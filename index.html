@@ -2230,6 +2230,26 @@ window.addEventListener('load',function(){
     body.dark-mode .sk-push-offer-text b{color:#fff}body.dark-mode .sk-push-offer-text span{color:#a7afbf}
     body.dark-mode .sk-push-offer-actions button.ghost{background:#1f242c;color:#fff}
 
+
+    /* v80 — team message: navy header design */
+    .app-modal.sk-announce{width:min(400px,92vw);padding:0!important;overflow:hidden;border-radius:24px!important;text-align:left}
+    .sk-ann-head{position:relative;padding:20px 20px 18px;color:#fff;background:radial-gradient(circle at 20% 0,#3a5cc4,#203c8e 55%,#152a66)}
+    .sk-ann-logo{height:22px;width:auto;display:block}
+    .sk-ann-bell{position:absolute;right:16px;top:14px;width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.14);display:grid;place-items:center}
+    .sk-ann-bell svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .sk-ann-kicker{margin-top:12px;font-size:11px;font-weight:850;letter-spacing:.1em;text-transform:uppercase;color:#e2b874}
+    .sk-ann-body{padding:18px 22px 4px}
+    .sk-ann-body .sk-announce-hi{margin:0;font-size:13.5px;font-weight:850;color:#203c8e}
+    .sk-ann-body h2{margin:4px 0 8px;font-size:20px;letter-spacing:-.01em;color:#1d2433;text-align:inherit}
+    .sk-ann-body .sk-announce-text{white-space:pre-line;margin:0!important;padding:0!important;background:none!important;font-size:14px!important;line-height:1.7!important;color:#3d4556!important;text-align:inherit}
+    .sk-ann-body[dir=rtl]{text-align:right}
+    .sk-announce-btn{width:calc(100% - 44px)!important;margin:16px 22px 22px!important}
+    body.dark-mode .app-modal.sk-announce{background:#12161c!important}
+    body.dark-mode .sk-ann-body .sk-announce-hi{color:#9db4ff}
+    body.dark-mode .sk-ann-body h2{color:#fff!important}
+    body.dark-mode .sk-ann-body .sk-announce-text{color:#d6dbe5!important;background:none!important}
+    .sk-ann-kicker[dir=rtl]{text-align:left;letter-spacing:0}
+
 </style>
 </head>
 <body>
@@ -2379,7 +2399,7 @@ window.addEventListener('load',function(){
     <p class="sk-about-text">Your central workspace for media planning, campaign monitoring, reporting and smart tools. Built to help our team manage clients, make faster data-driven decisions and create greater impact — together.</p>
     <div class="sk-about-pills"><span>Media planning</span><span>Campaign monitoring</span><span>Reporting</span><span>Smart tools</span></div>
     <div class="sk-credit"><span class="sk-credit-avatar">IA</span><span><small>Designed &amp; developed by</small><b>Ibrahim Amin</b></span></div>
-    <div class="sk-version">SEKNA Dashboard • v79</div>
+    <div class="sk-version">SEKNA Dashboard • v80</div>
   </section>
 </div>
 
@@ -2419,12 +2439,18 @@ window.addEventListener('load',function(){
 </div>
 
 <div class="app-modal-overlay" id="announceOverlay" onclick="closeAnnouncement(event)" data-share-ui>
-  <section class="app-modal sk-modal sk-confirm sk-announce" role="dialog" aria-modal="true" aria-labelledby="announceTitle" onclick="event.stopPropagation()">
-    <div class="sk-confirm-icon sk-announce-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1zM16 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></div>
-    <div class="sk-announce-hi" id="announceHi">Hi there,</div>
-    <h2 id="announceTitle">Message from SEKNA</h2>
-    <p class="sk-announce-text" id="announceText"></p>
-    <button class="sk-primary-btn sk-announce-btn" type="button" onclick="closeAnnouncement()">Got it</button>
+  <section class="app-modal sk-modal sk-announce" role="dialog" aria-modal="true" aria-labelledby="announceTitle" onclick="event.stopPropagation()">
+    <div class="sk-ann-head">
+      <img class="sk-ann-logo" id="announceLogo" alt="SEKNA">
+      <span class="sk-ann-bell"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
+      <div class="sk-ann-kicker" id="announceKicker">Message from SEKNA</div>
+    </div>
+    <div class="sk-ann-body" id="announceBody">
+      <div class="sk-announce-hi" id="announceHi">Hi there 👋</div>
+      <h2 id="announceTitle">Message from SEKNA</h2>
+      <p class="sk-announce-text" id="announceText"></p>
+    </div>
+    <button class="sk-primary-btn sk-announce-btn" id="announceBtn" type="button" onclick="closeAnnouncement()">Got it</button>
   </section>
 </div>
 
@@ -4080,7 +4106,7 @@ function demoServer(name,args){
  if(name==='adminInvite')return {ok:true,already:false,name:nameFromEmail(args[1])};
  if(name==='accessRequestCode')return {ok:true,name:nameFromEmail(args[0])};
  if(name==='accessVerifyCode')return {ok:true,token:'demo'.padEnd(64,'0'),status:'Pending',name:nameFromEmail(args[0])};
- if(name==='accessStatus')return {status:'Pending',name:storeGet(ACCESS_NAME_KEY)||'Ibrahim',email:'ibrahim.amin6700@gmail.com',isAdmin:demoAdmin,photo:'',dashboard:{version:'v79',date:'2026-10-17'}};
+ if(name==='accessStatus')return {status:'Pending',name:storeGet(ACCESS_NAME_KEY)||'Ibrahim',email:'ibrahim.amin6700@gmail.com',isAdmin:demoAdmin,photo:'',dashboard:{version:'v80',date:'2026-10-17'}};
  return {};
 }
 function nameFromEmail(email){
@@ -4574,9 +4600,16 @@ function maybeShowAnnouncement(a){
    const gate=document.getElementById('accessGate'),maint=document.getElementById('maintScreen');
    if((gate&&!gate.hidden)||(maint&&!maint.hidden))return;
    const name=firstName();
-   text('announceHi',name?`Hi ${name},`:'Hi there,');
-   text('announceTitle',a.title||'Message from SEKNA');
-   text('announceText',String(a.message).replace(/\{name\}/gi,name||'there'));
+   const ar=/[\u0600-\u06FF]/.test(String(a.title||'')+String(a.message||''));
+   const body=document.getElementById('announceBody');if(body)body.dir=ar?'rtl':'ltr';
+   const logo=document.getElementById('announceLogo'),src=document.querySelector('.sk-drawer-logo')?.src;
+   if(logo&&src&&logo.src!==src)logo.src=src;
+   text('announceKicker',ar?'رسالة من SEKNA':'Message from SEKNA');
+   const kicker=document.getElementById('announceKicker');if(kicker)kicker.dir=ar?'rtl':'ltr';
+   text('announceHi',(ar?'أهلاً ':'Hi ')+(name||(ar?'':'there'))+' 👋');
+   text('announceTitle',a.title||(ar?'رسالة من SEKNA':'Message from SEKNA'));
+   text('announceText',String(a.message).replace(/\{name\}/gi,name||(ar?'':'there')));
+   text('announceBtn',ar?'تمام':'Got it');
    const el=document.getElementById('announceOverlay');if(el){el.dataset.id=a.id;el.classList.add('open')}
  };
  setTimeout(show,900);
@@ -4786,7 +4819,7 @@ function closePushOffer(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v79',date:'2026-10-17'};
+const DASHBOARD_RELEASE_CLIENT={version:'v80',date:'2026-10-17'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
