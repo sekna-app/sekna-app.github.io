@@ -2283,6 +2283,24 @@ window.addEventListener('load',function(){
     .rp-report .sx-fbar .sx-prj{background:#e2b874!important;opacity:.85}
     .rp-foot{margin-top:28px;text-align:center;font-size:16px;font-weight:700;color:#8fa0d8}
 
+
+    /* v82 — Channel Delivery WhatsApp report (long, 1080 wide) */
+    .rp-report.rp-narrow{width:1080px}
+    .rp-oct .ox-hero{margin:0 0 12px}
+    .rp-oct .ox-tiles{grid-template-columns:1fr 1fr!important}
+    .rp-oct .ox-legend{display:flex!important}
+    .rp-wt{width:100%;border-collapse:separate;border-spacing:6px;margin:-6px}
+    .rp-wt thead th{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#8a92a6;text-align:left;padding:2px 8px;font-weight:850}
+    .rp-wt tbody th{text-align:left;padding:4px;white-space:nowrap}.rp-wt tbody th b{display:block;font-size:18px;color:#1d2433}.rp-wt tbody th span{font-size:13px;color:#6b7385;font-weight:600}
+    .rp-hm{border-radius:14px;padding:11px 12px}.rp-hm b{display:block;font-size:20px;font-weight:900}.rp-hm span{font-size:12.5px;font-weight:700;opacity:.9}
+    .rp-hm.g{background:#d8f6e6;color:#0b6b41}.rp-hm.o{background:#ecf9f2;color:#13804f}.rp-hm.a{background:#fdf3e2;color:#9a6416}.rp-hm.r{background:#fde6e3;color:#b42f26}.rp-hm.wait{background:#f3f5f9;color:#9aa1b2}
+    .rp-cr{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:16px;border:2px solid #e6ebf7;margin-bottom:10px}.rp-cr:last-child{margin-bottom:0}.rp-cr.win{border-color:#22e39a;background:#ecfdf5}
+    .rp-rk{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;color:#fff;font-weight:900;background:#203c8e;flex:none}.rp-rk.win{background:#0e9f68}.rp-rk.low{background:#c2382f}
+    .rp-cm{flex:1;min-width:0}.rp-ct{display:flex;align-items:center;gap:8px}.rp-ct b{font-size:18px;color:#1d2433}.rp-ct i{font-style:normal;background:#0e9f68;color:#fff;font-size:12px;font-weight:800;padding:2px 9px;border-radius:99px}
+    .rp-ct em{margin-left:auto;font-style:normal;font-size:20px;font-weight:900;color:#203c8e}.rp-ct em.win{color:#0e9f68}.rp-ct em.low{color:#c2382f}
+    .rp-cb{height:7px;border-radius:99px;background:#e9edf4;margin:8px 0 6px;overflow:hidden}.rp-cb span{display:block;height:100%;background:#2c4fb8;border-radius:99px}.rp-cb span.over{background:#e0584d}
+    .rp-cs{font-size:13.5px;color:#6b7385}.rp-cs b{color:#1d2433}
+
 </style>
 </head>
 <body>
@@ -2432,7 +2450,7 @@ window.addEventListener('load',function(){
     <p class="sk-about-text">Your central workspace for media planning, campaign monitoring, reporting and smart tools. Built to help our team manage clients, make faster data-driven decisions and create greater impact — together.</p>
     <div class="sk-about-pills"><span>Media planning</span><span>Campaign monitoring</span><span>Reporting</span><span>Smart tools</span></div>
     <div class="sk-credit"><span class="sk-credit-avatar">IA</span><span><small>Designed &amp; developed by</small><b>Ibrahim Amin</b></span></div>
-    <div class="sk-version">SEKNA Dashboard • v81</div>
+    <div class="sk-version">SEKNA Dashboard • v82</div>
   </section>
 </div>
 
@@ -4002,7 +4020,7 @@ async function shareWhatsApp(tab,btn){
  setShareButtonState(btn,true);
  const summary=getShareSummary(tab);
  try{
-   const canvas=tab==='channel'?await captureDashboardPanel(tab):await captureDailyReport();
+   const canvas=tab==='channel'?await captureChannelReport():await captureDailyReport();
    const blob=await canvasToBlob(canvas);
    const x=DASH_DATA.latest||{};
    const date=[x.monthName||'Media-Plan',x.dayNumber||''].filter(Boolean).join('-');
@@ -4139,7 +4157,7 @@ function demoServer(name,args){
  if(name==='adminInvite')return {ok:true,already:false,name:nameFromEmail(args[1])};
  if(name==='accessRequestCode')return {ok:true,name:nameFromEmail(args[0])};
  if(name==='accessVerifyCode')return {ok:true,token:'demo'.padEnd(64,'0'),status:'Pending',name:nameFromEmail(args[0])};
- if(name==='accessStatus')return {status:'Pending',name:storeGet(ACCESS_NAME_KEY)||'Ibrahim',email:'ibrahim.amin6700@gmail.com',isAdmin:demoAdmin,photo:'',dashboard:{version:'v81',date:'2026-10-17'}};
+ if(name==='accessStatus')return {status:'Pending',name:storeGet(ACCESS_NAME_KEY)||'Ibrahim',email:'ibrahim.amin6700@gmail.com',isAdmin:demoAdmin,photo:'',dashboard:{version:'v82',date:'2026-10-17'}};
  return {};
 }
 function nameFromEmail(email){
@@ -4890,11 +4908,59 @@ function shareReportHtml(){
  </div></div>
  <div class="rp-foot">Shared from SEKNA · sekna-app.web.app</div>`;
 }
-async function captureDailyReport(){
+
+function shareHead(sub){
+ const d=DASH_DATA||{},x=d.latest||{},a=accountMeta(d);
+ const year=String(x.date||'').slice(0,4);
+ const date=[x.dayName,[x.dayNumber,x.monthName,year].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+ const logo=document.querySelector('.logo img')?.src||'';
+ const sekna=document.querySelector('.sk-drawer-logo')?.src||'';
+ return `<div class="rp-head">${logo?`<img class="rp-client" src="${logo}" alt="">`:''}<div><b>${esc(a.label)}</b><span>${esc(sub)} · ${esc(date)}</span></div>${sekna?`<img class="rp-sekna" src="${sekna}" alt="SEKNA">`:''}</div>`;
+}
+function channelReportHtml(){
+ const d=DASH_DATA||{},x=d.latest||{};
+ const oct=document.querySelector('section.mtd-exec');
+ let october='';
+ if(oct){
+   const c=oct.cloneNode(true);
+   c.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));
+   const keep=['.ox-hero','.ox-tiles','.ox-legend'].map(s=>c.querySelector(s)).filter(Boolean);
+   october=keep.map(n=>{
+     [n,...n.querySelectorAll('*')].forEach(e=>{e.classList.remove('reveal-card','motion-pop','metric-motion');if(e.style){e.style.transition='none';e.style.animation='none'}if(e.dataset&&e.dataset.motionTarget){e.style.width=e.dataset.motionTarget;delete e.dataset.motionTarget}});
+     return n.outerHTML;
+   }).join('');
+ }
+ const cell=(a,p,f,has)=>{
+   if(!has||!(p>0))return `<td class="rp-hm wait"><b>${has&&a!=null?f(a):'—'}</b><span>Plan ${p>0?f(p):'—'}</span></td>`;
+   const r=a/p,k=r>=1.05?'g':r>=.95?'o':r>=.75?'a':'r';
+   return `<td class="rp-hm ${k}"><b>${f(a)}</b><span>${Math.round(r*100)}% of ${f(p)}</span></td>`;
+ };
+ const roasF=v=>fmt(v,2)+'x';
+ const weeks=(d.weekly||[]).map(w=>{
+   const has=!!w.hasActual,ps=Number(w.planSpend)||0,pv=Number(w.planValue)||0,pc=Number(w.planConversions??w.planConv)||0,pr=ps?pv/ps:0;
+   return `<tr><th><b>${esc(w.week||'')}</b><span>${esc(weekDateRange(w,x.monthName))}</span></th>${cell(Number(w.actualSpend)||0,ps,v=>money(v),has)}${cell(Number(w.actualValue)||0,pv,v=>money(v),has)}${cell(Number(w.actualConversions)||0,pc,v=>fmt(v,0),has)}${cell(has&&Number(w.actualSpend)>0?Number(w.roas)||0:null,pr,roasF,has&&Number(w.actualSpend)>0)}</tr>`;
+ }).join('');
+ const sorted=[...(d.channels||[])].sort((a,b)=>(Number(b.roas)||0)-(Number(a.roas)||0));
+ const chans=sorted.map((r,i)=>{
+   const roas=Number(r.roas)||0,ach=Number(r.spendAchievement)||0,k=i===0?'win':roas<1?'low':'';
+   return `<div class="rp-cr ${i===0?'win':''}"><span class="rp-rk ${k}">${i+1}</span><div class="rp-cm"><div class="rp-ct"><b>${esc(r.channel)}</b>${i===0?'<i>Winner</i>':''}<em class="${k}">${fmt(roas,2)}x</em></div>
+   <div class="rp-cb"><span class="${ach>1?'over':''}" style="width:${Math.min(ach*100,100)}%"></span></div>
+   <div class="rp-cs">Spend <b>${money(r.actualSpend)}</b> (${percent(ach)} of plan) · Clicks <b>${fmt(r.clicks,0)}</b> · Conv. <b>${fmt(r.conversions,0)}</b> · Value <b>${money(r.actualValue)}</b></div></div></div>`;
+ }).join('');
+ return `${shareHead('Channel Delivery')}
+ <div class="rp-t">${esc(x.monthName||'Month')} performance</div><div class="rp-box rp-oct">${october}</div>
+ <div class="rp-t">Weekly performance · % of plan</div><div class="rp-box"><table class="rp-wt"><thead><tr><th></th><th>Spend</th><th>Revenue</th><th>Conv.</th><th>ROAS</th></tr></thead><tbody>${weeks}</tbody></table></div>
+ <div class="rp-t">Channel delivery · ranked by ROAS</div><div class="rp-box">${chans}</div>
+ <div class="rp-foot">Shared from SEKNA · sekna-app.web.app</div>`;
+}
+
+function captureDailyReport(){return captureReport(shareReportHtml(),'')}
+function captureChannelReport(){return captureReport(channelReportHtml(),'rp-narrow')}
+async function captureReport(html,extraClass){
  const h2c=await ensureHtml2Canvas();
  const host=document.createElement('div');
- host.className='rp-report';host.setAttribute('data-share-ui','');
- host.innerHTML=shareReportHtml();
+ host.className='rp-report '+(extraClass||'');host.setAttribute('data-share-ui','');
+ host.innerHTML=html;
  document.body.appendChild(host);
  try{
    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
@@ -4909,7 +4975,7 @@ async function captureDailyReport(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v81',date:'2026-10-17'};
+const DASHBOARD_RELEASE_CLIENT={version:'v82',date:'2026-10-17'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
