@@ -1,7 +1,7 @@
 // SEKNA web app service worker: offline shell + notifications.
 // The page is always fetched fresh when online, so updates appear right away; the
 // cached copy is only used without a network. Dashboard data is never cached here.
-const CACHE = 'sekna-shell-v2';
+const CACHE = 'sekna-shell-v3';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './firebase-config.js',
   './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon-64.png', './icons/badge-96.png'];
 
@@ -13,15 +13,15 @@ if (self.SEKNA_FIREBASE && self.SEKNA_FIREBASE.apiKey) {
   firebase.messaging().onBackgroundMessage(payload => showSeknaNotification((payload && payload.data) || {}));
 }
 
+// Android already shows the SEKNA app icon next to every notification, so the
+// large icon is only added on computers (otherwise the logo appears twice).
+const IS_ANDROID = /Android/i.test(self.navigator.userAgent || '');
+
 function showSeknaNotification(d) {
   const tag = d.eventType === 'new_day' ? 'data-' + (d.accountKey || 'usa') : (d.eventType || 'sekna');
-  return self.registration.showNotification(d.title || 'SEKNA', {
-    body: d.body || '',
-    icon: 'icons/icon-192.png',
-    badge: 'icons/badge-96.png',
-    tag: tag,
-    data: { url: './' }
-  });
+  const options = { body: d.body || '', badge: 'icons/badge-96.png', tag: tag, data: { url: './' } };
+  if (!IS_ANDROID) options.icon = 'icons/icon-192.png';
+  return self.registration.showNotification(d.title || 'SEKNA', options);
 }
 
 self.addEventListener('notificationclick', event => {

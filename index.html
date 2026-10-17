@@ -2170,6 +2170,7 @@ window.addEventListener('load',function(){
     /* v76 — sticky SEKNA header in the menu, maintenance, team message, admin app status */
     .sk-drawer-head{position:sticky;top:-18px;z-index:3;margin:-18px -16px 0;padding:22px 18px 18px;background:#24459f}
     .sk-gate.sk-maint{justify-content:center!important}
+    .sk-gate.sk-maint .sk-gate-card{margin:auto 0}
     .sk-maint .sk-gate-icon{background:#fdf3e2;color:#a8701c}
     .sk-maint-title{margin:4px 0 8px;font-size:21px;letter-spacing:-.02em;color:#1d2433}
     .sk-maint-reason{margin:0 0 10px;padding:10px 12px;border-radius:12px;background:#f4f6fb;font-size:13px;font-weight:700;line-height:1.5;color:#203c8e}
@@ -2214,6 +2215,8 @@ window.addEventListener('load',function(){
 
     /* v78 — web notifications */
     body.sekna-web .sk-sound-row,body.sekna-web .sk-sounds{display:none!important}
+    .sk-person-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:10px}
+    .sk-person-actions:empty{display:none}
     .sk-push-offer{position:fixed;left:12px;right:12px;bottom:18px;margin:0 auto;z-index:60;max-width:460px;box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;padding:14px;border-radius:18px;background:#fff;border:1px solid #e3e7f0;box-shadow:0 18px 50px rgba(20,30,60,.22);animation:skRise .4s cubic-bezier(.2,.75,.25,1) both}
     .sk-push-offer[hidden]{display:none}
     .sk-push-offer-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#eef2fd;color:#203c8e;flex:none}
@@ -2352,11 +2355,6 @@ window.addEventListener('load',function(){
       <div class="sk-row sk-zoom-row" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M11 8v6M8 11h6"/></svg></span><span class="sk-row-text"><b>Layout size</b><small>Make the desktop layout bigger or smaller.</small></span><button type="button" onclick="changeDesktopZoom(-0.25)" aria-label="Smaller">−</button><b data-zoom-label>100%</b><button type="button" onclick="changeDesktopZoom(0.25)" aria-label="Larger">+</button></div>
     </div>
 
-    <div class="sk-group-title" id="securityGroupTitle" hidden>Security</div>
-    <div class="sk-card" id="securityGroup" hidden>
-      <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><span class="sk-row-text"><b>App lock</b><small>Use your fingerprint, face or phone PIN to open SEKNA.</small></span><span class="switch"><input id="appLockToggle" type="checkbox" onchange="toggleAppLock(this)"><span></span></span></label>
-    </div>
-
     <div class="sk-group-title">Notifications</div>
     <div class="sk-card">
       <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="sk-row-text"><b>Push notifications</b><small id="notificationsHelp">Media-plan update alerts in the SEKNA app.</small></span><span class="switch"><input id="notificationsToggle" type="checkbox" onchange="onNotificationsToggle(this)"><span></span></span></label>
@@ -2381,7 +2379,7 @@ window.addEventListener('load',function(){
     <p class="sk-about-text">Your central workspace for media planning, campaign monitoring, reporting and smart tools. Built to help our team manage clients, make faster data-driven decisions and create greater impact — together.</p>
     <div class="sk-about-pills"><span>Media planning</span><span>Campaign monitoring</span><span>Reporting</span><span>Smart tools</span></div>
     <div class="sk-credit"><span class="sk-credit-avatar">IA</span><span><small>Designed &amp; developed by</small><b>Ibrahim Amin</b></span></div>
-    <div class="sk-version">SEKNA Dashboard • v78</div>
+    <div class="sk-version">SEKNA Dashboard • v79</div>
   </section>
 </div>
 
@@ -2855,7 +2853,7 @@ function syncNativeSettings(){
  catch(e){}
 }
 function openSettings(){
- closeSidebar();syncSettingsControls();syncAppLockControl();renderProfileCard();
+ closeSidebar();syncSettingsControls();renderProfileCard();
  const el=document.getElementById('settingsOverlay');if(el)el.classList.add('open');
 }
 function closeSettings(event){
@@ -4082,7 +4080,7 @@ function demoServer(name,args){
  if(name==='adminInvite')return {ok:true,already:false,name:nameFromEmail(args[1])};
  if(name==='accessRequestCode')return {ok:true,name:nameFromEmail(args[0])};
  if(name==='accessVerifyCode')return {ok:true,token:'demo'.padEnd(64,'0'),status:'Pending',name:nameFromEmail(args[0])};
- if(name==='accessStatus')return {status:'Pending',name:storeGet(ACCESS_NAME_KEY)||'Ibrahim',email:'ibrahim.amin6700@gmail.com',isAdmin:demoAdmin,photo:'',dashboard:{version:'v78',date:'2026-10-17'}};
+ if(name==='accessStatus')return {status:'Pending',name:storeGet(ACCESS_NAME_KEY)||'Ibrahim',email:'ibrahim.amin6700@gmail.com',isAdmin:demoAdmin,photo:'',dashboard:{version:'v79',date:'2026-10-17'}};
  return {};
 }
 function nameFromEmail(email){
@@ -4418,7 +4416,9 @@ async function adminDeleteRow(id,btn){
  try{await serverCall('adminDelete',getAccessToken(),id);showSettingsToast('Record deleted');loadAdmin()}
  catch(err){if(btn){btn.disabled=false;btn.classList.remove('confirm');btn.textContent='Delete'}showSettingsToast(errorText(err))}
 }
+let ADMIN_LAST=null;
 function renderAdmin(d){
+ ADMIN_LAST=d;
  const rows=(d&&d.rows)||[], now=(d&&d.now)||Date.now(), photos=(d&&d.photos)||{};
  const people={};
  rows.forEach(r=>{(people[r.email]=people[r.email]||{email:r.email,name:r.name,devices:[]}).devices.push(r)});
@@ -4431,14 +4431,14 @@ function renderAdmin(d){
  const pending=rows.filter(r=>r.status==='Pending');
  const stats=[
    ['Users',users.length,''],
-   ['Devices',rows.filter(r=>r.status==='Approved').length,''],
+   ['Invited',rows.filter(r=>r.status==='Invited').length,''],
    ['Pending',pending.length,pending.length?'alert':''],
    ['Active today',users.filter(p=>now-p.last<86400000).length,'']
  ];
  const person=p=>`<div class="sk-person">
    <div class="sk-person-top"><span class="sk-person-avatar">${avatarHtml(photos[p.email],p.name)}</span>
      <span class="sk-person-text"><b>${esc(p.name)}</b><small>${esc(p.email)}</small><span class="sk-seen">${seenHtml(p.last,now)}</span></span>${statusChip(p.status)}</div>
-   <div class="sk-devices">${p.devices.map(r=>`<div class="sk-device"><span class="sk-device-text"><b>${esc(r.device||'Unknown device')}</b>${esc(r.status)} • ${seenHtml(r.lastSeenMs,now).replace('Last seen','last seen')}</span><span class="sk-device-actions">${deviceActions(r)}</span></div>`).join('')}</div>
+   <div class="sk-person-actions">${personActions(p)}</div>
  </div>`;
  adminBody(`
    <div class="sk-admin-stats">${stats.map(s=>`<div class="sk-stat ${s[2]}"><b>${s[1]}</b><span>${s[0]}</span></div>`).join('')}</div>
@@ -4447,6 +4447,43 @@ function renderAdmin(d){
      <form class="sk-invite" onsubmit="adminInviteSubmit(event)"><input id="adminInviteEmail" type="email" inputmode="email" autocapitalize="off" placeholder="name@company.com" onfocus="setTimeout(()=>this.scrollIntoView({block:'center'}),300)"><button id="adminInviteBtn" type="submit">Send invite</button></form></div>
    ${pending.length?`<div class="sk-admin-section"><h3>Waiting for approval</h3>${list.filter(p=>p.devices.some(x=>x.status==='Pending')).map(person).join('')}</div>`:''}
    <div class="sk-admin-section"><h3>People</h3>${list.filter(p=>!p.devices.some(x=>x.status==='Pending')).map(person).join('')||'<div class="sk-admin-empty">No one has requested access yet.</div>'}</div>`);
+}
+
+const PERSON_ACTIONS={approve:['Pending'],deny:['Pending'],revoke:['Approved'],restore:['Revoked','Denied']};
+function personActions(p){
+ const b=(action,label,cls)=>`<button class="sk-mini-btn ${cls||''}" type="button" onclick="adminPersonAction('${esc(p.email)}','${action}',this)">${label}</button>`;
+ const del=`<button class="sk-mini-btn ghost" type="button" onclick="adminDeletePerson('${esc(p.email)}',this)">Delete</button>`;
+ const has=s=>p.devices.some(r=>r.status===s);
+ let out='';
+ if(has('Pending'))out+=b('approve','Approve')+b('deny','Deny','danger');
+ if(has('Approved'))out+=b('revoke','Revoke','danger');
+ if(!has('Approved')&&!has('Pending')&&(has('Revoked')||has('Denied')))out+=b('restore','Restore','ghost');
+ if(!has('Approved')&&!has('Pending'))out+=del;
+ return out;
+}
+function adminPersonRows(email){return ((ADMIN_LAST&&ADMIN_LAST.rows)||[]).filter(r=>r.email===email)}
+async function adminPersonAction(email,action,btn){
+ const ids=adminPersonRows(email).filter(r=>PERSON_ACTIONS[action].indexOf(r.status)>=0).map(r=>r.id);
+ if(!ids.length)return;
+ if(btn){btn.disabled=true;btn.textContent='Saving…'}
+ try{
+   let last=null;
+   for(const id of ids)last=await serverCall('adminSetStatus',getAccessToken(),id,action);
+   showSettingsToast((last&&last.name?last.name+' is now ':'Now ')+((last&&last.status)||'updated'));
+   loadAdmin();
+ }catch(err){if(btn){btn.disabled=false;btn.textContent='Try again'}showSettingsToast(errorText(err))}
+}
+async function adminDeletePerson(email,btn){
+ if(btn&&!btn.classList.contains('confirm')){
+   btn.classList.add('confirm');btn.textContent='Confirm';
+   setTimeout(()=>{if(btn.isConnected&&btn.classList.contains('confirm')){btn.classList.remove('confirm');btn.textContent='Delete'}},3500);
+   return;
+ }
+ if(btn){btn.disabled=true;btn.textContent='Deleting…'}
+ try{
+   for(const r of adminPersonRows(email))await serverCall('adminDelete',getAccessToken(),r.id);
+   showSettingsToast('Record deleted');loadAdmin();
+ }catch(err){if(btn){btn.disabled=false;btn.classList.remove('confirm');btn.textContent='Delete'}showSettingsToast(errorText(err))}
 }
 async function adminAction(id,action,btn){
  if(btn){btn.disabled=true;btn.textContent='Saving…'}
@@ -4672,7 +4709,9 @@ async function seknaPushToken(){
 async function showWebPush(d){
  try{
    const reg=await navigator.serviceWorker.ready;
-   reg.showNotification(d.title||'SEKNA',{body:d.body||'',icon:'icons/icon-192.png',badge:'icons/badge-96.png',tag:d.eventType==='new_day'?'data-'+(d.accountKey||'usa'):(d.eventType||'sekna'),data:{url:'./'}});
+   const options={body:d.body||'',badge:'icons/badge-96.png',tag:d.eventType==='new_day'?'data-'+(d.accountKey||'usa'):(d.eventType||'sekna'),data:{url:'./'}};
+   if(!/Android/i.test(navigator.userAgent))options.icon='icons/icon-192.png';
+   reg.showNotification(d.title||'SEKNA',options);
  }catch(e){}
 }
 async function webPushEnable(){
@@ -4747,7 +4786,7 @@ function closePushOffer(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v78',date:'2026-10-17'};
+const DASHBOARD_RELEASE_CLIENT={version:'v79',date:'2026-10-17'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
