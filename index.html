@@ -73,6 +73,7 @@ window.addEventListener('load',function(){
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="SEKNA">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <script src="firebase-config.js"></script>
   <script>
   (function(){
    var API="https:\/\/script.google.com\/macros\/s\/AKfycbzjgZ1nXxLTcFdeFCIEznOj2H0XCo9YGUeu1YF2pJdsQiOo_aM-Mn6HxKKNk8peEuM1Ig\/exec";
@@ -2210,6 +2211,22 @@ window.addEventListener('load',function(){
     body.dark-mode .sk-announce-text{background:#0f1218!important;color:#d6dbe5!important}
     body.dark-mode .sk-announce-icon{background:#1b2440;color:#9db4ff}
 
+
+    /* v78 — web notifications */
+    body.sekna-web .sk-sound-row,body.sekna-web .sk-sounds{display:none!important}
+    .sk-push-offer{position:fixed;left:12px;right:12px;bottom:18px;margin:0 auto;z-index:60;max-width:460px;box-sizing:border-box;display:flex;flex-wrap:wrap;align-items:center;gap:10px 12px;padding:14px;border-radius:18px;background:#fff;border:1px solid #e3e7f0;box-shadow:0 18px 50px rgba(20,30,60,.22);animation:skRise .4s cubic-bezier(.2,.75,.25,1) both}
+    .sk-push-offer[hidden]{display:none}
+    .sk-push-offer-icon{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#eef2fd;color:#203c8e;flex:none}
+    .sk-push-offer-icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .sk-push-offer-text{flex:1 1 200px;min-width:0}.sk-push-offer-text b{display:block;font-size:14px;color:#1d2433}.sk-push-offer-text span{font-size:12px;color:#6b7383}
+    .sk-push-offer-actions{display:flex;gap:8px;margin-left:auto}
+    .sk-push-offer-actions button{border:0;border-radius:11px;padding:9px 14px;font:inherit;font-size:12.5px;font-weight:850;cursor:pointer;background:linear-gradient(180deg,#2b4db0,#203c8e);color:#fff}
+    .sk-push-offer-actions button.ghost{background:#f1f3f8;color:#3d4556}
+    .sk-push-offer-actions button:disabled{opacity:.7}
+    body.dark-mode .sk-push-offer{background:#12161c;border-color:#2b313a}
+    body.dark-mode .sk-push-offer-text b{color:#fff}body.dark-mode .sk-push-offer-text span{color:#a7afbf}
+    body.dark-mode .sk-push-offer-actions button.ghost{background:#1f242c;color:#fff}
+
 </style>
 </head>
 <body>
@@ -2342,8 +2359,8 @@ window.addEventListener('load',function(){
 
     <div class="sk-group-title">Notifications</div>
     <div class="sk-card">
-      <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="sk-row-text"><b>Push notifications</b><small>Media-plan update alerts in the SEKNA app.</small></span><span class="switch"><input id="notificationsToggle" type="checkbox" onchange="saveDashboardSettings()"><span></span></span></label>
-      <div class="sk-row sk-row--stack"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="sk-row-text"><b>Notification sound</b><small>Tap a sound to select it and hear a preview.</small></span></div>
+      <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="sk-row-text"><b>Push notifications</b><small id="notificationsHelp">Media-plan update alerts in the SEKNA app.</small></span><span class="switch"><input id="notificationsToggle" type="checkbox" onchange="onNotificationsToggle(this)"><span></span></span></label>
+      <div class="sk-row sk-row--stack sk-sound-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="sk-row-text"><b>Notification sound</b><small>Tap a sound to select it and hear a preview.</small></span></div>
       <div class="sk-sounds" role="radiogroup" aria-label="Notification sound">
         <button class="sk-sound" type="button" role="radio" data-sound="default" onclick="selectSound('default')"><span class="sk-sound-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span class="sk-sound-name">Default</span><svg class="sk-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
         <button class="sk-sound" type="button" role="radio" data-sound="human_appeal" onclick="selectSound('human_appeal')"><span class="sk-sound-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span class="sk-sound-name">Human Appeal Chime</span><svg class="sk-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
@@ -2364,7 +2381,7 @@ window.addEventListener('load',function(){
     <p class="sk-about-text">Your central workspace for media planning, campaign monitoring, reporting and smart tools. Built to help our team manage clients, make faster data-driven decisions and create greater impact — together.</p>
     <div class="sk-about-pills"><span>Media planning</span><span>Campaign monitoring</span><span>Reporting</span><span>Smart tools</span></div>
     <div class="sk-credit"><span class="sk-credit-avatar">IA</span><span><small>Designed &amp; developed by</small><b>Ibrahim Amin</b></span></div>
-    <div class="sk-version">SEKNA Dashboard • v77</div>
+    <div class="sk-version">SEKNA Dashboard • v78</div>
   </section>
 </div>
 
@@ -2395,6 +2412,12 @@ window.addEventListener('load',function(){
     <p class="sk-maint-note">We'll be back shortly. This page checks again automatically.</p>
     <button class="sk-primary-btn sk-maint-btn" id="maintRetry" type="button" onclick="checkMaintenance(true)">Check again</button>
   </main>
+</div>
+
+<div class="sk-push-offer" id="pushOffer" data-share-ui hidden role="dialog" aria-labelledby="pushOfferTitle">
+  <span class="sk-push-offer-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
+  <div class="sk-push-offer-text"><b id="pushOfferTitle">Get SEKNA notifications</b><span>New data, team messages and updates on this device.</span></div>
+  <div class="sk-push-offer-actions"><button type="button" class="ghost" onclick="closePushOffer()">Not now</button><button type="button" onclick="acceptPushOffer(this)">Turn on</button></div>
 </div>
 
 <div class="app-modal-overlay" id="announceOverlay" onclick="closeAnnouncement(event)" data-share-ui>
@@ -2787,6 +2810,7 @@ function syncSettingsControls(st){
  const notifications=document.getElementById('notificationsToggle');if(notifications)notifications.checked=st.notifications;
  const sound=document.getElementById('notificationSoundSetting');if(sound)sound.value=st.sound;
  updateSoundOptions(st.sound);
+ if(window.SEKNA_WEB)syncWebPushControl();
 }
 function saveDashboardSettings(showToast=true){
  const before=getDashboardSettings();
@@ -4058,7 +4082,7 @@ function demoServer(name,args){
  if(name==='adminInvite')return {ok:true,already:false,name:nameFromEmail(args[1])};
  if(name==='accessRequestCode')return {ok:true,name:nameFromEmail(args[0])};
  if(name==='accessVerifyCode')return {ok:true,token:'demo'.padEnd(64,'0'),status:'Pending',name:nameFromEmail(args[0])};
- if(name==='accessStatus')return {status:'Pending',name:storeGet(ACCESS_NAME_KEY)||'Ibrahim',email:'ibrahim.amin6700@gmail.com',isAdmin:demoAdmin,photo:'',dashboard:{version:'v77',date:'2026-10-17'}};
+ if(name==='accessStatus')return {status:'Pending',name:storeGet(ACCESS_NAME_KEY)||'Ibrahim',email:'ibrahim.amin6700@gmail.com',isAdmin:demoAdmin,photo:'',dashboard:{version:'v78',date:'2026-10-17'}};
  return {};
 }
 function nameFromEmail(email){
@@ -4228,6 +4252,7 @@ function startDashboard(){
  updateProfileUI();
  fetchProfile();
  loadData();
+ if(window.SEKNA_WEB)setTimeout(webPushStartup,3500);
 }
 
 function handleAccessError(err){
@@ -4323,6 +4348,7 @@ function closeSignOut(event){
 async function doSignOut(){
  const btn=document.getElementById('signOutBtn');
  setGateBusy(btn,true);
+ if(window.SEKNA_WEB){try{await webPushOff()}catch(e){}}
  try{await serverCall('accessSignOut',getAccessToken())}catch(e){}
  storeRemove(ACCESS_TOKEN_KEY);storeRemove(ACCESS_STATE_KEY);
  stopDashboardRefresh();
@@ -4609,8 +4635,119 @@ function nativeAccessWatch(on){
  }catch(e){}
 }
 
+
  
-const DASHBOARD_RELEASE_CLIENT={version:'v77',date:'2026-10-17'};
+var WEB_PUSH_KEY='sekna_web_push_token', WEB_PUSH_OFFER_KEY='sekna_web_push_offer';
+var FIREBASE_SDK='https:\/\/www.gstatic.com/firebasejs/10.12.2/';
+var FB_MESSAGING=null;
+function webPushConfigured(){return !!(window.SEKNA_WEB&&window.SEKNA_FIREBASE&&window.SEKNA_FIREBASE.apiKey&&window.SEKNA_FIREBASE.vapidKey)}
+function isIosDevice(){return /iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)}
+function isInstalledApp(){return (window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true}
+function webPushBrowserReady(){return 'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window}
+function webPushOn(){return !!storeGet(WEB_PUSH_KEY)&&('Notification' in window)&&Notification.permission==='granted'}
+function loadScriptOnce(src){
+ return new Promise((resolve,reject)=>{
+   if(document.querySelector('script[data-src="'+src+'"]')){resolve();return}
+   const s=document.createElement('script');s.src=src;s.dataset.src=src;
+   s.onload=resolve;s.onerror=()=>reject(new Error('Could not load notifications. Check your connection.'));
+   document.head.appendChild(s);
+ });
+}
+async function seknaMessaging(){
+ if(FB_MESSAGING)return FB_MESSAGING;
+ await loadScriptOnce(FIREBASE_SDK+'firebase-app-compat.js');
+ await loadScriptOnce(FIREBASE_SDK+'firebase-messaging-compat.js');
+ if(!firebase.apps.length)firebase.initializeApp(window.SEKNA_FIREBASE);
+ FB_MESSAGING=firebase.messaging();
+ FB_MESSAGING.onMessage(p=>showWebPush((p&&p.data)||{}));
+ return FB_MESSAGING;
+}
+async function seknaPushToken(){
+ const m=await seknaMessaging();
+ const reg=await navigator.serviceWorker.register('sw.js');
+ await navigator.serviceWorker.ready;
+ return m.getToken({vapidKey:window.SEKNA_FIREBASE.vapidKey,serviceWorkerRegistration:reg});
+}
+
+async function showWebPush(d){
+ try{
+   const reg=await navigator.serviceWorker.ready;
+   reg.showNotification(d.title||'SEKNA',{body:d.body||'',icon:'icons/icon-192.png',badge:'icons/badge-96.png',tag:d.eventType==='new_day'?'data-'+(d.accountKey||'usa'):(d.eventType||'sekna'),data:{url:'./'}});
+ }catch(e){}
+}
+async function webPushEnable(){
+ if(isIosDevice()&&!isInstalledApp())throw new Error('On iPhone, first add SEKNA to your Home Screen (Share → Add to Home Screen), then open it from there.');
+ if(!webPushBrowserReady())throw new Error('This browser does not support notifications.');
+ const permission=await Notification.requestPermission();
+ if(permission!=='granted')throw new Error(permission==='denied'?'Notifications are blocked for SEKNA. Allow them in your browser or phone settings.':'Notifications were not allowed.');
+ const token=await seknaPushToken();
+ if(!token)throw new Error('Could not turn on notifications. Please try again.');
+ await serverCall('webPushSubscribe',getAccessToken(),token,true);
+ storeSet(WEB_PUSH_KEY,token);
+}
+async function webPushOff(){
+ const token=storeGet(WEB_PUSH_KEY);
+ storeRemove(WEB_PUSH_KEY);
+ if(!token)return;
+ try{await serverCall('webPushSubscribe',getAccessToken(),token,false)}catch(e){}
+ try{(await seknaMessaging()).deleteToken()}catch(e){}
+}
+async function onNotificationsToggle(input){
+ if(!window.SEKNA_WEB){saveDashboardSettings();return}
+ const want=!!input.checked;
+ input.disabled=true;
+ try{
+   if(want){await webPushEnable();showSettingsToast('Notifications are on for this device')}
+   else{await webPushOff();showSettingsToast('Notifications are off for this device')}
+ }catch(err){showSettingsToast(errorText(err))}
+ input.checked=webPushOn();input.disabled=false;
+}
+function syncWebPushControl(){
+ const t=document.getElementById('notificationsToggle'),help=document.getElementById('notificationsHelp');
+ const group=t&&t.closest('.sk-card'),title=group&&group.previousElementSibling;
+ const show=webPushConfigured();
+ if(group)group.hidden=!show;
+ if(title&&title.classList.contains('sk-group-title'))title.hidden=!show;
+ if(!show||!t)return;
+ t.checked=webPushOn();
+ if(help)help.textContent=isIosDevice()&&!isInstalledApp()
+   ?'Add SEKNA to your Home Screen first, then turn this on from the Home Screen app.'
+   :(webPushBrowserReady()?'Get SEKNA alerts on this device.':'This browser does not support notifications.');
+}
+
+async function webPushStartup(){
+ if(!webPushConfigured())return;
+ const saved=storeGet(WEB_PUSH_KEY);
+ if(saved){
+   if(!webPushBrowserReady()||Notification.permission!=='granted'){storeRemove(WEB_PUSH_KEY);return}
+   try{
+     const token=await seknaPushToken();
+     if(token&&token!==saved){
+       await serverCall('webPushSubscribe',getAccessToken(),token,true);
+       storeSet(WEB_PUSH_KEY,token);
+       serverCall('webPushSubscribe',getAccessToken(),saved,false).catch(()=>{});
+     }
+   }catch(e){}
+   return;
+ }
+ if(storeGet(WEB_PUSH_OFFER_KEY)||!webPushBrowserReady()||Notification.permission!=='default')return;
+ if(isIosDevice()&&!isInstalledApp())return;
+ const el=document.getElementById('pushOffer');if(el)el.hidden=false;
+}
+async function acceptPushOffer(btn){
+ storeSet(WEB_PUSH_OFFER_KEY,'1');
+ if(btn){btn.disabled=true;btn.textContent='Turning on…'}
+ try{await webPushEnable();showSettingsToast('Notifications are on for this device')}
+ catch(err){showSettingsToast(errorText(err))}
+ closePushOffer();
+}
+function closePushOffer(){
+ storeSet(WEB_PUSH_OFFER_KEY,'1');
+ const el=document.getElementById('pushOffer');if(el)el.hidden=true;
+}
+
+ 
+const DASHBOARD_RELEASE_CLIENT={version:'v78',date:'2026-10-17'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
@@ -4702,6 +4839,7 @@ function seenHtml(ms,now){
 initClientLogos();
 syncNativeSettings();
 syncNativeDarkMode(getDashboardSettings().dark);
+if(window.SEKNA_WEB)document.body.classList.add('sekna-web');
 startAccess();
 window.SEKNA_READY=true;
 </script>

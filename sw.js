@@ -1,8 +1,38 @@
-// SEKNA web app shell. The page is always fetched fresh when online, so updates
-// appear right away; the cached copy is only used when the network is unavailable.
-// Dashboard data comes live from the SEKNA server and is never cached here.
-const CACHE = 'sekna-shell-v1';
-const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon-64.png'];
+// SEKNA web app service worker: offline shell + notifications.
+// The page is always fetched fresh when online, so updates appear right away; the
+// cached copy is only used without a network. Dashboard data is never cached here.
+const CACHE = 'sekna-shell-v2';
+const SHELL = ['./', './index.html', './manifest.webmanifest', './firebase-config.js',
+  './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon-64.png', './icons/badge-96.png'];
+
+importScripts('firebase-config.js');
+if (self.SEKNA_FIREBASE && self.SEKNA_FIREBASE.apiKey) {
+  importScripts('https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js',
+    'https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js');
+  firebase.initializeApp(self.SEKNA_FIREBASE);
+  firebase.messaging().onBackgroundMessage(payload => showSeknaNotification((payload && payload.data) || {}));
+}
+
+function showSeknaNotification(d) {
+  const tag = d.eventType === 'new_day' ? 'data-' + (d.accountKey || 'usa') : (d.eventType || 'sekna');
+  return self.registration.showNotification(d.title || 'SEKNA', {
+    body: d.body || '',
+    icon: 'icons/icon-192.png',
+    badge: 'icons/badge-96.png',
+    tag: tag,
+    data: { url: './' }
+  });
+}
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  event.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
+    for (const client of list) {
+      if (client.url.startsWith(self.registration.scope) && 'focus' in client) return client.focus();
+    }
+    return self.clients.openWindow('./');
+  }));
+});
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));
