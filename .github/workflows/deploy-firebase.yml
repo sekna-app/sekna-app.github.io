@@ -1,0 +1,38 @@
+name: Deploy to sekna.web.app
+
+# Publishes this site to Firebase Hosting (site "sekna" in the human-appeal-media-plan
+# project) on every push to main. GitHub Pages keeps serving sekna-app.github.io too.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check Firebase key
+        shell: bash
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            echo "::warning::FIREBASE_SERVICE_ACCOUNT secret is not set yet, so sekna.web.app was not updated."
+            echo "HAS_KEY=false" >> "$GITHUB_ENV"
+          else
+            echo "HAS_KEY=true" >> "$GITHUB_ENV"
+          fi
+
+      - name: Deploy to Firebase Hosting
+        if: env.HAS_KEY == 'true'
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: human-appeal-media-plan
+          channelId: live
