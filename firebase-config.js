@@ -6,5 +6,5 @@ self.SEKNA_FIREBASE = {
   projectId: 'human-appeal-media-plan',
   messagingSenderId: '887154890023',
   appId: '1:887154890023:web:85d13243114ebd259bc502',
-  vapidKey: ''
+  vapidKey: 'BLy4OOyjkzAglLcIUo3iPkZSCtb7KhXyObJeQWxiUk7SyDM4fUa3PW3RRHQP8q3-yR-TV7zlZIIun6sSgXm54e8'
 };
