@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "site": "sekna",
+    "site": "sekna-app",
     "public": ".",
     "ignore": ["firebase.json", ".firebaserc", "README.md", "**/.*", ".github/**"],
     "headers": [
