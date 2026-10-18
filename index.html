@@ -2678,6 +2678,31 @@ window.addEventListener('load',function(){
     .mc-ab b.win{text-decoration:none!important}
     .mr3-chip,.mr3-chip.good,.mr3-chip.bad,.mr3-chip.neutral{color:#fff!important}
     .mr3-chip.good{background:rgba(255,255,255,.28)}.mr3-chip.bad{background:rgba(0,0,0,.28)}
+
+    .pk-head b{display:none}
+    .dc-card:not(.open) .dc-more{display:none}
+    body .side-drawer.sk-drawer{overflow-x:hidden!important;overscroll-behavior:contain;touch-action:pan-y}
+    .sk-drawer::before{right:0!important;width:240px!important;height:240px!important;bottom:-90px!important}
+    .sk-drawer>*{max-width:100%}
+    .mt{position:relative;overflow:hidden;border-radius:22px;padding:16px;margin:4px 0 12px;color:#fff;background:radial-gradient(120% 120% at 100% 0%,#34d399 0%,#059669 38%,#065f46 72%,#064e3b 100%);box-shadow:0 16px 34px rgba(5,150,105,.32)}
+    .mt::after{content:"";position:absolute;left:-60px;bottom:-80px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.06)}
+    .mt-top{display:flex;align-items:center;gap:12px}.mt-top small{display:block;font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.08em;color:#a7f3d0}.mt-top b{font-size:13px;white-space:nowrap}
+    .mt-days{flex:1;height:5px;border-radius:99px;background:rgba(255,255,255,.18);overflow:hidden}.mt-days span{display:block;height:100%;border-radius:99px;background:#fff}
+    .mt-hero{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 0 12px}
+    .mt-hero small{display:block;font-size:10.5px;font-weight:850;text-transform:uppercase;letter-spacing:.07em;color:#a7f3d0}.mt-hero>div:first-child>b{display:block;font-size:34px;font-weight:900;letter-spacing:-.02em;line-height:1.1;direction:ltr}
+    .mt-hero i{font-style:normal;font-size:12px;color:#d1fae5;font-weight:750}
+    .mt-ring{position:relative;width:76px;height:76px;flex:none}.mt-ring svg{width:100%;height:100%}
+    .mt-ring .t{fill:none;stroke:rgba(255,255,255,.2);stroke-width:8}.mt-ring .f{fill:none;stroke:#fff;stroke-width:8;stroke-linecap:round}
+    .mt-ring.watch .f{stroke:#fde68a}.mt-ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:16px;font-weight:900;color:#fff}
+    .mt-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .mt-t{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:10px 8px;min-width:0;backdrop-filter:blur(2px)}
+    .mt-t small{display:block;font-size:9.5px;font-weight:850;text-transform:uppercase;letter-spacing:.06em;color:#a7f3d0}
+    .mt-t b{display:block;font-size:14.5px;font-weight:900;margin:3px 0 6px;direction:ltr;white-space:nowrap;letter-spacing:-.01em}
+    .mt-chip{display:inline-block;font-size:10px;font-weight:900;border-radius:99px;padding:2px 7px;background:rgba(255,255,255,.2);color:#fff;white-space:nowrap}
+    .mt-chip.good{background:#d1fae5;color:#065f46}.mt-chip.watch{background:#fef3c7;color:#92400e}.mt-chip.bad{background:#ffe4e6;color:#9f1239}
+    .mt-mix{position:relative;z-index:1;display:flex;gap:2px;height:7px;border-radius:99px;overflow:hidden;margin-top:12px}
+    .mt-mix .m0,.mt-legend i.m0{background:#fff}.mt-mix .m1,.mt-legend i.m1{background:#a7f3d0}.mt-mix .m2,.mt-legend i.m2{background:#fde68a}.mt-mix .m3,.mt-legend i.m3{background:#7dd3fc}.mt-mix .m4,.mt-legend i.m4{background:#fda4af}
+    .mt-legend{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:3px 10px;margin-top:7px;font-size:10.5px;color:#d1fae5;font-weight:750}.mt-legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px}
 </style>
 </head>
 <body>
@@ -4119,7 +4144,11 @@ function setDayView(v){
  document.getElementById('dxResultsBtn').classList.toggle('on',DAY_VIEW==='results');
  if(DASH_DATA)renderDays(DASH_DATA);
 }
-function toggleDay(date){DAY_OPEN=DAY_OPEN===date?'':date;if(DASH_DATA)renderDays(DASH_DATA)}
+
+function toggleDay(date){
+ DAY_OPEN=DAY_OPEN===date?'':date;
+ document.querySelectorAll('#dxBody .dc-card[data-date]').forEach(c=>c.classList.toggle('open',c.dataset.date===DAY_OPEN));
+}
 function achClass(v,isSpend){
  if(v==null||!isFinite(v))return '';
  if(isSpend)return v>1.1||v<.9?'watch':'good';
@@ -4165,18 +4194,18 @@ function daysCards(days,latest,T){
    const hij=`<div class="dc-hij">${esc(x.hijri)}${x.date===latest?'<em>Latest</em>':''}</div>`;
    if(plan){
      const tot=p.spend||1;
-     return `<div class="dc-card${open?' open':''}${x.date===latest?' latest':''}" onclick="toggleDay('${x.date}')">${head}<div class="dc-main">${hij}
+     return `<div class="dc-card${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" onclick="toggleDay('${x.date}')">${head}<div class="dc-main">${hij}
       <div class="dc-grid"><div><small>Spend</small><b>${money(p.spend)}</b></div><div><small>Value</small><b>${money(p.value)}</b></div><div><small>Conv.</small><b>${fmt(p.conversions,0)}</b></div><div><small>ROAS</small><b class="dc-r">${fmt(p.roas,2)}x</b></div></div>
       <div class="dc-mix">${p.channels.map((c,k)=>`<span class="m${k}" style="flex:${c.spend/tot}"></span>`).join('')}</div>
-      ${open?`<div class="dc-more">${dxPlanMore(p)}</div>`:''}</div></div>`;
+      <div class="dc-more">${dxPlanMore(p)}</div></div></div>`;
    }
    if(!a)return `<div class="dc-card upcoming">${head}<div class="dc-main">${hij}<div class="dc-up">Upcoming · plan ${money(p.spend)} · ${money(p.value)}</div></div></div>`;
-   return `<div class="dc-card${open?' open':''}${x.date===latest?' latest':''}" onclick="toggleDay('${x.date}')">${head}<div class="dc-main">${hij}
+   return `<div class="dc-card${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" onclick="toggleDay('${x.date}')">${head}<div class="dc-main">${hij}
      <div class="dc-grid"><div><small>Spend</small><b>${money(a.spend)}</b>${bar(a.spendAchievement,achClass(a.spendAchievement,true))}<i class="${achClass(a.spendAchievement,true)}">${percent(a.spendAchievement)}</i></div>
      <div><small>Value</small><b>${money(a.value)}</b>${bar(a.valueAchievement,achClass(a.valueAchievement))}<i class="${achClass(a.valueAchievement)}">${percent(a.valueAchievement)}</i></div>
      <div><small>Conv.</small><b>${fmt(a.conversions,0)}</b>${bar(a.convAchievement,achClass(a.convAchievement))}<i class="${achClass(a.convAchievement)}">${percent(a.convAchievement)}</i></div>
      <div><small>ROAS</small><b class="dc-r ${a.roas!=null&&p.roas?(a.roas>=p.roas?'good':'bad'):''}">${fmt(a.roas,2)}x</b><i>target ${fmt(p.roas,2)}x</i></div></div>
-     ${open?`<div class="dc-more">${dxResultMore(x)}</div>`:''}</div></div>`;
+     <div class="dc-more">${dxResultMore(x)}</div></div></div>`;
  }).join('');
  return (plan?planHero(days,T):resultsHero(days,T))+`<div class="dc-list">${cards}</div>`+(plan?`<div class="dc-legend">${PLAN_MIX_LABELS.map((l,k)=>`<span><i class="m${k}"></i>${l}</span>`).join('')}</div>`:'')+`<div class="dx-note">Tap a day to see more.</div>`;
 }
@@ -4198,20 +4227,21 @@ function planHero(days,T){
  
 function resultsHero(days,T){
  const a=T.a,p=T.p;
+ const cls=(r,spend)=>r==null?'':spend?(r>1.1||r<.9?'watch':'good'):(r>=1?'good':r>=.9?'watch':'bad');
+ const pct=(v,b)=>b?(Math.round(v/b*1000)/10)+'%':'—';
+ const sR=a.target?a.spend/a.target:null, vR=a.planValue?a.value/a.planValue:null, cR=a.planConv?a.conversions/a.planConv:null;
+ const tR=a.target?a.planValue/a.target:p.roas, rR=tR&&a.roas!=null?a.roas/tR:null;
+ const R=30,C=2*Math.PI*R,f=Math.max(0,Math.min(1,sR||0));
  const ch=(DASH_DATA&&DASH_DATA.channels)||[];
  const idx=n=>{const k=['Search Brand','Search Non-Brand','Performance Max','Demand Gen','Video (YouTube)'].indexOf(n);return k<0?4:k};
- const mix=ch.map(c=>({k:idx(c.channel),n:c.channel,s:Number(c.actualSpend)||0})).filter(m=>m.s>0);
+ const mix=ch.map(c=>({k:idx(c.channel),s:Number(c.actualSpend)||0})).filter(m=>m.s>0);
  const tot=mix.reduce((x,m)=>x+m.s,0)||1;
- const R=42,C=2*Math.PI*R;let off=0;
- const arcs=mix.map(m=>{const len=m.s/tot*C;const el=`<circle r="${R}" cx="55" cy="55" fill="none" class="pr g${m.k}" stroke-width="13" stroke-dasharray="${Math.max(0,len-1.5).toFixed(1)} ${C.toFixed(1)}" stroke-dashoffset="${(-off).toFixed(1)}"/>`;off+=len;return el}).join('');
- const pct=(v,b)=>b?Math.round(v/b*1000)/10+'%':'—';
- const cls=(r,spend)=>r==null?'':spend?(r>1.1||r<.9?'watch':'good'):(r>=1?'good':r>=.9?'watch':'bad');
- const tR=a.target?a.planValue/a.target:p.roas;
- const row=(l,v,sub,c)=>`<div><small>${l}</small><b>${v}</b><i class="${c}">${sub}</i></div>`;
- const legend=mix.length?`<div class="ph-legend rh-legend">${mix.map(m=>`<span><i class="g${m.k}"></i>${PLAN_MIX_LABELS[m.k]} <b>${Math.round(m.s/tot*100)}%</b></span>`).join('')}</div>`:'';
- return `<div class="ph2 rh"><div class="ph2-top"><span>Month to date</span><em>${a.days} of ${days.length} days</em></div>
-  <div class="ph2-body"><div class="ph2-ring"><svg viewBox="0 0 110 110"><g transform="rotate(-90 55 55)"><circle r="${R}" cx="55" cy="55" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="13"/>${arcs}</g></svg><div><small>Spend</small><b>${money(a.spend/1000,0)}k</b><i class="${cls(a.target?a.spend/a.target:null,true)}">${pct(a.spend,a.target)}</i></div></div>
-  <div class="ph2-list rh-list">${row('Value',money(a.value),`${pct(a.value,a.planValue)} of plan`,cls(a.planValue?a.value/a.planValue:null))}${row('Conversions',fmt(a.conversions,0),`${pct(a.conversions,a.planConv)} of plan`,cls(a.planConv?a.conversions/a.planConv:null))}${row('ROAS',fmt(a.roas,2)+'x',`target ${fmt(tR,2)}x`,a.roas!=null&&tR?(a.roas>=tR?'good':'bad'):'')}${row('Spend',money(a.spend),`${pct(a.spend,a.target)} of target`,cls(a.target?a.spend/a.target:null,true))}</div></div>${legend}</div>`;
+ const tile=(l,v,r,sub,c)=>`<div class="mt-t"><small>${l}</small><b>${v}</b><span class="mt-chip ${c}">${sub}</span></div>`;
+ return `<div class="mt"><div class="mt-top"><div><small>Month to date</small><b>${a.days} of ${days.length} days</b></div><div class="mt-days"><span style="width:${(days.length?a.days/days.length*100:0).toFixed(1)}%"></span></div></div>
+  <div class="mt-hero"><div><small>Spend</small><b>${money(a.spend)}</b><i>target ${money(a.target)}</i></div>
+   <div class="mt-ring ${cls(sR,true)}"><svg viewBox="0 0 72 72"><circle r="${R}" cx="36" cy="36" class="t"/><circle r="${R}" cx="36" cy="36" class="f" stroke-dasharray="${(f*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 36 36)"/></svg><b>${sR!=null?Math.round(sR*100)+'%':'—'}</b></div></div>
+  <div class="mt-grid">${tile('Value',money(a.value),vR,`${pct(a.value,a.planValue)} of plan`,cls(vR))}${tile('Conversions',fmt(a.conversions,0),cR,`${pct(a.conversions,a.planConv)} of plan`,cls(cR))}${tile('ROAS',fmt(a.roas,2)+'x',rR,`target ${fmt(tR,2)}x`,rR==null?'':rR>=1?'good':'bad')}</div>
+  ${mix.length?`<div class="mt-mix">${mix.map(m=>`<span class="m${m.k}" style="flex:${m.s/tot}"></span>`).join('')}</div><div class="mt-legend">${mix.map(m=>`<span><i class="m${m.k}"></i>${PLAN_MIX_LABELS[m.k]} ${Math.round(m.s/tot*100)}%</span>`).join('')}</div>`:''}</div>`;
 }
 const PLAN_CHANNEL_NAMES=['Search Brand','Search Non-Brand','Performance Max','Demand Gen','Video'];
 const PLAN_MIX_LABELS=['Search Brand','Non-Brand','PMax','Demand Gen','Video'];
@@ -4593,7 +4623,7 @@ function pkSummary(){
  const hint=p.anchor?`Tap another ${p.kind==='days'?'day':'month'} to pick everything in between`:L.sub;
  return `<div class="pk-foot"><div class="pk-sum">${n?`<b>${esc(L.title)}</b><small>${esc(hint)}</small>`:'<b>Nothing picked yet</b><small>Tap months or days</small>'}</div><button type="button" class="pk-ghost" onclick="pkClear()">Clear</button><button type="button" class="pk-apply" ${n?'':'disabled'} onclick="applyPeriod()">Show</button></div>`;
 }
-function pkHead(title){return `<div class="pk-head"><div><small>Report period</small><b>${title}</b></div><button type="button" class="pk-x" onclick="closePeriodPicker()" aria-label="Close">✕</button></div>`}
+function pkHead(title){return `<div class="pk-head"><div><small>Report period</small>${title?`<b>${title}</b>`:''}</div><button type="button" class="pk-x" onclick="closePeriodPicker()" aria-label="Close">✕</button></div>`}
 function pkCalendar(onTap,isOn){
  const ex=MONTH_EXTRA[CURRENT_ACCOUNT]||{}; const days=ex.days||{};
  if(!PK_MONTH)return '<div class="dx-empty">Daily data is still loading…</div>';
@@ -4613,7 +4643,7 @@ function renderPicker(){
  const tabs=`<div class="wx-tabs pk-tabs"><button type="button" class="wx-tab${PK_TAB==='months'?' on':''}" onclick="pkSetTab('months')">Months</button><button type="button" class="wx-tab${PK_TAB==='days'?' on':''}" onclick="pkSetTab('days')">Days</button></div>`;
    const presets=`<div class="pk-chips">${PK_PRESETS.filter(x=>PK_TAB==='days'?['yday','7d','30d'].includes(x[0]):!['yday','7d','30d'].includes(x[0])).map(([id,l])=>`<button type="button" onclick="pkPreset('${id}')">${l}</button>`).join('')}</div>`;
    const body=PK_TAB==='months'
-    ?years.map(y=>`<div class="pk-year"><button type="button" class="pk-yb" onclick="pkYear('${y}')">${y} <span>Whole year</span></button><div class="pk-mgrid">${Array.from({length:12},(_,i)=>{const m=y+'-'+String(i+1).padStart(2,'0');const h=H.find(x=>x.month===m);if(!h)return `<span class="pk-m off">${new Date(2000,i,1).toLocaleDateString('en-GB',{month:'short'})}</span>`;return `<button type="button" class="pk-m${mOn(m)?' on':''}${SEASONS[h.hijri]?' season':''}" onclick="pkToggleMonth('${m}')">${new Date(2000,i,1).toLocaleDateString('en-GB',{month:'short'})}<small>${esc(h.hijri)}</small></button>`}).join('')}</div></div>`).join('')
+    ?years.map(y=>`<div class="pk-year"><button type="button" class="pk-yb" onclick="pkYear('${y}')">${y}</button><div class="pk-mgrid">${Array.from({length:12},(_,i)=>{const m=y+'-'+String(i+1).padStart(2,'0');const h=H.find(x=>x.month===m);if(!h)return `<span class="pk-m off">${new Date(2000,i,1).toLocaleDateString('en-GB',{month:'short'})}</span>`;return `<button type="button" class="pk-m${mOn(m)?' on':''}${SEASONS[h.hijri]?' season':''}" onclick="pkToggleMonth('${m}')">${new Date(2000,i,1).toLocaleDateString('en-GB',{month:'short'})}<small>${esc(h.hijri)}</small></button>`}).join('')}</div></div>`).join('')
     :PK_JUMP?pkMonthGrid(pkDayMonths(),m=>m===PK_MONTH,'pkJumpTo','Pick a month to open its days')
     :`${pkCalendar('pkToggleDay',dOn)}<div class="pk-chips"><button type="button" onclick="pkWholeMonth()">Whole month</button></div>`;
  
@@ -4626,7 +4656,7 @@ function renderPicker(){
    return;
  }
  card.dataset.sig=sig; card.dataset.mode='period';
- card.innerHTML=pkHead('Select months or days')+tabs+presets+`<div class="pk-body">${body}</div>`+pkSummary();
+ card.innerHTML=pkHead('')+tabs+presets+`<div class="pk-body">${body}</div>`+pkSummary();
  
  const bodyEl=card.querySelector('.pk-body'), on=bodyEl&&bodyEl.querySelector('.pk-m.on,.pk-day.on');
  if(bodyEl)bodyEl.scrollTop=on?Math.max(0,on.offsetTop-bodyEl.offsetTop-120):bodyEl.scrollHeight;
