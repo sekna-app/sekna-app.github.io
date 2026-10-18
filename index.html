@@ -3884,22 +3884,22 @@ function renderYoy(x,y){
      valid++;
      const r=m.betterHigh?m.ratio:1/m.ratio;
      if(r>=1)wins++;
-     parts.push(Math.min(r,2));
+     parts.push(Math.min(r,1));
    }
  });
  const index=parts.length?parts.reduce((a,b)=>a+b,0)/parts.length:null;
- const scorePct=index==null?0:Math.round(index*100);
+ const scorePct=index==null?0:Math.round(index*1000)/10;
 
  let cls='watch',color='#c89434',title='About the same as last year';
- if(index!=null&&index>=1.02){cls='good';color='#2ca56f';title='Better than last year'}
- else if(index!=null&&index<.95){cls='bad';color='#d85f6b';title='Behind last year'}
+ if(index!=null&&index>=.95){cls='good';color='#2ca56f';title='In line with or better than last year'}
+ else if(index!=null&&index<.85){cls='bad';color='#d85f6b';title='Behind last year'}
  const grad=cls==='good'?['#5fd39b','#2ca56f']:cls==='bad'?['#f09aa3','#d85f6b']:['#e2b874','#C28D3E'];
- const L=Math.PI*100,dash=L*Math.max(0,Math.min(scorePct,200))/200;
+ const L=Math.PI*100,dash=L*Math.max(0,Math.min(scorePct,100))/100;
  const gauge=document.getElementById('yoyGauge');
  if(gauge)gauge.innerHTML=`<svg viewBox="0 0 240 132" aria-hidden="true"><defs><linearGradient id="yoyGaugeGrad" x1="0" x2="1"><stop offset="0" stop-color="${grad[0]}"/><stop offset="1" stop-color="${grad[1]}"/></linearGradient></defs>
    <path d="M20,120 A100,100 0 0 1 220,120" class="sx-gauge-track" fill="none" stroke-width="18" stroke-linecap="round"/>
    <path d="M20,120 A100,100 0 0 1 220,120" class="sx-gauge-fill" fill="none" stroke="url(#yoyGaugeGrad)" stroke-width="18" stroke-linecap="round" stroke-dasharray="${dash.toFixed(1)} ${L.toFixed(1)}"/>
- </svg><div class="sx-gauge-in" title="${esc(title)}"><b style="color:${color}">${index==null?'—':scorePct+'%'}</b><span>${index==null?'No data last year':`vs last year · ${wins}/${valid} better`}</span></div>`;
+ </svg><div class="sx-gauge-in" title="${esc(title)}"><b style="color:${color}">${index==null?'—':scorePct.toFixed(1)+'%'}</b><span>${index==null?'No data last year':`${wins}/${valid} metrics better than last year`}</span></div>`;
 
  const hijri=y.mode==='hijri';
  text('yoyTitle',hijri?'Same Hijri Day Last Year':'Same Day Last Year');
