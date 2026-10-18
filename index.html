@@ -2487,6 +2487,10 @@ window.addEventListener('load',function(){
     .rx-row.w .rx-icon em{background:#c2382f}.rx-row.w.first .rx-icon{border-color:#f09aa3}
     #settingsOverlay.open{backdrop-filter:blur(9px) saturate(1.1)!important;-webkit-backdrop-filter:blur(9px) saturate(1.1)!important;background:rgba(14,20,38,.34)}
     body.dark-mode .rx-icon{background:#0f141b;border-color:#2a313c}body.dark-mode .rx-icon em{border-color:#181e27}
+    .dc-hero.res{background:linear-gradient(140deg,#0b6b45,#16a866 60%,#22c47c);box-shadow:0 14px 30px rgba(14,159,104,.28)}
+    .dc-hero.res .dc-hero-top,.dc-hero.res .dc-hero-grid small{color:#c8f5de}
+    .dc-hero.res .dc-hero-grid i{color:#fff3c4}
+    .dc-hero.res .dc-hero-grid{background:rgba(255,255,255,.1)}
 </style>
 </head>
 <body>
@@ -3966,7 +3970,7 @@ function dxResultMore(x){
 function daysCards(days,latest,T){
  const plan=DAY_VIEW==='plan';
  const t=plan?T.p:T.a;
- const hero=`<div class="dc-hero"><div class="dc-hero-top"><span>${plan?'Month plan':'Month to date'}</span><em>${plan?days.length+' days':T.a.days+' of '+days.length+' days'}</em></div>
+ const hero=`<div class="dc-hero${plan?'':' res'}"><div class="dc-hero-top"><span>${plan?'Month plan':'Month to date'}</span><em>${plan?days.length+' days':T.a.days+' of '+days.length+' days'}</em></div>
   <div class="dc-hero-grid">${[
     ['Spend',money(t.spend),plan?`${fmt(T.p.clicks,0)} clicks`:`${T.a.target?percent(T.a.spend/T.a.target):'—'} of target`],
     ['Value',money(t.value),plan?`Avg. donation ${t.conversions?money(t.value/t.conversions,2):'—'}`:`${T.a.planValue?percent(T.a.value/T.a.planValue):'—'} of plan`],
