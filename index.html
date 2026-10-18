@@ -2306,33 +2306,8 @@ window.addEventListener('load',function(){
     body.no-share-tab .top-share-btn{display:none!important}
     .dx-switch,.rx-switch,.mx-basis{max-width:420px}
     .dx-empty{padding:18px;border-radius:14px;background:#f5f7fb;color:#6b7385;font-size:13px;text-align:center}
-    .dx-sum{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:4px 0 12px}
-    .dx-tile{background:#f8f9fc;border-radius:14px;padding:12px;min-width:0}
-    .dx-tile span{display:block;font-size:10.5px;font-weight:850;text-transform:uppercase;letter-spacing:.05em;color:#6b7385}
-    .dx-tile b{display:block;font-size:19px;font-weight:900;color:#1d2433;margin:3px 0;direction:ltr;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .dx-tile small{font-size:11.5px;color:#6b7385;font-weight:750}
-    .dx-tile small.good,.dx-ach.good{color:#13804f}.dx-tile small.bad,.dx-ach.bad{color:#c2382f}.dx-tile small.watch,.dx-ach.watch{color:#a8701c}
-    .dx-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px}
-    .dx-table{width:100%;border-collapse:collapse;font-size:13px;color:#1d2433;direction:ltr}
-    .dx-table th{position:sticky;top:0;background:var(--card);font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:#9aa1b2;text-align:right;padding:8px 6px;font-weight:800;z-index:1}
-    .dx-table th:first-child,.dx-table td:first-child{text-align:left}
-    .dx-table td{padding:9px 6px;border-top:1px solid #e8ebf2;text-align:right;white-space:nowrap;vertical-align:middle}
-    .dx-row{cursor:pointer;transition:background .15s ease}
-    .dx-row:hover{background:#f7f8fc}
-    .dx-row.latest{background:linear-gradient(90deg,#eef3ff,#f7f9ff)}
-    .dx-row.latest td:first-child{box-shadow:inset 3px 0 0 #3d6bff}
-    .dx-row.upcoming{color:#9aa1b2}
-    .dx-row.open{background:#f3f5fb}
-    .dx-day{display:flex;align-items:center;gap:8px}
-    .dx-day>b{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:10px;background:#eef1f8;color:#203c8e;font-weight:900;font-size:13px;flex:none}
-    .dx-row.latest .dx-day>b{background:#203c8e;color:#fff}
-    .dx-row.upcoming .dx-day>b{background:#f3f4f7;color:#a2a9b6}
-    .dx-day span{display:block;font-weight:800;font-size:12.5px}
-    .dx-day small{display:block;font-size:10.5px;color:#8b92a0;font-weight:700}
-    .dx-day em{font-style:normal;font-size:9.5px;font-weight:850;background:#203c8e;color:#fff;border-radius:99px;padding:1px 6px;margin-left:3px;vertical-align:1px}
+    .dx-ach.good{color:#13804f}.dx-ach.bad{color:#c2382f}.dx-ach.watch{color:#a8701c}
     .dx-ach{display:block;font-size:10.5px;font-weight:850;margin-top:1px}
-    .dx-roas{display:inline-block;padding:3px 8px;border-radius:99px;background:#eef1f8;color:#203c8e;font-weight:900;font-size:12px}
-    .dx-roas.good{background:#e7f8ef;color:#13804f}.dx-roas.bad{background:#fdecea;color:#c2382f}
     .dx-up{text-align:center!important;font-size:12px;font-weight:700}
     .dx-more td{padding:4px 8px 14px;border-top:0;white-space:normal;text-align:left!important}
     .dx-stats{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:#6b7385}.dx-stats b{color:#1d2433}
@@ -2341,7 +2316,6 @@ window.addEventListener('load',function(){
     .dx-chrow i{display:block;height:7px;border-radius:99px;background:#e6e9f1;overflow:hidden}
     .dx-chrow em{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#203c8e,#3d6bff)}
     .dx-chrow b{text-align:right;color:#1d2433}
-    .dx-table tfoot td{font-weight:900;border-top:2px solid #dfe3ec;background:#f8f9fc}
     .dx-note{font-size:11px;color:#9aa1b2;margin-top:8px;text-align:center}
 
     .mx-pick{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:end;margin:4px 0 10px}
@@ -2403,28 +2377,18 @@ window.addEventListener('load',function(){
     .rx-total{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px;margin-top:12px;padding:11px 13px;border-radius:14px;background:#f5f7fb;font-size:12.5px;color:#6b7385}
     .rx-total span:first-child{font-weight:900;color:#1d2433}.rx-total b{color:#1d2433}.rx-total .rx-roas{margin-left:auto;font-size:15px}
     @media(max-width:760px){
-      .dx-sum{gap:6px}.dx-tile{padding:10px 8px}.dx-tile b{font-size:15.5px}.dx-tile span{font-size:9.5px}.dx-tile small{font-size:10.5px}
-      .dx-table{font-size:12px}.dx-table td{padding:8px 4px}.dx-table th{padding:7px 4px;font-size:9.5px}
-      .dx-day{gap:6px}.dx-day>b{width:26px;height:26px;font-size:12px;border-radius:8px}.dx-day small{font-size:9.5px}
-      .dx-roas{padding:2px 6px;font-size:11px}
       .dx-chrow{grid-template-columns:96px 1fr 64px;font-size:11.5px}
       .mx-table{font-size:12.5px}.mx-table td{padding:9px 3px}.mx-arrow{padding:2px 6px;font-size:10.5px}
       .mx-sel select{font-size:12.5px;padding:9px 26px 9px 10px}
     }
-    body.dark-mode .dx-empty,body.dark-mode .dx-tile,body.dark-mode .rx-total,body.dark-mode .mx-verdict{background:#11161e;color:#a7afbf}
-    body.dark-mode .dx-tile b,body.dark-mode .dx-table,body.dark-mode .dx-stats b,body.dark-mode .dx-chrow b,body.dark-mode .mx-table,body.dark-mode .rx-name,body.dark-mode .rx-head b,body.dark-mode .rx-total b,body.dark-mode .rx-total span:first-child,body.dark-mode .mx-verdict b{color:#fff}
-    body.dark-mode .dx-tile span,body.dark-mode .dx-tile small,body.dark-mode .dx-stats,body.dark-mode .dx-chrow,body.dark-mode .mx-sel span,body.dark-mode .mx-table td.mx-m,body.dark-mode .rx-det,body.dark-mode .rx-splitkey,body.dark-mode .mx-foot{color:#a7afbf}
-    body.dark-mode .dx-tile small.good,body.dark-mode .dx-ach.good,body.dark-mode .mx-win{color:#5be3a3}body.dark-mode .dx-tile small.bad,body.dark-mode .dx-ach.bad{color:#ff9aa6}body.dark-mode .dx-tile small.watch,body.dark-mode .dx-ach.watch{color:#f2c879}
-    body.dark-mode .dx-table th{background:#181e27}
-    body.dark-mode .dx-table td,body.dark-mode .mx-table td{border-color:#252a32}
-    body.dark-mode .dx-row:hover,body.dark-mode .dx-row.open{background:#1d2430}
-    body.dark-mode .dx-row.latest{background:linear-gradient(90deg,#17223f,#151c2c)}
-    body.dark-mode .dx-day>b,body.dark-mode .dx-roas{background:#1f2a44;color:#c9d6ff}
-    body.dark-mode .dx-row.upcoming .dx-day>b{background:#1a1f27;color:#6b7385}
-    body.dark-mode .dx-roas.good,body.dark-mode .mx-arrow.good{background:#123326;color:#5be3a3}body.dark-mode .dx-roas.bad,body.dark-mode .mx-arrow.bad{background:#3a171c;color:#ff9aa6}
+    body.dark-mode .dx-empty,body.dark-mode .rx-total,body.dark-mode .mx-verdict{background:#11161e;color:#a7afbf}
+    body.dark-mode .dx-stats b,body.dark-mode .dx-chrow b,body.dark-mode .mx-table,body.dark-mode .rx-name,body.dark-mode .rx-head b,body.dark-mode .rx-total b,body.dark-mode .rx-total span:first-child,body.dark-mode .mx-verdict b{color:#fff}
+    body.dark-mode .dx-stats,body.dark-mode .dx-chrow,body.dark-mode .mx-sel span,body.dark-mode .mx-table td.mx-m,body.dark-mode .rx-det,body.dark-mode .rx-splitkey,body.dark-mode .mx-foot{color:#a7afbf}
+    body.dark-mode .dx-ach.good,body.dark-mode .mx-win{color:#5be3a3}body.dark-mode .dx-ach.bad{color:#ff9aa6}body.dark-mode .dx-ach.watch{color:#f2c879}
+    body.dark-mode .mx-table td{border-color:#252a32}
+    body.dark-mode .mx-arrow.good{background:#123326;color:#5be3a3}body.dark-mode .mx-arrow.bad{background:#3a171c;color:#ff9aa6}
     body.dark-mode .mx-arrow.neutral{background:#1f2632;color:#b9c2d6}
     body.dark-mode .dx-chrow i,body.dark-mode .rx-bar{background:#252b36}
-    body.dark-mode .dx-table tfoot td{background:#11161e;border-color:#2a313c}
     body.dark-mode .mx-sel select,body.dark-mode .mx-swap,body.dark-mode .mx-preset,body.dark-mode .rx-cat{background-color:#151a22;border-color:#303845;color:#e8ebf0}
     body.dark-mode .mx-sel.a select{border-color:#3d6bff}body.dark-mode .mx-sel.b select{border-color:#c89434}
     body.dark-mode .mx-swap svg{stroke:#c9d6ff}
@@ -2436,6 +2400,93 @@ window.addEventListener('load',function(){
     body.dark-mode .rx-row.w.first{background:linear-gradient(160deg,#2a1216,#22100f);border-color:#c2382f}
     body.dark-mode .rx-roas{color:#9db4ff}body.dark-mode .rx-row.g.first .rx-roas{color:#5be3a3}body.dark-mode .rx-row.w .rx-roas{color:#ff9aa6}
     body.dark-mode .rx-ok{background:#123326;color:#5be3a3}
+    /* v84 — Day cards, Month trend chart, sticky Top & Bottom 5 */
+
+    .dc-hero{background:linear-gradient(140deg,#203c8e,#2c4fb8);color:#fff;border-radius:18px;padding:14px 16px;margin:4px 0 12px;box-shadow:0 14px 30px rgba(32,60,142,.22)}
+    .dc-hero-top{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:850;text-transform:uppercase;letter-spacing:.06em;color:#c9d3f5}.dc-hero-top em{font-style:normal;background:rgba(255,255,255,.14);padding:3px 9px;border-radius:99px;text-transform:none;letter-spacing:0;color:#fff}
+    .dc-hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin-top:10px}
+    .dc-hero-grid small{display:block;font-size:11px;color:#c9d3f5;font-weight:750}.dc-hero-grid b{display:block;font-size:20px;font-weight:900;direction:ltr}.dc-hero-grid i{font-style:normal;font-size:11px;color:#ffd98a;font-weight:800}
+    .dc-list{display:grid;gap:8px}
+    .dc-card{display:flex;gap:12px;padding:11px 12px;border:1.5px solid #e6e9f1;border-radius:16px;background:#fff;cursor:pointer}
+    .dc-card.latest{border-color:#3d6bff;box-shadow:0 0 0 3px rgba(61,107,255,.1)}
+    .dc-card.upcoming{background:#fafbfc;cursor:default}
+    .dc-date{flex:none;width:44px;height:50px;border-radius:12px;background:#eef1f8;color:#203c8e;display:grid;place-items:center;align-content:center;gap:1px}
+    .dc-date b{font-size:18px;font-weight:900;line-height:1}.dc-date span{font-size:10px;font-weight:850;text-transform:uppercase}
+    .dc-date.latest{background:#203c8e;color:#fff}.dc-card.upcoming .dc-date{background:#f1f2f5;color:#a2a9b6}
+    .dc-main{flex:1;min-width:0}
+    .dc-hij{font-size:11px;font-weight:800;color:#8b92a0;margin-bottom:5px}.dc-hij em{font-style:normal;margin-left:6px;background:#203c8e;color:#fff;border-radius:99px;padding:1px 7px;font-size:9.5px}
+    .dc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .dc-grid small{display:block;font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:.04em;color:#9aa1b2}
+    .dc-grid b{display:block;font-size:13.5px;font-weight:900;color:#1d2433;direction:ltr;white-space:nowrap}
+    .dc-grid i{display:block;font-style:normal;font-size:10.5px;font-weight:850;color:#8b92a0}.dc-grid i.good{color:#13804f}.dc-grid i.bad{color:#c2382f}.dc-grid i.watch{color:#a8701c}
+    .dc-r{color:#203c8e!important}.dc-r.good{color:#13804f!important}.dc-r.bad{color:#c2382f!important}
+    .dc-pb{display:block;height:4px;border-radius:99px;background:#eceff5;margin:4px 0 2px;overflow:hidden}.dc-pb em{display:block;height:100%;border-radius:99px;background:#9aa1b2}
+    .dc-pb.good em{background:#22c47c}.dc-pb.bad em{background:#e0606c}.dc-pb.watch em{background:#d6a24a}
+    .dc-mix{display:flex;gap:2px;height:5px;border-radius:99px;overflow:hidden;margin-top:8px}
+    .m0{background:#203c8e}.m1{background:#3d6bff}.m2{background:#22c47c}.m3{background:#c89434}.m4{background:#e0606c}
+    .dc-legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11px;color:#6b7385;margin-top:10px}.dc-legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px}
+    .dc-up{font-size:12px;font-weight:750;color:#9aa1b2;padding-top:4px}
+    .dc-more{margin-top:10px;padding-top:10px;border-top:1px dashed #e1e5ee}
+
+
+    .mx-pick.one{grid-template-columns:1fr}.mx-pick.one .mx-swap,.mx-pick.one .mx-sel.b{display:none}
+    .mx-mode{max-width:420px}
+    .mx-table.ch.one th{font-size:10px;text-transform:uppercase;color:#9aa1b2;text-align:right}
+    .mx-table.ch.one td:not(.mx-m){width:auto}
+
+
+    .mc-keys{display:flex;gap:6px;margin:12px 0 8px;flex-wrap:wrap}
+    .mc-chart{display:flex;align-items:flex-end;gap:3px;height:150px;padding:6px 2px 0;border-bottom:1px solid #e8ebf2}
+    .mc-bar{appearance:none;border:0;background:none;padding:0;flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;position:relative;cursor:pointer;min-width:0}
+    .mc-bar span{display:block;width:100%;border-radius:5px 5px 2px 2px;background:#d7dce6;transition:height .5s ease}
+    .mc-bar.a span{background:linear-gradient(180deg,#3d6bff,#203c8e)}.mc-bar.b span{background:linear-gradient(180deg,#e2b874,#c89434)}
+    .mc-bar small{position:absolute;bottom:-17px;font-size:8.5px;color:#9aa1b2;font-weight:800;white-space:nowrap}
+    .mc-cap{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:#4b5263;font-weight:750;margin:24px 0 4px}
+    .mc-cap i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}.mc-cap i.a{background:#3d6bff}.mc-cap i.b{background:#c89434}.mc-hint{margin-left:auto;color:#9aa1b2}
+    .mc-tiles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+    .mc-tile{background:#f8f9fc;border-radius:14px;padding:10px 12px;min-width:0}
+    .mc-tile small{display:block;font-size:10px;font-weight:850;color:#6b7385;text-transform:uppercase;letter-spacing:.05em}
+    .mc-tile>b{display:block;font-size:18px;font-weight:900;color:#1d2433;margin:3px 0 4px;direction:ltr}
+    .mc-tile i{display:block;font-style:normal;font-size:10.5px;color:#9aa1b2;font-weight:750;margin-top:3px}
+    .mc-ab{display:flex;justify-content:space-between;gap:6px;margin:4px 0 6px}.mc-ab b{font-size:14px;font-weight:800;direction:ltr;white-space:nowrap}
+    .mc-ab b.a{color:#3d6bff}.mc-ab b.b{color:#a8701c}.mc-ab b.win{font-weight:900;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+
+    .rx-card{overflow:visible}
+    .rx-sticky{position:sticky;top:var(--rx-top,66px);z-index:4;background:var(--card,#fff);margin:-18px -18px 0;padding:14px 18px 6px;border-radius:18px 18px 0 0;transition:box-shadow .2s ease}
+    .rx-sticky .wx-tabs{margin:10px 0 8px}
+    .rx-sticky .rx-cats{margin-bottom:0;position:relative}
+    .rx-sticky::after{content:"";position:absolute;left:0;right:0;bottom:-10px;height:10px;background:linear-gradient(180deg,rgba(32,60,142,.08),transparent);pointer-events:none}
+    .rx-sec{padding-top:14px;scroll-margin-top:200px}
+    .rx-sec+.rx-sec{border-top:1px dashed #e1e5ee;margin-top:14px}
+    .rx-endpad{height:40vh}
+    @media(max-width:760px){
+      .rx-sticky{margin:-14px -14px 0;padding:12px 14px 6px}
+      .dc-grid{gap:6px}.dc-grid b{font-size:12.5px}.dc-card{gap:9px;padding:10px}
+    }
+    body.dark-mode .rx-sticky{background:#181e27}
+    body.dark-mode .dc-card{background:#151a22;border-color:#2a313c}
+    body.dark-mode .dc-card.upcoming{background:#12161d}
+    body.dark-mode .dc-date{background:#1f2a44;color:#c9d6ff}.dark-mode .dc-date.latest{background:#3d6bff;color:#fff}
+    body.dark-mode .dc-grid b,body.dark-mode .mc-tile>b{color:#fff}
+    body.dark-mode .dc-pb{background:#252b36}
+    body.dark-mode .mc-tile{background:#11161e}
+    body.dark-mode .mc-bar span{background:#2a313c}
+    body.dark-mode .rx-sec+.rx-sec,body.dark-mode .dc-more{border-color:#2a313c}
+
+    .dc-hero-grid{grid-template-columns:1fr 1fr;gap:0;margin-top:12px;border-radius:14px;background:rgba(255,255,255,.07);overflow:hidden}
+    .dc-hero-grid>div{padding:12px 8px 11px;text-align:center;display:flex;flex-direction:column;align-items:center}
+    .dc-hero-grid>div:nth-child(odd){border-right:1px solid rgba(255,255,255,.14)}
+    .dc-hero-grid>div:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,.14)}
+    .dc-hero-grid small{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;font-weight:850;margin-bottom:7px}
+    .dc-hero-grid b{font-size:21px;line-height:1.1}
+    .dc-hero-grid i{margin-top:6px;min-height:14px}
+    .rx-icon{position:relative;flex:none;width:40px;height:40px;border-radius:13px;background:#fff;border:1.5px solid #e3e7f0;display:grid;place-items:center;box-shadow:0 3px 10px rgba(32,60,142,.08)}
+    .rx-icon svg{width:24px;height:24px}
+    .rx-icon em{position:absolute;right:-6px;bottom:-6px;min-width:19px;height:19px;padding:0 4px;border-radius:99px;background:#203c8e;color:#fff;font-style:normal;font-size:10.5px;font-weight:900;display:grid;place-items:center;border:2px solid #fff}
+    .rx-row.g.first .rx-icon{border-color:#22e39a}.rx-row.g.first .rx-icon em{background:#0e9f68}
+    .rx-row.w .rx-icon em{background:#c2382f}.rx-row.w.first .rx-icon{border-color:#f09aa3}
+    #settingsOverlay.open{backdrop-filter:blur(9px) saturate(1.1)!important;-webkit-backdrop-filter:blur(9px) saturate(1.1)!important;background:rgba(14,20,38,.34)}
+    body.dark-mode .rx-icon{background:#0f141b;border-color:#2a313c}body.dark-mode .rx-icon em{border-color:#181e27}
 </style>
 </head>
 <body>
@@ -2588,7 +2639,7 @@ window.addEventListener('load',function(){
     <p class="sk-about-text">Your central workspace for media planning, campaign monitoring, reporting and smart tools. Built to help our team manage clients, make faster data-driven decisions and create greater impact — together.</p>
     <div class="sk-about-pills"><span>Media planning</span><span>Campaign monitoring</span><span>Reporting</span><span>Smart tools</span></div>
     <div class="sk-credit"><span class="sk-credit-avatar">IA</span><span><small>Designed &amp; developed by</small><b>Ibrahim Amin</b></span></div>
-    <div class="sk-version">SEKNA Dashboard • v83</div>
+    <div class="sk-version">SEKNA Dashboard • v84</div>
   </section>
 </div>
 
@@ -2889,9 +2940,7 @@ window.addEventListener('load',function(){
         <button class="wx-tab on" type="button" id="dxPlanBtn" onclick="setDayView('plan')">Media Plan</button>
         <button class="wx-tab" type="button" id="dxResultsBtn" onclick="setDayView('results')">Results</button>
       </div>
-      <div class="dx-sum" id="dxSummary"></div>
-      <div class="dx-wrap"><table class="dx-table" id="dxTable"></table></div>
-      <div class="dx-note" id="dxNote">Tap a day to see more.</div>
+      <div id="dxBody"></div>
     </section>
   </div>
 
@@ -2899,11 +2948,15 @@ window.addEventListener('load',function(){
     <section class="card section mx-card">
       <div class="section-head">
         <div>
-          <div class="section-title section-title-with-icon"><span class="section-heading-icon month">⇅</span><span>Month vs Month</span></div>
-          <div class="section-sub" id="mxSub">Pick any two months to compare</div>
+          <div class="section-title section-title-with-icon"><span class="section-heading-icon month">⇅</span><span id="mxTitle">Monthly History</span></div>
+          <div class="section-sub" id="mxSub">From the History tab</div>
         </div>
       </div>
-      <div class="mx-pick">
+      <div class="wx-tabs mx-mode" role="tablist">
+        <button class="wx-tab" type="button" id="mxOneBtn" onclick="setMonthMode('one')">One month</button>
+        <button class="wx-tab on" type="button" id="mxCmpBtn" onclick="setMonthMode('compare')">Compare</button>
+      </div>
+      <div class="mx-pick" id="mxPick">
         <label class="mx-sel a"><span>Month</span><select id="mxA" onchange="renderMonthCompare()"></select></label>
         <button class="mx-swap" type="button" onclick="swapMonths()" aria-label="Swap months"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M7 4l-3 3M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/></svg></button>
         <label class="mx-sel b"><span>Compare with</span><select id="mxB" onchange="renderMonthCompare()"></select></label>
@@ -2919,17 +2972,15 @@ window.addEventListener('load',function(){
 
   <div class="tab-panel" id="ranksPanel">
     <section class="card section rx-card">
-      <div class="section-head">
-        <div>
-          <div class="section-title section-title-with-icon"><span class="section-heading-icon month">★</span><span>Top &amp; Bottom 5</span></div>
-          <div class="section-sub" id="rxSub">Last closed day</div>
+      <div class="rx-sticky" id="rxSticky">
+        <div class="rx-titlerow"><div class="section-title section-title-with-icon"><span class="section-heading-icon month">★</span><span>Top &amp; Bottom 5</span></div></div>
+        <div class="section-sub" id="rxSub">Last closed day</div>
+        <div class="wx-tabs rx-switch" role="tablist">
+          <button class="wx-tab on" type="button" id="rxBestBtn" onclick="setRankSide('best')">🏆 Top performers</button>
+          <button class="wx-tab" type="button" id="rxWorstBtn" onclick="setRankSide('worst')">📉 Underperformers</button>
         </div>
+        <div class="rx-cats" id="rxCats" role="tablist"></div>
       </div>
-      <div class="wx-tabs rx-switch" role="tablist">
-        <button class="wx-tab on" type="button" id="rxBestBtn" onclick="setRankSide('best')">🏆 Top performers</button>
-        <button class="wx-tab" type="button" id="rxWorstBtn" onclick="setRankSide('worst')">📉 Underperformers</button>
-      </div>
-      <div class="rx-cats" id="rxCats" role="tablist"></div>
       <div id="rxBody"></div>
     </section>
   </div>
@@ -3879,65 +3930,90 @@ function setDayView(v){
 function toggleDay(date){DAY_OPEN=DAY_OPEN===date?'':date;if(DASH_DATA)renderDays(DASH_DATA)}
 function achClass(v,isSpend){
  if(v==null||!isFinite(v))return '';
- if(isSpend)return v>1.1?'watch':v<.9?'watch':'good';
+ if(isSpend)return v>1.1||v<.9?'watch':'good';
  return v>=1?'good':v>=.9?'watch':'bad';
 }
+const dxSum=(arr,f)=>arr.reduce((a,x)=>a+(Number(f(x))||0),0);
+function dayTotals(days){
+ const live=days.filter(x=>x.actual);
+ const p={spend:dxSum(days,x=>x.plan.spend),value:dxSum(days,x=>x.plan.value),conversions:dxSum(days,x=>x.plan.conversions),clicks:dxSum(days,x=>x.plan.clicks)};
+ const a={spend:dxSum(live,x=>x.actual.spend),target:dxSum(live,x=>x.actual.target),value:dxSum(live,x=>x.actual.value),planValue:dxSum(live,x=>x.plan.value),
+   conversions:dxSum(live,x=>x.actual.conversions),planConv:dxSum(live,x=>x.plan.conversions),clicks:dxSum(live,x=>x.actual.clicks),days:live.length};
+ p.roas=p.spend?p.value/p.spend:null;a.roas=a.spend?a.value/a.spend:null;
+ return {p,a,live};
+}
 function renderDays(d){
- const table=document.getElementById('dxTable');
- if(!table)return;
+ const body=document.getElementById('dxBody');
+ if(!body)return;
  const days=d.dayPlan||[];
- const latest=(d.latest||{}).date;
  const first=days[0], mName=first?monthName(first.date.slice(0,7),true):'';
  text('dxTitle',mName?`${mName} · Day by Day`:'Day by Day');
  text('dxSub',DAY_VIEW==='plan'?'The media plan for every day of the month':'Actual results against the plan, day by day');
- if(!days.length){table.innerHTML='';document.getElementById('dxSummary').innerHTML='<div class="dx-empty">No days found in the Media Plan tab.</div>';return}
-
- const live=days.filter(x=>x.actual);
- const sum=(arr,f)=>arr.reduce((a,x)=>a+(Number(f(x))||0),0);
- const sumEl=document.getElementById('dxSummary');
- if(DAY_VIEW==='plan'){
-   const sp=sum(days,x=>x.plan.spend), v=sum(days,x=>x.plan.value), c=sum(days,x=>x.plan.conversions);
-   sumEl.innerHTML=dxTile('Planned spend',money(sp),`${days.length} days`)+dxTile('Planned value',money(v),`${fmt(c,0)} conv.`)+dxTile('Target ROAS',sp?fmt(v/sp,2)+'x':'—',`CPA ${c?money(sp/c,2):'—'}`);
-   table.innerHTML=`<thead><tr><th>Day</th><th>Spend</th><th>Conv.</th><th>Value</th><th>ROAS</th></tr></thead><tbody>${days.map(x=>{
-     const open=DAY_OPEN===x.date, p=x.plan;
-     const max=Math.max(...p.channels.map(c=>c.spend),0.0001);
-     return `<tr class="dx-row${x.date===latest?' latest':''}${open?' open':''}${x.actual?'':' upcoming'}" onclick="toggleDay('${x.date}')">
-      ${dxDayCell(x,latest)}
-      <td><b>${money(p.spend)}</b></td><td>${fmt(p.conversions,0)}</td><td>${money(p.value)}</td><td><span class="dx-roas">${fmt(p.roas,2)}x</span></td></tr>
-      ${open?`<tr class="dx-more"><td colspan="5"><div class="dx-stats"><span>Clicks <b>${fmt(p.clicks,0)}</b></span><span>CPA <b>${money(p.cpa,2)}</b></span><span>CVR <b>${percent(p.cvr)}</b></span><span>Avg. donation <b>${money(p.aov,2)}</b></span></div>
-       <div class="dx-ch">${p.channels.map(c=>`<div class="dx-chrow"><span>${esc(c.channel)}</span><i><em style="width:${(c.spend/max*100).toFixed(1)}%"></em></i><b>${money(c.spend)}</b></div>`).join('')}</div></td></tr>`:''}`;
-   }).join('')}</tbody><tfoot><tr><td>Month</td><td>${money(sum(days,x=>x.plan.spend))}</td><td>${fmt(sum(days,x=>x.plan.conversions),0)}</td><td>${money(sum(days,x=>x.plan.value))}</td><td>${(()=>{const s=sum(days,x=>x.plan.spend);return s?fmt(sum(days,x=>x.plan.value)/s,2)+'x':'—'})()}</td></tr></tfoot>`;
- }else{
-   const sp=sum(live,x=>x.actual.spend), tg=sum(live,x=>x.actual.target), v=sum(live,x=>x.actual.value), pv=sum(live,x=>x.plan.value);
-   const cv=sum(live,x=>x.actual.conversions), pc=sum(live,x=>x.plan.conversions);
-   sumEl.innerHTML=dxTile('Spend to date',money(sp),`${tg?percent(sp/tg):'—'} of target`,achClass(tg?sp/tg:null,true))
-     +dxTile('Value to date',money(v),`${pv?percent(v/pv):'—'} of plan`,achClass(pv?v/pv:null))
-     +dxTile('Conversions',fmt(cv,0),`${pc?percent(cv/pc):'—'} of plan`,achClass(pc?cv/pc:null));
-   table.innerHTML=`<thead><tr><th>Day</th><th>Spend</th><th>Conv.</th><th>Value</th><th>ROAS</th></tr></thead><tbody>${days.map(x=>{
-     const a=x.actual, open=DAY_OPEN===x.date;
-     if(!a)return `<tr class="dx-row upcoming">${dxDayCell(x,latest)}<td colspan="4" class="dx-up">Upcoming · plan ${money(x.plan.spend)}</td></tr>`;
-     const tRoas=x.plan.roas;
-     return `<tr class="dx-row${x.date===latest?' latest':''}${open?' open':''}" onclick="toggleDay('${x.date}')">
-      ${dxDayCell(x,latest)}
-      <td><b>${money(a.spend)}</b><small class="dx-ach ${achClass(a.spendAchievement,true)}">${percent(a.spendAchievement)}</small></td>
-      <td>${fmt(a.conversions,0)}<small class="dx-ach ${achClass(a.convAchievement)}">${percent(a.convAchievement)}</small></td>
-      <td>${money(a.value)}<small class="dx-ach ${achClass(a.valueAchievement)}">${percent(a.valueAchievement)}</small></td>
-      <td><span class="dx-roas ${a.roas!=null&&tRoas?(a.roas>=tRoas?'good':'bad'):''}">${fmt(a.roas,2)}x</span></td></tr>
-      ${open?`<tr class="dx-more"><td colspan="5"><div class="dx-stats"><span>Target spend <b>${money(a.target)}</b></span><span>Plan value <b>${money(x.plan.value)}</b></span><span>Target ROAS <b>${fmt(tRoas,2)}x</b></span><span>Clicks <b>${fmt(a.clicks,0)}</b> <small class="dx-ach ${achClass(a.clicksAchievement)}">${percent(a.clicksAchievement)}</small></span><span>CPA <b>${money(a.cpa,2)}</b></span><span>CVR <b>${percent(a.cvr)}</b></span><span>CTR <b>${percent(a.ctr)}</b></span></div></td></tr>`:''}`;
-   }).join('')}</tbody><tfoot><tr><td>To date</td><td>${money(sp)}</td><td>${fmt(cv,0)}</td><td>${money(v)}</td><td>${sp?fmt(v/sp,2)+'x':'—'}</td></tr></tfoot>`;
- }
+ if(!days.length){body.innerHTML='<div class="dx-empty">No days found in the Media Plan tab.</div>';return}
+ const latest=(d.latest||{}).date;
+ body.innerHTML=daysCards(days,latest,dayTotals(days));
 }
-function dxTile(label,value,sub,cls){return `<div class="dx-tile"><span>${esc(label)}</span><b>${value}</b><small class="${cls||''}">${sub}</small></div>`}
-function dxDayCell(x,latest){
- return `<td><div class="dx-day"><b>${x.dayNumber}</b><div><span>${esc(String(x.dayName||'').slice(0,3))}${x.date===latest?' <em>Latest</em>':''}</span><small>${esc(x.hijri)}</small></div></div></td>`;
+function dxPlanMore(p){
+ const max=Math.max(...p.channels.map(c=>c.spend),0.0001);
+ return `<div class="dx-stats"><span>Clicks <b>${fmt(p.clicks,0)}</b></span><span>CPA <b>${money(p.cpa,2)}</b></span><span>CVR <b>${percent(p.cvr)}</b></span><span>Avg. donation <b>${money(p.aov,2)}</b></span></div>
+  <div class="dx-ch">${p.channels.map(c=>`<div class="dx-chrow"><span>${esc(c.channel)}</span><i><em style="width:${(c.spend/max*100).toFixed(1)}%"></em></i><b>${money(c.spend)}</b></div>`).join('')}</div>`;
 }
-
+function dxResultMore(x){
+ const a=x.actual;
+ return `<div class="dx-stats"><span>Target spend <b>${money(a.target)}</b></span><span>Plan value <b>${money(x.plan.value)}</b></span><span>Target ROAS <b>${fmt(x.plan.roas,2)}x</b></span><span>Clicks <b>${fmt(a.clicks,0)}</b> <small class="dx-ach ${achClass(a.clicksAchievement)}">${percent(a.clicksAchievement)}</small></span><span>CPA <b>${money(a.cpa,2)}</b></span><span>CVR <b>${percent(a.cvr)}</b></span><span>CTR <b>${percent(a.ctr)}</b></span></div>`;
+}
  
-let MONTH_BASIS='total', MONTH_EXTRA={}, MONTH_EXTRA_LOADING={}, MONTH_PICK={};
+function daysCards(days,latest,T){
+ const plan=DAY_VIEW==='plan';
+ const t=plan?T.p:T.a;
+ const hero=`<div class="dc-hero"><div class="dc-hero-top"><span>${plan?'Month plan':'Month to date'}</span><em>${plan?days.length+' days':T.a.days+' of '+days.length+' days'}</em></div>
+  <div class="dc-hero-grid">${[
+    ['Spend',money(t.spend),plan?`${fmt(T.p.clicks,0)} clicks`:`${T.a.target?percent(T.a.spend/T.a.target):'—'} of target`],
+    ['Value',money(t.value),plan?`Avg. donation ${t.conversions?money(t.value/t.conversions,2):'—'}`:`${T.a.planValue?percent(T.a.value/T.a.planValue):'—'} of plan`],
+    ['Conversions',fmt(t.conversions,0),plan?`CPA ${t.conversions?money(t.spend/t.conversions,2):'—'}`:`${T.a.planConv?percent(T.a.conversions/T.a.planConv):'—'} of plan`],
+    ['ROAS',t.roas!=null?fmt(t.roas,2)+'x':'—',plan?'planned':`target ${T.p.roas!=null?fmt(T.p.roas,2)+'x':'—'}`]
+   ].map(([l,v,sub])=>`<div><small>${l}</small><b>${v}</b><i>${sub}</i></div>`).join('')}</div></div>`;
+ const bar=(v,cls)=>`<span class="dc-pb ${cls}"><em style="width:${Math.max(3,Math.min(100,(v||0)*100)).toFixed(0)}%"></em></span>`;
+ const cards=days.map(x=>{
+   const p=x.plan,a=x.actual,open=DAY_OPEN===x.date;
+   const head=`<div class="dc-date${x.date===latest?' latest':''}"><b>${x.dayNumber}</b><span>${esc(String(x.dayName||'').slice(0,3))}</span></div>`;
+   const hij=`<div class="dc-hij">${esc(x.hijri)}${x.date===latest?'<em>Latest</em>':''}</div>`;
+   if(plan){
+     const tot=p.spend||1;
+     return `<div class="dc-card${open?' open':''}${x.date===latest?' latest':''}" onclick="toggleDay('${x.date}')">${head}<div class="dc-main">${hij}
+      <div class="dc-grid"><div><small>Spend</small><b>${money(p.spend)}</b></div><div><small>Value</small><b>${money(p.value)}</b></div><div><small>Conv.</small><b>${fmt(p.conversions,0)}</b></div><div><small>ROAS</small><b class="dc-r">${fmt(p.roas,2)}x</b></div></div>
+      <div class="dc-mix">${p.channels.map((c,k)=>`<span class="m${k}" style="flex:${c.spend/tot}"></span>`).join('')}</div>
+      ${open?`<div class="dc-more">${dxPlanMore(p)}</div>`:''}</div></div>`;
+   }
+   if(!a)return `<div class="dc-card upcoming">${head}<div class="dc-main">${hij}<div class="dc-up">Upcoming · plan ${money(p.spend)} · ${money(p.value)}</div></div></div>`;
+   return `<div class="dc-card${open?' open':''}${x.date===latest?' latest':''}" onclick="toggleDay('${x.date}')">${head}<div class="dc-main">${hij}
+     <div class="dc-grid"><div><small>Spend</small><b>${money(a.spend)}</b>${bar(a.spendAchievement,achClass(a.spendAchievement,true))}<i class="${achClass(a.spendAchievement,true)}">${percent(a.spendAchievement)}</i></div>
+     <div><small>Value</small><b>${money(a.value)}</b>${bar(a.valueAchievement,achClass(a.valueAchievement))}<i class="${achClass(a.valueAchievement)}">${percent(a.valueAchievement)}</i></div>
+     <div><small>Conv.</small><b>${fmt(a.conversions,0)}</b>${bar(a.convAchievement,achClass(a.convAchievement))}<i class="${achClass(a.convAchievement)}">${percent(a.convAchievement)}</i></div>
+     <div><small>ROAS</small><b class="dc-r ${a.roas!=null&&p.roas?(a.roas>=p.roas?'good':'bad'):''}">${fmt(a.roas,2)}x</b><i>target ${fmt(p.roas,2)}x</i></div></div>
+     ${open?`<div class="dc-more">${dxResultMore(x)}</div>`:''}</div></div>`;
+ }).join('');
+ return hero+`<div class="dc-list">${cards}</div>`+(plan?`<div class="dc-legend">${PLAN_MIX_LABELS.map((l,k)=>`<span><i class="m${k}"></i>${l}</span>`).join('')}</div>`:'')+`<div class="dx-note">Tap a day to see more.</div>`;
+}
+const PLAN_MIX_LABELS=['Search Brand','Non-Brand','PMax','Demand Gen','Video'];
+ 
+let MONTH_BASIS='total', MONTH_MODE='compare', MONTH_EXTRA={}, MONTH_EXTRA_LOADING={}, MONTH_PICK={}, MONTH_CHART='value';
+function setMonthMode(m){
+ MONTH_MODE=m==='one'?'one':'compare';
+ document.getElementById('mxOneBtn').classList.toggle('on',MONTH_MODE==='one');
+ document.getElementById('mxCmpBtn').classList.toggle('on',MONTH_MODE==='compare');
+ renderMonthCompare();
+}
 function setMonthBasis(b){
  MONTH_BASIS=b==='avg'?'avg':'total';
  document.getElementById('mxTotalBtn').classList.toggle('on',MONTH_BASIS==='total');
  document.getElementById('mxAvgBtn').classList.toggle('on',MONTH_BASIS==='avg');
+ renderMonthCompare();
+}
+function setMonthChart(k){MONTH_CHART=k;renderMonthCompare()}
+function chartPick(m){
+ const sel=document.getElementById(MONTH_MODE==='compare'&&chartPick._next==='b'?'mxB':'mxA');
+ sel.value=m; if(MONTH_MODE==='compare')chartPick._next=chartPick._next==='b'?'a':'b';
  renderMonthCompare();
 }
 function swapMonths(){
@@ -3990,73 +4066,122 @@ function monthStats(h,extra,daysFallback){
    spend:h.cost,value:h.value,conversions:h.conversions,roas:h.roas,
    cpa:h.conversions?h.cost/h.conversions:null,aov:h.conversions?h.value/h.conversions:null,
    clicks:e?e.clicks:null,impressions:e?e.impressions:null,
-   ctr:e&&e.impressions?e.clicks/e.impressions:null,cpc:e&&e.clicks?e.spend/e.clicks:null,cvr:e&&e.clicks?e.conversions/e.clicks:null,
+   ctr:e&&e.impressions?e.clicks/e.impressions:null,cpc:e&&e.clicks?e.spend/e.clicks:null,cvr:e&&e.clicks?(e.conversions||0)/e.clicks:null,
    channels:e?e.channels:null
  };
 }
+const MONTH_METRICS=[
+ {k:'value',l:'Revenue',f:v=>money(v),better:'high',sum:true},
+ {k:'roas',l:'ROAS',f:v=>fmt(v,2)+'x',better:'high'},
+ {k:'conversions',l:'Conversions',f:(v,avg)=>fmt(v,avg?1:0),better:'high',sum:true},
+ {k:'spend',l:'Spend',f:v=>money(v),better:'none',sum:true},
+ {k:'cpa',l:'CPA',f:v=>money(v,2),better:'low'},
+ {k:'aov',l:'Avg. donation',f:v=>money(v,2),better:'high'},
+ {k:'clicks',l:'Clicks',f:v=>fmt(v,0),better:'high',sum:true},
+ {k:'ctr',l:'CTR',f:v=>percent(v),better:'high'},
+ {k:'cpc',l:'CPC',f:v=>money(v,2),better:'low'},
+ {k:'cvr',l:'CVR',f:v=>percent(v),better:'high'}
+];
 function renderMonthCompare(){
  const d=DASH_DATA; if(!d)return;
  const hist=d.history||[], body=document.getElementById('mxBody');
+ const one=MONTH_MODE==='one';
+ document.getElementById('mxPick').classList.toggle('one',one);
  const aKey=document.getElementById('mxA').value, bKey=document.getElementById('mxB').value;
  MONTH_PICK[CURRENT_ACCOUNT]=[aKey,bKey];
+ text('mxTitle',one?'Month Report':'Month vs Month');
  const ha=hist.find(h=>h.month===aKey), hb=hist.find(h=>h.month===bKey);
  const pre=document.getElementById('mxPresets');
- pre.innerHTML=monthPresets(hist,aKey).map(([l,m])=>`<button type="button" class="mx-preset${m===bKey?' on':''}" onclick="pickPreset('${m}')">${esc(l)}</button>`).join('');
+ pre.innerHTML=one?'':monthPresets(hist,aKey).map(([l,m])=>`<button type="button" class="mx-preset${m===bKey?' on':''}" onclick="pickPreset('${m}')">${esc(l)}</button>`).join('');
  const ex=(MONTH_EXTRA[CURRENT_ACCOUNT]||{}).months||{};
  text('mxSub',`History tab · ${hist.length} months${MONTH_EXTRA[CURRENT_ACCOUNT]?'':' · loading clicks & channels…'}`);
- if(!ha||!hb){body.innerHTML='<div class="dx-empty">No monthly history found for this account yet.</div>';return}
+ if(!ha||(!one&&!hb)){body.innerHTML='<div class="dx-empty">No monthly history found for this account yet.</div>';return}
  const dim=k=>{const p=k.split('-').map(Number);return new Date(p[0],p[1],0).getDate()};
- const partialDays=h=>{const latest=(d.latest||{}).date||'';const snap=String((d.bestWorst||{}).day||latest);return snap.slice(0,7)===h.month?Number(snap.slice(8,10))||dim(h.month):dim(h.month)};
- const A=monthStats(ha,ex[aKey],ha.partial?partialDays(ha):dim(aKey));
- const B=monthStats(hb,ex[bKey],hb.partial?partialDays(hb):dim(bKey));
+ const partialDays=h=>{const snap=String((d.bestWorst||{}).day||(d.latest||{}).date||'');return snap.slice(0,7)===h.month?Number(snap.slice(8,10))||dim(h.month):dim(h.month)};
+ const stat=h=>monthStats(h,ex[h.month],h.partial?partialDays(h):dim(h.month));
  const avg=MONTH_BASIS==='avg';
- const per=(s,v)=>v==null?null:(avg?v/(s.days||1):v);
- const metrics=[
-   {l:'Revenue',a:per(A,A.value),b:per(B,B.value),f:v=>money(v),better:'high'},
-   {l:'ROAS',a:A.roas,b:B.roas,f:v=>fmt(v,2)+'x',better:'high'},
-   {l:'Conversions',a:per(A,A.conversions),b:per(B,B.conversions),f:v=>fmt(v,avg?1:0),better:'high'},
-   {l:'Spend',a:per(A,A.spend),b:per(B,B.spend),f:v=>money(v),better:'none'},
-   {l:'CPA',a:A.cpa,b:B.cpa,f:v=>money(v,2),better:'low'},
-   {l:'Avg. donation',a:A.aov,b:B.aov,f:v=>money(v,2),better:'high'},
-   {l:'Clicks',a:per(A,A.clicks),b:per(B,B.clicks),f:v=>fmt(v,0),better:'high'},
-   {l:'CTR',a:A.ctr,b:B.ctr,f:v=>percent(v),better:'high'},
-   {l:'CPC',a:A.cpc,b:B.cpc,f:v=>money(v,2),better:'low'},
-   {l:'CVR',a:A.cvr,b:B.cvr,f:v=>percent(v),better:'high'}
- ].filter(m=>m.a!=null&&m.b!=null&&isFinite(m.a)&&isFinite(m.b));
- let winsA=0,winsB=0;
- const rows=metrics.map(m=>{
-   const delta=m.b?m.a/m.b-1:null;
-   let w='';
-   if(m.better!=='none'&&Math.abs(delta||0)>=.005){w=(m.better==='high'?m.a>m.b:m.a<m.b)?'a':'b';if(w==='a')winsA++;else winsB++}
-   const arrow=delta==null?'':delta>=0?'▲':'▼';
-   const cls=m.better==='none'?'neutral':w==='a'?'good':w==='b'?'bad':'neutral';
-   return `<tr><td class="mx-m">${esc(m.l)}</td><td class="${w==='a'?'mx-win':''}">${m.f(m.a)}</td><td class="mx-d"><span class="mx-arrow ${cls}">${arrow} ${delta==null?'—':percent(Math.abs(delta))}</span></td><td class="${w==='b'?'mx-win':''}">${m.f(m.b)}</td></tr>`;
- }).join('');
- const label=s=>`<b>${esc(monthName(s.key))}</b><span>${esc(s.hijri)}${s.partial?` · ${s.days} days so far`:''}</span>`;
- const verdict=winsA===winsB?`<div class="mx-verdict tie">⚖️ Even — each month wins ${winsA}</div>`
-   :`<div class="mx-verdict ${winsA>winsB?'a':'b'}">🏆 <b>${esc(monthName(winsA>winsB?aKey:bKey,true))}</b> is better · wins ${Math.max(winsA,winsB)} of ${winsA+winsB}</div>`;
- const partialNote=(A.partial||B.partial)&&!avg?`<div class="mx-note">${esc(monthName((A.partial?A:B).key,true))} is still running — switch to <b>Per day</b> for a fair comparison.</div>`:'';
- body.innerHTML=`${verdict}${partialNote}
-  <table class="mx-table"><thead><tr><th></th><th class="mx-h a">${label(A)}</th><th></th><th class="mx-h b">${label(B)}</th></tr></thead><tbody>${rows}</tbody></table>
-  ${monthChannels(A,B,per)}
-  <div class="mx-foot">▲▼ change of the first month vs the second · <i class="good"></i> better <i class="bad"></i> worse <i class="neutral"></i> no better/worse</div>`;
+ const val=(s,m)=>{const v=s[m.k];if(v==null||!isFinite(v))return null;return avg&&m.sum?v/(s.days||1):v};
+ const A=stat(ha), B=one?null:stat(hb);
+ 
+ const idx=hist.findIndex(h=>h.month===aKey);
+ const base=hist.slice(Math.max(0,idx-12),idx).filter(h=>!h.partial).map(stat);
+ const ctx={hist,stat,val,avg,A,B,base,ex};
+ body.innerHTML=monthsChart(ctx);
 }
-function monthChannels(A,B,per){
- if(!A.channels||!B.channels)return '';
+function cmpRows(A,B,val){
+ return MONTH_METRICS.map(m=>{
+   const a=val(A,m),b=val(B,m);
+   if(a==null||b==null)return null;
+   const delta=b?a/b-1:null;
+   let w='';
+   if(m.better!=='none'&&Math.abs(delta||0)>=.005)w=(m.better==='high'?a>b:a<b)?'a':'b';
+   return {m,a,b,delta,w};
+ }).filter(Boolean);
+}
+function baseAvg(base,val,m){
+ const v=base.map(s=>val(s,m)).filter(x=>x!=null);
+ return v.length?v.reduce((x,y)=>x+y,0)/v.length:null;
+}
+function mxArrow(delta,cls){return `<span class="mx-arrow ${cls}">${delta==null?'—':(delta>=0?'▲ ':'▼ ')+percent(Math.abs(delta))}</span>`}
+function mxVerdict(rows,aKey,bKey){
+ const wa=rows.filter(r=>r.w==='a').length, wb=rows.filter(r=>r.w==='b').length;
+ return wa===wb?`<div class="mx-verdict tie">⚖️ Even — each month wins ${wa}</div>`
+  :`<div class="mx-verdict ${wa>wb?'a':'b'}">🏆 <b>${esc(monthName(wa>wb?aKey:bKey,true))}</b> is better · wins ${Math.max(wa,wb)} of ${wa+wb}</div>`;
+}
+function mxPartialNote(c){
+ const p=[c.A,c.B].filter(Boolean).find(s=>s.partial);
+ return p&&!c.avg?`<div class="mx-note">${esc(monthName(p.key,true))} is still running (${p.days} days) — switch to <b>Per day</b> for a fair comparison.</div>`:'';
+}
+function singleRows(c){
+ return MONTH_METRICS.map(m=>{
+   const v=c.val(c.A,m); if(v==null)return null;
+   const u=baseAvg(c.base,c.val,m);
+   const delta=u?v/u-1:null;
+   let cls='neutral';
+   if(m.better!=='none'&&delta!=null&&Math.abs(delta)>=.005)cls=(m.better==='high'?delta>0:delta<0)?'good':'bad';
+   return {m,v,u,delta,cls};
+ }).filter(Boolean);
+}
+function mxChannels(A,B,val){
+ if(!A.channels||(B&&!B.channels))return '';
+ const per=(s,v)=>MONTH_BASIS==='avg'?v/(s.days||1):v;
  const names=['Search Brand','Search Non-Brand','Performance Max','Demand Gen','Video (YouTube)'];
- Object.keys(A.channels).concat(Object.keys(B.channels)).forEach(n=>{if(!names.includes(n))names.push(n)});
+ Object.keys(A.channels).concat(B?Object.keys(B.channels):[]).forEach(n=>{if(!names.includes(n))names.push(n)});
  const rows=names.map(n=>{
-   const a=A.channels[n]||{spend:0,value:0},b=B.channels[n]||{spend:0,value:0};
-   if(!a.spend&&!b.spend)return '';
-   const ra=a.spend?a.value/a.spend:null, rb=b.spend?b.value/b.spend:null;
+   const a=A.channels[n]||{spend:0,value:0}, b=B?(B.channels[n]||{spend:0,value:0}):null;
+   if(!a.spend&&!(b&&b.spend))return '';
+   const ra=a.spend?a.value/a.spend:null, rb=b&&b.spend?b.value/b.spend:null;
+   if(!B)return `<tr><td class="mx-m">${esc(n)}</td><td>${money(per(A,a.spend))}</td><td>${money(per(A,a.value))}</td><td><b>${ra!=null?fmt(ra,2)+'x':'—'}</b></td></tr>`;
    const w=ra!=null&&rb!=null&&Math.abs(ra/rb-1)>=.005?(ra>rb?'a':'b'):'';
    return `<tr><td class="mx-m">${esc(n)}</td><td class="${w==='a'?'mx-win':''}">${ra!=null?fmt(ra,2)+'x':'—'}<small>${money(per(A,a.spend))}</small></td><td class="mx-d">${w?`<span class="mx-arrow ${w==='a'?'good':'bad'}">${w==='a'?'▲':'▼'}</span>`:''}</td><td class="${w==='b'?'mx-win':''}">${rb!=null?fmt(rb,2)+'x':'—'}<small>${money(per(B,b.spend))}</small></td></tr>`;
  }).join('');
- return `<div class="mx-sub">By channel · ROAS and spend</div><table class="mx-table ch"><tbody>${rows}</tbody></table>`;
+ return B?`<div class="mx-sub">By channel · ROAS and spend</div><table class="mx-table ch"><tbody>${rows}</tbody></table>`
+  :`<div class="mx-sub">By channel</div><table class="mx-table ch one"><thead><tr><th></th><th>Spend</th><th>Revenue</th><th>ROAS</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+const MX_FOOT='<div class="mx-foot">▲▼ change of the first month vs the second · <i class="good"></i> better <i class="bad"></i> worse <i class="neutral"></i> no better/worse</div>';
+const MX_FOOT_ONE='<div class="mx-foot">▲▼ vs the average of the 12 months before · <i class="good"></i> better <i class="bad"></i> worse</div>';
+ 
+function monthsChart(c){
+ const {A,B,val,hist}=c;
+ const keys=[['value','Revenue'],['roas','ROAS'],['spend','Spend'],['conversions','Conv.']];
+ const m=MONTH_METRICS.find(x=>x.k===MONTH_CHART)||MONTH_METRICS[0];
+ const show=hist.slice(-24);
+ const vals=show.map(h=>{const s=c.stat(h);return val(s,m)||0});
+ const mx=Math.max(...vals,0.0001);
+ const bars=show.map((h,i)=>{const cls=h.month===A.key?'a':B&&h.month===B.key?'b':'';const yr=h.month.slice(5)==='01';
+   return `<button type="button" class="mc-bar ${cls}" onclick="chartPick('${h.month}')" title="${esc(monthName(h.month))}"><span style="height:${Math.max(2,vals[i]/mx*100).toFixed(1)}%"></span><small>${yr?"'"+esc(h.month.slice(2,4)):esc(monthName(h.month).slice(0,1))}</small></button>`}).join('');
+ const chips=`<div class="mc-keys">${keys.map(([k,l])=>`<button type="button" class="mx-preset${k===MONTH_CHART?' on':''}" onclick="setMonthChart('${k}')">${l}</button>`).join('')}</div>`;
+ const chart=`${chips}<div class="mc-chart">${bars}</div><div class="mc-cap"><span><i class="a"></i>${esc(monthName(A.key))}</span>${B?`<span><i class="b"></i>${esc(monthName(B.key))}</span>`:''}<span class="mc-hint">Tap a bar to pick a month</span></div>`;
+ if(!B){
+   const rows=singleRows(c);
+   return chart+mxPartialNote(c)+`<div class="mc-tiles">${rows.map(x=>`<div class="mc-tile"><small>${esc(x.m.l)}</small><b>${x.m.f(x.v,c.avg)}</b>${mxArrow(x.delta,x.cls)}<i>avg ${x.u!=null?x.m.f(x.u,c.avg):'—'}</i></div>`).join('')}</div>${mxChannels(A,null,val)}${MX_FOOT_ONE}`;
+ }
+ const rows=cmpRows(A,B,val);
+ return chart+mxVerdict(rows,A.key,B.key)+mxPartialNote(c)+`<div class="mc-tiles">${rows.map(r=>`<div class="mc-tile cmp"><small>${esc(r.m.l)}</small><div class="mc-ab"><b class="a${r.w==='a'?' win':''}">${r.m.f(r.a,c.avg)}</b><b class="b${r.w==='b'?' win':''}">${r.m.f(r.b,c.avg)}</b></div>${mxArrow(r.delta,r.m.better==='none'?'neutral':r.w==='a'?'good':r.w==='b'?'bad':'neutral')}</div>`).join('')}</div>${mxChannels(A,B,val)}${MX_FOOT}`;
 }
 
  
-let RANK_SIDE='best', RANK_CAT='projects';
+let RANK_SIDE='best', RANK_CAT='projects', RANK_SPY=null;
 const RANK_CATS=[['projects','Projects'],['campaigns','Campaigns'],['adGroups','Ad groups'],['ads','Ads'],['assetGroups','Asset groups'],['searchTerms','Search terms'],['keywords','Keywords']];
 const RANK_TITLES={
  best:{projects:'Best projects & landing pages',campaigns:'Best campaigns',adGroups:'Best search ad groups',ads:'Best ads',assetGroups:'Best PMax asset groups',searchTerms:'Best search terms',keywords:'Best keywords'},
@@ -4067,42 +4192,89 @@ function setRankSide(s){
  document.getElementById('rxBestBtn').classList.toggle('on',RANK_SIDE==='best');
  document.getElementById('rxWorstBtn').classList.toggle('on',RANK_SIDE==='worst');
  if(DASH_DATA)renderRanks(DASH_DATA);
+ const card=document.querySelector('.rx-card');
+ if(card&&card.getBoundingClientRect().top<0)window.scrollTo({top:card.getBoundingClientRect().top+window.pageYOffset-rankTopOffset()+2,behavior:'smooth'});
 }
-function setRankCat(c){RANK_CAT=c;if(DASH_DATA)renderRanks(DASH_DATA)}
+function rankTopOffset(){const t=document.querySelector('.topbar');return t?t.getBoundingClientRect().height:0}
+function rankStickyBottom(){const s=document.getElementById('rxSticky');return s?s.getBoundingClientRect().bottom:rankTopOffset()}
+function setRankCat(c){
+ RANK_CAT=c;
+ const sec=document.getElementById('rx-sec-'+c);
+ markRankChip(c);
+ if(!sec)return;
+ const sticky=document.getElementById('rxSticky');
+ const h=sticky?sticky.offsetHeight:0;
+ RANK_SPY_LOCK=Date.now()+900;
+ window.scrollTo({top:sec.getBoundingClientRect().top+window.pageYOffset-rankTopOffset()-h-6,behavior:'smooth'});
+}
+let RANK_SPY_LOCK=0;
+function markRankChip(c){
+ RANK_CAT=c;
+ document.querySelectorAll('#rxCats .rx-cat').forEach(b=>{
+   const on=b.dataset.cat===c;b.classList.toggle('on',on);
+   if(on){const host=b.parentElement;const l=b.offsetLeft-host.offsetLeft-16;if(Math.abs(host.scrollLeft-l)>4)host.scrollTo({left:Math.max(0,l),behavior:'smooth'})}
+ });
+}
+function rankSpy(){
+ if(CURRENT_TAB!=='ranks'||Date.now()<RANK_SPY_LOCK)return;
+ const secs=[...document.querySelectorAll('.rx-sec')];
+ if(!secs.length)return;
+ const line=rankStickyBottom()+24;
+ let cur=secs[0];
+ secs.forEach(s=>{if(s.getBoundingClientRect().top<=line)cur=s});
+ if((window.innerHeight+window.pageYOffset)>=document.documentElement.scrollHeight-4)cur=secs[secs.length-1];
+ const c=cur.dataset.cat;
+ if(c!==RANK_CAT||!document.querySelector(`#rxCats .rx-cat.on[data-cat="${c}"]`))markRankChip(c);
+}
+window.addEventListener('scroll',()=>{if(RANK_SPY)return;RANK_SPY=requestAnimationFrame(()=>{RANK_SPY=null;rankSpy()})},{passive:true});
 function renderRanks(d){
  const bw=d.bestWorst, body=document.getElementById('rxBody'), cats=document.getElementById('rxCats');
  if(!body)return;
+ document.documentElement.style.setProperty('--rx-top',rankTopOffset()+'px');
  if(!bw){cats.innerHTML='';text('rxSub','Not linked yet');body.innerHTML='<div class="dx-empty">The Best &amp; Worst tab is not linked for this account yet.</div>';return}
  text('rxSub',`${shortDate(bw.day)} · last closed day · ranked by ${bw.rankBy}${bw.updated?' · updated '+bw.updated:''}`);
- const blocks=bw[RANK_SIDE]||[];
+ const blocks=(bw[RANK_SIDE]||[]).slice().sort((a,b)=>RANK_CATS.findIndex(c=>c[0]===a.key)-RANK_CATS.findIndex(c=>c[0]===b.key));
  if(!blocks.some(b=>b.key===RANK_CAT)&&blocks[0])RANK_CAT=blocks[0].key;
- cats.innerHTML=RANK_CATS.filter(([k])=>blocks.some(b=>b.key===k)).map(([k,l])=>`<button type="button" class="rx-cat${k===RANK_CAT?' on':''}" onclick="setRankCat('${k}')">${esc(l)}</button>`).join('');
- const b=blocks.find(x=>x.key===RANK_CAT);
- if(!b){body.innerHTML='<div class="dx-empty">Nothing to show.</div>';return}
- const worst=RANK_SIDE==='worst';
- const title=(RANK_TITLES[RANK_SIDE]||{})[b.key]||b.title;
- const head=`<div class="rx-head"><b>${esc(title)}</b>${b.minSpend?`<span class="sx-chip">Spent £${fmt(b.minSpend,0)}+</span>`:''}</div>`;
- if(!b.rows.length){
-   body.innerHTML=head+`<div class="rx-ok">👌 Nothing ${worst?'needs action':'to show'} here${b.minSpend?` — no item spent £${fmt(b.minSpend,0)} or more`:''}.</div>`;return;
- }
- const top=Math.max(...b.rows.map(r=>Number(r.roas)||0),0.0001);
- const topSpend=Math.max(...b.rows.map(r=>Number(r.spend)||0),0.0001);
- body.innerHTML=head+`<div class="rx-list">${b.rows.map((r,i)=>{
-   const split=(r.split||[]).filter(s=>s.spend>0);
-   const tot=split.reduce((a,s)=>a+s.spend,0)||1;
-   const details=(r.details||[]).map(x=>`<span>${esc(x.label)} <b>${esc(x.value)}</b></span>`).join('');
-   return `<div class="rx-row ${worst?'w':'g'}${i===0?' first':''}">
-     <span class="rx-rank">${r.rank||i+1}</span>
-     <div class="rx-main">
-      <div class="rx-top"><b class="rx-name">${esc(r.name)}</b><span class="rx-roas">${fmt(r.roas,2)}x</span></div>
-      ${details?`<div class="rx-det">${details}</div>`:''}
-      <div class="rx-bar"><span style="width:${Math.max(4,worst?(Number(r.spend)||0)/topSpend*100:(Number(r.roas)||0)/top*100).toFixed(1)}%"></span></div>
-      <div class="sx-lmeta"><span>Spend <b>${money(r.spend)}</b></span><span>Conv. <b>${fmt(r.conversions,0)}</b></span><span>Value <b>${money(r.value)}</b></span></div>
-      ${split.length>1?`<div class="rx-split">${split.map((s,k)=>`<span class="c${k}" style="flex:${s.spend/tot}" title="${esc(s.label)}"></span>`).join('')}</div><div class="rx-splitkey">${split.map((s,k)=>`<span><i class="c${k}"></i>${esc(s.label)} ${money(s.spend)}</span>`).join('')}</div>`:''}
-     </div></div>`;
- }).join('')}</div>${b.total?`<div class="rx-total"><span>Total</span><span>Spend <b>${money(b.total.spend)}</b></span><span>Conv. <b>${fmt(b.total.conversions,0)}</b></span><span>Value <b>${money(b.total.value)}</b></span><span class="rx-roas">${fmt(b.total.roas,2)}x</span></div>`:''}`;
+ cats.innerHTML=RANK_CATS.filter(([k])=>blocks.some(b=>b.key===k)).map(([k,l])=>`<button type="button" class="rx-cat${k===RANK_CAT?' on':''}" data-cat="${k}" onclick="setRankCat('${k}')">${esc(l)}</button>`).join('');
+ body.innerHTML=blocks.map(b=>{
+   const worst=RANK_SIDE==='worst';
+   const title=(RANK_TITLES[RANK_SIDE]||{})[b.key]||b.title;
+   const head=`<div class="rx-head"><b>${esc(title)}</b>${b.minSpend?`<span class="sx-chip">Spent £${fmt(b.minSpend,0)}+</span>`:''}</div>`;
+   const inner=b.rows.length?rankCardSec(b,worst):`<div class="rx-ok">👌 Nothing ${worst?'needs action':'to show'} here${b.minSpend?` — no item spent £${fmt(b.minSpend,0)} or more`:''}.</div>`;
+   return `<section class="rx-sec" id="rx-sec-${b.key}" data-cat="${b.key}">${head}${inner}</section>`;
+ }).join('')+'<div class="rx-endpad"></div>';
+ requestAnimationFrame(()=>markRankChip(RANK_CAT));
 }
-
+function rxSplit(r){
+ const split=(r.split||[]).filter(s=>s.spend>0);
+ if(split.length<2)return '';
+ const tot=split.reduce((a,s)=>a+s.spend,0)||1;
+ return `<div class="rx-split">${split.map((s,k)=>`<span class="c${k}" style="flex:${s.spend/tot}" title="${esc(s.label)}"></span>`).join('')}</div><div class="rx-splitkey">${split.map((s,k)=>`<span><i class="c${k}"></i>${esc(s.label)} ${money(s.spend)}</span>`).join('')}</div>`;
+}
+function rxName(n){return esc(n).replace(/_/g,'_\u200b')}
+function rxDetails(r){return (r.details||[]).map(x=>`<span>${esc(x.label)} <b>${esc(x.value)}</b></span>`).join('')}
+function rxTotal(b){return b.total?`<div class="rx-total"><span>Total</span><span>Spend <b>${money(b.total.spend)}</b></span><span>Conv. <b>${fmt(b.total.conversions,0)}</b></span><span>Value <b>${money(b.total.value)}</b></span><span class="rx-roas">${fmt(b.total.roas,2)}x</span></div>`:''}
+function rxBarW(b,r,worst){
+ const top=Math.max(...b.rows.map(x=>Number(x.roas)||0),0.0001), ts=Math.max(...b.rows.map(x=>Number(x.spend)||0),0.0001);
+ return Math.max(4,worst?(Number(r.spend)||0)/ts*100:(Number(r.roas)||0)/top*100).toFixed(1);
+}
+ 
+const RANK_ICONS={
+ projects:'<svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="#e0606c"/></svg>',
+ campaigns:'<svg viewBox="0 0 24 24"><rect x="9.2" y="2.6" width="5.6" height="15" rx="2.8" transform="rotate(30 12 10)" fill="#4285F4"/><rect x="3.6" y="7.4" width="5.6" height="13" rx="2.8" transform="rotate(-30 6.4 14)" fill="#FBBC04"/><circle cx="6.2" cy="18.2" r="2.9" fill="#34A853"/></svg>',
+ adGroups:'<svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="#4285F4"/><path d="M3 10h18" stroke="#fff" stroke-width="1.6"/></svg>',
+ ads:'<svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="14" rx="3" fill="#34A853"/><text x="12" y="15.6" text-anchor="middle" font-size="8.5" font-weight="900" font-family="Arial,sans-serif" fill="#fff">Ad</text></svg>',
+ assetGroups:'<svg viewBox="0 0 24 24"><path d="M12 12V3a9 9 0 0 1 9 9z" fill="#4285F4"/><path d="M12 12h9a9 9 0 0 1-9 9z" fill="#34A853"/><path d="M12 12v9a9 9 0 0 1-9-9z" fill="#FBBC04"/><path d="M12 12H3a9 9 0 0 1 9-9z" fill="#EA4335"/><circle cx="12" cy="12" r="3" fill="#fff"/></svg>',
+ searchTerms:'<svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="#4285F4" stroke-width="2.6"/><path d="M15 15l5 5" stroke="#4285F4" stroke-width="2.8" stroke-linecap="round"/></svg>',
+ keywords:'<svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4.6" fill="none" stroke="#C89434" stroke-width="2.6"/><path d="M12.4 12H21M18 12v3.5M15.4 12v2.5" stroke="#C89434" stroke-width="2.6" stroke-linecap="round"/></svg>'
+};
+function rankCardSec(b,worst){
+ const icon=RANK_ICONS[b.key]||RANK_ICONS.campaigns;
+ return `<div class="rx-list">${b.rows.map((r,i)=>{const det=rxDetails(r);return `<div class="rx-row ${worst?'w':'g'}${i===0?' first':''}"><span class="rx-icon">${icon}<em>${r.rank||i+1}</em></span><div class="rx-main">
+   <div class="rx-top"><b class="rx-name">${rxName(r.name)}</b><span class="rx-roas">${fmt(r.roas,2)}x</span></div>${det?`<div class="rx-det">${det}</div>`:''}
+   <div class="rx-bar"><span style="width:${rxBarW(b,r,worst)}%"></span></div>
+   <div class="sx-lmeta"><span>Spend <b>${money(r.spend)}</b></span><span>Conv. <b>${fmt(r.conversions,0)}</b></span><span>Value <b>${money(r.value)}</b></span></div>${rxSplit(r)}</div></div>`}).join('')}</div>${rxTotal(b)}`;
+}
 function daysInMonthOf(dateText){
  const p=String(dateText||'').split('-').map(Number);
  if(p.length<2||!p[0]||!p[1])return null;
@@ -4611,7 +4783,7 @@ function demoServer(name,args){
  if(name==='adminInvite')return {ok:true,already:false,name:nameFromEmail(args[1])};
  if(name==='accessRequestCode')return {ok:true,name:nameFromEmail(args[0])};
  if(name==='accessVerifyCode')return {ok:true,token:'demo'.padEnd(64,'0'),status:'Pending',name:nameFromEmail(args[0])};
- if(name==='accessStatus')return {status:'Pending',name:storeGet(ACCESS_NAME_KEY)||'Ibrahim',email:'ibrahim.amin6700@gmail.com',isAdmin:demoAdmin,photo:'',dashboard:{version:'v83',date:'2026-10-18'}};
+ if(name==='accessStatus')return {status:'Pending',name:storeGet(ACCESS_NAME_KEY)||'Ibrahim',email:'ibrahim.amin6700@gmail.com',isAdmin:demoAdmin,photo:'',dashboard:{version:'v84',date:'2026-10-18'}};
  return {};
 }
 function nameFromEmail(email){
@@ -4810,9 +4982,9 @@ function startAccess(){
 
  
 const DASHBOARD_VERSION='v71';
-const RELEASE_NOTES=[{version:'v83',date:'October 2026',items:[
+const RELEASE_NOTES=[{version:'v84',date:'October 2026',items:[
  {icon:'menu',title:'Day by Day',text:'The full month from the 1st: switch between the media plan and the actual results for every day.'},
- {icon:'spark',title:'Month vs Month',text:'Pick any two months from History and see which one did better, metric by metric.'},
+ {icon:'spark',title:'Month vs Month',text:'Pick any two months from History and see which one did better, or open one month on its own against the usual level.'},
  {icon:'shield',title:'Top & Bottom 5',text:'The best and weakest projects, campaigns, ad groups, ads, search terms and keywords of the last closed day.'},
  {icon:'lock',title:'Same Hijri day last year',text:'Today is now compared with the same Hijri date last year, and Top 3 Projects show real results.'}
 ]},{version:'v71',date:'October 2026',items:[
@@ -5434,7 +5606,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v83',date:'2026-10-18'};
+const DASHBOARD_RELEASE_CLIENT={version:'v84',date:'2026-10-18'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
