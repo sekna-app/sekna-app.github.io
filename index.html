@@ -2532,6 +2532,97 @@ window.addEventListener('load',function(){
     .dx-chrow i.dx-dot{width:8px;height:8px;border-radius:2px;flex:none}
     .dx-chrow i.dx-dot.m0{background:#203c8e}.dx-chrow i.dx-dot.m1{background:#3d6bff}.dx-chrow i.dx-dot.m2{background:#22c47c}.dx-chrow i.dx-dot.m3{background:#c89434}.dx-chrow i.dx-dot.m4{background:#e0606c}
     body.dark-mode .dx-chrow i.dx-dot.m0{background:#7f9bea}
+    /* v85 — Report period picker, seasons on the chart, report cards */
+    .mx-period{display:none}
+    .mx-pick.one .mx-sel.a{display:none}
+    .mx-pick.one .mx-period{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:1.5px solid #3d6bff;background:linear-gradient(135deg,#f3f6ff,#fff);border-radius:16px;padding:11px 12px;box-shadow:0 6px 16px rgba(61,107,255,.12)}
+    .mx-period-ico{font-size:22px;flex:none}
+    .mx-period-t{flex:1;min-width:0}.mx-period-t small{display:block;font-size:10px;font-weight:850;color:#6b7385;text-transform:uppercase;letter-spacing:.06em}
+    .mx-period-t b{display:block;font-size:15.5px;color:#1d2433;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.mx-period-t i{display:block;font-style:normal;font-size:11.5px;color:#8b92a0;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .mx-period-go{flex:none;background:#203c8e;color:#fff;font-size:12px;font-weight:850;padding:7px 12px;border-radius:99px}
+    body.dark-mode .mx-pick.one .mx-period{background:#151a22;border-color:#3d6bff}body.dark-mode .mx-period-t b{color:#fff}body.dark-mode .mx-period-go{background:#3d6bff}
+    .mx-sel.b select{border-color:#7c4dff!important}
+    .mc-bar.b span{background:linear-gradient(180deg,#a78bfa,#7c4dff)!important}.mc-cap i.b{background:#7c4dff!important}.mc-ab b.b{color:#7c4dff!important}
+    .mx-verdict.b{background:linear-gradient(135deg,#f3eeff,#faf7ff)!important;border-color:#7c4dff!important}body.dark-mode .mx-verdict.b{background:#1e1636!important}
+    .mc-bar.season span{background:linear-gradient(180deg,#f0cf8a,#c89434)}
+    .mc-bar.season.a span{background:linear-gradient(180deg,#e2b874 0 7px,#3d6bff 7px,#203c8e)}
+    .mc-bar.season.b span{background:linear-gradient(180deg,#e2b874 0 7px,#a78bfa 7px,#7c4dff)!important}
+    .mc-cap i.s{background:#c89434}
+    .mc-chart{position:relative}
+    .mc-tip{position:absolute;top:-6px;transform:translate(-50%,-100%);background:#1d2433;color:#fff;border-radius:12px;padding:7px 10px;font-size:11px;white-space:nowrap;z-index:2;box-shadow:0 8px 20px rgba(0,0,0,.2);pointer-events:none}
+    .mc-tip b{display:block;font-size:12.5px}.mc-tip span{opacity:.85;font-weight:700}
+    .mc-tip.season{background:linear-gradient(135deg,#a8701c,#c89434)}
+    .mc-tip::after{content:"";position:absolute;left:50%;bottom:-5px;margin-left:-5px;border:5px solid transparent;border-bottom:0;border-top-color:inherit}
+    .mc-tip{border-top-color:#1d2433}.mc-tip.season{border-top-color:#b8822a}
+    .mc-chart{margin-top:44px}
+    .mx-note{margin-top:10px}
+
+    .mr3-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+    .mr3{border-radius:18px;padding:13px;color:#fff;min-width:0;position:relative;overflow:hidden}
+    .mr3::after{content:"";position:absolute;right:-26px;top:-26px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.12)}
+    .mr3.spend{background:linear-gradient(140deg,#16295f,#203c8e)}.mr3.conversions{background:linear-gradient(140deg,#2649c9,#3d6bff)}.mr3.value{background:linear-gradient(140deg,#0b6b45,#22c47c)}.mr3.roas{background:linear-gradient(140deg,#8a5a10,#c89434)}
+    .mr3 small{font-size:10.5px;font-weight:850;text-transform:uppercase;letter-spacing:.06em;opacity:.85}.mr3 b{display:block;font-size:21px;font-weight:900;margin:6px 0;direction:ltr;white-space:nowrap}
+    .mr3-f{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}.mr3-f i{font-style:normal;font-size:10.5px;opacity:.85;font-weight:700}
+    .mr3-chip{background:rgba(255,255,255,.2);border-radius:99px;padding:3px 8px;font-size:11px;font-weight:900}.mr3-chip.good::before{content:""}.mr3-chip.bad{background:rgba(0,0,0,.22)}
+    .mr-list{margin-top:12px;border:1.5px solid #e6e9f1;border-radius:16px;overflow:hidden}
+    .mr-li{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:11px 14px;border-top:1px solid #eef0f5}.mr-li:first-child{border-top:0}
+    .mr-li span{font-size:13px;font-weight:750;color:#4b5263}.mr-li b{font-size:14.5px;font-weight:900;color:#1d2433;direction:ltr}
+    .mc-tiles{margin-top:10px}
+    body.dark-mode .mr-list{background:#151a22;border-color:#2a313c}body.dark-mode .mr-li b{color:#fff}body.dark-mode .mr-li{border-color:#252a32}body.dark-mode .mr-li span{color:#a7afbf}
+
+    .rc-roas{display:inline-block;padding:3px 8px;border-radius:99px;font-weight:900;font-size:11.5px;white-space:nowrap}
+    .rc-roas.good{background:#e7f8ef;color:#13804f}.rc-roas.bad{background:#fdecea;color:#c2382f}
+    body.dark-mode .rc-roas.good{background:#123326;color:#5be3a3}body.dark-mode .rc-roas.bad{background:#3a171c;color:#ff9aa6}
+    .rc1{border:1.5px solid #e6e9f1;border-radius:16px;padding:12px 14px}
+    .rc1-bar{display:flex;gap:2px;height:12px;border-radius:99px;overflow:hidden;margin-bottom:6px}
+    .rc1-row{display:grid;grid-template-columns:10px 1fr auto auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid #eef0f5}.rc1-bar+.rc1-row{border-top:0}
+    .rc1-row>i{width:10px;height:10px;border-radius:3px}
+    .rc1-n b{display:block;font-size:13px;color:#1d2433}.rc1-n small,.rc1-v small{display:block;font-size:10.5px;color:#8b92a0;font-weight:700}
+    .rc1-v{text-align:right}.rc1-v b{display:block;font-size:13px;color:#1d2433}
+    body.dark-mode .rc1{border-color:#2a313c;background:#151a22}
+    body.dark-mode .rc1-n b,body.dark-mode .rc1-v b{color:#fff}
+    body.dark-mode .rc1-row{border-color:#252a32}
+    body.dark-mode .rc1 .m0{background:#7f9bea}
+    .m5{background:#8b5cf6}
+
+    .pk-overlay{position:fixed;inset:0;z-index:60;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(14,20,38,.4);opacity:0;pointer-events:none;transition:opacity .2s ease}
+    .pk-overlay.open{opacity:1;pointer-events:auto;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+    .pk-card{width:100%;max-width:440px;max-height:min(86vh,760px);display:flex;flex-direction:column;background:#fff;border-radius:22px;box-shadow:0 24px 60px rgba(14,20,38,.35);overflow:hidden;transform:translateY(10px) scale(.98);transition:transform .22s ease}
+    .pk-overlay.open .pk-card{transform:none}
+    .pk-head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px 6px}.pk-head small{display:block;font-size:10px;font-weight:850;color:#6b7385;text-transform:uppercase;letter-spacing:.07em}.pk-head b{font-size:18px;color:#1d2433}
+    .pk-x{width:34px;height:34px;border-radius:12px;border:1px solid #e3e7f0;background:#fff;font-size:14px;color:#4b5263}
+    .pk-tabs{margin:6px 16px 4px!important}
+    .pk-chips{display:flex;flex-wrap:wrap;gap:6px;padding:6px 16px}.pk-chips button{border:1px solid #dfe3ec;background:#fff;color:#4b5263;border-radius:99px;padding:6px 11px;font-size:12px;font-weight:800}
+    .pk-body{flex:1;overflow:auto;padding:6px 16px 10px}
+    .pk-year{margin:8px 0 10px}.pk-year>b{display:block;font-size:12px;color:#6b7385;margin-bottom:6px;font-weight:900}
+    .pk-mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+    .pk-m{border:1.5px solid #e3e7f0;background:#fff;border-radius:12px;padding:7px 2px;font-size:13px;font-weight:850;color:#1d2433;display:grid;gap:1px;position:relative}
+    .pk-m small{font-size:9px;color:#9aa1b2;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .pk-m.off,.pk-m2.off{opacity:.35;text-align:center;padding:7px 2px;font-size:13px;font-weight:800;color:#9aa1b2;border:1.5px dashed #e3e7f0;border-radius:12px}
+    .pk-m.season::after{content:"";position:absolute;top:5px;right:6px;width:6px;height:6px;border-radius:50%;background:#c89434}
+    .pk-m.on{background:#203c8e;border-color:#203c8e;color:#fff}.pk-m.on small{color:#c9d3f5}
+    .pk-calhead{display:flex;justify-content:space-between;align-items:center;margin:4px 0 8px}.pk-calhead b{font-size:14px;color:#1d2433}
+    .pk-calhead button{width:34px;height:34px;border-radius:11px;border:1px solid #e3e7f0;background:#fff;font-size:18px;color:#203c8e}.pk-calhead button:disabled{opacity:.3}
+    .pk-week,.pk-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.pk-week span{text-align:center;font-size:10px;font-weight:850;color:#9aa1b2}
+    .pk-day{aspect-ratio:1;border:1.5px solid #e3e7f0;background:#fff;border-radius:11px;font-size:13px;font-weight:850;color:#1d2433}
+    .pk-day.empty{border:0;background:none}.pk-day.off{opacity:.3}
+    .pk-day.on{background:#203c8e;border-color:#203c8e;color:#fff}
+    .pk-foot{display:flex;align-items:center;gap:8px;padding:12px 16px;border-top:1px solid #eef0f5;background:#fafbfd}
+    .pk-sum{flex:1;min-width:0}.pk-sum b{display:block;font-size:13.5px;color:#1d2433;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pk-sum small{display:block;font-size:11px;color:#8b92a0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .pk-ghost{border:1px solid #dfe3ec;background:#fff;color:#4b5263;border-radius:12px;padding:10px 12px;font-weight:800;font-size:13px}
+    .pk-apply{border:0;background:#203c8e;color:#fff;border-radius:12px;padding:10px 18px;font-weight:900;font-size:13.5px}.pk-apply:disabled{opacity:.4}
+    body.dark-mode .pk-card{background:#181e27}body.dark-mode .pk-head b,body.dark-mode .pk-sum b,body.dark-mode .pk-calhead b{color:#fff}
+    body.dark-mode .pk-x,body.dark-mode .pk-chips button,body.dark-mode .pk-m,body.dark-mode .pk-day,body.dark-mode .pk-calhead button,body.dark-mode .pk-ghost{background:#151a22;border-color:#303845;color:#e8ebf0}
+    body.dark-mode .pk-m.on,body.dark-mode .pk-day.on{background:#3d6bff;border-color:#3d6bff;color:#fff}
+    body.dark-mode .pk-foot{background:#151a22;border-color:#2a313c}body.dark-mode .pk-apply{background:#3d6bff}
+    .mc-tip.l{transform:translate(-14px,-100%)}.mc-tip.l::after{left:14px}
+    .mc-tip.r{transform:translate(calc(-100% + 14px),-100%)}.mc-tip.r::after{left:auto;right:9px}
+    body.dark-mode .mc-bar.season span{background:linear-gradient(180deg,#f0cf8a,#c89434)}
+    body.dark-mode .mc-bar.a span{background:linear-gradient(180deg,#5b84ff,#3d6bff)}
+    body.dark-mode .mc-bar.season.a span{background:linear-gradient(180deg,#e2b874 0 7px,#5b84ff 7px,#3d6bff)}
+    body.dark-mode .mc-bar.b span{background:linear-gradient(180deg,#a78bfa,#7c4dff)!important}
+    body.dark-mode .mc-bar.season.b span{background:linear-gradient(180deg,#e2b874 0 7px,#a78bfa 7px,#7c4dff)!important}
+    body.dark-mode .mc-cap{color:#c9d0dc}body.dark-mode .mc-hint{color:#8b92a0}
 </style>
 </head>
 <body>
@@ -2684,7 +2775,7 @@ window.addEventListener('load',function(){
     <p class="sk-about-text">Your central workspace for media planning, campaign monitoring, reporting and smart tools. Built to help our team manage clients, make faster data-driven decisions and create greater impact — together.</p>
     <div class="sk-about-pills"><span>Media planning</span><span>Campaign monitoring</span><span>Reporting</span><span>Smart tools</span></div>
     <div class="sk-credit"><span class="sk-credit-avatar">IA</span><span><small>Designed &amp; developed by</small><b>Ibrahim Amin</b></span></div>
-    <div class="sk-version">SEKNA Dashboard • v84</div>
+    <div class="sk-version">SEKNA Dashboard • v85</div>
   </section>
 </div>
 
@@ -3003,6 +3094,7 @@ window.addEventListener('load',function(){
       </div>
       <div class="mx-pick" id="mxPick">
         <label class="mx-sel a"><span>Month</span><select id="mxA" onchange="renderMonthCompare()"></select></label>
+        <button type="button" class="mx-period" id="mxPeriodBtn" onclick="openPeriodPicker()"></button>
         <button class="mx-swap" type="button" onclick="swapMonths()" aria-label="Swap months"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M7 4l-3 3M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/></svg></button>
         <label class="mx-sel b"><span>Compare with</span><select id="mxB" onchange="renderMonthCompare()"></select></label>
       </div>
@@ -4047,7 +4139,9 @@ function planHero(days,T){
 const PLAN_CHANNEL_NAMES=['Search Brand','Search Non-Brand','Performance Max','Demand Gen','Video'];
 const PLAN_MIX_LABELS=['Search Brand','Non-Brand','PMax','Demand Gen','Video'];
  
-let MONTH_BASIS='total', MONTH_MODE='compare', MONTH_EXTRA={}, MONTH_EXTRA_LOADING={}, MONTH_PICK={}, MONTH_CHART='value';
+let MONTH_BASIS='total', MONTH_MODE='compare', MONTH_EXTRA={}, MONTH_EXTRA_LOADING={}, MONTH_PICK={}, MONTH_CHART='value', MONTH_TIP='';
+const PERIOD_SEL={};
+const SEASONS={'Ramadan':'🌙 Ramadan','Dhu Hijjah':'🐑 Qurbani · Eid al-Adha'};
 function setMonthMode(m){
  MONTH_MODE=m==='one'?'one':'compare';
  document.getElementById('mxOneBtn').classList.toggle('on',MONTH_MODE==='one');
@@ -4062,8 +4156,11 @@ function setMonthBasis(b){
 }
 function setMonthChart(k){MONTH_CHART=k;renderMonthCompare()}
 function chartPick(m){
- const sel=document.getElementById(MONTH_MODE==='compare'&&chartPick._next==='b'?'mxB':'mxA');
- sel.value=m; if(MONTH_MODE==='compare')chartPick._next=chartPick._next==='b'?'a':'b';
+ 
+ MONTH_TIP=MONTH_TIP===m?'':m;
+ if(MONTH_MODE==='one'){PERIOD_SEL[CURRENT_ACCOUNT]={kind:'months',months:[m]};renderMonthCompare();return}
+ const sel=document.getElementById(chartPick._next==='b'?'mxB':'mxA');
+ sel.value=m; chartPick._next=chartPick._next==='b'?'a':'b';
  renderMonthCompare();
 }
 function swapMonths(){
@@ -4094,6 +4191,7 @@ function renderMonths(d){
      b.value=pick&&hist.some(h=>h.month===pick[1])?pick[1]:(hist[hist.length-2]||hist[hist.length-1]).month;
    }
  }
+ if(!PERIOD_SEL[CURRENT_ACCOUNT]&&hist.length)PERIOD_SEL[CURRENT_ACCOUNT]={kind:'months',months:[hist[hist.length-1].month]};
  loadMonthExtras();
  renderMonthCompare();
 }
@@ -4108,30 +4206,115 @@ function monthPresets(hist,aKey){
  return out;
 }
 function pickPreset(m){document.getElementById('mxB').value=m;renderMonthCompare()}
-function monthStats(h,extra,daysFallback){
- const e=extra||null;
- const days=e&&e.days?e.days:daysFallback;
- return {
-   key:h.month,hijri:h.hijri,partial:h.partial,days:days,
-   spend:h.cost,value:h.value,conversions:h.conversions,roas:h.roas,
-   cpa:h.conversions?h.cost/h.conversions:null,aov:h.conversions?h.value/h.conversions:null,
-   clicks:e?e.clicks:null,impressions:e?e.impressions:null,
-   ctr:e&&e.impressions?e.clicks/e.impressions:null,cpc:e&&e.clicks?e.spend/e.clicks:null,cvr:e&&e.clicks?(e.conversions||0)/e.clicks:null,
-   channels:e?e.channels:null
- };
+
+ 
+function monthDim(k){const p=k.split('-').map(Number);return new Date(p[0],p[1],0).getDate()}
+function monthParts(h,ex,d){
+ const e=(ex.months||{})[h.month];
+ let days=e&&e.days?e.days:monthDim(h.month);
+ if(h.partial&&!(e&&e.days)){const snap=String((d.bestWorst||{}).day||(d.latest||{}).date||'');if(snap.slice(0,7)===h.month)days=Number(snap.slice(8,10))||days}
+ return {spend:h.cost,value:h.value,conversions:h.conversions,days,
+   extra:e?{spend:e.spend,clicks:e.clicks,impressions:e.impressions,conversions:e.conversions}:null,
+   channels:e?e.channels:null};
 }
+function dayParts(dk,ex){
+ const arr=(ex.days||{})[dk]; if(!arr)return null;
+ const names=ex.channels||[]; const ch={}; const t={spend:0,impressions:0,clicks:0,conversions:0,value:0};
+ names.forEach((n,i)=>{const o=i*5;if(o>=arr.length)return;const c={spend:arr[o]||0,impressions:arr[o+1]||0,clicks:arr[o+2]||0,conversions:arr[o+3]||0,value:arr[o+4]||0};
+   if(!c.spend&&!c.value&&!c.clicks)return;ch[n]=c;Object.keys(t).forEach(k=>t[k]+=c[k])});
+ return {spend:t.spend,value:t.value,conversions:t.conversions,days:1,extra:{spend:t.spend,clicks:t.clicks,impressions:t.impressions,conversions:t.conversions},channels:ch};
+}
+function mergeParts(list){
+ const o={spend:0,value:0,conversions:0,days:0,extra:{spend:0,clicks:0,impressions:0,conversions:0},channels:{}};
+ let allExtra=list.length>0;
+ list.forEach(p=>{
+   o.spend+=p.spend||0;o.value+=p.value||0;o.conversions+=p.conversions||0;o.days+=p.days||0;
+   if(p.extra)Object.keys(o.extra).forEach(k=>o.extra[k]+=p.extra[k]||0);else allExtra=false;
+   if(p.channels)Object.keys(p.channels).forEach(n=>{const c=p.channels[n],t=o.channels[n]||(o.channels[n]={spend:0,clicks:0,conversions:0,value:0});['spend','clicks','conversions','value'].forEach(k=>t[k]+=c[k]||0)});
+ });
+ if(!allExtra){o.extra=null;o.channels=null}
+ return o;
+}
+function statFrom(p,meta){
+ const e=p.extra;
+ return Object.assign({
+   days:p.days,spend:p.spend,value:p.value,conversions:p.conversions,
+   roas:p.spend?p.value/p.spend:null,cpa:p.conversions?p.spend/p.conversions:null,aov:p.conversions?p.value/p.conversions:null,
+   clicks:e?e.clicks:null,impressions:e?e.impressions:null,
+   ctr:e&&e.impressions?e.clicks/e.impressions:null,cpc:e&&e.clicks?e.spend/e.clicks:null,cvr:e&&e.clicks?e.conversions/e.clicks:null,
+   channels:p.channels
+ },meta||{});
+}
+function monthStats(h,ex,d){return statFrom(monthParts(h,ex,d),{key:h.month,hijri:h.hijri,partial:h.partial})}
+
 const MONTH_METRICS=[
+ {k:'spend',l:'Spend',f:v=>money(v),better:'none',sum:true},
+ {k:'conversions',l:'Conversions',f:(v,avg)=>fmt(v,avg?1:0),better:'high',sum:true},
  {k:'value',l:'Revenue',f:v=>money(v),better:'high',sum:true},
  {k:'roas',l:'ROAS',f:v=>fmt(v,2)+'x',better:'high'},
- {k:'conversions',l:'Conversions',f:(v,avg)=>fmt(v,avg?1:0),better:'high',sum:true},
- {k:'spend',l:'Spend',f:v=>money(v),better:'none',sum:true},
- {k:'cpa',l:'CPA',f:v=>money(v,2),better:'low'},
- {k:'aov',l:'Avg. donation',f:v=>money(v,2),better:'high'},
- {k:'clicks',l:'Clicks',f:v=>fmt(v,0),better:'high',sum:true},
+ {k:'clicks',l:'Clicks',f:(v,avg)=>fmt(v,0),better:'high',sum:true},
  {k:'ctr',l:'CTR',f:v=>percent(v),better:'high'},
+ {k:'cpa',l:'CPA',f:v=>money(v,2),better:'low'},
  {k:'cpc',l:'CPC',f:v=>money(v,2),better:'low'},
- {k:'cvr',l:'CVR',f:v=>percent(v),better:'high'}
+ {k:'cvr',l:'CVR',f:v=>percent(v),better:'high'},
+ {k:'aov',l:'Avg. donation',f:v=>money(v,2),better:'high'}
 ];
+function mxVal(s,m,avg){const v=s[m.k];if(v==null||!isFinite(v))return null;return avg&&m.sum?v/(s.days||1):v}
+
+ 
+function periodSel(){return PERIOD_SEL[CURRENT_ACCOUNT]||{kind:'months',months:[]}}
+function shortDay(dk){const p=dk.split('-').map(Number);return new Date(p[0],p[1]-1,p[2])}
+function consecutive(keys,step){
+ for(let i=1;i<keys.length;i++){if(step(keys[i-1])!==keys[i])return false}return true;
+}
+function nextMonthKey(k){const p=k.split('-').map(Number);const d=new Date(p[0],p[1],1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
+function nextDayKey(k){const d=shortDay(k);d.setDate(d.getDate()+1);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function periodLabel(sel,hist){
+ if(sel.kind==='days'){
+   const ds=[...sel.days].sort(); if(!ds.length)return {title:'No days picked',sub:''};
+   const f=k=>shortDay(k).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+   if(ds.length===1)return {title:shortDay(ds[0]).toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'}),sub:'1 day'};
+   if(consecutive(ds,nextDayKey))return {title:`${f(ds[0])} – ${f(ds[ds.length-1])}`,sub:`${ds.length} days in a row`};
+   return {title:`${ds.length} days`,sub:ds.map(k=>shortDay(k).toLocaleDateString('en-GB',{day:'numeric',month:'short'})).join(', ')};
+ }
+ const ms=[...sel.months].sort(); if(!ms.length)return {title:'No months picked',sub:''};
+ const hj=k=>(hist.find(h=>h.month===k)||{}).hijri||'';
+ if(ms.length===1){const h=hist.find(x=>x.month===ms[0])||{};return {title:monthName(ms[0],true),sub:`${hj(ms[0])}${h.partial?' · so far':''}`}}
+ if(consecutive(ms,nextMonthKey))return {title:`${monthName(ms[0])} – ${monthName(ms[ms.length-1])}`,sub:`${ms.length} months · ${hj(ms[0])} – ${hj(ms[ms.length-1])}`};
+ return {title:`${ms.length} months`,sub:ms.map(k=>monthName(k)).join(', ')};
+}
+function periodStats(sel,hist,ex,d){
+ if(sel.kind==='days')return statFrom(mergeParts(sel.days.map(k=>dayParts(k,ex)).filter(Boolean)),{partial:false});
+ const rows=sel.months.map(k=>hist.find(h=>h.month===k)).filter(Boolean);
+ return statFrom(mergeParts(rows.map(h=>monthParts(h,ex,d))),{partial:rows.some(h=>h.partial),key:rows.length===1?rows[0].month:''});
+}
+ 
+function periodBaseline(sel,hist,ex,d,days){
+ const first=sel.kind==='days'?[...sel.days].sort()[0]:[...sel.months].sort()[0];
+ if(!first)return null;
+ const mk=first.slice(0,7);
+ const idx=hist.findIndex(h=>h.month>=mk);
+ const prior=hist.slice(Math.max(0,(idx<0?hist.length:idx)-12),idx<0?hist.length:idx).filter(h=>!h.partial);
+ if(!prior.length)return null;
+ const all=mergeParts(prior.map(h=>monthParts(h,ex,d)));
+ const withExtra=prior.filter(h=>(ex.months||{})[h.month]);
+ const ext=withExtra.length?mergeParts(withExtra.map(h=>monthParts(h,ex,d))):null;
+ const k=days/(all.days||1), ke=ext?days/(ext.days||1):0;
+ const p={spend:all.spend*k,value:all.value*k,conversions:all.conversions*k,days,
+   extra:ext&&ext.extra?{spend:ext.extra.spend*ke,clicks:ext.extra.clicks*ke,impressions:ext.extra.impressions*ke,conversions:ext.extra.conversions*ke}:null,channels:null};
+ return statFrom(p,{});
+}
+function reportRows(S,U,avg){
+ return MONTH_METRICS.map(m=>{
+   const v=mxVal(S,m,avg); if(v==null)return null;
+   const u=U?mxVal(U,m,avg):null;
+   const delta=u?v/u-1:null;
+   let cls='neutral';
+   if(m.better!=='none'&&delta!=null&&Math.abs(delta)>=.005)cls=(m.better==='high'?delta>0:delta<0)?'good':'bad';
+   return {m,v,u,delta,cls};
+ }).filter(Boolean);
+}
+
 function renderMonthCompare(){
  const d=DASH_DATA; if(!d)return;
  const hist=d.history||[], body=document.getElementById('mxBody');
@@ -4139,38 +4322,42 @@ function renderMonthCompare(){
  document.getElementById('mxPick').classList.toggle('one',one);
  const aKey=document.getElementById('mxA').value, bKey=document.getElementById('mxB').value;
  MONTH_PICK[CURRENT_ACCOUNT]=[aKey,bKey];
- text('mxTitle',one?'Month Report':'Month vs Month');
- const ha=hist.find(h=>h.month===aKey), hb=hist.find(h=>h.month===bKey);
+ text('mxTitle',one?'Report':'Month vs Month');
+ const ex=MONTH_EXTRA[CURRENT_ACCOUNT]||{months:{},days:{}};
+ text('mxSub',`History tab · ${hist.length} months${MONTH_EXTRA[CURRENT_ACCOUNT]?'':' · loading days, clicks & channels…'}`);
  const pre=document.getElementById('mxPresets');
- pre.innerHTML=one?'':monthPresets(hist,aKey).map(([l,m])=>`<button type="button" class="mx-preset${m===bKey?' on':''}" onclick="pickPreset('${m}')">${esc(l)}</button>`).join('');
- const ex=(MONTH_EXTRA[CURRENT_ACCOUNT]||{}).months||{};
- text('mxSub',`History tab · ${hist.length} months${MONTH_EXTRA[CURRENT_ACCOUNT]?'':' · loading clicks & channels…'}`);
- if(!ha||(!one&&!hb)){body.innerHTML='<div class="dx-empty">No monthly history found for this account yet.</div>';return}
- const dim=k=>{const p=k.split('-').map(Number);return new Date(p[0],p[1],0).getDate()};
- const partialDays=h=>{const snap=String((d.bestWorst||{}).day||(d.latest||{}).date||'');return snap.slice(0,7)===h.month?Number(snap.slice(8,10))||dim(h.month):dim(h.month)};
- const stat=h=>monthStats(h,ex[h.month],h.partial?partialDays(h):dim(h.month));
  const avg=MONTH_BASIS==='avg';
- const val=(s,m)=>{const v=s[m.k];if(v==null||!isFinite(v))return null;return avg&&m.sum?v/(s.days||1):v};
- const A=stat(ha), B=one?null:stat(hb);
- 
- const idx=hist.findIndex(h=>h.month===aKey);
- const base=hist.slice(Math.max(0,idx-12),idx).filter(h=>!h.partial).map(stat);
- const ctx={hist,stat,val,avg,A,B,base,ex};
- body.innerHTML=monthsChart(ctx);
-}
-function cmpRows(A,B,val){
- return MONTH_METRICS.map(m=>{
-   const a=val(A,m),b=val(B,m);
+ if(one){
+   pre.innerHTML='';
+   const sel=periodSel();
+   const L=periodLabel(sel,hist);
+   const btn=document.getElementById('mxPeriodBtn');
+   if(btn)btn.innerHTML=`<span class="mx-period-ico">📅</span><span class="mx-period-t"><small>Period</small><b>${esc(L.title)}</b><i>${esc(L.sub)}</i></span><span class="mx-period-go">Change</span>`;
+   const S=periodStats(sel,hist,ex,d);
+   if(!S.days){body.innerHTML='<div class="dx-empty">Pick a month or some days to see the report.</div>';return}
+   const U=periodBaseline(sel,hist,ex,d,S.days);
+   const selMonths=sel.kind==='days'?[...new Set(sel.days.map(k=>k.slice(0,7)))]:sel.months;
+   const note=S.partial&&!avg?`<div class="mx-note">This includes a month that is still running (${S.days} days) — <b>Per day</b> gives a fair view.</div>`:'';
+   body.innerHTML=monthChart(hist,ex,d,selMonths,[],avg)+note+reportBody(S,U,avg);
+   return;
+ }
+ const ha=hist.find(h=>h.month===aKey), hb=hist.find(h=>h.month===bKey);
+ pre.innerHTML=monthPresets(hist,aKey).map(([l,m])=>`<button type="button" class="mx-preset${m===bKey?' on':''}" onclick="pickPreset('${m}')">${esc(l)}</button>`).join('');
+ if(!ha||!hb){body.innerHTML='<div class="dx-empty">No monthly history found for this account yet.</div>';return}
+ const A=monthStats(ha,ex,d), B=monthStats(hb,ex,d);
+ const rows=MONTH_METRICS.map(m=>{
+   const a=mxVal(A,m,avg),b=mxVal(B,m,avg);
    if(a==null||b==null)return null;
    const delta=b?a/b-1:null;
    let w='';
    if(m.better!=='none'&&Math.abs(delta||0)>=.005)w=(m.better==='high'?a>b:a<b)?'a':'b';
    return {m,a,b,delta,w};
  }).filter(Boolean);
-}
-function baseAvg(base,val,m){
- const v=base.map(s=>val(s,m)).filter(x=>x!=null);
- return v.length?v.reduce((x,y)=>x+y,0)/v.length:null;
+ const partial=[A,B].find(s=>s.partial);
+ const note=partial&&!avg?`<div class="mx-note">${esc(monthName(partial.key,true))} is still running (${partial.days} days) — switch to <b>Per day</b> for a fair comparison.</div>`:'';
+ body.innerHTML=monthChart(hist,ex,d,[aKey],[bKey],avg)+mxVerdict(rows,aKey,bKey)+note
+  +`<div class="mc-tiles">${rows.map(r=>`<div class="mc-tile cmp"><small>${esc(r.m.l)}</small><div class="mc-ab"><b class="a${r.w==='a'?' win':''}">${r.m.f(r.a,avg)}</b><b class="b${r.w==='b'?' win':''}">${r.m.f(r.b,avg)}</b></div>${mxArrow(r.delta,r.m.better==='none'?'neutral':r.w==='a'?'good':r.w==='b'?'bad':'neutral')}</div>`).join('')}</div>`
+  +mxChannelsCompare(A,B,avg)+'<div class="mx-foot">▲▼ change of the first month vs the second · <i class="good"></i> better <i class="bad"></i> worse <i class="neutral"></i> no better/worse</div>';
 }
 function mxArrow(delta,cls){return `<span class="mx-arrow ${cls}">${delta==null?'—':(delta>=0?'▲ ':'▼ ')+percent(Math.abs(delta))}</span>`}
 function mxVerdict(rows,aKey,bKey){
@@ -4178,56 +4365,149 @@ function mxVerdict(rows,aKey,bKey){
  return wa===wb?`<div class="mx-verdict tie">⚖️ Even — each month wins ${wa}</div>`
   :`<div class="mx-verdict ${wa>wb?'a':'b'}">🏆 <b>${esc(monthName(wa>wb?aKey:bKey,true))}</b> is better · wins ${Math.max(wa,wb)} of ${wa+wb}</div>`;
 }
-function mxPartialNote(c){
- const p=[c.A,c.B].filter(Boolean).find(s=>s.partial);
- return p&&!c.avg?`<div class="mx-note">${esc(monthName(p.key,true))} is still running (${p.days} days) — switch to <b>Per day</b> for a fair comparison.</div>`:'';
+const CHANNEL_ORDER=['Search Brand','Search Non-Brand','Performance Max','Demand Gen','Video (YouTube)','In-stream video'];
+const CHANNEL_SHORT={'Search Brand':'Search Brand','Search Non-Brand':'Non-Brand','Performance Max':'PMax','Demand Gen':'Demand Gen','Video (YouTube)':'Video','In-stream video':'In-stream'};
+function channelList(S,avg){
+ if(!S.channels)return [];
+ const names=CHANNEL_ORDER.slice();Object.keys(S.channels).forEach(n=>{if(!names.includes(n))names.push(n)});
+ const per=v=>avg?v/(S.days||1):v;
+ return names.map((n,i)=>{const c=S.channels[n];if(!c||(!c.spend&&!c.value))return null;
+   return {n,short:CHANNEL_SHORT[n]||n,k:Math.min(i,5),spend:per(c.spend),value:per(c.value),conversions:per(c.conversions),clicks:per(c.clicks),roas:c.spend?c.value/c.spend:null}}).filter(Boolean);
 }
-function singleRows(c){
- return MONTH_METRICS.map(m=>{
-   const v=c.val(c.A,m); if(v==null)return null;
-   const u=baseAvg(c.base,c.val,m);
-   const delta=u?v/u-1:null;
-   let cls='neutral';
-   if(m.better!=='none'&&delta!=null&&Math.abs(delta)>=.005)cls=(m.better==='high'?delta>0:delta<0)?'good':'bad';
-   return {m,v,u,delta,cls};
- }).filter(Boolean);
-}
-function mxChannels(A,B,val){
- if(!A.channels||(B&&!B.channels))return '';
- const per=(s,v)=>MONTH_BASIS==='avg'?v/(s.days||1):v;
- const names=['Search Brand','Search Non-Brand','Performance Max','Demand Gen','Video (YouTube)'];
- Object.keys(A.channels).concat(B?Object.keys(B.channels):[]).forEach(n=>{if(!names.includes(n))names.push(n)});
+function mxChannelsCompare(A,B,avg){
+ if(!A.channels||!B.channels)return '';
+ const la=channelList(A,avg), lb=channelList(B,avg);
+ const names=[...new Set(la.map(x=>x.n).concat(lb.map(x=>x.n)))];
  const rows=names.map(n=>{
-   const a=A.channels[n]||{spend:0,value:0}, b=B?(B.channels[n]||{spend:0,value:0}):null;
-   if(!a.spend&&!(b&&b.spend))return '';
-   const ra=a.spend?a.value/a.spend:null, rb=b&&b.spend?b.value/b.spend:null;
-   if(!B)return `<tr><td class="mx-m">${esc(n)}</td><td>${money(per(A,a.spend))}</td><td>${money(per(A,a.value))}</td><td><b>${ra!=null?fmt(ra,2)+'x':'—'}</b></td></tr>`;
-   const w=ra!=null&&rb!=null&&Math.abs(ra/rb-1)>=.005?(ra>rb?'a':'b'):'';
-   return `<tr><td class="mx-m">${esc(n)}</td><td class="${w==='a'?'mx-win':''}">${ra!=null?fmt(ra,2)+'x':'—'}<small>${money(per(A,a.spend))}</small></td><td class="mx-d">${w?`<span class="mx-arrow ${w==='a'?'good':'bad'}">${w==='a'?'▲':'▼'}</span>`:''}</td><td class="${w==='b'?'mx-win':''}">${rb!=null?fmt(rb,2)+'x':'—'}<small>${money(per(B,b.spend))}</small></td></tr>`;
+   const a=la.find(x=>x.n===n)||{spend:0,roas:null},b=lb.find(x=>x.n===n)||{spend:0,roas:null};
+   const w=a.roas!=null&&b.roas!=null&&Math.abs(a.roas/b.roas-1)>=.005?(a.roas>b.roas?'a':'b'):'';
+   return `<tr><td class="mx-m">${esc(n)}</td><td class="${w==='a'?'mx-win':''}">${a.roas!=null?fmt(a.roas,2)+'x':'—'}<small>${money(a.spend)}</small></td><td class="mx-d">${w?`<span class="mx-arrow ${w==='a'?'good':'bad'}">${w==='a'?'▲':'▼'}</span>`:''}</td><td class="${w==='b'?'mx-win':''}">${b.roas!=null?fmt(b.roas,2)+'x':'—'}<small>${money(b.spend)}</small></td></tr>`;
  }).join('');
- return B?`<div class="mx-sub">By channel · ROAS and spend</div><table class="mx-table ch"><tbody>${rows}</tbody></table>`
-  :`<div class="mx-sub">By channel</div><table class="mx-table ch one"><thead><tr><th></th><th>Spend</th><th>Revenue</th><th>ROAS</th></tr></thead><tbody>${rows}</tbody></table>`;
+ return `<div class="mx-sub">By channel · ROAS and spend</div><table class="mx-table ch"><tbody>${rows}</tbody></table>`;
 }
-const MX_FOOT='<div class="mx-foot">▲▼ change of the first month vs the second · <i class="good"></i> better <i class="bad"></i> worse <i class="neutral"></i> no better/worse</div>';
-const MX_FOOT_ONE='<div class="mx-foot">▲▼ vs the average of the 12 months before · <i class="good"></i> better <i class="bad"></i> worse</div>';
+
  
-function monthsChart(c){
- const {A,B,val,hist}=c;
+function monthChart(hist,ex,d,aKeys,bKeys,avg){
  const keys=[['value','Revenue'],['roas','ROAS'],['spend','Spend'],['conversions','Conv.']];
- const m=MONTH_METRICS.find(x=>x.k===MONTH_CHART)||MONTH_METRICS[0];
+ const m=MONTH_METRICS.find(x=>x.k===MONTH_CHART)||MONTH_METRICS[2];
  const show=hist.slice(-24);
- const vals=show.map(h=>{const s=c.stat(h);return val(s,m)||0});
+ const vals=show.map(h=>mxVal(monthStats(h,ex,d),m,avg)||0);
  const mx=Math.max(...vals,0.0001);
- const bars=show.map((h,i)=>{const cls=h.month===A.key?'a':B&&h.month===B.key?'b':'';const yr=h.month.slice(5)==='01';
-   return `<button type="button" class="mc-bar ${cls}" onclick="chartPick('${h.month}')" title="${esc(monthName(h.month))}"><span style="height:${Math.max(2,vals[i]/mx*100).toFixed(1)}%"></span><small>${yr?"'"+esc(h.month.slice(2,4)):esc(monthName(h.month).slice(0,1))}</small></button>`}).join('');
+ let tip='';
+ const bars=show.map((h,i)=>{
+   const season=SEASONS[h.hijri];
+   const cls=[aKeys.includes(h.month)?'a':bKeys.includes(h.month)?'b':'',season?'season':''].join(' ');
+   const yr=h.month.slice(5)==='01';
+   if(MONTH_TIP===h.month){
+     const pos=(i+.5)/show.length*100, side=pos<28?' l':pos>72?' r':'';
+     tip=`<div class="mc-tip${season?' season':''}${side}" style="left:${pos.toFixed(1)}%"><b>${season?esc(season):esc(h.hijri)}</b><span>${esc(monthName(h.month,true))} · ${m.f(vals[i],avg)}</span></div>`;
+   }
+   return `<button type="button" class="mc-bar ${cls}" onclick="chartPick('${h.month}')" title="${esc(monthName(h.month))}${season?' · '+esc(season):''}"><span style="height:${Math.max(2,vals[i]/mx*100).toFixed(1)}%"></span><small>${yr?"'"+esc(h.month.slice(2,4)):esc(monthName(h.month).slice(0,1))}</small></button>`;
+ }).join('');
  const chips=`<div class="mc-keys">${keys.map(([k,l])=>`<button type="button" class="mx-preset${k===MONTH_CHART?' on':''}" onclick="setMonthChart('${k}')">${l}</button>`).join('')}</div>`;
- const chart=`${chips}<div class="mc-chart">${bars}</div><div class="mc-cap"><span><i class="a"></i>${esc(monthName(A.key))}</span>${B?`<span><i class="b"></i>${esc(monthName(B.key))}</span>`:''}<span class="mc-hint">Tap a bar to pick a month</span></div>`;
- if(!B){
-   const rows=singleRows(c);
-   return chart+mxPartialNote(c)+`<div class="mc-tiles">${rows.map(x=>`<div class="mc-tile"><small>${esc(x.m.l)}</small><b>${x.m.f(x.v,c.avg)}</b>${mxArrow(x.delta,x.cls)}<i>avg ${x.u!=null?x.m.f(x.u,c.avg):'—'}</i></div>`).join('')}</div>${mxChannels(A,null,val)}${MX_FOOT_ONE}`;
- }
- const rows=cmpRows(A,B,val);
- return chart+mxVerdict(rows,A.key,B.key)+mxPartialNote(c)+`<div class="mc-tiles">${rows.map(r=>`<div class="mc-tile cmp"><small>${esc(r.m.l)}</small><div class="mc-ab"><b class="a${r.w==='a'?' win':''}">${r.m.f(r.a,c.avg)}</b><b class="b${r.w==='b'?' win':''}">${r.m.f(r.b,c.avg)}</b></div>${mxArrow(r.delta,r.m.better==='none'?'neutral':r.w==='a'?'good':r.w==='b'?'bad':'neutral')}</div>`).join('')}</div>${mxChannels(A,B,val)}${MX_FOOT}`;
+ const cap=MONTH_MODE==='one'?`<span><i class="a"></i>Picked</span>`:`<span><i class="a"></i>${esc(monthName(aKeys[0]))}</span><span><i class="b"></i>${esc(monthName(bKeys[0]))}</span>`;
+ return `${chips}<div class="mc-chart">${tip}${bars}</div><div class="mc-cap">${cap}<span><i class="s"></i>Ramadan &amp; Qurbani</span><span class="mc-hint">Tap a bar</span></div>`;
+}
+
+ 
+function reportBody(S,U,avg){
+ const rows=reportRows(S,U,avg);
+ const head=rows.filter(r=>['spend','conversions','value','roas'].includes(r.m.k));
+ const rest=rows.filter(r=>!['spend','conversions','value','roas'].includes(r.m.k));
+ const usual=r=>r.u!=null?`usual ${r.m.f(r.u,avg)}`:'no earlier data';
+ const top=`<div class="mr3-grid">${head.map(r=>`<div class="mr3 ${r.m.k}"><small>${esc(r.m.l)}</small><b>${r.m.f(r.v,avg)}</b><div class="mr3-f"><span class="mr3-chip ${r.cls}">${r.delta==null?'—':(r.delta>=0?'▲ ':'▼ ')+percent(Math.abs(r.delta))}</span><i>${usual(r)}</i></div></div>`).join('')}</div>`;
+ const more=`<div class="mr-list">${rest.map(r=>`<div class="mr-li"><span>${esc(r.m.l)}</span><b>${r.m.f(r.v,avg)}</b>${mxArrow(r.delta,r.cls)}</div>`).join('')}</div>`;
+ return top+more+reportChannels(S,avg)+'<div class="mx-foot">▲▼ vs the usual level: the 12 months before, scaled to the same number of days · <i class="good"></i> better <i class="bad"></i> worse</div>';
+}
+function reportChannels(S,avg){
+ const list=channelList(S,avg);
+ if(!list.length)return S.channels===null?'<div class="mx-sub">By channel</div><div class="dx-empty">Channel split is available from January 2025.</div>':'';
+ const tot=list.reduce((a,c)=>a+c.spend,0)||1, totV=list.reduce((a,c)=>a+c.value,0)||1;
+ const all=S.roas||0;
+ const pill=c=>`<span class="rc-roas ${c.roas!=null&&c.roas>=all?'good':'bad'}">${c.roas!=null?fmt(c.roas,2)+'x':'—'}</span>`;
+ return `<div class="mx-sub">By channel</div><div class="rc1"><div class="rc1-bar">${list.map(c=>`<span class="m${c.k}" style="flex:${c.spend/tot}"></span>`).join('')}</div>
+   ${list.map(c=>`<div class="rc1-row"><i class="m${c.k}"></i><div class="rc1-n"><b>${esc(c.n)}</b><small>${Math.round(c.spend/tot*100)}% of spend · ${fmt(c.conversions,0)} conv.</small></div><div class="rc1-v"><b>${money(c.spend)}</b><small>${money(c.value)}</small></div>${pill(c)}</div>`).join('')}</div>`;
+}
+
+ 
+let PK_DRAFT=null, PK_TAB='months', PK_MONTH='';
+function openPeriodPicker(){
+ const d=DASH_DATA; if(!d)return;
+ const sel=periodSel();
+ PK_DRAFT={kind:sel.kind,months:[...(sel.months||[])],days:[...(sel.days||[])],anchor:''};
+ PK_TAB=sel.kind==='days'?'days':'months';
+ const dm=pkDayMonths();
+ PK_MONTH=sel.kind==='days'&&sel.days.length?sel.days[0].slice(0,7):(dm.includes((sel.months||[])[0])?sel.months[0]:dm[dm.length-1]||'');
+ let ov=document.getElementById('pkOverlay');
+ if(!ov){ov=document.createElement('div');ov.id='pkOverlay';ov.className='pk-overlay';ov.onclick=e=>{if(e.target===ov)closePeriodPicker()};ov.innerHTML='<div class="pk-card" id="pkCard"></div>';document.body.appendChild(ov)}
+ renderPicker();
+ requestAnimationFrame(()=>ov.classList.add('open'));
+}
+function closePeriodPicker(){const ov=document.getElementById('pkOverlay');if(ov)ov.classList.remove('open')}
+function applyPeriod(){
+ const p=PK_DRAFT; if(!p)return;
+ const sel=p.kind==='days'?{kind:'days',days:[...p.days].sort()}:{kind:'months',months:[...p.months].sort()};
+ if((sel.kind==='days'&&!sel.days.length)||(sel.kind==='months'&&!sel.months.length))return;
+ PERIOD_SEL[CURRENT_ACCOUNT]=sel; MONTH_TIP='';
+ closePeriodPicker(); renderMonthCompare();
+}
+function pkDayMonths(){const ex=MONTH_EXTRA[CURRENT_ACCOUNT]||{};return [...new Set(Object.keys(ex.days||{}).map(k=>k.slice(0,7)))].sort()}
+function pkSetTab(t){PK_TAB=t;renderPicker()}
+function pkToggleMonth(m){const p=PK_DRAFT;if(p.kind!=='months'){p.kind='months';p.days=[]}const i=p.months.indexOf(m);if(i>=0)p.months.splice(i,1);else p.months.push(m);renderPicker()}
+function pkToggleDay(k){const p=PK_DRAFT;if(p.kind!=='days'){p.kind='days';p.months=[]}const i=p.days.indexOf(k);if(i>=0)p.days.splice(i,1);else p.days.push(k);renderPicker()}
+function pkMonthNav(step){const dm=pkDayMonths();const i=dm.indexOf(PK_MONTH)+step;if(i>=0&&i<dm.length){PK_MONTH=dm[i];renderPicker()}}
+function pkSetMonth(m){PK_MONTH=m;renderPicker()}
+function pkWholeMonth(){const ex=MONTH_EXTRA[CURRENT_ACCOUNT]||{};const p=PK_DRAFT;p.kind='days';p.months=[];p.days=Object.keys(ex.days||{}).filter(k=>k.slice(0,7)===PK_MONTH).sort();renderPicker()}
+function pkClear(){PK_DRAFT.months=[];PK_DRAFT.days=[];PK_DRAFT.anchor='';renderPicker()}
+function pkPreset(id){
+ const hist=(DASH_DATA.history||[]).map(h=>h.month), H=DASH_DATA.history||[];
+ const ex=MONTH_EXTRA[CURRENT_ACCOUNT]||{}; const allDays=Object.keys(ex.days||{}).sort();
+ const p=PK_DRAFT; p.anchor='';
+ const lastFull=H.filter(h=>!h.partial).map(h=>h.month);
+ const set=(kind,list)=>{p.kind=kind;p.months=kind==='months'?list:[];p.days=kind==='days'?list:[]};
+ if(id==='this')set('months',hist.slice(-1));
+ else if(id==='last')set('months',lastFull.slice(-1));
+ else if(id==='3m')set('months',lastFull.slice(-3));
+ else if(id==='6m')set('months',lastFull.slice(-6));
+ else if(id==='12m')set('months',lastFull.slice(-12));
+ else if(id==='yday')set('days',allDays.slice(-1));
+ else if(id==='7d')set('days',allDays.slice(-7));
+ else if(id==='30d')set('days',allDays.slice(-30));
+ else if(id==='ramadan'||id==='qurbani'){const name=id==='ramadan'?'Ramadan':'Dhu Hijjah';const r=H.filter(h=>h.hijri===name&&!h.partial);if(r.length){const lastYear=r[r.length-1].month;const grp=r.filter(h=>Math.abs(Number(h.month.slice(0,4))*12+Number(h.month.slice(5))-(Number(lastYear.slice(0,4))*12+Number(lastYear.slice(5))))<=1).map(h=>h.month);set('months',grp)}}
+ if(p.kind==='days'&&p.days.length)PK_MONTH=p.days[0].slice(0,7);
+ renderPicker();
+}
+const PK_PRESETS=[['yday','Yesterday'],['7d','Last 7 days'],['30d','Last 30 days'],['this','This month'],['last','Last month'],['3m','Last 3 months'],['6m','Last 6 months'],['ramadan','Last Ramadan'],['qurbani','Last Qurbani']];
+function pkSummary(){
+ const p=PK_DRAFT, hist=DASH_DATA.history||[];
+ const sel=p.kind==='days'?{kind:'days',days:p.days}:{kind:'months',months:p.months};
+ const n=p.kind==='days'?p.days.length:p.months.length;
+ const L=periodLabel(sel,hist);
+ return `<div class="pk-foot"><div class="pk-sum">${n?`<b>${esc(L.title)}</b><small>${esc(L.sub)}</small>`:'<b>Nothing picked yet</b><small>Tap months or days</small>'}</div><button type="button" class="pk-ghost" onclick="pkClear()">Clear</button><button type="button" class="pk-apply" ${n?'':'disabled'} onclick="applyPeriod()">Show</button></div>`;
+}
+function pkHead(title){return `<div class="pk-head"><div><small>SEKNA · Report</small><b>${title}</b></div><button type="button" class="pk-x" onclick="closePeriodPicker()" aria-label="Close">✕</button></div>`}
+function pkCalendar(onTap,isOn){
+ const ex=MONTH_EXTRA[CURRENT_ACCOUNT]||{}; const days=ex.days||{};
+ if(!PK_MONTH)return '<div class="dx-empty">Daily data is still loading…</div>';
+ const p=PK_MONTH.split('-').map(Number), n=monthDim(PK_MONTH), lead=(new Date(p[0],p[1]-1,1).getDay()+6)%7;
+ let cells=Array(lead).fill('<span class="pk-day empty"></span>').join('');
+ for(let i=1;i<=n;i++){const k=PK_MONTH+'-'+String(i).padStart(2,'0');const has=!!days[k];
+   cells+=`<button type="button" class="pk-day${has?'':' off'}${isOn(k)?' on':''}" ${has?`onclick="${onTap}('${k}')"`:'disabled'}>${i}</button>`}
+ const dm=pkDayMonths();
+ return `<div class="pk-calhead"><button type="button" onclick="pkMonthNav(-1)" ${dm.indexOf(PK_MONTH)>0?'':'disabled'}>‹</button><b>${esc(monthName(PK_MONTH,true))}</b><button type="button" onclick="pkMonthNav(1)" ${dm.indexOf(PK_MONTH)<dm.length-1?'':'disabled'}>›</button></div>
+  <div class="pk-week">${['M','T','W','T','F','S','S'].map(x=>`<span>${x}</span>`).join('')}</div><div class="pk-cal">${cells}</div>`;
+}
+function renderPicker(){
+ const card=document.getElementById('pkCard'); if(!card)return;
+ const p=PK_DRAFT, H=DASH_DATA.history||[];
+ const years=[...new Set(H.map(h=>h.month.slice(0,4)))].sort().reverse();
+ const mOn=m=>p.kind==='months'&&p.months.includes(m), dOn=k=>p.kind==='days'&&p.days.includes(k);
+ const tabs=`<div class="wx-tabs pk-tabs"><button type="button" class="wx-tab${PK_TAB==='months'?' on':''}" onclick="pkSetTab('months')">Months</button><button type="button" class="wx-tab${PK_TAB==='days'?' on':''}" onclick="pkSetTab('days')">Days</button></div>`;
+   const presets=`<div class="pk-chips">${PK_PRESETS.filter(x=>PK_TAB==='days'?['yday','7d','30d'].includes(x[0]):!['yday','7d','30d'].includes(x[0])).map(([id,l])=>`<button type="button" onclick="pkPreset('${id}')">${l}</button>`).join('')}</div>`;
+   const body=PK_TAB==='months'
+    ?years.map(y=>`<div class="pk-year"><b>${y}</b><div class="pk-mgrid">${Array.from({length:12},(_,i)=>{const m=y+'-'+String(i+1).padStart(2,'0');const h=H.find(x=>x.month===m);if(!h)return `<span class="pk-m off">${new Date(2000,i,1).toLocaleDateString('en-GB',{month:'short'})}</span>`;return `<button type="button" class="pk-m${mOn(m)?' on':''}${SEASONS[h.hijri]?' season':''}" onclick="pkToggleMonth('${m}')">${new Date(2000,i,1).toLocaleDateString('en-GB',{month:'short'})}<small>${esc(h.hijri)}</small></button>`}).join('')}</div></div>`).join('')
+    :`${pkCalendar('pkToggleDay',dOn)}<div class="pk-chips"><button type="button" onclick="pkWholeMonth()">Whole month</button></div>`;
+   card.innerHTML=pkHead('Choose a period')+tabs+presets+`<div class="pk-body">${body}</div>`+pkSummary();
 }
 
  
@@ -4838,7 +5118,7 @@ function demoServer(name,args){
  if(name==='adminInvite')return {ok:true,already:false,name:nameFromEmail(args[1])};
  if(name==='accessRequestCode')return {ok:true,name:nameFromEmail(args[0])};
  if(name==='accessVerifyCode')return {ok:true,token:'demo'.padEnd(64,'0'),status:'Pending',name:nameFromEmail(args[0])};
- if(name==='accessStatus')return {status:'Pending',name:storeGet(ACCESS_NAME_KEY)||'Ibrahim',email:'ibrahim.amin6700@gmail.com',isAdmin:demoAdmin,photo:'',dashboard:{version:'v84',date:'2026-10-18'}};
+ if(name==='accessStatus')return {status:'Pending',name:storeGet(ACCESS_NAME_KEY)||'Ibrahim',email:'ibrahim.amin6700@gmail.com',isAdmin:demoAdmin,photo:'',dashboard:{version:'v85',date:'2026-10-18'}};
  return {};
 }
 function nameFromEmail(email){
@@ -5037,9 +5317,9 @@ function startAccess(){
 
  
 const DASHBOARD_VERSION='v71';
-const RELEASE_NOTES=[{version:'v84',date:'October 2026',items:[
+const RELEASE_NOTES=[{version:'v85',date:'October 2026',items:[
  {icon:'menu',title:'Day by Day',text:'The full month from the 1st: switch between the media plan and the actual results for every day.'},
- {icon:'spark',title:'Month vs Month',text:'Pick any two months from History and see which one did better, or open one month on its own against the usual level.'},
+ {icon:'spark',title:'Report & Month vs Month',text:'Pick any months or single days for a full report against the usual level, or compare two months. Ramadan and Qurbani are marked in gold.'},
  {icon:'shield',title:'Top & Bottom 5',text:'The best and weakest projects, campaigns, ad groups, ads, search terms and keywords of the last closed day.'},
  {icon:'lock',title:'Same Hijri day last year',text:'Today is now compared with the same Hijri date last year, and Top 3 Projects show real results.'}
 ]},{version:'v71',date:'October 2026',items:[
@@ -5661,7 +5941,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v84',date:'2026-10-18'};
+const DASHBOARD_RELEASE_CLIENT={version:'v85',date:'2026-10-18'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
