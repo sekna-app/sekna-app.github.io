@@ -89,7 +89,8 @@ window.addEventListener('load',function(){
      return function(){var a=Array.prototype.slice.call(arguments);call(key,a).then(function(r){ok&&ok(r)},function(e){fail&&fail(e)})};
     }});
    }
-   window.SEKNA_WEB=true;
+   // Inside the SEKNA Android app the native bridge handles notifications, so web push stays off.
+   window.SEKNA_WEB=!window.AndroidShare;
    window.google={script:{run:runner()}};
   })();
   </script>
