@@ -70,7 +70,6 @@ p.l{font-size:18px;color:var(--sub);margin:0 0 26px;max-width:480px}
 .fr,.bk{position:absolute;inset:0;border-radius:calc(var(--pw) * .16);backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .fr{transform:translateZ(calc(var(--t) / 2));padding:calc(var(--pw) * .035);background:linear-gradient(145deg,#3a4888,#0b1236 60%);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.18)}
 .fr img{display:block;width:100%;height:100%;object-fit:cover;object-position:top;border-radius:calc(var(--pw) * .13)}
-.fr:before{content:"";position:absolute;top:calc(var(--pw) * .06);left:50%;width:30%;height:calc(var(--pw) * .055);transform:translateX(-50%);border-radius:99px;background:#05081a;z-index:2}
 .fr:after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(115deg,rgba(255,255,255,.22) 0,rgba(255,255,255,0) 28%,rgba(255,255,255,0) 70%,rgba(255,255,255,.06));pointer-events:none}
 .bk{transform:rotateY(180deg) translateZ(calc(var(--t) / 2));background:radial-gradient(circle at 30% 20%,#33478f,#101a4a 70%);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.14);display:grid;place-items:center}
 .bk img{width:46%;opacity:.9}
@@ -132,7 +131,7 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
 .pills span{font-size:12.5px;font-weight:700;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:5px 11px;background:rgba(255,255,255,.04)}
 .go{display:inline-flex;align-items:center;gap:8px;border-radius:14px;padding:12px 18px;background:#fff;color:#0a1748;font-weight:900}
 /* iPhone guide: one picture */
-.guide{border-radius:26px;padding:22px;border:1px solid var(--line);background:linear-gradient(160deg,rgba(79,124,255,.16),rgba(255,255,255,.03))}
+.guide{scroll-margin-top:16px;border-radius:26px;padding:22px;border:1px solid var(--line);background:linear-gradient(160deg,rgba(79,124,255,.16),rgba(255,255,255,.03))}
 .gh{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:18px}
 .gh h2{margin:6px 0 0}
 .gh p{margin:0;color:var(--sub);font-size:14px;max-width:340px}
@@ -180,6 +179,13 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
   .ar{display:none}
   .mk{max-width:150px}
 }
+.jump{display:flex;align-items:center;gap:9px;margin:2px 0 4px;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);font-weight:800;font-size:14.5px;color:#fff}
+.jump .ap{width:18px;height:18px;flex:0 0 18px}
+.jump span{margin-left:auto;color:var(--gold);font-size:16px;animation:nudge 1.6s ease-in-out infinite}
+@keyframes nudge{50%{transform:translateY(3px)}}
+.kk.ki{display:inline-flex;align-items:center;gap:7px}
+.kk .ap{width:17px;height:17px;margin-top:-3px}
+.lapgrid .txt h2{margin-top:0}
 </style>
 </head>
 <body>
@@ -227,12 +233,7 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
       <div class="box" id="boxW"><div><div class="card w">
         <h3>SEKNA on iPhone &amp; web</h3>
         <p>For iPhone, iPad, Mac and Windows.</p>
-        <div class="url"><span>sekna-app.web.app</span><button type="button" onclick="copyLink(this)">Copy</button></div>
-        <ol>
-          <li><span>On iPhone, open the link in <b>Safari</b>.</span></li>
-          <li><span>Tap <b>Share</b> → <b>Add to Home Screen</b>.</span></li>
-          <li><span>Open SEKNA from its icon and turn on <b>notifications</b>.</span></li>
-        </ol>
+        <a class="jump" href="#guide" onclick="toGuide(event)"><svg class="ap" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.5 2.1-3.7 2.2-3.8-1.2-1.7-3-2-3.7-2-1.6-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.8-1-2.8-4.1zM13.9 5.1c.7-.9 1.2-2 1-3.1-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3 1.1.1 2.2-.6 2.9-1.4z"/></svg>How to install SEKNA on iPhone <span>↓</span></a>
         <a class="open-btn" href="https://sekna-app.web.app/">Open SEKNA</a>
       </div></div></div>
 
@@ -244,18 +245,16 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
     <div class="lapgrid">
       <div class="lap" id="lap"><div class="lid"><div class="scr"><img src="/get/shots/desk.webp" alt="SEKNA on a laptop" loading="lazy"></div></div><div class="base"></div><div class="lap-sh"></div></div>
       <div class="txt">
-        <span class="kk">On your laptop</span>
-        <h2>Same SEKNA,<br>bigger screen.</h2>
-        <p class="s">Open sekna-app.web.app in Chrome, Edge or Safari. The same live numbers, laid out wide, with WhatsApp sharing included.</p>
-        <div class="pills"><span>Windows</span><span>Mac</span><span>No install needed</span></div>
-        <a class="go" href="https://sekna-app.web.app/">Open sekna-app.web.app →</a>
+        <h2>What is SEKNA?</h2>
+        <p class="s">SEKNA turns the media plan into a live dashboard. Every day it shows spend, conversions, conversion value and ROAS against the daily target, split by campaign type, with the projects and keywords behind them.</p>
+        <p class="s">Follow the month day by day, compare any two months, see how the same Hijri day did in past years, and share any view to WhatsApp as a clean image. The same live numbers on Android, iPhone and your laptop.</p>
       </div>
     </div>
   </section>
 
   <section class="sec">
-    <div class="guide">
-      <div class="gh"><div><span class="kk">iPhone</span><h2>Add it as an app, turn on alerts.</h2></div><p>Four taps in Safari. After that SEKNA opens full screen from its own icon.</p></div>
+    <div class="guide" id="guide">
+      <div class="gh"><div><span class="kk ki"><svg class="ap" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.5 2.1-3.7 2.2-3.8-1.2-1.7-3-2-3.7-2-1.6-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.8-1-2.8-4.1zM13.9 5.1c.7-.9 1.2-2 1-3.1-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3 1.1.1 2.2-.6 2.9-1.4z"/></svg>iPhone</span><h2>Add it as an app, turn on alerts.</h2></div><p>Four taps in Safari. After that SEKNA opens full screen from its own icon.</p></div>
       <div class="strip">
         <div class="gs"><div class="mk"><span class="n">1</span><div class="sf"><div class="pg"><i></i><i></i><i></i><i></i></div><div class="ad">🔒 sekna-app.web.app</div>
           <div class="tb"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span class="hl"><svg viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></span><svg viewBox="0 0 24 24"><rect x="5" y="5" width="11" height="11" rx="2"/></svg></div></div></div>
@@ -287,6 +286,7 @@ function openBox(k){
   setTimeout(function(){var r=box.getBoundingClientRect();if(r.bottom>innerHeight)window.scrollBy({top:r.bottom-innerHeight+16,behavior:'smooth'})},460);
   if(k==='a')setTimeout(function(){var h=a.querySelector('h3');h.textContent='Check your downloads';},2600);
 }
+function toGuide(e){var g=document.getElementById('guide');if(!g)return;e.preventDefault();g.scrollIntoView({behavior:'smooth',block:'start'})}
 function copyLink(btn){
   var url='https://sekna-app.web.app/';
   var done=function(){btn.textContent='Copied';setTimeout(function(){btn.textContent='Copy'},1600)};
