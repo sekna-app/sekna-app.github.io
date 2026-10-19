@@ -2284,6 +2284,41 @@ window.addEventListener('load',function(){
     .rp-foot{margin-top:28px;text-align:center;font-size:16px;font-weight:700;color:#8fa0d8}
 
 
+    /* v86 — By Campaign Type (latest day) */
+    .ctd-sec .section-head{margin-bottom:14px}
+    .ctd-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+    .ctd{--c:#203c8e;--s:#e8edfa;position:relative;overflow:hidden;background:#fff;border:1px solid rgba(29,36,51,.08);border-radius:20px;padding:19px 16px 14px;color:#1d2433}
+    .ctd::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:var(--c)}
+    .ctd.k1{--c:#3d6bff;--s:#eaf0ff}.ctd.k2{--c:#22c47c;--s:#e5f8ef}.ctd.k3{--c:#c89434;--s:#fbf3e3}.ctd.k4{--c:#e0606c;--s:#fdecee}
+    .ctd-h{display:flex;justify-content:space-between;align-items:center;gap:8px}.ctd-h b{font-size:15px;font-weight:800}
+    .ctd-rk{flex:0 0 26px;height:26px;border-radius:8px;background:var(--s);color:var(--c);display:grid;place-items:center;font-weight:900;font-size:13px}
+    .ctd-roas{font-size:34px;font-weight:900;letter-spacing:-.02em;margin-top:8px;color:var(--c);line-height:1.1}.ctd-roas small{font-size:13px;color:#8a92a6;font-weight:800;margin-left:5px;letter-spacing:0}
+    .ctd-sp{display:flex;justify-content:space-between;gap:6px;font-size:12.5px;color:#6b7385;font-weight:700;margin-top:10px}.ctd-sp b{color:#1d2433}
+    .ctd-bar{height:8px;border-radius:6px;background:rgba(138,146,166,.18);margin:6px 0 12px;overflow:hidden}.ctd-bar span{display:block;height:100%;background:var(--c);border-radius:6px}
+    .ctd-gr{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;background:var(--s);border-radius:12px;padding:9px 6px;text-align:center}
+    .ctd-gr small{display:block;font-size:10px;color:#6b7385;font-weight:800;text-transform:uppercase;letter-spacing:.06em}.ctd-gr b{font-size:15px;color:#1d2433}
+    .ctd-dots{display:none}
+    @media (max-width:760px){
+      .ctd-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin:0 -16px;padding:2px 16px 8px;scrollbar-width:none}.ctd-grid::-webkit-scrollbar{display:none}
+      .ctd{flex:0 0 72%;scroll-snap-align:start}
+      .ctd-dots{display:flex;justify-content:center;gap:6px;margin-top:6px}.ctd-dots i{width:6px;height:6px;border-radius:50%;background:#cfd5e3;transition:width .2s}.ctd-dots i.on{width:18px;border-radius:4px;background:#203c8e}
+    }
+    body.dark-mode .ctd-sec .ctd{background:#151d33;border-color:rgba(255,255,255,.08);color:#e9edf7}
+    body.dark-mode .ctd-sec .ctd.k0{--c:#9db4ff;--s:rgba(157,180,255,.12)}body.dark-mode .ctd-sec .ctd.k1{--s:rgba(61,107,255,.16)}body.dark-mode .ctd-sec .ctd.k2{--s:rgba(34,196,124,.14)}body.dark-mode .ctd-sec .ctd.k3{--c:#e2b874;--s:rgba(226,184,116,.14)}body.dark-mode .ctd-sec .ctd.k4{--c:#f0838f;--s:rgba(240,131,143,.14)}
+    body.dark-mode .ctd-sec .ctd-gr b,body.dark-mode .ctd-sec .ctd-sp b{color:#e9edf7}body.dark-mode .ctd-sec .ctd-gr small,body.dark-mode .ctd-sec .ctd-sp{color:#9aa3b8}body.dark-mode .ctd-dots i{background:#3a4357}body.dark-mode .ctd-dots i.on{background:#9db4ff}
+    /* Share image: always the full row of cards, bigger type */
+    .rp-report .ctd-grid{display:grid!important;overflow:visible!important;margin:0!important;padding:0!important;gap:14px}
+    .rp-report .ctd{flex:none!important;border-radius:22px;padding:24px 18px 16px;border:0}
+    .rp-report .ctd::before{height:6px}
+    .rp-report .ctd-h b{font-size:18px}.rp-report .ctd-rk{flex-basis:30px;height:30px;font-size:15px}
+    .rp-report .ctd-roas{font-size:42px}.rp-report .ctd-roas small{font-size:15px}
+    .rp-report .ctd-sp{font-size:15px}.rp-report .ctd-bar{height:9px}
+    .rp-report .ctd-gr{padding:11px 8px}.rp-report .ctd-gr small{font-size:11.5px}.rp-report .ctd-gr b{font-size:18px}
+    .rp-pill{display:inline-flex;align-items:center;gap:10px;margin-top:8px;padding:7px 16px 7px 12px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);color:#fff!important;font-size:18px!important;font-weight:800!important}
+    .rp-pill i{width:9px;height:9px;border-radius:50%;background:#e2b874;box-shadow:0 0 0 4px rgba(226,184,116,.25)}
+    .rp-st{margin:-4px 0 12px;font-size:15px;font-weight:700;color:#c9d3f5}
+    .rp-foot b{color:#fff;letter-spacing:.06em}
+
     /* v82 — Channel Delivery WhatsApp report (long, 1080 wide) */
     .rp-report.rp-narrow{width:1080px}
     .rp-oct .ox-hero{margin:0 0 12px}
@@ -2715,6 +2750,21 @@ window.addEventListener('load',function(){
     .lab-msg{margin-top:12px;padding:10px 12px;border-radius:12px;background:#f5f7fb;font-size:12.5px;color:#1d2433;font-weight:700}
     .lab-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
     .lab-go{border:0;background:#203c8e;color:#fff;border-radius:12px;padding:10px 16px;font-weight:900;font-size:13.5px}.lab-go:disabled{opacity:.45}
+    .lab-idle{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:26px 10px 14px}
+    .lab-idle-ic{font-size:30px;width:58px;height:58px;border-radius:18px;background:#f1f4fb;display:grid;place-items:center;margin-bottom:4px}
+    .lab-idle b{font-size:15px;color:#1d2433}.lab-idle small{font-size:12.5px;color:#6b7385;max-width:300px;line-height:1.5}
+    .lab-check{margin-top:10px;display:inline-flex;align-items:center;gap:8px;padding:11px 22px}
+    .lab-spin{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;animation:labSpin .8s linear infinite;display:inline-block;vertical-align:-2px;margin-right:6px}
+    .lab-spin.dark{border-color:rgba(32,60,142,.25);border-top-color:#203c8e}
+    @keyframes labSpin{to{transform:rotate(360deg)}}
+    .lab-done{display:flex;align-items:center;gap:14px;margin-top:12px;padding:14px;border-radius:16px;background:#e9f8f0;border:1px solid #bfe9d2;animation:labPop .45s cubic-bezier(.2,1.4,.4,1) both}
+    .lab-done svg{flex:0 0 46px;height:46px}
+    .lab-done circle{fill:#22c47c;stroke:none;transform-origin:center;animation:labPop .45s cubic-bezier(.2,1.4,.4,1) both}
+    .lab-done path{fill:none;stroke:#fff;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;stroke-dashoffset:40;animation:labTick .45s .3s ease-out forwards}
+    .lab-done b{display:block;font-size:16px;color:#13804f}.lab-done small{display:block;font-size:12.5px;color:#2f5d46;margin-top:2px;line-height:1.45}
+    @keyframes labPop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+    @keyframes labTick{to{stroke-dashoffset:0}}
+    body.dark-mode .lab-idle b{color:#fff}body.dark-mode .lab-idle-ic{background:#11161e}body.dark-mode .lab-done{background:rgba(34,196,124,.12);border-color:rgba(34,196,124,.35)}body.dark-mode .lab-done b{color:#5fd39b}body.dark-mode .lab-done small{color:#b8e6cc}
     body.dark-mode .lab-box{background:#151a22;border-color:#2a313c}body.dark-mode .lab-head b,body.dark-mode .lab-m b,body.dark-mode .lab-locked b,body.dark-mode .lab-msg{color:#fff}
     body.dark-mode .lab-row{border-color:#252a32}body.dark-mode .lab-msg{background:#11161e}body.dark-mode .lab-go{background:#3d6bff}
     body.dark-mode .lab-chip.ready{background:#123326;color:#5be3a3}body.dark-mode .lab-chip.running{background:#1f2a44;color:#c9d6ff}body.dark-mode .lab-chip.missing{background:#3a171c;color:#ff9aa6}body.dark-mode .lab-chip.archived{background:#1f242c;color:#a7afbf}
@@ -3069,6 +3119,18 @@ window.addEventListener('load',function(){
     </div>
 
     <div class="sx-lboard" id="topProjectsBoard"></div>
+  </section>
+
+  <section class="card section ctd-sec" id="dayChannelsSection" hidden>
+    <div class="section-head">
+      <div>
+        <div class="section-title section-title-with-icon"><span class="section-heading-icon month">◧</span><span>By Campaign Type</span></div>
+        <div class="section-sub" id="dayChannelsSub">Ranked by ROAS</div>
+      </div>
+      <span class="sx-chip sx-amber">Daily</span>
+    </div>
+    <div class="ctd-grid" id="dayChannelsGrid"></div>
+    <div class="ctd-dots" id="dayChannelsDots"></div>
   </section>
 
   <section class="grid bottom"><article class="card section"><div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month">▦</span><span>Month at a Glance</span></div><div class="section-sub" id="monthGlanceSub">October plan delivery</div></div><span class="sx-chip sx-amber">Forecast</span></div>
@@ -3714,6 +3776,7 @@ function render(d,opts){
 
  renderYoy(x,y);
  renderTopProjects(d);
+ renderDayChannels(d);
  renderExtraTab(d);
 
  text('monthGlanceSub',`${x.monthName||''} plan delivery`);
@@ -4273,6 +4336,30 @@ function resultsHero(days,T){
   <div class="mt-grid">${tile('Value',money(a.value),vR,`${pct(a.value,a.planValue)} of plan`,cls(vR))}${tile('Conversions',fmt(a.conversions,0),cR,`${pct(a.conversions,a.planConv)} of plan`,cls(cR))}${tile('ROAS',fmt(a.roas,2)+'x',rR,`target ${fmt(tR,2)}x`,rR==null?'':rR>=1?'good':'bad')}</div>
   ${mix.length?`<div class="mt-mix">${mix.map(m=>`<span class="m${m.k}" style="flex:${m.s/tot}"></span>`).join('')}</div><div class="mt-legend">${mix.map(m=>`<span><i class="m${m.k}"></i>${PLAN_MIX_LABELS[m.k]} ${Math.round(m.s/tot*100)}%</span>`).join('')}</div>`:''}</div>`;
 }
+ 
+function dayChannelCards(d){
+ const rows=(d&&d.dayChannels)||[];
+ return rows.map((c,i)=>{
+   const k=Math.min(Math.max(CHANNEL_ORDER.indexOf(c.channel),0),4);
+   const plan=Number(c.planSpend)||0, r=plan?c.spend/plan:null;
+   return `<div class="ctd k${k}"><div class="ctd-h"><b>${esc(CHANNEL_SHORT[c.channel]||c.channel)}</b><span class="ctd-rk">${i+1}</span></div>
+    <div class="ctd-roas">${c.roas!=null?fmt(c.roas,2)+'x':'—'}<small>ROAS</small></div>
+    <div class="ctd-sp"><span>Spend <b>${money(c.spend)}</b></span><span>${r!=null?Math.round(r*100)+'% of plan':'No plan'}</span></div>
+    <div class="ctd-bar"><span style="width:${r!=null?Math.min(100,r*100).toFixed(1):0}%"></span></div>
+    <div class="ctd-gr"><div><small>Clicks</small><b>${fmt(c.clicks,0)}</b></div><div><small>Conv.</small><b>${fmt(c.conversions,0)}</b></div><div><small>Value</small><b>${money(c.value)}</b></div></div></div>`;
+ }).join('');
+}
+function dayChannelsDate(d){const x=(d&&d.latest)||{};return [x.dayNumber,x.monthName].filter(Boolean).join(' ')}
+function renderDayChannels(d){
+ const sec=document.getElementById('dayChannelsSection');if(!sec)return;
+ const rows=(d&&d.dayChannels)||[];
+ sec.hidden=!rows.length;if(!rows.length)return;
+ text('dayChannelsSub',`${dayChannelsDate(d)} · ranked by ROAS`);
+ const grid=document.getElementById('dayChannelsGrid'),dots=document.getElementById('dayChannelsDots');
+ grid.innerHTML=dayChannelCards(d);
+ dots.innerHTML=rows.map((_,i)=>`<i class="${i?'':'on'}"></i>`).join('');
+ grid.onscroll=()=>{const w=(grid.firstElementChild||{}).offsetWidth||1;const n=Math.round(grid.scrollLeft/(w+12));[...dots.children].forEach((e,i)=>e.classList.toggle('on',i===n))};
+}
 const PLAN_CHANNEL_NAMES=['Search Brand','Search Non-Brand','Performance Max','Demand Gen','Video'];
 const PLAN_MIX_LABELS=['Search Brand','Non-Brand','PMax','Demand Gen','Video'];
  
@@ -4282,15 +4369,25 @@ function renderLab(){
  if(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin===false){
    body.innerHTML='<div class="lab-locked"><span>🔒</span><b>Admins only</b><small>Media Plan Lab is open to SEKNA administrators.</small></div>';return;
  }
- if(!LAB_STATE||LAB_STATE.account!==CURRENT_ACCOUNT){loadLab();return}
+ if(!LAB_STATE||LAB_STATE.account!==CURRENT_ACCOUNT){drawLabIdle();return}
  drawLab();
 }
+const LAB_INTRO='<div class="lab-head"><div><b>Close the month</b><small>When a month is over and every day of it is in, move its results into the history. That keeps the reports and comparisons complete and makes room for the new month\'s plan.</small></div></div>';
+
+function drawLabIdle(note){
+ const body=document.getElementById('labBody');if(!body)return;
+ body.innerHTML=`<div class="lab-box">${LAB_INTRO}
+   <div class="lab-idle"><span class="lab-idle-ic">🗂️</span><b>${LAB_CHECKING?'Checking the months…':'Ready when you are'}</b><small>${note?esc(note):LAB_CHECKING?'This takes a few seconds.':'Press Check to see which months are complete and ready to close.'}</small>
+   <button type="button" class="lab-go lab-check" onclick="loadLab()" ${LAB_CHECKING?'disabled':''}>${LAB_CHECKING?'<span class="lab-spin"></span>Checking…':'Check months'}</button></div></div>`;
+}
+let LAB_CHECKING=false, LAB_DONE='';
 function loadLab(){
- const body=document.getElementById('labBody');
- body.innerHTML='<div class="dx-empty">Checking the current month tab…</div>';
- serverCall('adminArchiveStatus',getAccessToken(),CURRENT_ACCOUNT).then(r=>{LAB_STATE=Object.assign({account:CURRENT_ACCOUNT},r);if(CURRENT_TAB==='lab')drawLab()})
-  .catch(err=>{if(/SEKNA_ADMIN_ONLY/.test(errorText(err))){ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE,{isAdmin:false});renderLab();return}
-   body.innerHTML=`<div class="dx-empty">${esc(errorText(err))}</div>`});
+ if(LAB_CHECKING)return;
+ LAB_CHECKING=true;LAB_DONE='';
+ if(LAB_STATE&&LAB_STATE.account===CURRENT_ACCOUNT)drawLab();else drawLabIdle();
+ serverCall('adminArchiveStatus',getAccessToken(),CURRENT_ACCOUNT).then(r=>{LAB_CHECKING=false;LAB_STATE=Object.assign({account:CURRENT_ACCOUNT},r);if(CURRENT_TAB==='lab')drawLab()})
+  .catch(err=>{LAB_CHECKING=false;if(/SEKNA_ADMIN_ONLY/.test(errorText(err))){ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE,{isAdmin:false});renderLab();return}
+   if(LAB_STATE&&LAB_STATE.account===CURRENT_ACCOUNT){LAB_MSG='⚠️ '+esc(errorText(err));drawLab()}else drawLabIdle(errorText(err))});
 }
 function drawLab(){
  const body=document.getElementById('labBody'), st=LAB_STATE;
@@ -4298,10 +4395,11 @@ function drawLab(){
  const label={ready:'Ready to move',running:'Month still running',missing:'Missing days',archived:'Already in history'};
  const rows=st.months.map(m=>`<div class="lab-row ${m.status}"><div class="lab-m"><b>${esc(monthName(m.key,true))}</b><small>${m.have} of ${m.need} days · ${fmt(m.rows,0)} rows${m.status==='missing'?` · missing day ${m.missing.slice(0,8).join(', ')}${m.missing.length>8?'…':''}`:''}</small></div><span class="lab-chip ${m.status}">${label[m.status]}</span></div>`).join('');
  body.innerHTML=`<div class="lab-box">
-   <div class="lab-head"><div><b>Close the month</b><small>When a month is over and every day of it is in, move its results into the history. That keeps the reports and comparisons complete and makes room for the new month's plan.</small></div></div>
-   <div class="lab-list">${rows||'<div class="dx-empty">The current month tab is empty.</div>'}</div>
+   ${LAB_INTRO}
+   ${LAB_DONE?`<div class="lab-done"><svg viewBox="0 0 52 52" aria-hidden="true"><circle cx="26" cy="26" r="23"/><path d="M15 27l7 7 15-16"/></svg><div><b>Moved</b><small>${LAB_DONE}</small></div></div>`:''}
+   <div class="lab-list">${rows||'<div class="dx-empty">No months to show yet.</div>'}</div>
    ${LAB_MSG?`<div class="lab-msg">${LAB_MSG}</div>`:''}
-   <div class="lab-actions"><button type="button" class="pk-ghost" onclick="LAB_MSG='';loadLab()" ${LAB_BUSY?'disabled':''}>Refresh</button>
+   <div class="lab-actions"><button type="button" class="pk-ghost" onclick="LAB_MSG='';loadLab()" ${LAB_BUSY||LAB_CHECKING?'disabled':''}>${LAB_CHECKING?'<span class="lab-spin dark"></span>Checking…':'Check again'}</button>
    <button type="button" class="lab-go" onclick="labMove()" ${ready.length&&!LAB_BUSY?'':'disabled'}>${LAB_BUSY?'Moving…':ready.length?`Move ${ready.length} complete month${ready.length>1?'s':''}`:'Nothing ready to move'}</button></div></div>`;
 }
 function labMove(){
@@ -4313,7 +4411,8 @@ function labMove(){
  serverCall('adminArchiveMove',getAccessToken(),CURRENT_ACCOUNT).then(r=>{
    LAB_BUSY=false;
    LAB_STATE=Object.assign({account:CURRENT_ACCOUNT},LAB_STATE,{months:r.months,archiveRows:r.archiveRows});
-   LAB_MSG=r.moved.length?`✅ ${r.moved.map(k=>monthName(k,true)).join(', ')} moved to the history (${fmt(r.rows,0)} rows). The new month can start.`:'Nothing was ready to move.';
+   LAB_MSG=r.moved.length?'':'Nothing was ready to move.';
+   LAB_DONE=r.moved.length?`${esc(r.moved.map(k=>monthName(k,true)).join(', '))} ${r.moved.length>1?'are':'is'} now in the history (${fmt(r.rows,0)} rows). The new month can start.`:'';
    delete MONTH_EXTRA[CURRENT_ACCOUNT];
    drawLab();
  }).catch(err=>{LAB_BUSY=false;LAB_MSG='⚠️ '+esc(errorText(err));drawLab()});
@@ -5009,28 +5108,31 @@ function summaryYoyEmoji(current,previous,lowerIsBetter){
  return better?'🟢':'🔴';
 }
 function buildSummary(d){
- const x=d.latest,y=d.yoy;
+ const x=d.latest,y=d.yoy||{};
  const roas=x.spend?x.value/x.spend:null;
- const planRoas=x.targetSpend?x.planValue/x.targetSpend:null;
- const roasAch=planRoas&&roas!=null?roas/planRoas:null;
  const mon=String(x.monthName||'').slice(0,3);
-
  const a=accountMeta(d);
- return `📊 ${a.dashboardTitle} — ${mon} ${x.dayNumber}
-
-${summaryAchEmoji(x.spendAchievement,true)} Spend: ${money(x.spend)} | ${percent(x.spendAchievement)}
-${summaryAchEmoji(x.convAchievement,false)} Conv: ${fmt(x.conversions,0)} | ${percent(x.convAchievement)}
-${summaryAchEmoji(x.valueAchievement,false)} Value: ${money(x.value)} | ${percent(x.valueAchievement)}
-${summaryAchEmoji(roasAch,false)} ROAS: ${roas!=null?fmt(roas,2)+'x':'—'} / ${planRoas!=null?fmt(planRoas,2)+'x':'—'}
-⚪ CPA ${money(x.cpa,2)} | CVR ${percent(x.cvr)} | CTR ${percent(x.ctr)}
-
-📅 ${y.mode==='hijri'?'Same Hijri day LY':'LY'}${y.lyDate?' ('+y.lyDate+')':''}
-${summaryYoyEmoji(x.spend,y.spend,true)} Spend ${money(y.spend)} → ${money(x.spend)}
-${summaryYoyEmoji(x.conversions,y.conversions,false)} Conv ${fmt(y.conversions,0)} → ${fmt(x.conversions,0)}
-${summaryYoyEmoji(x.value,y.value,false)} Value ${money(y.value)} → ${money(x.value)}
-${summaryYoyEmoji(x.ctr,y.ctr,false)} CTR ${percent(y.ctr)} → ${percent(x.ctr)}
-
-${topProjectsSummary(d)}`;
+ const r=(c,p)=>p?c/p:null;
+ const pct=v=>v==null||!isFinite(v)?'—':(Math.round(v*1000)/10)+'%';
+ const sign=v=>v==null||!isFinite(v)?'—':(v>=0?'+':'−')+Math.abs(Math.round(v*1000)/10)+'%';
+ const ctrD=y.ctr?x.ctr/y.ctr-1:null, spD=y.spend?x.spend/y.spend-1:null;
+ const types=(d.dayChannels||[]).map(c=>`${CHANNEL_SHORT[c.channel]||c.channel} ${c.roas!=null?fmt(c.roas,2)+'x':'—'}`).join(' · ');
+ const lines=[
+  `📌 ${a.shortLabel} Media Plan Results ⚙️`,'',
+  `📊 ${mon} ${x.dayNumber} Snapshot`,
+  `${summaryAchEmoji(x.convAchievement,false)} Conversions: ${pct(x.convAchievement)} of target`,
+  `${summaryAchEmoji(x.valueAchievement,false)} Conversion Value: ${pct(x.valueAchievement)} of target`,
+  `${summaryAchEmoji(x.spendAchievement,true)} Spend: ${pct(x.spendAchievement)} of daily target`,
+  `⚪ ROAS: ${roas!=null?fmt(roas,2)+'x':'—'} | CPA: ${money(x.cpa,2)} | CVR: ${percent(x.cvr)} | CTR: ${percent(x.ctr)}`];
+ if(y.lyDate&&y.hasData!==false){
+  lines.push('',`📅 YoY vs. ${mon} ${x.dayNumber} Last Year`,yoyCompareText(d),
+   `${summaryYoyEmoji(x.conversions,y.conversions,false)} Conversions: ${pct(r(x.conversions,y.conversions))}`,
+   `${summaryYoyEmoji(x.value,y.value,false)} Value: ${pct(r(x.value,y.value))}`,
+   `${summaryYoyEmoji(x.ctr,y.ctr,false)} CTR: ${sign(ctrD)} — ${percent(x.ctr)} vs. ${percent(y.ctr)}`,
+   `⚪ Spend: ${money(x.spend)} vs. ${money(y.spend)} — ${sign(spD)}`);
+ }
+ if(types)lines.push('',`🏷️ By campaign type (ROAS): ${types}`);
+ return lines.join('\n');
 }
 function topProjectsSummary(d){
  const rows=(d.topProjects||[]).slice(0,3);
@@ -6127,15 +6229,21 @@ function shareReportHtml(){
  const quick=shareClone('.quick-metrics-strip');
  
  const gaugeColor=(document.querySelector('.sx-gauge-in b')||{}).style?.color||'#C28D3E';
- return `<div class="rp-head">${logo?`<img class="rp-client" src="${logo}" alt="">`:''}<div><b>${esc(a.label)}</b><span>Daily Performance · ${esc(date)}</span></div>${sekna?`<img class="rp-sekna" src="${sekna}" alt="SEKNA">`:''}</div>
+ return `<div class="rp-head">${logo?`<img class="rp-client" src="${logo}" alt="">`:''}<div><b>${esc(a.label)}</b><span class="rp-pill"><i></i>Daily Performance · ${esc(date)}</span></div>${sekna?`<img class="rp-sekna" src="${sekna}" alt="SEKNA">`:''}</div>
  <div class="rp-cols"><div>
    <div class="rp-t">Today</div><div class="rp-kg">${kpis}</div>${quick}
-   <div class="rp-t">${esc((document.getElementById('yoyTitle')||{}).textContent||'Same day last year')}</div><div class="rp-box">${shareClone('.sx-yoy').replace(/stroke="url\(#yoyGaugeGrad\)"/g,`stroke="${gaugeColor}"`).replace(/class="sx-gauge-track"/g,'class="sx-gauge-track" stroke="#eef0f5"')}</div>
+   <div class="rp-t">${esc((document.getElementById('yoyTitle')||{}).textContent||'Same day last year')}</div>${yoyCompareText(d)?`<div class="rp-st">${esc(yoyCompareText(d))}</div>`:''}<div class="rp-box">${shareClone('.sx-yoy').replace(/stroke="url\(#yoyGaugeGrad\)"/g,`stroke="${gaugeColor}"`).replace(/class="sx-gauge-track"/g,'class="sx-gauge-track" stroke="#eef0f5"')}</div>
  </div><div>
    <div class="rp-t">Top 3 projects</div><div class="rp-box">${shareClone('.sx-lboard')}</div>
    <div class="rp-t">Month at a glance · ${esc(x.monthName||'')}</div><div class="rp-box">${shareClone('.sx-month')}</div>
  </div></div>
- <div class="rp-foot">Shared from SEKNA · sekna-app.web.app</div>`;
+ ${(d.dayChannels||[]).length?`<div class="rp-t">By campaign type · ${esc(dayChannelsDate(d))}</div><div class="ctd-grid" style="grid-template-columns:repeat(${d.dayChannels.length},minmax(0,1fr))">${dayChannelCards(d)}</div>`:''}
+ ${SHARE_FOOT}`;
+}
+const SHARE_FOOT='<div class="rp-foot"><b>SEKNA</b> · Designed &amp; Developed by Ibrahim Amin · sekna-app.web.app</div>';
+function yoyCompareText(d){
+ const y=(d&&d.yoy)||{};if(!y.lyDate)return '';
+ return `Compared with ${y.lyLabel||y.lyDate} – the same ${y.mode==='hijri'?'Hijri ':''}date last year`;
 }
 
 function shareHead(sub){
@@ -6144,7 +6252,7 @@ function shareHead(sub){
  const date=[x.dayName,[x.dayNumber,x.monthName,year].filter(Boolean).join(' ')].filter(Boolean).join(', ');
  const logo=document.querySelector('.logo img')?.src||'';
  const sekna=document.querySelector('.sk-drawer-logo')?.src||'';
- return `<div class="rp-head">${logo?`<img class="rp-client" src="${logo}" alt="">`:''}<div><b>${esc(a.label)}</b><span>${esc(sub)} · ${esc(date)}</span></div>${sekna?`<img class="rp-sekna" src="${sekna}" alt="SEKNA">`:''}</div>`;
+ return `<div class="rp-head">${logo?`<img class="rp-client" src="${logo}" alt="">`:''}<div><b>${esc(a.label)}</b><span class="rp-pill"><i></i>${esc(sub)} · ${esc(date)}</span></div>${sekna?`<img class="rp-sekna" src="${sekna}" alt="SEKNA">`:''}</div>`;
 }
 function channelReportHtml(){
  const d=DASH_DATA||{},x=d.latest||{};
@@ -6180,7 +6288,7 @@ function channelReportHtml(){
  <div class="rp-t">${esc(x.monthName||'Month')} performance</div><div class="rp-box rp-oct">${october}</div>
  <div class="rp-t">Weekly performance · % of plan</div><div class="rp-box"><table class="rp-wt"><thead><tr><th></th><th>Spend</th><th>Revenue</th><th>Conv.</th><th>ROAS</th></tr></thead><tbody>${weeks}</tbody></table></div>
  <div class="rp-t">Channel delivery · ranked by ROAS</div><div class="rp-box">${chans}</div>
- <div class="rp-foot">Shared from SEKNA · sekna-app.web.app</div>`;
+ ${SHARE_FOOT}`;
 }
 
 function captureDailyReport(){return captureReport(shareReportHtml(),'')}
