@@ -2476,6 +2476,40 @@ window.addEventListener('load',function(){
     .sks-app .sks-logo,.sks-app .sks-tag,.sks-app .sks-bar,.sks-app .sks-lt{animation:none}
     @media(prefers-reduced-motion:reduce){.sks *{animation-duration:.01s!important;animation-iteration-count:1!important}.sks-bar i{width:100%}}
 
+    /* v86 — Same Hijri day in past years (timeline) */
+    .py-open-wrap{display:flex;justify-content:center;margin-top:12px}
+    .py-open{border:0;border-radius:14px;padding:11px 18px;background:#203c8e;color:#fff;font-weight:900;font-size:13.5px;font-family:inherit;cursor:pointer;box-shadow:0 8px 20px rgba(32,60,142,.22)}
+    body.dark-mode .py-open{background:#3d6bff}
+    .py-body{padding:12px 14px 26px}
+    .py-hero{border-radius:22px;padding:16px 14px 10px;background:radial-gradient(circle at 85% 0,#3157c9,#203c8e 55%,#172d6e);color:#fff;box-shadow:0 14px 34px rgba(32,60,142,.25)}
+    .py-hero small{font-size:10.5px;font-weight:900;letter-spacing:.1em;color:#c9d3f5}
+    .py-chart{display:block;width:100%;height:auto;margin-top:6px}.py-chart circle{fill:#fff}.py-chart circle.win{fill:#39ff9a;filter:drop-shadow(0 0 6px #39ff9a)}
+    .py-chart .v{fill:#fff;font-size:10.5px;font-weight:800;text-anchor:middle}.py-chart .y{fill:#c9d3f5;font-size:10px;font-weight:800;text-anchor:middle}
+    .py-note{font-size:11.5px;color:#7b8396;font-weight:600;margin:10px 4px 0;line-height:1.5}
+    .py-tl{position:relative;padding-left:22px;margin-top:4px}.py-tl::before{content:"";position:absolute;left:8px;top:22px;bottom:22px;width:2px;background:#d5dbea}
+    .py-item{position:relative;margin-top:12px}.py-item::before{content:"";position:absolute;left:-19px;top:20px;width:12px;height:12px;border-radius:50%;background:#fff;border:3px solid #203c8e;z-index:1}
+    .py-item.today::before{border-color:#22c47c}
+    .py-card{background:#fff;border-radius:20px;padding:14px;box-shadow:0 4px 18px rgba(30,45,90,.05);border:1.5px solid #edf0f6;cursor:pointer;transition:border-color .2s}
+    .py-card.open{border-color:#203c8e}
+    .py-item.win .py-card{border-color:#39ff9a;box-shadow:0 0 0 1px #39ff9a,0 0 22px rgba(57,255,154,.45)}
+    .py-item.win::before{border-color:#39ff9a;background:#39ff9a;box-shadow:0 0 12px #39ff9a}
+    .py-win{display:inline-block;margin-left:6px;font-style:normal;font-size:10.5px;font-weight:900;color:#06371f;background:#39ff9a;padding:2px 8px;border-radius:999px;box-shadow:0 0 10px rgba(57,255,154,.7);vertical-align:2px}
+    .py-yh{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}.py-yh b{font-size:17px}.py-yh span{font-size:11.5px;color:#8a92a6;font-weight:700}
+    .py-chip{flex:0 0 auto;display:inline-block;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:900;white-space:nowrap}.py-chip.g{background:#dff5ea;color:#13804f}.py-chip.r{background:#fde3e1;color:#c2382f}.py-chip.n{background:#eef1f7;color:#6b7385}
+    .py-k4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}.py-k4 small{display:block;font-size:9.5px;font-weight:900;color:#8a92a6;letter-spacing:.05em}.py-k4 b{display:block;font-size:14px;font-weight:900}
+    .py-k4 em{font-style:normal;font-size:10px;font-weight:900}.py-k4 em.g{color:#13804f}.py-k4 em.r{color:#c2382f}
+    .py-tap{margin-top:8px;font-size:11px;font-weight:800;color:#3d6bff}
+    .py-more{margin-top:12px;animation:skRise .3s cubic-bezier(.2,.75,.25,1) both}
+    .py-q{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:#6b7385;font-weight:700}.py-q b{color:#1d2433}
+    .py-lbl{margin:12px 0 8px;font-size:11px;font-weight:900;letter-spacing:.08em;color:#8a92a6;text-transform:uppercase}
+    .py-types{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))!important}
+    @media (max-width:760px){.py-types{display:flex!important;overflow-x:auto;margin:0!important;padding:2px 0 6px!important;scroll-snap-type:x mandatory}.py-types .ctd{flex:0 0 80%;scroll-snap-align:start}}
+    body.dark-mode .py-card{background:#151a22;border-color:#252a32}body.dark-mode .py-card.open{border-color:#3d6bff}
+    body.dark-mode .py-item.win .py-card{border-color:#39ff9a}body.dark-mode .py-yh b,body.dark-mode .py-k4 b,body.dark-mode .py-q b{color:#fff}
+    body.dark-mode .py-tl::before{background:#2a313c}body.dark-mode .py-item::before{background:#0b0d11}
+    body.dark-mode .py-types .ctd{background:#151d33;border-color:rgba(255,255,255,.08);color:#e9edf7}body.dark-mode .py-types .ctd-gr b{color:#e9edf7}
+    body.dark-mode .py-types .ctd.k0{--c:#9db4ff;--s:rgba(157,180,255,.12)}body.dark-mode .py-types .ctd.k1{--s:rgba(61,107,255,.16)}body.dark-mode .py-types .ctd.k2{--s:rgba(34,196,124,.14)}body.dark-mode .py-types .ctd.k3{--c:#e2b874;--s:rgba(226,184,116,.14)}body.dark-mode .py-types .ctd.k4{--c:#f0838f;--s:rgba(240,131,143,.14)}body.dark-mode .py-types .ctd-gr small{color:#9aa3b8}
+
     /* v82 — Channel Delivery WhatsApp report (long, 1080 wide) */
     .rp-report.rp-narrow{width:1080px}
     .rp-oct .ox-hero{margin:0 0 12px}
@@ -3089,6 +3123,13 @@ window.addEventListener('load',function(){
   </section>
 </div>
 
+<div class="app-modal-overlay sk-page" id="pastYearsOverlay" onclick="closePastYears(event)" data-share-ui>
+  <section class="app-modal sk-modal py-page" role="dialog" aria-modal="true" aria-labelledby="pyTitle" onclick="event.stopPropagation()">
+    <div class="sk-modal-head"><div><div class="sk-kicker" id="pyKicker">PAST YEARS</div><h2 id="pyTitle">Same Hijri day</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closePastYears()" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+    <div id="pyBody" class="py-body"></div>
+  </section>
+</div>
+
 <div class="app-modal-overlay sk-page" id="aboutOverlay" onclick="closeAbout(event)" data-share-ui>
   <section class="app-modal sk-modal sk-about" role="dialog" aria-modal="true" aria-labelledby="aboutTitle" onclick="event.stopPropagation()">
     <div class="sk-modal-head"><div><div class="sk-kicker">About</div><h2 id="aboutTitle">SEKNA</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeAbout()" aria-label="Close about"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
@@ -3286,6 +3327,7 @@ window.addEventListener('load',function(){
         <tbody id="yoyRows"></tbody>
       </table>
     </div>
+    <div class="py-open-wrap" data-share-ui><button type="button" class="py-open" onclick="openPastYears()">↺ See this day in past years ›</button></div>
   </section>
 
   
@@ -4647,7 +4689,7 @@ function loadMonthExtras(){
  if(!(window.google&&google.script&&google.script.run))return;
  MONTH_EXTRA_LOADING[key]=true;
  google.script.run
-  .withSuccessHandler(r=>{MONTH_EXTRA_LOADING[key]=false;MONTH_EXTRA[key]=r||{months:{}};if(CURRENT_TAB==='months'&&key===CURRENT_ACCOUNT)renderMonthCompare()})
+  .withSuccessHandler(r=>{MONTH_EXTRA_LOADING[key]=false;MONTH_EXTRA[key]=r||{months:{}};if(CURRENT_TAB==='months'&&key===CURRENT_ACCOUNT)renderMonthCompare();if(PY_OPEN&&key===CURRENT_ACCOUNT)renderPastYears()})
   .withFailureHandler(()=>{MONTH_EXTRA_LOADING[key]=false})
   .getMonthCompareData(key,getAccessToken());
 }
@@ -6678,6 +6720,87 @@ function compareShareText(d){
  return [`📌 ${ac.shortLabel} Month vs Month ⚙️`,`${monthName(aKey,true)} vs. ${monthName(bKey,true)}${c.avg?' · per day':''}`,'',
   wa===wb?`⚖️ Even — each month wins ${wa}`:`🏆 ${wa>wb?an:bn} wins ${Math.max(wa,wb)} of ${wa+wb}`,'',
   ...pick.map(l=>`${l.w==='a'?'🟢':l.w==='b'?'🔴':'⚪'} ${rsShortLabel(l.m)}: ${l.m.f(l.x,c.avg)} vs. ${l.m.f(l.y,c.avg)} (${l.dl>=0?'+':'−'}${percent(Math.abs(l.dl))})`)].join('\n');
+}
+
+
+ 
+let PY_OPEN=false, PY_PICK='';
+const HIJRI_FMT=(()=>{try{return new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',year:'numeric',timeZone:'UTC'})}catch(e){return null}})();
+function hijriOf(dk){
+ if(!HIJRI_FMT)return null;
+ const p=HIJRI_FMT.formatToParts(new Date(dk+'T00:00:00Z'));
+ const g=t=>parseInt((p.find(x=>x.type===t)||{}).value,10);
+ return {d:g('day'),m:g('month'),y:g('year')};
+}
+const isoAdd=(dk,n)=>new Date(Date.parse(dk+'T00:00:00Z')+n*864e5).toISOString().slice(0,10);
+
+
+function hijriDayInYear(dk,back){
+ const h=hijriOf(dk); if(!h)return '';
+ const want=h.y-back, around=isoAdd(dk,-Math.round(back*354.367));
+ let first='';
+ for(let i=-45;i<=45&&!first;i++){const k=isoAdd(around,i),x=hijriOf(k);if(x&&x.y===want&&x.m===h.m&&x.d===1)first=k}
+ if(!first)return '';
+ let day=h.d;
+ while(day>1){const k=isoAdd(first,day-1),x=hijriOf(k);if(x&&x.m===h.m)break;day--}
+ return isoAdd(first,day-1);
+}
+function pyYears(){
+ const d=DASH_DATA||{}, ex=MONTH_EXTRA[CURRENT_ACCOUNT]; if(!ex)return null;
+ const today=(d.latest||{}).date; if(!today)return [];
+ const out=[];
+ for(let back=0;back<12;back++){
+   const dk=back?hijriDayInYear(today,back):today; if(!dk)break;
+   const parts=dayParts(dk,ex);
+   if(parts&&(parts.spend||parts.value))out.push({back,dk,h:hijriOf(dk),s:statFrom(parts,{}),ch:parts.channels||{}});
+   else if(back&&dk<Object.keys(ex.days||{}).sort()[0])break;
+ }
+ return out;
+}
+function openPastYears(){
+ PY_OPEN=true; PY_PICK='';
+ const el=document.getElementById('pastYearsOverlay'); if(el)el.classList.add('open');
+ if(!MONTH_EXTRA[CURRENT_ACCOUNT])loadMonthExtras();
+ renderPastYears();
+}
+function closePastYears(event){
+ if(event&&event.target!==event.currentTarget)return;
+ PY_OPEN=false; const el=document.getElementById('pastYearsOverlay'); if(el)el.classList.remove('open');
+}
+function pyPick(dk){PY_PICK=PY_PICK===dk?'':dk;renderPastYears()}
+function renderPastYears(){
+ const body=document.getElementById('pyBody'); if(!body)return;
+ const x=(DASH_DATA||{}).latest||{};
+ text('pyKicker',`${String(x.hijriDate||'').toUpperCase()} · PAST YEARS`);
+ if(!HIJRI_FMT){body.innerHTML='<div class="dx-empty">This device cannot work out Hijri dates.</div>';return}
+ const ys=pyYears();
+ if(ys===null){body.innerHTML='<div class="dx-empty"><span class="lab-spin dark"></span>Loading past years…</div>';return}
+ if(ys.length<2){body.innerHTML='<div class="dx-empty">No earlier year has data for this Hijri day yet.</div>';return}
+ if(!PY_PICK)PY_PICK=ys[1].dk;
+ const win=ys.reduce((a,b)=>b.s.value>a.s.value?b:a);
+ const yr=y=>y.back?y.dk.slice(0,4):'Today';
+ const day=dk=>shortDay(dk).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+ const chip=(a,b,low)=>{if(b==null||!b)return '<span class="py-chip n">first year</span>';const dd=a/b-1,g=low?dd<=0:dd>=0;return `<span class="py-chip ${g?'g':'r'}">${dd>=0?'▲':'▼'} ${percent(Math.abs(dd))}</span>`};
+ const dl=(a,b)=>{if(b==null||!b)return '';const dd=a/b-1;return `<em class="${dd>=0?'g':'r'}">${dd>=0?'▲':'▼'}${Math.abs(Math.round(dd*100))}%</em>`};
+ 
+ const pts=[...ys].reverse(), mx=Math.max(...pts.map(y=>y.s.value),1), W=320, H=104;
+ const X=i=>34+i*(W-68)/Math.max(1,pts.length-1), Y=v=>H-18-v/mx*(H-46);
+ const chart=`<svg class="py-chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet"><polyline points="${pts.map((y,i)=>X(i).toFixed(1)+','+Y(y.s.value).toFixed(1)).join(' ')}" fill="none" stroke="#e2b874" stroke-width="3" stroke-linejoin="round"/>
+   ${pts.map((y,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(y.s.value).toFixed(1)}" r="${y===win?7:5}" class="${y===win?'win':''}"/><text x="${X(i).toFixed(1)}" y="${(Y(y.s.value)-11).toFixed(1)}" class="v">£${(y.s.value/1000).toFixed(1)}k</text><text x="${X(i).toFixed(1)}" y="${H-2}" class="y">${yr(y)}</text>`).join('')}</svg>`;
+ const cards=ys.map((y,i)=>{
+   const p=ys[i+1], a=y.s, b=p?p.s:null, open=y.dk===PY_PICK, isWin=y===win;
+   const types=Object.entries(y.ch).map(([n,c])=>({n,c,r:c.spend?c.value/c.spend:null})).filter(t=>t.c.spend||t.c.value).sort((m,n)=>(n.r||0)-(m.r||0));
+   const typeCards=types.map(t=>{const k=Math.min(Math.max(CHANNEL_ORDER.indexOf(t.n),0),4);return `<div class="ctd k${k}"><div class="ctd-h"><b>${esc(CHANNEL_SHORT[t.n]||t.n)}</b></div><div class="ctd-roas">${t.r!=null?fmt(t.r,2)+'x':'—'}<small>ROAS</small></div><div class="ctd-gr"><div><small>Spend</small><b>${money(t.c.spend)}</b></div><div><small>Conv.</small><b>${fmt(t.c.conversions,0)}</b></div><div><small>Value</small><b>${money(t.c.value)}</b></div></div></div>`}).join('');
+   return `<div class="py-item${y.back?'':' today'}${isWin?' win':''}"><div class="py-card${open?' open':''}" onclick="pyPick('${y.dk}')">
+     <div class="py-yh"><div><b>${yr(y)}</b> <span>${esc(day(y.dk))}</span>${isWin?'<i class="py-win">🏆 Winner</i>':''}</div>${chip(a.value,b&&b.value)}</div>
+     <div class="py-k4">${[['SPEND',money(a.spend),a.spend,b&&b.spend],['CONV.',fmt(a.conversions,0),a.conversions,b&&b.conversions],['VALUE',money(a.value),a.value,b&&b.value],['ROAS',fmt(a.roas,2)+'x',a.roas,b&&b.roas]].map(([l,v,q,w])=>`<div><small>${l}</small><b>${v}</b>${dl(q,w)}</div>`).join('')}</div>
+     ${open?`<div class="py-more"><div class="py-q">${[['Clicks',fmt(a.clicks,0)],['CTR',percent(a.ctr)],['CPA',money(a.cpa,2)],['CVR',percent(a.cvr)]].map(([l,v])=>`<span>${l} <b>${v}</b></span>`).join('')}</div>
+       ${typeCards?`<div class="py-lbl">By campaign type</div><div class="ctd-grid py-types">${typeCards}</div>`:''}</div>`:`<div class="py-tap">Tap for campaign types ›</div>`}
+   </div></div>`;
+ }).join('');
+ body.innerHTML=`<div class="py-hero"><small>${esc(String(x.hijriDate||'').toUpperCase())} · CONV. VALUE BY YEAR</small>${chart}</div>
+   <div class="py-note">Each year is the same Hijri date, from the daily data that starts in ${esc(shortDate(Object.keys((MONTH_EXTRA[CURRENT_ACCOUNT]||{}).days||{}).sort()[0]||''))}. Changes compare with the year before.</div>
+   <div class="py-tl">${cards}</div>`;
 }
 
 function captureDailyReport(){return captureReport(shareReportHtml(),'')}
