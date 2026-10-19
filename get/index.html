@@ -40,17 +40,31 @@ h1 span{background:linear-gradient(90deg,var(--gold),var(--gold2));-webkit-backg
 .dl .web{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#fff;backdrop-filter:blur(8px)}
 .meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;font-size:13px;color:var(--mute);font-weight:600}
 .meta b{color:var(--sub)}
-/* phones in hero */
-.phones{position:relative;height:560px}
-.phone{position:absolute;width:250px;border-radius:40px;padding:9px;background:linear-gradient(145deg,#2a3567,#0b1236);box-shadow:0 40px 80px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.12)}
-.phone img{display:block;width:100%;aspect-ratio:390/844;object-fit:cover;object-position:top;border-radius:32px}
-.phone.p1{left:50%;top:0;transform:translateX(-40%) rotate(3deg);z-index:2}
-.phone.p2{left:50%;top:70px;transform:translateX(-112%) rotate(-7deg);opacity:.92;width:220px}
-.glow{position:absolute;left:50%;top:48%;width:360px;height:360px;transform:translate(-40%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(79,124,255,.55),transparent 65%);filter:blur(10px)}
-.float{position:absolute;z-index:3;background:rgba(10,23,72,.82);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:16px;padding:10px 14px;font-size:12px;color:var(--sub);font-weight:700;box-shadow:0 14px 30px rgba(0,0,0,.35)}
-.float b{display:block;color:#fff;font-size:18px;font-weight:900}
-.float.f1{right:0;top:110px}.float.f1 b{color:var(--green)}
-.float.f2{left:4%;bottom:40px}
+/* hero layout: text, then the spinning phone, then the buttons */
+.hgrid{grid-template-areas:"ht stage" "ha stage";grid-template-rows:1fr 1fr;row-gap:0}
+.ht{grid-area:ht;align-self:end}.ha{grid-area:ha;align-self:start}.stage{grid-area:stage}
+/* spinning phone ring */
+.stage{position:relative;display:flex;flex-direction:column;align-items:center;--pw:230px;--r:250px}
+.glow{position:absolute;left:50%;top:44%;width:420px;height:420px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(79,124,255,.5),transparent 65%);filter:blur(12px);pointer-events:none}
+.ring-wrap{position:relative;width:100%;height:calc(var(--pw) * 2.164 + 30px);perspective:1400px;touch-action:pan-y}
+.ring{position:absolute;left:50%;top:10px;width:var(--pw);margin-left:calc(var(--pw) / -2);height:calc(var(--pw) * 2.164);transform-style:preserve-3d;transition:transform 1s cubic-bezier(.65,0,.25,1)}
+.rp{position:absolute;inset:0;border-radius:calc(var(--pw) * .16);padding:calc(var(--pw) * .035);background:linear-gradient(145deg,#2c3a73,#0b1236);box-shadow:0 30px 60px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.14);backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:opacity .9s ease,filter .9s ease}
+.rp:before{content:"";position:absolute;top:calc(var(--pw) * .06);left:50%;width:30%;height:calc(var(--pw) * .055);transform:translateX(-50%);border-radius:99px;background:#05081a;z-index:2}
+.rp img{display:block;width:100%;height:100%;object-fit:cover;object-position:top;border-radius:calc(var(--pw) * .13)}
+.rp.side{opacity:.5;filter:saturate(.6) brightness(.75)}
+.rp.far{opacity:0}
+.cap{position:relative;display:flex;align-items:center;justify-content:center;gap:14px;margin-top:6px;width:100%;max-width:380px}
+.cap-t{flex:1;text-align:center;min-height:46px}
+.cap-t b{display:block;font-size:18px;font-weight:900;letter-spacing:-.01em}
+.cap-t span{display:block;font-size:13.5px;color:var(--sub);font-weight:600}
+.cap-t.swap{animation:capin .55s ease}
+@keyframes capin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.arr{flex:0 0 44px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);color:#fff;display:grid;place-items:center;cursor:pointer;transition:background .2s ease,transform .15s ease}
+.arr:hover{background:rgba(255,255,255,.14)}.arr:active{transform:scale(.92)}
+.arr svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.dots{display:flex;gap:7px;margin-top:12px}
+.dots i{width:7px;height:7px;border-radius:99px;background:rgba(255,255,255,.25);transition:width .35s ease,background .35s ease}
+.dots i.on{width:22px;background:var(--gold)}
 /* sections */
 section{padding:56px 0 0}
 .sh{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:22px}
@@ -134,9 +148,10 @@ h2{font-size:34px;letter-spacing:-.03em;margin:6px 0 0;font-weight:900;line-heig
 .credit .by small{display:block;font-size:11px;letter-spacing:.14em;font-weight:800;color:var(--mute);text-transform:uppercase}
 .credit .by b{font-size:20px;letter-spacing:-.01em;background:linear-gradient(90deg,var(--gold),var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent}
 @media (max-width:900px){
-  .hgrid{grid-template-columns:1fr}
-  .phones{height:470px;margin-top:6px}
-  .phone{width:210px}.phone.p2{width:185px}
+  .hgrid{grid-template-columns:1fr;grid-template-areas:"ht" "stage" "ha";grid-template-rows:auto}
+  .stage{margin:22px 0 26px}
+  .ha{display:flex;flex-direction:column;align-items:center}.ha .meta{justify-content:center}
+  .dl{width:100%}
   .feats{grid-template-columns:1fr 1fr}.f.wide{grid-column:span 2}
   .plats{grid-template-columns:1fr}
   .ios{grid-template-columns:1fr 1fr}
@@ -146,8 +161,13 @@ h2{font-size:34px;letter-spacing:-.03em;margin:6px 0 0;font-weight:900;line-heig
   h1{font-size:42px}
   .hero p.l{font-size:16px}
   .dl{grid-template-columns:1fr}
-  .float.f1{right:-4px;top:70px}.float.f2{left:0;bottom:24px}
-  .feats{grid-template-columns:1fr}.f.wide{grid-column:auto;grid-template-columns:1fr}
+  .stage{--pw:178px;--r:170px;margin:14px 0 22px}
+  .glow{width:300px;height:300px}
+  .ht{text-align:center}.kick{justify-content:center}
+  .hero p.l{margin:0 auto}
+  .cap{gap:10px}.cap-t b{font-size:16.5px}
+  .feats{grid-template-columns:1fr 1fr;gap:10px}.f{padding:14px;border-radius:18px}.f i{width:36px;height:36px;font-size:16px;margin-bottom:10px}.f b{font-size:14.5px}.f p{font-size:12.5px;line-height:1.45}
+  section{padding-top:44px}.pl{padding:20px}.pl h3{font-size:22px}
   .ios{gap:10px}.st{padding:12px}
   h2{font-size:28px}
   .g{width:200px}
@@ -160,10 +180,12 @@ h2{font-size:34px;letter-spacing:-.03em;margin:6px 0 0;font-weight:900;line-heig
   <div class="wrap">
     <div class="nav"><img src="/get/logo-white.webp" alt="SEKNA"><a class="pill" href="#get">Install</a></div>
     <div class="hgrid">
-      <div>
+      <div class="ht">
         <span class="kick"><i></i>Live media plan dashboard</span>
         <h1>The calm in<br>the <span>campaign.</span></h1>
         <p class="l">SEKNA puts the whole media plan on your phone: today against target, every campaign type, every day of the month, and how this Hijri day did in past years.</p>
+      </div>
+      <div class="ha">
         <div class="dl">
           <a class="and" href="https://sekna-app.github.io/get/SEKNA.apk" download="SEKNA-1.2.2.apk">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22a11.5 11.5 0 0 0-9.84 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>
@@ -174,29 +196,21 @@ h2{font-size:34px;letter-spacing:-.03em;margin:6px 0 0;font-weight:900;line-heig
         </div>
         <div class="meta"><span>Version <b>1.2.2</b></span><span>Size <b>2.9 MB</b></span><span>Android <b>7+</b></span><span>By <b>Ibrahim Amin</b></span></div>
       </div>
-      <div class="phones" aria-hidden="true">
+      <div class="stage" id="stage">
         <div class="glow"></div>
-        <div class="phone p2"><img src="/get/shots/years.webp" alt=""></div>
-        <div class="phone p1"><img src="/get/shots/home.webp" alt=""></div>
-        <div class="float f1">ROAS today<b>2.82x</b></div>
-        <div class="float f2">🔔 New data for 17 Oct<b>SEKNA</b></div>
+        <div class="ring-wrap"><div class="ring" id="ring"></div></div>
+        <div class="cap">
+          <button type="button" class="arr" id="prev" aria-label="Previous screen"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <div class="cap-t" aria-live="polite"><b id="capT"></b><span id="capS"></span></div>
+          <button type="button" class="arr" id="next" aria-label="Next screen"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+        </div>
+        <div class="dots" id="dots"></div>
       </div>
     </div>
   </div>
 </div>
 
 <main class="wrap">
-  <section>
-    <div class="sh"><div><span class="kick">Inside the app</span><h2>Everything the plan knows.<br>One tap away.</h2></div><p>Real screens from SEKNA. Swipe through them.</p></div>
-    <div class="gal">
-      <div class="g"><div class="phone"><img src="/get/shots/home.webp" alt="Daily Performance" loading="lazy"></div><h3>Daily Performance</h3><span>Today against target, 14-day trend</span></div>
-      <div class="g"><div class="phone"><img src="/get/shots/types.webp" alt="By Campaign Type" loading="lazy"></div><h3>By Campaign Type</h3><span>Search, PMax, Demand Gen, Video</span></div>
-      <div class="g"><div class="phone"><img src="/get/shots/years.webp" alt="Same Hijri day" loading="lazy"></div><h3>Same Hijri day</h3><span>This day in every past year</span></div>
-      <div class="g"><div class="phone"><img src="/get/shots/results.webp" alt="Day by Day" loading="lazy"></div><h3>Day by Day</h3><span>Results against the plan</span></div>
-      <div class="g"><div class="phone"><img src="/get/shots/ranks.webp" alt="Top and Bottom 5" loading="lazy"></div><h3>Top &amp; Bottom 5</h3><span>Projects, campaigns, keywords</span></div>
-      <div class="g"><div class="phone"><img src="/get/shots/home-dark.webp" alt="Dark mode" loading="lazy"></div><h3>Dark mode</h3><span>Easy on the eyes at night</span></div>
-    </div>
-  </section>
 
   <section>
     <div class="sh"><div><span class="kick">Why SEKNA</span><h2>Built for the people who run the plan.</h2></div></div>
@@ -268,6 +282,46 @@ function copyLink(btn){
   if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(done,function(){prompt('Copy this link',url)});
   else prompt('Copy this link',url);
 }
+
+// Spinning phone: one screen at a time comes to the front, on its own or with the arrows.
+(function(){
+  var S=[['home','Daily Performance','Today against target, 14-day trend'],
+         ['types','By Campaign Type','Search, PMax, Demand Gen, Video'],
+         ['results','Day by Day','Results against the plan'],
+         ['years','Same Hijri day','This day in every past year'],
+         ['ranks','Top & Bottom 5','Projects, campaigns, keywords'],
+         ['home-dark','Dark mode','Easy on the eyes at night']];
+  var N=S.length, step=360/N, cur=0, timer=null;
+  var ring=document.getElementById('ring'), stage=document.getElementById('stage'), dots=document.getElementById('dots');
+  var capT=document.getElementById('capT'), capS=document.getElementById('capS'), cap=capT.parentNode;
+  S.forEach(function(x,i){
+    var d=document.createElement('div');d.className='rp';
+    d.innerHTML='<img src="/get/shots/'+x[0]+'.webp" alt="'+x[1]+'"'+(i>1?' loading="lazy"':'')+'>';
+    ring.appendChild(d);
+    var dot=document.createElement('i');dots.appendChild(dot);
+  });
+  var phones=ring.children, dl=dots.children;
+  function radius(){return parseFloat(getComputedStyle(stage).getPropertyValue('--r'))||250}
+  function place(){var r=radius();for(var i=0;i<N;i++)phones[i].style.transform='rotateY('+(i*step)+'deg) translateZ('+r+'px)';show(false)}
+  function show(anim){
+    var r=radius(), k=((cur%N)+N)%N;
+    ring.style.transform='translateZ('+(-r)+'px) rotateY('+(-cur*step)+'deg)';
+    for(var i=0;i<N;i++){var d=Math.min(Math.abs(i-k),N-Math.abs(i-k));phones[i].className='rp'+(d===1?' side':d>1?' far':'');dl[i].className=i===k?'on':''}
+    capT.textContent=S[k][1];capS.textContent=S[k][2];
+    if(anim){cap.classList.remove('swap');void cap.offsetWidth;cap.classList.add('swap')}
+  }
+  function go(n){cur+=n;show(true)}
+  function play(){stop();timer=setInterval(function(){go(1)},3000)}
+  function stop(){if(timer)clearInterval(timer);timer=null}
+  document.getElementById('next').onclick=function(){go(1);play()};
+  document.getElementById('prev').onclick=function(){go(-1);play()};
+  var x0=null;
+  stage.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
+  stage.addEventListener('touchend',function(e){if(x0==null)return;var dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40){go(dx<0?1:-1);play()}},{passive:true});
+  document.addEventListener('visibilitychange',function(){document.hidden?stop():play()});
+  window.addEventListener('resize',place);
+  place();play();
+})();
 </script>
 </body>
 </html>
