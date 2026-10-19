@@ -4295,10 +4295,10 @@ function loadLab(){
 function drawLab(){
  const body=document.getElementById('labBody'), st=LAB_STATE;
  const ready=st.months.filter(m=>m.status==='ready');
- const label={ready:'Ready to move',running:'Month still running',missing:'Missing days',archived:'Already in archive'};
+ const label={ready:'Ready to move',running:'Month still running',missing:'Missing days',archived:'Already in history'};
  const rows=st.months.map(m=>`<div class="lab-row ${m.status}"><div class="lab-m"><b>${esc(monthName(m.key,true))}</b><small>${m.have} of ${m.need} days · ${fmt(m.rows,0)} rows${m.status==='missing'?` · missing day ${m.missing.slice(0,8).join(', ')}${m.missing.length>8?'…':''}`:''}</small></div><span class="lab-chip ${m.status}">${label[m.status]}</span></div>`).join('');
  body.innerHTML=`<div class="lab-box">
-   <div class="lab-head"><div><b>Archive closed months</b><small>Moves every complete month from <em>${esc(st.sourceName)}</em> to <em>${esc(st.archiveName)}</em> (${fmt(st.archiveRows,0)} rows). A month moves only when it is over and all its days are there.</small></div></div>
+   <div class="lab-head"><div><b>Close the month</b><small>When a month is over and every day of it is in, move its results into the history. That keeps the reports and comparisons complete and makes room for the new month's plan.</small></div></div>
    <div class="lab-list">${rows||'<div class="dx-empty">The current month tab is empty.</div>'}</div>
    ${LAB_MSG?`<div class="lab-msg">${LAB_MSG}</div>`:''}
    <div class="lab-actions"><button type="button" class="pk-ghost" onclick="LAB_MSG='';loadLab()" ${LAB_BUSY?'disabled':''}>Refresh</button>
@@ -4308,12 +4308,12 @@ function labMove(){
  const ready=LAB_STATE.months.filter(m=>m.status==='ready');
  if(!ready.length||LAB_BUSY)return;
  const list=ready.map(m=>`${monthName(m.key,true)} (${fmt(m.rows,0)} rows)`).join('\n');
- if(!confirm(`Move these months to the archive?\n\n${list}\n\nThe rows go under the last row of the archive, then they are removed from ${LAB_STATE.sourceName.trim()}.`))return;
+ if(!confirm(`Close these months and move them to the history?\n\n${list}\n\nIts results are added to the history and cleared from the current month, ready for the new month.`))return;
  LAB_BUSY=true; drawLab();
  serverCall('adminArchiveMove',getAccessToken(),CURRENT_ACCOUNT).then(r=>{
    LAB_BUSY=false;
    LAB_STATE=Object.assign({account:CURRENT_ACCOUNT},LAB_STATE,{months:r.months,archiveRows:r.archiveRows});
-   LAB_MSG=r.moved.length?`✅ Moved ${fmt(r.rows,0)} rows (${r.moved.map(k=>monthName(k)).join(', ')}) — added from row ${r.startRow} of the archive.`:'Nothing was ready to move.';
+   LAB_MSG=r.moved.length?`✅ ${r.moved.map(k=>monthName(k,true)).join(', ')} moved to the history (${fmt(r.rows,0)} rows). The new month can start.`:'Nothing was ready to move.';
    delete MONTH_EXTRA[CURRENT_ACCOUNT];
    drawLab();
  }).catch(err=>{LAB_BUSY=false;LAB_MSG='⚠️ '+esc(errorText(err));drawLab()});
@@ -4406,13 +4406,15 @@ function dayParts(dk,ex){
 }
 function mergeParts(list){
  const o={spend:0,value:0,conversions:0,days:0,extra:{spend:0,clicks:0,impressions:0,conversions:0},channels:{}};
- let allExtra=list.length>0;
+ let allExtra=list.length>0, covered=0;
  list.forEach(p=>{
    o.spend+=p.spend||0;o.value+=p.value||0;o.conversions+=p.conversions||0;o.days+=p.days||0;
-   if(p.extra)Object.keys(o.extra).forEach(k=>o.extra[k]+=p.extra[k]||0);else allExtra=false;
+   if(p.extra){covered++;Object.keys(o.extra).forEach(k=>o.extra[k]+=p.extra[k]||0)}else allExtra=false;
    if(p.channels)Object.keys(p.channels).forEach(n=>{const c=p.channels[n],t=o.channels[n]||(o.channels[n]={spend:0,clicks:0,conversions:0,value:0});['spend','clicks','conversions','value'].forEach(k=>t[k]+=c[k]||0)});
  });
- if(!allExtra){o.extra=null;o.channels=null}
+ 
+ o.coverage={covered,total:list.length};
+ if(!allExtra){o.extra=null;if(!covered)o.channels=null}
  return o;
 }
 function statFrom(p,meta){
@@ -4422,7 +4424,7 @@ function statFrom(p,meta){
    roas:p.spend?p.value/p.spend:null,cpa:p.conversions?p.spend/p.conversions:null,aov:p.conversions?p.value/p.conversions:null,
    clicks:e?e.clicks:null,impressions:e?e.impressions:null,
    ctr:e&&e.impressions?e.clicks/e.impressions:null,cpc:e&&e.clicks?e.spend/e.clicks:null,cvr:e&&e.clicks?e.conversions/e.clicks:null,
-   channels:p.channels
+   channels:p.channels,coverage:p.coverage||null
  },meta||{});
 }
 function monthStats(h,ex,d){return statFrom(monthParts(h,ex,d),{key:h.month,hijri:h.hijri,partial:h.partial})}
@@ -4551,7 +4553,7 @@ function compareBody(rows,A,B,avg,aKey,bKey){
  return top+more+compareChannels(A,B,avg,aKey,bKey)+'<div class="mx-foot">▲▼ the first month vs the second · <i class="good"></i> better <i class="bad"></i> worse <i class="neutral"></i> no better/worse</div>';
 }
 function compareChannels(A,B,avg,aKey,bKey){
- if(!A.channels||!B.channels)return '<div class="mx-sub">By channel</div><div class="dx-empty">Channel split is available from January 2025.</div>';
+ if(!A.channels||!B.channels)return `<div class="mx-sub">By channel</div><div class="dx-empty">The channel split needs daily data${dailyStartText()}.</div>`;
  const la=channelList(A,avg), lb=channelList(B,avg);
  const tot=la.reduce((x,c)=>x+c.spend,0)||1, totB=lb.reduce((x,c)=>x+c.spend,0)||1;
  const names=[...new Set(la.map(x=>x.n).concat(lb.map(x=>x.n)))];
@@ -4612,13 +4614,18 @@ function reportBody(S,U,avg){
  const more=`<div class="mr-list">${rest.map(r=>`<div class="mr-li"><span>${esc(r.m.l)}</span><b>${r.m.f(r.v,avg)}</b>${mxArrow(r.delta,r.cls)}</div>`).join('')}</div>`;
  return top+more+reportChannels(S,avg)+'<div class="mx-foot">▲▼ vs the usual level: the 12 months before, scaled to the same number of days · <i class="good"></i> better <i class="bad"></i> worse</div>';
 }
+function dailyStartText(){
+ const ks=Object.keys((MONTH_EXTRA[CURRENT_ACCOUNT]||{}).days||{}).sort();
+ return ks.length?', which starts on '+shortDate(ks[0]):'';
+}
 function reportChannels(S,avg){
  const list=channelList(S,avg);
- if(!list.length)return S.channels===null?'<div class="mx-sub">By channel</div><div class="dx-empty">Channel split is available from January 2025.</div>':'';
+ if(!list.length)return S.channels===null?`<div class="mx-sub">By channel</div><div class="dx-empty">The channel split needs daily data${dailyStartText()}.</div>`:'';
  const tot=list.reduce((a,c)=>a+c.spend,0)||1, totV=list.reduce((a,c)=>a+c.value,0)||1;
- const all=S.roas||0;
+ const all=totV/tot;
+ const cov=S.coverage&&S.coverage.covered<S.coverage.total?`<div class="mx-note">Based on ${S.coverage.covered} of ${S.coverage.total} months — daily data${dailyStartText()}.</div>`:'';
  const pill=c=>`<span class="rc-roas ${c.roas!=null&&c.roas>=all?'good':'bad'}">${c.roas!=null?fmt(c.roas,2)+'x':'—'}</span>`;
- return `<div class="mx-sub">By channel</div><div class="rc1"><div class="rc1-bar">${list.map(c=>`<span class="m${c.k}" style="flex:${c.spend/tot}"></span>`).join('')}</div>
+ return `<div class="mx-sub">By channel</div>${cov}<div class="rc1"><div class="rc1-bar">${list.map(c=>`<span class="m${c.k}" style="flex:${c.spend/tot}"></span>`).join('')}</div>
    ${list.map(c=>`<div class="rc1-row"><i class="m${c.k}"></i><div class="rc1-n"><b>${esc(c.n)}</b><small>${Math.round(c.spend/tot*100)}% of spend · ${fmt(c.conversions,0)} conv.</small></div><div class="rc1-v"><b>${money(c.spend)}</b><small>${money(c.value)}</small></div>${pill(c)}</div>`).join('')}</div>`;
 }
 
