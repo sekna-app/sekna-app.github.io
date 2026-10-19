@@ -2466,7 +2466,7 @@ window.addEventListener('load',function(){
     @keyframes sksGlint{to{background-position:-130% 0}}
     .sks-tag{margin-top:14px;font-size:16px;color:#cfd9ff;animation:sksUp .5s .45s ease-out both}
     .sks-bar{margin-top:26px;width:200px;height:6px;border-radius:999px;background:rgba(255,255,255,.16);overflow:hidden;animation:sksUp .4s .35s ease-out both}
-    .sks-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#e2b874,#fff3d6);box-shadow:0 0 12px rgba(226,184,116,.8);animation:sksFill 1.9s .35s cubic-bezier(.4,.1,.2,1) forwards}
+    .sks-bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#e2b874,#fff3d6);box-shadow:0 0 12px rgba(226,184,116,.8);animation:sksFill 1.45s .3s cubic-bezier(.4,.1,.2,1) forwards}
     @keyframes sksFill{to{width:100%}}
     .sks-lt{margin-top:12px;font-size:11px;font-weight:800;letter-spacing:.32em;color:rgba(207,217,255,.65);animation:sksUp .4s .5s both}
     @keyframes sksUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
@@ -2942,7 +2942,7 @@ window.addEventListener('load',function(){
  var inApp=!!(window.AndroidShare&&typeof window.AndroidShare.splashShown==='function');
  if(inApp){s.classList.add('sks-app');try{requestAnimationFrame(function(){window.AndroidShare.splashShown()})}catch(e){}}
  var quick=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
- setTimeout(function(){s.classList.add('out');setTimeout(function(){s.remove()},460)},quick?700:2600);
+ setTimeout(function(){s.classList.add('out');setTimeout(function(){s.remove()},460)},quick?700:2100);
 })();
 </script>
 <div class="sk-loadbar" id="skLoadbar" aria-hidden="true"></div>
@@ -2990,7 +2990,7 @@ window.addEventListener('load',function(){
       <h1>You're verified, <span data-gate-name>there</span>!</h1>
       <p class="sk-gate-sub">Your identity has been confirmed and your access to the SEKNA dashboard is now active.</p>
       <div class="sk-verified-chip"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M8.5 12l2.5 2.5 4.5-4.5"/></svg>Verified SEKNA team member</div>
-      <button class="sk-gate-btn" type="button" onclick="gateEnterDashboard()"><span>Open dashboard</span></button>
+      <button class="sk-gate-btn" type="button" onclick="gateEnterDashboard()"><span>Open app</span></button>
     </section>
 
     <section class="sk-step" data-step="blocked">
