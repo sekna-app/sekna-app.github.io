@@ -2436,6 +2436,15 @@ window.addEventListener('load',function(){
     .ab3-pills{position:relative;display:flex;flex-wrap:wrap;gap:8px;margin-top:16px!important}.ab3-pills span{padding:8px 13px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);font-size:12.5px;font-weight:800;color:#fff}
     .ab3-credit{position:relative;margin-top:22px!important;text-align:center;font-size:14px;color:#9fb6ff;font-weight:600}.ab3-credit b{color:#fff;font-weight:900}
     .ab3-ver{position:relative;color:#8fa4e6!important;margin-top:8px!important}
+    .ab3-idea{position:relative;display:flex;align-items:center;gap:12px;width:100%;margin-top:22px;padding:14px 16px;border-radius:20px;border:1px solid rgba(226,184,116,.45);background:linear-gradient(135deg,rgba(226,184,116,.2),rgba(255,255,255,.06));color:#fff;font:inherit;text-align:left;cursor:pointer;overflow:hidden;box-shadow:0 10px 26px rgba(5,12,40,.25)}
+    .ab3-idea:before{content:"";position:absolute;right:-30px;top:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(226,184,116,.35),transparent 70%)}
+    .ab3-bulb{position:relative;flex:0 0 46px;width:46px;height:46px;border-radius:15px;display:grid;place-items:center;font-size:22px;background:rgba(255,255,255,.12);animation:ab3Glow 2.6s ease-in-out infinite}
+    @keyframes ab3Glow{0%,100%{box-shadow:0 0 0 0 rgba(226,184,116,.0)}50%{box-shadow:0 0 22px 2px rgba(226,184,116,.55)}}
+    .ab3-it{position:relative;flex:1;min-width:0}.ab3-it b{display:block;font-size:15px;font-weight:900}.ab3-it small{display:block;margin-top:2px;font-size:12.5px;color:#d4ddff;font-weight:600;line-height:1.4}
+    .ab3-go{position:relative;font-size:24px;color:#e2b874;font-weight:700}
+    .ab3-idea:active{transform:scale(.98)}
+    #ideasOverlay{z-index:60}
+
     @media(prefers-reduced-motion:reduce){.ab3-mc,.ab3-bars i,.ab3-ring .f,.ab3-line path{animation:none!important}.ab3-ring .f{stroke-dashoffset:var(--ab3-off)}.ab3-line path{stroke-dashoffset:0}}
 
     /* v86 — Admin page (A2): coloured tiles, three action cards, panel underneath */
@@ -3012,7 +3021,9 @@ window.addEventListener('load',function(){
     body.dark-mode .lab-chip.ready{background:#123326;color:#5be3a3}body.dark-mode .lab-chip.running{background:#1f2a44;color:#c9d6ff}body.dark-mode .lab-chip.missing{background:#3a171c;color:#ff9aa6}body.dark-mode .lab-chip.archived{background:#1f242c;color:#a7afbf}
 
     /* v87 — Monthly Report page */
-    .mrp-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px;border:1.5px solid #e6e9f1;border-radius:16px}
+    .mrp-head{display:flex;align-items:center;gap:10px;width:100%;padding:14px;border:1.5px solid #e6e9f1;border-radius:16px;background:#fff;font:inherit;text-align:left;cursor:pointer}.mrp-head>div{flex:1;min-width:0}
+    .mrp-arrow{font-size:18px;color:#203c8e;transition:transform .25s ease}.mrp-head[aria-expanded="true"]{margin-bottom:12px}.mrp-head[aria-expanded="true"] .mrp-arrow{transform:rotate(180deg)}
+    body.dark-mode .mrp-arrow{color:#9db5ff}
     .mrp-head b{display:block;font-size:17px;font-weight:900;color:#1d2433}.mrp-head small{color:#8b92a0;font-size:12.5px;font-weight:700}
     .mrp-chip{font-size:11.5px;font-weight:900;padding:4px 10px;border-radius:999px}.mrp-chip.run{background:#fff3dc;color:#a8701c}.mrp-chip.ok{background:#dff5ea;color:#13804f}
     .mrp-what{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 14px}.mrp-what span{font-size:12px;font-weight:800;color:#4b5263;background:#f2f4f9;border-radius:999px;padding:5px 10px}
@@ -3098,6 +3109,8 @@ window.addEventListener('load',function(){
     .phx-more{color:#203c8e;font-weight:900}
     .phx-t{font-size:13px;margin-top:14px}.phx-t th{font-size:10.5px;padding:0 6px 8px}.phx-t td{padding:9px 6px}
     .lab-save{border:1.5px solid #e6e9f1;border-radius:18px;padding:14px;margin-bottom:12px;background:linear-gradient(160deg,#fff8ea,#fff)}
+    .lab-wait{margin:0 0 10px;padding:8px 10px;border-radius:10px;background:#f2f4f9;font-size:12.5px;font-weight:800;color:#6b7385}
+    body.dark-mode .lab-wait{background:#1b212b;color:#a7afbf}
     .lab-save-t{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}.lab-save-t>span{font-size:26px}
     .lab-save-t b{display:block;font-size:15px;color:#1d2433}.lab-save-t small{display:block;color:#6b7385;font-size:12.5px;line-height:1.45;margin-top:2px}
     body.dark-mode .phx-item,body.dark-mode .lab-save{background:#151a22;border-color:#2a313c}
@@ -3129,6 +3142,8 @@ window.addEventListener('load',function(){
     .sh-total{display:flex;align-items:baseline;gap:8px;margin:12px 0}.sh-total b{font-size:34px;font-weight:900;color:#203c8e;letter-spacing:-.02em}.sh-total span{font-size:13px;font-weight:800;color:#6b7385}
     .sh-bars{display:grid;gap:8px}.sh-row{display:grid;grid-template-columns:90px 1fr 34px;gap:8px;align-items:center;font-size:13px;font-weight:800;color:#1d2433}
     .sh-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sh-row i{height:10px;border-radius:6px;background:#eef0f5;overflow:hidden}.sh-row u{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#25d366,#13804f)}.sh-row b{text-align:right}
+    .sh-reset{margin-top:14px;width:100%;border:1.5px dashed #e0a3a8;background:#fff6f6;color:#c2382f;border-radius:12px;padding:10px;font:inherit;font-size:13px;font-weight:900;cursor:pointer}.sh-reset:disabled{opacity:.5}
+    body.dark-mode .sh-reset{background:#2a1a1d;border-color:#6b3a40;color:#ff9aa3}
     .sh-kinds{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.sh-kinds span{font-size:12px;font-weight:700;color:#4b5263;background:#f2f4f9;border-radius:999px;padding:5px 10px}.sh-kinds b{color:#1d2433}
     body.dark-mode .sh-row{color:#fff}body.dark-mode .sh-row i{background:#252b35}body.dark-mode .sh-kinds span{background:#1b212b;color:#c3c9d6}body.dark-mode .sh-kinds b,body.dark-mode .sh-total b{color:#fff}
   </style>
@@ -3294,11 +3309,6 @@ window.addEventListener('load',function(){
       <input type="hidden" id="notificationSoundSetting" value="default">
     </div>
 
-    <div class="sk-group-title">Feedback</div>
-    <div class="sk-card">
-      <button class="sk-row" type="button" onclick="openIdeas()"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg></span><span class="sk-row-text"><b>Suggest an idea</b><small>Send an idea or a problem. Only the SEKNA admin sees it.</small></span><span class="sk-row-go">›</span></button>
-    </div>
-
     <button class="sk-primary-btn" type="button" onclick="closeSettings()">Done</button>
   </section>
 </div>
@@ -3330,6 +3340,7 @@ window.addEventListener('load',function(){
     </div>
     <p class="ab3-text">Your central workspace for media planning, campaign monitoring, reporting and smart tools. Built to help our team manage clients, make faster data-driven decisions and create greater impact — together.</p>
     <div class="ab3-pills"><span>Media planning</span><span>Campaign monitoring</span><span>Reporting</span><span>Smart tools</span></div>
+    <button type="button" class="ab3-idea" onclick="openIdeas()"><span class="ab3-bulb">💡</span><span class="ab3-it"><b>Have an idea for SEKNA?</b><small>Tell us what would make your day easier. Every idea is read.</small></span><span class="ab3-go">›</span></button>
     <div class="ab3-credit">Designed &amp; developed by <b>Ibrahim Amin</b></div>
     <div class="sk-version ab3-ver">SEKNA Dashboard • v87</div>
   </section>
@@ -7257,7 +7268,7 @@ function logShareQuiet(kind){
 
  
 const MP_W=1080, MP_H=1527;
-let MR={pages:null,pdf:null,busy:'',msg:'',people:null,notes:'',sig:''};
+let MR={open:false,pages:null,pdf:null,busy:'',msg:'',people:null,notes:'',sig:''};
 const mpAcc=(a,p)=>p>0?Math.max(0,1-Math.abs(a-p)/p):null;
 function mpPct(v){return v==null||!isFinite(v)?'—':Math.round(v*100)+'%'}
 function mpK(v){v=Number(v)||0;return v>=1e6?'£'+(v/1e6).toFixed(2)+'M':v>=1e4?'£'+(v/1e3).toFixed(1)+'k':money(v)}
@@ -7477,7 +7488,9 @@ function drawMonthlyReport(){
  const live=days.filter(x=>x.actual).length, label=days[0]?monthName(days[0].date.slice(0,7),true):'This month';
  const ppl=MR.people||[];
  const notes=document.getElementById('mrNotes');if(notes)MR.notes=notes.value;
- body.innerHTML=`<div class="mrp-head"><div><b>${esc(label)}</b><small>${live} of ${days.length} days in${live<days.length?' · the month is still running':' · complete'}</small></div><span class="mrp-chip ${live<days.length?'run':'ok'}">${live<days.length?'Running':'Ready'}</span></div>
+ const head=`<button type="button" class="mrp-head" onclick="MR.open=!MR.open;drawMonthlyReport()" aria-expanded="${MR.open?'true':'false'}"><div><b>📄 ${esc(label)} report</b><small>${live} of ${days.length} days in${live<days.length?' · the month is still running':' · complete'}</small></div><span class="mrp-chip ${live<days.length?'run':'ok'}">${live<days.length?'Running':'Ready'}</span><span class="mrp-arrow">▾</span></button>`;
+ if(!MR.open){body.innerHTML=head;return}
+ body.innerHTML=`${head}
   <div class="mrp-what"><span>📊 Results</span><span>🧭 Accuracy</span><span>📅 Types by week</span><span>🌙 Same Hijri month last year</span><span>📝 Notes</span><span>💙 Thank-you page</span></div>
   <label class="mrp-lbl" for="mrNotes">Notes for the team (optional, one per line)</label>
   <textarea id="mrNotes" class="mrp-notes" rows="3" placeholder="e.g. Gaza Emergency appeal launched on the 9th" oninput="MR.notes=this.value">${esc(MR.notes)}</textarea>
@@ -7529,9 +7542,11 @@ function drawLabSave(){
  const host=document.getElementById('labSave');if(!host)return;
  if(!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)){host.innerHTML='';return}
  const days=(DASH_DATA&&DASH_DATA.dayPlan)||[], label=days[0]?monthName(days[0].date.slice(0,7),true):'this month';
+ const live=days.filter(x=>x.actual).length, done=days.length>0&&live>=days.length;
  host.innerHTML=`<div class="lab-save"><div class="lab-save-t"><span>🏛️</span><div><b>Save ${esc(label)} to Plan History</b><small>Keeps the month's plan and what we achieved as our reference. Do it on the last day, before the new month's plan goes into the sheet.</small></div></div>
   ${LAB_SAVE.msg?`<div class="mrp-msg">${LAB_SAVE.msg}</div>`:''}
-  <button type="button" class="lab-go" onclick="labSavePlan()" ${LAB_SAVE.busy?'disabled':''}>${LAB_SAVE.busy?'<span class="lab-spin"></span>Saving…':'Save to Plan History'}</button></div>`;
+  ${done?'':`<div class="lab-wait">🔒 Opens when the month is closed: ${live} of ${days.length} days are in.</div>`}
+  <button type="button" class="lab-go" onclick="labSavePlan()" ${LAB_SAVE.busy||!done?'disabled':''}>${LAB_SAVE.busy?'<span class="lab-spin"></span>Saving…':'Save to Plan History'}</button></div>`;
 }
 function labSavePlan(){
  if(LAB_SAVE.busy)return;
@@ -7556,7 +7571,7 @@ function drawIdeas(){
  const t=document.getElementById('ideaTitle'),x=document.getElementById('ideaText');
  const keep=[t?t.value:'',x?x.value:''];
  const mine=IDEAS.mine;
- body.innerHTML=`<div class="id-card"><div class="id-lock">🔒 Only the SEKNA admin can read what you send.</div>
+ body.innerHTML=`<div class="id-card">
   <input id="ideaTitle" class="id-in" maxlength="120" placeholder="Title (optional)">
   <textarea id="ideaText" class="id-in" rows="5" maxlength="3000" placeholder="Your idea, or a problem you found…"></textarea>
   ${IDEAS.msg?`<div class="mrp-msg">${IDEAS.msg}</div>`:''}
@@ -7593,7 +7608,14 @@ function adminSharesHtml(){
  return `<b class="ad-h">💬 WhatsApp shares · ${esc(monthName(s.month,true))}</b><small class="ad-sub">Each time someone prepares a WhatsApp image. WhatsApp does not tell us if it was then sent.</small>
   <div class="sh-total"><b>${s.total}</b><span>image${s.total===1?'':'s'} this month</span></div>
   ${s.people.length?`<div class="sh-bars">${s.people.map(p=>`<div class="sh-row"><span>${esc(p.name)}</span><i><u style="width:${(p.n/max*100).toFixed(1)}%"></u></i><b>${p.n}</b></div>`).join('')}</div>
-  <div class="sh-kinds">${s.kinds.map(k=>`<span>${esc(SHARE_NAMES[k.kind]||k.kind)} <b>${k.n}</b></span>`).join('')}</div>`:'<div class="sk-admin-empty">No shares yet this month.</div>'}`;
+  <div class="sh-kinds">${s.kinds.map(k=>`<span>${esc(SHARE_NAMES[k.kind]||k.kind)} <b>${k.n}</b></span>`).join('')}</div>`:'<div class="sk-admin-empty">No shares yet this month.</div>'}
+  <button type="button" class="sh-reset" onclick="adminResetShares(this)">↺ Reset share counts to zero</button>`;
+}
+function adminResetShares(btn){
+ if(!confirm('Reset all WhatsApp share counts to zero? This cannot be undone.'))return;
+ if(btn){btn.disabled=true;btn.textContent='Resetting…'}
+ serverCall('adminResetShares',getAccessToken()).then(()=>{ADMIN_SHARES=null;adminLoadExtra('shares');if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})
+  .catch(err=>{if(btn){btn.disabled=false;btn.textContent='↺ Reset share counts to zero'}alert(errorText(err))});
 }
 function adminIdeasHtml(){
  const L=ADMIN_IDEAS;
