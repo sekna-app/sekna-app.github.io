@@ -4287,7 +4287,7 @@ function renderLab(){
 }
 function loadLab(){
  const body=document.getElementById('labBody');
- body.innerHTML='<div class="dx-empty">Checking the 2026 tab…</div>';
+ body.innerHTML='<div class="dx-empty">Checking the current month tab…</div>';
  serverCall('adminArchiveStatus',getAccessToken(),CURRENT_ACCOUNT).then(r=>{LAB_STATE=Object.assign({account:CURRENT_ACCOUNT},r);if(CURRENT_TAB==='lab')drawLab()})
   .catch(err=>{if(/SEKNA_ADMIN_ONLY/.test(errorText(err))){ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE,{isAdmin:false});renderLab();return}
    body.innerHTML=`<div class="dx-empty">${esc(errorText(err))}</div>`});
@@ -4299,7 +4299,7 @@ function drawLab(){
  const rows=st.months.map(m=>`<div class="lab-row ${m.status}"><div class="lab-m"><b>${esc(monthName(m.key,true))}</b><small>${m.have} of ${m.need} days · ${fmt(m.rows,0)} rows${m.status==='missing'?` · missing day ${m.missing.slice(0,8).join(', ')}${m.missing.length>8?'…':''}`:''}</small></div><span class="lab-chip ${m.status}">${label[m.status]}</span></div>`).join('');
  body.innerHTML=`<div class="lab-box">
    <div class="lab-head"><div><b>Archive closed months</b><small>Moves every complete month from <em>${esc(st.sourceName)}</em> to <em>${esc(st.archiveName)}</em> (${fmt(st.archiveRows,0)} rows). A month moves only when it is over and all its days are there.</small></div></div>
-   <div class="lab-list">${rows||'<div class="dx-empty">The 2026 tab is empty.</div>'}</div>
+   <div class="lab-list">${rows||'<div class="dx-empty">The current month tab is empty.</div>'}</div>
    ${LAB_MSG?`<div class="lab-msg">${LAB_MSG}</div>`:''}
    <div class="lab-actions"><button type="button" class="pk-ghost" onclick="LAB_MSG='';loadLab()" ${LAB_BUSY?'disabled':''}>Refresh</button>
    <button type="button" class="lab-go" onclick="labMove()" ${ready.length&&!LAB_BUSY?'':'disabled'}>${LAB_BUSY?'Moving…':ready.length?`Move ${ready.length} complete month${ready.length>1?'s':''}`:'Nothing ready to move'}</button></div></div>`;
@@ -4308,7 +4308,7 @@ function labMove(){
  const ready=LAB_STATE.months.filter(m=>m.status==='ready');
  if(!ready.length||LAB_BUSY)return;
  const list=ready.map(m=>`${monthName(m.key,true)} (${fmt(m.rows,0)} rows)`).join('\n');
- if(!confirm(`Move these months to the archive?\n\n${list}\n\nThe rows go under the last row of the archive, then they are removed from the 2026 tab.`))return;
+ if(!confirm(`Move these months to the archive?\n\n${list}\n\nThe rows go under the last row of the archive, then they are removed from ${LAB_STATE.sourceName.trim()}.`))return;
  LAB_BUSY=true; drawLab();
  serverCall('adminArchiveMove',getAccessToken(),CURRENT_ACCOUNT).then(r=>{
    LAB_BUSY=false;
