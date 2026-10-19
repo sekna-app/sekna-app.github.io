@@ -6886,7 +6886,7 @@ function renderPastYears(){
  if(ys.length<2){body.innerHTML='<div class="dx-empty">No earlier year has data for this Hijri day yet.</div>';return}
  if(PY_PICK===null)PY_PICK=ys[1].dk;
  const win=ys.reduce((a,b)=>b.s.value>a.s.value?b:a);
- const yr=y=>y.back?y.dk.slice(0,4):'Today';
+ const yr=y=>y.dk.slice(0,4);
  const day=dk=>shortDay(dk).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
  const chip=(a,b,low)=>{if(b==null||!b)return '<span class="py-chip n">first year</span>';const dd=a/b-1,g=low?dd<=0:dd>=0;return `<span class="py-chip ${g?'g':'r'}">${dd>=0?'▲':'▼'} ${percent(Math.abs(dd))}</span>`};
  const dl=(a,b)=>{if(b==null||!b)return '';const dd=a/b-1;return `<em class="${dd>=0?'g':'r'}">${dd>=0?'▲':'▼'}${Math.abs(Math.round(dd*100))}%</em>`};
@@ -6903,7 +6903,7 @@ function renderPastYears(){
    const typeBlock=types.length?`<div class="py-lbl">By campaign type</div><div class="py-mix">${[...types].sort((m,n)=>m.k-n.k).map(t=>`<i class="m${t.k}" style="flex:${t.c.spend/tot}"></i>`).join('')}</div>
      <div class="py-tl2"><span class="py-h"></span><span class="py-h c">Spend · Conv. · Value</span><span class="py-h">ROAS</span>${byRoas.map(t=>`<span class="py-tn"><i class="m${t.k}"></i>${esc(CHANNEL_SHORT[t.n]||t.n)}</span><span class="py-ts"><b>${money(t.c.spend)}</b><i>·</i><b>${fmt(t.c.conversions,0)}</b><i>·</i><b>${money(t.c.value)}</b></span><span class="py-chip ${t.r!=null&&t.r>=(a.roas||0)?'g':'r'}">${t.r!=null?fmt(t.r,2)+'x':'—'}</span>`).join('')}</div>`:'';
    return `<div class="py-c2${y.back?'':' today'}${isWin?' win':''}${open?' open':''}" onclick="pyPick('${y.dk}')">
-     <div class="py-badge">${y.back?y.dk.slice(0,4):'Today'}<small>${isWin?'🏆 WIN':esc(shortDay(y.dk).toLocaleDateString('en-GB',{day:'numeric',month:'short'}))}</small></div>
+     <div class="py-badge">${yr(y)}<small>${isWin?'🏆 WIN':esc(shortDay(y.dk).toLocaleDateString('en-GB',{day:'numeric',month:'short'}))}</small></div>
      <div class="py-main"><div class="py-v"><b>${money(a.value)}</b>${isWin?'<span class="py-winb">Winner</span>':chip(a.value,b&&b.value)}</div>
        <div class="py-bar"><i style="width:${(a.value/maxV*100).toFixed(1)}%"></i></div>
        <div class="py-st"><span>Spend <b>${money(a.spend)}</b>${dl(a.spend,b&&b.spend)}</span><span>Conv. <b>${fmt(a.conversions,0)}</b>${dl(a.conversions,b&&b.conversions)}</span><span>ROAS <b>${fmt(a.roas,2)}x</b>${dl(a.roas,b&&b.roas)}</span></div></div>
