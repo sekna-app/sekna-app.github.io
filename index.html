@@ -3010,7 +3010,128 @@ window.addEventListener('load',function(){
     body.dark-mode .lab-box{background:#151a22;border-color:#2a313c}body.dark-mode .lab-head b,body.dark-mode .lab-m b,body.dark-mode .lab-locked b,body.dark-mode .lab-msg{color:#fff}
     body.dark-mode .lab-row{border-color:#252a32}body.dark-mode .lab-msg{background:#11161e}body.dark-mode .lab-go{background:#3d6bff}
     body.dark-mode .lab-chip.ready{background:#123326;color:#5be3a3}body.dark-mode .lab-chip.running{background:#1f2a44;color:#c9d6ff}body.dark-mode .lab-chip.missing{background:#3a171c;color:#ff9aa6}body.dark-mode .lab-chip.archived{background:#1f242c;color:#a7afbf}
-</style>
+
+    /* v87 — Monthly Report page */
+    .mrp-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px;border:1.5px solid #e6e9f1;border-radius:16px}
+    .mrp-head b{display:block;font-size:17px;font-weight:900;color:#1d2433}.mrp-head small{color:#8b92a0;font-size:12.5px;font-weight:700}
+    .mrp-chip{font-size:11.5px;font-weight:900;padding:4px 10px;border-radius:999px}.mrp-chip.run{background:#fff3dc;color:#a8701c}.mrp-chip.ok{background:#dff5ea;color:#13804f}
+    .mrp-what{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 14px}.mrp-what span{font-size:12px;font-weight:800;color:#4b5263;background:#f2f4f9;border-radius:999px;padding:5px 10px}
+    .mrp-lbl{display:block;font-size:12px;font-weight:800;color:#6b7385;margin:0 0 6px}
+    .mrp-notes{width:100%;box-sizing:border-box;border:1.5px solid #e6e9f1;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;resize:vertical;background:#fff;color:#1d2433}
+    .mrp-thumbs{display:flex;gap:10px;overflow-x:auto;padding:12px 2px 6px}.mrp-thumbs img{height:170px;border-radius:8px;box-shadow:0 6px 16px rgba(17,24,43,.16);border:1px solid #e6e9f1}
+    .mrp-busy{display:flex;align-items:center;gap:6px;margin-top:12px;font-size:13px;font-weight:800;color:#203c8e}
+    .lab-spin.dark{border-color:rgba(32,60,142,.25);border-top-color:#203c8e}
+    .mrp-msg{margin-top:12px;padding:10px 12px;border-radius:12px;background:#f2f4f9;font-size:13.5px;font-weight:700;color:#1d2433}.mrp-msg a{color:#203c8e;font-weight:900}
+    .mrp-acts{display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:8px;margin-top:14px}
+    .mrp-btn{border:0;border-radius:12px;padding:12px 10px;font:inherit;font-size:13.5px;font-weight:900;background:#203c8e;color:#fff;cursor:pointer}.mrp-btn.ghost{background:#eef1f8;color:#203c8e}.mrp-btn:disabled{opacity:.45;cursor:default}
+    .mrp-ppl{margin-top:10px;font-size:12px;color:#8b92a0;font-weight:700}
+    @media (max-width:560px){.mrp-acts{grid-template-columns:1fr 1fr}.mrp-acts .mrp-btn:last-child{grid-column:1/-1}}
+    body.dark-mode .mrp-head,body.dark-mode .mrp-notes{background:#151a22;border-color:#2a313c;color:#fff}body.dark-mode .mrp-head b{color:#fff}
+    body.dark-mode .mrp-what span,body.dark-mode .mrp-msg{background:#1b212b;color:#d7dce6}body.dark-mode .mrp-btn.ghost{background:#1b212b;color:#9db5ff}
+
+    /* v87 — PDF pages (A4 at 1080 wide) */
+    .mp-host{position:fixed;left:-40000px;top:0;z-index:-1}
+    .mp-pg{position:relative;width:1080px;height:1527px;box-sizing:border-box;padding:70px 72px 0;overflow:hidden;font-family:Inter,ui-sans-serif,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+    .mp-navy{background:radial-gradient(circle at 85% 0,#3157c9,#1b347f 45%,#0f1f52);color:#fff}
+    .mp-white{background:#fff;color:#1d2433}
+    .mp-top{display:flex;justify-content:space-between;align-items:center}.mp-top img{height:44px}.mp-top b{font-size:34px;letter-spacing:.06em}
+    .mp-top span{font-size:20px;font-weight:800;color:#c9d3f5;border:2px solid rgba(255,255,255,.2);border-radius:999px;padding:8px 18px}
+    .mp-kick{margin-top:70px;font-size:22px;font-weight:900;letter-spacing:.16em;color:#e2b874}
+    .mp-navy h1{margin:10px 0 6px;font-size:96px;line-height:1;letter-spacing:-.04em;font-weight:900}
+    .mp-sub{font-size:24px;font-weight:700;color:#c9d3f5}
+    .mp-acc{display:flex;align-items:center;gap:44px;margin:54px 0 48px}
+    .mp-ring{position:relative;width:260px;height:260px;flex:0 0 260px}.mp-ring svg{display:block}
+    .mp-ring div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .mp-ring b{font-size:64px;font-weight:900;letter-spacing:-.03em}.mp-ring span{font-size:18px;font-weight:800;color:#c9d3f5}
+    .mp-words b{display:block;font-size:40px;line-height:1.15;font-weight:900;letter-spacing:-.02em}.mp-words span{display:block;margin-top:14px;font-size:20px;line-height:1.45;color:#c9d3f5;font-weight:600}
+    .mp-ks{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .mp-k{background:#fff;color:#1d2433;border-radius:28px;padding:26px 28px}
+    .mp-k small{display:block;font-size:19px;font-weight:900;letter-spacing:.06em;color:#6b7385;text-transform:uppercase}
+    .mp-k b{display:block;margin:8px 0 6px;font-size:52px;font-weight:900;letter-spacing:-.03em}
+    .mp-k span{font-size:19px;font-weight:700;color:#8a92a6}.mp-k i{float:right;font-style:normal;font-size:20px;font-weight:900}
+    .mp-hl{margin-top:34px;display:grid;gap:12px}.mp-hl div{font-size:21px;line-height:1.4;font-weight:600;color:#e3e9fb}
+    .mp-foot{position:absolute;left:72px;right:72px;bottom:40px;display:flex;justify-content:space-between;font-size:17px;font-weight:700;opacity:.7}
+    .mp-white .mp-foot{color:#6b7385}
+    .mp-h2 small{display:block;font-size:19px;font-weight:900;letter-spacing:.14em;color:#3d6bff}
+    .mp-h2 b{display:block;margin-top:8px;font-size:38px;line-height:1.15;font-weight:900;letter-spacing:-.02em}
+    .mp-t{width:100%;border-collapse:collapse;margin-top:26px;font-size:21px}
+    .mp-t th{text-align:right;font-size:16px;font-weight:900;letter-spacing:.05em;color:#8a92a6;text-transform:uppercase;padding:0 10px 14px;border-bottom:2px solid #e6e9f1}
+    .mp-t th small{display:block;font-size:14px;letter-spacing:0;text-transform:none;color:#a0a7b8;margin-top:2px}
+    .mp-t td{text-align:right;padding:16px 10px;border-bottom:1px solid #eef0f5;font-weight:700;vertical-align:top}
+    .mp-t .mp-n{text-align:left;font-weight:900;white-space:nowrap}
+    .mp-t td.mp-n i{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:10px;vertical-align:1px}
+    .mp-t i.k0{background:#203c8e}.mp-t i.k1{background:#3d6bff}.mp-t i.k2{background:#22c47c}.mp-t i.k3{background:#c89434}.mp-t i.k4{background:#e0606c}
+    .mp-w td b{display:block;font-size:22px;font-weight:900}.mp-w td small{display:block;font-size:15px;color:#8a92a6;font-weight:700;margin-top:3px}
+    .mp-w td em{display:block;font-style:normal;font-size:15px;font-weight:900;color:#13804f;margin-top:4px}
+    .mp-tot td{background:#f5f7fc;border-bottom:0}
+    .mp-c td{font-size:24px}
+    .mp-chg{font-weight:900;padding:4px 10px;border-radius:999px;font-size:19px}.mp-chg.up{background:#dff5ea;color:#13804f}.mp-chg.down{background:#fde3e1;color:#c2382f}.mp-chg.flat{background:#eef0f5;color:#6b7385}
+    .mp-note{margin-top:16px;font-size:17px;color:#8a92a6;font-weight:600;line-height:1.45}
+    .mp-empty{margin-top:24px;padding:26px;border-radius:20px;background:#f5f7fc;font-size:21px;color:#6b7385;font-weight:700}
+    .mp-notes{margin-top:22px;display:grid;gap:14px}.mp-notes div{font-size:22px;line-height:1.45;font-weight:600;color:#2f3647;padding:16px 20px;border-radius:16px;background:#f5f7fc}
+    .mp-team div{background:#fff8ea;color:#5c4511}
+    .mp-thx{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 110px}
+    .mp-glow{position:absolute;left:50%;top:38%;width:760px;height:760px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(226,184,116,.28),transparent 62%)}
+    .mp-big{position:relative;height:110px;font-size:110px;font-weight:900}
+    .mp-tag{position:relative;margin-top:18px;font-size:24px;font-weight:700;color:#e2b874;letter-spacing:.04em}
+    .mp-thx h2{position:relative;margin:90px 0 22px;font-size:66px;line-height:1.05;letter-spacing:-.03em;font-weight:900}
+    .mp-thx p{position:relative;margin:0;font-size:25px;line-height:1.55;color:#c9d3f5;font-weight:600}
+    .mp-sig{position:relative;margin-top:90px;font-size:22px;color:#c9d3f5;font-weight:700}.mp-sig b{color:#fff}
+    .mp-url{position:relative;margin-top:10px;font-size:20px;color:#8ea2dd;font-weight:700}
+
+    /* v87 — Plan History */
+    .phx-empty{display:grid;justify-items:center;gap:6px;padding:30px 12px;text-align:center}.phx-empty span{font-size:32px}.phx-empty b{font-size:16px;color:#1d2433}.phx-empty small{color:#8b92a0;font-size:13px;max-width:420px;line-height:1.5}
+    .phx-list{display:grid;gap:12px;min-width:0}.phx-list>*{min-width:0}.phx-tw{overflow-x:auto;margin:0 -4px}
+    .phx-item .mp-t td,.phx-item .mp-t .mp-n{color:#1d2433}.phx-item .phx-ms *{min-width:0}
+    .phx-item{border:1.5px solid #e6e9f1;border-radius:20px;padding:16px;cursor:pointer;background:linear-gradient(160deg,#fff,#f7f9fe);transition:box-shadow .2s ease}
+    .phx-item.open{box-shadow:0 12px 30px rgba(32,60,142,.12)}
+    .phx-item.good{border-left:5px solid #22c47c}.phx-item.watch{border-left:5px solid #e9a93b}.phx-item.bad{border-left:5px solid #e0606c}
+    .phx-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+    .phx-top b{display:block;font-size:18px;font-weight:900;color:#1d2433}.phx-top small{color:#8b92a0;font-size:12.5px;font-weight:700}
+    .phx-acc{text-align:right}.phx-acc b{font-size:28px;letter-spacing:-.02em}.phx-acc small{display:block}
+    .phx-item.good .phx-acc b{color:#13804f}.phx-item.watch .phx-acc b{color:#a8701c}.phx-item.bad .phx-acc b{color:#c2382f}
+    .phx-ms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}
+    .phx-m small{display:block;font-size:11px;font-weight:900;color:#8b92a0;letter-spacing:.04em;text-transform:uppercase}
+    .phx-m b{display:block;font-size:16px;font-weight:900;color:#1d2433;margin-top:2px}.phx-m span{display:block;font-size:11.5px;color:#8b92a0;font-weight:700}
+    .phx-m i{display:block;height:6px;border-radius:4px;background:#eef0f5;margin-top:6px;overflow:hidden}.phx-m u{display:block;height:100%;border-radius:4px;background:#3d6bff}
+    .phx-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:12.5px;color:#6b7385;font-weight:700}.phx-foot b{color:#1d2433}
+    .phx-more{color:#203c8e;font-weight:900}
+    .phx-t{font-size:13px;margin-top:14px}.phx-t th{font-size:10.5px;padding:0 6px 8px}.phx-t td{padding:9px 6px}
+    .lab-save{border:1.5px solid #e6e9f1;border-radius:18px;padding:14px;margin-bottom:12px;background:linear-gradient(160deg,#fff8ea,#fff)}
+    .lab-save-t{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}.lab-save-t>span{font-size:26px}
+    .lab-save-t b{display:block;font-size:15px;color:#1d2433}.lab-save-t small{display:block;color:#6b7385;font-size:12.5px;line-height:1.45;margin-top:2px}
+    body.dark-mode .phx-item,body.dark-mode .lab-save{background:#151a22;border-color:#2a313c}
+    body.dark-mode .phx-top b,body.dark-mode .phx-m b,body.dark-mode .phx-foot b,body.dark-mode .phx-empty b,body.dark-mode .lab-save-t b{color:#fff}
+    body.dark-mode .phx-m i{background:#252b35}body.dark-mode .phx-more{color:#9db5ff}
+    body.dark-mode .phx-t td,body.dark-mode .phx-item .mp-t .mp-n{border-color:#252a32;color:#d7dce6}body.dark-mode .phx-t th{border-color:#2a313c}
+
+    /* v87 — ideas box */
+    .id-card{background:#fff;border:1.5px solid #e6e9f1;border-radius:18px;padding:14px;display:grid;gap:10px}
+    .id-lock{font-size:12.5px;font-weight:800;color:#6b7385;background:#f2f4f9;border-radius:10px;padding:8px 10px}
+    .id-in{width:100%;box-sizing:border-box;border:1.5px solid #e6e9f1;border-radius:12px;padding:11px 12px;font:inherit;font-size:14.5px;background:#fff;color:#1d2433;resize:vertical}
+    .id-list{display:grid;gap:10px}
+    .id-item,.ai-item{background:#fff;border:1.5px solid #e6e9f1;border-radius:16px;padding:12px 14px}
+    .ai-item{margin-top:10px}
+    .id-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}.id-top b{font-size:14.5px;color:#1d2433}
+    .id-item p,.ai-item p{margin:6px 0;font-size:13.5px;line-height:1.5;color:#4b5263;white-space:pre-wrap}
+    .id-st{flex:0 0 auto;font-size:11px;font-weight:900;padding:3px 9px;border-radius:999px;background:#eef1f8;color:#203c8e}
+    .id-st.Planned{background:#fff3dc;color:#a8701c}.id-st.Done{background:#dff5ea;color:#13804f}.id-st.Declined{background:#f2f2f4;color:#8b92a0}.id-st.Reviewing{background:#e8eefc;color:#2453d6}
+    .id-reply{margin-top:8px;padding:9px 11px;border-radius:12px;background:#f5f7fc;font-size:13px;color:#1d2433;white-space:pre-wrap}.id-reply small{display:block;font-size:10.5px;font-weight:900;color:#3d6bff;letter-spacing:.06em;text-transform:uppercase;margin-bottom:2px}
+    .id-when{display:block;font-size:11.5px;color:#a0a7b8;font-weight:700;margin-top:4px}
+    .ai-edit{display:grid;grid-template-columns:auto 1fr auto;gap:6px;margin-top:10px}
+    .ai-edit select,.ai-edit input{border:1.5px solid #e6e9f1;border-radius:10px;padding:7px 8px;font:inherit;font-size:13px;background:#fff;color:#1d2433;min-width:0}
+    .sk-row-go{margin-left:auto;font-size:22px;color:#a0a7b8;font-weight:700}
+    button.sk-row{width:100%;border:0;background:none;font:inherit;text-align:left;color:inherit}
+    body.dark-mode .id-card,body.dark-mode .id-item,body.dark-mode .ai-item,body.dark-mode .id-in,body.dark-mode .ai-edit select,body.dark-mode .ai-edit input{background:#151a22;border-color:#2a313c;color:#fff}
+    body.dark-mode .id-top b{color:#fff}body.dark-mode .id-item p,body.dark-mode .ai-item p{color:#c3c9d6}body.dark-mode .id-lock,body.dark-mode .id-reply{background:#1b212b;color:#d7dce6}
+
+    /* v87 — admin: WhatsApp shares */
+    .sh-total{display:flex;align-items:baseline;gap:8px;margin:12px 0}.sh-total b{font-size:34px;font-weight:900;color:#203c8e;letter-spacing:-.02em}.sh-total span{font-size:13px;font-weight:800;color:#6b7385}
+    .sh-bars{display:grid;gap:8px}.sh-row{display:grid;grid-template-columns:90px 1fr 34px;gap:8px;align-items:center;font-size:13px;font-weight:800;color:#1d2433}
+    .sh-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sh-row i{height:10px;border-radius:6px;background:#eef0f5;overflow:hidden}.sh-row u{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#25d366,#13804f)}.sh-row b{text-align:right}
+    .sh-kinds{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.sh-kinds span{font-size:12px;font-weight:700;color:#4b5263;background:#f2f4f9;border-radius:999px;padding:5px 10px}.sh-kinds b{color:#1d2433}
+    body.dark-mode .sh-row{color:#fff}body.dark-mode .sh-row i{background:#252b35}body.dark-mode .sh-kinds span{background:#1b212b;color:#c3c9d6}body.dark-mode .sh-kinds b,body.dark-mode .sh-total b{color:#fff}
+  </style>
 </head>
 <body>
 <div class="sks" id="skSplash" data-share-ui aria-hidden="true">
@@ -3127,7 +3248,9 @@ window.addEventListener('load',function(){
     <button class="sk-nav-btn active" id="overviewTabBtn" type="button" onclick="switchDashboardTab('overview')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></span><span>Daily Performance</span></button>
     <button class="sk-nav-btn" id="daysTabBtn" type="button" onclick="switchDashboardTab('days')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M8 14h2M12 14h2M16 14h0M8 17h2M12 17h2"/></svg></span><span>Day by Day</span></button>
     <button class="sk-nav-btn" id="channelTabBtn" type="button" onclick="switchDashboardTab('channel')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg></span><span>Channel Delivery</span></button>
+    <button class="sk-nav-btn" id="reportTabBtn" type="button" onclick="switchDashboardTab('report')" hidden><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></svg></span><span>Monthly Report</span></button>
     <button class="sk-nav-btn" id="labTabBtn" type="button" onclick="switchDashboardTab('lab')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-9V3"/><path d="M7.5 15h9"/></svg></span><span>Media Plan Lab</span><span class="sk-nav-lock" id="labNavLock" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span></button>
+    <button class="sk-nav-btn" id="plansTabBtn" type="button" onclick="switchDashboardTab('plans')" hidden><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v4H4zM4 11h16v8H4z"/><path d="M9 15h6"/></svg></span><span>Plan History</span></button>
     <button class="sk-nav-btn" id="ranksTabBtn" type="button" onclick="switchDashboardTab('ranks')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 6h3a3 3 0 0 1-3 4M7 6H4a3 3 0 0 0 3 4"/></svg></span><span>Top &amp; Bottom 5</span></button>
     <button class="sk-nav-btn" id="monthsTabBtn" type="button" onclick="switchDashboardTab('months')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M7 4l-3 3M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/></svg></span><span>Month vs Month</span></button>
   </nav>
@@ -3154,6 +3277,7 @@ window.addEventListener('load',function(){
     <div class="sk-card">
       <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></span><span class="sk-row-text"><b>Dark mode</b><small>Use a darker theme across the dashboard.</small></span><span class="switch"><input id="darkModeToggle" type="checkbox" onchange="saveDashboardSettings()"><span></span></span></label>
       <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span><span class="sk-row-text"><b>Desktop layout</b><small>Show the full computer layout on your phone.</small></span><span class="switch"><input id="desktopViewToggle" type="checkbox" onchange="saveDashboardSettings()"><span></span></span></label>
+      <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></svg></span><span class="sk-row-text"><b>Swipe between pages</b><small>Swipe left or right to move to the next page.</small></span><span class="switch"><input id="swipeToggle" type="checkbox" onchange="setSwipe(this.checked)"><span></span></span></label>
       <div class="sk-row sk-zoom-row" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M11 8v6M8 11h6"/></svg></span><span class="sk-row-text"><b>Layout size</b><small>Make the desktop layout bigger or smaller.</small></span><button type="button" onclick="changeDesktopZoom(-0.25)" aria-label="Smaller">−</button><b data-zoom-label>100%</b><button type="button" onclick="changeDesktopZoom(0.25)" aria-label="Larger">+</button></div>
     </div>
 
@@ -3170,7 +3294,19 @@ window.addEventListener('load',function(){
       <input type="hidden" id="notificationSoundSetting" value="default">
     </div>
 
+    <div class="sk-group-title">Feedback</div>
+    <div class="sk-card">
+      <button class="sk-row" type="button" onclick="openIdeas()"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg></span><span class="sk-row-text"><b>Suggest an idea</b><small>Send an idea or a problem. Only the SEKNA admin sees it.</small></span><span class="sk-row-go">›</span></button>
+    </div>
+
     <button class="sk-primary-btn" type="button" onclick="closeSettings()">Done</button>
+  </section>
+</div>
+
+<div class="app-modal-overlay sk-page" id="ideasOverlay" onclick="closeIdeas(event)" data-share-ui>
+  <section class="app-modal sk-modal id-page" role="dialog" aria-modal="true" aria-labelledby="ideasTitle" onclick="event.stopPropagation()">
+    <div class="sk-modal-head"><div><div class="sk-kicker">FEEDBACK</div><h2 id="ideasTitle">Suggest an idea</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeIdeas()" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button></div>
+    <div id="ideasBody"></div>
   </section>
 </div>
 
@@ -3195,7 +3331,7 @@ window.addEventListener('load',function(){
     <p class="ab3-text">Your central workspace for media planning, campaign monitoring, reporting and smart tools. Built to help our team manage clients, make faster data-driven decisions and create greater impact — together.</p>
     <div class="ab3-pills"><span>Media planning</span><span>Campaign monitoring</span><span>Reporting</span><span>Smart tools</span></div>
     <div class="ab3-credit">Designed &amp; developed by <b>Ibrahim Amin</b></div>
-    <div class="sk-version ab3-ver">SEKNA Dashboard • v86</div>
+    <div class="sk-version ab3-ver">SEKNA Dashboard • v87</div>
   </section>
 </div>
 
@@ -3526,7 +3662,28 @@ window.addEventListener('load',function(){
           <div class="section-sub">Admin tools for the media plan sheet</div>
         </div>
       </div>
+      <div id="labSave"></div>
       <div id="labBody"></div>
+    </section>
+  </div>
+
+  <div class="tab-panel" id="reportPanel">
+    <section class="card section mrp-card">
+      <div class="section-head"><div>
+        <div class="section-title section-title-with-icon"><span class="section-heading-icon month">📄</span><span>Monthly Report</span></div>
+        <div class="section-sub">The month's results as a PDF, emailed to the whole team · only you see this page</div>
+      </div></div>
+      <div id="mrBody"></div>
+    </section>
+  </div>
+
+  <div class="tab-panel" id="plansPanel">
+    <section class="card section phx-card">
+      <div class="section-head"><div>
+        <div class="section-title section-title-with-icon"><span class="section-heading-icon month">🏛️</span><span>Plan History</span></div>
+        <div class="section-sub">Our reference: every month's plan against what we achieved</div>
+      </div></div>
+      <div id="phBody"></div>
     </section>
   </div>
 
@@ -3945,7 +4102,7 @@ function switchAccount(accountKey){
  }
 }
 
-const DASH_TABS=['overview','days','channel','lab','ranks','months'];
+const DASH_TABS=['overview','days','channel','report','lab','plans','ranks','months'];
 function switchDashboardTab(tab){
  const prev=DASH_TABS.indexOf(CURRENT_TAB);
  CURRENT_TAB=DASH_TABS.includes(tab)?tab:'overview';
@@ -4547,6 +4704,8 @@ function renderExtraTab(d){
  else if(CURRENT_TAB==='months')renderMonths(d);
  else if(CURRENT_TAB==='ranks')renderRanks(d);
  else if(CURRENT_TAB==='lab')renderLab();
+ else if(CURRENT_TAB==='report')renderMonthlyReport();
+ else if(CURRENT_TAB==='plans')renderPlanHistory();
 }
 
  
@@ -4695,6 +4854,7 @@ function renderLab(){
  if(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin===false){
    body.innerHTML='<div class="lab-locked"><span>🔒</span><b>Admins only</b><small>Media Plan Lab is open to SEKNA administrators.</small></div>';return;
  }
+ drawLabSave();
  if(!LAB_STATE||LAB_STATE.account!==CURRENT_ACCOUNT){drawLabIdle();return}
  drawLab();
 }
@@ -5689,6 +5849,7 @@ async function shareWhatsApp(tab,btn){
    const html=kind.html();
    if(!html)throw new Error('Nothing to share on this page yet');
    const canvas=await captureReport(html,kind.cls);
+   logShareQuiet(shareKind(tab));
    const blob=await canvasToBlob(canvas);
    const x=DASH_DATA.latest||{};
    const date=[x.monthName||'Media-Plan',x.dayNumber||''].filter(Boolean).join('-');
@@ -6067,6 +6228,7 @@ function updateProfileUI(){
  if(lock)lock.hidden=!!p.isAdmin;
  const labLock=document.getElementById('labNavLock');
  if(labLock)labLock.hidden=!!p.isAdmin;
+ ['reportTabBtn','plansTabBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.hidden=!p.isAdmin});
 }
 
 function openWhatsNew(){
@@ -6170,7 +6332,7 @@ async function adminDeleteRow(id,btn){
 }
 let ADMIN_LAST=null, ADMIN_TAB='';
 
-function adminTab(k){ADMIN_TAB=ADMIN_TAB===k?'':k;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+function adminTab(k){ADMIN_TAB=ADMIN_TAB===k?'':k;if(ADMIN_TAB)adminLoadExtra(ADMIN_TAB);if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function renderAdmin(d){
  ADMIN_LAST=d;
  const rows=(d&&d.rows)||[], now=(d&&d.now)||Date.now(), photos=(d&&d.photos)||{};
@@ -6202,9 +6364,9 @@ function renderAdmin(d){
  const annState=ann?(ann.showFrom&&ann.showFrom>isoDay(0)?'Scheduled':'Showing now'):'None yet';
  const act=(k,ic,bg,t,sub)=>`<button type="button" class="a2-act${ADMIN_TAB===k?' on':''}" onclick="adminTab('${k}')"><span style="background:${bg}">${ic}</span><b>${t}</b><small>${sub}</small></button>`;
  const inviteView=`<div class="a2-sheet"><b class="ad-h">➕ Invite someone</b><small class="ad-sub">They get an email with a link to sign in to SEKNA.</small><form class="ad-invite" style="margin-top:12px" onsubmit="adminInviteSubmit(event)"><input id="adminInviteEmail" type="email" inputmode="email" autocapitalize="off" placeholder="name@company.com" onfocus="setTimeout(()=>this.scrollIntoView({block:'center'}),300)"><button id="adminInviteBtn" type="submit">Send invite</button></form></div>`;
- const sheet=ADMIN_TAB==='invite'?inviteView:ADMIN_TAB==='message'?`<div class="a2-sheet">${adminMessageHtml()}</div>`:ADMIN_TAB==='app'?`<div class="a2-sheet">${adminMaintHtml()}</div>`:'';
+ const sheet=ADMIN_TAB==='invite'?inviteView:ADMIN_TAB==='message'?`<div class="a2-sheet">${adminMessageHtml()}</div>`:ADMIN_TAB==='app'?`<div class="a2-sheet">${adminMaintHtml()}</div>`:ADMIN_TAB==='shares'?`<div class="a2-sheet">${adminSharesHtml()}</div>`:ADMIN_TAB==='ideas'?`<div class="a2-sheet">${adminIdeasHtml()}</div>`:'';
  adminBody(`<div class="a2-tiles">${tile('t1','👥',users.length,'Users')}${tile('t3','⏳',waiting.length,'Waiting for approval')}${tile('t2','✉️',invited,'Invited')}${tile('t4','⚡',today,'Active today')}</div>
-   <div class="a2-acts">${act('app',m.on?'🔴':'🟢',m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message','📣','#e9eefc','Team message',annState)}${act('invite','➕','#fff3dc','Invite','Add someone')}</div>
+   <div class="a2-acts">${act('app',m.on?'🔴':'🟢',m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message','📣','#e9eefc','Team message',annState)}${act('invite','➕','#fff3dc','Invite','Add someone')}${act('shares','💬','#e3f6ec','Shares',ADMIN_SHARES&&ADMIN_SHARES.total!=null?ADMIN_SHARES.total+' this month':'WhatsApp')}${act('ideas','💡','#fff3dc','Ideas',Array.isArray(ADMIN_IDEAS)?(ADMIN_IDEAS.filter(i=>i.status==='New').length+' new'):'From the team')}</div>
    ${sheet}
    ${waiting.length?`<div class="ad-lbl">Waiting for approval</div><div class="ad-card ad-pend">${waiting.map(person).join('')}</div>`:''}
    <div class="ad-lbl">People · ${team.length}</div><div class="ad-card">${team.map(person).join('')||'<div class="sk-admin-empty">No one has requested access yet.</div>'}</div>`);
@@ -6952,7 +7114,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v86',date:'2026-10-19'};
+const DASHBOARD_RELEASE_CLIENT={version:'v87',date:'2026-10-19'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
@@ -7046,6 +7208,412 @@ syncNativeSettings();
 syncNativeDarkMode(getDashboardSettings().dark);
 if(window.SEKNA_WEB)document.body.classList.add('sekna-web');
 startAccess();
+
+ 
+const SWIPE_KEY='sekna_swipe';
+function swipeOn(){return storeGet(SWIPE_KEY)!=='0'}
+function setSwipe(on){storeSet(SWIPE_KEY,on?'1':'0')}
+
+function swipeTabs(){
+ return DASH_TABS.filter(t=>{
+   const b=document.getElementById(t+'TabBtn');
+   if(!b||b.hidden)return false;
+   return !(t==='lab'&&ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin===false);
+ });
+}
+function scrollsSideways(el){
+ for(;el&&el!==document.body;el=el.parentElement){
+   const o=getComputedStyle(el).overflowX;
+   if((o==='auto'||o==='scroll')&&el.scrollWidth>el.clientWidth+2)return true;
+ }
+ return false;
+}
+(function(){
+ let x0=0,y0=0,t0=0,ok=false;
+ document.addEventListener('touchstart',e=>{
+   ok=false;
+   if(!swipeOn()||e.touches.length!==1||document.body.classList.contains('drawer-open'))return;
+   if(document.querySelector('.app-modal-overlay.open'))return;
+   const t=e.target;
+   if(!t.closest||!t.closest('.tab-panel')||t.closest('input,textarea,select,button,a,[data-noswipe]')||scrollsSideways(t))return;
+   ok=true;x0=e.touches[0].clientX;y0=e.touches[0].clientY;t0=Date.now();
+ },{passive:true});
+ document.addEventListener('touchend',e=>{
+   if(!ok)return;ok=false;
+   const p=e.changedTouches[0],dx=p.clientX-x0,dy=p.clientY-y0;
+   
+   if(Date.now()-t0>650||Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*2)return;
+   const tabs=swipeTabs(),i=tabs.indexOf(CURRENT_TAB),next=tabs[i+(dx<0?1:-1)];
+   if(i>=0&&next)switchDashboardTab(next);
+ },{passive:true});
+ const box=document.getElementById('swipeToggle');if(box)box.checked=swipeOn();
+})();
+
+ 
+function logShareQuiet(kind){
+ if(!hasServer())return;
+ serverCall('logShare',getAccessToken(),kind,CURRENT_ACCOUNT).catch(()=>{});
+}
+
+ 
+const MP_W=1080, MP_H=1527;
+let MR={pages:null,pdf:null,busy:'',msg:'',people:null,notes:'',sig:''};
+const mpAcc=(a,p)=>p>0?Math.max(0,1-Math.abs(a-p)/p):null;
+function mpPct(v){return v==null||!isFinite(v)?'—':Math.round(v*100)+'%'}
+function mpK(v){v=Number(v)||0;return v>=1e6?'£'+(v/1e6).toFixed(2)+'M':v>=1e4?'£'+(v/1e3).toFixed(1)+'k':money(v)}
+function mpLogo(){const i=document.querySelector('.sk-drawer-logo');return i?i.src:''}
+function ensureMonthExtras(){
+ const key=CURRENT_ACCOUNT;
+ if(MONTH_EXTRA[key])return Promise.resolve(MONTH_EXTRA[key]);
+ return serverCall('getMonthCompareData',key,getAccessToken()).then(r=>{MONTH_EXTRA[key]=r||{months:{},days:{}};return MONTH_EXTRA[key]});
+}
+
+function mpData(){
+ const d=DASH_DATA||{}, days=d.dayPlan||[];
+ if(!days.length)return null;
+ const {p,a,live}=dayTotals(days);
+ const pt={spend:dxSum(live,x=>x.plan.spend),conversions:a.planConv,value:a.planValue};
+ pt.roas=pt.spend?pt.value/pt.spend:null;
+ const acc={spend:mpAcc(a.spend,pt.spend),conversions:mpAcc(a.conversions,pt.conversions),value:mpAcc(a.value,pt.value)};
+ const accs=Object.values(acc).filter(v=>v!=null);
+ acc.all=accs.length?accs.reduce((x,y)=>x+y,0)/accs.length:null;
+ const month=days[0].date.slice(0,7), meta=accountMeta(d);
+ const ex=MONTH_EXTRA[CURRENT_ACCOUNT]||{days:{}};
+ 
+ const weeks=[[1,7],[8,14],[15,21],[22,28],[29,31]].map(([f,t])=>({f,t,days:days.filter(x=>x.dayNumber>=f&&x.dayNumber<=t)})).filter(w=>w.days.length);
+ const types={};
+ weeks.forEach((w,wi)=>{
+   w.plan=dxSum(w.days,x=>x.plan.value);w.planSpend=dxSum(w.days,x=>x.plan.spend);
+   w.tot={spend:0,conversions:0,value:0};
+   w.days.forEach(x=>{
+     const parts=dayParts(x.date,ex);if(!parts)return;
+     const ch=mergeVideo(parts.channels||{});
+     Object.keys(ch).forEach(n=>{
+       const c=ch[n],row=types[n]||(types[n]={name:n,w:weeks.map(()=>({spend:0,conversions:0,value:0}))});
+       ['spend','conversions','value'].forEach(k=>{row.w[wi][k]+=c[k]||0;w.tot[k]+=c[k]||0});
+     });
+   });
+ });
+ const typeRows=Object.values(types).sort((x,y)=>{const i=CHANNEL_ORDER.indexOf(x.name),j=CHANNEL_ORDER.indexOf(y.name);return (i<0?9:i)-(j<0?9:j)});
+ 
+ const chMap={};
+ (d.channels||[]).forEach(c=>{const n=chName(c.channel),o=chMap[n]||(chMap[n]={name:n,planSpend:0,spend:0,planValue:0,value:0,conversions:0});
+   o.planSpend+=c.planSpend||0;o.spend+=c.actualSpend||0;o.planValue+=c.planValue||0;o.value+=c.actualValue||0;o.conversions+=c.conversions||0});
+ const toDate={};
+ live.forEach(x=>(x.plan.channels||[]).forEach(c=>{const n=chName(c.channel);toDate[n]=(toDate[n]||0)+(c.spend||0)}));
+ Object.values(chMap).forEach(c=>{if(toDate[c.name]!=null)c.planSpend=toDate[c.name]});
+ const chans=Object.values(chMap).map(c=>Object.assign(c,{roas:c.spend?c.value/c.spend:null})).sort((x,y)=>(y.roas||0)-(x.roas||0));
+ 
+ let ly={spend:0,conversions:0,value:0,have:0,from:'',to:''};
+ live.forEach(x=>{const k=hijriDayInYear(x.date,1);if(!k)return;const parts=dayParts(k,ex);if(!ly.from)ly.from=k;ly.to=k;
+   if(parts){ly.have++;ly.spend+=parts.spend||0;ly.conversions+=parts.conversions||0;ly.value+=parts.value||0}});
+ ly.roas=ly.spend?ly.value/ly.spend:null;
+ const best=live.reduce((m,x)=>!m||x.actual.value>m.actual.value?x:m,null);
+ const roasDays=live.filter(x=>x.actual.roas!=null&&x.plan.roas&&x.actual.roas>=x.plan.roas).length;
+ return {d,days,live,p,a,pt,acc,month,meta,weeks,typeRows,chans,ly,best,roasDays,
+   label:monthName(month,true),hijri:`${days[0].hijri||''} – ${days[days.length-1].hijri||''}`,complete:live.length>=days.length};
+}
+function mpWords(m){
+ const v=m.pt.value?m.a.value/m.pt.value:0;
+ return v>=1.05?'An outstanding month — we beat the plan.':v>=.95?'A strong month, right on plan.':v>=.85?'A solid month, close to the plan.':'A month to learn from — and the next one starts now.';
+}
+function mpHighlights(m){
+ const out=[], v=m.pt.value?m.a.value/m.pt.value:null;
+ if(v!=null)out.push(`Conversion value reached ${mpPct(v)} of the plan: ${mpK(m.a.value)} against ${mpK(m.pt.value)}.`);
+ if(m.acc.all!=null)out.push(`Plan accuracy was ${mpPct(m.acc.all)} across spend, conversions and value.`);
+ if(m.best)out.push(`Best day: ${shortDay(m.best.date).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}, ${mpK(m.best.actual.value)} at ${fmt(m.best.actual.roas,2)}x ROAS.`);
+ const top=m.chans.filter(c=>c.spend>0)[0];
+ if(top)out.push(`${CHANNEL_SHORT[top.name]||top.name} led on ROAS at ${fmt(top.roas,2)}x.`);
+ const under=m.chans.filter(c=>c.planSpend>0&&c.spend/c.planSpend<.8).map(c=>CHANNEL_SHORT[c.name]||c.name);
+ if(under.length)out.push(`${under.join(', ')} spent under 80% of plan.`);
+ out.push(`${m.roasDays} of ${m.live.length} days met or beat their ROAS target.`);
+ return out;
+}
+function mpKey(n){const i=CHANNEL_ORDER.indexOf(n);return i<0?(isVideoChannel(n)?4:0):Math.min(i,4)}
+function mpFoot(n){return `<div class="mp-foot"><span><b>SEKNA</b> · Designed &amp; developed by Ibrahim Amin</span><span>${n}</span></div>`}
+function mpRing(v,size,col){
+ const c=document.createElement('canvas'),k=2;c.width=c.height=size*k;
+ const g=c.getContext('2d'),r=(size/2-12)*k,m=size*k/2,f=Math.max(0,Math.min(1,v||0));
+ g.lineWidth=18*k;g.lineCap='round';
+ g.strokeStyle='rgba(255,255,255,.14)';g.beginPath();g.arc(m,m,r,0,Math.PI*2);g.stroke();
+ if(f>0){g.strokeStyle=col;g.beginPath();g.arc(m,m,r,-Math.PI/2,-Math.PI/2+Math.PI*2*f);g.stroke()}
+ return `<img src="${c.toDataURL('image/png')}" width="${size}" height="${size}" alt="">`;
+}
+function mpCover(m){
+ const k=(l,v,plan,r)=>`<div class="mp-k"><small>${l}</small><b>${v}</b><span>Plan ${plan}</span><i style="color:${r==null?'#8a92a6':r>=.95?'#13804f':r>=.85?'#a8701c':'#c2382f'}">${mpPct(r)} of plan</i></div>`;
+ const accCol=m.acc.all>=.9?'#39e29a':m.acc.all>=.8?'#e2b874':'#ff8f8f';
+ return `<div class="mp-pg mp-navy">
+  <div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="">`:'<b>SEKNA</b>'}<span>${esc(m.meta.dashboardTitle)}</span></div>
+  <div class="mp-kick">MEDIA PLAN RESULTS</div>
+  <h1>${esc(m.label)}</h1>
+  <div class="mp-sub">${esc(m.hijri)} · ${m.live.length} of ${m.days.length} days</div>
+  <div class="mp-acc"><div class="mp-ring">${mpRing(m.acc.all,260,accCol)}<div><b>${mpPct(m.acc.all)}</b><span>Plan accuracy</span></div></div>
+   <div class="mp-words"><b>${esc(mpWords(m))}</b><span>Accuracy shows how close the month came to its plan for spend, conversions and value.</span></div></div>
+  <div class="mp-ks">${k('Spend',mpK(m.a.spend),mpK(m.pt.spend),m.pt.spend?m.a.spend/m.pt.spend:null)}${k('Conv.',fmt(m.a.conversions,0),fmt(m.pt.conversions,0),m.pt.conversions?m.a.conversions/m.pt.conversions:null)}${k('Conv. Value',mpK(m.a.value),mpK(m.pt.value),m.pt.value?m.a.value/m.pt.value:null)}${k('ROAS',fmt(m.a.roas,2)+'x',fmt(m.pt.roas,2)+'x',m.pt.roas&&m.a.roas!=null?m.a.roas/m.pt.roas:null)}</div>
+  <div class="mp-hl">${mpHighlights(m).slice(0,4).map(t=>`<div>✦ ${esc(t)}</div>`).join('')}</div>
+  ${mpFoot('1')}
+ </div>`;
+}
+function mpWeeksPage(m){
+ const cell=c=>c&&(c.spend||c.value)?`<b>${mpK(c.value)}</b><small>${c.spend?fmt(c.value/c.spend,2)+'x':'—'} · ${mpK(c.spend)}</small>`:'<small>—</small>';
+ const head=m.weeks.map(w=>`<th>Week ${m.weeks.indexOf(w)+1}<small>${w.f}–${Math.min(w.t,m.days.length)}</small></th>`).join('');
+ const rows=m.typeRows.map(r=>`<tr><td class="mp-n"><i class="k${mpKey(r.name)}"></i>${esc(CHANNEL_SHORT[r.name]||r.name)}</td>${r.w.map(c=>`<td>${cell(c)}</td>`).join('')}</tr>`).join('');
+ const tot=`<tr class="mp-tot"><td class="mp-n">Total</td>${m.weeks.map(w=>`<td>${cell(w.tot)}<em>${w.plan&&w.tot.value?mpPct(w.tot.value/w.plan)+' of plan':''}</em></td>`).join('')}</tr>`;
+ const ch=m.chans.map(c=>`<tr><td class="mp-n"><i class="k${mpKey(c.name)}"></i>${esc(CHANNEL_SHORT[c.name]||c.name)}</td><td>${mpK(c.planSpend)}</td><td>${mpK(c.spend)}</td><td>${c.planSpend?mpPct(c.spend/c.planSpend):'—'}</td><td>${mpK(c.value)}</td><td>${fmt(c.conversions,0)}</td><td><b>${c.roas!=null?fmt(c.roas,2)+'x':'—'}</b></td></tr>`).join('');
+ return `<div class="mp-pg mp-white">
+  <div class="mp-h2"><small>CAMPAIGN TYPES</small><b>${esc(m.label)} by campaign type</b></div>
+  <table class="mp-t"><thead><tr><th class="mp-n">Type</th><th>Plan to date</th><th>Spend</th><th>Of plan</th><th>Value</th><th>Conv.</th><th>ROAS</th></tr></thead><tbody>${ch}</tbody></table>
+  <div class="mp-h2" style="margin-top:44px"><small>WEEK BY WEEK</small><b>Value, ROAS and spend each week</b></div>
+  <table class="mp-t mp-w"><thead><tr><th class="mp-n">Type</th>${head}</tr></thead><tbody>${rows}${tot}</tbody></table>
+  <div class="mp-note">Each cell: conversion value, then ROAS · spend. Weeks run 1–7, 8–14, 15–21, 22–28 and 29 to the end of the month.</div>
+  ${mpFoot('3')}
+ </div>`;
+}
+function mpComparePage(m,notes){
+ const ly=m.ly, row=(l,a,b,f,hi)=>{const ch=b?a/b-1:null;return `<tr><td class="mp-n">${l}</td><td><b>${f(a)}</b></td><td>${b?f(b):'—'}</td><td>${ch==null?'—':`<span class="mp-chg ${hi==null?'flat':(hi?ch>=0:ch<=0)?'up':'down'}">${ch>=0?'▲':'▼'} ${Math.abs(ch*100).toFixed(1)}%</span>`}</td></tr>`};
+ const lyLabel=ly.from?`${shortDay(ly.from).toLocaleDateString('en-GB',{day:'numeric',month:'short'})} – ${shortDay(ly.to).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}`:'';
+ const team=String(notes||'').split('\n').map(s=>s.trim()).filter(Boolean);
+ return `<div class="mp-pg mp-white">
+  <div class="mp-h2"><small>SAME HIJRI MONTH LAST YEAR</small><b>${esc(m.label)} against the same Hijri days a year ago</b></div>
+  ${ly.have?`<table class="mp-t mp-c"><thead><tr><th class="mp-n">Metric</th><th>This year</th><th>Last year</th><th>Change</th></tr></thead><tbody>
+   ${row('Spend',m.a.spend,ly.spend,mpK,null)}${row('Conversions',m.a.conversions,ly.conversions,v=>fmt(v,0),true)}${row('Conversion value',m.a.value,ly.value,mpK,true)}${row('ROAS',m.a.roas,ly.roas,v=>fmt(v,2)+'x',true)}</tbody></table>
+   <div class="mp-note">Last year: ${esc(lyLabel)} · ${ly.have} of ${m.live.length} days had data.</div>`:`<div class="mp-empty">There is no data for the same Hijri days last year.</div>`}
+  <div class="mp-h2" style="margin-top:46px"><small>NOTES</small><b>What stood out this month</b></div>
+  <div class="mp-notes">${mpHighlights(m).map(t=>`<div>✦ ${esc(t)}</div>`).join('')}</div>
+  ${team.length?`<div class="mp-h2" style="margin-top:36px"><small>FROM THE TEAM</small><b>Notes</b></div><div class="mp-notes mp-team">${team.map(t=>`<div>${esc(t)}</div>`).join('')}</div>`:''}
+  ${mpFoot('4')}
+ </div>`;
+}
+function mpThanks(m){
+ return `<div class="mp-pg mp-navy mp-thx">
+  <div class="mp-glow"></div>
+  ${mpLogo()?`<img class="mp-big" src="${mpLogo()}" alt="SEKNA">`:'<b class="mp-big">SEKNA</b>'}
+  <div class="mp-tag">The calm in the campaign.</div>
+  <h2>Thank you, SEKNA team</h2>
+  <p>Every number in this report is the work of a team that plans carefully, watches closely and keeps improving. Thank you for another month of calm, focused work — on to ${esc(monthName(isoAdd(m.days[m.days.length-1].date,1).slice(0,7),true))}.</p>
+  <div class="mp-sig">Designed &amp; developed by <b>Ibrahim Amin</b></div>
+  <div class="mp-url">sekna-app.web.app</div>
+ </div>`;
+}
+let JSPDF_PROMISE=null;
+function ensureJsPdf(){
+ if(window.jspdf&&window.jspdf.jsPDF)return Promise.resolve(window.jspdf.jsPDF);
+ if(!JSPDF_PROMISE)JSPDF_PROMISE=new Promise((resolve,reject)=>{
+   const s=document.createElement('script');
+   s.src='https:\/\/cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+   s.onload=()=>window.jspdf&&window.jspdf.jsPDF?resolve(window.jspdf.jsPDF):reject(new Error('PDF library unavailable'));
+   s.onerror=()=>{JSPDF_PROMISE=null;reject(new Error('Could not load the PDF library. Check the connection.'))};
+   document.head.appendChild(s);
+ });
+ return JSPDF_PROMISE;
+}
+async function mpCapture(html){
+ const h2c=await ensureHtml2Canvas();
+ const host=document.createElement('div');
+ host.className='mp-host';host.setAttribute('data-share-ui','');host.innerHTML=html;
+ document.body.appendChild(host);
+ try{
+   await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+   return await h2c(host.firstElementChild,{scale:1.5,useCORS:true,allowTaint:true,logging:false,scrollX:0,scrollY:0,windowWidth:1800,windowHeight:1800,backgroundColor:null,
+     onclone:doc=>{doc.body.classList.remove('dark-mode','desktop-site-mode','is-sharing');doc.documentElement.classList.remove('desktop-site-mode')}});
+ }finally{host.remove()}
+}
+function mrSig(){return [CURRENT_ACCOUNT,(DASH_DATA&&DASH_DATA.generatedAt)||'',MR.notes].join('|')}
+async function mrBuild(){
+ if(MR.busy)return;
+ MR.busy='Loading last year…';MR.msg='';drawMonthlyReport();
+ try{
+   await ensureMonthExtras();
+   const m=mpData();if(!m)throw new Error('The media plan has no days yet.');
+   const steps=[['Building the cover…',()=>mpCapture(mpCover(m))],
+     ['Adding the Results page…',()=>captureReport(resultsShareHtml(),'rp-narrow')],
+     ['Adding campaign types by week…',()=>mpCapture(mpWeeksPage(m))],
+     ['Adding last year and notes…',()=>mpCapture(mpComparePage(m,MR.notes))],
+     ['Adding the thank-you page…',()=>mpCapture(mpThanks(m))]];
+   const canvases=[];
+   for(let i=0;i<steps.length;i++){MR.busy=`${steps[i][0]} (${i+1}/${steps.length})`;drawMonthlyReport();canvases.push(await steps[i][1]())}
+   MR.busy='Making the PDF…';drawMonthlyReport();
+   const jsPDF=await ensureJsPdf();
+   const doc=new jsPDF({orientation:'p',unit:'pt',format:'a4',compress:true});
+   const W=doc.internal.pageSize.getWidth(),H=doc.internal.pageSize.getHeight();
+   canvases.forEach((c,i)=>{
+     if(i)doc.addPage();
+     const s=Math.min(W/c.width,H/c.height),w=c.width*s,h=c.height*s;
+     
+     if(w<W-1||h<H-1){doc.setFillColor(21,42,102);doc.rect(0,0,W,H,'F')}
+     doc.addImage(c.toDataURL('image/jpeg',.86),'JPEG',(W-w)/2,(H-h)/2,w,h,undefined,'FAST');
+   });
+   MR.pdf=doc.output('datauristring').split(',')[1];
+   MR.pages=canvases.map(c=>{const t=document.createElement('canvas');t.width=240;t.height=Math.round(240*c.height/c.width);t.getContext('2d').drawImage(c,0,0,t.width,t.height);return t.toDataURL('image/jpeg',.8)});
+   MR.m=m;MR.sig=mrSig();MR.busy='';
+ }catch(err){MR.busy='';MR.msg='⚠️ '+esc(errorText(err))}
+ drawMonthlyReport();
+}
+function mrSend(testOnly){
+ const m=MR.m;if(!MR.pdf||!m||MR.busy)return;
+ if(MR.sig!==mrSig()){MR.msg='The notes changed. Press Rebuild PDF first.';drawMonthlyReport();return}
+ const n=testOnly?1:(MR.people||[]).length;
+ if(!testOnly&&!confirm(`Email the ${m.label} report to ${n} ${n===1?'person':'people'}?`))return;
+ MR.busy=testOnly?'Sending a test to you…':`Sending to ${n} people…`;MR.msg='';drawMonthlyReport();
+ const meta={testOnly:!!testOnly,
+   title:`SEKNA · ${m.meta.dashboardTitle} · ${m.label} results`,
+   fileName:`SEKNA-${m.meta.shortLabel}-${m.label.replace(/\s+/g,'-')}-Results`,
+   intro:`Here are the ${m.label} media plan results for ${m.meta.dashboardTitle}. ${mpWords(m)}`,
+   lines:mpHighlights(m).slice(0,3)};
+ serverCall('adminSendMonthlyReport',getAccessToken(),MR.pdf,meta).then(r=>{
+   MR.busy='';MR.msg=r.testOnly?'✅ Test sent to your email.':`✅ Sent to ${r.sent} ${r.sent===1?'person':'people'}.${r.failed&&r.failed.length?' Not sent to: '+esc(r.failed.join(', ')):''}`;drawMonthlyReport();
+ }).catch(err=>{MR.busy='';MR.msg='⚠️ '+esc(errorText(err));drawMonthlyReport()});
+}
+function renderMonthlyReport(){
+ const body=document.getElementById('mrBody');if(!body)return;
+ if(!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)){body.innerHTML='<div class="lab-locked"><span>🔒</span><b>Admins only</b><small>The monthly report is sent by the SEKNA admin.</small></div>';return}
+ if(MR.people===null){MR.people=[];serverCall('adminReportRecipients',getAccessToken()).then(r=>{MR.people=(r&&r.people)||[];drawMonthlyReport()}).catch(()=>{})}
+ if(MR.pdf&&MR.sig!==mrSig()){MR.pdf=null;MR.pages=null}
+ drawMonthlyReport();
+}
+function drawMonthlyReport(){
+ const body=document.getElementById('mrBody');if(!body||CURRENT_TAB!=='report')return;
+ const days=(DASH_DATA&&DASH_DATA.dayPlan)||[];
+ const live=days.filter(x=>x.actual).length, label=days[0]?monthName(days[0].date.slice(0,7),true):'This month';
+ const ppl=MR.people||[];
+ const notes=document.getElementById('mrNotes');if(notes)MR.notes=notes.value;
+ body.innerHTML=`<div class="mrp-head"><div><b>${esc(label)}</b><small>${live} of ${days.length} days in${live<days.length?' · the month is still running':' · complete'}</small></div><span class="mrp-chip ${live<days.length?'run':'ok'}">${live<days.length?'Running':'Ready'}</span></div>
+  <div class="mrp-what"><span>📊 Results</span><span>🧭 Accuracy</span><span>📅 Types by week</span><span>🌙 Same Hijri month last year</span><span>📝 Notes</span><span>💙 Thank-you page</span></div>
+  <label class="mrp-lbl" for="mrNotes">Notes for the team (optional, one per line)</label>
+  <textarea id="mrNotes" class="mrp-notes" rows="3" placeholder="e.g. Gaza Emergency appeal launched on the 9th" oninput="MR.notes=this.value">${esc(MR.notes)}</textarea>
+  ${MR.pages?`<div class="mrp-thumbs">${MR.pages.map((s,i)=>`<img src="${s}" alt="Page ${i+1}">`).join('')}</div>`:''}
+  ${MR.busy?`<div class="mrp-busy"><span class="lab-spin dark"></span>${esc(MR.busy)}</div>`:''}
+  ${MR.msg?`<div class="mrp-msg">${MR.msg}</div>`:''}
+  <div class="mrp-acts">
+   <button type="button" class="mrp-btn ghost" onclick="mrBuild()" ${MR.busy?'disabled':''}>${MR.pages?'Rebuild PDF':'Build PDF'}</button>
+   <button type="button" class="mrp-btn ghost" onclick="mrSend(true)" ${!MR.pdf||MR.busy?'disabled':''}>Send test to me</button>
+   <button type="button" class="mrp-btn" onclick="mrSend(false)" ${!MR.pdf||MR.busy||!ppl.length?'disabled':''}>Send to everyone${ppl.length?` (${ppl.length})`:''}</button>
+  </div>
+  <div class="mrp-ppl">${ppl.length?`Goes to: ${ppl.map(p=>esc(p.name)).join(', ')}`:'Loading who it goes to…'}</div>`;
+}
+
+ 
+let PH={account:'',list:null,open:'',busy:false,msg:''};
+function renderPlanHistory(){
+ const body=document.getElementById('phBody');if(!body)return;
+ if(!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)){body.innerHTML='<div class="lab-locked"><span>🔒</span><b>Admins only</b><small>Plan History is kept by the SEKNA admin.</small></div>';return}
+ if(PH.account!==CURRENT_ACCOUNT){PH={account:CURRENT_ACCOUNT,list:null,open:'',busy:false,msg:''}}
+ if(PH.list===null&&!PH.busy){PH.busy=true;
+   serverCall('getPlanHistory',getAccessToken(),CURRENT_ACCOUNT).then(r=>{PH.busy=false;PH.list=r||[];drawPlanHistory()}).catch(err=>{PH.busy=false;PH.list=[];PH.msg=errorText(err);drawPlanHistory()})}
+ drawPlanHistory();
+}
+function phAcc(s){
+ const p=s.daysLive<s.daysTotal?s.planToDate:s.plan, a=s.actual;
+ const v=[mpAcc(a.spend,p.spend),mpAcc(a.conversions,p.conversions),mpAcc(a.value,p.value)].filter(x=>x!=null);
+ return {p,all:v.length?v.reduce((x,y)=>x+y,0)/v.length:null};
+}
+function phToggle(k){PH.open=PH.open===k?'':k;drawPlanHistory()}
+function drawPlanHistory(){
+ const body=document.getElementById('phBody');if(!body||CURRENT_TAB!=='plans')return;
+ if(PH.list===null){body.innerHTML='<div class="dx-empty"><span class="lab-spin dark"></span>Loading Plan History…</div>';return}
+ if(!PH.list.length){body.innerHTML=`<div class="phx-empty"><span>🏛️</span><b>Nothing saved yet</b><small>At the end of a month, open Media Plan Lab and press <b>Save to Plan History</b>. The month's plan and what we achieved are kept here as our reference.</small>${PH.msg?`<small>⚠️ ${esc(PH.msg)}</small>`:''}</div>`;return}
+ body.innerHTML=`<div class="phx-list">${PH.list.map(s=>{
+   const {p,all}=phAcc(s), a=s.actual, open=PH.open===s.month, col=all>=.9?'good':all>=.8?'watch':'bad';
+   const bar=(l,av,pv,f)=>`<div class="phx-m"><small>${l}</small><b>${f(av)}</b><span>Plan ${f(pv)} · ${pv?mpPct(av/pv):'—'}</span><i><u style="width:${pv?Math.min(100,av/pv*100).toFixed(1):0}%"></u></i></div>`;
+   const ch=(s.channels||[]).map(c=>Object.assign({},c,{n:chName(c.channel)})).sort((x,y)=>(y.roas||0)-(x.roas||0)).map(c=>`<tr><td class="mp-n">${esc(CHANNEL_SHORT[c.channel]||c.n)}</td><td>${mpK(c.planSpend)}</td><td>${mpK(c.spend)}</td><td>${mpPct(mpAcc(c.spend,c.planSpend))}</td><td>${mpK(c.value)}</td><td><b>${c.roas!=null?fmt(c.roas,2)+'x':'—'}</b></td></tr>`).join('');
+   return `<div class="phx-item ${col}${open?' open':''}" onclick="phToggle('${s.month}')">
+    <div class="phx-top"><div><b>${esc(monthName(s.month,true))}</b><small>${esc(s.hijriFrom)} – ${esc(s.hijriTo)}${s.daysLive<s.daysTotal?` · saved on day ${s.daysLive} of ${s.daysTotal}`:''}</small></div><div class="phx-acc"><b>${mpPct(all)}</b><small>accuracy</small></div></div>
+    <div class="phx-ms">${bar('Conv. Value',a.value,p.value,mpK)}${bar('Spend',a.spend,p.spend,mpK)}${bar('Conv.',a.conversions,p.conversions,v=>fmt(v,0))}</div>
+    <div class="phx-foot"><span>ROAS <b>${fmt(a.roas,2)}x</b> · plan ${fmt(p.roas,2)}x</span><span class="phx-more">${open?'Hide types ▲':'By campaign type ▼'}</span></div>
+    ${open?`<div class="phx-tw"><table class="mp-t phx-t"><thead><tr><th class="mp-n">Type</th><th>Plan spend</th><th>Spend</th><th>Accuracy</th><th>Value</th><th>ROAS</th></tr></thead><tbody>${ch}</tbody></table></div>`:''}
+   </div>`}).join('')}</div>`;
+}
+
+let LAB_SAVE={busy:false,msg:''};
+function drawLabSave(){
+ const host=document.getElementById('labSave');if(!host)return;
+ if(!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)){host.innerHTML='';return}
+ const days=(DASH_DATA&&DASH_DATA.dayPlan)||[], label=days[0]?monthName(days[0].date.slice(0,7),true):'this month';
+ host.innerHTML=`<div class="lab-save"><div class="lab-save-t"><span>🏛️</span><div><b>Save ${esc(label)} to Plan History</b><small>Keeps the month's plan and what we achieved as our reference. Do it on the last day, before the new month's plan goes into the sheet.</small></div></div>
+  ${LAB_SAVE.msg?`<div class="mrp-msg">${LAB_SAVE.msg}</div>`:''}
+  <button type="button" class="lab-go" onclick="labSavePlan()" ${LAB_SAVE.busy?'disabled':''}>${LAB_SAVE.busy?'<span class="lab-spin"></span>Saving…':'Save to Plan History'}</button></div>`;
+}
+function labSavePlan(){
+ if(LAB_SAVE.busy)return;
+ LAB_SAVE={busy:true,msg:''};drawLabSave();
+ serverCall('adminSavePlanHistory',getAccessToken(),CURRENT_ACCOUNT).then(s=>{
+   LAB_SAVE={busy:false,msg:`✅ ${esc(monthName(s.month,true))} is saved. <a href="#" onclick="switchDashboardTab('plans');return false">Open Plan History ›</a>`};
+   PH.list=null;PH.account='';drawLabSave();
+ }).catch(err=>{LAB_SAVE={busy:false,msg:'⚠️ '+esc(errorText(err))};drawLabSave()});
+}
+
+ 
+let IDEAS={mine:null,busy:false,msg:''};
+const IDEA_LABEL={New:'Received',Reviewing:'Reviewing',Planned:'Planned',Done:'Done',Declined:'Not now'};
+function openIdeas(){
+ const el=document.getElementById('ideasOverlay');if(el)el.classList.add('open');
+ IDEAS.msg='';drawIdeas();
+ serverCall('myIdeas',getAccessToken()).then(r=>{IDEAS.mine=r||[];drawIdeas()}).catch(()=>{IDEAS.mine=IDEAS.mine||[];drawIdeas()});
+}
+function closeIdeas(e){if(e&&e.target!==e.currentTarget)return;const el=document.getElementById('ideasOverlay');if(el)el.classList.remove('open')}
+function drawIdeas(){
+ const body=document.getElementById('ideasBody');if(!body)return;
+ const t=document.getElementById('ideaTitle'),x=document.getElementById('ideaText');
+ const keep=[t?t.value:'',x?x.value:''];
+ const mine=IDEAS.mine;
+ body.innerHTML=`<div class="id-card"><div class="id-lock">🔒 Only the SEKNA admin can read what you send.</div>
+  <input id="ideaTitle" class="id-in" maxlength="120" placeholder="Title (optional)">
+  <textarea id="ideaText" class="id-in" rows="5" maxlength="3000" placeholder="Your idea, or a problem you found…"></textarea>
+  ${IDEAS.msg?`<div class="mrp-msg">${IDEAS.msg}</div>`:''}
+  <button type="button" class="sk-primary-btn" onclick="sendIdea()" ${IDEAS.busy?'disabled':''}>${IDEAS.busy?'Sending…':'Send'}</button></div>
+  <div class="ad-lbl">Your ideas</div>
+  <div class="id-list">${mine===null?'<div class="sk-admin-empty">Loading…</div>':mine.length?mine.map(i=>`<div class="id-item"><div class="id-top"><b>${esc(i.title||i.text.slice(0,60))}</b><span class="id-st ${i.status}">${IDEA_LABEL[i.status]||esc(i.status)}</span></div>${i.title?`<p>${esc(i.text)}</p>`:''}${i.reply?`<div class="id-reply"><small>SEKNA admin</small>${esc(i.reply)}</div>`:''}<small class="id-when">${esc((i.time||'').slice(0,10))}</small></div>`).join(''):'<div class="sk-admin-empty">You have not sent any ideas yet.</div>'}</div>`;
+ const t2=document.getElementById('ideaTitle'),x2=document.getElementById('ideaText');
+ if(t2)t2.value=keep[0];if(x2)x2.value=keep[1];
+}
+function sendIdea(){
+ const t=document.getElementById('ideaTitle'),x=document.getElementById('ideaText');
+ const text=(x&&x.value||'').trim();
+ if(!text){IDEAS.msg='Please write your idea first.';drawIdeas();return}
+ IDEAS.busy=true;IDEAS.msg='';drawIdeas();
+ serverCall('submitIdea',getAccessToken(),t?t.value:'',text).then(()=>{
+   IDEAS.busy=false;IDEAS.msg='✅ Thank you! The admin will look at it.';
+   const t2=document.getElementById('ideaTitle'),x2=document.getElementById('ideaText');if(t2)t2.value='';if(x2)x2.value='';
+   return serverCall('myIdeas',getAccessToken()).then(r=>{IDEAS.mine=r||[]});
+ }).catch(err=>{IDEAS.busy=false;IDEAS.msg='⚠️ '+esc(errorText(err))}).then(drawIdeas);
+}
+
+ 
+let ADMIN_SHARES=null, ADMIN_IDEAS=null;
+const SHARE_NAMES={daily:'Daily Performance',channel:'Channel Delivery',plan:'Media Plan',results:'Results',report:'Report',compare:'Month vs Month'};
+function adminLoadExtra(k){
+ if(k==='shares'&&!ADMIN_SHARES)serverCall('adminShareStats',getAccessToken()).then(r=>{ADMIN_SHARES=r;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{ADMIN_SHARES={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)});
+ if(k==='ideas'&&!ADMIN_IDEAS)serverCall('adminIdeas',getAccessToken()).then(r=>{ADMIN_IDEAS=r||[];if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{ADMIN_IDEAS={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)});
+}
+function adminSharesHtml(){
+ const s=ADMIN_SHARES;
+ if(!s)return '<b class="ad-h">💬 WhatsApp shares</b><div class="sk-admin-empty">Loading…</div>';
+ if(s.error)return `<b class="ad-h">💬 WhatsApp shares</b><div class="sk-admin-empty">${esc(s.error)}</div>`;
+ const max=Math.max(1,...s.people.map(p=>p.n));
+ return `<b class="ad-h">💬 WhatsApp shares · ${esc(monthName(s.month,true))}</b><small class="ad-sub">Each time someone prepares a WhatsApp image. WhatsApp does not tell us if it was then sent.</small>
+  <div class="sh-total"><b>${s.total}</b><span>image${s.total===1?'':'s'} this month</span></div>
+  ${s.people.length?`<div class="sh-bars">${s.people.map(p=>`<div class="sh-row"><span>${esc(p.name)}</span><i><u style="width:${(p.n/max*100).toFixed(1)}%"></u></i><b>${p.n}</b></div>`).join('')}</div>
+  <div class="sh-kinds">${s.kinds.map(k=>`<span>${esc(SHARE_NAMES[k.kind]||k.kind)} <b>${k.n}</b></span>`).join('')}</div>`:'<div class="sk-admin-empty">No shares yet this month.</div>'}`;
+}
+function adminIdeasHtml(){
+ const L=ADMIN_IDEAS;
+ if(!L)return '<b class="ad-h">💡 Ideas</b><div class="sk-admin-empty">Loading…</div>';
+ if(L.error)return `<b class="ad-h">💡 Ideas</b><div class="sk-admin-empty">${esc(L.error)}</div>`;
+ const opts=s=>['New','Reviewing','Planned','Done','Declined'].map(o=>`<option value="${o}"${o===s?' selected':''}>${IDEA_LABEL[o]}</option>`).join('');
+ return `<b class="ad-h">💡 Ideas · ${L.length}</b><small class="ad-sub">Only you can see these. The sender gets an email when you change the status or reply.</small>
+  ${L.length?L.map(i=>`<div class="ai-item"><div class="id-top"><b>${esc(i.title||'Idea')}</b><span class="id-st ${i.status}">${IDEA_LABEL[i.status]||esc(i.status)}</span></div>
+   <p>${esc(i.text)}</p><small class="id-when">${esc(i.name)} · ${esc(i.email)} · ${esc((i.time||'').slice(0,10))}</small>
+   <div class="ai-edit"><select id="ais-${esc(i.id)}">${opts(i.status)}</select><input id="air-${esc(i.id)}" placeholder="Reply (optional)" value="${esc(i.reply)}"><button type="button" class="sk-mini-btn" onclick="adminIdeaSave('${esc(i.id)}',this)">Save</button></div></div>`).join(''):'<div class="sk-admin-empty">No ideas yet.</div>'}`;
+}
+function adminIdeaSave(id,btn){
+ const st=document.getElementById('ais-'+id),rp=document.getElementById('air-'+id);
+ if(btn){btn.disabled=true;btn.textContent='Saving…'}
+ serverCall('adminIdeaUpdate',getAccessToken(),id,st.value,rp.value).then(()=>{
+   const i=(ADMIN_IDEAS||[]).find(x=>x.id===id);if(i){i.status=st.value;i.reply=rp.value}
+   if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
+ }).catch(err=>{if(btn){btn.disabled=false;btn.textContent='Save'}alert(errorText(err))});
+}
+
 window.SEKNA_READY=true;
 </script>
 <div id="seknaFileEnd" hidden></div>
