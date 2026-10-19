@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Get SEKNA</title>
+<meta name="description" content="SEKNA, the media plan dashboard. Download for Android, or open it on iPhone and the web.">
+<meta name="theme-color" content="#f5f6fa">
+<link rel="icon" href="../icons/favicon-64.png">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f6fa;--card:#fff;--ink:#11182b;--sub:#5d6578;--mute:#8e95a6;--line:#e6e9f1;--blue:#2453d6;--navy:#0a1748;--gold:#c89434;--green:#13804f;--chip:#eef1f8}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+/* top bar */
+.bar{position:sticky;top:0;z-index:10;background:rgba(245,246,250,.86);backdrop-filter:saturate(1.6) blur(14px);-webkit-backdrop-filter:saturate(1.6) blur(14px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;align-items:center;justify-content:space-between;height:56px}
+.bar .brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.01em}
+.bar .brand img{width:30px;height:30px;border-radius:8px}
+.bar .get{background:var(--blue);color:#fff;font-weight:800;font-size:14px;padding:7px 16px;border-radius:999px}
+/* hero */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;padding:34px 0 22px}
+.icon{width:128px;height:128px;border-radius:29px;box-shadow:0 14px 34px rgba(36,83,214,.28),0 0 0 1px rgba(0,0,0,.04)}
+.hero h1{margin:0;font-size:38px;line-height:1.05;letter-spacing:-.03em;font-weight:900}
+.hero .tag{margin:6px 0 2px;font-size:17px;color:var(--sub);font-weight:600}
+.hero .dev{font-size:14px;color:var(--blue);font-weight:700}
+.ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.btn{display:inline-flex;align-items:center;gap:10px;border-radius:14px;padding:12px 18px;font-weight:800;font-size:15px;line-height:1.15;transition:transform .15s ease,box-shadow .15s ease}
+.btn:active{transform:scale(.97)}
+.btn svg{width:22px;height:22px;flex:0 0 22px}
+.btn small{display:block;font-size:11.5px;font-weight:600;opacity:.75}
+.btn.primary{background:var(--blue);color:#fff;box-shadow:0 10px 24px rgba(36,83,214,.3)}
+.btn.ghost{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+/* info strip */
+.info{display:grid;grid-template-columns:repeat(5,1fr);background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 4px;margin:6px 0 30px}
+.info div{text-align:center;padding:0 8px;border-left:1px solid var(--line)}
+.info div:first-child{border-left:0}
+.info small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+.info b{display:block;font-size:19px;font-weight:900;margin:3px 0 0;letter-spacing:-.01em}
+.info span{font-size:12px;color:var(--sub);font-weight:600}
+/* sections */
+h2{font-size:24px;letter-spacing:-.02em;margin:0 0 4px;font-weight:900}
+.lead{color:var(--sub);margin:0 0 16px;font-size:15px}
+section{margin:0 0 38px}
+/* screenshots */
+.shots{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 16px 18px;margin:0 -16px;scrollbar-width:none}
+.shots::-webkit-scrollbar{display:none}
+.shot{flex:0 0 auto;width:218px;scroll-snap-align:start}
+.shot .ph{border-radius:30px;padding:7px;background:#0d1222;box-shadow:0 16px 34px rgba(17,24,43,.18)}
+.shot img{display:block;width:100%;aspect-ratio:390/844;object-fit:cover;object-position:top;border-radius:24px;background:#e9edf6}
+.shot p{margin:10px 2px 0;font-size:13.5px;font-weight:800}
+.shot p span{display:block;font-size:12px;color:var(--mute);font-weight:600}
+/* about */
+.about{display:grid;grid-template-columns:1.25fr 1fr;gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px}
+.card p{margin:0 0 10px;color:#2f3647;font-size:15px}
+.feat{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.feat li{display:grid;grid-template-columns:36px 1fr;gap:12px;align-items:start;font-size:14px;color:var(--sub)}
+.feat li b{display:block;color:var(--ink);font-size:14.5px}
+.feat i{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-style:normal;font-size:17px;background:var(--chip)}
+/* platform cards */
+.plat{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.pc{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;display:flex;flex-direction:column}
+.pc .ph-h{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.pc .ph-h i{width:44px;height:44px;border-radius:13px;display:grid;place-items:center}
+.pc .ph-h i svg{width:24px;height:24px}
+.pc h3{margin:0;font-size:19px;font-weight:900;letter-spacing:-.01em}
+.pc h3 small{display:block;font-size:12.5px;color:var(--mute);font-weight:700;letter-spacing:0}
+.pc ol{margin:6px 0 18px;padding:0;list-style:none;counter-reset:s;display:grid;gap:10px}
+.pc ol li{counter-increment:s;display:grid;grid-template-columns:26px 1fr;gap:10px;font-size:14px;color:var(--sub)}
+.pc ol li:before{content:counter(s);width:26px;height:26px;border-radius:50%;background:var(--chip);color:var(--ink);font-weight:900;font-size:12.5px;display:grid;place-items:center}
+.pc ol b{color:var(--ink)}
+.pc .btn{margin-top:auto;justify-content:center}
+.link{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--chip);border-radius:12px;padding:10px 12px;margin-bottom:12px;font-weight:800;font-size:15px;color:var(--blue)}
+.link button{border:0;background:#fff;color:var(--ink);font:inherit;font-size:12.5px;font-weight:800;padding:6px 10px;border-radius:9px;cursor:pointer}
+/* iPhone steps */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:14px 14px 16px}
+.step .n{display:inline-block;font-size:11px;font-weight:900;letter-spacing:.1em;color:var(--blue);background:#e8eefc;padding:3px 9px;border-radius:999px}
+.step h4{margin:8px 0 2px;font-size:15px;font-weight:900}
+.step p{margin:0 0 12px;font-size:13px;color:var(--sub)}
+.mock{position:relative;border-radius:22px;overflow:hidden;aspect-ratio:9/13;background:#eef1f7;border:1px solid var(--line)}
+/* mock: Safari */
+.sf{position:absolute;inset:0;display:flex;flex-direction:column}
+.sf .pg{flex:1;padding:14px 12px;display:flex;flex-direction:column;gap:8px}
+.sf .pg .l1{height:10px;width:55%;border-radius:5px;background:#cfd6e6}.sf .pg .l2{height:54px;border-radius:12px;background:#fff}.sf .pg .l3{display:grid;grid-template-columns:1fr 1fr;gap:6px}.sf .pg .l3 span{height:44px;border-radius:10px;background:#fff}
+.sf .ad{margin:0 8px 6px;background:#fff;border-radius:12px;padding:7px 10px;font-size:11.5px;font-weight:700;color:#333;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.sf .tb{display:flex;justify-content:space-around;align-items:center;padding:8px 6px 12px;background:#f7f7f9;border-top:1px solid #e1e3ea}
+.sf .tb svg{width:19px;height:19px;stroke:#2f6bff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sf .tb .hl{position:relative}
+.sf .tb .hl:after{content:"";position:absolute;inset:-9px;border-radius:50%;border:2.5px solid #ff9f1c;animation:ping 1.6s ease-out infinite}
+@keyframes ping{0%{transform:scale(.7);opacity:1}100%{transform:scale(1.35);opacity:0}}
+/* mock: share sheet */
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#f2f2f6;border-radius:18px 18px 0 0;padding:10px 10px 14px;box-shadow:0 -6px 20px rgba(0,0,0,.12)}
+.sheet .grab{width:34px;height:4px;border-radius:2px;background:#c8c8cf;margin:0 auto 10px}
+.sheet .row{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:9px 11px;font-size:12px;font-weight:600;color:#222;border-bottom:1px solid #ececf1}
+.sheet .row:first-of-type{border-radius:10px 10px 0 0}.sheet .row:last-of-type{border-radius:0 0 10px 10px;border-bottom:0}
+.sheet .row svg{width:16px;height:16px;stroke:#333;fill:none;stroke-width:1.8}
+.sheet .row.on{background:#fff4e2;box-shadow:inset 0 0 0 2px #ff9f1c;font-weight:800}
+.dim{position:absolute;inset:0;background:rgba(0,0,0,.28)}
+/* mock: home screen */
+.home{position:absolute;inset:0;background:linear-gradient(160deg,#2b4fc7,#0b1a57 70%);padding:18px 14px}
+.home .apps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px 8px}
+.home .apps span{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:8.5px;color:#fff;font-weight:600}
+.home .apps span i{width:100%;aspect-ratio:1;border-radius:22%;background:rgba(255,255,255,.18)}
+.home .apps span.me i{background:url(../icons/icon-192.png) center/cover;box-shadow:0 0 0 2.5px #ff9f1c,0 6px 14px rgba(0,0,0,.3)}
+.home .apps span.me{font-weight:800}
+/* mock: push */
+.mock.push{background:#f2f4f9}
+.mock.push img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:bottom}
+.alert{position:absolute;left:10%;right:10%;top:30%;background:rgba(246,246,248,.97);border-radius:14px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.25);overflow:hidden}
+.alert b{display:block;font-size:12px;padding:12px 10px 4px;line-height:1.3}
+.alert span{display:block;font-size:10.5px;color:#555;padding:0 10px 10px}
+.alert div{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #d9d9de;font-size:12.5px;color:#2f6bff}
+.alert div em{font-style:normal;padding:9px 0}.alert div em+em{border-left:1px solid #d9d9de;font-weight:800;background:#fff4e2}
+/* note + footer */
+.note{display:flex;gap:12px;align-items:flex-start;background:#fff8ea;border:1px solid #f1dfb8;border-radius:16px;padding:14px 16px;font-size:14px;color:#6b5320;margin-top:14px}
+.note b{color:#4d3a10}
+footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--mute);font-size:13.5px}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
+footer b{color:var(--ink)}
+@media (max-width:820px){
+  .steps{grid-template-columns:1fr 1fr}
+  .about,.plat{grid-template-columns:1fr}
+  .info{grid-template-columns:repeat(3,1fr);row-gap:14px}
+  .info div:nth-child(4){border-left:0}
+}
+@media (max-width:520px){
+  .hero{grid-template-columns:1fr;text-align:left;gap:14px;padding-top:24px}
+  .icon{width:96px;height:96px;border-radius:22px}
+  .hero h1{font-size:32px}
+  .ctas .btn{flex:1 1 100%;justify-content:center}
+  .shot{width:190px}
+  .steps{gap:10px}
+  .step{padding:12px}
+}
+</style>
+</head>
+<body>
+<header class="bar"><div class="wrap">
+  <a class="brand" href="#"><img src="../icons/icon-192.png" alt="">SEKNA</a>
+  <a class="get" href="#get">Get</a>
+</div></header>
+
+<main class="wrap">
+  <div class="hero">
+    <img class="icon" src="../icons/icon-512.png" alt="SEKNA app icon">
+    <div>
+      <h1>SEKNA</h1>
+      <div class="tag">The calm in the campaign. Your media plan, live, in your pocket.</div>
+      <div class="dev">Designed &amp; developed by Ibrahim Amin</div>
+      <div class="ctas">
+        <a class="btn primary" href="../get/SEKNA.apk" download="SEKNA-1.2.2.apk">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22a11.5 11.5 0 0 0-9.84 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>
+          <span>Download for Android<small>APK · version 1.2.2 · 2.9 MB</small></span>
+        </a>
+        <a class="btn ghost" href="#iphone">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>
+          <span>iPhone &amp; web<small>sekna-app.web.app</small></span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="info">
+    <div><small>Version</small><b>1.2.2</b><span>Latest</span></div>
+    <div><small>Size</small><b>2.9 MB</b><span>Android</span></div>
+    <div><small>Works on</small><b>Android 7+</b><span>iPhone · web</span></div>
+    <div><small>Updates</small><b>Live</b><span>No re-install</span></div>
+    <div><small>Developer</small><b>I. Amin</b><span>SEKNA</span></div>
+  </div>
+
+  <section>
+    <h2>Screenshots</h2>
+    <p class="lead">Swipe to see the whole app.</p>
+    <div class="shots">
+      <div class="shot"><div class="ph"><img src="../get/shots/home.webp" alt="Daily Performance" loading="lazy"></div><p>Daily Performance<span>Today against target, 14-day trend</span></p></div>
+      <div class="shot"><div class="ph"><img src="../get/shots/types.webp" alt="By Campaign Type" loading="lazy"></div><p>By Campaign Type<span>Ranked by ROAS</span></p></div>
+      <div class="shot"><div class="ph"><img src="../get/shots/years.webp" alt="Same Hijri day" loading="lazy"></div><p>Same Hijri day<span>This day in past years</span></p></div>
+      <div class="shot"><div class="ph"><img src="../get/shots/results.webp" alt="Day by Day results" loading="lazy"></div><p>Day by Day<span>Results against the plan</span></p></div>
+      <div class="shot"><div class="ph"><img src="../get/shots/plan.webp" alt="Media plan" loading="lazy"></div><p>Media Plan<span>Every day of the month</span></p></div>
+      <div class="shot"><div class="ph"><img src="../get/shots/ranks.webp" alt="Top and Bottom 5" loading="lazy"></div><p>Top &amp; Bottom 5<span>Best and worst performers</span></p></div>
+      <div class="shot"><div class="ph"><img src="../get/shots/yoy.webp" alt="Same Hijri Day Last Year" loading="lazy"></div><p>Year on year<span>Same Hijri day last year</span></p></div>
+      <div class="shot"><div class="ph"><img src="../get/shots/home-dark.webp" alt="Dark mode" loading="lazy"></div><p>Dark mode<span>Easy on the eyes at night</span></p></div>
+    </div>
+  </section>
+
+  <section class="about">
+    <div class="card">
+      <h2>About this app</h2>
+      <p>SEKNA turns the media plan into a live dashboard. Spend, conversions, conversion value and ROAS for every day, checked against the plan, with the campaign types, projects and keywords behind them.</p>
+      <p>Compare any month, see the same Hijri day in past years, and share any view to WhatsApp as a clean image with a ready-made caption.</p>
+      <p style="margin:0">The app updates itself: new features appear the next time you open it, with nothing to re-install.</p>
+    </div>
+    <div class="card">
+      <ul class="feat">
+        <li><i>📈</i><div><b>Live daily numbers</b>Today against target, at a glance</div></li>
+        <li><i>🗓️</i><div><b>Plan vs results</b>Day by day, month by month</div></li>
+        <li><i>🌙</i><div><b>Hijri aware</b>Compare the same Hijri day each year</div></li>
+        <li><i>💬</i><div><b>Share to WhatsApp</b>Images and captions in one tap</div></li>
+        <li><i>🔔</i><div><b>Notifications</b>New data and team messages</div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="get">
+    <h2>Get SEKNA</h2>
+    <p class="lead">Android has its own app. On iPhone and computers, SEKNA runs from the web and installs to the Home Screen.</p>
+    <div class="plat">
+      <div class="pc">
+        <div class="ph-h"><i style="background:#e5f6ec;color:#1f9d5c"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22a11.5 11.5 0 0 0-9.84 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg></i><h3>Android<small>Recommended for Android phones</small></h3></div>
+        <ol>
+          <li><span>Tap <b>Download for Android</b> and open the file.</span></li>
+          <li><span>If asked, allow <b>Install unknown apps</b> for your browser.</span></li>
+          <li><span>Tap <b>Install</b>, open SEKNA and sign in. Allow notifications when asked.</span></li>
+        </ol>
+        <a class="btn primary" href="../get/SEKNA.apk" download="SEKNA-1.2.2.apk"><span>Download APK · 2.9 MB</span></a>
+      </div>
+      <div class="pc" id="iphone">
+        <div class="ph-h"><i style="background:#e8eefc;color:var(--blue)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg></i><h3>iPhone &amp; web<small>iPhone, iPad, Mac and Windows</small></h3></div>
+        <div class="link"><span>sekna-app.web.app</span><button type="button" onclick="copyLink(this)">Copy</button></div>
+        <ol>
+          <li><span>On iPhone, open the link in <b>Safari</b>.</span></li>
+          <li><span>Add it to your <b>Home Screen</b>, as shown below.</span></li>
+          <li><span>Open SEKNA from the Home Screen and turn on <b>notifications</b>.</span></li>
+        </ol>
+        <a class="btn ghost" href="https://sekna-app.web.app/"><span>Open SEKNA on the web</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Install on iPhone</h2>
+    <p class="lead">Four taps. After this SEKNA opens full screen like any other app, and can send notifications.</p>
+    <div class="steps">
+      <div class="step"><span class="n">STEP 1</span><h4>Tap Share</h4><p>Open sekna-app.web.app in Safari, then tap the Share button.</p>
+        <div class="mock"><div class="sf"><div class="pg"><span class="l1"></span><span class="l2"></span><div class="l3"><span></span><span></span></div><div class="l3"><span></span><span></span></div></div>
+          <div class="ad">🔒 sekna-app.web.app</div>
+          <div class="tb"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg><span class="hl"><svg viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></span><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/></svg><svg viewBox="0 0 24 24"><rect x="5" y="5" width="11" height="11" rx="2"/><path d="M9 19h10V9"/></svg></div></div></div></div>
+      <div class="step"><span class="n">STEP 2</span><h4>Add to Home Screen</h4><p>Scroll the list and tap Add to Home Screen, then Add.</p>
+        <div class="mock"><div class="dim"></div><div class="sheet"><div class="grab"></div>
+          <div class="row">Copy<svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V6a2 2 0 0 1 2-2h10"/></svg></div>
+          <div class="row">Add to Reading List<svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4"/><circle cx="17" cy="12" r="4"/></svg></div>
+          <div class="row on">Add to Home Screen<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg></div>
+          <div class="row">Find on Page<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg></div></div></div></div>
+      <div class="step"><span class="n">STEP 3</span><h4>Open from Home Screen</h4><p>SEKNA now has its own icon. Always open it from there.</p>
+        <div class="mock"><div class="home"><div class="apps"><span><i></i>Mail</span><span><i></i>Photos</span><span><i></i>Maps</span><span><i></i>Notes</span><span><i></i>Clock</span><span class="me"><i></i>SEKNA</span><span><i></i>Music</span><span><i></i>Files</span></div></div></div></div>
+      <div class="step"><span class="n">STEP 4</span><h4>Turn on notifications</h4><p>Tap Turn on in SEKNA, then Allow. You can change it later in Settings.</p>
+        <div class="mock push"><img src="../get/shots/push.webp" alt="" loading="lazy"><div class="dim"></div><div class="alert"><b>“SEKNA” Would Like to Send You Notifications</b><span>Notifications may include alerts, sounds and icon badges.</span><div><em>Don’t Allow</em><em>Allow</em></div></div></div></div>
+    </div>
+    <div class="note"><span>💡</span><div><b>Use Safari on iPhone.</b> Notifications on iPhone only work after SEKNA is added to the Home Screen and opened from its icon (iOS 16.4 or newer).</div></div>
+  </section>
+</main>
+
+<footer><div class="wrap">
+  <span><b>SEKNA</b> · The calm in the campaign.</span>
+  <span>Designed &amp; developed by <b>Ibrahim Amin</b></span>
+</div></footer>
+
+<script>
+function copyLink(btn){
+  var url='https://sekna-app.web.app/';
+  var done=function(){btn.textContent='Copied';setTimeout(function(){btn.textContent='Copy'},1600)};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(done,function(){prompt('Copy this link',url)});
+  else prompt('Copy this link',url);
+}
+</script>
+</body>
+</html>
