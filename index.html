@@ -2533,6 +2533,34 @@ window.addEventListener('load',function(){
     body.dark-mode .py-badge{background:#1d2440;color:#9db4ff}body.dark-mode .py-c2.today .py-badge{background:rgba(34,196,124,.15);color:#5fd39b}
     body.dark-mode .py-v b,body.dark-mode .py-st b,body.dark-mode .py-tn{color:#fff}body.dark-mode .py-bar{background:#232a35}
 
+    /* v86 — past years: smaller cards, campaign rows with spend · conv. · value */
+    .py-c2{padding:11px 12px;gap:10px;grid-template-columns:48px 1fr;margin-top:10px;border-radius:18px}
+    .py-badge{width:48px;height:48px;border-radius:15px;font-size:13.5px}.py-badge small{font-size:8.5px}
+    .py-v b{font-size:16px}.py-bar{height:6px;margin:6px 0 7px}.py-st{font-size:11.5px}
+    .py-tl2{grid-template-columns:auto 1fr auto;gap:7px 10px}
+    .py-ts{text-align:center;color:#6b7385;font-weight:800;white-space:nowrap}.py-ts b{color:#1d2433;font-weight:900}.py-ts i{font-style:normal;color:#b4bac8;margin:0 5px}
+    .py-h{font-size:9.5px;font-weight:900;letter-spacing:.08em;color:#8a92a6;text-transform:uppercase}.py-h.c{text-align:center}
+    body.dark-mode .py-ts b{color:#fff}
+
+    /* v86 — Daily Performance cards (K4): value, 14-day line against the daily target */
+    .k4card{min-height:0!important;padding:14px 14px 12px!important}
+    .k4card .kpi-main{position:relative}
+    .k4card .kpi-label{display:flex;justify-content:space-between;align-items:center;font-size:12px!important}
+    .k4-dot{width:8px;height:8px;border-radius:50%;background:#c7cee0;flex:0 0 8px}
+    .k4card .kpi-value{font-size:25px!important;margin-top:6px!important}
+    .k4-spark{display:block;width:100%;height:46px;margin-top:6px;overflow:visible}
+    .k4-spark .k4-t{fill:none;stroke:#c7cee0;stroke-width:1.5;stroke-dasharray:4 4;vector-effect:non-scaling-stroke}
+    .k4-sw{position:relative;margin-top:6px}.k4-sw .k4-spark{margin-top:0}
+    .k4-spark .k4-a{fill:var(--k4c);opacity:.08}.k4-spark .k4-l{fill:none;stroke:var(--k4c);stroke-width:2.5;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+    .k4-now{position:absolute;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;border:2px solid #fff;box-sizing:border-box;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+    .k4-foot{display:flex;justify-content:space-between;align-items:baseline;gap:6px;margin-top:4px}
+    .k4card .target{margin:0!important;padding:0!important;background:none!important;border:0!important;font-size:11px!important;color:#8a92a6!important;font-weight:800}
+    .k4card .target:before{color:#8a92a6!important;font-size:11px!important}
+    .k4-pct{font-size:12px;font-weight:900}
+    .k4card .delta,.k4card .pace{display:none!important}
+    body.dark-mode .k4-spark .k4-t{stroke:#3a4357}body.dark-mode .k4-now{border-color:#181e27}body.dark-mode .k4card .target,body.dark-mode .k4card .target:before{color:#9aa3b8!important;background:none!important;box-shadow:none!important}
+    body.dark-mode #sSpend{--k4c:#7c9bff!important}body.dark-mode #sConv{--k4c:#5f8bff!important}body.dark-mode #sValue{--k4c:#2fd08a!important}body.dark-mode .k4-spark .k4-a{opacity:.14}
+
     /* v82 — Channel Delivery WhatsApp report (long, 1080 wide) */
     .rp-report.rp-narrow{width:1080px}
     .rp-oct .ox-hero{margin:0 0 12px}
@@ -3246,38 +3274,42 @@ window.addEventListener('load',function(){
 
   
   <section class="grid kpis">
-    <article class="card kpi">
+    <article class="card kpi k4card">
       <div class="kpi-main">
-          <div class="kpi-label">Daily Spend</div>
+          <div class="kpi-label">Daily Spend<i class="k4-dot" id="xSpend"></i></div>
           <div class="kpi-value" id="kSpend">—</div>
-          <div class="target" id="tSpend">—</div>
+          <svg class="k4-spark" id="sSpend" viewBox="0 0 150 46" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div class="k4-foot"><div class="target" id="tSpend">—</div><b class="k4-pct" id="qSpend"></b></div>
           <div class="delta" id="dSpend">—</div>
       </div>
       <div class="pace"><span id="pSpend"></span></div>
     </article>
-    <article class="card kpi">
+    <article class="card kpi k4card">
       <div class="kpi-main">
-          <div class="kpi-label">Conversions</div>
+          <div class="kpi-label">Conversions<i class="k4-dot" id="xConv"></i></div>
           <div class="kpi-value" id="kConv">—</div>
-          <div class="target" id="tConv">—</div>
+          <svg class="k4-spark" id="sConv" viewBox="0 0 150 46" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div class="k4-foot"><div class="target" id="tConv">—</div><b class="k4-pct" id="qConv"></b></div>
           <div class="delta" id="dConv">—</div>
       </div>
       <div class="pace"><span id="pConv"></span></div>
     </article>
-    <article class="card kpi">
+    <article class="card kpi k4card">
       <div class="kpi-main">
-          <div class="kpi-label">Conversion Value</div>
+          <div class="kpi-label">Conversion Value<i class="k4-dot" id="xValue"></i></div>
           <div class="kpi-value" id="kValue">—</div>
-          <div class="target" id="tValue">—</div>
+          <svg class="k4-spark" id="sValue" viewBox="0 0 150 46" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div class="k4-foot"><div class="target" id="tValue">—</div><b class="k4-pct" id="qValue"></b></div>
           <div class="delta" id="dValue">—</div>
       </div>
       <div class="pace teal"><span id="pValue"></span></div>
     </article>
-    <article class="card kpi">
+    <article class="card kpi k4card">
       <div class="kpi-main">
-          <div class="kpi-label">ROAS</div>
+          <div class="kpi-label">ROAS<i class="k4-dot" id="xRoas"></i></div>
           <div class="kpi-value" id="kRoas">—</div>
-          <div class="target" id="tRoas">—</div>
+          <svg class="k4-spark" id="sRoas" viewBox="0 0 150 46" preserveAspectRatio="none" aria-hidden="true"></svg>
+          <div class="k4-foot"><div class="target" id="tRoas">—</div><b class="k4-pct" id="qRoas"></b></div>
           <div class="delta" id="dRoas">—</div>
       </div>
       <div class="pace green"><span id="pRoas"></span></div>
@@ -4023,6 +4055,7 @@ function render(d,opts){
  kpi('kValue','tValue','dValue','pValue',money(x.value),money(x.planValue),x.valueAchievement,false);
  kpi('kConv','tConv','dConv','pConv',fmt(x.conversions,0),fmt(x.planConversions,1),x.convAchievement,false);
  kpi('kRoas','tRoas','dRoas','pRoas',roas!=null?fmt(roas,2)+'x':'—',planRoas!=null?fmt(planRoas,2)+'x':'—',roasAch,false);
+ drawKpiSparks(d,{Spend:x.spendAchievement,Conv:x.convAchievement,Value:x.valueAchievement,Roas:roasAch});
 
  text('topCPA',money(x.cpa,2));
  text('topCTR',percent(x.ctr));
@@ -4103,6 +4136,33 @@ function notifyAndroidDashboard(d){
      window.AndroidShare.dashboardReady();
    }
  }catch(e){ console.debug('Android bridge unavailable',e); }
+}
+
+
+ 
+const KPI_SPARK={Spend:['spend','targetSpend','#203c8e'],Conv:['conversions','planConversions','#3d6bff'],Value:['value','planValue','#13804f'],Roas:['roas','targetRoas','#c89434']};
+const KPI_STATUS={good:'#22c47c',watch:'#e9a93b',bad:'#e0606c'};
+function drawKpiSparks(d,ach){
+ const days=(d&&d.daily)||[];
+ Object.keys(KPI_SPARK).forEach(key=>{
+   const [f,t,col]=KPI_SPARK[key];
+   const svg=document.getElementById('s'+key),dot=document.getElementById('x'+key),pct=document.getElementById('q'+key),delta=document.getElementById('d'+key);
+   const st=delta&&/good|bad|watch/.exec(delta.className);const c=KPI_STATUS[st?st[0]:'watch'];
+   if(dot)dot.style.background=c;
+   if(pct){pct.textContent=ach[key]!=null&&isFinite(ach[key])?Math.round(ach[key]*100)+'%':'';pct.style.color=st&&st[0]==='good'?'#13804f':st&&st[0]==='bad'?'#c2382f':'#a8701c'}
+   if(!svg)return;
+   const a=days.map(x=>Number(x[f])||0),b=days.map(x=>Number(x[t])||0);
+   if(a.length<2){svg.innerHTML='';return}
+   const all=a.concat(b).filter(v=>v>0),mx=Math.max(...all,1)*1.08,mn=Math.min(...all,mx)*.85;
+   const X=i=>2+i*146/(a.length-1),Y=v=>43-(v-mn)/((mx-mn)||1)*38;
+   const pts=a.map((v,i)=>X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' '),tp=b.map((v,i)=>X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' ');
+   svg.style.setProperty('--k4c',col);
+   svg.innerHTML=`<polyline class="k4-t" points="${tp}"/><polygon class="k4-a" points="${X(0)},46 ${pts} ${X(a.length-1)},46"/><polyline class="k4-l" points="${pts}"/>`;
+   
+   let wrap=svg.parentElement;if(!wrap.classList.contains('k4-sw')){const w=document.createElement('div');w.className='k4-sw';wrap.insertBefore(w,svg);w.appendChild(svg);wrap=w}
+   let p=wrap.querySelector('.k4-now');if(!p){p=document.createElement('i');p.className='k4-now';wrap.appendChild(p)}
+   p.style.background=c;p.style.left=(X(a.length-1)/150*100).toFixed(2)+'%';p.style.top=(Y(a[a.length-1])/46*100).toFixed(2)+'%';
+ });
 }
 
 function kpi(valueId,targetId,deltaId,barId,value,target,achievement,isSpend){
@@ -4382,7 +4442,7 @@ function renderChannels(rows){
   const ach=Number(r.spendAchievement)||0;
   const pill=win?'win':roas<1?'low':'';
   return `<tr class="cx-row${win?' win':''}">
-   <td><div class="cx-name"><span class="channel-icon ${channelIconClass(r.channel)}">${channelIconSvg(r.channel)}</span><div><b>${esc(r.channel)}</b>${win?'<span class="cx-crown">Winner</span>':''}</div></div></td>
+   <td><div class="cx-name"><span class="channel-icon ${channelIconClass(r.channel)}">${channelIconSvg(r.channel)}</span><div><b>${esc(chName(r.channel))}</b>${win?'<span class="cx-crown">Winner</span>':''}</div></div></td>
    <td><b class="cx-money">${money(r.actualSpend)}</b><div class="cx-bar"><span class="${ach>1?'over':''}" style="width:${Math.min(ach*100,100)}%"></span></div><span class="cx-sub">${percent(ach)} of plan</span></td>
    <td class="cx-wide">${fmt(r.clicks,0)}</td>
    <td class="cx-wide">${fmt(r.conversions,0)}</td>
@@ -4597,8 +4657,14 @@ function resultsHero(days,T){
   ${mix.length?`<div class="mt-mix">${mix.map(m=>`<span class="m${m.k}" style="flex:${m.s/tot}"></span>`).join('')}</div><div class="mt-legend">${mix.map(m=>`<span><i class="m${m.k}"></i>${PLAN_MIX_LABELS[m.k]} ${Math.round(m.s/tot*100)}%</span>`).join('')}</div>`:''}</div>`;
 }
  
+function mergeDayChannels(rows){
+ const out=[];(rows||[]).forEach(r=>{const v=isVideoChannel(r.channel),t=v&&out.find(o=>isVideoChannel(o.channel));
+  if(!t){out.push(Object.assign({},r,v?{channel:'Video (YouTube)'}:{}));return}
+  ['spend','clicks','conversions','value','planSpend'].forEach(f=>t[f]=(t[f]||0)+(r[f]||0));t.roas=t.spend?t.value/t.spend:null});
+ return out.sort((a,b)=>(b.roas||0)-(a.roas||0));
+}
 function dayChannelCards(d){
- const rows=(d&&d.dayChannels)||[];
+ const rows=mergeDayChannels(d&&d.dayChannels);
  return rows.map((c,i)=>{
    const k=Math.min(Math.max(CHANNEL_ORDER.indexOf(c.channel),0),4);
    const plan=Number(c.planSpend)||0, r=plan?c.spend/plan:null;
@@ -4612,7 +4678,7 @@ function dayChannelCards(d){
 function dayChannelsDate(d){const x=(d&&d.latest)||{};return [x.dayNumber,x.monthName].filter(Boolean).join(' ')}
 function renderDayChannels(d){
  const sec=document.getElementById('dayChannelsSection');if(!sec)return;
- const rows=(d&&d.dayChannels)||[];
+ const rows=mergeDayChannels(d&&d.dayChannels);
  sec.hidden=!rows.length;if(!rows.length)return;
  text('dayChannelsSub',`${dayChannelsDate(d)} · ranked by ROAS`);
  const grid=document.getElementById('dayChannelsGrid'),dots=document.getElementById('dayChannelsDots');
@@ -4920,7 +4986,7 @@ function compareChannels(A,B,avg,aKey,bKey){
    const a=la.find(x=>x.n===n)||{n,k:5,spend:0,value:0,roas:null}, b=lb.find(x=>x.n===n)||{spend:0,roas:null};
    const k=(la.find(x=>x.n===n)||lb.find(x=>x.n===n)).k;
    const w=a.roas!=null&&b.roas!=null&&Math.abs(a.roas/b.roas-1)>=.005?(a.roas>b.roas?'good':'bad'):'';
-   return `<div class="rc1-row"><i class="m${k}"></i><div class="rc1-n"><b>${esc(n)}</b><small>${Math.round(a.spend/tot*100)}% of spend · was ${Math.round(b.spend/totB*100)}%</small></div><div class="rc1-v"><b>${money(a.spend)}</b><small>${esc(monthName(bKey))} ${money(b.spend)}</small></div><div class="rc1-r"><span class="rc-roas ${w||'neutral'}">${a.roas!=null?fmt(a.roas,2)+'x':'—'}</span><small>${b.roas!=null?fmt(b.roas,2)+'x':'—'}</small></div></div>`;
+   return `<div class="rc1-row"><i class="m${k}"></i><div class="rc1-n"><b>${esc(chName(n))}</b><small>${Math.round(a.spend/tot*100)}% of spend · was ${Math.round(b.spend/totB*100)}%</small></div><div class="rc1-v"><b>${money(a.spend)}</b><small>${esc(monthName(bKey))} ${money(b.spend)}</small></div><div class="rc1-r"><span class="rc-roas ${w||'neutral'}">${a.roas!=null?fmt(a.roas,2)+'x':'—'}</span><small>${b.roas!=null?fmt(b.roas,2)+'x':'—'}</small></div></div>`;
  }).join('');
  return `<div class="mx-sub">By channel · ${esc(monthName(aKey))} vs ${esc(monthName(bKey))}</div><div class="rc1"><div class="rc1-bar">${la.map(c=>`<span class="m${c.k}" style="flex:${c.spend/tot}"></span>`).join('')}</div>${rows}</div>`;
 }
@@ -4930,13 +4996,24 @@ function mxVerdict(rows,aKey,bKey){
  return wa===wb?`<div class="mx-verdict tie">⚖️ Even — each month wins ${wa}</div>`
   :`<div class="mx-verdict ${wa>wb?'a':'b'}">🏆 <b>${esc(monthName(wa>wb?aKey:bKey,true))}</b> is better · wins ${Math.max(wa,wb)} of ${wa+wb}</div>`;
 }
+
+const isVideoChannel=n=>/video|in-stream|youtube/i.test(String(n||''));
+const chName=n=>isVideoChannel(n)?'Video':n;
+function mergeVideo(obj){
+ if(!obj)return obj;const out={};
+ Object.keys(obj).forEach(n=>{const k=isVideoChannel(n)?'Video (YouTube)':n,c=obj[n],t=out[k];
+   if(!t){out[k]=Object.assign({},c);return}
+   Object.keys(c).forEach(f=>{if(typeof c[f]==='number')t[f]=(t[f]||0)+c[f]})});
+ return out;
+}
 const CHANNEL_ORDER=['Search Brand','Search Non-Brand','Performance Max','Demand Gen','Video (YouTube)','In-stream video'];
-const CHANNEL_SHORT={'Search Brand':'Search Brand','Search Non-Brand':'Non-Brand','Performance Max':'PMax','Demand Gen':'Demand Gen','Video (YouTube)':'Video','In-stream video':'In-stream'};
+const CHANNEL_SHORT={'Search Brand':'Search Brand','Search Non-Brand':'Non-Brand','Performance Max':'PMax','Demand Gen':'Demand Gen','Video (YouTube)':'Video','In-stream video':'Video'};
 function channelList(S,avg){
  if(!S.channels)return [];
- const names=CHANNEL_ORDER.slice();Object.keys(S.channels).forEach(n=>{if(!names.includes(n))names.push(n)});
+ const chs=mergeVideo(S.channels);
+ const names=CHANNEL_ORDER.slice();Object.keys(chs).forEach(n=>{if(!names.includes(n))names.push(n)});
  const per=v=>avg?v/(S.days||1):v;
- return names.map((n,i)=>{const c=S.channels[n];if(!c||(!c.spend&&!c.value))return null;
+ return names.map((n,i)=>{const c=chs[n];if(!c||(!c.spend&&!c.value))return null;
    return {n,short:CHANNEL_SHORT[n]||n,k:Math.min(i,5),spend:per(c.spend),value:per(c.value),conversions:per(c.conversions),clicks:per(c.clicks),roas:c.spend?c.value/c.spend:null}}).filter(Boolean);
 }
 
@@ -4985,7 +5062,7 @@ function reportChannels(S,avg){
  const cov=S.coverage&&S.coverage.covered<S.coverage.total?`<div class="mx-note">Based on ${S.coverage.covered} of ${S.coverage.total} months — daily data${dailyStartText()}.</div>`:'';
  const pill=c=>`<span class="rc-roas ${c.roas!=null&&c.roas>=all?'good':'bad'}">${c.roas!=null?fmt(c.roas,2)+'x':'—'}</span>`;
  return `<div class="mx-sub">By channel</div>${cov}<div class="rc1"><div class="rc1-bar">${list.map(c=>`<span class="m${c.k}" style="flex:${c.spend/tot}"></span>`).join('')}</div>
-   ${list.map(c=>`<div class="rc1-row"><i class="m${c.k}"></i><div class="rc1-n"><b>${esc(c.n)}</b><small>${Math.round(c.spend/tot*100)}% of spend · ${fmt(c.conversions,0)} conv.</small></div><div class="rc1-v"><b>${money(c.spend)}</b><small>${money(c.value)}</small></div>${pill(c)}</div>`).join('')}</div>`;
+   ${list.map(c=>`<div class="rc1-row"><i class="m${c.k}"></i><div class="rc1-n"><b>${esc(chName(c.n))}</b><small>${Math.round(c.spend/tot*100)}% of spend · ${fmt(c.conversions,0)} conv.</small></div><div class="rc1-v"><b>${money(c.spend)}</b><small>${money(c.value)}</small></div>${pill(c)}</div>`).join('')}</div>`;
 }
 
  
@@ -5406,7 +5483,7 @@ function buildChannelSummary(d){
  const targetRoas=Number(m.targetRoas)||((Number(m.planSpend)||0)?(Number(m.planValue)||0)/(Number(m.planSpend)||1):null);
  const lines=channels.slice(0,5).map((c,i)=>{
    const medals=['🥇','🥈','🥉','4️⃣','5️⃣'];
-   return `${medals[i]||'•'} ${c.channel} — ${fmt(c.roas,2)}x | Value ${money(c.actualValue||0)}`;
+   return `${medals[i]||'•'} ${chName(c.channel)} — ${fmt(c.roas,2)}x | Value ${money(c.actualValue||0)}`;
  }).join('\n');
  const a=accountMeta(d);
  return `📊 ${a.dashboardTitle} • Channel Delivery — ${mon} ${x.dayNumber||''}
@@ -6570,7 +6647,7 @@ function channelReportHtml(){
  const sorted=[...(d.channels||[])].sort((a,b)=>(Number(b.roas)||0)-(Number(a.roas)||0));
  const chans=sorted.map((r,i)=>{
    const roas=Number(r.roas)||0,ach=Number(r.spendAchievement)||0,k=i===0?'win':roas<1?'low':'';
-   return `<div class="rp-cr ${i===0?'win':''}"><span class="rp-rk ${k}">${i+1}</span><div class="rp-cm"><div class="rp-ct"><b>${esc(r.channel)}</b>${i===0?'<i>Winner</i>':''}<em class="${k}">${fmt(roas,2)}x</em></div>
+   return `<div class="rp-cr ${i===0?'win':''}"><span class="rp-rk ${k}">${i+1}</span><div class="rp-cm"><div class="rp-ct"><b>${esc(chName(r.channel))}</b>${i===0?'<i>Winner</i>':''}<em class="${k}">${fmt(roas,2)}x</em></div>
    <div class="rp-cb"><span class="${ach>1?'over':''}" style="width:${Math.min(ach*100,100)}%"></span></div>
    <div class="rp-cs">Spend <b>${money(r.actualSpend)}</b> (${percent(ach)} of plan) · Clicks <b>${fmt(r.clicks,0)}</b> · Conv. <b>${fmt(r.conversions,0)}</b> · Value <b>${money(r.actualValue)}</b></div></div></div>`;
  }).join('');
@@ -6814,10 +6891,10 @@ function renderPastYears(){
  const maxV=Math.max(...ys.map(y=>y.s.value),1);
  const cards=ys.map((y,i)=>{
    const p=ys[i+1], a=y.s, b=p?p.s:null, open=y.dk===PY_PICK, isWin=y===win;
-   const types=Object.entries(y.ch).map(([n,c])=>({n,c,k:Math.min(Math.max(CHANNEL_ORDER.indexOf(n),0),4),r:c.spend?c.value/c.spend:null})).filter(t=>t.c.spend||t.c.value);
+   const types=Object.entries(mergeVideo(y.ch)).map(([n,c])=>({n,c,k:Math.min(Math.max(CHANNEL_ORDER.indexOf(n),0),4),r:c.spend?c.value/c.spend:null})).filter(t=>t.c.spend||t.c.value);
    const byRoas=[...types].sort((m,n)=>(n.r||0)-(m.r||0)), tot=types.reduce((q,t)=>q+t.c.spend,0)||1;
    const typeBlock=types.length?`<div class="py-lbl">By campaign type</div><div class="py-mix">${[...types].sort((m,n)=>m.k-n.k).map(t=>`<i class="m${t.k}" style="flex:${t.c.spend/tot}"></i>`).join('')}</div>
-     <div class="py-tl2">${byRoas.map(t=>`<span class="py-tn"><i class="m${t.k}"></i>${esc(CHANNEL_SHORT[t.n]||t.n)}</span><span class="py-ts">${money(t.c.spend)} · ${fmt(t.c.conversions,0)} conv.</span><span class="py-chip ${t.r!=null&&t.r>=(a.roas||0)?'g':'r'}">${t.r!=null?fmt(t.r,2)+'x':'—'}</span>`).join('')}</div>`:'';
+     <div class="py-tl2"><span class="py-h"></span><span class="py-h c">Spend · Conv. · Value</span><span class="py-h">ROAS</span>${byRoas.map(t=>`<span class="py-tn"><i class="m${t.k}"></i>${esc(CHANNEL_SHORT[t.n]||t.n)}</span><span class="py-ts"><b>${money(t.c.spend)}</b><i>·</i><b>${fmt(t.c.conversions,0)}</b><i>·</i><b>${money(t.c.value)}</b></span><span class="py-chip ${t.r!=null&&t.r>=(a.roas||0)?'g':'r'}">${t.r!=null?fmt(t.r,2)+'x':'—'}</span>`).join('')}</div>`:'';
    return `<div class="py-c2${y.back?'':' today'}${isWin?' win':''}${open?' open':''}" onclick="pyPick('${y.dk}')">
      <div class="py-badge">${y.back?y.dk.slice(0,4):'Today'}<small>${isWin?'🏆 WIN':esc(shortDay(y.dk).toLocaleDateString('en-GB',{day:'numeric',month:'short'}))}</small></div>
      <div class="py-main"><div class="py-v"><b>${money(a.value)}</b>${isWin?'<span class="py-winb">Winner</span>':chip(a.value,b&&b.value)}</div>
