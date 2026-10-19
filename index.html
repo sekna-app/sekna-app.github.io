@@ -2510,6 +2510,29 @@ window.addEventListener('load',function(){
     body.dark-mode .py-types .ctd{background:#151d33;border-color:rgba(255,255,255,.08);color:#e9edf7}body.dark-mode .py-types .ctd-gr b{color:#e9edf7}
     body.dark-mode .py-types .ctd.k0{--c:#9db4ff;--s:rgba(157,180,255,.12)}body.dark-mode .py-types .ctd.k1{--s:rgba(61,107,255,.16)}body.dark-mode .py-types .ctd.k2{--s:rgba(34,196,124,.14)}body.dark-mode .py-types .ctd.k3{--c:#e2b874;--s:rgba(226,184,116,.14)}body.dark-mode .py-types .ctd.k4{--c:#f0838f;--s:rgba(240,131,143,.14)}body.dark-mode .py-types .ctd-gr small{color:#9aa3b8}
 
+    /* v86 — past years cards (C2) */
+    .py-list{margin-top:6px}
+    .py-c2{margin-top:12px;border-radius:20px;background:#fff;padding:14px;display:grid;grid-template-columns:58px 1fr;gap:12px;box-shadow:0 4px 18px rgba(30,45,90,.05);border:1.5px solid #edf0f6;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:border-color .2s,box-shadow .2s}
+    .py-c2.open{border-color:#203c8e}
+    .py-badge{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;align-content:center;background:#eef2fd;color:#203c8e;font-weight:900;font-size:16px;text-align:center;line-height:1.05}.py-badge small{display:block;font-size:9px;font-weight:800;color:#8a92a6;margin-top:2px}
+    .py-c2.today .py-badge{background:#e3f6ec;color:#13804f}
+    .py-c2.win{border-color:#39ff9a;box-shadow:0 0 0 1px #39ff9a,0 0 22px rgba(57,255,154,.45)}
+    .py-c2.win .py-badge{background:#39ff9a;color:#06371f;box-shadow:0 0 14px rgba(57,255,154,.6)}.py-c2.win .py-badge small{color:#06371f}
+    .py-main{min-width:0}
+    .py-v{display:flex;align-items:center;justify-content:space-between;gap:8px}.py-v b{font-size:22px;font-weight:900;letter-spacing:-.02em}
+    .py-winb{font-size:10.5px;font-weight:900;color:#06371f;background:#39ff9a;padding:3px 9px;border-radius:999px;box-shadow:0 0 10px rgba(57,255,154,.7)}
+    .py-bar{height:8px;border-radius:5px;background:#eef0f5;margin:7px 0 9px;overflow:hidden}.py-bar i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#203c8e,#3d6bff)}.py-c2.win .py-bar i{background:linear-gradient(90deg,#13804f,#39ff9a)}
+    .py-st{display:flex;gap:6px 12px;flex-wrap:wrap;font-size:12px;color:#6b7385;font-weight:700}.py-st b{color:#1d2433}.py-st em{font-style:normal;font-weight:900;font-size:10.5px;margin-left:3px}.py-st em.g{color:#13804f}.py-st em.r{color:#c2382f}
+    .py-more{grid-column:1/-1;animation:skRise .3s cubic-bezier(.2,.75,.25,1) both}
+    .py-day{font-size:11.5px;color:#8a92a6;font-weight:700;margin-bottom:6px}
+    .py-mix{display:flex;height:12px;border-radius:7px;overflow:hidden;gap:2px}.py-mix i{display:block}
+    .py-tl2{display:grid;grid-template-columns:1fr auto auto;gap:7px 12px;margin-top:10px;font-size:12px;font-weight:800;align-items:center}
+    .py-tn i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px}.py-ts{color:#8a92a6}
+    .py-hint{text-align:center;font-size:11.5px;color:#8a92a6;font-weight:700;margin-top:14px}
+    body.dark-mode .py-c2{background:#151a22;border-color:#252a32}body.dark-mode .py-c2.open{border-color:#3d6bff}body.dark-mode .py-c2.win{border-color:#39ff9a}
+    body.dark-mode .py-badge{background:#1d2440;color:#9db4ff}body.dark-mode .py-c2.today .py-badge{background:rgba(34,196,124,.15);color:#5fd39b}
+    body.dark-mode .py-v b,body.dark-mode .py-st b,body.dark-mode .py-tn{color:#fff}body.dark-mode .py-bar{background:#232a35}
+
     /* v82 — Channel Delivery WhatsApp report (long, 1080 wide) */
     .rp-report.rp-narrow{width:1080px}
     .rp-oct .ox-hero{margin:0 0 12px}
@@ -6724,7 +6747,7 @@ function compareShareText(d){
 
 
  
-let PY_OPEN=false, PY_PICK='';
+let PY_OPEN=false, PY_PICK=null;
 const HIJRI_FMT=(()=>{try{return new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',year:'numeric',timeZone:'UTC'})}catch(e){return null}})();
 function hijriOf(dk){
  if(!HIJRI_FMT)return null;
@@ -6758,7 +6781,7 @@ function pyYears(){
  return out;
 }
 function openPastYears(){
- PY_OPEN=true; PY_PICK='';
+ PY_OPEN=true; PY_PICK=null;
  const el=document.getElementById('pastYearsOverlay'); if(el)el.classList.add('open');
  if(!MONTH_EXTRA[CURRENT_ACCOUNT])loadMonthExtras();
  renderPastYears();
@@ -6767,6 +6790,7 @@ function closePastYears(event){
  if(event&&event.target!==event.currentTarget)return;
  PY_OPEN=false; const el=document.getElementById('pastYearsOverlay'); if(el)el.classList.remove('open');
 }
+
 function pyPick(dk){PY_PICK=PY_PICK===dk?'':dk;renderPastYears()}
 function renderPastYears(){
  const body=document.getElementById('pyBody'); if(!body)return;
@@ -6776,7 +6800,7 @@ function renderPastYears(){
  const ys=pyYears();
  if(ys===null){body.innerHTML='<div class="dx-empty"><span class="lab-spin dark"></span>Loading past years…</div>';return}
  if(ys.length<2){body.innerHTML='<div class="dx-empty">No earlier year has data for this Hijri day yet.</div>';return}
- if(!PY_PICK)PY_PICK=ys[1].dk;
+ if(PY_PICK===null)PY_PICK=ys[1].dk;
  const win=ys.reduce((a,b)=>b.s.value>a.s.value?b:a);
  const yr=y=>y.back?y.dk.slice(0,4):'Today';
  const day=dk=>shortDay(dk).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
@@ -6787,20 +6811,25 @@ function renderPastYears(){
  const X=i=>34+i*(W-68)/Math.max(1,pts.length-1), Y=v=>H-18-v/mx*(H-46);
  const chart=`<svg class="py-chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet"><polyline points="${pts.map((y,i)=>X(i).toFixed(1)+','+Y(y.s.value).toFixed(1)).join(' ')}" fill="none" stroke="#e2b874" stroke-width="3" stroke-linejoin="round"/>
    ${pts.map((y,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(y.s.value).toFixed(1)}" r="${y===win?7:5}" class="${y===win?'win':''}"/><text x="${X(i).toFixed(1)}" y="${(Y(y.s.value)-11).toFixed(1)}" class="v">£${(y.s.value/1000).toFixed(1)}k</text><text x="${X(i).toFixed(1)}" y="${H-2}" class="y">${yr(y)}</text>`).join('')}</svg>`;
+ const maxV=Math.max(...ys.map(y=>y.s.value),1);
  const cards=ys.map((y,i)=>{
    const p=ys[i+1], a=y.s, b=p?p.s:null, open=y.dk===PY_PICK, isWin=y===win;
-   const types=Object.entries(y.ch).map(([n,c])=>({n,c,r:c.spend?c.value/c.spend:null})).filter(t=>t.c.spend||t.c.value).sort((m,n)=>(n.r||0)-(m.r||0));
-   const typeCards=types.map(t=>{const k=Math.min(Math.max(CHANNEL_ORDER.indexOf(t.n),0),4);return `<div class="ctd k${k}"><div class="ctd-h"><b>${esc(CHANNEL_SHORT[t.n]||t.n)}</b></div><div class="ctd-roas">${t.r!=null?fmt(t.r,2)+'x':'—'}<small>ROAS</small></div><div class="ctd-gr"><div><small>Spend</small><b>${money(t.c.spend)}</b></div><div><small>Conv.</small><b>${fmt(t.c.conversions,0)}</b></div><div><small>Value</small><b>${money(t.c.value)}</b></div></div></div>`}).join('');
-   return `<div class="py-item${y.back?'':' today'}${isWin?' win':''}"><div class="py-card${open?' open':''}" onclick="pyPick('${y.dk}')">
-     <div class="py-yh"><div><b>${yr(y)}</b> <span>${esc(day(y.dk))}</span>${isWin?'<i class="py-win">🏆 Winner</i>':''}</div>${chip(a.value,b&&b.value)}</div>
-     <div class="py-k4">${[['SPEND',money(a.spend),a.spend,b&&b.spend],['CONV.',fmt(a.conversions,0),a.conversions,b&&b.conversions],['VALUE',money(a.value),a.value,b&&b.value],['ROAS',fmt(a.roas,2)+'x',a.roas,b&&b.roas]].map(([l,v,q,w])=>`<div><small>${l}</small><b>${v}</b>${dl(q,w)}</div>`).join('')}</div>
-     ${open?`<div class="py-more"><div class="py-q">${[['Clicks',fmt(a.clicks,0)],['CTR',percent(a.ctr)],['CPA',money(a.cpa,2)],['CVR',percent(a.cvr)]].map(([l,v])=>`<span>${l} <b>${v}</b></span>`).join('')}</div>
-       ${typeCards?`<div class="py-lbl">By campaign type</div><div class="ctd-grid py-types">${typeCards}</div>`:''}</div>`:`<div class="py-tap">Tap for campaign types ›</div>`}
-   </div></div>`;
+   const types=Object.entries(y.ch).map(([n,c])=>({n,c,k:Math.min(Math.max(CHANNEL_ORDER.indexOf(n),0),4),r:c.spend?c.value/c.spend:null})).filter(t=>t.c.spend||t.c.value);
+   const byRoas=[...types].sort((m,n)=>(n.r||0)-(m.r||0)), tot=types.reduce((q,t)=>q+t.c.spend,0)||1;
+   const typeBlock=types.length?`<div class="py-lbl">By campaign type</div><div class="py-mix">${[...types].sort((m,n)=>m.k-n.k).map(t=>`<i class="m${t.k}" style="flex:${t.c.spend/tot}"></i>`).join('')}</div>
+     <div class="py-tl2">${byRoas.map(t=>`<span class="py-tn"><i class="m${t.k}"></i>${esc(CHANNEL_SHORT[t.n]||t.n)}</span><span class="py-ts">${money(t.c.spend)} · ${fmt(t.c.conversions,0)} conv.</span><span class="py-chip ${t.r!=null&&t.r>=(a.roas||0)?'g':'r'}">${t.r!=null?fmt(t.r,2)+'x':'—'}</span>`).join('')}</div>`:'';
+   return `<div class="py-c2${y.back?'':' today'}${isWin?' win':''}${open?' open':''}" onclick="pyPick('${y.dk}')">
+     <div class="py-badge">${y.back?y.dk.slice(0,4):'Today'}<small>${isWin?'🏆 WIN':esc(shortDay(y.dk).toLocaleDateString('en-GB',{day:'numeric',month:'short'}))}</small></div>
+     <div class="py-main"><div class="py-v"><b>${money(a.value)}</b>${isWin?'<span class="py-winb">Winner</span>':chip(a.value,b&&b.value)}</div>
+       <div class="py-bar"><i style="width:${(a.value/maxV*100).toFixed(1)}%"></i></div>
+       <div class="py-st"><span>Spend <b>${money(a.spend)}</b>${dl(a.spend,b&&b.spend)}</span><span>Conv. <b>${fmt(a.conversions,0)}</b>${dl(a.conversions,b&&b.conversions)}</span><span>ROAS <b>${fmt(a.roas,2)}x</b>${dl(a.roas,b&&b.roas)}</span></div></div>
+     ${open?`<div class="py-more"><div class="py-day">${esc(day(y.dk))}</div><div class="py-q">${[['Clicks',fmt(a.clicks,0)],['CTR',percent(a.ctr)],['CPA',money(a.cpa,2)],['CVR',percent(a.cvr)]].map(([l,v])=>`<span>${l} <b>${v}</b></span>`).join('')}</div>${typeBlock}</div>`:''}
+   </div>`;
  }).join('');
  body.innerHTML=`<div class="py-hero"><small>${esc(String(x.hijriDate||'').toUpperCase())} · CONV. VALUE BY YEAR</small>${chart}</div>
    <div class="py-note">Each year is the same Hijri date, from the daily data that starts in ${esc(shortDate(Object.keys((MONTH_EXTRA[CURRENT_ACCOUNT]||{}).days||{}).sort()[0]||''))}. Changes compare with the year before.</div>
-   <div class="py-tl">${cards}</div>`;
+   <div class="py-list">${cards}</div>
+   <div class="py-hint">Tap a year to open or close it.</div>`;
 }
 
 function captureDailyReport(){return captureReport(shareReportHtml(),'')}
