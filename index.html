@@ -3573,7 +3573,7 @@ window.addEventListener('load',function(){
   </div>
 
   <div class="share-toast" id="shareToast" role="status" aria-live="polite"></div>
-  <footer id="dashboardFooter">Media Plan USA • Live Google Sheets Dashboard</footer>
+  <footer id="dashboardFooter">SEKNA · Media Plan USA</footer>
 
 </main>
 
@@ -3867,7 +3867,7 @@ function applyAccountBrand(d){
  text('brandName',a.label);
  text('brandSub','Media Plan • Live performance');
  text('dashboardTitle',a.dashboardTitle);
- text('dashboardFooter',a.dashboardTitle+' • Live Google Sheets Dashboard');
+ text('dashboardFooter','SEKNA · '+a.dashboardTitle);
  document.title='SEKNA';
 }
 
@@ -4454,26 +4454,26 @@ function renderChannels(rows){
 }
 
 function renderYoy(x,y){
+ const xr=x.spend?x.value/x.spend:null, yr=y.spend?y.value/y.spend:null;
  const metrics=[
-  {key:'spend',label:'Spend',ratio:y.spend?x.spend/y.spend:null,betterHigh:false,current:money(x.spend),prev:money(y.spend)},
-  {key:'conv',label:'Conversions',ratio:y.conversions?x.conversions/y.conversions:null,betterHigh:true,current:fmt(x.conversions,0),prev:fmt(y.conversions,0)},
-  {key:'value',label:'Conversion Value',ratio:y.value?x.value/y.value:null,betterHigh:true,current:money(x.value),prev:money(y.value)},
-  {key:'ctr',label:'CTR',ratio:y.ctr?x.ctr/y.ctr:null,betterHigh:true,current:percent(x.ctr),prev:percent(y.ctr)}
+  {key:'spend',label:'Spend',ratio:y.spend?x.spend/y.spend:null,neutral:true,current:money(x.spend),prev:money(y.spend)},
+  {key:'conv',label:'Conversions',ratio:y.conversions?x.conversions/y.conversions:null,w:.3,current:fmt(x.conversions,0),prev:fmt(y.conversions,0)},
+  {key:'value',label:'Conversion Value',ratio:y.value?x.value/y.value:null,w:.4,current:money(x.value),prev:money(y.value)},
+  {key:'roas',label:'ROAS',ratio:yr&&xr!=null?xr/yr:null,w:.2,current:xr==null?'—':xr.toFixed(2)+'x',prev:yr==null?'—':yr.toFixed(2)+'x'},
+  {key:'ctr',label:'CTR',ratio:y.ctr?x.ctr/y.ctr:null,w:.1,current:percent(x.ctr),prev:percent(y.ctr)}
  ];
 
  
  
  
- let wins=0, valid=0, parts=[];
+ let wins=0, valid=0, sum=0, wsum=0;
  metrics.forEach(m=>{
-   if(m.ratio!=null && isFinite(m.ratio) && m.ratio>0){
-     valid++;
-     const r=m.betterHigh?m.ratio:1/m.ratio;
-     if(r>=1)wins++;
-     parts.push(Math.min(r,1));
+   if(!m.neutral && m.ratio!=null && isFinite(m.ratio) && m.ratio>=0){
+     valid++; if(m.ratio>=1)wins++;
+     sum+=Math.min(m.ratio,1)*m.w; wsum+=m.w;
    }
  });
- const index=parts.length?parts.reduce((a,b)=>a+b,0)/parts.length:null;
+ const index=wsum?sum/wsum:null;
  const scorePct=index==null?0:Math.round(index*1000)/10;
 
  let cls='watch',color='#c89434',title='About the same as last year';
@@ -4494,9 +4494,9 @@ function renderYoy(x,y){
  if(rowsHost)rowsHost.innerHTML=metrics.map(m=>{
    const ok=m.ratio!=null&&isFinite(m.ratio);
    const delta=ok?m.ratio-1:null;
-   const better=ok&&(m.betterHigh?delta>=0:delta<=0);
-   const mark=ok?`<span class="sx-mark ${better?'good':'bad'}">${better?'✓':'✕'}</span>`:'<span class="sx-mark">–</span>';
-   const chip=ok?`<span class="sx-chip ${better?'good':'bad'}">${delta>=0?'+':''}${percent(delta)}</span>`:'<span class="sx-chip">—</span>';
+   const better=ok&&delta>=0, tone=m.neutral?'':better?'good':'bad';
+   const mark=ok&&!m.neutral?`<span class="sx-mark ${tone}">${better?'✓':'✕'}</span>`:'<span class="sx-mark">–</span>';
+   const chip=ok?`<span class="sx-chip ${tone}">${delta>=0?'+':''}${percent(delta)}</span>`:'<span class="sx-chip">—</span>';
    return `<tr><td><span class="sx-mname">${mark}${esc(m.label)}</span></td><td class="sx-muted">${m.prev}</td><td><b>${m.current}</b></td><td>${chip}</td></tr>`;
  }).join('');
 }
@@ -4608,15 +4608,15 @@ function daysCards(days,latest,T){
    if(plan){
      const tot=p.spend||1;
      return `<div class="dc-card${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" onclick="toggleDay('${x.date}')">${head}<div class="dc-main">${hij}
-      <div class="dc-grid"><div><small>Spend</small><b>${money(p.spend)}</b></div><div><small>Value</small><b>${money(p.value)}</b></div><div><small>Conv.</small><b>${fmt(p.conversions,0)}</b></div><div><small>ROAS</small><b class="dc-r">${fmt(p.roas,2)}x</b></div></div>
+      <div class="dc-grid"><div><small>Spend</small><b>${money(p.spend)}</b></div><div><small>Conv.</small><b>${fmt(p.conversions,0)}</b></div><div><small>Value</small><b>${money(p.value)}</b></div><div><small>ROAS</small><b class="dc-r">${fmt(p.roas,2)}x</b></div></div>
       <div class="dc-mix">${p.channels.map((c,k)=>`<span class="m${k}" style="flex:${c.spend/tot}"></span>`).join('')}</div>
       <div class="dc-more">${dxPlanMore(p)}</div></div></div>`;
    }
    if(!a)return `<div class="dc-card upcoming">${head}<div class="dc-main">${hij}<div class="dc-up">Upcoming · plan ${money(p.spend)} · ${money(p.value)}</div></div></div>`;
    return `<div class="dc-card${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" onclick="toggleDay('${x.date}')">${head}<div class="dc-main">${hij}
      <div class="dc-grid"><div><small>Spend</small><b>${money(a.spend)}</b>${bar(a.spendAchievement,achClass(a.spendAchievement,true))}<i class="${achClass(a.spendAchievement,true)}">${percent(a.spendAchievement)}</i></div>
-     <div><small>Value</small><b>${money(a.value)}</b>${bar(a.valueAchievement,achClass(a.valueAchievement))}<i class="${achClass(a.valueAchievement)}">${percent(a.valueAchievement)}</i></div>
      <div><small>Conv.</small><b>${fmt(a.conversions,0)}</b>${bar(a.convAchievement,achClass(a.convAchievement))}<i class="${achClass(a.convAchievement)}">${percent(a.convAchievement)}</i></div>
+     <div><small>Value</small><b>${money(a.value)}</b>${bar(a.valueAchievement,achClass(a.valueAchievement))}<i class="${achClass(a.valueAchievement)}">${percent(a.valueAchievement)}</i></div>
      <div><small>ROAS</small><b class="dc-r ${a.roas!=null&&p.roas?(a.roas>=p.roas?'good':'bad'):''}">${fmt(a.roas,2)}x</b><i>target ${fmt(p.roas,2)}x</i></div></div>
      <div class="dc-more">${dxResultMore(x)}</div></div></div>`;
  }).join('');
@@ -4634,7 +4634,7 @@ function planHero(days,T){
  const arcs=mix.map(m=>{const len=m.s/tot*C;const el=`<circle r="${R}" cx="55" cy="55" fill="none" class="pr m${m.k}" stroke-width="13" stroke-dasharray="${Math.max(0,len-1.5).toFixed(1)} ${C.toFixed(1)}" stroke-dashoffset="${(-off).toFixed(1)}"/>`;off+=len;return el}).join('');
  return `<div class="ph2"><div class="ph2-top"><span>Month plan</span><em>${days.length} days</em></div>
     <div class="ph2-body"><div class="ph2-ring"><svg viewBox="0 0 110 110"><g transform="rotate(-90 55 55)"><circle r="${R}" cx="55" cy="55" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="13"/>${arcs}</g></svg><div><small>Spend</small><b>${money(p.spend/1000,0)}k</b></div></div>
-    <div class="ph2-list"><div><small>Value</small><b>${money(p.value)}</b></div><div><small>Conversions</small><b>${fmt(p.conversions,0)}</b></div><div><small>ROAS</small><b>${fmt(p.roas,2)}x</b></div><div><small>Avg. donation</small><b>${money(aov,2)}</b></div></div></div>${legend}</div>`;
+    <div class="ph2-list"><div><small>Conversions</small><b>${fmt(p.conversions,0)}</b></div><div><small>Value</small><b>${money(p.value)}</b></div><div><small>ROAS</small><b>${fmt(p.roas,2)}x</b></div><div><small>Avg. donation</small><b>${money(aov,2)}</b></div></div></div>${legend}</div>`;
 }
 
  
@@ -4653,7 +4653,7 @@ function resultsHero(days,T){
  return `<div class="mt"><div class="mt-top"><div><small>Month to date</small><b>${a.days} of ${days.length} days</b></div><div class="mt-days"><span style="width:${(days.length?a.days/days.length*100:0).toFixed(1)}%"></span></div></div>
   <div class="mt-hero"><div><small>Spend</small><b>${money(a.spend)}</b><i>target ${money(a.target)}</i></div>
    <div class="mt-ring ${cls(sR,true)}"><svg viewBox="0 0 72 72"><circle r="${R}" cx="36" cy="36" class="t"/><circle r="${R}" cx="36" cy="36" class="f" stroke-dasharray="${(f*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 36 36)"/></svg><b>${sR!=null?Math.round(sR*100)+'%':'—'}</b></div></div>
-  <div class="mt-grid">${tile('Value',money(a.value),vR,`${pct(a.value,a.planValue)} of plan`,cls(vR))}${tile('Conversions',fmt(a.conversions,0),cR,`${pct(a.conversions,a.planConv)} of plan`,cls(cR))}${tile('ROAS',fmt(a.roas,2)+'x',rR,`target ${fmt(tR,2)}x`,rR==null?'':rR>=1?'good':'bad')}</div>
+  <div class="mt-grid">${tile('Conversions',fmt(a.conversions,0),cR,`${pct(a.conversions,a.planConv)} of plan`,cls(cR))}${tile('Value',money(a.value),vR,`${pct(a.value,a.planValue)} of plan`,cls(vR))}${tile('ROAS',fmt(a.roas,2)+'x',rR,`target ${fmt(tR,2)}x`,rR==null?'':rR>=1?'good':'bad')}</div>
   ${mix.length?`<div class="mt-mix">${mix.map(m=>`<span class="m${m.k}" style="flex:${m.s/tot}"></span>`).join('')}</div><div class="mt-legend">${mix.map(m=>`<span><i class="m${m.k}"></i>${PLAN_MIX_LABELS[m.k]} ${Math.round(m.s/tot*100)}%</span>`).join('')}</div>`:''}</div>`;
 }
  
@@ -5268,7 +5268,7 @@ function renderRanks(d){
    const head=`<div class="rx-head"><b>${esc(title)}</b>${b.minSpend?`<span class="sx-chip">Spent £${fmt(b.minSpend,0)}+</span>`:''}</div>`;
    const inner=b.rows.length?rankCardSec(b,worst):`<div class="rx-ok">👌 Nothing ${worst?'needs action':'to show'} here${b.minSpend?` — no item spent £${fmt(b.minSpend,0)} or more`:''}.</div>`;
    return `<section class="rx-sec" id="rx-sec-${b.key}" data-cat="${b.key}">${head}${inner}</section>`;
- }).join('')+'<div class="rx-endpad"></div>';
+ }).join('');
  requestAnimationFrame(()=>markRankChip(RANK_CAT));
  revealOnScroll(body,'.rx-row,.rx-sum,.rx-ok');
 }
@@ -6684,7 +6684,7 @@ function planShareHtml(){
  const mx=Math.max(...days.map(x=>x.plan.value||0),1);
  const mix=PLAN_CHANNEL_NAMES.map((n,k)=>dxSum(days,x=>(x.plan.channels[k]||{}).spend));
  const tot=mix.reduce((a,b)=>a+b,0)||1;
- const cards=`<div class="rs-kg">${rsCard('navy','Spend plan',money(T.spend),`${days.length} days`)}${rsCard('green','Value plan',money(T.value),`${rsK(T.value/days.length)} a day`)}${rsCard('blue','Conversions',fmt(T.conversions,0),`${fmt(T.conversions/days.length,0)} a day`)}${rsCard('gold','ROAS target',fmt(T.roas,2)+'x',`Avg. ${money(T.conversions?T.value/T.conversions:null)}`)}</div>`;
+ const cards=`<div class="rs-kg">${rsCard('navy','Spend plan',money(T.spend),`${days.length} days`)}${rsCard('blue','Conversions',fmt(T.conversions,0),`${fmt(T.conversions/days.length,0)} a day`)}${rsCard('green','Value plan',money(T.value),`${rsK(T.value/days.length)} a day`)}${rsCard('gold','ROAS target',fmt(T.roas,2)+'x',`Avg. ${money(T.conversions?T.value/T.conversions:null)}`)}</div>`;
  const cal=rsCalendar(days,x=>{const a=.1+.75*(x.plan.value||0)/mx,dark=a>.5;
    return `<div class="rs-cd" style="background:rgba(32,60,142,${a.toFixed(2)});color:${dark?'#fff':'#1d2433'}"><div class="rs-n"><b>${x.dayNumber}</b><span>${esc(rsHijri(x.hijri))}</span></div><div class="rs-v">${rsK(x.plan.spend)}</div><div class="rs-s">${rsK(x.plan.value)} · ${fmt(x.plan.roas,2)}x</div></div>`});
  return `${rsHead('Media Plan · '+mName)}
@@ -6703,7 +6703,7 @@ function resultsShareHtml(){
  const tR=a.target?a.planValue/a.target:null;
  const sCls=r=>r==null?'watch':r>1.1||r<.9?'watch':'good', vCls=r=>r==null?'watch':r>=1?'good':r>=.9?'watch':'bad';
  const pct=r=>r==null?'—':Math.round(r*100)+'%';
- const cards=`<div class="rs-kg">${rsCard('navy','Spend',money(a.spend),`${pct(a.target?a.spend/a.target:null)} of target`)}${rsCard('green','Value',money(a.value),`${pct(a.planValue?a.value/a.planValue:null)} of plan`)}${rsCard('blue','Conversions',fmt(a.conversions,0),`${pct(a.planConv?a.conversions/a.planConv:null)} of plan`)}${rsCard('gold','ROAS',fmt(a.roas,2)+'x',`target ${fmt(tR,2)}x`)}</div>`;
+ const cards=`<div class="rs-kg">${rsCard('navy','Spend',money(a.spend),`${pct(a.target?a.spend/a.target:null)} of target`)}${rsCard('blue','Conversions',fmt(a.conversions,0),`${pct(a.planConv?a.conversions/a.planConv:null)} of plan`)}${rsCard('green','Value',money(a.value),`${pct(a.planValue?a.value/a.planValue:null)} of plan`)}${rsCard('gold','ROAS',fmt(a.roas,2)+'x',`target ${fmt(tR,2)}x`)}</div>`;
  const cal=rsCalendar(days,x=>{
    const r=x.actual;
    if(!r)return `<div class="rs-cd fut"><div class="rs-n"><b>${x.dayNumber}</b></div><div class="rs-s" style="margin-top:12px">plan</div><div class="rs-s"><b>${rsK(x.plan.value)}</b> · ${fmt(x.plan.roas,2)}x</div></div>`;
@@ -6845,13 +6845,20 @@ function hijriDayInYear(dk,back){
  while(day>1){const k=isoAdd(first,day-1),x=hijriOf(k);if(x&&x.m===h.m)break;day--}
  return isoAdd(first,day-1);
 }
+
+function liveDayParts(d){
+ const x=d.latest||{}; if(!(x.spend||x.value))return null;
+ const ch={}; (d.dayChannels||[]).forEach(r=>{ch[r.channel]={spend:r.spend||0,impressions:0,clicks:r.clicks||0,conversions:r.conversions||0,value:r.value||0}});
+ const imp=x.ctr?Math.round((x.clicks||0)/x.ctr):0;
+ return {spend:x.spend||0,value:x.value||0,conversions:x.conversions||0,days:1,extra:{spend:x.spend||0,clicks:x.clicks||0,impressions:imp,conversions:x.conversions||0},channels:ch};
+}
 function pyYears(){
  const d=DASH_DATA||{}, ex=MONTH_EXTRA[CURRENT_ACCOUNT]; if(!ex)return null;
  const today=(d.latest||{}).date; if(!today)return [];
  const out=[];
  for(let back=0;back<12;back++){
    const dk=back?hijriDayInYear(today,back):today; if(!dk)break;
-   const parts=dayParts(dk,ex);
+   const parts=dayParts(dk,ex)||(back?null:liveDayParts(d));
    if(parts&&(parts.spend||parts.value))out.push({back,dk,h:hijriOf(dk),s:statFrom(parts,{}),ch:parts.channels||{}});
    else if(back&&dk<Object.keys(ex.days||{}).sort()[0])break;
  }

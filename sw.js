@@ -1,7 +1,7 @@
 // SEKNA web app service worker: offline shell + notifications.
 // The page is always fetched fresh when online, so updates appear right away; the
 // cached copy is only used without a network. Dashboard data is never cached here.
-const CACHE = 'sekna-shell-v3';
+const CACHE = 'sekna-shell-v4';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './firebase-config.js',
   './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon-64.png', './icons/badge-96.png'];
 
@@ -47,8 +47,10 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   if (event.request.method !== 'GET' || url.origin !== self.location.origin) return;
+  // Pages skip the browser's HTTP cache too, so a new release shows on the next open.
+  const req = event.request.mode === 'navigate' ? fetch(url.href, { cache: 'no-cache', credentials: 'same-origin' }) : fetch(event.request);
   event.respondWith(
-    fetch(event.request)
+    req
       .then(res => {
         const copy = res.clone();
         caches.open(CACHE).then(cache => cache.put(event.request, copy));
