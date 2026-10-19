@@ -5116,7 +5116,6 @@ function buildSummary(d){
  const pct=v=>v==null||!isFinite(v)?'—':(Math.round(v*1000)/10)+'%';
  const sign=v=>v==null||!isFinite(v)?'—':(v>=0?'+':'−')+Math.abs(Math.round(v*1000)/10)+'%';
  const ctrD=y.ctr?x.ctr/y.ctr-1:null, spD=y.spend?x.spend/y.spend-1:null;
- const types=(d.dayChannels||[]).map(c=>`${CHANNEL_SHORT[c.channel]||c.channel} ${c.roas!=null?fmt(c.roas,2)+'x':'—'}`).join(' · ');
  const lines=[
   `📌 ${a.shortLabel} Media Plan Results ⚙️`,'',
   `📊 ${mon} ${x.dayNumber} Snapshot`,
@@ -5131,7 +5130,6 @@ function buildSummary(d){
    `${summaryYoyEmoji(x.ctr,y.ctr,false)} CTR: ${sign(ctrD)} — ${percent(x.ctr)} vs. ${percent(y.ctr)}`,
    `⚪ Spend: ${money(x.spend)} vs. ${money(y.spend)} — ${sign(spD)}`);
  }
- if(types)lines.push('',`🏷️ By campaign type (ROAS): ${types}`);
  return lines.join('\n');
 }
 function topProjectsSummary(d){
