@@ -3929,6 +3929,34 @@ window.addEventListener('load',function(){
     .wly-list em{font-style:normal;font-weight:900}.wly-list em.up{color:#0e8f5d}.wly-list em.dn{color:#c43c50}
     body.dark-mode .wly-list button{border-color:#252a32}body.dark-mode .wly-col i.l{background:#3a4252}body.dark-mode .wly-col b.t{color:#9fb6ff}
     .section-head:has(.wly-btn){display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+
+    /* v116 · section icons "soft blue + gold dot" */
+    body .sec-ic,body.dark-mode .sec-ic{width:30px!important;height:30px!important;flex:0 0 30px!important;border-radius:9px!important;display:grid!important;place-items:center!important;position:relative;background:#eef2fd!important;border:0!important;color:#203c8e!important;font-size:0!important;box-shadow:none!important}
+    .sec-ic svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .sec-ic::after{content:"";position:absolute;right:4px;top:4px;width:5px;height:5px;border-radius:50%;background:#e2b874}
+    body.dark-mode .sec-ic{background:#1b2a5c!important;color:#9fb6ff!important}
+    /* v116 · locks */
+    .lab-locked .lock-ic{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;background:#fff4e5;color:#c28d3e;margin-bottom:8px;box-shadow:0 0 0 6px rgba(226,184,116,.15)}
+    .lock-ic svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+    .lock-ic.anim .sh{transform-box:fill-box;transform-origin:right bottom;animation:lockShut 1.4s cubic-bezier(.3,1.4,.5,1) both}
+    .lock-ic.anim{animation:lockShake .5s 1.15s ease both}
+    @keyframes lockShut{0%{transform:translateY(-6px) rotate(-28deg)}55%{transform:translateY(-6px) rotate(0)}80%{transform:translateY(1px)}100%{transform:none}}
+    @keyframes lockShake{0%,100%{transform:none}25%{transform:rotate(-7deg)}60%{transform:rotate(5deg)}}
+    body.dark-mode .lab-locked .lock-ic{background:#2b2214}
+    /* v116 · weekly last year */
+    .wly-ms{display:flex;gap:6px;margin-top:10px}
+    .wly-ms button{border:1px solid #dfe3ec;background:#fff;color:#4b5263;border-radius:99px;padding:5px 12px;font:inherit;font-size:11.5px;font-weight:800;cursor:pointer}
+    .wly-ms button.on{background:#203c8e;border-color:#203c8e;color:#fff}
+    .wly-wk{display:inline-grid!important;place-items:center;width:26px;height:26px;border-radius:8px;background:#eef2fd;color:#203c8e!important;font-size:11px!important;font-weight:900!important;position:relative}
+    .wly-wk::before{content:"";position:absolute;left:5px;right:5px;top:4px;height:2px;border-radius:2px;background:#203c8e;opacity:.35}
+    .wly-wk::after{content:"";position:absolute;right:-2px;top:-2px;width:6px;height:6px;border-radius:50%;background:#e2b874}
+    .wly-g small.wly-wk{position:absolute;bottom:-34px;left:50%;right:auto;transform:translateX(-50%)}
+    .wly-lg{margin-top:42px!important}
+    .wly-col.win i{box-shadow:0 0 0 2px #39ff88,0 0 14px rgba(57,255,136,.85),0 0 28px rgba(57,255,136,.45)}
+    .wly-col.win i.l{background:#c6f7dc}.wly-col.win i.t{background:linear-gradient(#39e29a,#13995f)}
+    .wly-col.win b{color:#0e8f5d!important;text-shadow:0 0 8px rgba(57,255,136,.6)}
+    .wly-lg i.n{background:#39ff88;box-shadow:0 0 8px #39ff88}
+    body.dark-mode .wly-wk{background:#1b2a5c;color:#9fb6ff!important}
 </style>
 </head>
 <body>
@@ -4345,7 +4373,7 @@ window.addEventListener('load',function(){
     <div class="section-head">
       <div>
         <div class="section-title section-title-with-icon"><span class="section-heading-icon history">↺</span><span id="yoyTitle">Same Hijri Day Last Year</span></div>
-        <div class="section-sub" id="yoySub">Current performance compared with the same Hijri date last year.</div>
+        <div class="section-sub" id="yoySub">Vs the same Hijri day last year</div>
       </div>
     </div>
 
@@ -4454,7 +4482,7 @@ window.addEventListener('load',function(){
             <span class="section-heading-icon month">▤</span>
             <span>Weekly Performance</span>
           </div>
-          <div class="section-sub">Weekly actuals vs plan • updates automatically from the tracker</div>
+          <div class="section-sub">Actuals vs plan, week by week</div>
         </div>
         <button type="button" class="wly-btn" id="wlyBtn" onclick="toggleWeeklyLy()">↺ Last year</button>
       </div>
@@ -4468,7 +4496,7 @@ window.addEventListener('load',function(){
     </section>
 
     <section class="card section channel-section">
-    <div class="section-head"><div><div class="section-title section-title-with-icon"><span class="title-crown">👑</span><span>Channel Delivery</span></div><div class="section-sub">Month-to-date performance by Google Ads channel · ranked by ROAS</div></div></div>
+    <div class="section-head"><div><div class="section-title section-title-with-icon"><span class="title-crown">👑</span><span>Channel Delivery</span></div><div class="section-sub">Month to date · ranked by ROAS</div></div></div>
     <table class="cx-table">
       <thead><tr><th>Channel</th><th>Spend</th><th class="cx-wide">Clicks</th><th class="cx-wide">Conv.</th><th class="cx-wide">Value</th><th>ROAS</th></tr></thead>
       <tbody id="channelRows"></tbody>
@@ -4504,7 +4532,7 @@ window.addEventListener('load',function(){
       <div class="section-head">
         <div>
           <div class="section-title section-title-with-icon"><span class="section-heading-icon month">⚗</span><span>Media Plan Lab</span></div>
-          <div class="section-sub">Admin tools for the media plan sheet</div>
+          <div class="section-sub">Admin tools for the media plan</div>
         </div>
       </div>
       <div id="labSave"></div>
@@ -4516,7 +4544,7 @@ window.addEventListener('load',function(){
     <section class="card section phx-card">
       <div class="section-head"><div>
         <div class="section-title section-title-with-icon"><span class="section-heading-icon month">🏛️</span><span>Plan History</span></div>
-        <div class="section-sub">Our reference: every month's plan against what we achieved</div>
+        <div class="section-sub">Every month's plan vs what we achieved</div>
       </div></div>
       <div id="phBody"></div>
     </section>
@@ -4760,6 +4788,30 @@ function setPageTitle(){
  el.innerHTML=(w.length?esc(w.join(' '))+' ':'')+`<span>${esc(last||'')}</span>`;
  if(!el.isConnected)return;
  el.classList.remove('pg-in');void el.offsetWidth;el.classList.add('pg-in');
+}
+
+const SEC_IC={trend:'<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>',week:'<rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16M8 14h3M13 14h3M8 17h3"/>',
+ crown:'<path d="M4 18l2-9 4 4 2-6 2 6 4-4 2 9z"/><path d="M4 21h16"/>',hist:'<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5M12 8v4l3 2"/>',layers:'<path d="M12 4l8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4M4 16l8 4 8-4"/>',
+ cal:'<rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/>',grid:'<rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 10h16M9.5 10v10M14.5 10v10"/>',
+ flask:'<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-9V3"/><path d="M7.5 15h9"/>',archive:'<rect x="4" y="4" width="16" height="5" rx="1.5"/><path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9M10 13h4"/>',
+ swap:'<path d="M7 4v16M7 4L4 7M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/>',trophy:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 6h3a3 3 0 0 1-3 4M7 6H4a3 3 0 0 0 3 4"/>',
+ star:'<path d="M12 3l2.6 5.5 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.3l6-.8z"/>',doc:'<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/>',target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/>',
+ dot:'<circle cx="12" cy="12" r="5"/>'};
+function secIconKey(t){
+ t=String(t||'').toLowerCase();
+ if(/hijri|last year/.test(t))return 'hist';if(/campaign type/.test(t))return 'layers';if(/glance/.test(t))return 'cal';
+ if(/weekly/.test(t))return 'week';if(/day by day/.test(t))return 'grid';if(/channel/.test(t))return 'crown';if(/lab/.test(t))return 'flask';
+ if(/plan (performance )?history/.test(t))return 'archive';if(/month vs|report|monthly history/.test(t))return /monthly report/.test(t)?'doc':'swap';
+ if(/top & bottom|top &amp; bottom|bottom 5/.test(t))return 'trophy';if(/top 3|project/.test(t))return 'star';if(/accuracy/.test(t))return 'target';
+ if(/performance/.test(t))return 'trend';return 'dot';
+}
+function applySectionIcons(root){
+ (root||document).querySelectorAll('.section-heading-icon,.title-crown').forEach(el=>{
+   if(el.dataset.ic)return;
+   const t=(el.closest('.section-title,.mr-toggle')||el.parentElement||{}).textContent||'';
+   el.dataset.ic=secIconKey(t);el.classList.add('sec-ic');
+   el.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true">${SEC_IC[el.dataset.ic]}</svg>`;
+ });
 }
 function tbAccount(){openSidebar();setTimeout(()=>{try{toggleAccountMenu(true)}catch(e){}},260)}
 function openAbout(){closeSidebar();text('aboutVer','SEKNA Dashboard • '+DASHBOARD_RELEASE_CLIENT.version);syncAboutLogo();fillAboutDash();const el=document.getElementById('aboutOverlay');if(el)el.classList.add('open')}
@@ -5287,7 +5339,7 @@ function renderMtd(d){
  const pace=(day&&dim)?Math.min(day/dim,1):null;
 
  text('mtdPeriodTitle',`${x.monthName||'Month'} Performance`);
- text('mtdPeriodSub',`Full-month plan • Actuals updated through ${String(x.monthName||'').slice(0,3)} ${x.dayNumber||'—'}`);
+ text('mtdPeriodSub',`Full-month plan · actuals to ${String(x.monthName||'').slice(0,3)} ${x.dayNumber||'—'}`);
 
  text('mtdSpend',money(m.actualSpend));
  text('mtdSpendPlan',`${percent(spendAch)} of ${money(m.planSpend)}`);
@@ -5395,7 +5447,8 @@ function weekRangeEnd(w){
  return m?{start:Number(m[1]),end:Number(m[2])}:null;
 }
  
-let WK_LY=false, WLY_SHEETS=[];
+let WK_LY=false, WLY_SHEETS=[], WLY_M='v';
+function wlyMetric(m){WLY_M=m;drawWeeklyLy(true)}
 function toggleWeeklyLy(){WK_LY=!WK_LY;drawWeeklyLy(true)}
 function drawWeeklyLy(anim){
  const box=document.getElementById('weeklyLy'),cards=document.getElementById('weeklyCards'),btn=document.getElementById('wlyBtn');
@@ -5415,7 +5468,10 @@ function drawWeeklyLy(anim){
      if(x.actual){live++;t.s+=x.actual.spend||0;t.v+=x.actual.value||0;t.c+=x.actual.conversions||0;t.cl+=x.actual.clicks||0}
      if(!hf)hf=x.hijri||'';ht=x.hijri||''});
    return {i,a,z,t,l,from,to,hf,ht,live,n:z-a+1}});
- const mx=Math.max(1,...W.map(w=>Math.max(w.t.v,w.l.v)));
+ const M={v:{l:'Value',g:o=>o.v,f:mpK,hi:true},s:{l:'Spend',g:o=>o.s,f:mpK,hi:null},r:{l:'ROAS',g:o=>o.s?o.v/o.s:0,f:v=>fmt(v,2)+'x',hi:true}}[WLY_M];
+ const mx=Math.max(1e-9,...W.map(w=>Math.max(M.g(w.t),M.g(w.l))));
+ 
+ const win=w=>!w.live||M.hi==null?'':M.g(w.t)>=M.g(w.l)?'t':'l';
  const dd=k=>k?shortDay(k).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';
  const chip=(a,b)=>!b||!a?'':`<em class="${a>=b?'up':'dn'}">${a>=b?'▲':'▼'} ${Math.round(Math.abs(a/b-1)*100)}%</em>`;
  WLY_SHEETS=W.map(w=>{const rows=[['Value',w.t.v,w.l.v,v=>money(v),1],['Spend',w.t.s,w.l.s,v=>money(v),0],['ROAS',w.t.s?w.t.v/w.t.s:null,w.l.s?w.l.v/w.l.s:null,v=>v==null?'—':fmt(v,2)+'x',1],['Conversions',w.t.c,w.l.c,v=>fmt(v,0),1],['Clicks',w.t.cl,w.l.cl,v=>fmt(v,0),1]];
@@ -5423,9 +5479,10 @@ function drawWeeklyLy(anim){
     <div class="lyx-det"><div class="lyx-dr hd"><span>Days ${w.a}–${w.z}</span><b>This year</b><b>Last year</b><span></span></div>${rows.map(([t,x,y,f,g])=>{const d=w.live&&x!=null&&y?x/y-1:null,c=!g||d==null||Math.abs(d)<.005?'neutral':d>0?'good':'bad';return `<div class="lyx-dr"><span>${t}</span><b>${w.live?f(x):'—'}</b><b class="m">${f(y)}</b>${mxArrow(d,c)}</div>`}).join('')}</div></div>`});
  const go=anim&&motionOn();
  box.innerHTML=`<div class="wly-cap">Same Hijri weeks last year · ${esc(dd(W[0]&&W[0].from))} – ${esc(dd(W.length&&W[W.length-1].to))}</div>
-  <div class="wly-bars${go?' anim':''}">${W.map((w,j)=>`<button type="button" class="wly-g" onclick="wlyOpen(${j})"><span class="wly-col"><b>${mpK(w.l.v)}</b><i class="l" style="height:${(w.l.v/mx*100).toFixed(1)}%;--d:${j*.12}s"></i></span><span class="wly-col"><b class="t">${w.live?mpK(w.t.v):'—'}</b><i class="t" style="height:${Math.max(1,w.t.v/mx*100).toFixed(1)}%;--d:${.3+j*.12}s"></i></span><small>W${j+1}</small></button>`).join('')}</div>
-  <div class="wly-lg"><span><i class="l"></i>Last year</span><span><i class="t"></i>This year so far</span><span class="tip">Tap a week for details</span></div>
-  <div class="wly-list">${W.map((w,j)=>`<button type="button" onclick="wlyOpen(${j})"><b>W${j+1}</b><span><b>${esc(w.hf)} – ${esc(w.ht)}</b><small>${esc(dd(w.from))} – ${esc(dd(w.to))} ${w.from?w.from.slice(0,4):''}</small></span><span class="r"><b>${mpK(w.l.v)}</b><small>${w.live?`${chip(w.t.v,w.l.v)} this year`:'not yet'}</small></span></button>`).join('')}</div>`;
+  <div class="wly-ms">${[['v','Value'],['s','Spend'],['r','ROAS']].map(([k,l])=>`<button type="button" class="${WLY_M===k?'on':''}" onclick="wlyMetric('${k}')">${l}</button>`).join('')}</div>
+  <div class="wly-bars${go?' anim':''}">${W.map((w,j)=>{const wn=win(w);return `<button type="button" class="wly-g" onclick="wlyOpen(${j})"><span class="wly-col${wn==='l'?' win':''}"><b>${M.f(M.g(w.l))}</b><i class="l" style="height:${(M.g(w.l)/mx*100).toFixed(1)}%;--d:${j*.12}s"></i></span><span class="wly-col${wn==='t'?' win':''}"><b class="t">${w.live?M.f(M.g(w.t)):'—'}</b><i class="t" style="height:${Math.max(1,M.g(w.t)/mx*100).toFixed(1)}%;--d:${.3+j*.12}s"></i></span><small class="wly-wk">${j+1}</small></button>`}).join('')}</div>
+  <div class="wly-lg"><span><i class="l"></i>Last year</span><span><i class="t"></i>This year so far</span>${M.hi==null?'':'<span><i class="n"></i>Winner</span>'}<span class="tip">Tap a week for details</span></div>
+  <div class="wly-list">${W.map((w,j)=>`<button type="button" onclick="wlyOpen(${j})"><span class="wly-wk">${j+1}</span><span><b>${esc(w.hf)} – ${esc(w.ht)}</b><small>${esc(dd(w.from))} – ${esc(dd(w.to))} ${w.from?w.from.slice(0,4):''}</small></span><span class="r"><b>${mpK(w.l.v)}</b><small>${w.live?`${chip(w.t.v,w.l.v)} this year`:'not yet'}</small></span></button>`).join('')}</div>`;
 }
 function wlyOpen(i){LYX_SHEETS=WLY_SHEETS;lyxOpen(i)}
 function renderWeekly(rows){
@@ -5547,7 +5604,7 @@ function renderYoy(x,y){
 
  const hijri=y.mode==='hijri';
  text('yoyTitle',hijri?'Same Hijri Day Last Year':'Same Day Last Year');
- text('yoySub',hijri&&y.lyDate?`Compared with ${y.lyLabel||y.lyDate} — the same Hijri date last year${y.hasData===false?' (no data that day)':''}.`:'Current performance compared with the same date last year.');
+ text('yoySub',hijri&&y.lyDate?`Vs ${y.lyLabel||y.lyDate} · same Hijri day${y.hasData===false?' (no data)':''}`:'Current performance compared with the same date last year.');
  const rowsHost=document.getElementById('yoyRows');
  if(rowsHost)rowsHost.innerHTML=metrics.map(m=>{
    const ok=m.ratio!=null&&isFinite(m.ratio);
@@ -5738,7 +5795,7 @@ function renderDays(d){
  const days=d.dayPlan||[];
  const first=days[0], mName=first?monthName(first.date.slice(0,7),true):'';
  text('dxTitle',mName?`${mName} · Day by Day`:'Day by Day');
- text('dxSub',DAY_VIEW==='plan'?'The media plan for every day of the month':DAY_VIEW==='ly'?'Each day against the same Hijri day last year':'Actual results against the plan, day by day');
+ text('dxSub',DAY_VIEW==='plan'?'The media plan, day by day':DAY_VIEW==='ly'?'Each day vs the same Hijri day last year':'Results vs plan, day by day');
  if(!days.length){body.innerHTML='<div class="dx-empty">No days found in the Media Plan tab.</div>';return}
  if(DAY_VIEW==='ly'){body.innerHTML=lyDays(days);return}
  const latest=(d.latest||{}).date;
@@ -5850,7 +5907,7 @@ let LAB_STATE=null, LAB_BUSY=false, LAB_MSG='';
 function renderLab(){
  const body=document.getElementById('labBody'); if(!body)return;
  if(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin===false){
-   body.innerHTML='<div class="lab-locked"><span>🔒</span><b>Admins only</b><small>Media Plan Lab is open to SEKNA administrators.</small></div>';return;
+   body.innerHTML='<div class="lab-locked"><div class="lock-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><b>Admins only</b><small>Media Plan Lab is open to SEKNA administrators.</small></div>';return;
  }
  drawLabSave();
  if(!LAB_STATE||LAB_STATE.account!==CURRENT_ACCOUNT){drawLabIdle();return}
@@ -6132,7 +6189,7 @@ function renderMonthCompare(){
  MONTH_PICK[CURRENT_ACCOUNT]=[aKey,bKey];
  text('mxTitle',one?'Report':'Month vs Month');
  const ex=MONTH_EXTRA[CURRENT_ACCOUNT]||{months:{},days:{}};
- text('mxSub',`History tab · ${hist.length} months${mxTypeTag()}${extraState()==='ok'?'':extraState()==='fail'?' · daily data could not load':' · loading days, clicks & channels…'}`);
+ text('mxSub',`${hist.length} months of history${mxTypeTag()}${extraState()==='ok'?'':extraState()==='fail'?' · daily data could not load':' · loading days, clicks & channels…'}`);
  const typesEl=document.getElementById('mxTypes');if(typesEl)typesEl.innerHTML=mxTypesHtml(ex);
  const noTypeData=`<div class="dx-empty">No ${esc(mxTypesLabel())} numbers for this period. Campaign types come from the daily data${dailyStartText()}.</div>`;
  const pre=document.getElementById('mxPresets');
@@ -7946,7 +8003,7 @@ function adminMaintHtml(){
  const m=((ADMIN_APP_STATE||{}).maintenance)||{};
  return `<div class="a2-maint ${m.on?'maint':''}">
    <div class="sk-app-top"><span class="sk-app-dot"></span><b>${m.on?'Maintenance mode is on':'SEKNA is live'}</b></div>
-   <p>${m.on?'The team sees an “update in progress” screen and no data notifications are sent. Admins still see the dashboard.':'Turn this on while you update the sheets at the start of a month. The team will not see data or get notifications until you turn it off.'}</p>
+   <p>${m.on?'The team sees an “update in progress” screen and no data notifications are sent. Admins still see the dashboard.':'Turn this on while you update the media plan at the start of a month. The team will not see data or get notifications until you turn it off.'}</p>
    ${m.on?`${m.reason?`<div class="sk-app-reason">Reason shown: ${esc(m.reason)}</div>`:''}<button class="ad-btn" type="button" onclick="adminMaintenance(false,this)">Turn off maintenance</button>`
      :`<textarea id="adminMaintReason" rows="2" maxlength="300" placeholder="Reason (optional) — e.g. Updating the October media plan"></textarea><button class="ad-btn danger" type="button" onclick="adminMaintenance(true,this)">Turn on maintenance</button>`}
  </div>`;
@@ -8557,7 +8614,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v115',date:'2026-11-03'};
+const DASHBOARD_RELEASE_CLIENT={version:'v116',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
@@ -8664,6 +8721,7 @@ function seenHtml(ms,now){
 }
 
 initClientLogos();
+applySectionIcons();
 (function(){const t=document.getElementById('tbSekna');if(t)t.src=SEKNA_WHITE_LOGO})();
 syncNativeSettings();
 syncNativeDarkMode(getDashboardSettings().dark);
@@ -8993,7 +9051,7 @@ function drawMonthlyReport(){
 let PH={account:'',list:null,open:'',busy:false,msg:''};
 function renderPlanHistory(){
  const body=document.getElementById('phBody');if(!body)return;
- if(!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)){body.innerHTML='<div class="lab-locked"><span>🔒</span><b>Admins only</b><small>Plan History is kept by the SEKNA admin.</small></div>';return}
+ if(!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)){body.innerHTML='<div class="lab-locked"><div class="lock-ic anim"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="sh" d="M8 11V8a4 4 0 0 1 8 0v3"/><rect x="5" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1.4" fill="currentColor"/></svg></div><b>Admins only</b><small>Plan Performance History is kept by the SEKNA admin.</small></div>';return}
  if(PH.account!==CURRENT_ACCOUNT){PH={account:CURRENT_ACCOUNT,list:null,open:'',busy:false,msg:''}}
  if(PH.list===null&&!PH.busy){PH.busy=true;
    serverCall('getPlanHistory',getAccessToken(),CURRENT_ACCOUNT).then(r=>{PH.busy=false;PH.list=r||[];drawPlanHistory()}).catch(err=>{PH.busy=false;PH.list=[];PH.msg=errorText(err);drawPlanHistory()})}
@@ -9027,7 +9085,7 @@ function drawLabSave(){
  if(!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)){host.innerHTML='';return}
  const days=(DASH_DATA&&DASH_DATA.dayPlan)||[], label=days[0]?monthName(days[0].date.slice(0,7),true):'this month';
  const live=days.filter(x=>x.actual).length, done=days.length>0&&live>=days.length;
- host.innerHTML=`<div class="lab-save"><div class="lab-save-t"><span>🏛️</span><div><b>Save ${esc(label)} to Plan History</b><small>Keeps the month's plan and what we achieved as our reference. Do it on the last day, before the new month's plan goes into the sheet.</small></div></div>
+ host.innerHTML=`<div class="lab-save"><div class="lab-save-t"><span>🏛️</span><div><b>Save ${esc(label)} to Plan History</b><small>Keeps the month's plan and what we achieved as our reference. Do it on the last day, before the new month's plan is added.</small></div></div>
   ${LAB_SAVE.msg?`<div class="mrp-msg">${LAB_SAVE.msg}</div>`:''}
   ${done?'':`<div class="lab-wait">🔒 Opens when the month is closed: ${live} of ${days.length} days are in.</div>`}
   <button type="button" class="lab-go" onclick="labSavePlan()" ${LAB_SAVE.busy||!done?'disabled':''}>${LAB_SAVE.busy?'<span class="lab-spin"></span>Saving…':'Save to Plan History'}</button></div>`;
