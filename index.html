@@ -3862,6 +3862,34 @@ window.addEventListener('load',function(){
     .lyx-sum.anim .lyx-run{stroke-dasharray:1;animation:lyxRun 1.4s .4s ease-out both}
     @keyframes lyxRun{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
     .lyx-sum.anim .lyx-ring b{animation:pgIn .5s .3s both}
+
+    /* v112 */
+    #adminOverlay .sk-admin-head,#adminOverlay .a3-tabs{background:#203c8e!important;box-shadow:none!important;border:0!important}
+    .a3-tabs button{background:transparent!important;color:#c9d3f5}.a3-tabs button.on{background:#fff!important;color:#203c8e}
+    .mr3c{text-align:center;padding:6px 4px 4px}
+    .mr3-book{position:relative;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;width:168px;height:236px;margin:6px auto 0;border:0;border-radius:6px 14px 14px 6px;padding:16px 14px;text-align:left;color:#fff;cursor:pointer;overflow:hidden;
+      background:linear-gradient(160deg,#2f50b5,#0c1a46);box-shadow:inset 6px 0 0 rgba(0,0,0,.18),0 18px 34px rgba(12,26,70,.32);transform:rotate(-3deg);animation:mrFloat 4.5s ease-in-out infinite}
+    .mr3-book small{display:block;font-size:8px;font-weight:900;letter-spacing:.14em;color:#e2b874}
+    .mr3-book b{display:block;font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:16px;line-height:1.15;margin-top:6px}
+    .mr3-book img{position:absolute;left:50%;top:66%;width:100px;transform:translate(-50%,-50%);opacity:.95}
+    .mr3-book i{position:absolute;left:14px;right:14px;bottom:16px;height:4px;border-radius:2px;background:#e2b874;transform-origin:left;animation:mrBar 1.2s .3s cubic-bezier(.2,.8,.2,1) both}
+    .mr3-book u{position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.28) 50%,transparent 65%);transform:translateX(-120%);animation:mrShine 4.5s 1s ease-in-out infinite}
+    @keyframes mrFloat{0%,100%{transform:rotate(-3deg) translateY(0)}50%{transform:rotate(-1deg) translateY(-6px)}}
+    @keyframes mrBar{from{transform:scaleX(0)}to{transform:none}}
+    @keyframes mrShine{0%,55%{transform:translateX(-120%)}80%,100%{transform:translateX(120%)}}
+    body.no-motion .mr3-book,body.no-motion .mr3-book u{animation:none}
+    .mr3c p{margin:16px 0 0;font-size:12.5px;color:#6b7385;font-weight:600;line-height:1.5}
+    .mr3-go,.mr3-mail{display:block;width:100%;margin-top:10px;border:0;border-radius:14px;padding:12px;font:inherit;font-size:13.5px;font-weight:900;cursor:pointer}
+    .mr3-go{background:linear-gradient(90deg,#e2b874,#f3d79f);color:#0c1a46}.mr3-mail{background:#f1f3f8;color:#203c8e}
+    .mr3c+*{margin-top:14px}
+    body.dark-mode .mr3-mail{background:#252a32;color:#c9d3f5}
+    .lyx-cal2{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:8px}
+    @media(min-width:900px){.lyx-cal2{grid-template-columns:repeat(7,minmax(0,1fr))}}
+    .lyx-c{border-radius:14px;padding:7px 7px 8px;color:#fff;min-height:78px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer}
+    .lyx-c.w{background:linear-gradient(160deg,#22c47c,#13995f)}.lyx-c.l{background:linear-gradient(160deg,#ef7584,#d34a5d)}
+    .lyx-c.f,.lyx-c.n{background:#e8ebf2;color:#8a93a6;cursor:default}
+    .lyx-c b{font-size:15px}.lyx-c span{font-size:13px;font-weight:900}.lyx-c small{font-size:9.5px;font-weight:700;opacity:.9}.lyx-c .ly{color:#4b5263}
+    body.dark-mode .lyx-c.f,body.dark-mode .lyx-c.n{background:#1b2230;color:#6f7787}body.dark-mode .lyx-c .ly{color:#a7afbf}
 </style>
 </head>
 <body>
@@ -4002,7 +4030,7 @@ window.addEventListener('load',function(){
 
 <div class="app-modal-overlay sk-page" id="settingsOverlay" onclick="closeSettings(event)" data-share-ui>
   <section class="app-modal sk-modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" onclick="event.stopPropagation()">
-    <div class="sk-modal-head st-head"><div class="st-me"><span class="st-av" id="stAv">S</span><span class="st-ut"><b id="stName">SEKNA</b><span class="st-role" id="stRole" hidden>ADMIN</span></span></div><div><div class="sk-kicker">SEKNA</div><h2 id="settingsTitle">Settings</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeSettings()" aria-label="Close settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+    <div class="sk-modal-head st-head"><div><div class="sk-kicker">SEKNA</div><h2 id="settingsTitle">Settings</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeSettings()" aria-label="Close settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
 
     <div class="sk-group-title">Appearance</div>
     <div class="sk-card">
@@ -4670,9 +4698,6 @@ function openSettings(){
 }
 
 function settingsUser(){
- const nm=(document.getElementById('profileName')||{}).textContent||'SEKNA', em=(document.getElementById('profileEmail')||{}).textContent||'';
- text('stName',nm.split(' ')[0]);text('stAv',(nm.trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2)||'S').toUpperCase());
- const r=document.getElementById('stRole');if(r)r.hidden=!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin);
  const app=appVersion();text('stVer','SEKNA Dashboard '+DASHBOARD_RELEASE_CLIENT.version+(app?' · App '+app:''));
 }
 function closeSettings(event){
@@ -5592,8 +5617,9 @@ function lyDays(days){
          :`<div class="lyx-v">${r.l?money(r.l.value):'—'}</div><div class="lyx-ly">${r.l?'last year · to beat':'No data last year'}</div>`}`};
  
  LYX_SHEETS=R.map(r=>r.a&&r.l?`<div class="lyx-t ${r.w?'w':'l'}">${head(r)}${det(r)}</div>`:'');
- const tiles=R.map((r,i)=>`<div class="lyx-t ${!r.a?'f':!r.l?'n':r.w?'w':'l'}"${r.a&&r.l?` onclick="lyxOpen(${i})"`:''}>${head(r)}</div>`).join('');
- return sum+`<div class="lyx-tip">Tap a day to see its details</div><div class="lyx-grid">${tiles}</div>`;
+ const tiles=R.map((r,i)=>{const d=r.a&&r.l&&r.l.value?r.a.value/r.l.value-1:null;
+   return `<div class="lyx-c ${!r.a?'f':!r.l?'n':r.w?'w':'l'}"${r.a&&r.l?` onclick="lyxOpen(${i})"`:''}><b>${r.x.dayNumber}</b>${r.a?`<span>${mpK(r.a.value)}</span><small>${d!=null?`${d>=0?'▲':'▼'} ${Math.round(Math.abs(d)*100)}% · LY ${mpK(r.l.value)}`:'no data last year'}</small>`:`<small>to beat</small><span class="ly">${r.l?mpK(r.l.value):'—'}</span>`}</div>`}).join('');
+ return sum+`<div class="lyx-tip">Tap a day to see its details</div><div class="lyx-cal2">${tiles}</div>`;
 }
  
 function lySums(has){
@@ -7626,6 +7652,10 @@ function adminView(v){
  if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
  const b=document.querySelector('#adminOverlay .app-modal');if(b)b.scrollTop=0;
 }
+async function clearRecent(){
+ if(!await askSekna({title:'Clear recent?',text:'The list starts empty again; only new activity shows from now.',ok:'Clear'}))return;
+ storeSet('sekna_recent_cleared',String(Date.now()));if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
+}
 function adminGo(k){ADMIN_VIEW='tools';ADMIN_TAB=k;adminLoadExtra(k);if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 const AD_IC={eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
  bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/>',server:'<rect x="4" y="4" width="16" height="7" rx="2"/><rect x="4" y="13" width="16" height="7" rx="2"/><path d="M8 7.5h.01M8 16.5h.01"/>'};
@@ -7680,8 +7710,9 @@ function renderAdmin(d){
    waiting.forEach(p=>feed.push({at:Math.max(0,...p.devices.map(x=>x.lastSeenMs||0))||now,ic:adIco('user','#9a6a22','#fbf1e1'),t:`${esc(p.name)} asked for access`}));
    if(Array.isArray(ADMIN_IDEAS))ADMIN_IDEAS.forEach(i=>{const at=Date.parse(i.time);if(at)feed.push({at,ic:adIco('bulb','#c28d3e','#fff6e0'),t:`New idea: ${esc(i.title||'Untitled')}`})});
    if(Array.isArray(SRV_ADMIN.events))SRV_ADMIN.events.forEach(e=>{if(e.at)feed.push({at:e.at,ic:adIco('server',/Backup/.test(e.server)?'#c43c50':'#0e8f5d',/Backup/.test(e.server)?'#fde8eb':'#e3f6ee'),t:/Backup/.test(e.server)?'Server moved to the backup':'Server back on Firebase'})});
+   const cleared=+storeGet('sekna_recent_cleared')||0;
    feed.sort((x,y)=>y.at-x.at);
-   const recent=`<div class="ad-lbl">Recent</div><div class="ad-card">${feed.slice(0,8).map(f=>`<div class="a3-fi">${f.ic}<div><b>${f.t}</b><small>${esc(timeAgo(f.at,now))}</small></div></div>`).join('')||'<div class="sk-admin-empty">Nothing yet.</div>'}</div>`;
+   const recent=`<div class="ad-lbl">Recent</div><div class="ad-card">${feed.filter(f=>f.at>cleared).slice(0,8).map(f=>`<div class="a3-fi">${f.ic}<div><b>${f.t}</b><small>${esc(timeAgo(f.at,now))}</small></div></div>`).join('')||'<div class="sk-admin-empty">Nothing new.</div>'}</div>${feed.some(f=>f.at>cleared)?'<button type="button" class="sh-reset" onclick="clearRecent()">↺ Clear recent</button>':''}`;
    body=`<div class="a3-stats"><div><b>${users.length}</b><small>Users</small></div><div class="${waiting.length?'alert':''}"><b>${waiting.length}</b><small>Waiting</small></div><div><b>${invited}</b><small>Invited</small></div><div><b>${today}</b><small>Today</small></div></div>${opens}${quick}${recent}`;
  }
  else if(ADMIN_VIEW==='people')body=peopleView;
@@ -8452,7 +8483,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v111',date:'2026-11-01'};
+const DASHBOARD_RELEASE_CLIENT={version:'v112',date:'2026-11-02'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
@@ -8869,7 +8900,10 @@ function drawMonthlyReport(){
  const live=days.filter(x=>x.actual).length, label=days[0]?monthName(days[0].date.slice(0,7),true):'This month';
  const ppl=MR.people||[];
  const notes=document.getElementById('mrNotes');if(notes)MR.notes=notes.value;
- const head=`<button type="button" class="mrp-head" onclick="MR.open=!MR.open;drawMonthlyReport()" aria-expanded="${MR.open?'true':'false'}"><div><b>📄 ${esc(label)} report</b><small>${live} of ${days.length} days in${live<days.length?' · the month is still running':' · complete'}</small></div><span class="mrp-chip ${live<days.length?'run':'ok'}">${live<days.length?'Running':'Ready'}</span><span class="mrp-arrow">▾</span></button>`;
+ const acc=accountMeta(DASH_DATA||{}), running=live<days.length;
+ const head=`<div class="mr3c"><button type="button" class="mr3-book" onclick="MR.open=!MR.open;drawMonthlyReport()" aria-label="Open the report"><small>${esc(String(acc.label||'').toUpperCase())}</small><b>${esc(label)}<br>report</b><img src="${SEKNA_WHITE_LOGO}" alt="SEKNA"><i></i><u></u></button>
+   <p>${running?`The month is still running · ${live} of ${days.length} days.<br>Build it now as a preview, or wait for the 1st.`:`The month is complete · ${days.length} days.<br>Build the PDF and send it to the team.`}</p>
+   ${MR.open?'':`<button type="button" class="mr3-go" onclick="MR.open=true;mrBuild()" ${MR.busy?'disabled':''}>${MR.pages?'Rebuild PDF':'Build PDF'}</button><button type="button" class="mr3-mail" onclick="MR.open=true;drawMonthlyReport()">Email to the team</button>`}</div>`;
  if(!MR.open){body.innerHTML=head;return}
  body.innerHTML=`${head}
   <div class="mrp-what"><span>📊 Results</span><span>🧭 Accuracy</span><span>📅 Types by week</span><span>🌙 Same Hijri month last year</span><span>📝 Notes</span><span>💙 Thank-you page</span></div>
