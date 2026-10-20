@@ -3306,6 +3306,8 @@ window.addEventListener('load',function(){
     .sh-kinds{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.sh-kinds span{font-size:12px;font-weight:700;color:#4b5263;background:#f2f4f9;border-radius:999px;padding:5px 10px}.sh-kinds b{color:#1d2433}
     body.dark-mode .sh-row{color:#fff}body.dark-mode .sh-row i{background:#252b35}body.dark-mode .sh-kinds span{background:#1b212b;color:#c3c9d6}body.dark-mode .sh-kinds b,body.dark-mode .sh-total b{color:#fff}
 
+    #adminRefreshBtn.spinning svg{animation:skAdminSpin .9s linear infinite}
+    @keyframes skAdminSpin{to{transform:rotate(360deg)}}
     /* v89 — admin: Server (Firebase, with Apps Script as the backup) */
     .srv-now{display:flex;gap:12px;align-items:center;margin:12px 0;padding:14px;border-radius:16px;background:#e3f6ec}
     .srv-now.backup{background:#fff1df}.srv-now.idle{background:#f2f4f9}
@@ -6416,6 +6418,7 @@ function fetchProfile(){
    if(p.name)storeSet(ACCESS_NAME_KEY,p.name);
    updateProfileUI();
    applyAppState(p.app,p.isAdmin);
+   if(p.isAdmin)setTimeout(()=>adminFetch().catch(()=>{}),4000);
  }).catch(()=>{});
 }
 function updateProfileUI(){
@@ -6464,7 +6467,7 @@ async function doSignOut(){
  setGateBusy(btn,true);
  if(window.SEKNA_WEB){try{await webPushOff()}catch(e){}}
  try{await serverCall('accessSignOut',getAccessToken())}catch(e){}
- storeRemove(ACCESS_TOKEN_KEY);storeRemove(ACCESS_STATE_KEY);
+ storeRemove(ACCESS_TOKEN_KEY);storeRemove(ACCESS_STATE_KEY);storeRemove(ADMIN_CACHE_KEY);
  stopDashboardRefresh();
  DASHBOARD_STARTED=false;DASH_DATA=null;ACCESS_PROFILE=null;PREFETCH_STARTED=false;
  Object.keys(ACCOUNT_DATA_CACHE).forEach(k=>delete ACCOUNT_DATA_CACHE[k]);
@@ -6487,21 +6490,36 @@ function adminLockedView(){
  adminBody(`<div class="sk-admin-state"><div class="sk-gate-icon sk-gate-icon--warn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><h3>Admin only</h3><p>This area is only available to Ibrahim Amin.</p></div>`);
  const r=document.getElementById('adminRefreshBtn');if(r)r.hidden=true;
 }
+
+const ADMIN_CACHE_KEY='sekna_admin_cache';
+let ADMIN_FETCH=null;
+function adminFetch(){
+ if(ADMIN_FETCH)return ADMIN_FETCH;
+ const token=getAccessToken();
+ ADMIN_FETCH=Promise.all([serverCall('adminOverview',token),serverCall('adminGetAppState',token).catch(()=>null)])
+  .then(([overview,state])=>{storeSet(ADMIN_CACHE_KEY,JSON.stringify({overview,state,at:Date.now()}));return {overview,state}})
+  .finally(()=>{ADMIN_FETCH=null});
+ return ADMIN_FETCH;
+}
+function adminCached(){try{const c=JSON.parse(storeGet(ADMIN_CACHE_KEY)||'null');return c&&c.overview?c:null}catch(e){return null}}
 async function loadAdmin(){
  const r=document.getElementById('adminRefreshBtn');if(r)r.hidden=false;
  if(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin===false){adminLockedView();return}
- adminBody('<div class="sk-admin-state"><div class="sk-admin-spinner"></div><p style="margin-top:14px">Loading people and devices…</p></div>');
+ const cached=adminCached();
+ if(cached){ADMIN_APP_STATE=cached.state;renderAdmin(cached.overview)}
+ else adminBody('<div class="sk-admin-state"><div class="sk-admin-spinner"></div><p style="margin-top:14px">Loading people and devices…</p></div>');
+ if(r)r.classList.add('spinning');
  try{
-   const token=getAccessToken();
-   const [overview,state]=await Promise.all([serverCall('adminOverview',token),serverCall('adminGetAppState',token).catch(()=>null)]);
+   const {overview,state}=await adminFetch();
    ADMIN_APP_STATE=state;
    renderAdmin(overview);
  }
  catch(err){
-   if(/SEKNA_ADMIN_ONLY/.test(errorText(err))){adminLockedView();return}
+   if(/SEKNA_ADMIN_ONLY/.test(errorText(err))){storeRemove(ADMIN_CACHE_KEY);adminLockedView();return}
    if(handleAccessError(err)){closeAdmin();return}
-   adminBody(`<div class="sk-admin-state"><h3>Could not load</h3><p>${esc(errorText(err))}</p></div>`);
+   if(!cached)adminBody(`<div class="sk-admin-state"><h3>Could not load</h3><p>${esc(errorText(err))}</p></div>`);
  }
+ finally{if(r)r.classList.remove('spinning')}
 }
 function timeAgo(ms,now){
  if(!ms)return 'Never';
