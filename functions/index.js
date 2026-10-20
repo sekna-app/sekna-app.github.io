@@ -186,7 +186,7 @@ exports.api = onRequest({
  * times a day. The cost is kept for Admin → Server; at the limit, billing is switched
  * off for this project, Firebase stops, and the app carries on with Apps Script.
  */
-exports.budgetGuard = onMessagePublished({
+exports.monthlyLimit = onMessagePublished({
   topic: 'sekna-budget',
   region: 'europe-west2',
   serviceAccount: SERVER_ACCOUNT,
