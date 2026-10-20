@@ -3097,6 +3097,8 @@ window.addEventListener('load',function(){
     .py-sum b{display:block;font-size:20px;font-weight:900;color:#1d2433;margin:2px 0}.py-sum b.up{color:#13804f}.py-sum b.dn{color:#c2382f}
     .py-sum span{font-size:12.5px;color:#6b7385;font-weight:700}
     body.dark-mode .py-sum div{background:#151a22}body.dark-mode .py-sum b{color:#fff}body.dark-mode .py-sum b.up{color:#39e29a}body.dark-mode .py-sum b.dn{color:#ff8f9a}
+    .mx-wait{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .mx-retry{border:0;border-radius:10px;background:#203c8e;color:#fff;font:inherit;font-size:12.5px;font-weight:900;padding:7px 12px;cursor:pointer}
     /* v88 — desktop: the phone design, laid out side by side instead of one long column */
     @media (min-width:1100px){
       .wrap{max-width:1320px}
@@ -5007,7 +5009,7 @@ function labMove(){
  }).catch(err=>{LAB_BUSY=false;LAB_MSG='⚠️ '+esc(errorText(err));drawLab()});
 }
  
-let MONTH_BASIS='total', MONTH_MODE='compare', MONTH_EXTRA={}, MONTH_EXTRA_LOADING={}, MONTH_PICK={}, MONTH_CHART='value', MONTH_TIP='';
+let MONTH_BASIS='total', MONTH_MODE='compare', MONTH_EXTRA={}, MONTH_EXTRA_LOADING={}, MONTH_EXTRA_FAIL={}, MONTH_PICK={}, MONTH_CHART='value', MONTH_TIP='';
 const PERIOD_SEL={};
 const SEASONS={'Ramadan':'🌙 Ramadan','Dhu Hijjah':'🐑 Qurbani · Eid al-Adha'};
 function setMonthMode(m){
@@ -5039,10 +5041,10 @@ function loadMonthExtras(){
  const key=CURRENT_ACCOUNT;
  if(MONTH_EXTRA[key]||MONTH_EXTRA_LOADING[key])return;
  if(!(window.google&&google.script&&google.script.run))return;
- MONTH_EXTRA_LOADING[key]=true;
+ MONTH_EXTRA_LOADING[key]=true;MONTH_EXTRA_FAIL[key]=false;
  google.script.run
   .withSuccessHandler(r=>{MONTH_EXTRA_LOADING[key]=false;MONTH_EXTRA[key]=r||{months:{}};if(CURRENT_TAB==='months'&&key===CURRENT_ACCOUNT)renderMonthCompare();if(PY_OPEN&&key===CURRENT_ACCOUNT)renderPastYears()})
-  .withFailureHandler(()=>{MONTH_EXTRA_LOADING[key]=false})
+  .withFailureHandler(()=>{MONTH_EXTRA_LOADING[key]=false;MONTH_EXTRA_FAIL[key]=true;if(CURRENT_TAB==='months'&&key===CURRENT_ACCOUNT)renderMonthCompare()})
   .getMonthCompareData(key,getAccessToken());
 }
 function renderMonths(d){
@@ -5195,7 +5197,7 @@ function renderMonthCompare(){
  MONTH_PICK[CURRENT_ACCOUNT]=[aKey,bKey];
  text('mxTitle',one?'Report':'Month vs Month');
  const ex=MONTH_EXTRA[CURRENT_ACCOUNT]||{months:{},days:{}};
- text('mxSub',`History tab · ${hist.length} months${MONTH_EXTRA[CURRENT_ACCOUNT]?'':' · loading days, clicks & channels…'}`);
+ text('mxSub',`History tab · ${hist.length} months${extraState()==='ok'?'':extraState()==='fail'?' · daily data could not load':' · loading days, clicks & channels…'}`);
  const pre=document.getElementById('mxPresets');
  const avg=MONTH_BASIS==='avg';
  if(one){
@@ -5240,10 +5242,11 @@ function compareBody(rows,A,B,avg,aKey,bKey){
  const head=rows.filter(r=>['spend','conversions','value','roas'].includes(r.m.k));
  const rest=rows.filter(r=>!['spend','conversions','value','roas'].includes(r.m.k));
  const top=`<div class="mr3-grid">${head.map(r=>`<div class="mr3 ${r.m.k}"><small>${esc(r.m.l)}</small><b>${r.m.f(r.a,avg)}</b><div class="mr3-f"><span class="mr3-chip ${ck(r)}">${r.delta==null?'—':(r.delta>=0?'▲ ':'▼ ')+percent(Math.abs(r.delta))}</span><i>${bn} ${r.m.f(r.b,avg)}</i></div></div>`).join('')}</div>`;
- const more=`<div class="mr-list cmp"><div class="mr-li mr-lh"><span></span><b>${esc(monthName(aKey))}</b><b>${bn}</b><span></span></div>${rest.map(r=>`<div class="mr-li"><span>${esc(r.m.l)}</span><b>${r.m.f(r.a,avg)}</b><b class="mr-b">${r.m.f(r.b,avg)}</b>${mxArrow(r.delta,ck(r))}</div>`).join('')}</div>`;
+ const more=`<div class="mr-list cmp"><div class="mr-li mr-lh"><span></span><b>${esc(monthName(aKey))}</b><b>${bn}</b><span></span></div>${rest.map(r=>`<div class="mr-li"><span>${esc(r.m.l)}</span><b>${r.m.f(r.a,avg)}</b><b class="mr-b">${r.m.f(r.b,avg)}</b>${mxArrow(r.delta,ck(r))}</div>`).join('')}</div>${extraState()==='ok'?'':extraWaitHtml('clicks, CTR, CPC and CVR')}`;
  return top+'<div class="mx-split"><div>'+more+'</div><div>'+compareChannels(A,B,avg,aKey,bKey)+'</div></div>'+'<div class="mx-foot">▲▼ the first month vs the second · <i class="good"></i> better <i class="bad"></i> worse <i class="neutral"></i> no better/worse</div>';
 }
 function compareChannels(A,B,avg,aKey,bKey){
+ if((!A.channels||!B.channels)&&extraState()!=='ok')return `<div class="mx-sub">By channel</div>${extraWaitHtml('the channels')}`;
  if(!A.channels||!B.channels)return `<div class="mx-sub">By channel</div><div class="dx-empty">The channel split needs daily data${dailyStartText()}.</div>`;
  const la=channelList(A,avg), lb=channelList(B,avg);
  const tot=la.reduce((x,c)=>x+c.spend,0)||1, totB=lb.reduce((x,c)=>x+c.spend,0)||1;
@@ -5313,15 +5316,24 @@ function reportBody(S,U,avg){
  const rest=rows.filter(r=>!['spend','conversions','value','roas'].includes(r.m.k));
  const usual=r=>r.u!=null?`usual ${r.m.f(r.u,avg)}`:'no earlier data';
  const top=`<div class="mr3-grid">${head.map(r=>`<div class="mr3 ${r.m.k}"><small>${esc(r.m.l)}</small><b>${r.m.f(r.v,avg)}</b><div class="mr3-f"><span class="mr3-chip ${r.cls}">${r.delta==null?'—':(r.delta>=0?'▲ ':'▼ ')+percent(Math.abs(r.delta))}</span><i>${usual(r)}</i></div></div>`).join('')}</div>`;
- const more=`<div class="mr-list">${rest.map(r=>`<div class="mr-li"><span>${esc(r.m.l)}</span><b>${r.m.f(r.v,avg)}</b>${mxArrow(r.delta,r.cls)}</div>`).join('')}</div>`;
+ const more=`<div class="mr-list">${rest.map(r=>`<div class="mr-li"><span>${esc(r.m.l)}</span><b>${r.m.f(r.v,avg)}</b>${mxArrow(r.delta,r.cls)}</div>`).join('')}</div>${extraState()==='ok'?'':extraWaitHtml('clicks, CTR, CPC and CVR')}`;
  return top+'<div class="mx-split"><div>'+more+'</div><div>'+reportChannels(S,avg)+'</div></div>'+'<div class="mx-foot">▲▼ vs the usual level: the 12 months before, scaled to the same number of days · <i class="good"></i> better <i class="bad"></i> worse</div>';
 }
 function dailyStartText(){
  const ks=Object.keys((MONTH_EXTRA[CURRENT_ACCOUNT]||{}).days||{}).sort();
  return ks.length?', which starts on '+shortDate(ks[0]):'';
 }
+
+function extraState(){const k=CURRENT_ACCOUNT;return MONTH_EXTRA[k]?'ok':MONTH_EXTRA_FAIL[k]?'fail':'loading'}
+function retryMonthExtras(){MONTH_EXTRA_FAIL[CURRENT_ACCOUNT]=false;loadMonthExtras();renderMonthCompare()}
+function extraWaitHtml(what){
+ return extraState()==='fail'
+  ?`<div class="dx-empty mx-wait">Could not load ${what}. <button type="button" class="mx-retry" onclick="retryMonthExtras()">Try again</button></div>`
+  :`<div class="dx-empty mx-wait"><span class="lab-spin dark"></span>Loading ${what}…</div>`;
+}
 function reportChannels(S,avg){
  const list=channelList(S,avg);
+ if(!list.length&&extraState()!=='ok')return `<div class="mx-sub">By channel</div>${extraWaitHtml('the channels')}`;
  if(!list.length)return S.channels===null?`<div class="mx-sub">By channel</div><div class="dx-empty">The channel split needs daily data${dailyStartText()}.</div>`:'';
  const tot=list.reduce((a,c)=>a+c.spend,0)||1, totV=list.reduce((a,c)=>a+c.value,0)||1;
  const all=totV/tot;
