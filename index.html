@@ -1975,6 +1975,17 @@ window.addEventListener('load',function(){
     .tour-next{border:0;border-radius:16px;padding:15px 24px;font:inherit;font-size:14px;font-weight:900;background:linear-gradient(90deg,#e2b874,#f3d79f);color:#0f1f52;cursor:pointer;white-space:nowrap;transition:all .4s}
     .tour-next.go{flex:1}
     @media(prefers-reduced-motion:reduce){.tour-logo,.tour-bar,.tour-bar i{transition:none}.gc b,.gc i{display:none}}
+
+    /* v93 — sections move in when they come into view; the side menu header spans the full drawer */
+    .mv-pre{opacity:0;transform:translateX(-16px)}
+    .mv-rise{animation:mvRise .6s cubic-bezier(.2,.8,.2,1) both}
+    @keyframes mvRise{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
+    .mv-pop{animation:mvPop .5s cubic-bezier(.3,1.6,.5,1)}
+    .py-chart circle.mv-land{animation:mvPop .5s cubic-bezier(.3,1.6,.5,1)}
+    .mv-pop,.py-chart circle.mv-land{transform-box:fill-box;transform-origin:center}
+    @keyframes mvPop{0%{scale:.2}70%{scale:1.4}100%{scale:1}}
+    @media(prefers-reduced-motion:reduce){.mv-pre{opacity:1;transform:none}.mv-rise,.mv-pop{animation:none}}
+    .sk-drawer>.sk-drawer-head{align-self:stretch;flex:none;box-sizing:border-box;max-width:none;width:calc(100% + 32px)}
     /* v92 — maintenance: a weld point runs along the empty gold bar of the "E" and leaves gold behind */
     .sk-gate.sk-maint{justify-content:center!important;align-items:center}
     .mw{position:relative;width:min(380px,100%);margin:auto 0;padding:0 6px;text-align:center;color:#fff;animation:skCardIn .7s cubic-bezier(.2,.75,.25,1) both}
@@ -4436,7 +4447,9 @@ function replayDashboardMotion(){
  const token=++MOTION_TOKEN;
  const active=document.querySelector('.tab-panel.active');
  if(!active)return;
- const bars=active.querySelectorAll('.pace span,.week-neon span,.week-mini-track span,.accuracy-track span,.month-kpi-progress span,.month-progress span,.channel-progress span,.sx-fbar span.sx-act,.sx-thin span,.sx-lbar span,.ox-seg span,.ox-bar span,.wx-seg-bar span,.wx-thin span,.cx-bar span');
+ mvArm(active);
+ const own=el=>!el.closest('[data-mv]');
+ const bars=[...active.querySelectorAll('.pace span,.week-neon span,.week-mini-track span,.accuracy-track span,.month-kpi-progress span,.month-progress span,.channel-progress span,.sx-fbar span.sx-act,.sx-thin span,.sx-lbar span,.ox-seg span,.ox-bar span,.wx-seg-bar span,.wx-thin span,.cx-bar span')].filter(own);
  bars.forEach((el,i)=>{
    const target=el.dataset.motionTarget||el.style.width;
    if(!target)return;
@@ -4448,7 +4461,7 @@ function replayDashboardMotion(){
      el.style.transition='';el.style.width=target;delete el.dataset.motionTarget;
    },Math.min(i*48,420));
  });
- const rings=active.querySelectorAll('circle.ring-progress,.overall-ring svg circle:nth-of-type(2),.sx-gauge path.sx-gauge-fill');
+ const rings=[...active.querySelectorAll('circle.ring-progress,.overall-ring svg circle:nth-of-type(2),.sx-gauge path.sx-gauge-fill')].filter(own);
  rings.forEach((circle,i)=>{
    const dash=(circle.getAttribute('stroke-dasharray')||'').trim().split(/[ ,]+/)[0];
    const n=parseFloat(dash);if(!isFinite(n)||n<=0)return;
@@ -5098,7 +5111,7 @@ function setDayView(v){
  DAY_VIEW=v==='results'?'results':'plan';
  document.getElementById('dxPlanBtn').classList.toggle('on',DAY_VIEW==='plan');
  document.getElementById('dxResultsBtn').classList.toggle('on',DAY_VIEW==='results');
- if(DASH_DATA)renderDays(DASH_DATA);
+ if(DASH_DATA){renderDays(DASH_DATA);mvArm(document.getElementById('dxBody'))}
 }
 
 function toggleDay(date){
@@ -6738,7 +6751,7 @@ function tourEnd(){
  
  let x0=null;
  document.addEventListener('touchstart',e=>{const t=document.getElementById('tour');x0=t&&!t.hidden&&t.contains(e.target)?e.touches[0].clientX:null},{passive:true});
- document.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>50)(dx<0?tourNext:tourBack)()},{passive:true});
+ document.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>50)(dx>0?tourNext:tourBack)()},{passive:true});
  
  const w=document.getElementById('gateLogoW');if(w)w.src=SEKNA_WHITE_LOGO;
 })();
@@ -6771,6 +6784,121 @@ function offlineBack(){
 window.addEventListener('offline',offlineShow);
 window.addEventListener('online',offlineBack);
 if(navigator.onLine===false)setTimeout(offlineShow,0);
+
+
+ 
+const MV={token:0,obs:null,reduced:!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)};
+const mvQ=(r,s)=>[...r.querySelectorAll(s)];
+const MV_EASE='cubic-bezier(.2,.8,.2,1)';
+
+function mvNum(el){
+ if(el._mvN)return el._mvN;
+ const node=[...el.childNodes].find(n=>n.nodeType===3&&/\d/.test(n.nodeValue));if(!node)return null;
+ const txt=node.nodeValue,m=txt.match(/-?[\d,]*\.?\d+/);if(!m)return null;
+ const raw=m[0],target=parseFloat(raw.replace(/,/g,''));if(!isFinite(target))return null;
+ const dec=(raw.split('.')[1]||'').length,comma=raw.indexOf(',')>=0;
+ const pre=txt.slice(0,m.index),post=txt.slice(m.index+raw.length);
+ const f=v=>pre+(comma?v.toLocaleString('en-GB',{minimumFractionDigits:dec,maximumFractionDigits:dec}):v.toFixed(dec))+post;
+ return el._mvN={node,txt,target,f};
+}
+function mvPrepCount(els){els.forEach(el=>{const n=mvNum(el);if(n)n.node.nodeValue=n.f(0)})}
+function mvPlayCount(els,dur,delay){
+ els.forEach(el=>{const n=mvNum(el);if(!n)return;
+   setTimeout(()=>{const t0=performance.now();
+     const step=t=>{const k=Math.min(1,(t-t0)/dur);n.node.nodeValue=k<1?n.f(n.target*(1-Math.pow(1-k,3))):n.txt;if(k<1)requestAnimationFrame(step);else el._mvN=null};
+     requestAnimationFrame(step)},delay||0)});
+}
+function mvPrepGrow(els,prop){prop=prop||'width';els.forEach(el=>{if(el._mvT==null)el._mvT=el.style[prop];if(!el._mvT)return;el.style.transition='none';el.style[prop]='0%'})}
+function mvPlayGrow(els,prop,delay,stagger){prop=prop||'width';els.forEach((el,i)=>{if(!el._mvT)return;void el.offsetWidth;
+ setTimeout(()=>{el.style.transition=`${prop} .9s ${MV_EASE}`;el.style[prop]=el._mvT;el._mvT=null},(delay||0)+i*(stagger==null?90:stagger))})}
+function mvPrepDash(els){els.forEach(el=>{if(el._mvD==null)el._mvD=el.getAttribute('stroke-dasharray')||'';const p=el._mvD.split(/[ ,]+/);if(p.length<2)return;el.style.transition='none';el.style.strokeDasharray='0 '+p[1]})}
+function mvPlayDash(els,dur,delay,stagger){els.forEach((el,i)=>{if(!el._mvD)return;el.getBoundingClientRect();
+ setTimeout(()=>{el.style.transition=`stroke-dasharray ${dur}ms ${MV_EASE}`;el.style.strokeDasharray=el._mvD;el._mvD=null},(delay||0)+i*(stagger||0))})}
+function mvPrepDraw(els){els.forEach(el=>{let L=0;try{L=el.getTotalLength()}catch(e){}if(!L)return;el._mvL=L;el.style.transition='none';el.style.strokeDasharray=L;el.style.strokeDashoffset=L})}
+function mvPlayDraw(els,dur,delay){els.forEach(el=>{if(!el._mvL)return;el.getBoundingClientRect();
+ setTimeout(()=>{el.style.transition=`stroke-dashoffset ${dur}ms cubic-bezier(.4,0,.2,1)`;el.style.strokeDashoffset='0'},delay||0);
+ setTimeout(()=>{el.style.transition='';el.style.strokeDasharray='';el.style.strokeDashoffset='';el._mvL=0},(delay||0)+dur+60)})}
+function mvPrepRise(els){els.forEach(el=>{el.classList.remove('mv-rise');el.classList.add('mv-pre')})}
+function mvPlayRise(els,delay,stagger){els.forEach((el,i)=>{el.style.animationDelay=((delay||0)+i*(stagger==null?110:stagger))+'ms';el.classList.remove('mv-pre');el.classList.add('mv-rise')})}
+function mvPrepFade(els){els.forEach(el=>{el.style.transition='none';el.style.opacity='0'})}
+function mvPlayFade(els,delay){els.forEach(el=>setTimeout(()=>{el.style.transition='opacity .7s ease';el.style.opacity=''},delay||0))}
+
+
+function mvBoard(find,rows,bars,nums){
+ return {find,
+  prep:r=>{mvPrepRise(mvQ(r,rows));mvPrepGrow(mvQ(r,bars));mvPrepCount(mvQ(r,nums))},
+  play:r=>{mvPlayRise(mvQ(r,rows),0,120);mvPlayGrow(mvQ(r,bars),'width',250,120);mvPlayCount(mvQ(r,nums),1000,150)}};
+}
+const mvSel=s=>p=>mvQ(p,s);
+const MV_SECTIONS=[
+ 
+ {find:mvSel('.k4-sw'),
+  prep:r=>{mvPrepDraw(mvQ(r,'.k4-l'));mvPrepFade(mvQ(r,'.k4-a,.k4-t,.k4-now'))},
+  play:r=>{mvPlayDraw(mvQ(r,'.k4-l'),1100,0);mvPlayFade(mvQ(r,'.k4-a,.k4-t'),450);
+    setTimeout(()=>mvQ(r,'.k4-now').forEach(e=>{e.style.transition='opacity .2s';e.style.opacity='';e.classList.remove('mv-pop');void e.offsetWidth;e.classList.add('mv-pop')}),1050)}},
+ 
+ {find:mvSel('#yoyGauge'),
+  prep:r=>{mvPrepDash(mvQ(r,'.sx-gauge-fill'));mvPrepCount(mvQ(r,'.sx-gauge-in b'))},
+  play:r=>{mvPlayDash(mvQ(r,'.sx-gauge-fill'),1300,0);mvPlayCount(mvQ(r,'.sx-gauge-in b'),1300)}},
+ {find:mvSel('#yoyRows'),prep:r=>mvPrepRise(mvQ(r,'tr')),play:r=>mvPlayRise(mvQ(r,'tr'),250,80)},
+ mvBoard(mvSel('#topProjectsBoard'),'.sx-lrow','.sx-lbar span','.sx-lroas'),
+ mvBoard(mvSel('#dayChannelsSection'),'.ctd','.ctd-bar span','.ctd-roas'),
+ mvBoard(mvSel('.sx-month'),'.sx-hero,.sx-ftile','.sx-fbar span,.sx-thin span','#mSpend,#mValue,#mRoas'),
+ mvBoard(p=>{const r=p.querySelector('.cx-row');return r?[r.parentElement]:[]},'.cx-row','.cx-bar span','.cx-roas'),
+ 
+ {find:p=>{const s=p.querySelector('#planAccuracyScore');return s?[s.closest('.card')||s.parentElement]:[]},
+  prep:r=>{mvPrepCount(mvQ(r,'#planAccuracyScore,#accuracySpend,#accuracyRevenue,#accuracyRoas'));mvPrepGrow(mvQ(r,'#accuracySpendBar,#accuracyRevenueBar,#accuracyRoasBar'))},
+  play:r=>{mvPlayCount(mvQ(r,'#planAccuracyScore'),1400);mvPlayCount(mvQ(r,'#accuracySpend,#accuracyRevenue,#accuracyRoas'),1100,200);mvPlayGrow(mvQ(r,'#accuracySpendBar,#accuracyRevenueBar,#accuracyRoasBar'),'width',200,120)}},
+ 
+ {find:mvSel('.ph2'),
+  prep:r=>{mvPrepDash(mvQ(r,'.ph2-ring circle.pr'));mvPrepCount(mvQ(r,'.ph2-ring b'))},
+  play:r=>{mvPlayDash(mvQ(r,'.ph2-ring circle.pr'),650,100,230);mvPlayCount(mvQ(r,'.ph2-ring b'),1200)}},
+ 
+ {find:mvSel('.mt'),
+  prep:r=>{mvPrepDash(mvQ(r,'.mt-ring circle.f'));mvPrepCount(mvQ(r,'.mt-ring b'));mvPrepGrow(mvQ(r,'.mt-days span'));mvPrepRise(mvQ(r,'.mt-t'))},
+  play:r=>{mvPlayDash(mvQ(r,'.mt-ring circle.f'),1200,100);mvPlayCount(mvQ(r,'.mt-ring b'),1200,100);mvPlayGrow(mvQ(r,'.mt-days span'));mvPlayRise(mvQ(r,'.mt-t'),300,90)}},
+ 
+ {find:mvSel('#mxChart .mc-chart'),
+  prep:r=>mvPrepGrow(mvQ(r,'.mc-bar span'),'height'),
+  play:r=>mvPlayGrow(mvQ(r,'.mc-bar span'),'height',0,28)}
+];
+function mvArm(scope){
+ if(MV.reduced||!scope)return;
+ const tok=++MV.token;
+ if(MV.obs)MV.obs.disconnect();
+ MV.obs=('IntersectionObserver' in window)?new IntersectionObserver(list=>list.forEach(e=>{
+   if(!e.isIntersecting)return;MV.obs.unobserve(e.target);
+   if(e.target._mvTok===tok&&e.target._mvSec){e.target._mvTok=0;e.target._mvSec.play(e.target)}
+ }),{threshold:.2}):null;
+ MV_SECTIONS.forEach(s=>s.find(scope).forEach(r=>{
+   if(!r||!r.isConnected)return;
+   r.setAttribute('data-mv','');r._mvSec=s;r._mvTok=tok;
+   try{s.prep(r)}catch(e){return}
+   if(MV.obs)MV.obs.observe(r);else s.play(r);
+ }));
+}
+
+
+function pyAnimate(body){
+ if(MV.reduced)return;
+ const svg=body.querySelector('.py-chart');if(!svg)return;
+ const line=svg.querySelector('polyline'),dots=[...svg.querySelectorAll('circle')],labels=[...svg.querySelectorAll('text.v')];
+ const win=dots.find(c=>c.classList.contains('win'));
+ mvPrepDraw([line]);mvPrepFade(dots.concat(labels));
+ mvPlayDraw([line],1000,80);
+ dots.forEach((c,i)=>{if(c!==win)mvPlayFade([c],250+i*160)});
+ mvPlayFade(labels,900);
+ if(!win)return;
+ const pts=dots.map(c=>[+c.getAttribute('cx'),+c.getAttribute('cy')]),wi=dots.indexOf(win),end=pts[wi];
+ win.style.transition='none';win.style.opacity='1';win.setAttribute('cx',pts[0][0]);win.setAttribute('cy',pts[0][1]);
+ const total=Math.max(1,wi),dur=420*total;
+ setTimeout(()=>{const t0=performance.now();
+   const step=t=>{const k=Math.min(1,(t-t0)/dur),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2,pos=e*total,a=Math.floor(Math.min(pos,total-1e-6)),f=pos-a;
+     const p0=pts[a]||end,p1=pts[a+1]||end;
+     win.setAttribute('cx',(p0[0]+(p1[0]-p0[0])*f).toFixed(1));win.setAttribute('cy',(p0[1]+(p1[1]-p0[1])*f).toFixed(1));
+     if(k<1)requestAnimationFrame(step);else{win.setAttribute('cx',end[0]);win.setAttribute('cy',end[1]);win.classList.remove('mv-land');void win.getBoundingClientRect();win.classList.add('mv-land')}};
+   requestAnimationFrame(step)},1100);
+}
 
 
 const ASK_ICONS={
@@ -7551,10 +7679,10 @@ function compareShareText(d){
 
 
  
-let PY_OPEN=false, PY_PICK=null, PY_METRIC='value';
+let PY_OPEN=false, PY_PICK=null, PY_METRIC='value', PY_ANIM=false;
 
 const PY_METRICS={spend:{l:'Spend',t:'SPEND'},roas:{l:'ROAS',t:'ROAS'},value:{l:'Value',t:'CONV. VALUE'}};
-function pyMetric(k){PY_METRIC=k;renderPastYears()}
+function pyMetric(k){PY_METRIC=k;PY_ANIM=true;renderPastYears()}
 const HIJRI_FMT=(()=>{try{return new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',year:'numeric',timeZone:'UTC'})}catch(e){return null}})();
 function hijriOf(dk){
  if(!HIJRI_FMT)return null;
@@ -7595,7 +7723,7 @@ function pyYears(){
  return out;
 }
 function openPastYears(){
- PY_OPEN=true; PY_PICK=null; PY_METRIC='value';
+ PY_OPEN=true; PY_PICK=null; PY_METRIC='value'; PY_ANIM=true;
  const el=document.getElementById('pastYearsOverlay'); if(el)el.classList.add('open');
  if(!MONTH_EXTRA[CURRENT_ACCOUNT])loadMonthExtras();
  renderPastYears();
@@ -7658,6 +7786,7 @@ function renderPastYears(){
    ${pySummary(ys,win,yr)}</div>
    <div class="py-col"><div class="py-list">${cards}</div>
    <div class="py-hint">Tap a year to open or close it.</div></div>`;
+ if(PY_ANIM){PY_ANIM=false;pyAnimate(body)}
 }
 
 function captureDailyReport(){return captureReport(shareReportHtml(),'')}
@@ -7696,7 +7825,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v92',date:'2026-10-22'};
+const DASHBOARD_RELEASE_CLIENT={version:'v93',date:'2026-10-23'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
@@ -7825,7 +7954,7 @@ function scrollsSideways(el){
    const p=e.changedTouches[0],dx=p.clientX-x0,dy=p.clientY-y0;
    
    if(Date.now()-t0>650||Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*2)return;
-   const tabs=swipeTabs(),i=tabs.indexOf(CURRENT_TAB),next=tabs[i+(dx<0?1:-1)];
+   const tabs=swipeTabs(),i=tabs.indexOf(CURRENT_TAB),next=tabs[i+(dx>0?1:-1)];
    if(i>=0&&next)switchDashboardTab(next);
  },{passive:true});
  const box=document.getElementById('swipeToggle');if(box)box.checked=swipeOn();
