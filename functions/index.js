@@ -3,6 +3,7 @@
 // else, and these two whenever this server fails, still goes to Apps Script.
 const { onRequest } = require('firebase-functions/v2/https');
 const { onMessagePublished } = require('firebase-functions/v2/pubsub');
+const { onSchedule } = require('firebase-functions/v2/scheduler');
 const { buildDashboardData, getMonthCompareData, normalizeAccountKey_ } = require('./dash');
 const { assertAccess, assertAdmin } = require('./access');
 const { fsGet, fsSet, request, PROJECT_ID } = require('./google');
@@ -11,7 +12,12 @@ const VERSION = 'server-1';
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzjgZ1nXxLTcFdeFCIEznOj2H0XCo9YGUeu1YF2pJdsQiOo_aM-Mn6HxKKNk8peEuM1Ig/exec';
 const SERVER_ACCOUNT = 'sekna-server@human-appeal-media-plan.iam.gserviceaccount.com';
 const ORIGINS = ['https://sekna-app.web.app', 'https://sekna-app.firebaseapp.com', 'https://sekna-app.github.io'];
-const DASH_CACHE_MS = 25 * 1000;
+// The keep-warm job rebuilds the data every 2 minutes, so people get it ready-made;
+// Refresh in the app (forceFresh) still reads the sheets on the spot.
+const DASH_CACHE_MS = 150 * 1000;
+const WARM_ACCOUNTS = ['usa'];
+const API_URL = 'https://europe-west2-human-appeal-media-plan.cloudfunctions.net/api';
+let lastWarm = 0;
 const MONTHS_CACHE_MS = 30 * 60 * 1000;
 
 const started = Date.now();
@@ -34,16 +40,22 @@ function cached(key, ttl, fresh, build) {
   return pending;
 }
 
+/** The access check and the data are fetched together; nothing is returned unless access is approved. */
+async function withAccess(token, dataPromise) {
+  const [access, data] = await Promise.allSettled([assertAccess(token), dataPromise]);
+  if (access.status === 'rejected') throw access.reason;
+  if (data.status === 'rejected') throw data.reason;
+  return data.value;
+}
+
 const CALLS = {
   async getDashboardData(args) {
-    await assertAccess(args[2]);
     const key = normalizeAccountKey_(args[0]);
-    return cached('dash:' + key, DASH_CACHE_MS, !!args[1], () => buildDashboardData(key));
+    return withAccess(args[2], cached('dash:' + key, DASH_CACHE_MS, !!args[1], () => buildDashboardData(key)));
   },
   async getMonthCompareData(args) {
-    await assertAccess(args[1]);
     const key = normalizeAccountKey_(args[0]);
-    return cached('months:' + key, MONTHS_CACHE_MS, false, () => getMonthCompareData(key));
+    return withAccess(args[1], cached('months:' + key, MONTHS_CACHE_MS, false, () => getMonthCompareData(key)));
   }
 };
 
@@ -143,6 +155,19 @@ exports.api = onRequest({
 
   const route = String(req.path || '/').replace(/\/+$/, '') || '/';
   if (route === '/ping') { res.json({ ok: true, version: VERSION }); return; }
+  if (route === '/warm') {
+    // Called by keepWarm. At most once a minute; it only refreshes the shared data.
+    if (Date.now() - lastWarm < 60 * 1000) { res.json({ ok: true, skipped: true }); return; }
+    lastWarm = Date.now();
+    const done = [];
+    for (const key of WARM_ACCOUNTS) {
+      try { await cached('dash:' + key, DASH_CACHE_MS, true, () => buildDashboardData(key)); done.push(key); }
+      catch (e) { stats.errors++; stats.lastError = errorText(e); stats.lastErrorAt = Date.now(); }
+      try { await cached('months:' + key, MONTHS_CACHE_MS, false, () => getMonthCompareData(key)); } catch (e) {}
+    }
+    res.json({ ok: true, warmed: done });
+    return;
+  }
   if (req.method !== 'POST') { res.status(405).json({ ok: false, error: 'POST only.' }); return; }
 
   const b = body(req);
@@ -207,4 +232,20 @@ exports.monthlyLimit = onMessagePublished({
     return;
   }
   await fsSet('server/billing', record);
+});
+
+/* ---------- Keep warm ----------
+ * Every 2 minutes: wakes the server and rebuilds the USA data, so opening SEKNA does not
+ * wait for a cold start or for the sheets. About 22,000 calls a month, inside the free tier.
+ */
+exports.keepWarm = onSchedule({
+  schedule: 'every 2 minutes',
+  region: 'europe-west2',
+  serviceAccount: SERVER_ACCOUNT,
+  memory: '256MiB',
+  maxInstances: 1,
+  retryCount: 0
+}, async () => {
+  const res = await fetch(API_URL + '/warm', { method: 'POST', body: '{}', headers: { 'Content-Type': 'text/plain' } });
+  if (!res.ok) throw new Error('Warm-up answered ' + res.status);
 });

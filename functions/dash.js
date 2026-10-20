@@ -135,6 +135,9 @@ async function openBook(account) {
   return book;
 }
 
+// The monthly tab found by its layout, remembered for 10 minutes (one read less per request).
+const autoMonthCache = {};
+
 /** Same order as getOptionalSheet_: tab link (gid), AUTO layout search, then tab name. */
 async function optionalSheet(book, logicalKey) {
   if (Object.prototype.hasOwnProperty.call(book.resolved, logicalKey)) return book.resolved[logicalKey];
@@ -143,10 +146,15 @@ async function optionalSheet(book, logicalKey) {
   const gid = parseGidFromRef_(ref);
   if (gid !== null) found = book.meta.sheets.find(s => s.sheetId === gid) || null;
   if (!found && String(ref || '').toUpperCase() === 'AUTO' && logicalKey === 'month') {
-    const candidates = book.meta.sheets.filter(s => s.rows >= 22);
-    const cells = await batchGet(book.id, candidates.map(s => a1(s.title, 'A22')));
-    const i = cells.findIndex(v => String((v[0] || [])[0] || '').trim().toLowerCase() === 'week starting');
-    found = i >= 0 ? candidates[i] : null;
+    const hit = autoMonthCache[book.id];
+    if (hit && Date.now() - hit.at < 10 * 60 * 1000) found = book.meta.sheets.find(s => s.sheetId === hit.sheetId) || null;
+    if (!found) {
+      const candidates = book.meta.sheets.filter(s => s.rows >= 22);
+      const cells = await batchGet(book.id, candidates.map(s => a1(s.title, 'A22')));
+      const i = cells.findIndex(v => String((v[0] || [])[0] || '').trim().toLowerCase() === 'week starting');
+      found = i >= 0 ? candidates[i] : null;
+      if (found) autoMonthCache[book.id] = { at: Date.now(), sheetId: found.sheetId };
+    }
   }
   if (!found && ref && gid === null && String(ref).toUpperCase() !== 'AUTO') found = book.meta.sheets.find(s => s.title === String(ref)) || null;
   book.resolved[logicalKey] = found;
@@ -194,6 +202,13 @@ async function buildDashboardData(accountKey) {
 
   const media = await requiredSheet(book, 'mediaPlan');
   const month = await requiredSheet(book, 'month');
+
+  // Every other tab is read at the same time as the Media Plan, not one after another.
+  const nowWall = wallFromInstant(Date.now(), tz);
+  const early = p => { p.catch(() => {}); return p; };
+  const historyP = early(readHistory_(book, fmt(nowWall, 'yyyy-MM')));
+  const bestWorstP = early(readBestWorst_(book));
+  early(optionalSheet(book, 'currentMonth').then(sh => sh ? campaignRows(book, sh) : null));
 
   const rowCount = DASHBOARD_SETTINGS.END_ROW - DASHBOARD_SETTINGS.START_ROW + 1;
   const width = Math.min(MEDIA_PLAN_COLS.WIDTH, media.cols);
@@ -350,9 +365,8 @@ async function buildDashboardData(accountKey) {
 
   const dayPlan = buildDayPlan_(rows, asDate_);
   const dayChannels = buildDayChannels_(dayActualByChannel, dayPlan.filter(d => d.date === dateText)[0]);
-  const nowWall = wallFromInstant(Date.now(), tz);
-  const history = await readHistory_(book, fmt(nowWall, 'yyyy-MM'));
-  const bestWorst = await readBestWorst_(book);
+  const history = await historyP;
+  const bestWorst = await bestWorstP;
   try { await rerankCampaigns_(book, bestWorst); } catch (err) { console.error('Campaign ranking from raw rows failed: ' + err); }
   const bestProjects = bestWorst && bestWorst.best ? bestWorst.best.filter(b => b.key === 'projects')[0] : null;
 
