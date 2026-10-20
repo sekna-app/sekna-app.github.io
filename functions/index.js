@@ -6,7 +6,8 @@ const { onMessagePublished } = require('firebase-functions/v2/pubsub');
 const { onSchedule } = require('firebase-functions/v2/scheduler');
 const { buildDashboardData, getMonthCompareData, normalizeAccountKey_ } = require('./dash');
 const { assertAccess, assertAdmin } = require('./access');
-const { fsGet, fsSet, request, PROJECT_ID } = require('./google');
+const { fsGet, fsSet, fsAppend, fsList, fsClearList, request, PROJECT_ID } = require('./google');
+const { archiveStatus, archiveMove } = require('./archive');
 
 const VERSION = 'server-1';
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzjgZ1nXxLTcFdeFCIEznOj2H0XCo9YGUeu1YF2pJdsQiOo_aM-Mn6HxKKNk8peEuM1Ig/exec';
@@ -56,8 +57,35 @@ const CALLS = {
   async getMonthCompareData(args) {
     const key = normalizeAccountKey_(args[0]);
     return withAccess(args[1], cached('months:' + key, MONTHS_CACHE_MS, false, () => getMonthCompareData(key)));
+  },
+  // Media Plan Lab → Close the month (admins only).
+  async adminArchiveStatus(args) {
+    await assertAdmin(args[0]);
+    return archiveStatus(args[1]);
+  },
+  async adminArchiveMove(args) {
+    const who = await assertAdmin(args[0]);
+    const key = normalizeAccountKey_(args[1]);
+    const result = await archiveMove(key, who);
+    delete cache['dash:' + key];
+    delete cache['months:' + key];
+    return result;
   }
 };
+
+/* ---------- Switch log (Firestore) ---------- */
+
+const EVENTS = 'server/events';
+
+async function logEvent(b) {
+  const who = await assertAccess(b.token);
+  const backup = b.kind !== 'firebase';
+  const reason = String(b.reason || '').slice(0, 200);
+  await fsAppend(EVENTS, { at: Date.now(), name: who.name || '', email: who.email || '',
+    server: backup ? 'Backup (Apps Script)' : 'Firebase', reason, device: String(b.device || '').slice(0, 120), id: Math.random().toString(36).slice(2, 10) });
+  // Apps Script sends the email (at most one every 3 hours); the log itself stays here.
+  if (backup) await appsScriptCall('notifyServerSwitch', [b.token, reason]).catch(() => {});
+}
 
 function body(req) {
   if (req.body && typeof req.body === 'object' && !Buffer.isBuffer(req.body)) return req.body;
@@ -139,7 +167,7 @@ exports.api = onRequest({
   concurrency: 20,
   minInstances: 0,
   maxInstances: 2,
-  timeoutSeconds: 60,
+  timeoutSeconds: 120,
   invoker: 'public'
 }, async (req, res) => {
   const origin = req.get('origin') || '';
@@ -178,6 +206,23 @@ exports.api = onRequest({
       const result = await CALLS[fn](Array.isArray(b.args) ? b.args.slice(0, 6) : []);
       stats.served++;
       res.json({ ok: true, result, server: VERSION });
+      return;
+    }
+    if (route === '/event') {
+      await logEvent(b);
+      res.json({ ok: true, result: { ok: true } });
+      return;
+    }
+    if (route === '/events') {
+      await assertAdmin(b.token);
+      const list = (await fsList(EVENTS)).sort((x, y) => y.at - x.at).slice(0, 50);
+      res.json({ ok: true, result: list });
+      return;
+    }
+    if (route === '/events/clear') {
+      await assertAdmin(b.token);
+      await fsClearList(EVENTS);
+      res.json({ ok: true, result: { ok: true } });
       return;
     }
     if (route === '/status') {

@@ -5,7 +5,8 @@ const { GoogleAuth } = require('google-auth-library');
 const PROJECT_ID = 'human-appeal-media-plan';
 const auth = new GoogleAuth({
   scopes: [
-    'https://www.googleapis.com/auth/spreadsheets.readonly',
+    // Read and write; what the server can actually change is decided by how each sheet is shared.
+    'https://www.googleapis.com/auth/spreadsheets',
     'https://www.googleapis.com/auth/cloud-platform'
   ]
 });
@@ -58,6 +59,21 @@ async function batchGet(ssId, ranges, formattedDates) {
   return (data.valueRanges || []).map(v => v.values || []);
 }
 
+/** Writes values exactly as given (numbers stay numbers, text stays text). */
+async function valuesUpdate(ssId, range, values) {
+  return request(`https://sheets.googleapis.com/v4/spreadsheets/${ssId}/values/${encodeURIComponent(range)}?valueInputOption=RAW`,
+    { method: 'PUT', data: { range, majorDimension: 'ROWS', values } });
+}
+
+/** Empties the values of a range and keeps its formatting (like clearContent). */
+async function valuesClear(ssId, range) {
+  return request(`https://sheets.googleapis.com/v4/spreadsheets/${ssId}/values/${encodeURIComponent(range)}:clear`, { method: 'POST', data: {} });
+}
+
+async function sheetsBatchUpdate(ssId, requests) {
+  return request(`https://sheets.googleapis.com/v4/spreadsheets/${ssId}:batchUpdate`, { method: 'POST', data: { requests } });
+}
+
 /* ---------- Firestore (one JSON field per document) ---------- */
 
 const FS = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
@@ -77,4 +93,31 @@ async function fsSet(path, obj) {
   await request(`${FS}/${path}`, { method: 'PATCH', data: { fields: { json: { stringValue: JSON.stringify(obj) } } } });
 }
 
-module.exports = { PROJECT_ID, request, sheetMeta, batchGet, a1, fsGet, fsSet };
+/** Adds one JSON item to a list document in a single write, so two devices never overwrite each other. */
+async function fsAppend(path, obj) {
+  const name = `projects/${PROJECT_ID}/databases/(default)/documents/${path}`;
+  await request(`${FS}:commit`, { method: 'POST', data: { writes: [{
+    transform: { document: name, fieldTransforms: [{ fieldPath: 'items', appendMissingElements: { values: [{ stringValue: JSON.stringify(obj) }] } }] }
+  }] } });
+}
+
+async function fsList(path) {
+  try {
+    const doc = await request(`${FS}/${path}`);
+    const items = doc.fields && doc.fields.items && doc.fields.items.arrayValue && doc.fields.items.arrayValue.values;
+    return (items || []).map(v => { try { return JSON.parse(v.stringValue); } catch (e) { return null; } }).filter(Boolean);
+  } catch (err) {
+    if (err && err.response && err.response.status === 404) return [];
+    throw err;
+  }
+}
+
+async function fsClearList(path) {
+  await request(`${FS}/${path}`, { method: 'PATCH', data: { fields: { items: { arrayValue: { values: [] } } } } });
+}
+
+/** Forgets the cached tab list, so the next read sees a sheet's new size. */
+function forgetMeta(ssId) { delete metaCache[ssId]; }
+
+module.exports = { PROJECT_ID, request, sheetMeta, batchGet, a1, fsGet, fsSet, fsAppend, fsList, fsClearList,
+  valuesUpdate, valuesClear, sheetsBatchUpdate, forgetMeta };

@@ -815,4 +815,7 @@ async function getMonthCompareData(accountKey) {
   return { months, channels, days, generatedAt: fmt(wallFromInstant(Date.now(), book.tz), 'yyyy-MM-dd HH:mm') };
 }
 
-module.exports = { buildDashboardData, getMonthCompareData, normalizeAccountKey_, fmt, wallFromInstant, makeAsDate, grid, toNumber_ };
+function forgetArchive() { Object.keys(archiveCache).forEach(k => delete archiveCache[k]); }
+
+module.exports = { ACCOUNTS, buildDashboardData, getMonthCompareData, normalizeAccountKey_, fmt, wallFromInstant, makeAsDate, grid, toNumber_,
+  ssIdOf, openBook, optionalSheet, forgetArchive };
