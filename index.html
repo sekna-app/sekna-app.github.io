@@ -3957,6 +3957,16 @@ window.addEventListener('load',function(){
     .wly-col.win b{color:#0e8f5d!important;text-shadow:0 0 8px rgba(57,255,136,.6)}
     .wly-lg i.n{background:#39ff88;box-shadow:0 0 8px #39ff88}
     body.dark-mode .wly-wk{background:#1b2a5c;color:#9fb6ff!important}
+
+    /* v117 · tab bars "Aurora glow" everywhere, lighter neon, week labels */
+    body .wx-tab.on,body.dark-mode .wx-tab.on,body .wly-ms button.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%)!important;color:#fff!important;border-color:transparent!important;box-shadow:0 8px 18px rgba(61,107,255,.4)!important}
+    .wx-tab{transition:background .25s,color .25s,box-shadow .25s}
+    .wly-g small.wly-wl{position:absolute;bottom:-18px;left:0;right:0;text-align:center;font-size:10.5px;font-weight:900;color:#8a93a6}
+    .wly-lg{margin-top:26px!important}
+    .wly-col.win i{box-shadow:0 0 0 2px #9dffc8,0 0 12px rgba(125,255,179,.7),0 0 24px rgba(125,255,179,.35)!important}
+    .wly-col.win i.l{background:#dcfbe9!important}.wly-col.win i.t{background:linear-gradient(#8ff0bf,#3fd18d)!important}
+    .wly-col.win b{color:#21a565!important;text-shadow:0 0 8px rgba(125,255,179,.55)!important}
+    .wly-lg i.n{background:#9dffc8!important;box-shadow:0 0 8px #7dffb3!important}
 </style>
 </head>
 <body>
@@ -5480,7 +5490,7 @@ function drawWeeklyLy(anim){
  const go=anim&&motionOn();
  box.innerHTML=`<div class="wly-cap">Same Hijri weeks last year · ${esc(dd(W[0]&&W[0].from))} – ${esc(dd(W.length&&W[W.length-1].to))}</div>
   <div class="wly-ms">${[['v','Value'],['s','Spend'],['r','ROAS']].map(([k,l])=>`<button type="button" class="${WLY_M===k?'on':''}" onclick="wlyMetric('${k}')">${l}</button>`).join('')}</div>
-  <div class="wly-bars${go?' anim':''}">${W.map((w,j)=>{const wn=win(w);return `<button type="button" class="wly-g" onclick="wlyOpen(${j})"><span class="wly-col${wn==='l'?' win':''}"><b>${M.f(M.g(w.l))}</b><i class="l" style="height:${(M.g(w.l)/mx*100).toFixed(1)}%;--d:${j*.12}s"></i></span><span class="wly-col${wn==='t'?' win':''}"><b class="t">${w.live?M.f(M.g(w.t)):'—'}</b><i class="t" style="height:${Math.max(1,M.g(w.t)/mx*100).toFixed(1)}%;--d:${.3+j*.12}s"></i></span><small class="wly-wk">${j+1}</small></button>`}).join('')}</div>
+  <div class="wly-bars${go?' anim':''}">${W.map((w,j)=>{const wn=win(w);return `<button type="button" class="wly-g" onclick="wlyOpen(${j})"><span class="wly-col${wn==='l'?' win':''}"><b>${M.f(M.g(w.l))}</b><i class="l" style="height:${(M.g(w.l)/mx*100).toFixed(1)}%;--d:${j*.12}s"></i></span><span class="wly-col${wn==='t'?' win':''}"><b class="t">${w.live?M.f(M.g(w.t)):'—'}</b><i class="t" style="height:${Math.max(1,M.g(w.t)/mx*100).toFixed(1)}%;--d:${.3+j*.12}s"></i></span><small class="wly-wl">W${j+1}</small></button>`}).join('')}</div>
   <div class="wly-lg"><span><i class="l"></i>Last year</span><span><i class="t"></i>This year so far</span>${M.hi==null?'':'<span><i class="n"></i>Winner</span>'}<span class="tip">Tap a week for details</span></div>
   <div class="wly-list">${W.map((w,j)=>`<button type="button" onclick="wlyOpen(${j})"><span class="wly-wk">${j+1}</span><span><b>${esc(w.hf)} – ${esc(w.ht)}</b><small>${esc(dd(w.from))} – ${esc(dd(w.to))} ${w.from?w.from.slice(0,4):''}</small></span><span class="r"><b>${mpK(w.l.v)}</b><small>${w.live?`${chip(w.t.v,w.l.v)} this year`:'not yet'}</small></span></button>`).join('')}</div>`;
 }
@@ -5907,7 +5917,7 @@ let LAB_STATE=null, LAB_BUSY=false, LAB_MSG='';
 function renderLab(){
  const body=document.getElementById('labBody'); if(!body)return;
  if(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin===false){
-   body.innerHTML='<div class="lab-locked"><div class="lock-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><b>Admins only</b><small>Media Plan Lab is open to SEKNA administrators.</small></div>';return;
+   body.innerHTML='<div class="lab-locked"><div class="lock-ic anim"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="sh" d="M8 11V8a4 4 0 0 1 8 0v3"/><rect x="5" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1.4" fill="currentColor"/></svg></div><b>Admins only</b><small>Media Plan Lab is open to SEKNA administrators.</small></div>';return;
  }
  drawLabSave();
  if(!LAB_STATE||LAB_STATE.account!==CURRENT_ACCOUNT){drawLabIdle();return}
@@ -8614,7 +8624,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v116',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v117',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
