@@ -2017,7 +2017,10 @@ window.addEventListener('load',function(){
     .lyx-dr{display:grid;grid-template-columns:1fr auto auto 74px;gap:10px;align-items:center;padding:5px 0;font-size:12px}
     .lyx-dr span:first-child{color:#6b7385;font-weight:700}.lyx-dr b{text-align:right;color:#1d2433}.lyx-dr b.m{color:#a2a9b8;font-weight:700}
     .lyx-dr .mx-arrow{justify-self:end}.lyx-dr.hd b{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:#8a93a6}
-    .lyx-more{margin-top:6px;text-align:center;font-size:11px;font-weight:800;color:#3d6bff}
+    .lyx-tip{margin:12px 2px 0;font-size:11.5px;font-weight:700;color:#8a93a6}
+    .lyx-t.f{background:#f4f6fb;border-color:#e6e9f1}.lyx-t.f .lyx-v{color:#8a93a6}.lyx-t.n{background:#f4f6fb}
+    body.dark-mode .lyx-t.f,body.dark-mode .lyx-t.n{background:#11161e;border-color:#252a32}body.dark-mode .lyx-t.f .lyx-v{color:#6f7787}
+    .lyx-grid{margin-top:8px}
     @media(min-width:900px){.lyx-sum{grid-template-columns:340px minmax(0,1fr);gap:28px;align-items:center;padding:18px 22px}.lyx-b svg{height:150px}}
     body.desktop-site-mode .lyx-sum{grid-template-columns:340px minmax(0,1fr);gap:28px;align-items:center}body.desktop-site-mode .lyx-b svg{height:150px}
     body.dark-mode .lyx-t{background:#151a22;border-color:#2a313c}body.dark-mode .lyx-t.w{background:#0f2a20;border-color:#1f6a4b}body.dark-mode .lyx-t.l{background:#2c161b;border-color:#6a2a35}
@@ -5277,43 +5280,78 @@ function lyxOpen(i){
  requestAnimationFrame(()=>o.classList.add('open'));
 }
 function lyxClose(){const o=document.getElementById('lyxSheet');if(o)o.classList.remove('open')}
-function lyDays(days){
- const ex=MONTH_EXTRA[CURRENT_ACCOUNT];
- if(!ex){loadMonthExtras();return extraWaitHtml('last year’s days')}
- const R=days.filter(x=>x.actual).map(x=>{const k=hijriDayInYear(x.date,1),l=k?dayParts(k,ex):null,a=x.actual;
-   return {x,k,a,l,w:l?a.value>l.value:null}});
- if(!R.length)return '<div class="dx-empty">No day has results yet this month.</div>';
- const has=R.filter(r=>r.l), wins=has.filter(r=>r.w).length;
- if(!has.length)return `<div class="dx-empty">Last year has no daily data for these Hijri days${dailyStartText()}.</div>`;
- const TA=has.reduce((t,r)=>t+r.a.value,0), TL=has.reduce((t,r)=>t+r.l.value,0), dl=TL?TA/TL-1:null;
+
+function lyData(days){
+ const ex=MONTH_EXTRA[CURRENT_ACCOUNT]; if(!ex)return null;
+ const R=days.map(x=>{const k=hijriDayInYear(x.date,1),l=k?dayParts(k,ex):null,a=x.actual||null;
+   return {x,k,a,l,w:a&&l?a.value>l.value:null}});
+ const has=R.filter(r=>r.a&&r.l), wins=has.filter(r=>r.w).length;
+ const TA=has.reduce((t,r)=>t+r.a.value,0), TL=has.reduce((t,r)=>t+r.l.value,0);
  const best=[...has].sort((p,q)=>(q.a.value-q.l.value)-(p.a.value-p.l.value))[0];
- const C=2*Math.PI*28, share=wins/has.length;
- const byDate={};R.forEach(r=>byDate[r.x.date]=r);
- const cal=days.map(x=>{const r=byDate[x.date];return `<i class="${!r?'f':!r.l?'n':r.w?'w':'l'}" title="${esc(x.hijri||'')}">${x.dayNumber}</i>`}).join('');
+ return {R,has,wins,TA,TL,dl:TL?TA/TL-1:null,best:best&&best.a.value>best.l.value?best:null,live:R.filter(r=>r.a).length};
+}
+function lyRunPts(has,w,h){
  let ca=0,cl=0;const cum=has.map(r=>[ca+=r.a.value,cl+=r.l.value]), cm=Math.max(ca,cl)||1;
- const pts=k=>cum.map((c,i)=>`${(has.length>1?i/(has.length-1)*316+2:160).toFixed(1)},${(78-c[k]/cm*72).toFixed(1)}`).join(' ');
- const chip=v=>v==null?'':`${v>=0?'▲':'▼'} ${percent(Math.abs(v))}`;
+ return k=>cum.map((c,i)=>`${(has.length>1?i/(has.length-1)*(w-4)+2:w/2).toFixed(1)},${(h-4-c[k]/cm*(h-10)).toFixed(1)}`).join(' ');
+}
+const lyChip=v=>v==null||!isFinite(v)?'':`${v>=0?'▲':'▼'} ${percent(Math.abs(v))}`;
+function lyDays(days){
+ const D=lyData(days);
+ if(!D){loadMonthExtras();return extraWaitHtml('last year’s days')}
+ if(!D.live)return '<div class="dx-empty">No day has results yet this month.</div>';
+ if(!D.has.length)return `<div class="dx-empty">Last year has no daily data for these Hijri days${dailyStartText()}.</div>`;
+ const {R,has,wins,TA,TL,dl,best}=D, C=2*Math.PI*28, share=wins/has.length, pts=lyRunPts(has,320,82);
+ const cal=R.map(r=>`<i class="${!r.a?'f':!r.l?'n':r.w?'w':'l'}" title="${esc(r.x.hijri||'')}">${r.x.dayNumber}</i>`).join('');
  const sum=`<div class="lyx-sum"><div class="lyx-a"><small>VS THE SAME HIJRI DAYS LAST YEAR</small>
    <div class="lyx-ring"><svg viewBox="0 0 70 70"><circle cx="35" cy="35" r="28" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="8"/><circle cx="35" cy="35" r="28" fill="none" stroke="#39e29a" stroke-width="8" stroke-linecap="round" stroke-dasharray="${(share*C).toFixed(1)} ${C.toFixed(1)}"/></svg>
-   <div><b>${wins}/${has.length}</b><p>days beat last year${best&&best.a.value>best.l.value?` · best ${esc(shortDate(best.x.date))} <em class="up">+${mpK(best.a.value-best.l.value)}</em>`:''}</p></div></div>
+   <div><b>${wins}/${has.length}</b><p>days beat last year${best?` · best ${esc(shortDate(best.x.date))} <em class="up">+${mpK(best.a.value-best.l.value)}</em>`:''}</p></div></div>
    <div class="lyx-cal">${cal}</div>
    <div class="lyx-key"><span><i class="w"></i>Beat last year</span><span><i class="l"></i>Under</span><span><i class="f"></i>To come</span></div></div>
   <div class="lyx-b"><small>RUNNING TOTAL · VALUE</small>
    <svg viewBox="0 0 320 82" preserveAspectRatio="none"><polyline points="${pts(1)}" fill="none" stroke="#9fb0dd" stroke-width="2" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/><polyline points="${pts(0)}" fill="none" stroke="#39e29a" stroke-width="3" vector-effect="non-scaling-stroke"/></svg>
-   <div class="lyx-lg"><span><i style="background:#39e29a"></i>This year ${mpK(TA)}</span><span><i style="background:#9fb0dd"></i>Last year ${mpK(TL)}</span><b class="${dl>=0?'up':'dn'}">${chip(dl)}</b></div></div></div>`;
+   <div class="lyx-lg"><span><i style="background:#39e29a"></i>This year ${mpK(TA)}</span><span><i style="background:#9fb0dd"></i>Last year ${mpK(TL)}</span><b class="${dl>=0?'up':'dn'}">${lyChip(dl)}</b></div></div></div>`;
  const det=r=>{const a=r.a,l=r.l;
    const rows=[['Value',a.value,l.value,v=>money(v),1],['Spend',a.spend,l.spend,v=>money(v),0],['ROAS',a.spend?a.value/a.spend:null,l.spend?l.value/l.spend:null,v=>v==null?'—':fmt(v,2)+'x',1],
      ['Conversions',a.conversions,l.conversions,v=>fmt(v,0),1],['Clicks',a.clicks,l.extra?l.extra.clicks:null,v=>v==null?'—':fmt(v,0),1],
      ['Avg. donation',a.conversions?a.value/a.conversions:null,l.conversions?l.value/l.conversions:null,v=>v==null?'—':money(v,2),1]];
    return `<div class="lyx-det"><div class="lyx-dr hd"><span>Last year: ${esc(shortDay(r.k).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'}))}</span><b>This year</b><b>Last year</b><span></span></div>
     ${rows.map(([t,x,y,f,g])=>{const d=x!=null&&y?x/y-1:null,c=!g||d==null||Math.abs(d)<.005?'neutral':d>0?'good':'bad';return `<div class="lyx-dr"><span>${t}</span><b>${f(x)}</b><b class="m">${f(y)}</b>${mxArrow(d,c)}</div>`}).join('')}</div>`};
- const head=r=>{const x=r.x,d=r.l&&r.l.value?r.a.value/r.l.value-1:null;
-   return `<span class="lyx-dl ${r.w?'up':'dn'}">${chip(d)}</span><div class="lyx-d"><b>${x.dayNumber}</b>${esc(String(x.dayName||'').slice(0,3))} · ${esc(x.hijri||'')}</div>
-    <div class="lyx-v">${money(r.a.value)}</div><div class="lyx-ly">${r.l?`last year ${money(r.l.value)}`:'No data last year'}</div>`};
+ const head=r=>{const x=r.x,d=r.a&&r.l&&r.l.value?r.a.value/r.l.value-1:null;
+   return `${d!=null?`<span class="lyx-dl ${r.w?'up':'dn'}">${lyChip(d)}</span>`:''}<div class="lyx-d"><b>${x.dayNumber}</b>${esc(String(x.dayName||'').slice(0,3))} · ${esc(x.hijri||'')}</div>
+    ${r.a?`<div class="lyx-v">${money(r.a.value)}</div><div class="lyx-ly">${r.l?`last year ${money(r.l.value)}`:'No data last year'}</div>`
+         :`<div class="lyx-v">${r.l?money(r.l.value):'—'}</div><div class="lyx-ly">${r.l?'last year · to beat':'No data last year'}</div>`}`};
  
- LYX_SHEETS=R.map(r=>r.l?`<div class="lyx-t ${r.w?'w':'l'}">${head(r)}${det(r)}</div>`:'');
- const tiles=R.map((r,i)=>`<div class="lyx-t ${r.l?(r.w?'w':'l'):'n'}"${r.l?` onclick="lyxOpen(${i})"`:''}>${head(r)}${r.l?'<div class="lyx-more">Details ▾</div>':''}</div>`).join('');
- return sum+`<div class="lyx-grid">${tiles}</div>`;
+ LYX_SHEETS=R.map(r=>r.a&&r.l?`<div class="lyx-t ${r.w?'w':'l'}">${head(r)}${det(r)}</div>`:'');
+ const tiles=R.map((r,i)=>`<div class="lyx-t ${!r.a?'f':!r.l?'n':r.w?'w':'l'}"${r.a&&r.l?` onclick="lyxOpen(${i})"`:''}>${head(r)}</div>`).join('');
+ return sum+`<div class="lyx-tip">Tap a day to see its details</div><div class="lyx-grid">${tiles}</div>`;
+}
+ 
+function lyShareHtml(){
+ const d=DASH_DATA||{}, days=d.dayPlan||[]; if(!days.length)return '';
+ const D=lyData(days); if(!D||!D.has.length)return '';
+ const {R,has,wins,TA,TL,dl,best}=D, mName=rsMonthOf(days), pts=lyRunPts(has,680,170);
+ const cards=`<div class="rs-kg">${rsCard('green','Days beat last year',`${wins} of ${has.length}`,`${Math.round(wins/has.length*100)}% of the days so far`)}${rsCard('navy','Value to date',money(TA),`${rsChip(dl)} vs ${rsK(TL)} last year`)}${best?rsCard('gold','Best day',`+${rsK(best.a.value-best.l.value)}`,`${esc(shortDate(best.x.date))} · ${rsK(best.a.value)} vs ${rsK(best.l.value)}`):''}</div>`;
+ const cal=rsCalendar(days,x=>{const r=R.find(y=>y.x.date===x.date);
+   if(!r||!r.a)return `<div class="rs-cd fut"><div class="rs-n"><b>${x.dayNumber}</b><span>${esc(rsHijri(x.hijri))}</span></div><div class="rs-s" style="margin-top:12px">last year</div><div class="rs-s"><b>${r&&r.l?rsK(r.l.value):'—'}</b></div></div>`;
+   if(!r.l)return `<div class="rs-cd"><div class="rs-n"><b>${x.dayNumber}</b></div><div class="rs-v">${rsK(r.a.value)}</div><div class="rs-s">no data last year</div></div>`;
+   return `<div class="rs-cd" style="background:${r.w?RS_COL.good:RS_COL.bad};color:#fff"><div class="rs-n"><b>${x.dayNumber}</b><span>${esc(rsHijri(x.hijri))}</span></div>
+    <div class="rs-v">${rsK(r.a.value)}</div><div class="rs-s">LY ${rsK(r.l.value)}</div></div>`});
+ const top=has.filter(r=>r.w).sort((p,q)=>(q.a.value-q.l.value)-(p.a.value-p.l.value)).slice(0,5);
+ const list=top.length?`${rsT('Days we beat last year','value, this year vs last year')}<div class="rp-box rs-list">${top.map(r=>`<div><span>${esc(String(r.x.dayName||'').slice(0,3))} ${r.x.dayNumber} · ${esc(r.x.hijri||'')}</span><b>${money(r.a.value)}</b><em class="good">+${rsK(r.a.value-r.l.value)}</em></div>`).join('')}</div>`:'';
+ return `${rsHead('Vs last year · '+mName)}
+  ${rsT('Same Hijri days last year',`${has.length} of ${days.length} days so far · by value`)}${cards}
+  ${rsT('Day by day','<b style="color:#5fd39b">● beat last year</b> &nbsp;<b style="color:#f0838f">● under last year</b> · big number = value')}<div class="rp-box">${cal}</div>
+  ${rsT('Running total','value, this year vs last year')}<div class="rp-box"><svg viewBox="0 0 680 170" width="100%" height="170"><polyline points="${pts(1)}" fill="none" stroke="#9aa4bd" stroke-width="3" stroke-dasharray="7 7"/><polyline points="${pts(0)}" fill="none" stroke="#22c47c" stroke-width="5"/></svg>
+   <div class="rs-note"><b style="color:#22c47c">● This year ${rsK(TA)}</b> &nbsp; <b style="color:#9aa4bd">● Last year ${rsK(TL)}</b> &nbsp; ${rsChip(dl)}</div></div>
+  ${list}${SHARE_FOOT}`;
+}
+function lyShareText(d){
+ const days=(d&&d.dayPlan)||[], D=lyData(days); if(!D||!D.has.length)return '';
+ const a=accountMeta(d);
+ return [`📌 ${a.shortLabel} vs Last Year — ${rsMonthOf(days)} ⚙️`,'Same Hijri days, by value','',
+  `${D.wins*2>=D.has.length?'🟢':'🔴'} Beat last year: ${D.wins} of ${D.has.length} days`,
+  `💚 Value to date: ${money(D.TA)} vs. ${money(D.TL)} (${D.dl>=0?'+':'−'}${percent(Math.abs(D.dl||0))})`,
+  D.best?`🏆 Best day: ${shortDate(D.best.x.date)} — +${money(D.best.a.value-D.best.l.value)}`:null].filter(x=>x!==null).join('\n');
 }
 function renderDays(d){
  const body=document.getElementById('dxBody');
@@ -6338,6 +6376,7 @@ function getShareSummary(tab){
  if(k==='results')return resultsShareText(DASH_DATA);
  if(k==='report')return oneMonthShareText(DASH_DATA);
  if(k==='compare')return compareShareText(DASH_DATA);
+ if(k==='ly')return lyShareText(DASH_DATA);
  return buildSummary(DASH_DATA);
 }
 
@@ -8060,7 +8099,7 @@ function captureDailyReport(){return captureReport(shareReportHtml(),'')}
 
 function shareKind(tab){
  if(tab==='channel')return 'channel';
- if(tab==='days')return DAY_VIEW==='plan'?'plan':'results';
+ if(tab==='days')return DAY_VIEW==='plan'?'plan':DAY_VIEW==='ly'?'ly':'results';
  if(tab==='months')return MONTH_MODE==='one'?'report':'compare';
  return 'daily';
 }
@@ -8070,7 +8109,8 @@ const SHARE_KINDS={
  plan:{html:()=>planShareHtml(),cls:'rp-narrow',name:'Media-Plan'},
  results:{html:()=>resultsShareHtml(),cls:'rp-narrow',name:'Results'},
  report:{html:()=>oneMonthShareHtml(),cls:'rp-narrow',name:'Report'},
- compare:{html:()=>compareShareHtml(),cls:'rp-narrow',name:'Month-vs-Month'}
+ compare:{html:()=>compareShareHtml(),cls:'rp-narrow',name:'Month-vs-Month'},
+ ly:{html:()=>lyShareHtml(),cls:'rp-narrow',name:'Vs-Last-Year'}
 };
 function captureChannelReport(){return captureReport(channelReportHtml(),'rp-narrow')}
 async function captureReport(html,extraClass){
@@ -8092,7 +8132,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v101',date:'2026-10-27'};
+const DASHBOARD_RELEASE_CLIENT={version:'v102',date:'2026-10-28'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
@@ -8436,6 +8476,7 @@ async function mrBuild(){
    const m=mpData();if(!m)throw new Error('The media plan has no days yet.');
    const steps=[['Building the cover…',()=>mpCapture(mpCover(m))],
      ['Adding the Results page…',()=>captureReport(resultsShareHtml(),'rp-narrow')],
+     ...(lyShareHtml()?[['Adding the days vs last year…',()=>captureReport(lyShareHtml(),'rp-narrow')]]:[]),
      ['Adding campaign types by week…',()=>mpCapture(mpWeeksPage(m))],
      ['Adding last year and notes…',()=>mpCapture(mpComparePage(m,MR.notes))],
      ['Adding the thank-you page…',()=>mpCapture(mpThanks(m))]];
