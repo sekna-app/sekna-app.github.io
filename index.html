@@ -7654,7 +7654,8 @@ function adminView(v){
 }
 async function clearRecent(){
  if(!await askSekna({title:'Clear recent?',text:'The list starts empty again; only new activity shows from now.',ok:'Clear'}))return;
- storeSet('sekna_recent_cleared',String(Date.now()));if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
+ try{ADMIN_APP_STATE=await serverCall('adminClearRecent',getAccessToken());storeRemove(ADMIN_CACHE_KEY);if(ADMIN_LAST)renderAdmin(ADMIN_LAST);showSettingsToast('Recent cleared')}
+ catch(err){showSettingsToast(errorText(err))}
 }
 function adminGo(k){ADMIN_VIEW='tools';ADMIN_TAB=k;adminLoadExtra(k);if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 const AD_IC={eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
@@ -7710,7 +7711,7 @@ function renderAdmin(d){
    waiting.forEach(p=>feed.push({at:Math.max(0,...p.devices.map(x=>x.lastSeenMs||0))||now,ic:adIco('user','#9a6a22','#fbf1e1'),t:`${esc(p.name)} asked for access`}));
    if(Array.isArray(ADMIN_IDEAS))ADMIN_IDEAS.forEach(i=>{const at=Date.parse(i.time);if(at)feed.push({at,ic:adIco('bulb','#c28d3e','#fff6e0'),t:`New idea: ${esc(i.title||'Untitled')}`})});
    if(Array.isArray(SRV_ADMIN.events))SRV_ADMIN.events.forEach(e=>{if(e.at)feed.push({at:e.at,ic:adIco('server',/Backup/.test(e.server)?'#c43c50':'#0e8f5d',/Backup/.test(e.server)?'#fde8eb':'#e3f6ee'),t:/Backup/.test(e.server)?'Server moved to the backup':'Server back on Firebase'})});
-   const cleared=+storeGet('sekna_recent_cleared')||0;
+   const cleared=+((ADMIN_APP_STATE||{}).recentClearedAt)||0;
    feed.sort((x,y)=>y.at-x.at);
    const recent=`<div class="ad-lbl">Recent</div><div class="ad-card">${feed.filter(f=>f.at>cleared).slice(0,8).map(f=>`<div class="a3-fi">${f.ic}<div><b>${f.t}</b><small>${esc(timeAgo(f.at,now))}</small></div></div>`).join('')||'<div class="sk-admin-empty">Nothing new.</div>'}</div>${feed.some(f=>f.at>cleared)?'<button type="button" class="sh-reset" onclick="clearRecent()">↺ Clear recent</button>':''}`;
    body=`<div class="a3-stats"><div><b>${users.length}</b><small>Users</small></div><div class="${waiting.length?'alert':''}"><b>${waiting.length}</b><small>Waiting</small></div><div><b>${invited}</b><small>Invited</small></div><div><b>${today}</b><small>Today</small></div></div>${opens}${quick}${recent}`;
@@ -8483,7 +8484,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v112',date:'2026-11-02'};
+const DASHBOARD_RELEASE_CLIENT={version:'v113',date:'2026-11-02'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
