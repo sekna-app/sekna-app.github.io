@@ -3090,6 +3090,23 @@ window.addEventListener('load',function(){
     .mp-sig{position:relative;margin-top:90px;font-size:22px;color:#c9d3f5;font-weight:700}.mp-sig b{color:#fff}
     .mp-url{position:relative;margin-top:10px;font-size:20px;color:#8ea2dd;font-weight:700}
 
+
+    /* v88 — desktop: the phone design, laid out side by side instead of one long column */
+    @media (min-width:1100px){
+      .wrap{max-width:1320px}
+      #overviewPanel.active{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:stretch}
+      #overviewPanel>*{grid-column:1/-1;margin-top:0!important;margin-bottom:0!important}
+      #overviewPanel>section.yoy,#overviewPanel>#projectPerformanceSection{grid-column:auto}
+      #app .sx-month{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;align-items:stretch}#app .sx-month>.sx-hero{margin:0;display:flex;flex-direction:column;justify-content:center}#app .sx-month>.sx-ftiles{margin:0;grid-template-columns:1fr!important;align-content:stretch}
+      #app .dc-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+      #app .rx-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+      #app .phx-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+      #app .mr3-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+      #app .mx-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}#app .mx-split>div>.mx-sub:first-child{margin-top:12px}
+    }
+    @media (min-width:1500px){
+      #app .dc-list{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
     /* v87 — PDF pages 3 and 4 (navy) */
 
     .dz-h{margin:0 0 20px}.dz-h small{display:block;font-size:19px;font-weight:900;letter-spacing:.16em;color:#e2b874}
@@ -3403,7 +3420,7 @@ window.addEventListener('load',function(){
     <div class="ab3-pills"><span>Media planning</span><span>Campaign monitoring</span><span>Reporting</span><span>Smart tools</span></div>
     <button type="button" class="ab3-idea" onclick="openIdeas()"><span class="ab3-bulb">💡</span><span class="ab3-it"><b>Have an idea for SEKNA?</b><small>Tell us what would make your day easier. Every idea is read.</small></span><span class="ab3-go">›</span></button>
     <div class="ab3-credit">Designed &amp; developed by <b>Ibrahim Amin</b></div>
-    <div class="sk-version ab3-ver">SEKNA Dashboard • v87</div>
+    <div class="sk-version ab3-ver">SEKNA Dashboard • v88</div>
   </section>
 </div>
 
@@ -5204,7 +5221,7 @@ function compareBody(rows,A,B,avg,aKey,bKey){
  const rest=rows.filter(r=>!['spend','conversions','value','roas'].includes(r.m.k));
  const top=`<div class="mr3-grid">${head.map(r=>`<div class="mr3 ${r.m.k}"><small>${esc(r.m.l)}</small><b>${r.m.f(r.a,avg)}</b><div class="mr3-f"><span class="mr3-chip ${ck(r)}">${r.delta==null?'—':(r.delta>=0?'▲ ':'▼ ')+percent(Math.abs(r.delta))}</span><i>${bn} ${r.m.f(r.b,avg)}</i></div></div>`).join('')}</div>`;
  const more=`<div class="mr-list cmp"><div class="mr-li mr-lh"><span></span><b>${esc(monthName(aKey))}</b><b>${bn}</b><span></span></div>${rest.map(r=>`<div class="mr-li"><span>${esc(r.m.l)}</span><b>${r.m.f(r.a,avg)}</b><b class="mr-b">${r.m.f(r.b,avg)}</b>${mxArrow(r.delta,ck(r))}</div>`).join('')}</div>`;
- return top+more+compareChannels(A,B,avg,aKey,bKey)+'<div class="mx-foot">▲▼ the first month vs the second · <i class="good"></i> better <i class="bad"></i> worse <i class="neutral"></i> no better/worse</div>';
+ return top+'<div class="mx-split"><div>'+more+'</div><div>'+compareChannels(A,B,avg,aKey,bKey)+'</div></div>'+'<div class="mx-foot">▲▼ the first month vs the second · <i class="good"></i> better <i class="bad"></i> worse <i class="neutral"></i> no better/worse</div>';
 }
 function compareChannels(A,B,avg,aKey,bKey){
  if(!A.channels||!B.channels)return `<div class="mx-sub">By channel</div><div class="dx-empty">The channel split needs daily data${dailyStartText()}.</div>`;
@@ -5277,7 +5294,7 @@ function reportBody(S,U,avg){
  const usual=r=>r.u!=null?`usual ${r.m.f(r.u,avg)}`:'no earlier data';
  const top=`<div class="mr3-grid">${head.map(r=>`<div class="mr3 ${r.m.k}"><small>${esc(r.m.l)}</small><b>${r.m.f(r.v,avg)}</b><div class="mr3-f"><span class="mr3-chip ${r.cls}">${r.delta==null?'—':(r.delta>=0?'▲ ':'▼ ')+percent(Math.abs(r.delta))}</span><i>${usual(r)}</i></div></div>`).join('')}</div>`;
  const more=`<div class="mr-list">${rest.map(r=>`<div class="mr-li"><span>${esc(r.m.l)}</span><b>${r.m.f(r.v,avg)}</b>${mxArrow(r.delta,r.cls)}</div>`).join('')}</div>`;
- return top+more+reportChannels(S,avg)+'<div class="mx-foot">▲▼ vs the usual level: the 12 months before, scaled to the same number of days · <i class="good"></i> better <i class="bad"></i> worse</div>';
+ return top+'<div class="mx-split"><div>'+more+'</div><div>'+reportChannels(S,avg)+'</div></div>'+'<div class="mx-foot">▲▼ vs the usual level: the 12 months before, scaled to the same number of days · <i class="good"></i> better <i class="bad"></i> worse</div>';
 }
 function dailyStartText(){
  const ks=Object.keys((MONTH_EXTRA[CURRENT_ACCOUNT]||{}).days||{}).sort();
@@ -7185,7 +7202,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v87',date:'2026-10-19'};
+const DASHBOARD_RELEASE_CLIENT={version:'v88',date:'2026-10-21'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
