@@ -3905,6 +3905,30 @@ window.addEventListener('load',function(){
     .mx-pd{justify-content:flex-start!important;gap:10px!important}
     .mx-pd-t{font-size:12.5px;font-weight:600;color:#9aa2b3}
     body.dark-mode .mr-toggle b{color:#fff}
+
+    /* v115 · Weekly Performance · last year */
+    .wly-btn{flex:none;align-self:flex-start;border:1px solid #f1d9a8;background:#fbf1e1;color:#9a6a22;border-radius:99px;padding:6px 12px;font:inherit;font-size:11.5px;font-weight:900;cursor:pointer}
+    .wly-btn.on{background:#c28d3e;border-color:#c28d3e;color:#fff}
+    .wly-cap{font-size:11px;color:#8a93a6;font-weight:700;margin-top:4px}
+    .wly-bars{display:flex;align-items:flex-end;gap:14px;height:200px;margin-top:10px;padding:18px 4px 0;border-bottom:1px solid #e6e9f1}
+    .wly-g{flex:1;display:flex;align-items:flex-end;gap:4px;height:100%;position:relative;border:0;background:none;padding:0;cursor:pointer}
+    .wly-col{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;min-width:0}
+    .wly-col b{font-size:9.5px;font-weight:900;color:#6b7385;white-space:nowrap;margin-bottom:3px}.wly-col b.t{color:#203c8e}
+    .wly-col i{display:block;width:100%;border-radius:7px 7px 2px 2px;transform-origin:bottom}
+    .wly-col i.l{background:#cfd5e2}.wly-col i.t{background:linear-gradient(#3d6bff,#203c8e)}
+    .wly-bars.anim .wly-col i{animation:grow .9s var(--d,0s) cubic-bezier(.2,.8,.2,1) both}
+    .wly-bars.anim .wly-col b{animation:pgIn .4s calc(var(--d,0s) + .6s) both}
+    .wly-g small{position:absolute;bottom:-18px;left:0;right:0;text-align:center;font-size:10px;font-weight:800;color:#8a93a6}
+    @keyframes grow{from{transform:scaleY(0)}to{transform:none}}
+    .wly-lg{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;font-size:10.5px;font-weight:800;color:#4b5263;margin-top:26px}
+    .wly-lg i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:-1px}.wly-lg i.l{background:#cfd5e2}.wly-lg i.t{background:#3d6bff}
+    .wly-lg .tip{margin-left:auto;color:#9aa2b3;font-weight:600}
+    .wly-list{margin-top:8px}
+    .wly-list button{display:grid;grid-template-columns:34px 1fr auto;gap:8px;width:100%;align-items:center;padding:9px 0;border:0;border-top:1px solid #eef0f5;background:none;font:inherit;text-align:left;cursor:pointer;color:inherit}
+    .wly-list b{font-size:12px}.wly-list small{display:block;color:#8a93a6;font-weight:600;font-size:10.5px}.wly-list .r{text-align:right}
+    .wly-list em{font-style:normal;font-weight:900}.wly-list em.up{color:#0e8f5d}.wly-list em.dn{color:#c43c50}
+    body.dark-mode .wly-list button{border-color:#252a32}body.dark-mode .wly-col i.l{background:#3a4252}body.dark-mode .wly-col b.t{color:#9fb6ff}
+    .section-head:has(.wly-btn){display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
 </style>
 </head>
 <body>
@@ -4432,7 +4456,9 @@ window.addEventListener('load',function(){
           </div>
           <div class="section-sub">Weekly actuals vs plan • updates automatically from the tracker</div>
         </div>
+        <button type="button" class="wly-btn" id="wlyBtn" onclick="toggleWeeklyLy()">↺ Last year</button>
       </div>
+      <div class="wly" id="weeklyLy" hidden></div>
       <div class="wx" id="weeklyCards">
         <div class="wx-cap" id="weeklyStripCap">By week · width = weekly budget</div>
         <div class="wx-strip" id="weeklyStrip"></div>
@@ -5368,6 +5394,40 @@ function weekRangeEnd(w){
  const m=String((w&&w.sourceLabel)||'').match(/(\d{1,2})\s*[:\-–]\s*(\d{1,2})\s*$/);
  return m?{start:Number(m[1]),end:Number(m[2])}:null;
 }
+ 
+let WK_LY=false, WLY_SHEETS=[];
+function toggleWeeklyLy(){WK_LY=!WK_LY;drawWeeklyLy(true)}
+function drawWeeklyLy(anim){
+ const box=document.getElementById('weeklyLy'),cards=document.getElementById('weeklyCards'),btn=document.getElementById('wlyBtn');
+ if(!box||!cards)return;
+ if(btn)btn.classList.toggle('on',WK_LY);
+ box.hidden=!WK_LY;cards.hidden=WK_LY;
+ if(!WK_LY)return;
+ const ex=MONTH_EXTRA[CURRENT_ACCOUNT];
+ if(!ex){loadMonthExtras();box.innerHTML=extraWaitHtml('last year’s weeks');return}
+ const days=(DASH_DATA&&DASH_DATA.dayPlan)||[], weeks=(DASH_DATA&&DASH_DATA.weekly)||[];
+ 
+ let start=1;
+ const W=weeks.map((w,i)=>{const m=String(w.sourceLabel||'').match(/(\d+)\s*:\s*(\d+)/);const a=m?+m[1]:start,z=m?+m[2]:(i===weeks.length-1?days.length:start+(w.days||7)-1);start=z+1;
+   const t={s:0,v:0,c:0,cl:0},l={s:0,v:0,c:0,cl:0};let from='',to='',hf='',ht='',live=0;
+   days.filter(x=>x.dayNumber>=a&&x.dayNumber<=z).forEach(x=>{const k=hijriDayInYear(x.date,1),p=k?dayParts(k,ex):null;
+     if(p){l.s+=p.spend;l.v+=p.value;l.c+=p.conversions;l.cl+=p.extra?p.extra.clicks:0;if(!from)from=k;to=k}
+     if(x.actual){live++;t.s+=x.actual.spend||0;t.v+=x.actual.value||0;t.c+=x.actual.conversions||0;t.cl+=x.actual.clicks||0}
+     if(!hf)hf=x.hijri||'';ht=x.hijri||''});
+   return {i,a,z,t,l,from,to,hf,ht,live,n:z-a+1}});
+ const mx=Math.max(1,...W.map(w=>Math.max(w.t.v,w.l.v)));
+ const dd=k=>k?shortDay(k).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';
+ const chip=(a,b)=>!b||!a?'':`<em class="${a>=b?'up':'dn'}">${a>=b?'▲':'▼'} ${Math.round(Math.abs(a/b-1)*100)}%</em>`;
+ WLY_SHEETS=W.map(w=>{const rows=[['Value',w.t.v,w.l.v,v=>money(v),1],['Spend',w.t.s,w.l.s,v=>money(v),0],['ROAS',w.t.s?w.t.v/w.t.s:null,w.l.s?w.l.v/w.l.s:null,v=>v==null?'—':fmt(v,2)+'x',1],['Conversions',w.t.c,w.l.c,v=>fmt(v,0),1],['Clicks',w.t.cl,w.l.cl,v=>fmt(v,0),1]];
+   return `<div class="lyx-t ${w.live&&w.t.v>=w.l.v?'w':w.live?'l':'f'}"><div class="lyx-d"><b>Week ${w.i+1}</b>${esc(w.hf)} – ${esc(w.ht)}</div><div class="lyx-v">${w.live?money(w.t.v):'To come'}</div><div class="lyx-ly">Last year ${money(w.l.v)} · ${esc(dd(w.from))} – ${esc(dd(w.to))}${w.live&&w.live<w.n?` · ${w.live} of ${w.n} days so far`:''}</div>
+    <div class="lyx-det"><div class="lyx-dr hd"><span>Days ${w.a}–${w.z}</span><b>This year</b><b>Last year</b><span></span></div>${rows.map(([t,x,y,f,g])=>{const d=w.live&&x!=null&&y?x/y-1:null,c=!g||d==null||Math.abs(d)<.005?'neutral':d>0?'good':'bad';return `<div class="lyx-dr"><span>${t}</span><b>${w.live?f(x):'—'}</b><b class="m">${f(y)}</b>${mxArrow(d,c)}</div>`}).join('')}</div></div>`});
+ const go=anim&&motionOn();
+ box.innerHTML=`<div class="wly-cap">Same Hijri weeks last year · ${esc(dd(W[0]&&W[0].from))} – ${esc(dd(W.length&&W[W.length-1].to))}</div>
+  <div class="wly-bars${go?' anim':''}">${W.map((w,j)=>`<button type="button" class="wly-g" onclick="wlyOpen(${j})"><span class="wly-col"><b>${mpK(w.l.v)}</b><i class="l" style="height:${(w.l.v/mx*100).toFixed(1)}%;--d:${j*.12}s"></i></span><span class="wly-col"><b class="t">${w.live?mpK(w.t.v):'—'}</b><i class="t" style="height:${Math.max(1,w.t.v/mx*100).toFixed(1)}%;--d:${.3+j*.12}s"></i></span><small>W${j+1}</small></button>`).join('')}</div>
+  <div class="wly-lg"><span><i class="l"></i>Last year</span><span><i class="t"></i>This year so far</span><span class="tip">Tap a week for details</span></div>
+  <div class="wly-list">${W.map((w,j)=>`<button type="button" onclick="wlyOpen(${j})"><b>W${j+1}</b><span><b>${esc(w.hf)} – ${esc(w.ht)}</b><small>${esc(dd(w.from))} – ${esc(dd(w.to))} ${w.from?w.from.slice(0,4):''}</small></span><span class="r"><b>${mpK(w.l.v)}</b><small>${w.live?`${chip(w.t.v,w.l.v)} this year`:'not yet'}</small></span></button>`).join('')}</div>`;
+}
+function wlyOpen(i){LYX_SHEETS=WLY_SHEETS;lyxOpen(i)}
 function renderWeekly(rows){
  const strip=document.getElementById('weeklyStrip');
  const tabs=document.getElementById('weeklyTabs');
@@ -5395,6 +5455,7 @@ function renderWeekly(rows){
  }).join('');
  tabs.innerHTML=list.map((w,i)=>`<button type="button" role="tab" aria-selected="${i===WEEK_PICK}" class="wx-tab${i===WEEK_PICK?' on':''}" onclick="pickWeek(${i})">${esc(w.week||('Week '+(i+1)))}</button>`).join('');
  renderWeekDetail(list[WEEK_PICK],WEEK_PICK===live,x.monthName);
+ if(WK_LY)drawWeeklyLy(false);
 }
 function pickWeek(i){
  WEEK_PICK=i;
@@ -5905,7 +5966,7 @@ function loadMonthExtras(){
  if(!(window.google&&google.script&&google.script.run))return;
  MONTH_EXTRA_LOADING[key]=true;MONTH_EXTRA_FAIL[key]=false;
  google.script.run
-  .withSuccessHandler(r=>{MONTH_EXTRA_LOADING[key]=false;MONTH_EXTRA[key]=r||{months:{}};if(CURRENT_TAB==='months'&&key===CURRENT_ACCOUNT)renderMonthCompare();if(CURRENT_TAB==='days'&&DAY_VIEW==='ly'&&key===CURRENT_ACCOUNT&&DASH_DATA)renderDays(DASH_DATA);if(PY_OPEN&&key===CURRENT_ACCOUNT)renderPastYears()})
+  .withSuccessHandler(r=>{MONTH_EXTRA_LOADING[key]=false;MONTH_EXTRA[key]=r||{months:{}};if(CURRENT_TAB==='months'&&key===CURRENT_ACCOUNT)renderMonthCompare();if(CURRENT_TAB==='days'&&DAY_VIEW==='ly'&&key===CURRENT_ACCOUNT&&DASH_DATA)renderDays(DASH_DATA);if(WK_LY&&key===CURRENT_ACCOUNT)drawWeeklyLy(true);if(PY_OPEN&&key===CURRENT_ACCOUNT)renderPastYears()})
   .withFailureHandler(()=>{MONTH_EXTRA_LOADING[key]=false;MONTH_EXTRA_FAIL[key]=true;if(CURRENT_TAB==='months'&&key===CURRENT_ACCOUNT)renderMonthCompare();if(CURRENT_TAB==='days'&&DAY_VIEW==='ly'&&key===CURRENT_ACCOUNT&&DASH_DATA)renderDays(DASH_DATA)})
   .getMonthCompareData(key,getAccessToken());
 }
@@ -8496,7 +8557,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v114',date:'2026-11-03'};
+const DASHBOARD_RELEASE_CLIENT={version:'v115',date:'2026-11-03'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
