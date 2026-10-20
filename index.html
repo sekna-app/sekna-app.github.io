@@ -1976,6 +1976,28 @@ window.addEventListener('load',function(){
     .tour-next.go{flex:1}
     @media(prefers-reduced-motion:reduce){.tour-logo,.tour-bar,.tour-bar i{transition:none}.gc b,.gc i{display:none}}
 
+    /* One month · By channel leaderboard (v99) */
+    .rl-sub{display:flex;justify-content:space-between;align-items:baseline}.rl-sub span{font-size:11px;color:#9aa2b3;letter-spacing:.02em;text-transform:none;font-weight:800}
+    .rl{border:1.5px solid #e6e9f1;border-radius:16px;padding:4px 14px 12px}
+    .rl-row{padding:12px 0;border-bottom:1px solid #eef0f5}
+    .rl-h{display:flex;align-items:center;gap:8px}
+    .rl-rk{width:22px;height:22px;border-radius:7px;background:#f1f3f8;font-size:11px;font-weight:900;display:grid;place-items:center;color:#6b7385;flex:none}
+    .rl-rk.top{background:#fbf1e1;color:#9a6a22}
+    .rl-h>i{width:9px;height:9px;border-radius:50%;flex:none}
+    .rl-h b{font-size:14px;flex:1;color:#1d2433;min-width:0}
+    .rl-ro{font-size:16px;font-weight:900}.rl-ro.up,.rl-key b.up{color:#0e8f5d}.rl-ro.dn,.rl-key b.dn{color:#c43c50}
+    .rl-t{position:relative;height:9px;border-radius:9px;background:#eef0f5;margin:8px 0 7px 30px}
+    .rl-t i{position:absolute;left:0;top:0;bottom:0;border-radius:9px}
+    .rl-t em{position:absolute;top:-4px;bottom:-4px;width:2px;margin-left:-1px;background:#1d2433;border-radius:2px}
+    .rl-s{margin-left:30px;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:11.5px;color:#6b7385;font-weight:700}.rl-s b{color:#1d2433}
+    .rl-key{margin-top:10px;font-size:11px;color:#6b7385;font-weight:700;display:flex;align-items:center;gap:7px;line-height:1.4}
+    .rl-key em{width:2px;height:14px;background:#1d2433;border-radius:2px;flex:none}
+    body.dark-mode .rl{background:#151a22;border-color:#2a313c}body.dark-mode .rl-row{border-color:#252a32}
+    body.dark-mode .rl-h b,body.dark-mode .rl-s b{color:#fff}body.dark-mode .rl-t{background:#2a313c}
+    body.dark-mode .rl-t em,body.dark-mode .rl-key em{background:#fff}body.dark-mode .rl-rk{background:#252a32;color:#a7afbf}
+    body.dark-mode .rl .m0{background:#7f9bea}
+    body.dark-mode .rl-ro.up,body.dark-mode .rl-key b.up{color:#39e29a}body.dark-mode .rl-ro.dn,body.dark-mode .rl-key b.dn{color:#ff8f9a}
+    .sbx-tie{display:block;margin-top:3px;font-size:11.5px;font-weight:700;color:#9fb0dd}
     /* Compare scoreboard (v97) */
     .sbx{background:#0c1a46;border-radius:22px;padding:16px 14px;color:#fff;position:relative;overflow:hidden;margin:12px 0 4px}
     .sbx::before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:#3d6bff;filter:blur(60px);opacity:.45;top:-110px;left:-60px;pointer-events:none}
@@ -5638,13 +5660,15 @@ const MX_POINTS={value:3,roas:3,conversions:2};
 const mxPts=k=>MX_POINTS[k]||1;
 function mxPoints(rows){
  const pa=rows.filter(r=>r.w==='a').reduce((s,r)=>s+mxPts(r.m.k),0), pb=rows.filter(r=>r.w==='b').reduce((s,r)=>s+mxPts(r.m.k),0);
- return {pa,pb,win:pa===pb?'':pa>pb?'a':'b'};
+ 
+ const rev=rows.find(r=>r.m.k==='value'), tie=pa===pb;
+ return {pa,pb,tie,win:tie?(rev&&rev.w)||'':pa>pb?'a':'b'};
 }
 function mxLean(w){return `<i class="${w==='a'?'wa':w?'':'tie'}" style="width:${w==='a'?62:w?38:50}%"></i><i class="${w==='b'?'wb':w?'':'tie'}" style="width:${w==='b'?62:w?38:50}%"></i>`}
 function scoreBody(rows,A,B,avg,ha,hb){
- const an=monthName(ha.month), bn=monthName(hb.month), {pa,pb,win}=mxPoints(rows);
+ const an=monthName(ha.month), bn=monthName(hb.month), {pa,pb,win,tie}=mxPoints(rows);
  const side=(h,n,w)=>`<div class="sbx-m${w?' win':''}"><span class="sbx-crown">${w?'👑':''}</span><b>${esc(n)}</b><small>${esc(h.hijri)}${h.partial?' · so far':''}</small></div>`;
- const say=win?`<span>${esc(win==='a'?an:bn)}</span> is the better month`:'Even on points';
+ const say=!win?'Even on points':tie?`<span>${esc(win==='a'?an:bn)}</span> wins on revenue<small class="sbx-tie">Even on points, so the month with more revenue wins</small>`:`<span>${esc(win==='a'?an:bn)}</span> is the better month`;
  
  const rev=rows.find(r=>r.m.k==='value'), ro=rows.find(r=>r.m.k==='roas'), cv=rows.find(r=>r.m.k==='conversions');
  let split='';
@@ -5663,7 +5687,7 @@ function scoreBody(rows,A,B,avg,ha,hb){
  const tug=`<div class="sbx-tug">${rows.filter(r=>r.m.better!=='none').sort((x,y)=>mxPts(y.m.k)-mxPts(x.m.k)||(x.m.k==='value'?-1:y.m.k==='value'?1:0)).map(r=>`<div class="sbx-tg${mxPts(r.m.k)>1?' key':''}"><div class="sbx-tg-h"><b class="${r.w==='b'?'lose':''}">${r.m.f(r.a,avg)}</b><small>${esc(r.m.l)}${mxPts(r.m.k)>1?`<em>×${mxPts(r.m.k)}</em>`:''}</small><b class="${r.w==='a'?'lose':''}">${r.m.f(r.b,avg)}</b></div><div class="sbx-bar">${mxLean(r.w)}</div></div>`).join('')}</div>
   ${spend?`<div class="sbx-sp">Spend${avg?' per day':''} · ${esc(an)} ${spend.m.f(spend.a,avg)} · ${esc(bn)} ${spend.m.f(spend.b,avg)}</div>`:''}
   ${extraState()==='ok'?'':extraWaitHtml('clicks, CTR, CPC and CVR')}`;
- return board+`<div class="mx-split"><div>${tug}</div><div>${compareTypes(A,B,avg,an,bn)}</div></div>`;
+ return `<div class="mx-split sbx-split2"><div>${board}${tug}</div><div>${compareTypes(A,B,avg,an,bn)}</div></div>`;
 }
 
 function compareTypes(A,B,avg,an,bn){
@@ -5764,12 +5788,16 @@ function reportChannels(S,avg){
  const list=channelList(S,avg);
  if(!list.length&&extraState()!=='ok')return `<div class="mx-sub">By channel</div>${extraWaitHtml('the channels')}`;
  if(!list.length)return S.channels===null?`<div class="mx-sub">By channel</div><div class="dx-empty">The channel split needs daily data${dailyStartText()}.</div>`:'';
- const tot=list.reduce((a,c)=>a+c.spend,0)||1, totV=list.reduce((a,c)=>a+c.value,0)||1;
- const all=totV/tot;
+ const tot=list.reduce((a,c)=>a+c.spend,0)||1, all=list.reduce((a,c)=>a+c.value,0)/tot;
  const cov=S.coverage&&S.coverage.covered<S.coverage.total?`<div class="mx-note">Based on ${S.coverage.covered} of ${S.coverage.total} months — daily data${dailyStartText()}.</div>`:'';
- const pill=c=>`<span class="rc-roas ${c.roas!=null&&c.roas>=all?'good':'bad'}">${c.roas!=null?fmt(c.roas,2)+'x':'—'}</span>`;
- return `<div class="mx-sub">By channel</div>${cov}<div class="rc1"><div class="rc1-bar">${list.map(c=>`<span class="m${c.k}" style="flex:${c.spend/tot}"></span>`).join('')}</div>
-   ${list.map(c=>`<div class="rc1-row"><i class="m${c.k}"></i><div class="rc1-n"><b>${esc(chName(c.n))}</b><small>${Math.round(c.spend/tot*100)}% of spend · ${fmt(c.conversions,0)} conv.</small></div><div class="rc1-v"><b>${money(c.spend)}</b><small>${money(c.value)}</small></div>${pill(c)}</div>`).join('')}</div>`;
+ 
+ const rows=list.filter(c=>c.roas!=null).sort((a,b)=>b.roas-a.roas).concat(list.filter(c=>c.roas==null));
+ const top=Math.max(all,...rows.map(c=>c.roas||0))*1.1||1, pos=v=>Math.min(100,v/top*100).toFixed(1);
+ return `<div class="mx-sub rl-sub">By channel<span>ranked by ROAS</span></div>${cov}<div class="rl">${rows.map((c,i)=>`<div class="rl-row">
+   <div class="rl-h"><span class="rl-rk${i?'':' top'}">${i+1}</span><i class="m${c.k}"></i><b>${esc(chName(c.n))}</b><span class="rl-ro ${c.roas!=null&&c.roas>=all?'up':'dn'}">${c.roas!=null?fmt(c.roas,2)+'x':'—'}</span></div>
+   <div class="rl-t"><i class="m${c.k}" style="width:${pos(c.roas||0)}%"></i><em style="left:${pos(all)}%"></em></div>
+   <div class="rl-s"><span>Spend <b>${money(c.spend)}</b></span><span>Revenue <b>${money(c.value)}</b></span><span>Conv. <b>${fmt(c.conversions,avg?1:0)}</b></span><span>${Math.round(c.spend/tot*100)}% of spend</span></div></div>`).join('')}
+  <div class="rl-key"><em></em><span>The dark line is this period's ROAS (${fmt(all,2)}x): <b class="up">green</b> above it, <b class="dn">red</b> under it.</span></div></div>`;
 }
 
  
@@ -7752,9 +7780,9 @@ function compareShareHtml(){
  const A=monthStats(ha,c.ex,c.d), B=monthStats(hb,c.ex,c.d);
  const rows=CMP_METRICS().map(m=>{const a=mxVal(A,m,c.avg),b=mxVal(B,m,c.avg);if(a==null||b==null)return null;
    const delta=b?a/b-1:null;let w='';if(m.better!=='none'&&Math.abs(delta||0)>=.005)w=(m.better==='high'?a>b:a<b)?'a':'b';return {m,a,b,delta,w}}).filter(Boolean);
- const {pa:wa,pb:wb}=mxPoints(rows);
+ const {pa:wa,pb:wb,win:tw}=mxPoints(rows);
  const an=monthName(aKey,true), bn=monthName(bKey,true);
- const lead=wa===wb?`Even on points — ${wa} each`:`${wa>wb?an:bn} wins ${Math.max(wa,wb)}–${Math.min(wa,wb)} on points`;
+ const lead=wa===wb?(tw?`Even on points — ${tw==='a'?an:bn} wins on revenue`:`Even on points — ${wa} each`):`${wa>wb?an:bn} wins ${Math.max(wa,wb)}–${Math.min(wa,wb)} on points`;
  const partial=[A,B].find(s=>s.partial);
  const la=channelList(A,c.avg), lb=channelList(B,c.avg);
  const names=[...new Set(la.map(x=>x.n).concat(lb.map(x=>x.n)))];
@@ -7813,7 +7841,7 @@ function compareShareText(d){
  const pick=['spend','value','conversions','roas'].map(k=>lines.find(l=>l.m.k===k)).filter(Boolean);
  const an=monthName(aKey), bn=monthName(bKey);
  return [`📌 ${ac.shortLabel} Month vs Month ⚙️`,`${monthName(aKey,true)} vs. ${monthName(bKey,true)}${c.avg?' · per day':''}${mxTypeTag()}`,'',
-  wa===wb?`⚖️ Even on points — ${wa} each`:`🏆 ${wa>wb?an:bn} wins ${Math.max(wa,wb)}–${Math.min(wa,wb)} on points`,'',
+  wa===wb?`⚖️ Even on points (${wa}–${wb}) — ${lines.find(l=>l.m.k==='value')&&lines.find(l=>l.m.k==='value').w==='a'?an:bn} wins on revenue`:`🏆 ${wa>wb?an:bn} wins ${Math.max(wa,wb)}–${Math.min(wa,wb)} on points`,'',
   ...pick.map(l=>`${l.w==='a'?'🟢':l.w==='b'?'🔴':'⚪'} ${rsShortLabel(l.m)}: ${l.m.f(l.x,c.avg)} vs. ${l.m.f(l.y,c.avg)} (${l.dl>=0?'+':'−'}${percent(Math.abs(l.dl))})`)].join('\n');
 }
 
@@ -7965,7 +7993,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v98',date:'2026-10-26'};
+const DASHBOARD_RELEASE_CLIENT={version:'v99',date:'2026-10-26'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
