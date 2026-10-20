@@ -5329,7 +5329,7 @@ function lyDays(days){
 function lyShareHtml(){
  const d=DASH_DATA||{}, days=d.dayPlan||[]; if(!days.length)return '';
  const D=lyData(days); if(!D||!D.has.length)return '';
- const {R,has,wins,TA,TL,dl,best}=D, mName=rsMonthOf(days), pts=lyRunPts(has,680,170);
+ const {R,has,wins,TA,TL,dl,best}=D, mName=rsMonthOf(days);
  const cards=`<div class="rs-kg">${rsCard('green','Days beat last year',`${wins} of ${has.length}`,`${Math.round(wins/has.length*100)}% of the days so far`)}${rsCard('navy','Value to date',money(TA),`${rsChip(dl)} vs ${rsK(TL)} last year`)}${best?rsCard('gold','Best day',`+${rsK(best.a.value-best.l.value)}`,`${esc(shortDate(best.x.date))} · ${rsK(best.a.value)} vs ${rsK(best.l.value)}`):''}</div>`;
  const cal=rsCalendar(days,x=>{const r=R.find(y=>y.x.date===x.date);
    if(!r||!r.a)return `<div class="rs-cd fut"><div class="rs-n"><b>${x.dayNumber}</b><span>${esc(rsHijri(x.hijri))}</span></div><div class="rs-s" style="margin-top:12px">last year</div><div class="rs-s"><b>${r&&r.l?rsK(r.l.value):'—'}</b></div></div>`;
@@ -5341,8 +5341,6 @@ function lyShareHtml(){
  return `${rsHead('Vs last year · '+mName)}
   ${rsT('Same Hijri days last year',`${has.length} of ${days.length} days so far · by value`)}${cards}
   ${rsT('Day by day','<b style="color:#5fd39b">● beat last year</b> &nbsp;<b style="color:#f0838f">● under last year</b> · big number = value')}<div class="rp-box">${cal}</div>
-  ${rsT('Running total','value, this year vs last year')}<div class="rp-box"><svg viewBox="0 0 680 170" width="100%" height="170"><polyline points="${pts(1)}" fill="none" stroke="#9aa4bd" stroke-width="3" stroke-dasharray="7 7"/><polyline points="${pts(0)}" fill="none" stroke="#22c47c" stroke-width="5"/></svg>
-   <div class="rs-note"><b style="color:#22c47c">● This year ${rsK(TA)}</b> &nbsp; <b style="color:#9aa4bd">● Last year ${rsK(TL)}</b> &nbsp; ${rsChip(dl)}</div></div>
   ${list}${SHARE_FOOT}`;
 }
 function lyShareText(d){
