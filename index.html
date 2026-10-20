@@ -5522,6 +5522,8 @@ const MONTH_METRICS=[
  {k:'cvr',l:'CVR',f:v=>percent(v),better:'high'},
  {k:'aov',l:'Avg. donation',f:v=>money(v,2),better:'high'}
 ];
+
+const CMP_METRICS=()=>MONTH_METRICS.filter(m=>m.k!=='cvr'&&m.k!=='aov');
 function mxVal(s,m,avg){const v=s[m.k];if(v==null||!isFinite(v))return null;return avg&&m.sum?v/(s.days||1):v}
 
  
@@ -5615,7 +5617,7 @@ function renderMonthCompare(){
  pre.innerHTML=monthPresets(hist,aKey).map(([l,m])=>`<button type="button" class="mx-preset${m===bKey?' on':''}" onclick="pickPreset('${m}')">${esc(l)}</button>`).join('');
  if(!ha||!hb){body.innerHTML='<div class="dx-empty">No monthly history found for this account yet.</div>';return}
  const A=monthStats(ha,ex,d), B=monthStats(hb,ex,d);
- const rows=MONTH_METRICS.map(m=>{
+ const rows=CMP_METRICS().map(m=>{
    const a=mxVal(A,m,avg),b=mxVal(B,m,avg);
    if(a==null||b==null)return null;
    const delta=b?a/b-1:null;
@@ -5682,8 +5684,6 @@ function compareTypes(A,B,avg,an,bn){
      ['Conversions',a.conversions,b.conversions,v=>fmt(v,avg?1:0),'high'],['Clicks',a.clicks,b.clicks,v=>fmt(v,0),'high'],
      ['CPA',a.conversions?a.spend/a.conversions:null,b.conversions?b.spend/b.conversions:null,v=>v==null?'—':money(v,2),'low'],
      ['CPC',a.clicks?a.spend/a.clicks:null,b.clicks?b.spend/b.clicks:null,v=>v==null?'—':money(v,2),'low'],
-     ['CVR',a.clicks?a.conversions/a.clicks:null,b.clicks?b.conversions/b.clicks:null,v=>v==null?'—':percent(v),'high'],
-     ['Avg. donation',a.conversions?a.value/a.conversions:null,b.conversions?b.value/b.conversions:null,v=>v==null?'—':money(v,2),'high'],
      ['Share of spend',a.spend/totA,b.spend/totB,v=>percent(v),'none']].map(([l,x,y,f,bt])=>{
        const d=x!=null&&y?x/y-1:null, c=bt==='none'||d==null||Math.abs(d)<.005?'neutral':(bt==='high'?d>0:d<0)?'good':'bad';
        return `<div class="sbx-dr"><span>${l}</span><b>${f(x)}</b><b class="mut">${f(y)}</b>${mxArrow(d,c)}</div>`}).join('');
@@ -7750,7 +7750,7 @@ function compareShareHtml(){
  const aKey=document.getElementById('mxA').value, bKey=document.getElementById('mxB').value;
  const ha=c.hist.find(h=>h.month===aKey), hb=c.hist.find(h=>h.month===bKey); if(!ha||!hb)return '';
  const A=monthStats(ha,c.ex,c.d), B=monthStats(hb,c.ex,c.d);
- const rows=MONTH_METRICS.map(m=>{const a=mxVal(A,m,c.avg),b=mxVal(B,m,c.avg);if(a==null||b==null)return null;
+ const rows=CMP_METRICS().map(m=>{const a=mxVal(A,m,c.avg),b=mxVal(B,m,c.avg);if(a==null||b==null)return null;
    const delta=b?a/b-1:null;let w='';if(m.better!=='none'&&Math.abs(delta||0)>=.005)w=(m.better==='high'?a>b:a<b)?'a':'b';return {m,a,b,delta,w}}).filter(Boolean);
  const {pa:wa,pb:wb}=mxPoints(rows);
  const an=monthName(aKey,true), bn=monthName(bKey,true);
@@ -7807,7 +7807,7 @@ function compareShareText(d){
  const ha=c.hist.find(h=>h.month===aKey), hb=c.hist.find(h=>h.month===bKey); if(!ha||!hb)return '';
  const A=monthStats(ha,c.ex,c.d), B=monthStats(hb,c.ex,c.d), ac=accountMeta(d);
  let wa=0,wb=0;
- const lines=MONTH_METRICS.map(m=>{const x=mxVal(A,m,c.avg),y=mxVal(B,m,c.avg);if(x==null||y==null)return null;const dl=y?x/y-1:null;
+ const lines=CMP_METRICS().map(m=>{const x=mxVal(A,m,c.avg),y=mxVal(B,m,c.avg);if(x==null||y==null)return null;const dl=y?x/y-1:null;
    let w='';if(m.better!=='none'&&Math.abs(dl||0)>=.005){w=(m.better==='high'?x>y:x<y)?'a':'b';w==='a'?wa+=mxPts(m.k):wb+=mxPts(m.k)}
    return {m,x,y,dl,w}}).filter(Boolean);
  const pick=['spend','value','conversions','roas'].map(k=>lines.find(l=>l.m.k===k)).filter(Boolean);
@@ -7965,7 +7965,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v97',date:'2026-10-25'};
+const DASHBOARD_RELEASE_CLIENT={version:'v98',date:'2026-10-26'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
