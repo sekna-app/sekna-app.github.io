@@ -3982,6 +3982,46 @@ window.addEventListener('load',function(){
     .py-seg button{flex:1;border:1px solid #dfe3ec!important;background:#fff!important;color:#4b5263!important;border-radius:99px!important;padding:7px 12px!important;font-size:12px!important;font-weight:800!important;transition:background .25s,color .25s,box-shadow .25s}
     body.dark-mode .py-seg button{background:#151a22!important;border-color:#252a32!important;color:#a7afbf!important}
     body .py-seg button.on,body.dark-mode .py-seg button.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%)!important;color:#fff!important;border-color:transparent!important;box-shadow:0 8px 18px rgba(61,107,255,.4)!important}
+
+    /* v120 · menu groups fold open and shut */
+    .sk-grp{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 0 6px;padding:13px 14px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.07);color:#fff;font:inherit;font-size:15px;font-weight:900;text-align:left;cursor:pointer;transition:all .28s cubic-bezier(.2,.75,.25,1)}
+    .sk-grp .sk-gchev{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s ease;opacity:.85}
+    .sk-grp.open{background:transparent;border-color:transparent;padding:4px 4px 2px;margin:18px 0 6px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#9fb0dd}
+    .sk-grp.open .sk-gchev{transform:rotate(180deg);width:15px;height:15px}
+    .sk-grp-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s cubic-bezier(.2,.75,.25,1),opacity .25s;opacity:0}
+    .sk-grp-body>*{min-height:0;overflow:hidden}
+    .sk-grp-body.open{grid-template-rows:1fr;opacity:1}.sk-grp-body.open>*{overflow:visible}
+    .sk-nav-row{position:relative}
+    .sk-nav-row .sk-nav-btn{padding-right:44px!important}
+    .sk-sub-tg{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:10px;border:0;background:rgba(255,255,255,.07);color:#dfe5fb;display:grid;place-items:center;cursor:pointer}
+    .sk-sub-tg .sk-gchev{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s}
+    .sk-sub-tg.open .sk-gchev{transform:rotate(180deg)}
+    .sk-sub>div{padding-left:22px;position:relative}
+    .sk-sub>div:before{content:'';position:absolute;left:21px;top:2px;bottom:8px;width:2px;border-radius:2px;background:rgba(255,255,255,.12)}
+    .sk-soon{margin-left:auto;font-size:9.5px;font-weight:900;letter-spacing:.06em;color:#0c1a46;background:linear-gradient(90deg,#f3d79f,#e2b874);border-radius:99px;padding:3px 8px}
+    .soon-body{padding:40px 22px;text-align:center;display:flex;flex-direction:column;align-items:center}
+    .soon-ic{width:84px;height:84px;border-radius:26px;display:grid;place-items:center;background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);box-shadow:0 14px 30px rgba(61,107,255,.35);animation:soonFloat 3s ease-in-out infinite}
+    .soon-ic svg{width:40px;height:40px;fill:none;stroke:#f3d79f;stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
+    @keyframes soonFloat{50%{transform:translateY(-6px)}}
+    .soon-body h3{margin:22px 0 6px;font-size:20px}.soon-body p{margin:0;color:#6b7385;font-size:13.5px;max-width:320px;line-height:1.5}
+    .soon-note{margin-top:18px;background:#fff5e4;color:#8a5a12;border-radius:14px;padding:11px 14px;font-size:12.5px;font-weight:800}
+    body.dark-mode .soon-body p{color:#a7afbf}body.dark-mode .soon-note{background:#2a2216;color:#f3d79f}
+    /* v120 · Month at a Glance "Target on top" */
+    .g1-top{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+    .g1-top>div{display:flex;flex-direction:column}
+    .g1-tg{text-align:right;align-items:flex-end}.g1-tg .sx-lbl{color:#f3d79f!important}.g1-tg b{font-size:clamp(18px,5.2vw,24px);font-weight:900;color:#f3d79f;letter-spacing:-.01em}
+    .g1-barw{position:relative;margin-top:36px}
+    .g1-barw .sx-fbar{margin-top:0}
+    .g1-pace{position:absolute;top:-10px;bottom:-4px;width:2px;margin-left:-1px;background:#f3d79f;font-style:normal}
+    .g1-pace span{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:10.5px;font-weight:900;color:#1d2433;background:#f3d79f;border-radius:7px;padding:3px 7px;margin-bottom:2px}
+    .g1-pace.r span{transform:translateX(-85%)}.g1-pace.l span{transform:translateX(-15%)}
+    .g1-end{position:absolute;right:-1px;top:-5px;bottom:-5px;width:3px;border-radius:3px;background:#f3d79f}
+    .sx-k.g1-k{background:#f3d79f!important;width:3px!important}
+    .sx-fcap b{color:#fff}
+    .g1-gap{display:flex;gap:8px;margin-top:12px}.g1-gap>div{flex:1;background:rgba(255,255,255,.1);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column}
+    .g1-gap small{font-size:9.5px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#b9c6ef}.g1-gap b{font-size:15px;font-weight:900;color:#fff}
+    .g1-gap b.down{color:#ff9fac}.g1-gap b.up{color:#7dffb3}
+    .rp-box .g1-pace span{font-size:9px}
 </style>
 </head>
 <body>
@@ -4095,16 +4135,27 @@ window.addEventListener('load',function(){
     <select id="accountSelect" hidden aria-hidden="true" tabindex="-1"><option value="usa">Human Appeal USA</option><option value="ar">Human Appeal AR</option></select>
   </div>
 
-  <div class="sk-section-label">Media Plan</div>
-  <nav class="sk-nav" aria-label="Media Plan">
+  <button class="sk-grp" type="button" data-grp="mp" onclick="navGroup('mp')" aria-expanded="true"><span>Media Plan</span><svg class="sk-gchev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+  <div class="sk-grp-body" id="grp-mp"><nav class="sk-nav" aria-label="Media Plan">
     <button class="sk-nav-btn active" id="overviewTabBtn" type="button" onclick="switchDashboardTab('overview')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></span><span>Daily Performance</span></button>
     <button class="sk-nav-btn" id="daysTabBtn" type="button" onclick="switchDashboardTab('days')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M8 14h2M12 14h2M16 14h0M8 17h2M12 17h2"/></svg></span><span>Day by Day Performance</span></button>
     <button class="sk-nav-btn" id="channelTabBtn" type="button" onclick="switchDashboardTab('channel')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg></span><span>Monthly Progress</span></button>
     <button class="sk-nav-btn" id="labTabBtn" type="button" onclick="switchDashboardTab('lab')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-9V3"/><path d="M7.5 15h9"/></svg></span><span>Media Plan Lab</span><span class="sk-nav-lock" id="labNavLock" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span></button>
     <button class="sk-nav-btn" id="plansTabBtn" type="button" onclick="switchDashboardTab('plans')" hidden><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v4H4zM4 11h16v8H4z"/><path d="M9 15h6"/></svg></span><span>Plan Performance History</span></button>
+    <div class="sk-nav-row">
+      <button class="sk-nav-btn" id="monthsTabBtn" type="button" onclick="switchDashboardTab('months')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M7 4l-3 3M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/></svg></span><span>Reports Studio</span></button>
+      <button class="sk-sub-tg" type="button" data-grp="rs" onclick="navGroup('rs')" aria-label="More in Reports Studio" aria-expanded="false"><svg class="sk-gchev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+    </div>
+    <div class="sk-grp-body sk-sub" id="grp-rs"><div>
+      <button class="sk-nav-btn" type="button" onclick="openSoon('ask')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/><path d="M18.5 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg></span><span>Ask SEKNA</span><span class="sk-soon">Soon</span></button>
+    </div></div>
+  </nav></div>
+
+  <button class="sk-grp" type="button" data-grp="ps" onclick="navGroup('ps')" aria-expanded="false"><span>Performance Snapshots</span><svg class="sk-gchev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+  <div class="sk-grp-body" id="grp-ps"><nav class="sk-nav" aria-label="Performance Snapshots">
     <button class="sk-nav-btn" id="ranksTabBtn" type="button" onclick="switchDashboardTab('ranks')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 6h3a3 3 0 0 1-3 4M7 6H4a3 3 0 0 0 3 4"/></svg></span><span>Top &amp; Bottom 5</span></button>
-    <button class="sk-nav-btn" id="monthsTabBtn" type="button" onclick="switchDashboardTab('months')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M7 4l-3 3M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/></svg></span><span>Reports Studio</span></button>
-  </nav>
+    <button class="sk-nav-btn" type="button" onclick="openSoon('camp')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h3l6 4V6L7 10z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a7.5 7.5 0 0 1 0 11"/></svg></span><span>Campaign Performance</span><span class="sk-soon">Soon</span></button>
+  </nav></div>
 
   <div class="sk-section-label">App</div>
   <nav class="sk-nav" aria-label="App options">
@@ -4162,6 +4213,13 @@ window.addEventListener('load',function(){
   <section class="app-modal sk-modal py-page" role="dialog" aria-modal="true" aria-labelledby="pyTitle" onclick="event.stopPropagation()">
     <div class="sk-modal-head"><div><div class="sk-kicker" id="pyKicker">PAST YEARS</div><h2 id="pyTitle">Same Hijri day</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closePastYears()" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
     <div id="pyBody" class="py-body"></div>
+  </section>
+</div>
+
+<div class="app-modal-overlay sk-page" id="soonOverlay" onclick="closeSoon(event)" data-share-ui>
+  <section class="app-modal sk-modal soon-page" role="dialog" aria-modal="true" aria-labelledby="soonTitle" onclick="event.stopPropagation()">
+    <div class="sk-modal-head"><div><div class="sk-kicker" id="soonKicker">SEKNA</div><h2 id="soonTitle">Coming soon</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeSoon()" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+    <div id="soonBody" class="soon-body"></div>
   </section>
 </div>
 
@@ -4442,11 +4500,10 @@ window.addEventListener('load',function(){
   <section class="grid bottom"><article class="card section"><div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month">▦</span><span>Month at a Glance</span></div><div class="section-sub" id="monthGlanceSub">October plan delivery</div></div><span class="sx-chip sx-amber">Forecast</span></div>
     <div class="sx-month">
       <div class="sx-hero">
-        <span class="sx-lbl">Spend to date</span>
-        <b class="sx-hv" id="mSpend">—</b>
-        <span class="sx-hs" id="mSpendNote">—</span>
-        <div class="sx-fbar"><span class="sx-act" id="mSpendBar"></span><span class="sx-prj" id="mSpendProj"></span></div>
-        <div class="sx-fcap"><span><i class="sx-k act"></i>Actual</span><span><i class="sx-k prj"></i>Projected</span><span class="sx-fcap-target" id="mSpendTarget">Target —</span></div>
+        <div class="g1-top"><div><span class="sx-lbl">Spend to date</span><b class="sx-hv" id="mSpend">—</b></div><div class="g1-tg"><span class="sx-lbl">Month target</span><b id="mSpendTarget">—</b></div></div>
+        <div class="g1-barw"><div class="sx-fbar"><span class="sx-act" id="mSpendBar"></span><span class="sx-prj" id="mSpendProj"></span></div><i class="g1-pace" id="mPace"><span id="mPaceLbl">Today —</span></i><i class="g1-end"></i></div>
+        <div class="sx-fcap"><span><i class="sx-k act"></i>Actual</span><span><i class="sx-k prj"></i>Projected <b id="mProj">—</b></span><span><i class="sx-k g1-k"></i>Target</span></div>
+        <div class="g1-gap"><div><small id="mGapL">Behind pace</small><b id="mGap">—</b></div><div><small>Left to spend</small><b id="mLeft">—</b></div></div>
       </div>
       <div class="sx-ftiles">
         <div class="sx-ftile"><span class="sx-lbl">Value</span><b id="mValue">—</b><span class="sx-hs" id="mValueNote">—</span><div class="sx-thin green"><span id="mValueBar"></span></div></div>
@@ -4867,7 +4924,35 @@ function showSettingsToast(message){
  clearTimeout(SETTINGS_TOAST_TIMER);SETTINGS_TOAST_TIMER=setTimeout(()=>el.classList.remove('show'),1800);
 }
 
+
+const NAV_GRP_DEF={mp:true,ps:false,rs:false};
+function navGroupState(){let o={};try{o=JSON.parse(localStorage.getItem('sekna_nav_grp')||'{}')||{}}catch(e){}return Object.assign({},NAV_GRP_DEF,o)}
+function navGroupApply(){
+ const st=navGroupState();
+ Object.keys(st).forEach(k=>{
+   const b=document.getElementById('grp-'+k);if(b)b.classList.toggle('open',!!st[k]);
+   document.querySelectorAll('[data-grp="'+k+'"]').forEach(t=>{t.classList.toggle('open',!!st[k]);t.setAttribute('aria-expanded',st[k]?'true':'false')});
+ });
+}
+function navGroup(k){
+ const st=navGroupState();st[k]=!st[k];
+ try{localStorage.setItem('sekna_nav_grp',JSON.stringify(st))}catch(e){}
+ navGroupApply();
+}
+const SOON={
+ ask:{k:'AI ASSISTANT',t:'Ask SEKNA',ic:'<path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/><path d="M18.5 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>',d:'Ask about your campaigns in plain words and get answers from your own numbers.'},
+ camp:{k:'PERFORMANCE SNAPSHOTS',t:'Campaign Performance',ic:'<path d="M4 10v4h3l6 4V6L7 10z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a7.5 7.5 0 0 1 0 11"/>',d:'Every campaign side by side: spend, value and ROAS, with search terms to follow.'}
+};
+function openSoon(k){
+ const x=SOON[k];if(!x)return;closeSidebar();
+ text('soonKicker',x.k);text('soonTitle',x.t);
+ const b=document.getElementById('soonBody');
+ if(b)b.innerHTML=`<div class="soon-ic"><svg viewBox="0 0 24 24" aria-hidden="true">${x.ic}</svg></div><h3>We're still working on it</h3><p>${esc(x.d)}</p><div class="soon-note">🔔 You'll get a notification as soon as it's ready.</div>`;
+ const o=document.getElementById('soonOverlay');if(o)o.classList.add('open');
+}
+function closeSoon(e){if(e&&e.target!==e.currentTarget)return;const o=document.getElementById('soonOverlay');if(o)o.classList.remove('open')}
 function openSidebar(){
+ navGroupApply();
  const drawer=document.getElementById('sideDrawer'),overlay=document.getElementById('drawerOverlay');
  if(drawer)drawer.classList.add('open');
  if(overlay)overlay.classList.add('open');
@@ -5048,7 +5133,7 @@ function switchAccount(accountKey){
  }
 }
 
-const DASH_TABS=['overview','days','channel','lab','plans','ranks','months'];
+const DASH_TABS=['overview','days','channel','lab','plans','months','ranks'];
 let SWIPE_FROM='';
 function switchDashboardTab(tab){
  const prev=DASH_TABS.indexOf(CURRENT_TAB);
@@ -5180,7 +5265,7 @@ function render(d,opts){
  renderExtraTab(d);
 
  text('monthGlanceSub',`${x.monthName||''} plan delivery`);
- renderMonthForecast(x,m);
+ renderMonthForecast(x,m,d);
  SUMMARY_TEXT=buildSummary(d);
  document.body.classList.remove('account-changing');
 
@@ -6660,7 +6745,7 @@ function daysInMonthOf(dateText){
  return new Date(p[0],p[1],0).getDate();
 }
 
-function renderMonthForecast(x,m){
+function renderMonthForecast(x,m,d){
  const day=Number(x.dayNumber)||0;
  const dim=daysInMonthOf(x.date);
  const project=v=>(v!=null&&isFinite(v)&&day&&dim)?v/day*dim:null;
@@ -6670,11 +6755,19 @@ function renderMonthForecast(x,m){
  const projSpend=project(spend), projValue=project(value);
 
  text('mSpend',money(spend));
- const sNote=document.getElementById('mSpendNote');
- if(sNote)sNote.innerHTML=projSpend!=null
-   ?`Projected month-end <b>${money(projSpend)}</b>${planSpend?` · ${pct(projSpend/planSpend)} of target`:''}`
-   :(planSpend?`${pct(spend/planSpend)} of ${money(planSpend)} target`:'—');
- text('mSpendTarget',planSpend?`Target ${money(planSpend)}`:'Target —');
+ text('mSpendTarget',planSpend?money(planSpend):'—');
+ text('mProj',projSpend!=null?money(projSpend):'—');
+ 
+ const dp=(d&&Array.isArray(d.dayPlan))?d.dayPlan.filter(r=>Number(r.dayNumber)<=day):[];
+ let pace=dp.reduce((a,r)=>a+(Number(r.plan&&r.plan.spend)||0),0);
+ if(!pace&&planSpend&&dim)pace=planSpend*day/dim;
+ const pe=document.getElementById('mPace'), pr=planSpend?Math.min(pace/planSpend,1):0;
+ if(pe){pe.hidden=!pace;pe.style.left=(pr*100)+'%';pe.classList.toggle('r',pr>.72);pe.classList.toggle('l',pr<.28)}
+ text('mPaceLbl',pace?`Today ${money(pace)}`:'');
+ const gap=spend-pace;
+ text('mGapL',gap>=0?'Ahead of pace':'Behind pace');
+ const ge=document.getElementById('mGap');if(ge){ge.textContent=pace?(gap>=0?'+':'−')+money(Math.abs(gap)):'—';ge.className=gap>=0?'up':'down'}
+ text('mLeft',planSpend?money(Math.max(planSpend-spend,0)):'—');
  setProgress('mSpendBar',planSpend?spend/planSpend:0);
  const proj=document.getElementById('mSpendProj');
  if(proj){
@@ -8646,7 +8739,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v119',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v120',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
