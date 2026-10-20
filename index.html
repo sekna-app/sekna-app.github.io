@@ -1976,6 +1976,13 @@ window.addEventListener('load',function(){
     .tour-next.go{flex:1}
     @media(prefers-reduced-motion:reduce){.tour-logo,.tour-bar,.tour-bar i{transition:none}.gc b,.gc i{display:none}}
 
+    .channel-icon.ch-ico{width:22px;height:22px;flex:0 0 22px;border-radius:7px;display:inline-grid;vertical-align:middle;margin-right:7px}
+    .channel-icon.ch-ico svg{width:13px;height:13px}
+    .mx-types .channel-icon.ch-ico{width:18px;height:18px;flex-basis:18px;border-radius:5px;margin-right:0}
+    .mx-types .channel-icon.ch-ico svg{width:11px;height:11px}
+    .ctd-h b,.sbx-t-h b,.py-tn{display:inline-flex;align-items:center}
+    .dx-chrow .channel-icon.ch-ico{width:18px;height:18px;flex-basis:18px;border-radius:5px;margin-right:0}.dx-chrow .channel-icon.ch-ico svg{width:11px;height:11px}
+    .rl-h .channel-icon.ch-ico,.sbx-t-h .channel-icon.ch-ico{margin-right:0}
     /* One month · By channel leaderboard (v99) */
     .rl-sub{display:flex;justify-content:space-between;align-items:baseline}.rl-sub span{font-size:11px;color:#9aa2b3;letter-spacing:.02em;text-transform:none;font-weight:800}
     .rl{border:1.5px solid #e6e9f1;border-radius:16px;padding:4px 14px 12px}
@@ -2905,7 +2912,7 @@ window.addEventListener('load',function(){
     .dx-more td{padding:4px 8px 14px;border-top:0;white-space:normal;text-align:left!important}
     .dx-stats{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:#6b7385}.dx-stats b{color:#1d2433}
     .dx-ch{display:grid;gap:6px;margin-top:10px}
-    .dx-chrow{display:grid;grid-template-columns:118px 1fr 74px;align-items:center;gap:8px;font-size:12px;color:#4b5263}
+    .dx-chrow{display:grid;grid-template-columns:138px 1fr 74px;align-items:center;gap:8px;font-size:12px;color:#4b5263}
     .dx-chrow i{display:block;height:7px;border-radius:99px;background:#e6e9f1;overflow:hidden}
     .dx-chrow em{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#203c8e,#3d6bff)}
     .dx-chrow b{text-align:right;color:#1d2433}
@@ -2976,7 +2983,7 @@ window.addEventListener('load',function(){
     .rx-total{display:flex;flex-wrap:wrap;align-items:center;gap:4px 14px;margin-top:12px;padding:11px 13px;border-radius:14px;background:#f5f7fb;font-size:12.5px;color:#6b7385}
     .rx-total span:first-child{font-weight:900;color:#1d2433}.rx-total b{color:#1d2433}.rx-total .rx-roas{margin-left:auto;font-size:15px}
     @media(max-width:760px){
-      .dx-chrow{grid-template-columns:96px 1fr 64px;font-size:11.5px}
+      .dx-chrow{grid-template-columns:118px 1fr 64px;font-size:11.5px}
       .mx-table{font-size:12.5px}.mx-table td{padding:9px 3px}.mx-arrow{padding:2px 6px;font-size:10.5px}
       .mx-sel select{font-size:12.5px;padding:9px 26px 9px 10px}
     }
@@ -5234,7 +5241,7 @@ function renderDays(d){
 function dxPlanMore(p){
  const max=Math.max(...p.channels.map(c=>c.spend),0.0001);
  return `<div class="dx-stats"><span>Clicks <b>${fmt(p.clicks,0)}</b></span><span>CPA <b>${money(p.cpa,2)}</b></span><span>CVR <b>${percent(p.cvr)}</b></span><span>Avg. donation <b>${money(p.aov,2)}</b></span></div>
-  <div class="dx-ch">${p.channels.map((c,k)=>`<div class="dx-chrow"><span><i class="dx-dot m${k}"></i>${esc(c.channel)}</span><i><em class="m${k}" style="width:${(c.spend/max*100).toFixed(1)}%"></em></i><b>${money(c.spend)}</b></div>`).join('')}</div>`;
+  <div class="dx-ch">${p.channels.map((c,k)=>`<div class="dx-chrow"><span>${chIco(c.channel)}${esc(CHANNEL_SHORT[c.channel]||chName(c.channel))}</span><i><em class="m${k}" style="width:${(c.spend/max*100).toFixed(1)}%"></em></i><b>${money(c.spend)}</b></div>`).join('')}</div>`;
 }
 function dxResultMore(x){
  const a=x.actual;
@@ -5311,7 +5318,7 @@ function dayChannelCards(d){
  return rows.map((c,i)=>{
    const k=Math.min(Math.max(CHANNEL_ORDER.indexOf(c.channel),0),4);
    const plan=Number(c.planSpend)||0, r=plan?c.spend/plan:null;
-   return `<div class="ctd k${k}"><div class="ctd-h"><b>${esc(CHANNEL_SHORT[c.channel]||c.channel)}</b><span class="ctd-rk">${i+1}</span></div>
+   return `<div class="ctd k${k}"><div class="ctd-h"><b>${chIco(c.channel)}${esc(CHANNEL_SHORT[c.channel]||c.channel)}</b><span class="ctd-rk">${i+1}</span></div>
     <div class="ctd-roas">${c.roas!=null?fmt(c.roas,2)+'x':'—'}<small>ROAS</small></div>
     <div class="ctd-sp"><span>Spend <b>${money(c.spend)}</b></span><span>${r!=null?Math.round(r*100)+'% of plan':'No plan'}</span></div>
     <div class="ctd-bar"><span style="width:${r!=null?Math.min(100,r*100).toFixed(1):0}%"></span></div>
@@ -5410,8 +5417,8 @@ function toggleMxType(i){
 }
 function mxTypesHtml(ex){
  const list=mxTypeList(ex), t=mxTypes()||[];
- const chips=list.map((n,i)=>{const k=Math.min(Math.max(CHANNEL_ORDER.indexOf(n),0),5);
-   return `<button type="button" class="mx-preset${t.includes(n)?' on':''}" onclick="toggleMxType(${i})"><i class="m${k}"></i>${esc(CHANNEL_SHORT[n]||n)}</button>`}).join('');
+ const chips=list.map((n,i)=>{
+   return `<button type="button" class="mx-preset${t.includes(n)?' on':''}" onclick="toggleMxType(${i})">${chIco(n)}${esc(CHANNEL_SHORT[n]||n)}</button>`}).join('');
  return `<small>Campaign type</small><button type="button" class="mx-preset${t.length?'':' on'}" onclick="toggleMxType(-1)">All types</button>${chips||(extraState()==='fail'?'<em>Could not load the campaign types</em>':'<em>Loading…</em>')}`;
 }
 const SEASONS={'Ramadan':'🌙 Ramadan','Dhu Hijjah':'🐑 Qurbani · Eid al-Adha'};
@@ -5711,7 +5718,7 @@ function compareTypes(A,B,avg,an,bn){
      ['Share of spend',a.spend/totA,b.spend/totB,v=>percent(v),'none']].map(([l,x,y,f,bt])=>{
        const d=x!=null&&y?x/y-1:null, c=bt==='none'||d==null||Math.abs(d)<.005?'neutral':(bt==='high'?d>0:d<0)?'good':'bad';
        return `<div class="sbx-dr"><span>${l}</span><b>${f(x)}</b><b class="mut">${f(y)}</b>${mxArrow(d,c)}</div>`}).join('');
-   return `<div class="sbx-t" onclick="this.classList.toggle('open')"><div class="sbx-t-h"><b><i class="m${k}"></i>${esc(chName(n))}</b>${pill}</div>
+   return `<div class="sbx-t" onclick="this.classList.toggle('open')"><div class="sbx-t-h"><b>${chIco(n)}${esc(chName(n))}</b>${pill}</div>
     ${line('REVENUE',mpK(a.value),mpK(b.value),rv)}${line('ROAS',a.roas==null?'—':fmt(a.roas,2)+'x',b.roas==null?'—':fmt(b.roas,2)+'x',ro)}
     <div class="sbx-det"><div class="sbx-dr hd"><span></span><b>${esc(an)}</b><b class="mut">${esc(bn)}</b><span></span></div>${det}</div>
     <div class="sbx-more"><span class="o">Details</span><span class="c">Hide details</span> ▾</div></div>`;
@@ -5794,7 +5801,7 @@ function reportChannels(S,avg){
  const rows=list.filter(c=>c.roas!=null).sort((a,b)=>b.roas-a.roas).concat(list.filter(c=>c.roas==null));
  const top=Math.max(all,...rows.map(c=>c.roas||0))*1.1||1, pos=v=>Math.min(100,v/top*100).toFixed(1);
  return `<div class="mx-sub rl-sub">By channel<span>ranked by ROAS</span></div>${cov}<div class="rl">${rows.map((c,i)=>`<div class="rl-row">
-   <div class="rl-h"><span class="rl-rk${i?'':' top'}">${i+1}</span><i class="m${c.k}"></i><b>${esc(chName(c.n))}</b><span class="rl-ro ${c.roas!=null&&c.roas>=all?'up':'dn'}">${c.roas!=null?fmt(c.roas,2)+'x':'—'}</span></div>
+   <div class="rl-h"><span class="rl-rk${i?'':' top'}">${i+1}</span>${chIco(c.n)}<b>${esc(chName(c.n))}</b><span class="rl-ro ${c.roas!=null&&c.roas>=all?'up':'dn'}">${c.roas!=null?fmt(c.roas,2)+'x':'—'}</span></div>
    <div class="rl-t"><i class="m${c.k}" style="width:${pos(c.roas||0)}%"></i><em style="left:${pos(all)}%"></em></div>
    <div class="rl-s"><span>Spend <b>${money(c.spend)}</b></span><span>Revenue <b>${money(c.value)}</b></span><span>Conv. <b>${fmt(c.conversions,avg?1:0)}</b></span><span>${Math.round(c.spend/tot*100)}% of spend</span></div></div>`).join('')}
   <div class="rl-key"><em></em><span>The dark line is this period's ROAS (${fmt(all,2)}x): <b class="up">green</b> above it, <b class="dn">red</b> under it.</span></div></div>`;
@@ -6130,15 +6137,15 @@ function renderMiniYoy(valueId,stateId,currentId,m){
 
 function channelIconClass(s){
  const t=String(s);
- if(t.includes('Performance'))return 'pmax';
+ if(t.includes('Performance')||t==='PMax')return 'pmax';
  if(t.includes('Demand'))return 'dg';
- if(t.includes('Video'))return 'video';
+ if(/video|youtube/i.test(t))return 'video';
  return 'search';
 }
 
 function channelIconSvg(s){
  const t=String(s);
- if(t.includes('Performance')){
+ if(t.includes('Performance')||t==='PMax'){
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
     <path d="M12 3l2.2 4.7 5.1.7-3.7 3.6.9 5.1-4.5-2.4-4.5 2.4.9-5.1-3.7-3.6 5.1-.7L12 3z"/>
   </svg>`;
@@ -6148,7 +6155,7 @@ function channelIconSvg(s){
     <path d="M4 13V8l11-3v11L4 13z"/><path d="M7 13l1.5 6h3L10 14"/><path d="M18 8v5"/>
   </svg>`;
  }
- if(t.includes('Video')){
+ if(/video|youtube/i.test(t)){
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
     <rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9l5 3-5 3V9z"/>
   </svg>`;
@@ -6158,6 +6165,8 @@ function channelIconSvg(s){
   </svg>`;
 }
 
+
+function chIco(n){return `<span class="channel-icon ch-ico ${channelIconClass(n)}">${channelIconSvg(n)}</span>`}
 function summaryAchEmoji(ratio,isSpend){
  if(ratio==null||!isFinite(ratio))return '⚪';
  if(isSpend){
@@ -7940,7 +7949,7 @@ function renderPastYears(){
    const types=Object.entries(mergeVideo(y.ch)).map(([n,c])=>({n,c,k:Math.min(Math.max(CHANNEL_ORDER.indexOf(n),0),4),r:c.spend?c.value/c.spend:null})).filter(t=>t.c.spend||t.c.value);
    const byRoas=[...types].sort((m,n)=>(n.r||0)-(m.r||0)), tot=types.reduce((q,t)=>q+t.c.spend,0)||1;
    const typeBlock=types.length?`<div class="py-lbl">By campaign type</div><div class="py-mix">${[...types].sort((m,n)=>m.k-n.k).map(t=>`<i class="m${t.k}" style="flex:${t.c.spend/tot}"></i>`).join('')}</div>
-     <div class="py-tl2"><span class="py-h"></span><span class="py-h c">Spend · Conv. · Value</span><span class="py-h">ROAS</span>${byRoas.map(t=>`<span class="py-tn"><i class="m${t.k}"></i>${esc(CHANNEL_SHORT[t.n]||t.n)}</span><span class="py-ts"><b>${money(t.c.spend)}</b><i>·</i><b>${fmt(t.c.conversions,0)}</b><i>·</i><b>${money(t.c.value)}</b></span><span class="py-chip ${t.r!=null&&t.r>=(a.roas||0)?'g':'r'}">${t.r!=null?fmt(t.r,2)+'x':'—'}</span>`).join('')}</div>`:'';
+     <div class="py-tl2"><span class="py-h"></span><span class="py-h c">Spend · Conv. · Value</span><span class="py-h">ROAS</span>${byRoas.map(t=>`<span class="py-tn">${chIco(t.n)}${esc(CHANNEL_SHORT[t.n]||t.n)}</span><span class="py-ts"><b>${money(t.c.spend)}</b><i>·</i><b>${fmt(t.c.conversions,0)}</b><i>·</i><b>${money(t.c.value)}</b></span><span class="py-chip ${t.r!=null&&t.r>=(a.roas||0)?'g':'r'}">${t.r!=null?fmt(t.r,2)+'x':'—'}</span>`).join('')}</div>`:'';
    return `<div class="py-c2${y.back?'':' today'}${isWin?' win':''}${open?' open':''}" onclick="pyPick('${y.dk}')">
      <div class="py-badge">${yr(y)}<small>${isWin?'🏆 WIN':esc(shortDay(y.dk).toLocaleDateString('en-GB',{day:'numeric',month:'short'}))}</small></div>
      <div class="py-main"><div class="py-v"><b>${money(a.value)}</b>${isWin?'<span class="py-winb">Winner</span>':chip(a.value,b&&b.value)}</div>
@@ -7993,7 +8002,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v99',date:'2026-10-26'};
+const DASHBOARD_RELEASE_CLIENT={version:'v100',date:'2026-10-27'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
@@ -8430,7 +8439,7 @@ function drawPlanHistory(){
  body.innerHTML=`<div class="phx-list">${PH.list.map(s=>{
    const {p,all}=phAcc(s), a=s.actual, open=PH.open===s.month, col=all>=.9?'good':all>=.8?'watch':'bad';
    const bar=(l,av,pv,f)=>`<div class="phx-m"><small>${l}</small><b>${f(av)}</b><span>Plan ${f(pv)} · ${pv?mpPct(av/pv):'—'}</span><i><u style="width:${pv?Math.min(100,av/pv*100).toFixed(1):0}%"></u></i></div>`;
-   const ch=(s.channels||[]).map(c=>Object.assign({},c,{n:chName(c.channel)})).sort((x,y)=>(y.roas||0)-(x.roas||0)).map(c=>`<tr><td class="mp-n">${esc(CHANNEL_SHORT[c.channel]||c.n)}</td><td>${mpK(c.planSpend)}</td><td>${mpK(c.spend)}</td><td>${mpPct(mpAcc(c.spend,c.planSpend))}</td><td>${mpK(c.value)}</td><td><b>${c.roas!=null?fmt(c.roas,2)+'x':'—'}</b></td></tr>`).join('');
+   const ch=(s.channels||[]).map(c=>Object.assign({},c,{n:chName(c.channel)})).sort((x,y)=>(y.roas||0)-(x.roas||0)).map(c=>`<tr><td class="mp-n">${chIco(c.channel)}${esc(CHANNEL_SHORT[c.channel]||c.n)}</td><td>${mpK(c.planSpend)}</td><td>${mpK(c.spend)}</td><td>${mpPct(mpAcc(c.spend,c.planSpend))}</td><td>${mpK(c.value)}</td><td><b>${c.roas!=null?fmt(c.roas,2)+'x':'—'}</b></td></tr>`).join('');
    return `<div class="phx-item ${col}${open?' open':''}" onclick="phToggle('${s.month}')">
     <div class="phx-top"><div><b>${esc(monthName(s.month,true))}</b><small>${esc(s.hijriFrom)} – ${esc(s.hijriTo)}${s.daysLive<s.daysTotal?` · saved on day ${s.daysLive} of ${s.daysTotal}`:''}</small></div><div class="phx-acc"><b>${mpPct(all)}</b><small>accuracy</small></div></div>
     <div class="phx-ms">${bar('Conv. Value',a.value,p.value,mpK)}${bar('Spend',a.spend,p.spend,mpK)}${bar('Conv.',a.conversions,p.conversions,v=>fmt(v,0))}</div>
