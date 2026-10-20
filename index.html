@@ -3811,19 +3811,18 @@ window.addEventListener('load',function(){
 
     /* v108 · account chip and page title */
     .acc-strip{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 4px;padding:0;background:none!important;border:0!important;box-shadow:none!important}
-    .acc-strip .brand{flex:0 1 auto;display:inline-flex;gap:9px;background:#fff;border:1px solid #e6e9f1;border-radius:999px;padding:5px 14px 5px 5px;box-shadow:0 4px 12px rgba(16,24,40,.05);min-width:0}
-    .acc-strip .logo{width:32px!important;height:32px!important;flex:0 0 32px;border-radius:50%!important;border:0!important}
-    .acc-strip .brand-name{font-size:13.5px!important}
-    .acc-strip>.brand-sub{display:flex!important;align-items:center;gap:6px;margin:0;font-size:11.5px!important;font-weight:700;color:#6b7385!important;white-space:nowrap;flex:none}
+    .acc-strip .brand{flex:0 1 auto;display:inline-flex;gap:7px;background:#fff;border:1px solid #e6e9f1;border-radius:999px;padding:4px 12px 4px 4px;box-shadow:0 4px 12px rgba(16,24,40,.05);min-width:0}
+    .acc-strip .logo{width:26px!important;height:26px!important;flex:0 0 26px;border-radius:50%!important;border:0!important;padding:2px!important;overflow:visible!important}
+    .acc-strip .brand-name{font-size:12.5px!important}
+    .acc-strip>.brand-sub{display:flex!important;align-items:center;gap:6px;margin:0;font-size:11px!important;font-weight:700;color:#6b7385!important;white-space:nowrap;flex:none}
     .pg-title{margin:12px 0 14px;font-size:26px;font-weight:900;letter-spacing:-.02em;color:#1d2433;line-height:1.15}
     body:not(.no-hero) .pg-title{margin-bottom:6px}
     .hero .eyebrow{display:none!important}
     body.dark-mode .acc-strip .brand{background:#151a22;border-color:#252a32}body.dark-mode .pg-title{color:#fff}body.dark-mode .acc-strip>.brand-sub{color:#a7afbf!important}
-    /* v108 · 3D WhatsApp mark */
-    body .topbar .top-share-btn,body.dark-mode .topbar .top-share-btn{background:transparent!important;box-shadow:none!important;border:0!important;padding:0!important;min-height:44px;width:auto;gap:8px;color:#fff!important}
-    body .topbar .top-share-btn svg.wa3d{width:44px!important;height:44px!important;filter:drop-shadow(0 6px 10px rgba(0,0,0,.28))}
-    body .topbar .top-share-btn span{color:#fff;font-size:12px;font-weight:900}
-    @media(max-width:760px){html:not(.desktop-site-mode) body .topbar .top-share-btn{width:44px!important}}
+    /* v109 · gold WhatsApp button, the mark centred */
+    body .topbar .top-share-btn{display:inline-flex!important;align-items:center;justify-content:center;gap:8px}
+    @media(max-width:760px){html:not(.desktop-site-mode) body .topbar .top-share-btn{width:40px!important;height:40px;padding:0!important}html:not(.desktop-site-mode) body .topbar .top-share-btn span{display:none}}
+    body .topbar .top-share-btn svg{width:19px!important;height:19px!important;margin:0!important;flex:none}
 </style>
 </head>
 <body>
@@ -3913,7 +3912,7 @@ window.addEventListener('load',function(){
     </button>
     <img class="tb-sekna" id="tbSekna" alt="SEKNA">
   </div>
-  <div class="actions"><div class="live"><span class="dot"></span>Live sync</div><button class="btn tb-refresh" onclick="loadData({force:true})" aria-label="Refresh" title="Refresh"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg></button><button class="whatsapp-share-btn top-share-btn" type="button" onclick="shareWhatsApp(CURRENT_TAB,this)" aria-label="Share current dashboard page on WhatsApp"><svg class="wa3d" viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="wa3dG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#61f294"/><stop offset=".55" stop-color="#25d366"/><stop offset="1" stop-color="#128c4a"/></linearGradient><radialGradient id="wa3dH" cx=".34" cy=".22" r=".55"><stop offset="0" stop-color="#fff" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><path d="M24 6.5a17.5 17.5 0 0 0-15 26.4L6.4 41.6l8.9-2.4A17.5 17.5 0 1 0 24 6.5z" fill="#0b6b36" transform="translate(0 1.6)"/><path d="M24 6.5a17.5 17.5 0 0 0-15 26.4L6.4 41.6l8.9-2.4A17.5 17.5 0 1 0 24 6.5z" fill="url(#wa3dG)"/><ellipse cx="20" cy="14" rx="11" ry="6.5" fill="url(#wa3dH)"/><path d="M31.3 27.2c-.4-.2-2.6-1.3-3-1.4-.4-.2-.7-.2-1 .2-.3.4-1.1 1.4-1.4 1.7-.3.3-.5.3-.9.1-.4-.2-1.8-.7-3.5-2.1-1.3-1.1-2.1-2.5-2.4-2.9-.3-.4 0-.7.2-.9l.7-.8c.2-.3.3-.5.4-.8.1-.3.1-.6 0-.8l-1.4-3.3c-.4-.9-.7-.8-1-.8h-.8c-.3 0-.8.1-1.2.5-.4.4-1.6 1.5-1.6 3.7s1.6 4.3 1.8 4.6c.2.3 3.1 4.8 7.6 6.7 3.8 1.5 4.5 1.2 5.3 1.1.8-.1 2.6-1.1 3-2.1.4-1 .4-1.9.3-2.1-.2-.3-.5-.4-.9-.6z" fill="#fff"/></svg><span>Share WhatsApp</span></button></div>
+  <div class="actions"><div class="live"><span class="dot"></span>Live sync</div><button class="btn tb-refresh" onclick="loadData({force:true})" aria-label="Refresh" title="Refresh"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg></button><button class="whatsapp-share-btn top-share-btn" type="button" onclick="shareWhatsApp(CURRENT_TAB,this)" aria-label="Share current dashboard page on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.5 0 .2 5.3.2 11.9c0 2.1.6 4.2 1.6 6L.1 24l6.3-1.7a11.8 11.8 0 0 0 5.7 1.5h.1c6.5 0 11.8-5.3 11.8-11.9 0-3.2-1.2-6.2-3.5-8.4Zm-8.3 18.3h-.1c-1.8 0-3.6-.5-5.1-1.4l-.4-.2-3.7 1 1-3.6-.2-.4a9.8 9.8 0 1 1 8.5 4.6Zm5.4-7.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.2-.2.3-.8.9-.9 1.1-.2.2-.3.2-.6.1-1.7-.8-2.8-1.5-3.9-3.4-.3-.5.3-.5.8-1.6.1-.2 0-.4 0-.6 0-.1-.7-1.7-1-2.3-.3-.7-.5-.6-.7-.6h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.9s1.2 3.3 1.4 3.6c.2.2 2.4 3.7 5.8 5.2.8.3 1.4.5 1.9.7.8.3 1.6.2 2.2.1.7-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3Z"/></svg><span>Share WhatsApp</span></button></div>
 </header>
 
 <div class="drawer-overlay" id="drawerOverlay" onclick="closeSidebar()" data-share-ui></div>
@@ -8403,7 +8402,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v108',date:'2026-10-31'};
+const DASHBOARD_RELEASE_CLIENT={version:'v109',date:'2026-10-31'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
