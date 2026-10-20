@@ -52,6 +52,13 @@ window.addEventListener('load',function(){
       try{
         var wantsDesktop=localStorage.getItem('ha_setting_desktop_view')==='1';
         var mobileLike=(navigator.maxTouchPoints||0)>0 && Math.min(screen.width||9999,screen.height||9999)<900;
+        
+        
+        var vw=document.documentElement.clientWidth||window.innerWidth||0, sw=Math.min(screen.width||9999,screen.height||9999);
+        if(!wantsDesktop&&(navigator.maxTouchPoints||0)>0&&sw<600&&vw>sw*1.15){
+          var vp=document.querySelector('meta[name="viewport"]');
+          if(vp)vp.setAttribute('content','width='+sw+',initial-scale=1,maximum-scale=5');
+        }
         if(wantsDesktop&&mobileLike){
           var root=document.documentElement;
           var viewport=root.clientWidth||window.innerWidth||390;
