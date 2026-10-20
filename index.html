@@ -3649,7 +3649,47 @@ window.addEventListener('load',function(){
     body.dark-mode .srv-now b,body.dark-mode .srv-box>b,body.dark-mode .srv-grid span b,body.dark-mode .srv-cost b,body.dark-mode .srv-log div,body.dark-mode .srv-res div{color:#fff}
     body.dark-mode .srv-box{border-color:#252a32}body.dark-mode .srv-grid span,body.dark-mode .srv-res div{background:#1b212b}body.dark-mode .srv-res div.ok{background:#13281f}body.dark-mode .srv-res div.no{background:#2a1a1d}
     body.dark-mode .srv-bar{background:#252b35}body.dark-mode .srv-btn.soft{background:#1f2632;color:#fff}
-  </style>
+  
+    /* Month vs Month controls (v104): month cards with arrows, glowing blue / red */
+    #mxPick:not(.one){grid-template-columns:1fr 1fr;gap:12px;position:relative;align-items:stretch;margin:8px 0 12px}
+    #mxPick:not(.one) .mx-sel{border-radius:18px;padding:9px 8px 10px;text-align:center}
+    #mxPick:not(.one) .mx-sel>span{margin-bottom:4px;font-size:10px;letter-spacing:.08em}
+    #mxPick .mx-sel.a{background:#eef3ff;border:1.5px solid #3d6bff;box-shadow:0 0 0 4px rgba(61,107,255,.12),0 8px 22px rgba(61,107,255,.3)}
+    #mxPick .mx-sel.b{background:#fff2f4;border:1.5px solid #e0566a;box-shadow:0 0 0 4px rgba(224,86,106,.13),0 8px 22px rgba(224,86,106,.32)}
+    #mxPick .mx-sel.b>span{color:#c43c50}#mxPick .mx-sel.a>span{color:#2349c9}
+    .mxs{display:flex;align-items:center;gap:4px}
+    .mxs-arr{flex:none;width:28px;height:28px;border-radius:50%;border:0;background:#fff;color:#203c8e;font-size:17px;font-weight:900;line-height:1;display:grid;place-items:center;box-shadow:0 2px 6px rgba(16,24,40,.12);cursor:pointer}
+    .mx-sel.b .mxs-arr{color:#c43c50}.mxs-arr:disabled{opacity:.35;cursor:default}
+    #mxPick .mx-msel{flex:1;min-width:0;display:block;text-align:center;border:0;background:transparent;padding:2px 0;box-shadow:none}
+    #mxPick .mx-msel b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#mxPick .mx-msel small{display:block;font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    #mxPick:not(.one) .mx-swap{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:#203c8e;color:#fff;border:3px solid #fff;font-size:10.5px;font-weight:900;z-index:2;box-shadow:0 4px 12px rgba(32,60,142,.35);cursor:pointer;padding:0}
+    @keyframes mxGlowB{50%{box-shadow:0 0 0 6px rgba(224,86,106,.18),0 10px 28px rgba(224,86,106,.45)}}
+    #mxPick .mx-sel.b{animation:mxGlowB 2.6s ease-in-out infinite}
+    body.no-motion #mxPick .mx-sel.b{animation:none}
+    @media(prefers-reduced-motion:reduce){#mxPick .mx-sel.b{animation:none}}
+    .mx-types>small{margin-bottom:2px}
+    .mx-tls{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;width:100%}
+    .mx-tl{display:flex;flex-direction:column;align-items:center;gap:4px;border:0;background:none;padding:2px 0;font:inherit;font-size:10px;font-weight:800;color:#4b5263;cursor:pointer;min-width:0}
+    .mx-tl span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+    .mx-tl .channel-icon.ch-ico,.mx-tl .mx-all{width:40px;height:40px;flex:none;border-radius:13px;margin:0;border:2px solid transparent;box-sizing:border-box}
+    .mx-tl .channel-icon.ch-ico svg{width:18px;height:18px}
+    .mx-all{display:grid;place-items:center;background:#f1f3f8;color:#203c8e;font-style:normal;font-size:10px;font-weight:900}
+    .mx-tl.on .channel-icon.ch-ico,.mx-tl.on .mx-all{border-color:#203c8e;box-shadow:0 0 0 2px #fff inset}
+    .mx-tl.on .mx-all{background:#203c8e;color:#fff}.mx-tl.on span{color:#203c8e}
+    .mx-pd{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:10px 0 2px;cursor:pointer}
+    .mx-pd b{display:block;font-size:13px;color:#1d2433}.mx-pd small{font-size:10.5px;color:#8a93a6;font-weight:700}
+    .mc-bar.b span{background:linear-gradient(180deg,#f08a98,#e0566a)!important}.mc-cap i.b{background:#e0566a!important}
+    .mc-bar.season.b span{background:linear-gradient(180deg,#e2b874 0 7px,#f08a98 7px,#e0566a)!important}
+    .mc-bar span.cut{background-image:linear-gradient(180deg,transparent 0 6px,rgba(255,255,255,.95) 6px 9px,transparent 9px),linear-gradient(180deg,#f0cf8a,#c89434)}
+    .mc-bar.a span.cut{background-image:linear-gradient(180deg,transparent 0 6px,rgba(255,255,255,.95) 6px 9px,transparent 9px),linear-gradient(180deg,#3d6bff,#203c8e)}
+    .mc-bar.b span.cut{background-image:linear-gradient(180deg,transparent 0 6px,rgba(255,255,255,.95) 6px 9px,transparent 9px),linear-gradient(180deg,#f08a98,#e0566a)!important}
+    body.dark-mode #mxPick .mx-sel.a{background:#121d3d}body.dark-mode #mxPick .mx-sel.b{background:#2c151b}
+    body.dark-mode .mxs-arr{background:#1b2230;color:#9fb6ff}body.dark-mode .mx-sel.b .mxs-arr{color:#ff8f9a}
+    body.dark-mode #mxPick .mx-msel b,body.dark-mode .mx-pd b{color:#fff}
+    body.dark-mode #mxPick:not(.one) .mx-swap{border-color:#151a22;background:#3d6bff}
+    body.dark-mode .mx-all{background:#252a32;color:#c9d3f5}body.dark-mode .mx-tl{color:#a7afbf}
+    body.dark-mode .mx-tl.on .channel-icon.ch-ico,body.dark-mode .mx-tl.on .mx-all{border-color:#9fb6ff;box-shadow:none}body.dark-mode .mx-tl.on span{color:#9fb6ff}
+</style>
 </head>
 <body>
 <div class="sks" id="skSplash" data-share-ui aria-hidden="true">
@@ -4251,17 +4291,14 @@ window.addEventListener('load',function(){
         <button class="wx-tab on" type="button" id="mxCmpBtn" onclick="setMonthMode('compare')">Compare</button>
       </div>
       <div class="mx-pick" id="mxPick">
-        <label class="mx-sel a"><span>Month</span><select id="mxA" onchange="renderMonthCompare()"></select><button type="button" class="mx-msel" id="mxABtn" onclick="openMonthSelect('a')"></button></label>
+        <div class="mx-sel a"><span>Month</span><select id="mxA" onchange="renderMonthCompare()"></select><div class="mxs"><button type="button" class="mxs-arr" onclick="stepMonth('a',-1)" aria-label="Month before">‹</button><button type="button" class="mx-msel" id="mxABtn" onclick="openMonthSelect('a')"></button><button type="button" class="mxs-arr" onclick="stepMonth('a',1)" aria-label="Month after">›</button></div></div>
         <button type="button" class="mx-period" id="mxPeriodBtn" onclick="openPeriodPicker()"></button>
-        <button class="mx-swap" type="button" onclick="swapMonths()" aria-label="Swap months"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M7 4l-3 3M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/></svg></button>
-        <label class="mx-sel b"><span>Compare with</span><select id="mxB" onchange="renderMonthCompare()"></select><button type="button" class="mx-msel" id="mxBBtn" onclick="openMonthSelect('b')"></button></label>
+        <button class="mx-swap" type="button" onclick="swapMonths()" aria-label="Swap months" title="Swap months">VS</button>
+        <div class="mx-sel b"><span>Compare with</span><select id="mxB" onchange="renderMonthCompare()"></select><div class="mxs"><button type="button" class="mxs-arr" onclick="stepMonth('b',-1)" aria-label="Month before">‹</button><button type="button" class="mx-msel" id="mxBBtn" onclick="openMonthSelect('b')"></button><button type="button" class="mxs-arr" onclick="stepMonth('b',1)" aria-label="Month after">›</button></div></div>
       </div>
       <div class="mx-presets" id="mxPresets"></div>
       <div class="mx-types" id="mxTypes"></div>
-      <div class="wx-tabs mx-basis" role="tablist">
-        <button class="wx-tab on" type="button" id="mxTotalBtn" onclick="setMonthBasis('total')">Month total</button>
-        <button class="wx-tab" type="button" id="mxAvgBtn" onclick="setMonthBasis('avg')">Per day</button>
-      </div>
+      <label class="mx-pd"><span><b>Per day averages</b><small>Off = month totals</small></span><span class="switch"><input id="mxAvgToggle" type="checkbox" onchange="setMonthBasis(this.checked?'avg':'total')"><span></span></span></label>
       </div><div id="mxChart"></div></div>
       <div id="mxBody"></div>
     </section>
@@ -5576,11 +5613,11 @@ function toggleMxType(i){
  if(t.length>=all.length)t=[];
  MX_TYPES[CURRENT_ACCOUNT]=t;MONTH_TIP='';renderMonthCompare();
 }
+const MX_TYPE_LABEL={'Search Brand':'Brand','Search Non-Brand':'Non-Brand','Performance Max':'PMax','Demand Gen':'D. Gen','Video (YouTube)':'Video'};
 function mxTypesHtml(ex){
  const list=mxTypeList(ex), t=mxTypes()||[];
- const chips=list.map((n,i)=>{
-   return `<button type="button" class="mx-preset${t.includes(n)?' on':''}" onclick="toggleMxType(${i})">${chIco(n)}${esc(CHANNEL_SHORT[n]||n)}</button>`}).join('');
- return `<small>Campaign type</small><button type="button" class="mx-preset${t.length?'':' on'}" onclick="toggleMxType(-1)">All types</button>${chips||(extraState()==='fail'?'<em>Could not load the campaign types</em>':'<em>Loading…</em>')}`;
+ const tiles=list.map((n,i)=>`<button type="button" class="mx-tl${t.includes(n)?' on':''}" onclick="toggleMxType(${i})" title="${esc(CHANNEL_SHORT[n]||n)}">${chIco(n)}<span>${esc(MX_TYPE_LABEL[n]||CHANNEL_SHORT[n]||n)}</span></button>`).join('');
+ return `<small>Campaign type</small><div class="mx-tls"><button type="button" class="mx-tl${t.length?'':' on'}" onclick="toggleMxType(-1)"><i class="mx-all">ALL</i><span>All</span></button>${tiles||`<em>${extraState()==='fail'?'Could not load the campaign types':'Loading…'}</em>`}</div>`;
 }
 const SEASONS={'Ramadan':'🌙 Ramadan','Dhu Hijjah':'🐑 Qurbani · Eid al-Adha'};
 function setMonthMode(m){
@@ -5591,8 +5628,7 @@ function setMonthMode(m){
 }
 function setMonthBasis(b){
  MONTH_BASIS=b==='avg'?'avg':'total';
- document.getElementById('mxTotalBtn').classList.toggle('on',MONTH_BASIS==='total');
- document.getElementById('mxAvgBtn').classList.toggle('on',MONTH_BASIS==='avg');
+ const tg=document.getElementById('mxAvgToggle');if(tg)tg.checked=MONTH_BASIS==='avg';
  renderMonthCompare();
 }
 function setMonthChart(k){MONTH_CHART=k;renderMonthCompare()}
@@ -5603,6 +5639,13 @@ function chartPick(m){
  const sel=document.getElementById(chartPick._next==='b'?'mxB':'mxA');
  sel.value=m; chartPick._next=chartPick._next==='b'?'a':'b';
  renderMonthCompare();
+}
+
+function stepMonth(which,dir){
+ const sel=document.getElementById(which==='b'?'mxB':'mxA'), keys=((DASH_DATA||{}).history||[]).map(h=>h.month);
+ const i=keys.indexOf(sel.value), j=i+dir;
+ if(i<0||j<0||j>=keys.length)return;
+ sel.value=keys[j];MONTH_TIP='';renderMonthCompare();
 }
 function swapMonths(){
  const a=document.getElementById('mxA'), b=document.getElementById('mxB');
@@ -5802,8 +5845,9 @@ function renderMonthCompare(){
    return;
  }
  const ha=hist.find(h=>h.month===aKey), hb=hist.find(h=>h.month===bKey);
- const lbl=h=>h?`<b>${esc(monthName(h.month))}</b><small>${esc(h.hijri)}${h.partial?' · so far':''}</small><i>▾</i>`:'—';
+ const lbl=h=>h?`<b>${esc(monthName(h.month))}</b><small>${esc(h.hijri)}${h.partial?' · so far':''}</small>`:'—';
  document.getElementById('mxABtn').innerHTML=lbl(ha); document.getElementById('mxBBtn').innerHTML=lbl(hb);
+ [['mxABtn',aKey],['mxBBtn',bKey]].forEach(([id,k])=>{const i=hist.findIndex(h=>h.month===k),arr=document.getElementById(id).parentElement.querySelectorAll('.mxs-arr');arr[0].disabled=i<=0;arr[1].disabled=i<0||i>=hist.length-1});
  pre.innerHTML=monthPresets(hist,aKey).map(([l,m])=>`<button type="button" class="mx-preset${m===bKey?' on':''}" onclick="pickPreset('${m}')">${esc(l)}</button>`).join('');
  if(!ha||!hb){body.innerHTML='<div class="dx-empty">No monthly history found for this account yet.</div>';return}
  const A=monthStats(ha,ex,d), B=monthStats(hb,ex,d);
@@ -5913,7 +5957,9 @@ function monthChart(hist,ex,d,aKeys,bKeys,avg){
  const m=MONTH_METRICS.find(x=>x.k===MONTH_CHART)||MONTH_METRICS[2];
  const show=hist.slice(-24);
  const vals=show.map(h=>mxVal(monthStats(h,ex,d),m,avg)||0);
- const mx=Math.max(...vals,0.0001);
+ 
+ const peak=Math.max(...vals,0.0001), usual=Math.max(...vals.filter((v,i)=>!SEASONS[show[i].hijri]),0);
+ const mx=usual&&peak>usual*1.6?usual*1.3:peak;
  let tip='';
  const bars=show.map((h,i)=>{
    const season=SEASONS[h.hijri];
@@ -5923,7 +5969,7 @@ function monthChart(hist,ex,d,aKeys,bKeys,avg){
      const pos=(i+.5)/show.length*100, side=pos<28?' l':pos>72?' r':'';
      tip=`<div class="mc-tip${season?' season':''}${side}" style="left:${pos.toFixed(1)}%"><b>${season?esc(season):esc(h.hijri)}</b><span>${esc(monthName(h.month,true))} · ${m.f(vals[i],avg)}</span></div>`;
    }
-   return `<button type="button" class="mc-bar ${cls}" onclick="chartPick('${h.month}')" title="${esc(monthName(h.month))}${season?' · '+esc(season):''}"><span style="height:${Math.max(2,vals[i]/mx*100).toFixed(1)}%"></span><small>${yr?"'"+esc(h.month.slice(2,4)):esc(monthName(h.month).slice(0,1))}</small></button>`;
+   return `<button type="button" class="mc-bar ${cls}" onclick="chartPick('${h.month}')" title="${esc(monthName(h.month))}${season?' · '+esc(season):''}"><span class="${vals[i]>mx?'cut':''}" style="height:${Math.max(2,Math.min(100,vals[i]/mx*100)).toFixed(1)}%"></span><small>${yr?"'"+esc(h.month.slice(2,4)):esc(monthName(h.month).slice(0,1))}</small></button>`;
  }).join('');
  const chips=`<div class="mc-keys">${keys.map(([k,l])=>`<button type="button" class="mx-preset${k===MONTH_CHART?' on':''}" onclick="setMonthChart('${k}')">${l}</button>`).join('')}</div>`;
  const cap=MONTH_MODE==='one'?`<span><i class="a"></i>Picked</span>`:`<span><i class="a"></i>${esc(monthName(aKeys[0]))}</span><span><i class="b"></i>${esc(monthName(bKeys[0]))}</span>`;
@@ -8165,7 +8211,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v103',date:'2026-10-28'};
+const DASHBOARD_RELEASE_CLIENT={version:'v104',date:'2026-10-29'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
