@@ -8,7 +8,8 @@
       "README.md",
       "**/.*",
       ".github/**",
-      "**/*.apk"
+      "**/*.apk",
+      "functions/**"
     ],
     "headers": [
       {
@@ -48,5 +49,16 @@
         ]
       }
     ]
-  }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "*.local"
+      ]
+    }
+  ]
 }

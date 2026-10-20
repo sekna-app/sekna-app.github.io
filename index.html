@@ -83,12 +83,63 @@ window.addEventListener('load',function(){
   <script src="firebase-config.js"></script>
   <script>
   (function(){
-   var API="https:\/\/script.google.com\/macros\/s\/AKfycbzjgZ1nXxLTcFdeFCIEznOj2H0XCo9YGUeu1YF2pJdsQiOo_aM-Mn6HxKKNk8peEuM1Ig\/exec";
-   function call(name,args){
+   var API="https:\/\/script.google.com\/macros\/s\/AKfycbzjgZ1nXxLTcFdeFCIEznOj2H0XCo9YGUeu1YF2pJdsQiOo_aM-Mn6HxKKNk8peEuM1Ig\/exec", FB="https:\/\/europe-west2-human-appeal-media-plan.cloudfunctions.net\/api", FB_PRIMARY=false;
+   // Firebase first for these (with how long to wait), Apps Script for everything else.
+   var FB_FNS={getDashboardData:20000,getMonthCompareData:45000};
+   var SRV=window.SEKNA_SERVER={primary:FB_PRIMARY,mode:'appsscript',since:0,reason:'',hold:0,ms:0};
+   function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
+   function save(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}
+   function fbWanted(){var t=load('sekna_fb_device');return t==='firebase'?true:t==='appsscript'?false:FB_PRIMARY}
+   function asCall(name,args){
     return fetch(API,{method:'POST',body:JSON.stringify({action:'call',fn:name,args:args}),redirect:'follow'})
      .then(function(r){if(!r.ok)throw new Error('The SEKNA server did not answer ('+r.status+'). Please try again.');return r.json()})
      .then(function(j){if(!j||!j.ok)throw new Error((j&&j.error)||'The SEKNA server did not answer. Please try again.');return j.result});
    }
+   function fbPost(path,body,wait){
+    var ctl=window.AbortController?new AbortController():null, t0=Date.now();
+    var timer=setTimeout(function(){if(ctl)ctl.abort()},wait||20000);
+    return fetch(FB+path,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),signal:ctl?ctl.signal:undefined})
+     .then(function(r){if(!r.ok)throw new Error('Firebase answered '+r.status);return r.json()},
+           function(e){throw new Error(e&&e.name==='AbortError'?'Firebase took too long to answer':'Firebase could not be reached')})
+     .then(function(j){
+       clearTimeout(timer);
+       if(j&&j.ok){SRV.ms=Date.now()-t0;return j.result}
+       var e=new Error((j&&j.error)||'Firebase did not answer');e.access=!!(j&&j.access);throw e;
+     },function(e){clearTimeout(timer);throw e});
+   }
+   function report(kind,reason,token){
+    if(!token)return;
+    var key='sekna_srv_report_'+kind, last=+load(key)||0;
+    if(Date.now()-last<30*60000)return;
+    save(key,String(Date.now()));
+    asCall('reportServerEvent',[token,kind,reason,navigator.userAgent.slice(0,120)]).catch(function(){});
+   }
+   function setMode(mode,reason,token){
+    var was=SRV.mode;
+    if(mode!==was){SRV.mode=mode;SRV.since=Date.now();SRV.reason=reason||''}
+    if(mode==='backup'&&was!=='backup')report('backup',reason,token);
+    if(mode==='firebase'&&load('sekna_srv_on_backup')==='1')report('firebase','',token);
+    save('sekna_srv_on_backup',mode==='backup'?'1':null);
+    try{window.dispatchEvent(new Event('sekna-server'))}catch(e){}
+   }
+   function call(name,args){
+    if(FB_FNS[name]&&fbWanted()&&Date.now()>SRV.hold){
+     var token=args[name==='getDashboardData'?2:1];
+     return fbPost('/call',{fn:name,args:args},FB_FNS[name]).then(function(r){setMode('firebase','',token);return r},function(e){
+      // An access answer is not a server failure: Apps Script decides it.
+      if(!e.access){SRV.hold=Date.now()+5*60000;setMode('backup',e.message,token)}
+      return asCall(name,args);
+     });
+    }
+    if(FB_FNS[name]&&!fbWanted()&&SRV.mode!=='appsscript'){SRV.mode='appsscript';SRV.since=Date.now()}
+    return asCall(name,args);
+   }
+   window.SEKNA_FB={
+    post:fbPost,
+    wanted:fbWanted,
+    device:function(v){if(v!==undefined){save('sekna_fb_device',v||null);SRV.hold=0}return load('sekna_fb_device')||'auto'},
+    retry:function(){SRV.hold=0}
+   };
    function runner(ok,fail){
     return new Proxy({},{get:function(_,key){
      if(key==='withSuccessHandler')return function(f){return runner(f,fail)};
@@ -3249,6 +3300,25 @@ window.addEventListener('load',function(){
     body.dark-mode .act-seg{background:#11161e}body.dark-mode .act-seg button.on{background:#1f2632;color:#fff}
     .sh-kinds{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.sh-kinds span{font-size:12px;font-weight:700;color:#4b5263;background:#f2f4f9;border-radius:999px;padding:5px 10px}.sh-kinds b{color:#1d2433}
     body.dark-mode .sh-row{color:#fff}body.dark-mode .sh-row i{background:#252b35}body.dark-mode .sh-kinds span{background:#1b212b;color:#c3c9d6}body.dark-mode .sh-kinds b,body.dark-mode .sh-total b{color:#fff}
+
+    /* v89 — admin: Server (Firebase, with Apps Script as the backup) */
+    .srv-now{display:flex;gap:12px;align-items:center;margin:12px 0;padding:14px;border-radius:16px;background:#e3f6ec}
+    .srv-now.backup{background:#fff1df}.srv-now.idle{background:#f2f4f9}
+    .srv-now i{font-style:normal;font-size:26px}.srv-now b{display:block;font-size:15px;color:#1d2433}.srv-now small{display:block;font-size:12px;font-weight:700;color:#5d6577;margin-top:2px}
+    .srv-box{border:1.5px solid #edf0f6;border-radius:16px;padding:12px 14px;margin-top:10px}
+    .srv-box>b{display:block;font-size:13px;color:#1d2433}.srv-box>small{display:block;font-size:12px;color:#8a92a6;font-weight:700;margin-top:2px}
+    .srv-cost{display:flex;align-items:baseline;gap:6px;margin-top:6px}.srv-cost b{font-size:28px;font-weight:900;color:#203c8e;letter-spacing:-.02em}.srv-cost span{font-size:13px;font-weight:800;color:#6b7385}
+    .srv-bar{height:10px;border-radius:6px;background:#eef0f5;overflow:hidden;margin-top:8px}.srv-bar u{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#22c47c,#13804f)}
+    .srv-bar.warn u{background:linear-gradient(90deg,#f5b14c,#e07b16)}.srv-bar.stop u{background:linear-gradient(90deg,#ff7a85,#c2382f)}
+    .srv-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.srv-grid span{font-size:12px;font-weight:700;color:#6b7385;background:#f6f7fb;border-radius:10px;padding:8px 10px}.srv-grid span b{display:block;font-size:14px;color:#1d2433}
+    .srv-btn{width:100%;margin-top:10px;border:0;border-radius:12px;padding:11px;font:inherit;font-size:13px;font-weight:900;cursor:pointer;background:#203c8e;color:#fff}.srv-btn.soft{background:#eef1f7;color:#1d2433}.srv-btn:disabled{opacity:.55}
+    .srv-res{margin-top:8px;display:grid;gap:6px}.srv-res div{font-size:12.5px;font-weight:700;color:#1d2433;background:#f6f7fb;border-radius:10px;padding:8px 10px}
+    .srv-res div.ok{background:#e3f6ec}.srv-res div.no{background:#fde7e5}.srv-res code{display:block;font-size:11px;color:#5d6577;word-break:break-all;margin-top:3px;white-space:normal}
+    .srv-log{display:grid;gap:6px;margin-top:8px}.srv-log div{display:grid;grid-template-columns:22px 1fr;gap:6px;font-size:12.5px;font-weight:700;color:#1d2433}.srv-log small{display:block;font-size:11.5px;color:#8a92a6;font-weight:700}
+    body.dark-mode .srv-now{background:#13281f}body.dark-mode .srv-now.backup{background:#2d2214}body.dark-mode .srv-now.idle{background:#1b212b}
+    body.dark-mode .srv-now b,body.dark-mode .srv-box>b,body.dark-mode .srv-grid span b,body.dark-mode .srv-cost b,body.dark-mode .srv-log div,body.dark-mode .srv-res div{color:#fff}
+    body.dark-mode .srv-box{border-color:#252a32}body.dark-mode .srv-grid span,body.dark-mode .srv-res div{background:#1b212b}body.dark-mode .srv-res div.ok{background:#13281f}body.dark-mode .srv-res div.no{background:#2a1a1d}
+    body.dark-mode .srv-bar{background:#252b35}body.dark-mode .srv-btn.soft{background:#1f2632;color:#fff}
   </style>
 </head>
 <body>
@@ -3444,7 +3514,7 @@ window.addEventListener('load',function(){
     <div class="ab3-pills"><span>Media planning</span><span>Campaign monitoring</span><span>Reporting</span><span>Smart tools</span></div>
     <button type="button" class="ab3-idea" onclick="openIdeas()"><span class="ab3-bulb">💡</span><span class="ab3-it"><b>Have an idea for SEKNA?</b><small>Tell us what would make your day easier. Every idea is read.</small></span><span class="ab3-go">›</span></button>
     <div class="ab3-credit">Designed &amp; developed by <b>Ibrahim Amin</b></div>
-    <div class="sk-version ab3-ver">SEKNA Dashboard • v88</div>
+    <div class="sk-version ab3-ver">SEKNA Dashboard • v89</div>
   </section>
 </div>
 
@@ -6491,9 +6561,9 @@ function renderAdmin(d){
  const annState=ann?(ann.showFrom&&ann.showFrom>isoDay(0)?'Scheduled':'Showing now'):'None yet';
  const act=(k,ic,bg,t,sub)=>`<button type="button" class="a2-act${ADMIN_TAB===k?' on':''}" onclick="adminTab('${k}')"><span style="background:${bg}">${ic}</span><b>${t}</b><small>${sub}</small></button>`;
  const inviteView=`<div class="a2-sheet"><b class="ad-h">➕ Invite someone</b><small class="ad-sub">They get an email with a link to sign in to SEKNA.</small><form class="ad-invite" style="margin-top:12px" onsubmit="adminInviteSubmit(event)"><input id="adminInviteEmail" type="email" inputmode="email" autocapitalize="off" placeholder="name@company.com" onfocus="setTimeout(()=>this.scrollIntoView({block:'center'}),300)"><button id="adminInviteBtn" type="submit">Send invite</button></form></div>`;
- const sheet=ADMIN_TAB==='invite'?inviteView:ADMIN_TAB==='message'?`<div class="a2-sheet">${adminMessageHtml()}</div>`:ADMIN_TAB==='app'?`<div class="a2-sheet">${adminMaintHtml()}</div>`:ADMIN_TAB==='activity'?`<div class="a2-sheet">${adminActivityHtml()}</div>`:ADMIN_TAB==='ideas'?`<div class="a2-sheet">${adminIdeasHtml()}</div>`:'';
+ const sheet=ADMIN_TAB==='invite'?inviteView:ADMIN_TAB==='message'?`<div class="a2-sheet">${adminMessageHtml()}</div>`:ADMIN_TAB==='app'?`<div class="a2-sheet">${adminMaintHtml()}</div>`:ADMIN_TAB==='activity'?`<div class="a2-sheet">${adminActivityHtml()}</div>`:ADMIN_TAB==='ideas'?`<div class="a2-sheet">${adminIdeasHtml()}</div>`:ADMIN_TAB==='server'?`<div class="a2-sheet">${adminServerHtml()}</div>`:'';
  adminBody(`<div class="a2-tiles">${tile('t1','👥',users.length,'Users')}${tile('t3','⏳',waiting.length,'Waiting for approval')}${tile('t2','✉️',invited,'Invited')}${tile('t4','⚡',today,'Active today')}</div>
-   <div class="a2-acts">${act('app',m.on?'🔴':'🟢',m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message','📣','#e9eefc','Team message',annState)}${act('invite','➕','#fff3dc','Invite','Add someone')}${act('activity','📊','#e3f6ec','Activity','This month')}${act('ideas','💡','#fff3dc','Ideas',Array.isArray(ADMIN_IDEAS)?(ADMIN_IDEAS.filter(i=>i.status==='New').length+' new'):'From the team')}</div>
+   <div class="a2-acts">${act('app',m.on?'🔴':'🟢',m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message','📣','#e9eefc','Team message',annState)}${act('invite','➕','#fff3dc','Invite','Add someone')}${act('activity','📊','#e3f6ec','Activity','This month')}${act('ideas','💡','#fff3dc','Ideas',Array.isArray(ADMIN_IDEAS)?(ADMIN_IDEAS.filter(i=>i.status==='New').length+' new'):'From the team')}${act('server',serverNow().icon,serverNow().bg,'Server',serverNow().short)}</div>
    ${sheet}
    ${waiting.length?`<div class="ad-lbl">Waiting for approval</div><div class="ad-card ad-pend">${waiting.map(person).join('')}</div>`:''}
    <div class="ad-lbl">People · ${team.length}</div><div class="ad-card">${team.map(person).join('')||'<div class="sk-admin-empty">No one has requested access yet.</div>'}</div>`);
@@ -7253,7 +7323,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v88',date:'2026-10-21'};
+const DASHBOARD_RELEASE_CLIENT={version:'v89',date:'2026-10-22'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
@@ -7746,10 +7816,90 @@ function sendIdea(){
 let ADMIN_ACTIVITY=null, ADMIN_IDEAS=null, ADMIN_ACT_VIEW='shares';
 const SHARE_NAMES={daily:'Daily Performance',channel:'Channel Delivery',plan:'Media Plan',results:'Results',report:'Report',compare:'Month vs Month'};
 function adminLoadExtra(k){
+ if(k==='server')srvLoad();
  if(k==='activity'&&!ADMIN_ACTIVITY)serverCall('adminActivity',getAccessToken()).then(r=>{ADMIN_ACTIVITY=r;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{ADMIN_ACTIVITY={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)});
  if(k==='ideas'&&!ADMIN_IDEAS)serverCall('adminIdeas',getAccessToken()).then(r=>{ADMIN_IDEAS=r||[];if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{ADMIN_IDEAS={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)});
 }
 function actView(v){ADMIN_ACT_VIEW=v;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+
+ 
+const SRV_ADMIN={status:null,events:null,parity:null,busy:''};
+function serverNow(){
+ const s=window.SEKNA_SERVER, fb=window.SEKNA_FB;
+ if(!s||!fb)return {icon:'⚪',bg:'#f2f4f9',short:'Apps Script',cls:'idle',title:'Apps Script',text:'This copy of SEKNA talks to Apps Script only.'};
+ const since=s.since?` since ${new Date(s.since).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}`:'';
+ if(s.mode==='backup')return {icon:'🟠',bg:'#fff1df',short:'Backup',cls:'backup',title:'Backup: Apps Script'+since,text:'Firebase did not answer: '+(s.reason||'unknown reason')+'. SEKNA tries Firebase again in 5 minutes.'};
+ if(s.mode==='firebase')return {icon:'🟢',bg:'#e3f6ec',short:'Firebase',cls:'',title:'Firebase'+since,text:'Data comes from the SEKNA server'+(s.ms?` · last answer in ${(s.ms/1000).toFixed(1)} s`:'')+'.'};
+ return fb.wanted()?{icon:'🟢',bg:'#e3f6ec',short:'Firebase',cls:'',title:'Firebase',text:'Firebase answers the next data refresh.'}
+   :{icon:'⚪',bg:'#f2f4f9',short:'Apps Script',cls:'idle',title:'Apps Script',text:'Firebase is not switched on for everyone yet. You can try it on this device below.'};
+}
+function srvLoad(){
+ const fb=window.SEKNA_FB, rerender=()=>{if(ADMIN_LAST)renderAdmin(ADMIN_LAST)};
+ serverCall('adminServerEvents',getAccessToken()).then(r=>{SRV_ADMIN.events=r||[];rerender()}).catch(err=>{SRV_ADMIN.events={error:errorText(err)};rerender()});
+ if(!fb){SRV_ADMIN.status={error:'Open SEKNA from the app or sekna-app.web.app to see the Firebase server.'};return}
+ fb.post('/status',{token:getAccessToken()},20000).then(r=>{SRV_ADMIN.status=r;rerender()}).catch(err=>{SRV_ADMIN.status={error:errorText(err)};rerender()});
+}
+function srvDevice(v){
+ if(!window.SEKNA_FB)return;
+ SEKNA_FB.device(v);
+ if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
+ loadData({force:true,silent:true});
+}
+function srvRetry(){if(window.SEKNA_FB){SEKNA_FB.retry();loadData({force:true,silent:true})}}
+function srvParity(){
+ if(!window.SEKNA_FB||SRV_ADMIN.busy)return;
+ SRV_ADMIN.busy='parity';SRV_ADMIN.parity=null;if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
+ SEKNA_FB.post('/parity',{token:getAccessToken(),account:CURRENT_ACCOUNT},120000)
+  .then(r=>{SRV_ADMIN.parity=r}).catch(err=>{SRV_ADMIN.parity={error:errorText(err)}})
+  .finally(()=>{SRV_ADMIN.busy='';if(ADMIN_LAST)renderAdmin(ADMIN_LAST)});
+}
+function srvAgo(ms){
+ if(!ms)return '';
+ const d=new Date(ms);
+ return d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' · '+d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+}
+function adminServerHtml(){
+ const n=serverNow(), st=SRV_ADMIN.status, ev=SRV_ADMIN.events, pr=SRV_ADMIN.parity, fb=window.SEKNA_FB;
+ const dev=fb?fb.device():'auto', seg=(k,l)=>`<button type="button" class="${dev===k?'on':''}" onclick="srvDevice('${k}')">${l}</button>`;
+ let cost='<small>Loading…</small>';
+ if(st&&st.error)cost=`<small>${esc(st.error)}</small>`;
+ else if(st){
+   const b=st.billing;
+   if(!b)cost=`<small>${st.billingError?esc(st.billingError):'Google has not reported a cost yet. It reports a few times a day, a few hours late.'}</small>`;
+   else{
+     const pct=b.budget?Math.min(100,b.cost/b.budget*100):0;
+     cost=`<div class="srv-cost"><b>$${fmt(b.cost,2)}</b><span>of $${fmt(b.budget,2)} this month</span></div>
+       <div class="srv-bar ${pct>=100?'stop':pct>=50?'warn':''}"><u style="width:${pct.toFixed(1)}%"></u></div>
+       <small style="display:block;margin-top:6px;font-size:11.5px;color:#8a92a6;font-weight:700">Reported ${esc(srvAgo(b.at))}${b.stopped?' · Billing was switched off at the limit':''}</small>`;
+   }
+ }
+ const health=st&&!st.error?`<div class="srv-grid"><span>Answers<b>${fmt(st.served)}</b></span><span>Errors<b>${fmt(st.errors)}</b></span><span>Running since<b>${esc(srvAgo(st.startedAt))}</b></span><span>Version<b>${esc(st.version||'')}</b></span></div>
+   ${st.lastError?`<small style="display:block;margin-top:6px;font-size:11.5px;color:#c2382f;font-weight:700">Last error (${esc(srvAgo(st.lastErrorAt))}): ${esc(st.lastError)}</small>`:''}`:'';
+ const names={getDashboardData:'Dashboard',getMonthCompareData:'Month history'};
+ let parity='';
+ if(SRV_ADMIN.busy==='parity')parity='<div class="srv-res"><div>Comparing… this reads every tab twice, so it can take up to a minute.</div></div>';
+ else if(pr&&pr.error)parity=`<div class="srv-res"><div class="no">${esc(pr.error)}</div></div>`;
+ else if(pr)parity=`<div class="srv-res">${Object.keys(pr.results||{}).map(k=>{
+   const r=pr.results[k], t=`Firebase ${r.firebaseMs!=null?(r.firebaseMs/1000).toFixed(1)+' s':'—'} · Apps Script ${r.appsScriptMs!=null?(r.appsScriptMs/1000).toFixed(1)+' s':'—'}`;
+   if(r.firebaseError||r.appsScriptError)return `<div class="no">✖ ${names[k]||k}: ${esc(r.firebaseError?'Firebase — '+r.firebaseError:'Apps Script — '+r.appsScriptError)}</div>`;
+   return r.same?`<div class="ok">✅ ${names[k]||k}: the same numbers<code>${t}</code></div>`
+     :`<div class="no">⚠️ ${names[k]||k}: ${r.differences.length}${r.differences.length>=40?'+':''} differences<code>${r.differences.slice(0,8).map(d=>`${esc(d.path)}: ${esc(JSON.stringify(d.firebase))} vs ${esc(JSON.stringify(d.appsScript))}`).join('<br>')}</code></div>`;
+ }).join('')}</div>`;
+ let log='<small>Loading…</small>';
+ if(ev&&ev.error)log=`<small>${esc(ev.error)}</small>`;
+ else if(ev)log=ev.length?`<div class="srv-log">${ev.slice(0,12).map(e=>`<div><span>${/Backup/.test(e.server)?'🟠':'🟢'}</span><span>${esc(/Backup/.test(e.server)?'Moved to the backup':'Back on Firebase')}${e.reason?` — ${esc(e.reason)}`:''}<small>${esc(srvAgo(e.at))} · ${esc(e.name||e.email)}</small></span></div>`).join('')}</div>`
+   :'<small>No switches yet. Each time a device moves to the backup or back, it shows here, and you get an email.</small>';
+ return `<b class="ad-h">🖥️ Server</b><small class="ad-sub">The data comes from Firebase. If Firebase stops, SEKNA moves to Apps Script by itself.</small>
+  <div class="srv-now ${n.cls}"><i>${n.icon}</i><span><b>${esc(n.title)}</b><small>${esc(n.text)}</small></span></div>
+  ${n.cls==='backup'?'<button type="button" class="srv-btn" onclick="srvRetry()">Try Firebase again</button>':''}
+  <div class="srv-box"><b>This month's cost</b><small>Limit $3 · at the limit Firebase stops and SEKNA keeps working on Apps Script.</small>${cost}</div>
+  <div class="srv-box"><b>Firebase server</b><small>Europe (London)</small>${health}</div>
+  <div class="srv-box"><b>Same numbers?</b><small>Reads ${esc(CURRENT_ACCOUNT.toUpperCase())} on both servers and compares every figure.</small>
+    <button type="button" class="srv-btn soft" onclick="srvParity()" ${SRV_ADMIN.busy||!fb?'disabled':''}>Compare with Apps Script</button>${parity}</div>
+  ${fb?`<div class="srv-box"><b>This device</b><small>For testing: which server this phone or computer uses.</small><div class="act-seg">${seg('auto','Automatic')}${seg('firebase','Firebase')}${seg('appsscript','Apps Script')}</div></div>`:''}
+  <div class="srv-box"><b>Switch log</b><small>From every device in the team.</small>${log}</div>`;
+}
+window.addEventListener('sekna-server',()=>{if(ADMIN_TAB==='server'&&ADMIN_LAST)renderAdmin(ADMIN_LAST)});
 function hoursText(sec){sec=Math.round(sec||0);const h=Math.floor(sec/3600),m=Math.round(sec%3600/60);return h?`${h}h ${m}m`:`${m}m`}
 function adminActivityHtml(){
  const a=ADMIN_ACTIVITY, head='<b class="ad-h">📊 Activity</b>';

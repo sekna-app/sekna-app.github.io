@@ -1,0 +1,51 @@
+name: Deploy SEKNA server
+
+# Publishes the Firebase functions in functions/ (the SEKNA server and the monthly
+# limit guard) when they change. The web page has its own workflow.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'functions/**'
+      - '.github/workflows/deploy-functions.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-functions
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install
+        working-directory: functions
+        run: npm ci
+
+      - name: Deploy functions
+        shell: bash
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            echo "::error::The FIREBASE_SERVICE_ACCOUNT secret is not set."
+            exit 1
+          fi
+          # The key only lives in a temporary file for this step and is never printed.
+          printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/deploy-key.json"
+          export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/deploy-key.json"
+          # --force also sets the clean-up policy that deletes old builds (stays in the free storage).
+          npx --yes firebase-tools@14.27.0 deploy --only functions --project human-appeal-media-plan --non-interactive --force
+
+      - name: Remove key file
+        if: always()
+        run: rm -f "$RUNNER_TEMP/deploy-key.json"
