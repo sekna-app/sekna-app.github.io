@@ -3091,6 +3091,12 @@ window.addEventListener('load',function(){
     .mp-url{position:relative;margin-top:10px;font-size:20px;color:#8ea2dd;font-weight:700}
 
 
+    .py-sum{display:none;gap:10px;margin-top:12px}
+    .py-sum div{background:#fff;border-radius:16px;padding:12px 14px;box-shadow:0 6px 18px rgba(30,45,90,.06)}
+    .py-sum small{display:block;font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8b92a0}
+    .py-sum b{display:block;font-size:20px;font-weight:900;color:#1d2433;margin:2px 0}.py-sum b.up{color:#13804f}.py-sum b.dn{color:#c2382f}
+    .py-sum span{font-size:12.5px;color:#6b7385;font-weight:700}
+    body.dark-mode .py-sum div{background:#151a22}body.dark-mode .py-sum b{color:#fff}body.dark-mode .py-sum b.up{color:#39e29a}body.dark-mode .py-sum b.dn{color:#ff8f9a}
     /* v88 — desktop: the phone design, laid out side by side instead of one long column */
     @media (min-width:1100px){
       .wrap{max-width:1320px}
@@ -3102,6 +3108,15 @@ window.addEventListener('load',function(){
       #app .rx-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
       #app .phx-list{grid-template-columns:repeat(2,minmax(0,1fr))}
       #app .mr3-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+      #app .ph2-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-content:center}
+      #app .ph2-list div{flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;border:0;padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.1)}
+      #app .ph2-list b{font-size:24px}
+      #app .mx-top{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:28px;align-items:center}
+      #app .mx-top>#mxChart:empty{display:none}
+      #pastYearsOverlay .sk-modal-head{padding-left:max(16px,calc((100% - 1240px)/2 + 16px))!important;padding-right:max(16px,calc((100% - 1240px)/2 + 16px))!important}
+      #pastYearsOverlay .py-body{max-width:1240px!important;margin:0 auto;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:22px;align-items:start}
+      #pastYearsOverlay .py-side{position:sticky;top:90px}
+      #pastYearsOverlay .py-sum{display:grid}
       #app .mx-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}#app .mx-split>div>.mx-sub:first-child{margin-top:12px}
     }
     @media (min-width:1500px){
@@ -3781,6 +3796,7 @@ window.addEventListener('load',function(){
           <div class="section-sub" id="mxSub">From the History tab</div>
         </div>
       </div>
+      <div class="mx-top"><div class="mx-ctl">
       <div class="wx-tabs mx-mode" role="tablist">
         <button class="wx-tab" type="button" id="mxOneBtn" onclick="setMonthMode('one')">One month</button>
         <button class="wx-tab on" type="button" id="mxCmpBtn" onclick="setMonthMode('compare')">Compare</button>
@@ -3796,6 +3812,7 @@ window.addEventListener('load',function(){
         <button class="wx-tab on" type="button" id="mxTotalBtn" onclick="setMonthBasis('total')">Month total</button>
         <button class="wx-tab" type="button" id="mxAvgBtn" onclick="setMonthBasis('avg')">Per day</button>
       </div>
+      </div><div id="mxChart"></div></div>
       <div id="mxBody"></div>
     </section>
   </div>
@@ -5170,7 +5187,8 @@ function reportRows(S,U,avg){
 
 function renderMonthCompare(){
  const d=DASH_DATA; if(!d)return;
- const hist=d.history||[], body=document.getElementById('mxBody');
+ const hist=d.history||[], body=document.getElementById('mxBody'), chartEl=document.getElementById('mxChart');
+ if(chartEl)chartEl.innerHTML='';
  const one=MONTH_MODE==='one';
  document.getElementById('mxPick').classList.toggle('one',one);
  const aKey=document.getElementById('mxA').value, bKey=document.getElementById('mxB').value;
@@ -5191,7 +5209,8 @@ function renderMonthCompare(){
    const U=periodBaseline(sel,hist,ex,d,S.days);
    const selMonths=sel.kind==='days'?[...new Set(sel.days.map(k=>k.slice(0,7)))]:sel.months;
    const note=S.partial&&!avg?`<div class="mx-note">This includes a month that is still running (${S.days} days) — <b>Per day</b> gives a fair view.</div>`:'';
-   body.innerHTML=monthChart(hist,ex,d,selMonths,[],avg)+note+reportBody(S,U,avg);
+   if(chartEl)chartEl.innerHTML=monthChart(hist,ex,d,selMonths,[],avg);
+   body.innerHTML=note+reportBody(S,U,avg);
    return;
  }
  const ha=hist.find(h=>h.month===aKey), hb=hist.find(h=>h.month===bKey);
@@ -5210,7 +5229,8 @@ function renderMonthCompare(){
  }).filter(Boolean);
  const partial=[A,B].find(s=>s.partial);
  const note=partial&&!avg?`<div class="mx-note">${esc(monthName(partial.key,true))} is still running (${partial.days} days) — switch to <b>Per day</b> for a fair comparison.</div>`:'';
- body.innerHTML=monthChart(hist,ex,d,[aKey],[bKey],avg)+mxVerdict(rows,aKey,bKey)+note+compareBody(rows,A,B,avg,aKey,bKey);
+ if(chartEl)chartEl.innerHTML=monthChart(hist,ex,d,[aKey],[bKey],avg);
+ body.innerHTML=mxVerdict(rows,aKey,bKey)+note+compareBody(rows,A,B,avg,aKey,bKey);
 
 }
  
@@ -7126,6 +7146,17 @@ function closePastYears(event){
 }
 
 function pyPick(dk){PY_PICK=PY_PICK===dk?'':dk;renderPastYears()}
+
+function pySummary(ys,win,yr){
+ const now=ys[0], prev=ys[1], past=ys.slice(1), avg=past.reduce((a,y)=>a+y.s.value,0)/past.length;
+ const ch=prev&&prev.s.value?now.s.value/prev.s.value-1:null, va=avg?now.s.value/avg-1:null;
+ const pct=v=>v==null?'—':`${v>=0?'▲':'▼'} ${Math.abs(v*100).toFixed(1)}%`;
+ return `<div class="py-sum">
+  <div><small>Best year</small><b>${esc(yr(win))}</b><span>${money(win.s.value)} · ${fmt(win.s.roas,2)}x ROAS</span></div>
+  <div><small>${esc(yr(now))} vs ${esc(yr(prev))}</small><b class="${ch>=0?'up':'dn'}">${pct(ch)}</b><span>${money(now.s.value)} against ${money(prev.s.value)}</span></div>
+  <div><small>Average of past years</small><b>${money(avg)}</b><span>${esc(yr(now))} is ${pct(va)} on that</span></div>
+ </div>`;
+}
 function renderPastYears(){
  const body=document.getElementById('pyBody'); if(!body)return;
  const x=(DASH_DATA||{}).latest||{};
@@ -7160,10 +7191,11 @@ function renderPastYears(){
      ${open?`<div class="py-more"><div class="py-day">${esc(day(y.dk))}</div><div class="py-q">${[['Clicks',fmt(a.clicks,0)],['CTR',percent(a.ctr)],['CPA',money(a.cpa,2)],['CVR',percent(a.cvr)]].map(([l,v])=>`<span>${l} <b>${v}</b></span>`).join('')}</div>${typeBlock}</div>`:''}
    </div>`;
  }).join('');
- body.innerHTML=`<div class="py-hero"><small>${esc(String(x.hijriDate||'').toUpperCase())} · CONV. VALUE BY YEAR</small>${chart}</div>
+ body.innerHTML=`<div class="py-side"><div class="py-hero"><small>${esc(String(x.hijriDate||'').toUpperCase())} · CONV. VALUE BY YEAR</small>${chart}</div>
    <div class="py-note">Each year is the same Hijri date, from the daily data that starts in ${esc(shortDate(Object.keys((MONTH_EXTRA[CURRENT_ACCOUNT]||{}).days||{}).sort()[0]||''))}. Changes compare with the year before.</div>
-   <div class="py-list">${cards}</div>
-   <div class="py-hint">Tap a year to open or close it.</div>`;
+   ${pySummary(ys,win,yr)}</div>
+   <div class="py-col"><div class="py-list">${cards}</div>
+   <div class="py-hint">Tap a year to open or close it.</div></div>`;
 }
 
 function captureDailyReport(){return captureReport(shareReportHtml(),'')}
