@@ -210,7 +210,7 @@ async function buildDashboardData(accountKey) {
   for (let i = 0; i < rows.length; i++) {
     if (rows[i][15] && toNumber_(rows[i][19]) > 0) lastIdx = i;
   }
-  if (lastIdx < 0) throw new Error('No actual day with Spend > 0 was found in Media Plan.');
+  if (lastIdx < 0) throw new Error(account.shortLabel + ': no actual day with Spend > 0 was found in Media Plan.');
 
   const r = rows[lastIdx];
   const actualDate = asDate_(r[15]);
