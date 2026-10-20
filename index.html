@@ -2005,6 +2005,23 @@ window.addEventListener('load',function(){
     .mw-btn:disabled{opacity:.7}
     .mw-hint{margin-top:12px;font-size:11.5px;font-weight:700;color:#8f9fd0}
     @media(prefers-reduced-motion:reduce){.mw-fill,.mw-hot{width:8.7%;animation:none}.mw-bead,.mw-spk{display:none}}
+    /* v92 — no internet: the logo goes dim, a soft light sweeps across it, the gold bar flickers */
+    .sk-gate.sk-off{z-index:230;justify-content:center!important;align-items:center}
+    .of-word .mw-logo{opacity:.35}
+    .of-scan{position:absolute;top:-10%;bottom:-10%;width:22%;background:linear-gradient(90deg,transparent,rgba(201,211,245,.5) 50%,transparent);filter:blur(4px);mix-blend-mode:screen;animation:ofScan 2.6s ease-in-out infinite}
+    @keyframes ofScan{0%{left:-25%}100%{left:105%}}
+    .of-bar{position:absolute;left:24.7%;top:43%;width:8.7%;height:15.4%;border-radius:3px;background:linear-gradient(180deg,#f3d79f,#c28d3e);animation:ofBulb 2.2s steps(1) infinite}
+    @keyframes ofBulb{0%,8%,20%,26%,60%,64%{opacity:1;box-shadow:0 0 16px rgba(226,184,116,.8)}9%,19%,27%,59%,65%,100%{opacity:.15;box-shadow:none}}
+    .of-rip{position:absolute;left:29%;top:50%;width:14px;height:14px;margin:-7px;border-radius:50%;border:2px solid rgba(226,184,116,.6);animation:ofRip 2.2s ease-out infinite}
+    .of-rip+.of-rip{animation-delay:.7s}
+    @keyframes ofRip{0%{transform:scale(1);opacity:1}100%{transform:scale(9);opacity:0}}
+    .of .of-kick{margin-top:56px;color:#ff8f9a}
+    .of-status{display:inline-flex;align-items:center;gap:8px;margin-top:14px;padding:8px 14px;border-radius:999px;background:rgba(255,143,154,.12);border:1px solid rgba(255,143,154,.3);color:#ffb3ba;font-size:12px;font-weight:800}
+    .of-status i{width:8px;height:8px;border-radius:50%;background:#ff8f9a;animation:skBlink 1.2s infinite}
+    .of-ghost{display:block;width:100%;margin-top:10px;border:1px solid rgba(255,255,255,.2);border-radius:15px;padding:13px;background:rgba(255,255,255,.08);color:#fff;font:inherit;font-size:13.5px;font-weight:800;cursor:pointer}
+    .of-ghost[hidden]{display:none}
+    .of .mw-btn.shake{animation:skShake .45s ease}
+    @media(prefers-reduced-motion:reduce){.of-scan,.of-rip{display:none}.of-bar{animation:none;opacity:.6}}
 
     .app-modal.sk-admin{width:min(720px,96vw);max-height:90vh}
     .sk-head-actions{display:flex;gap:8px}
@@ -3718,6 +3735,19 @@ window.addEventListener('load',function(){
   </main>
 </div>
 
+<div class="sk-gate sk-off" id="offlineScreen" data-share-ui hidden>
+  <div class="sk-gate-bg" aria-hidden="true"><span class="sk-orb sk-orb--a"></span><span class="sk-orb sk-orb--b"></span><span class="sk-orb sk-orb--c"></span></div>
+  <main class="mw of" role="alertdialog" aria-modal="true" aria-labelledby="offTitle">
+    <div class="mw-word of-word" aria-hidden="true"><img class="mw-logo" id="offLogo" alt=""><i class="of-scan"></i><i class="of-rip"></i><i class="of-rip"></i><i class="of-bar"></i></div>
+    <span class="mw-kick of-kick">NO INTERNET</span>
+    <h2 class="sk-maint-title" id="offTitle">Connection lost</h2>
+    <p class="sk-maint-note">We'll keep trying in the background. SEKNA updates the moment you're back online.</p>
+    <span class="of-status" id="offStatus"><i></i><span>Searching for a connection</span></span>
+    <button class="mw-btn" id="offRetry" type="button" onclick="offlineRetry()">Try again</button>
+    <button class="of-ghost" id="offKeep" type="button" onclick="offlineHide()" hidden>Keep reading what's on screen</button>
+  </main>
+</div>
+
 <div class="sk-push-offer" id="pushOffer" data-share-ui hidden role="dialog" aria-labelledby="pushOfferTitle">
   <span class="sk-push-offer-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span>
   <div class="sk-push-offer-text"><b id="pushOfferTitle">Get SEKNA notifications</b><span>New data, team messages and updates on this device.</span></div>
@@ -4533,6 +4563,7 @@ function loadData(options){
    .withFailureHandler(err=>{
      if(slowTimer)clearTimeout(slowTimer);
      if(handleAccessError(err))return;
+     if(navigator.onLine===false){document.getElementById('app').classList.remove('loading');offlineShow();return}
      if(accountAtRequest===CURRENT_ACCOUNT&&!silent)showError(err);
    })
    .getDashboardData(accountAtRequest,force,getAccessToken());
@@ -6711,6 +6742,35 @@ function tourEnd(){
  
  const w=document.getElementById('gateLogoW');if(w)w.src=SEKNA_WHITE_LOGO;
 })();
+
+
+ 
+function offlineShow(){
+ const el=document.getElementById('offlineScreen');if(!el||!el.hidden)return;
+ const logo=document.getElementById('offLogo');if(logo&&!logo.src)logo.src=SEKNA_WHITE_LOGO;
+ const keep=document.getElementById('offKeep');if(keep)keep.hidden=!DASH_DATA;
+ offlineStatus('Searching for a connection');
+ el.hidden=false;
+}
+function offlineHide(){const el=document.getElementById('offlineScreen');if(el)el.hidden=true}
+function offlineStatus(t){const s=document.querySelector('#offStatus span');if(s)s.textContent=t}
+function offlineRetry(){
+ if(navigator.onLine===false){
+   offlineStatus('Still offline · trying again');
+   const b=document.getElementById('offRetry');if(b){b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake')}
+   return;
+ }
+ offlineBack();
+}
+
+function offlineBack(){
+ const el=document.getElementById('offlineScreen');if(!el||el.hidden)return;
+ offlineHide();
+ if(DASHBOARD_STARTED)loadData({force:true,silent:!!DASH_DATA});
+}
+window.addEventListener('offline',offlineShow);
+window.addEventListener('online',offlineBack);
+if(navigator.onLine===false)setTimeout(offlineShow,0);
 
 
 const ASK_ICONS={
