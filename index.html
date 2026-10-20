@@ -1975,6 +1975,36 @@ window.addEventListener('load',function(){
     .tour-next{border:0;border-radius:16px;padding:15px 24px;font:inherit;font-size:14px;font-weight:900;background:linear-gradient(90deg,#e2b874,#f3d79f);color:#0f1f52;cursor:pointer;white-space:nowrap;transition:all .4s}
     .tour-next.go{flex:1}
     @media(prefers-reduced-motion:reduce){.tour-logo,.tour-bar,.tour-bar i{transition:none}.gc b,.gc i{display:none}}
+    /* v92 — maintenance: a weld point runs along the empty gold bar of the "E" and leaves gold behind */
+    .sk-gate.sk-maint{justify-content:center!important;align-items:center}
+    .mw{position:relative;width:min(380px,100%);margin:auto 0;padding:0 6px;text-align:center;color:#fff;animation:skCardIn .7s cubic-bezier(.2,.75,.25,1) both}
+    .mw-word{position:relative;width:min(270px,78vw);margin:0 auto}
+    .mw-logo{width:100%;display:block}
+    .mw-slot,.mw-fill,.mw-hot{position:absolute;left:24.7%;top:43%;height:15.4%;border-radius:3px}
+    .mw-slot{width:8.7%;background:#13245c}
+    .mw-fill,.mw-hot{width:0;animation:mwSeam 3.6s ease-in-out infinite}
+    .mw-fill{background:linear-gradient(180deg,#f3d79f,#c28d3e)}
+    .mw-hot{background:linear-gradient(90deg,rgba(255,160,60,0),#ff9f43);mix-blend-mode:screen;opacity:.9}
+    @keyframes mwSeam{0%{width:0}75%,100%{width:8.7%}}
+    .mw-bead,.mw-spk{position:absolute;left:24.7%;top:50.7%;animation:mwRide 3.6s ease-in-out infinite}
+    .mw-bead{width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:radial-gradient(circle,#fff 20%,#ffd27a 45%,rgba(255,160,60,0) 72%)}
+    @keyframes mwRide{0%{left:24.7%;opacity:1}75%{left:33.4%;opacity:1}80%,100%{left:33.4%;opacity:0}}
+    .mw-spk i{position:absolute;width:3px;height:3px;border-radius:50%;background:#ffd27a;box-shadow:0 0 6px #ffb347;opacity:0;animation:mwFall .8s ease-out infinite}
+    @keyframes mwFall{0%{opacity:0;transform:translate(0,0)}8%{opacity:1}100%{opacity:0;transform:translate(var(--x),var(--y))}}
+    .mw-pct{margin-top:26px;font-size:12px;font-weight:900;letter-spacing:.14em;color:#f3d79f}
+    .mw-track{width:170px;height:5px;margin:10px auto 0;border-radius:9px;background:rgba(255,255,255,.12);overflow:hidden}
+    .mw-track u{display:block;height:100%;width:0;border-radius:9px;background:linear-gradient(90deg,#e2b874,#f3d79f);animation:mwTrack 3.6s ease-in-out infinite}
+    @keyframes mwTrack{0%{width:0}75%,100%{width:100%}}
+    .mw-kick{display:block;margin-top:44px;font-size:11px;font-weight:900;letter-spacing:.14em;color:#e2b874}
+    .mw .sk-maint-title{margin:8px 0 0;font-size:26px;font-weight:900;letter-spacing:-.02em;color:#fff}
+    .mw .sk-maint-note{margin:10px auto 0;max-width:290px;font-size:13.5px;line-height:1.55;font-weight:600;color:#c9d3f5}
+    .mw .sk-maint-reason{display:inline-block;margin:14px 0 0;padding:9px 14px;border-radius:14px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);font-size:12.5px;font-weight:700;color:#f3d79f}
+    .mw .sk-maint-reason[hidden]{display:none}
+    .mw-btn{position:relative;overflow:hidden;display:block;width:100%;margin:20px 0 0;border:0;border-radius:15px;padding:15px;font:inherit;font-size:14.5px;font-weight:900;cursor:pointer;background:linear-gradient(90deg,#e2b874,#f3d79f);color:#0f1f52;box-shadow:0 10px 26px rgba(226,184,116,.25)}
+    .mw-btn::before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);transform:translateX(-100%);animation:skShine 3.4s 1s ease-in-out infinite}
+    .mw-btn:disabled{opacity:.7}
+    .mw-hint{margin-top:12px;font-size:11.5px;font-weight:700;color:#8f9fd0}
+    @media(prefers-reduced-motion:reduce){.mw-fill,.mw-hot{width:8.7%;animation:none}.mw-bead,.mw-spk{display:none}}
 
     .app-modal.sk-admin{width:min(720px,96vw);max-height:90vh}
     .sk-head-actions{display:flex;gap:8px}
@@ -3632,7 +3662,7 @@ window.addEventListener('load',function(){
     <button type="button" class="ab3-idea ab3-tour" onclick="closeAbout();tourStart()"><span class="ab3-bulb">✨</span><span class="ab3-it"><b>Take the tour</b><small>A one-minute look at what SEKNA can do.</small></span><span class="ab3-go">›</span></button>
     <button type="button" class="ab3-idea ab3-idea2" onclick="openIdeas()"><span class="ab3-bulb">💡</span><span class="ab3-it"><b>Have an idea for SEKNA?</b><small>Tell us what would make your day easier. Every idea is read.</small></span><span class="ab3-go">›</span></button>
     <div class="ab3-credit">Designed &amp; developed by <b>Ibrahim Amin</b></div>
-    <div class="sk-version ab3-ver">SEKNA Dashboard • v91</div>
+    <div class="sk-version ab3-ver">SEKNA Dashboard • v92</div>
   </section>
 </div>
 
@@ -3676,13 +3706,15 @@ window.addEventListener('load',function(){
 
 <div class="sk-gate sk-maint" id="maintScreen" data-share-ui hidden>
   <div class="sk-gate-bg" aria-hidden="true"><span class="sk-orb sk-orb--a"></span><span class="sk-orb sk-orb--b"></span><span class="sk-orb sk-orb--c"></span></div>
-  <main class="sk-gate-card" role="dialog" aria-modal="true" aria-labelledby="maintTitle">
-    <img class="sk-gate-logo" id="maintLogo" alt="SEKNA">
-    <div class="sk-gate-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"/></svg></div>
-    <h2 class="sk-maint-title" id="maintTitle">SEKNA is being updated</h2>
+  <main class="mw" role="dialog" aria-modal="true" aria-labelledby="maintTitle">
+    <div class="mw-word" aria-hidden="true"><img class="mw-logo" id="maintLogo" alt=""><i class="mw-slot"></i><i class="mw-fill"></i><i class="mw-hot"></i><i class="mw-bead"></i><span class="mw-spk"><i style="--x:5px;--y:37px;animation-delay:0.21s"></i><i style="--x:-13px;--y:14px;animation-delay:0.27s"></i><i style="--x:5px;--y:19px;animation-delay:0.27s"></i><i style="--x:15px;--y:16px;animation-delay:0.58s"></i><i style="--x:-14px;--y:42px;animation-delay:0.76s"></i><i style="--x:3px;--y:24px;animation-delay:0.13s"></i><i style="--x:-21px;--y:21px;animation-delay:0.11s"></i><i style="--x:13px;--y:18px;animation-delay:0.62s"></i><i style="--x:0px;--y:20px;animation-delay:0.74s"></i><i style="--x:-11px;--y:28px;animation-delay:0.58s"></i></span></div>
+    <div class="mw-pct" aria-hidden="true">UPDATING</div><div class="mw-track" aria-hidden="true"><u></u></div>
+    <span class="mw-kick">SCHEDULED MAINTENANCE</span>
+    <h2 class="sk-maint-title" id="maintTitle">Update in progress</h2>
+    <p class="sk-maint-note">We're improving SEKNA. It will open again by itself in a few minutes.</p>
     <p class="sk-maint-reason" id="maintReason" hidden></p>
-    <p class="sk-maint-note">We'll be back shortly. This page checks again automatically.</p>
-    <button class="sk-primary-btn sk-maint-btn" id="maintRetry" type="button" onclick="checkMaintenance(true)">Check again</button>
+    <button class="sk-maint-btn mw-btn" id="maintRetry" type="button" onclick="checkMaintenance(true)">Check again</button>
+    <div class="mw-hint">Checks every minute</div>
   </main>
 </div>
 
@@ -6923,7 +6955,7 @@ function applyAppState(app,isAdmin){
 function showMaintenance(reason){
  const el=document.getElementById('maintScreen');if(!el)return;
  const logo=document.getElementById('maintLogo'),src=document.querySelector('.sk-gate-logo')?.src;
- if(logo&&src&&!logo.src)logo.src=src;
+ if(logo&&!logo.src)logo.src=SEKNA_WHITE_LOGO;
  if(reason!==undefined){const r=document.getElementById('maintReason');if(r){r.textContent=reason||'';r.hidden=!reason}}
  if(el.hidden){
    closeSidebar();closeSettings();closeAbout();closeAdmin();closeAnnouncement();
@@ -7604,7 +7636,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v91',date:'2026-10-22'};
+const DASHBOARD_RELEASE_CLIENT={version:'v92',date:'2026-10-22'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
