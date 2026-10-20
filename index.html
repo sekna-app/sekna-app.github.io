@@ -3840,6 +3840,28 @@ window.addEventListener('load',function(){
     @keyframes sceneInRight{from{opacity:0;transform:translateX(34px)}to{opacity:1;transform:none}}
     @keyframes sceneInLeft{from{opacity:0;transform:translateX(-34px)}to{opacity:1;transform:none}}
     @media(prefers-reduced-motion:reduce){.pg-title.pg-in,.pg-title.pg-in span,.motion-scene-in,.motion-scene-in-left{animation:none!important}}
+
+    /* v111 */
+    .sk-drawer .sk-account-current .sk-client-logo{width:30px;height:30px;flex-basis:30px;border-radius:9px}
+    .sk-drawer .sk-client-logo img{object-fit:contain;transform:none;padding:2px}
+    .sync{display:none!important}
+    .hero{margin-bottom:8px!important}
+    body:not(.no-hero) .pg-title{margin-bottom:2px!important}
+    .st-me{margin-left:auto;display:flex;align-items:center;gap:8px;order:-1}
+    .st-me .st-av{width:34px;height:34px;font-size:12px}
+    .st-me .st-ut{display:flex;align-items:center;gap:6px}.st-me .st-ut b{font-size:13px;color:#fff}
+    .st-me .st-role{font-size:9.5px;padding:3px 8px}
+    #adminOverlay .sk-admin-body{padding-top:0!important}
+    .a3-tabs{position:sticky!important;z-index:4;margin:0 -14px 12px!important;padding:6px 14px 12px!important}
+    .sbx-bar i.wb,body.dark-mode .sbx-bar i.wb{background:#e0566a!important}
+    .sbx-who.b{background:#fde8eb!important;color:#c43c50!important}body.dark-mode .sbx-who.b{background:#3a1a20!important;color:#ff8f9a!important}
+    .lyx-sum.anim .lyx-arc{animation:lyxArc 1.1s .15s cubic-bezier(.2,.8,.2,1) both}
+    @keyframes lyxArc{from{stroke-dasharray:0 999}to{stroke-dasharray:var(--d) 999}}
+    .lyx-sum.anim .lyx-cal i{animation:lyxPop .38s calc(var(--i)*35ms + .2s) cubic-bezier(.3,1.5,.5,1) both}
+    @keyframes lyxPop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+    .lyx-sum.anim .lyx-run{stroke-dasharray:1;animation:lyxRun 1.4s .4s ease-out both}
+    @keyframes lyxRun{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+    .lyx-sum.anim .lyx-ring b{animation:pgIn .5s .3s both}
 </style>
 </head>
 <body>
@@ -3980,8 +4002,7 @@ window.addEventListener('load',function(){
 
 <div class="app-modal-overlay sk-page" id="settingsOverlay" onclick="closeSettings(event)" data-share-ui>
   <section class="app-modal sk-modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" onclick="event.stopPropagation()">
-    <div class="sk-modal-head st-head"><div><div class="sk-kicker">SEKNA</div><h2 id="settingsTitle">Settings</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeSettings()" aria-label="Close settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
-    <div class="st-hero"><div class="st-user"><span class="st-av" id="stAv">S</span><span class="st-ut"><b id="stName">SEKNA</b><small id="stEmail">Signed in</small></span><span class="st-role" id="stRole" hidden>ADMIN</span></div></div>
+    <div class="sk-modal-head st-head"><div class="st-me"><span class="st-av" id="stAv">S</span><span class="st-ut"><b id="stName">SEKNA</b><span class="st-role" id="stRole" hidden>ADMIN</span></span></div><div><div class="sk-kicker">SEKNA</div><h2 id="settingsTitle">Settings</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeSettings()" aria-label="Close settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
 
     <div class="sk-group-title">Appearance</div>
     <div class="sk-card">
@@ -4456,7 +4477,7 @@ window.addEventListener('load',function(){
       </div>
       <div class="mx-presets" id="mxPresets"></div>
       <div class="mx-types" id="mxTypes"></div>
-      <label class="mx-pd"><span><b>Per day averages</b><small>Off = month totals</small></span><span class="switch"><input id="mxAvgToggle" type="checkbox" onchange="setMonthBasis(this.checked?'avg':'total')"><span></span></span></label>
+      <label class="mx-pd"><span><b>Per day averages</b></span><span class="switch"><input id="mxAvgToggle" type="checkbox" onchange="setMonthBasis(this.checked?'avg':'total')"><span></span></span></label>
       </div><div id="mxChart"></div></div>
       <div id="mxBody"></div>
     </section>
@@ -4650,7 +4671,7 @@ function openSettings(){
 
 function settingsUser(){
  const nm=(document.getElementById('profileName')||{}).textContent||'SEKNA', em=(document.getElementById('profileEmail')||{}).textContent||'';
- text('stName',nm);text('stEmail',em);text('stAv',(nm.trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2)||'S').toUpperCase());
+ text('stName',nm.split(' ')[0]);text('stAv',(nm.trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2)||'S').toUpperCase());
  const r=document.getElementById('stRole');if(r)r.hidden=!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin);
  const app=appVersion();text('stVer','SEKNA Dashboard '+DASHBOARD_RELEASE_CLIENT.version+(app?' · App '+app:''));
 }
@@ -5494,6 +5515,7 @@ function renderExtraTab(d){
 let DAY_VIEW='plan', DAY_OPEN='';
 function setDayView(v){
  DAY_VIEW=v==='results'||v==='ly'?v:'plan';
+ LYX_ANIM=DAY_VIEW==='ly';
  document.getElementById('dxPlanBtn').classList.toggle('on',DAY_VIEW==='plan');
  document.getElementById('dxResultsBtn').classList.toggle('on',DAY_VIEW==='results');
  document.getElementById('dxLyBtn').classList.toggle('on',DAY_VIEW==='ly');
@@ -5519,7 +5541,7 @@ function dayTotals(days){
  return {p,a,live};
 }
  
-let LYX_SHEETS=[];
+let LYX_SHEETS=[], LYX_ANIM=false;
 function lyxOpen(i){
  let o=document.getElementById('lyxSheet');
  if(!o){o=document.createElement('div');o.id='lyxSheet';o.className='lyx-sheet';o.onclick=e=>{if(e.target===o||e.target.closest('.lyx-x'))lyxClose()};document.body.appendChild(o)}
@@ -5548,14 +5570,15 @@ function lyDays(days){
  if(!D.live)return '<div class="dx-empty">No day has results yet this month.</div>';
  if(!D.has.length)return `<div class="dx-empty">Last year has no daily data for these Hijri days${dailyStartText()}.</div>`;
  const {R,has,wins,TA,TL,dl,best}=D, C=2*Math.PI*28, share=wins/has.length, pts=lyRunPts(has,320,82);
- const cal=R.map(r=>`<i class="${!r.a?'f':!r.l?'n':r.w?'w':'l'}" title="${esc(r.x.hijri||'')}">${r.x.dayNumber}</i>`).join('');
- const sum=`<div class="lyx-sum"><div class="lyx-a"><small>VS THE SAME HIJRI DAYS LAST YEAR</small>
-   <div class="lyx-ring"><svg viewBox="0 0 70 70"><circle cx="35" cy="35" r="28" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="8"/><circle cx="35" cy="35" r="28" fill="none" stroke="#39e29a" stroke-width="8" stroke-linecap="round" stroke-dasharray="${(share*C).toFixed(1)} ${C.toFixed(1)}"/></svg>
+ const cal=R.map((r,i)=>`<i class="${!r.a?'f':!r.l?'n':r.w?'w':'l'}" style="--i:${i}" title="${esc(r.x.hijri||'')}">${r.x.dayNumber}</i>`).join('');
+ const anim=LYX_ANIM&&motionOn();LYX_ANIM=false;
+ const sum=`<div class="lyx-sum${anim?' anim':''}"><div class="lyx-a"><small>VS THE SAME HIJRI DAYS LAST YEAR</small>
+   <div class="lyx-ring"><svg viewBox="0 0 70 70"><circle cx="35" cy="35" r="28" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="8"/><circle class="lyx-arc" cx="35" cy="35" r="28" fill="none" stroke="#39e29a" stroke-width="8" stroke-linecap="round" stroke-dasharray="${(share*C).toFixed(1)} ${C.toFixed(1)}" style="--d:${(share*C).toFixed(1)}px"/></svg>
    <div><b>${wins}/${has.length}</b><p>days beat last year${best?` · best ${esc(shortDate(best.x.date))} <em class="up">+${mpK(best.a.value-best.l.value)}</em>`:''}</p></div></div>
    <div class="lyx-cal">${cal}</div>
    <div class="lyx-key"><span><i class="w"></i>Beat last year</span><span><i class="l"></i>Under</span><span><i class="f"></i>To come</span></div></div>
   <div class="lyx-b"><small>RUNNING TOTAL · VALUE</small>
-   <svg viewBox="0 0 320 82" preserveAspectRatio="none"><polyline points="${pts(1)}" fill="none" stroke="#9fb0dd" stroke-width="2" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/><polyline points="${pts(0)}" fill="none" stroke="#39e29a" stroke-width="3" vector-effect="non-scaling-stroke"/></svg>
+   <svg viewBox="0 0 320 82" preserveAspectRatio="none"><polyline points="${pts(1)}" fill="none" stroke="#9fb0dd" stroke-width="2" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/><polyline class="lyx-run" pathLength="1" points="${pts(0)}" fill="none" stroke="#39e29a" stroke-width="3" vector-effect="non-scaling-stroke"/></svg>
    <div class="lyx-lg"><span><i style="background:#39e29a"></i>This year ${mpK(TA)}</span><span><i style="background:#9fb0dd"></i>Last year ${mpK(TL)}</span><b class="${dl>=0?'up':'dn'}">${lyChip(dl)}</b></div></div></div>`;
  const det=r=>{const a=r.a,l=r.l;
    const rows=[['Value',a.value,l.value,v=>money(v),1],['Spend',a.spend,l.spend,v=>money(v),0],['ROAS',a.spend?a.value/a.spend:null,l.spend?l.value/l.spend:null,v=>v==null?'—':fmt(v,2)+'x',1],
@@ -7665,6 +7688,7 @@ function renderAdmin(d){
  else if(ADMIN_VIEW==='server')body=`<div class="a2-sheet">${adminServerHtml()}</div>`;
  else body=`<div class="a2-acts">${act('app',m.on?'🔴':'🟢',m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message','📣','#e9eefc','Team message',annState)}${act('invite','➕','#fff3dc','Invite','Add someone')}${act('activity','📊','#e3f6ec','Activity','This month')}${act('ideas','💡','#fff3dc','Ideas',Array.isArray(ADMIN_IDEAS)?(ADMIN_IDEAS.filter(i=>i.status==='New').length+' new'):'From the team')}</div>${ADMIN_TAB==='server'?'':sheet}`;
  adminBody(tabs+`<div class="a3-body">${body}</div>`);
+ const hd=document.querySelector('#adminOverlay .sk-modal-head'),tb=document.querySelector('.a3-tabs');if(hd&&tb)tb.style.top=hd.offsetHeight+'px';
 }
 
 const PERSON_ACTIONS={approve:['Pending'],deny:['Pending'],revoke:['Approved'],restore:['Revoked','Denied']};
@@ -8428,7 +8452,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v110',date:'2026-11-01'};
+const DASHBOARD_RELEASE_CLIENT={version:'v111',date:'2026-11-01'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
