@@ -2609,6 +2609,8 @@ window.addEventListener('load',function(){
     .ab3-it{position:relative;flex:1;min-width:0}.ab3-it b{display:block;font-size:15px;font-weight:900}.ab3-it small{display:block;margin-top:2px;font-size:12.5px;color:#d4ddff;font-weight:600;line-height:1.4}
     .ab3-go{position:relative;font-size:24px;color:#e2b874;font-weight:700}
     .ab3-idea:active{transform:scale(.98)}
+    .ab3-tour{background:linear-gradient(135deg,rgba(61,107,255,.28),rgba(255,255,255,.06));border-color:rgba(159,180,255,.45)}
+    .ab3-idea.ab3-idea2{margin-top:10px}
     #ideasOverlay{z-index:60}
 
     @media(prefers-reduced-motion:reduce){.ab3-mc,.ab3-bars i,.ab3-ring .f,.ab3-line path{animation:none!important}.ab3-ring .f{stroke-dashoffset:var(--ab3-off)}.ab3-line path{stroke-dashoffset:0}}
@@ -3627,7 +3629,8 @@ window.addEventListener('load',function(){
     </div>
     <p class="ab3-text">Your central workspace for media planning, campaign monitoring, reporting and smart tools. Built to help our team manage clients, make faster data-driven decisions and create greater impact — together.</p>
     <div class="ab3-pills"><span>Media planning</span><span>Campaign monitoring</span><span>Reporting</span><span>Smart tools</span></div>
-    <button type="button" class="ab3-idea" onclick="openIdeas()"><span class="ab3-bulb">💡</span><span class="ab3-it"><b>Have an idea for SEKNA?</b><small>Tell us what would make your day easier. Every idea is read.</small></span><span class="ab3-go">›</span></button>
+    <button type="button" class="ab3-idea ab3-tour" onclick="closeAbout();tourStart()"><span class="ab3-bulb">✨</span><span class="ab3-it"><b>Take the tour</b><small>A one-minute look at what SEKNA can do.</small></span><span class="ab3-go">›</span></button>
+    <button type="button" class="ab3-idea ab3-idea2" onclick="openIdeas()"><span class="ab3-bulb">💡</span><span class="ab3-it"><b>Have an idea for SEKNA?</b><small>Tell us what would make your day easier. Every idea is read.</small></span><span class="ab3-go">›</span></button>
     <div class="ab3-credit">Designed &amp; developed by <b>Ibrahim Amin</b></div>
     <div class="sk-version ab3-ver">SEKNA Dashboard • v91</div>
   </section>
