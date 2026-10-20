@@ -5494,7 +5494,7 @@ function renderRanks(d){
  body.innerHTML=blocks.map(b=>{
    const worst=RANK_SIDE==='worst';
    const title=(RANK_TITLES[RANK_SIDE]||{})[b.key]||b.title;
-   const head=`<div class="rx-head"><b>${esc(title)}</b>${b.minSpend?`<span class="sx-chip">Spent £${fmt(b.minSpend,0)}+</span>`:''}</div>`;
+   const head=`<div class="rx-head"><b>${esc(title)}</b>${b.rankNote?`<span class="sx-chip">${esc(b.rankNote)}</span>`:''}${b.minSpend?`<span class="sx-chip">Spent £${fmt(b.minSpend,0)}+</span>`:''}</div>`;
    const inner=b.rows.length?rankCardSec(b,worst):`<div class="rx-ok">👌 Nothing ${worst?'needs action':'to show'} here${b.minSpend?` — no item spent £${fmt(b.minSpend,0)} or more`:''}.</div>`;
    return `<section class="rx-sec" id="rx-sec-${b.key}" data-cat="${b.key}">${head}${inner}</section>`;
  }).join('');
