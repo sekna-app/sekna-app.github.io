@@ -3199,10 +3199,13 @@ window.addEventListener('load',function(){
 
     /* v87 — admin: WhatsApp shares */
     .sh-total{display:flex;align-items:baseline;gap:8px;margin:12px 0}.sh-total b{font-size:34px;font-weight:900;color:#203c8e;letter-spacing:-.02em}.sh-total span{font-size:13px;font-weight:800;color:#6b7385}
-    .sh-bars{display:grid;gap:8px}.sh-row{display:grid;grid-template-columns:90px 1fr 34px;gap:8px;align-items:center;font-size:13px;font-weight:800;color:#1d2433}
-    .sh-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sh-row i{height:10px;border-radius:6px;background:#eef0f5;overflow:hidden}.sh-row u{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#25d366,#13804f)}.sh-row b{text-align:right}
+    .sh-bars{display:grid;gap:8px}.sh-row{display:grid;grid-template-columns:90px 1fr minmax(34px,auto);gap:8px;align-items:center;font-size:13px;font-weight:800;color:#1d2433}
+    .sh-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sh-row i{height:10px;border-radius:6px;background:#eef0f5;overflow:hidden}.sh-row u{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#25d366,#13804f)}.sh-row b{text-align:right;white-space:nowrap}
     .sh-reset{margin-top:14px;width:100%;border:1.5px dashed #e0a3a8;background:#fff6f6;color:#c2382f;border-radius:12px;padding:10px;font:inherit;font-size:13px;font-weight:900;cursor:pointer}.sh-reset:disabled{opacity:.5}
     body.dark-mode .sh-reset{background:#2a1a1d;border-color:#6b3a40;color:#ff9aa3}
+    .act-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#f2f4f9;border-radius:14px;padding:4px;margin:12px 0 8px}
+    .act-seg button{border:0;background:none;border-radius:10px;padding:9px 4px;font:inherit;font-size:13px;font-weight:900;color:#6b7385;cursor:pointer}.act-seg button.on{background:#fff;color:#203c8e;box-shadow:0 2px 8px rgba(17,24,43,.08)}
+    body.dark-mode .act-seg{background:#11161e}body.dark-mode .act-seg button.on{background:#1f2632;color:#fff}
     .sh-kinds{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}.sh-kinds span{font-size:12px;font-weight:700;color:#4b5263;background:#f2f4f9;border-radius:999px;padding:5px 10px}.sh-kinds b{color:#1d2433}
     body.dark-mode .sh-row{color:#fff}body.dark-mode .sh-row i{background:#252b35}body.dark-mode .sh-kinds span{background:#1b212b;color:#c3c9d6}body.dark-mode .sh-kinds b,body.dark-mode .sh-total b{color:#fff}
   </style>
@@ -3322,7 +3325,6 @@ window.addEventListener('load',function(){
     <button class="sk-nav-btn active" id="overviewTabBtn" type="button" onclick="switchDashboardTab('overview')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></span><span>Daily Performance</span></button>
     <button class="sk-nav-btn" id="daysTabBtn" type="button" onclick="switchDashboardTab('days')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M8 14h2M12 14h2M16 14h0M8 17h2M12 17h2"/></svg></span><span>Day by Day</span></button>
     <button class="sk-nav-btn" id="channelTabBtn" type="button" onclick="switchDashboardTab('channel')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg></span><span>Channel Delivery</span></button>
-    <button class="sk-nav-btn" id="reportTabBtn" type="button" onclick="switchDashboardTab('report')" hidden><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></svg></span><span>Monthly Report</span></button>
     <button class="sk-nav-btn" id="labTabBtn" type="button" onclick="switchDashboardTab('lab')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-9V3"/><path d="M7.5 15h9"/></svg></span><span>Media Plan Lab</span><span class="sk-nav-lock" id="labNavLock" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span></button>
     <button class="sk-nav-btn" id="plansTabBtn" type="button" onclick="switchDashboardTab('plans')" hidden><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v4H4zM4 11h16v8H4z"/><path d="M9 15h6"/></svg></span><span>Plan History</span></button>
     <button class="sk-nav-btn" id="ranksTabBtn" type="button" onclick="switchDashboardTab('ranks')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 6h3a3 3 0 0 1-3 4M7 6H4a3 3 0 0 0 3 4"/></svg></span><span>Top &amp; Bottom 5</span></button>
@@ -3704,6 +3706,13 @@ window.addEventListener('load',function(){
       <tbody id="channelRows"></tbody>
     </table>
   </section>
+  <section class="card section mrp-card" id="mrSection" hidden>
+    <div class="section-head"><div>
+      <div class="section-title section-title-with-icon"><span class="section-heading-icon month">📄</span><span>Monthly Report</span></div>
+      <div class="section-sub">The month's results as a PDF, emailed to the whole team · only you see this</div>
+    </div></div>
+    <div id="mrBody"></div>
+  </section>
   </div>
 
 
@@ -3734,16 +3743,6 @@ window.addEventListener('load',function(){
       </div>
       <div id="labSave"></div>
       <div id="labBody"></div>
-    </section>
-  </div>
-
-  <div class="tab-panel" id="reportPanel">
-    <section class="card section mrp-card">
-      <div class="section-head"><div>
-        <div class="section-title section-title-with-icon"><span class="section-heading-icon month">📄</span><span>Monthly Report</span></div>
-        <div class="section-sub">The month's results as a PDF, emailed to the whole team · only you see this page</div>
-      </div></div>
-      <div id="mrBody"></div>
     </section>
   </div>
 
@@ -4172,7 +4171,7 @@ function switchAccount(accountKey){
  }
 }
 
-const DASH_TABS=['overview','days','channel','report','lab','plans','ranks','months'];
+const DASH_TABS=['overview','days','channel','lab','plans','ranks','months'];
 function switchDashboardTab(tab){
  const prev=DASH_TABS.indexOf(CURRENT_TAB);
  CURRENT_TAB=DASH_TABS.includes(tab)?tab:'overview';
@@ -4774,7 +4773,7 @@ function renderExtraTab(d){
  else if(CURRENT_TAB==='months')renderMonths(d);
  else if(CURRENT_TAB==='ranks')renderRanks(d);
  else if(CURRENT_TAB==='lab')renderLab();
- else if(CURRENT_TAB==='report')renderMonthlyReport();
+ else if(CURRENT_TAB==='channel')renderMonthlyReport();
  else if(CURRENT_TAB==='plans')renderPlanHistory();
 }
 
@@ -6282,6 +6281,7 @@ function fetchProfile(){
  serverCall('accessStatus',token).then(p=>{
    if(!p||(hasServer()&&p.status!=='Approved'))return;
    ACCESS_PROFILE=p;
+   trackUsageStart();
    if(p.name)storeSet(ACCESS_NAME_KEY,p.name);
    updateProfileUI();
    applyAppState(p.app,p.isAdmin);
@@ -6298,7 +6298,8 @@ function updateProfileUI(){
  if(lock)lock.hidden=!!p.isAdmin;
  const labLock=document.getElementById('labNavLock');
  if(labLock)labLock.hidden=!!p.isAdmin;
- ['reportTabBtn','plansTabBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.hidden=!p.isAdmin});
+ ['mrSection','plansTabBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.hidden=!p.isAdmin});
+ if(p.isAdmin&&CURRENT_TAB==='channel')renderMonthlyReport();
 }
 
 function openWhatsNew(){
@@ -6434,9 +6435,9 @@ function renderAdmin(d){
  const annState=ann?(ann.showFrom&&ann.showFrom>isoDay(0)?'Scheduled':'Showing now'):'None yet';
  const act=(k,ic,bg,t,sub)=>`<button type="button" class="a2-act${ADMIN_TAB===k?' on':''}" onclick="adminTab('${k}')"><span style="background:${bg}">${ic}</span><b>${t}</b><small>${sub}</small></button>`;
  const inviteView=`<div class="a2-sheet"><b class="ad-h">➕ Invite someone</b><small class="ad-sub">They get an email with a link to sign in to SEKNA.</small><form class="ad-invite" style="margin-top:12px" onsubmit="adminInviteSubmit(event)"><input id="adminInviteEmail" type="email" inputmode="email" autocapitalize="off" placeholder="name@company.com" onfocus="setTimeout(()=>this.scrollIntoView({block:'center'}),300)"><button id="adminInviteBtn" type="submit">Send invite</button></form></div>`;
- const sheet=ADMIN_TAB==='invite'?inviteView:ADMIN_TAB==='message'?`<div class="a2-sheet">${adminMessageHtml()}</div>`:ADMIN_TAB==='app'?`<div class="a2-sheet">${adminMaintHtml()}</div>`:ADMIN_TAB==='shares'?`<div class="a2-sheet">${adminSharesHtml()}</div>`:ADMIN_TAB==='ideas'?`<div class="a2-sheet">${adminIdeasHtml()}</div>`:'';
+ const sheet=ADMIN_TAB==='invite'?inviteView:ADMIN_TAB==='message'?`<div class="a2-sheet">${adminMessageHtml()}</div>`:ADMIN_TAB==='app'?`<div class="a2-sheet">${adminMaintHtml()}</div>`:ADMIN_TAB==='activity'?`<div class="a2-sheet">${adminActivityHtml()}</div>`:ADMIN_TAB==='ideas'?`<div class="a2-sheet">${adminIdeasHtml()}</div>`:'';
  adminBody(`<div class="a2-tiles">${tile('t1','👥',users.length,'Users')}${tile('t3','⏳',waiting.length,'Waiting for approval')}${tile('t2','✉️',invited,'Invited')}${tile('t4','⚡',today,'Active today')}</div>
-   <div class="a2-acts">${act('app',m.on?'🔴':'🟢',m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message','📣','#e9eefc','Team message',annState)}${act('invite','➕','#fff3dc','Invite','Add someone')}${act('shares','💬','#e3f6ec','Shares',ADMIN_SHARES&&ADMIN_SHARES.total!=null?ADMIN_SHARES.total+' this month':'WhatsApp')}${act('ideas','💡','#fff3dc','Ideas',Array.isArray(ADMIN_IDEAS)?(ADMIN_IDEAS.filter(i=>i.status==='New').length+' new'):'From the team')}</div>
+   <div class="a2-acts">${act('app',m.on?'🔴':'🟢',m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message','📣','#e9eefc','Team message',annState)}${act('invite','➕','#fff3dc','Invite','Add someone')}${act('activity','📊','#e3f6ec','Activity','This month')}${act('ideas','💡','#fff3dc','Ideas',Array.isArray(ADMIN_IDEAS)?(ADMIN_IDEAS.filter(i=>i.status==='New').length+' new'):'From the team')}</div>
    ${sheet}
    ${waiting.length?`<div class="ad-lbl">Waiting for approval</div><div class="ad-card ad-pend">${waiting.map(person).join('')}</div>`:''}
    <div class="ad-lbl">People · ${team.length}</div><div class="ad-card">${team.map(person).join('')||'<div class="sk-admin-empty">No one has requested access yet.</div>'}</div>`);
@@ -7326,6 +7327,25 @@ function logShareQuiet(kind){
 }
 
  
+const USAGE={on:false,since:0,pending:0,hiddenAt:0};
+function usageSend(kind,sec){if(!hasServer()||!getAccessToken())return;serverCall('logUsage',getAccessToken(),kind,sec||0,CURRENT_ACCOUNT).catch(()=>{})}
+function usageFlush(){
+ if(USAGE.since){USAGE.pending+=(Date.now()-USAGE.since)/1000;USAGE.since=document.hidden?0:Date.now()}
+ const sec=Math.min(3600,Math.round(USAGE.pending));
+ if(sec>=20){USAGE.pending=0;usageSend('time',sec)}
+}
+
+function trackUsageStart(){
+ if(USAGE.on)return;USAGE.on=true;
+ usageSend('open');USAGE.since=document.hidden?0:Date.now();
+ document.addEventListener('visibilitychange',()=>{
+   if(document.hidden){USAGE.hiddenAt=Date.now();usageFlush();USAGE.since=0}
+   else{if(USAGE.hiddenAt&&Date.now()-USAGE.hiddenAt>30*60000)usageSend('open');USAGE.since=Date.now()}
+ });
+ setInterval(()=>{if(!document.hidden)usageFlush()},5*60000);
+}
+
+ 
 const MP_W=1080, MP_H=1527;
 let MR={open:false,pages:null,pdf:null,busy:'',msg:'',people:null,notes:'',sig:''};
 const mpAcc=(a,p)=>p>0?Math.max(0,1-Math.abs(a-p)/p):null;
@@ -7536,13 +7556,15 @@ function mrSend(testOnly){
 }
 function renderMonthlyReport(){
  const body=document.getElementById('mrBody');if(!body)return;
- if(!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)){body.innerHTML='<div class="lab-locked"><span>🔒</span><b>Admins only</b><small>The monthly report is sent by the SEKNA admin.</small></div>';return}
+ const sec=document.getElementById('mrSection');
+ if(!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)){if(sec)sec.hidden=true;return}
+ if(sec)sec.hidden=false;
  if(MR.people===null){MR.people=[];serverCall('adminReportRecipients',getAccessToken()).then(r=>{MR.people=(r&&r.people)||[];drawMonthlyReport()}).catch(()=>{})}
  if(MR.pdf&&MR.sig!==mrSig()){MR.pdf=null;MR.pages=null}
  drawMonthlyReport();
 }
 function drawMonthlyReport(){
- const body=document.getElementById('mrBody');if(!body||CURRENT_TAB!=='report')return;
+ const body=document.getElementById('mrBody');if(!body||CURRENT_TAB!=='channel')return;
  const days=(DASH_DATA&&DASH_DATA.dayPlan)||[];
  const live=days.filter(x=>x.actual).length, label=days[0]?monthName(days[0].date.slice(0,7),true):'This month';
  const ppl=MR.people||[];
@@ -7583,7 +7605,7 @@ function phToggle(k){PH.open=PH.open===k?'':k;drawPlanHistory()}
 function drawPlanHistory(){
  const body=document.getElementById('phBody');if(!body||CURRENT_TAB!=='plans')return;
  if(PH.list===null){body.innerHTML='<div class="dx-empty"><span class="lab-spin dark"></span>Loading Plan History…</div>';return}
- if(!PH.list.length){body.innerHTML=`<div class="phx-empty"><span>🏛️</span><b>Nothing saved yet</b><small>At the end of a month, open Media Plan Lab and press <b>Save to Plan History</b>. The month's plan and what we achieved are kept here as our reference.</small>${PH.msg?`<small>⚠️ ${esc(PH.msg)}</small>`:''}</div>`;return}
+ if(!PH.list.length){body.innerHTML=`<div class="phx-empty"><span>🏛️</span><b>Nothing saved yet</b>${PH.msg?`<small>⚠️ ${esc(PH.msg)}</small>`:''}</div>`;return}
  body.innerHTML=`<div class="phx-list">${PH.list.map(s=>{
    const {p,all}=phAcc(s), a=s.actual, open=PH.open===s.month, col=all>=.9?'good':all>=.8?'watch':'bad';
    const bar=(l,av,pv,f)=>`<div class="phx-m"><small>${l}</small><b>${f(av)}</b><span>Plan ${f(pv)} · ${pv?mpPct(av/pv):'—'}</span><i><u style="width:${pv?Math.min(100,av/pv*100).toFixed(1):0}%"></u></i></div>`;
@@ -7653,28 +7675,41 @@ function sendIdea(){
 }
 
  
-let ADMIN_SHARES=null, ADMIN_IDEAS=null;
+let ADMIN_ACTIVITY=null, ADMIN_IDEAS=null, ADMIN_ACT_VIEW='shares';
 const SHARE_NAMES={daily:'Daily Performance',channel:'Channel Delivery',plan:'Media Plan',results:'Results',report:'Report',compare:'Month vs Month'};
 function adminLoadExtra(k){
- if(k==='shares'&&!ADMIN_SHARES)serverCall('adminShareStats',getAccessToken()).then(r=>{ADMIN_SHARES=r;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{ADMIN_SHARES={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)});
+ if(k==='activity'&&!ADMIN_ACTIVITY)serverCall('adminActivity',getAccessToken()).then(r=>{ADMIN_ACTIVITY=r;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{ADMIN_ACTIVITY={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)});
  if(k==='ideas'&&!ADMIN_IDEAS)serverCall('adminIdeas',getAccessToken()).then(r=>{ADMIN_IDEAS=r||[];if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{ADMIN_IDEAS={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)});
 }
-function adminSharesHtml(){
- const s=ADMIN_SHARES;
- if(!s)return '<b class="ad-h">💬 WhatsApp shares</b><div class="sk-admin-empty">Loading…</div>';
- if(s.error)return `<b class="ad-h">💬 WhatsApp shares</b><div class="sk-admin-empty">${esc(s.error)}</div>`;
- const max=Math.max(1,...s.people.map(p=>p.n));
- return `<b class="ad-h">💬 WhatsApp shares · ${esc(monthName(s.month,true))}</b><small class="ad-sub">Each time someone prepares a WhatsApp image. WhatsApp does not tell us if it was then sent.</small>
-  <div class="sh-total"><b>${s.total}</b><span>image${s.total===1?'':'s'} this month</span></div>
-  ${s.people.length?`<div class="sh-bars">${s.people.map(p=>`<div class="sh-row"><span>${esc(p.name)}</span><i><u style="width:${(p.n/max*100).toFixed(1)}%"></u></i><b>${p.n}</b></div>`).join('')}</div>
-  <div class="sh-kinds">${s.kinds.map(k=>`<span>${esc(SHARE_NAMES[k.kind]||k.kind)} <b>${k.n}</b></span>`).join('')}</div>`:'<div class="sk-admin-empty">No shares yet this month.</div>'}
-  <button type="button" class="sh-reset" onclick="adminResetShares(this)">↺ Reset share counts to zero</button>`;
+function actView(v){ADMIN_ACT_VIEW=v;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+function hoursText(sec){sec=Math.round(sec||0);const h=Math.floor(sec/3600),m=Math.round(sec%3600/60);return h?`${h}h ${m}m`:`${m}m`}
+function adminActivityHtml(){
+ const a=ADMIN_ACTIVITY, head='<b class="ad-h">📊 Activity</b>';
+ if(!a)return head+'<div class="sk-admin-empty">Loading…</div>';
+ if(a.error)return head+`<div class="sk-admin-empty">${esc(a.error)}</div>`;
+ const v=ADMIN_ACT_VIEW, seg=(k,l)=>`<button type="button" class="${v===k?'on':''}" onclick="actView('${k}')">${l}</button>`;
+ const bars=(list,val,txt)=>{const mx=Math.max(1,...list.map(val));return list.length?`<div class="sh-bars">${list.map(p=>`<div class="sh-row"><span>${esc(p.name)}</span><i><u style="width:${(val(p)/mx*100).toFixed(1)}%"></u></i><b>${txt(p)}</b></div>`).join('')}</div>`:'<div class="sk-admin-empty">Nothing yet this month.</div>'};
+ const reset=(k,l)=>`<button type="button" class="sh-reset" onclick="adminResetActivity('${k}',this)">↺ Reset ${l} to zero</button>`;
+ let body='';
+ if(v==='shares'){const s=a.shares;
+   body=`<small class="ad-sub">Each time someone prepares a WhatsApp image. WhatsApp does not tell us if it was then sent.</small>
+   <div class="sh-total"><b>${s.total}</b><span>image${s.total===1?'':'s'} this month</span></div>${bars(s.people,p=>p.n,p=>p.n)}
+   ${s.kinds.length?`<div class="sh-kinds">${s.kinds.map(k=>`<span>${esc(SHARE_NAMES[k.kind]||k.kind)} <b>${k.n}</b></span>`).join('')}</div>`:''}${reset('shares','share counts')}`;
+ }else if(v==='opens'){const o=a.opens;
+   body=`<small class="ad-sub">Each time someone opens SEKNA, or comes back to it after 30 minutes away.</small>
+   <div class="sh-total"><b>${o.total}</b><span>open${o.total===1?'':'s'} this month</span></div>${bars(o.people,p=>p.n,p=>p.n)}${reset('opens','app opens')}`;
+ }else{const t=a.time;
+   body=`<small class="ad-sub">Time with SEKNA open on the screen, added up for the month.</small>
+   <div class="sh-total"><b>${hoursText(t.total)}</b><span>in SEKNA this month</span></div>${bars(t.people,p=>p.sec,p=>hoursText(p.sec))}${reset('time','time in the app')}`;
+ }
+ return `${head}<div class="act-seg">${seg('shares','💬 Shares')}${seg('opens','📱 Opens')}${seg('time','⏱️ Time')}</div>${body}`;
 }
-function adminResetShares(btn){
- if(!confirm('Reset all WhatsApp share counts to zero? This cannot be undone.'))return;
+function adminResetActivity(kind,btn){
+ const names={shares:'all WhatsApp share counts',opens:'all app-open counts',time:'all time in the app'};
+ if(!confirm(`Reset ${names[kind]} to zero? This cannot be undone.`))return;
  if(btn){btn.disabled=true;btn.textContent='Resetting…'}
- serverCall('adminResetShares',getAccessToken()).then(()=>{ADMIN_SHARES=null;adminLoadExtra('shares');if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})
-  .catch(err=>{if(btn){btn.disabled=false;btn.textContent='↺ Reset share counts to zero'}alert(errorText(err))});
+ serverCall('adminResetActivity',getAccessToken(),kind).then(()=>{ADMIN_ACTIVITY=null;adminLoadExtra('activity');if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})
+  .catch(err=>{if(btn)btn.disabled=false;alert(errorText(err))});
 }
 function adminIdeasHtml(){
  const L=ADMIN_IDEAS;
