@@ -1887,6 +1887,13 @@ window.addEventListener('load',function(){
     body.dark-mode .sk-confirm h2{color:#fff!important}
     body.dark-mode .sk-confirm p{color:#b8c0cc!important}
     body.dark-mode .sk-secondary-btn{background:#12161c;border-color:#2b313a;color:#fff}
+    /* v90 — SEKNA questions and messages instead of the browser's own boxes */
+    #askOverlay{z-index:120}
+    .sk-confirm-icon.info{background:#eef2ff;color:#203c8e}.sk-confirm-icon.ok{background:#e3f6ec;color:#13804f}
+    #askText{white-space:pre-line;font-size:12.5px}
+    .sk-confirm-actions.one{grid-template-columns:1fr}
+    .sk-blue-btn{position:relative;padding:12px;border-radius:12px;font-family:inherit;font-size:12.5px;font-weight:850;cursor:pointer;border:0;background:linear-gradient(180deg,#2b4db0,#203c8e);color:#fff;box-shadow:0 8px 18px rgba(32,60,142,.25)}
+    body.dark-mode .sk-confirm-icon.info{background:#1b2440;color:#9fb4ff}
 
     .app-modal.sk-admin{width:min(720px,96vw);max-height:90vh}
     .sk-head-actions{display:flex;gap:8px}
@@ -3561,6 +3568,15 @@ window.addEventListener('load',function(){
   </section>
 </div>
 
+<div class="app-modal-overlay sk-ask-overlay" id="askOverlay" onclick="askAnswer(false,event)" data-share-ui>
+  <section class="app-modal sk-modal sk-confirm" role="dialog" aria-modal="true" aria-labelledby="askTitle" onclick="event.stopPropagation()">
+    <div class="sk-confirm-icon" id="askIcon"></div>
+    <h2 id="askTitle"></h2>
+    <p id="askText"></p>
+    <div class="sk-confirm-actions" id="askActions"></div>
+  </section>
+</div>
+
 <div class="sk-gate sk-maint" id="maintScreen" data-share-ui hidden>
   <div class="sk-gate-bg" aria-hidden="true"><span class="sk-orb sk-orb--a"></span><span class="sk-orb sk-orb--b"></span><span class="sk-orb sk-orb--c"></span></div>
   <main class="sk-gate-card" role="dialog" aria-modal="true" aria-labelledby="maintTitle">
@@ -5096,11 +5112,12 @@ function drawLab(){
    <div class="lab-actions"><button type="button" class="pk-ghost" onclick="LAB_MSG='';loadLab()" ${LAB_BUSY||LAB_CHECKING?'disabled':''}>${LAB_CHECKING?'<span class="lab-spin dark"></span>Checking…':'Check again'}</button>
    <button type="button" class="lab-go" onclick="labMove()" ${ready.length&&!LAB_BUSY?'':'disabled'}>${LAB_BUSY?'Moving…':ready.length?`Move ${ready.length} complete month${ready.length>1?'s':''}`:'Nothing ready to move'}</button></div></div>`;
 }
-function labMove(){
+async function labMove(){
  const ready=LAB_STATE.months.filter(m=>m.status==='ready');
  if(!ready.length||LAB_BUSY)return;
- const list=ready.map(m=>`${monthName(m.key,true)} (${fmt(m.rows,0)} rows)`).join('\n');
- if(!confirm(`Close these months and move them to the history?\n\n${list}\n\nIts results are added to the history and cleared from the current month, ready for the new month.`))return;
+ const list=ready.map(m=>`${monthName(m.key,true)} · ${fmt(m.rows,0)} rows`).join('\n');
+ if(!await askSekna({title:'Close the month?',text:`${list}\n\nThe results move to the history and are cleared from the current month, ready for the new month.`,ok:'Close the month',tone:'info',icon:'box'}))return;
+ if(LAB_BUSY)return;
  LAB_BUSY=true; drawLab();
  serverCall('adminArchiveMove',getAccessToken(),CURRENT_ACCOUNT).then(r=>{
    LAB_BUSY=false;
@@ -6477,6 +6494,37 @@ function confirmSignOut(){
  closeSidebar();
  const el=document.getElementById('signOutOverlay');if(el)el.classList.add('open');
 }
+
+const ASK_ICONS={
+ danger:'<svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/></svg>',
+ mail:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>',
+ box:'<svg viewBox="0 0 24 24"><path d="M3 7h18v4H3zM5 11v9h14v-9M10 15h4"/></svg>',
+ warn:'<svg viewBox="0 0 24 24"><path d="M12 3l10 18H2zM12 10v4M12 17.5v.5"/></svg>'
+};
+let ASK_RESOLVE=null;
+function askSekna(o){
+ return new Promise(res=>{
+   if(ASK_RESOLVE)ASK_RESOLVE(false);
+   ASK_RESOLVE=res;
+   const tone=o.tone||'danger', icon=document.getElementById('askIcon');
+   icon.className='sk-confirm-icon'+(tone==='danger'?'':' info');
+   icon.innerHTML=ASK_ICONS[o.icon||(tone==='danger'?'danger':'mail')];
+   text('askTitle',o.title||'');
+   text('askText',o.text||'');
+   const acts=document.getElementById('askActions');
+   acts.className='sk-confirm-actions'+(o.cancel===false?' one':'');
+   acts.innerHTML=(o.cancel===false?'':`<button class="sk-secondary-btn" type="button" onclick="askAnswer(false)">${esc(o.cancel||'Cancel')}</button>`)+
+     `<button class="${tone==='danger'?'sk-danger-btn':'sk-blue-btn'}" type="button" onclick="askAnswer(true)"><span>${esc(o.ok||'OK')}</span></button>`;
+   document.getElementById('askOverlay').classList.add('open');
+ });
+}
+function askAnswer(yes,event){
+ if(event&&event.target!==event.currentTarget)return;
+ document.getElementById('askOverlay').classList.remove('open');
+ const r=ASK_RESOLVE;ASK_RESOLVE=null;if(r)r(!!yes);
+}
+function tellSekna(message,title){return askSekna({title:title||'Something went wrong',text:message,ok:'OK',cancel:false,tone:'info',icon:'warn'})}
+
 function closeSignOut(event){
  if(event&&event.target!==event.currentTarget)return;
  const el=document.getElementById('signOutOverlay');if(el)el.classList.remove('open');
@@ -7724,11 +7772,12 @@ async function mrBuild(){
  }catch(err){MR.busy='';MR.msg='⚠️ '+esc(errorText(err))}
  drawMonthlyReport();
 }
-function mrSend(testOnly){
+async function mrSend(testOnly){
  const m=MR.m;if(!MR.pdf||!m||MR.busy)return;
  if(MR.sig!==mrSig()){MR.msg='The notes changed. Press Rebuild PDF first.';drawMonthlyReport();return}
  const n=testOnly?1:(MR.people||[]).length;
- if(!testOnly&&!confirm(`Email the ${m.label} report to ${n} ${n===1?'person':'people'}?`))return;
+ if(!testOnly&&!await askSekna({title:'Send the report?',text:`The ${m.label} report goes by email to ${n} ${n===1?'person':'people'} in the team.`,ok:'Send',tone:'info',icon:'mail'}))return;
+ if(MR.busy)return;
  MR.busy=testOnly?'Sending a test to you…':`Sending to ${n} people…`;MR.msg='';drawMonthlyReport();
  const meta={testOnly:!!testOnly,
    title:`SEKNA · ${m.meta.dashboardTitle} · ${m.label} results`,
@@ -7900,13 +7949,13 @@ function srvDevice(v){
  if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
  loadData({force:true,silent:true});
 }
-function srvClearLog(btn){
- if(!confirm('Clear the whole switch log? This cannot be undone.'))return;
+async function srvClearLog(btn){
+ if(!await askSekna({title:'Clear the switch log?',text:'Every switch from every device is removed. This cannot be undone.',ok:'Clear log'}))return;
  if(btn){btn.disabled=true;btn.textContent='Clearing…'}
  const token=getAccessToken(), fb=window.SEKNA_FB;
  Promise.all([fb?fb.post('/events/clear',{token},20000):Promise.resolve(),serverCall('adminClearServerEvents',token)])
   .then(()=>{SRV_ADMIN.events=[];if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})
-  .catch(err=>{if(btn){btn.disabled=false;btn.textContent='↺ Clear log'}alert(errorText(err))});
+  .catch(err=>{if(btn){btn.disabled=false;btn.textContent='↺ Clear log'}tellSekna(errorText(err))});
 }
 function srvRetry(){if(window.SEKNA_FB){SEKNA_FB.retry();loadData({force:true,silent:true})}}
 function srvParity(){
@@ -7986,12 +8035,12 @@ function adminActivityHtml(){
  }
  return `${head}<div class="act-seg">${seg('shares','💬 Shares')}${seg('opens','📱 Opens')}${seg('time','⏱️ Time')}</div>${body}`;
 }
-function adminResetActivity(kind,btn){
+async function adminResetActivity(kind,btn){
  const names={shares:'all WhatsApp share counts',opens:'all app-open counts',time:'all time in the app'};
- if(!confirm(`Reset ${names[kind]} to zero? This cannot be undone.`))return;
+ if(!await askSekna({title:'Reset to zero?',text:`This resets ${names[kind]} to zero. This cannot be undone.`,ok:'Reset'}))return;
  if(btn){btn.disabled=true;btn.textContent='Resetting…'}
  serverCall('adminResetActivity',getAccessToken(),kind).then(()=>{ADMIN_ACTIVITY=null;adminLoadExtra('activity');if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})
-  .catch(err=>{if(btn)btn.disabled=false;alert(errorText(err))});
+  .catch(err=>{if(btn)btn.disabled=false;tellSekna(errorText(err))});
 }
 function adminIdeasHtml(){
  const L=ADMIN_IDEAS;
@@ -8009,7 +8058,7 @@ function adminIdeaSave(id,btn){
  serverCall('adminIdeaUpdate',getAccessToken(),id,st.value,rp.value).then(()=>{
    const i=(ADMIN_IDEAS||[]).find(x=>x.id===id);if(i){i.status=st.value;i.reply=rp.value}
    if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
- }).catch(err=>{if(btn){btn.disabled=false;btn.textContent='Save'}alert(errorText(err))});
+ }).catch(err=>{if(btn){btn.disabled=false;btn.textContent='Save'}tellSekna(errorText(err))});
 }
 
 window.SEKNA_READY=true;
