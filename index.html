@@ -1985,6 +1985,8 @@ window.addEventListener('load',function(){
     .mv-pop,.py-chart circle.mv-land{transform-box:fill-box;transform-origin:center}
     @keyframes mvPop{0%{scale:.2}70%{scale:1.4}100%{scale:1}}
     @media(prefers-reduced-motion:reduce){.mv-pre{opacity:1;transform:none}.mv-rise,.mv-pop{animation:none}}
+    body.no-motion .tab-panel,body.no-motion .tab-panel *:not(.lab-spin),body.no-motion #pastYearsOverlay *:not(.lab-spin){animation:none!important;transition:none!important}
+    body.no-motion .rv,body.no-motion .mv-pre{opacity:1!important;transform:none!important}
     .sk-drawer>.sk-drawer-head{align-self:stretch;flex:none;box-sizing:border-box;max-width:none;width:calc(100% + 32px)}
     /* v92 — maintenance: a weld point runs along the empty gold bar of the "E" and leaves gold behind */
     .sk-gate.sk-maint{justify-content:center!important;align-items:center}
@@ -3640,6 +3642,7 @@ window.addEventListener('load',function(){
       <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></span><span class="sk-row-text"><b>Dark mode</b><small>Use a darker theme across the dashboard.</small></span><span class="switch"><input id="darkModeToggle" type="checkbox" onchange="saveDashboardSettings()"><span></span></span></label>
       <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span><span class="sk-row-text"><b>Desktop layout</b><small>Show the full computer layout on your phone.</small></span><span class="switch"><input id="desktopViewToggle" type="checkbox" onchange="saveDashboardSettings()"><span></span></span></label>
       <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></svg></span><span class="sk-row-text"><b>Swipe between pages</b><small>Swipe left or right to move to the next page.</small></span><span class="switch"><input id="swipeToggle" type="checkbox" onchange="setSwipe(this.checked)"><span></span></span></label>
+      <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg></span><span class="sk-row-text"><b>Animations</b><small>Charts and numbers move in. Turn off for a calmer or faster screen.</small></span><span class="switch"><input id="motionToggle" type="checkbox" onchange="setMotion(this.checked)"><span></span></span></label>
       <div class="sk-row sk-zoom-row" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M11 8v6M8 11h6"/></svg></span><span class="sk-row-text"><b>Layout size</b><small>Make the desktop layout bigger or smaller.</small></span><button type="button" onclick="changeDesktopZoom(-0.25)" aria-label="Smaller">−</button><b data-zoom-label>100%</b><button type="button" onclick="changeDesktopZoom(0.25)" aria-label="Larger">+</button></div>
     </div>
 
@@ -4434,6 +4437,7 @@ function initAccountSelector(){
 }
 
 function animateScene(direction='right'){
+ if(!motionOn())return;
  const panel=document.getElementById((DASH_TABS.includes(CURRENT_TAB)?CURRENT_TAB:'overview')+'Panel');
  if(!panel)return;
  panel.classList.remove('motion-scene-in','motion-scene-in-left');
@@ -4445,6 +4449,7 @@ function animateScene(direction='right'){
 let MOTION_TOKEN=0;
 function replayDashboardMotion(){
  const token=++MOTION_TOKEN;
+ if(!motionOn())return;
  const active=document.querySelector('.tab-panel.active');
  if(!active)return;
  mvArm(active);
@@ -5060,7 +5065,7 @@ function renderYoy(x,y){
 let REVEAL2=null;
 function revealOnScroll(root,sel){
  const els=[...root.querySelectorAll(sel)];
- if(!('IntersectionObserver' in window)){return}
+ if(!('IntersectionObserver' in window)||!motionOn()){return}
  if(!REVEAL2)REVEAL2=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');REVEAL2.unobserve(e.target)}}),{rootMargin:'0px 0px -6% 0px',threshold:.05});
  els.forEach(el=>{el.classList.add('rv');REVEAL2.observe(el)});
 }
@@ -6863,7 +6868,7 @@ const MV_SECTIONS=[
   play:r=>mvPlayGrow(mvQ(r,'.mc-bar span'),'height',0,28)}
 ];
 function mvArm(scope){
- if(MV.reduced||!scope)return;
+ if(MV.reduced||!scope||!motionOn())return;
  const tok=++MV.token;
  if(MV.obs)MV.obs.disconnect();
  MV.obs=('IntersectionObserver' in window)?new IntersectionObserver(list=>list.forEach(e=>{
@@ -6880,7 +6885,7 @@ function mvArm(scope){
 
 
 function pyAnimate(body){
- if(MV.reduced)return;
+ if(MV.reduced||!motionOn())return;
  const svg=body.querySelector('.py-chart');if(!svg)return;
  const line=svg.querySelector('polyline'),dots=[...svg.querySelectorAll('circle')],labels=[...svg.querySelectorAll('text.v')];
  const win=dots.find(c=>c.classList.contains('win'));
@@ -7825,7 +7830,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v93',date:'2026-10-23'};
+const DASHBOARD_RELEASE_CLIENT={version:'v94',date:'2026-10-24'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
@@ -7925,6 +7930,16 @@ const SWIPE_KEY='sekna_swipe';
 function swipeOn(){return storeGet(SWIPE_KEY)!=='0'}
 function setSwipe(on){storeSet(SWIPE_KEY,on?'1':'0')}
 
+function motionOn(){return storeGet('sekna_motion')!=='0'}
+function setMotion(on){
+ storeSet('sekna_motion',on?'1':'0');document.body.classList.toggle('no-motion',!on);
+ if(on)return;
+ 
+ MV.token++;if(MV.obs)MV.obs.disconnect();
+ document.querySelectorAll('[data-mv]').forEach(r=>{if(r._mvTok&&r._mvSec){r._mvTok=0;try{r._mvSec.play(r)}catch(e){}}});
+ document.querySelectorAll('.rv:not(.in)').forEach(e=>e.classList.add('in'));
+}
+
 function swipeTabs(){
  return DASH_TABS.filter(t=>{
    const b=document.getElementById(t+'TabBtn');
@@ -7958,6 +7973,8 @@ function scrollsSideways(el){
    if(i>=0&&next)switchDashboardTab(next);
  },{passive:true});
  const box=document.getElementById('swipeToggle');if(box)box.checked=swipeOn();
+ const mbox=document.getElementById('motionToggle');if(mbox)mbox.checked=motionOn();
+ document.body.classList.toggle('no-motion',!motionOn());
 })();
 
  
