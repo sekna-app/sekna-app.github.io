@@ -5396,11 +5396,10 @@ function renderMonths(d){
 function monthPresets(hist,aKey){
  const idx=hist.findIndex(h=>h.month===aKey);
  if(idx<0)return [];
- const cur=hist[idx], out=[];
+ const out=[];
  if(hist[idx-1])out.push(['Previous month',hist[idx-1].month]);
  const ly=String(Number(aKey.slice(0,4))-1)+aKey.slice(4);
  if(hist.some(h=>h.month===ly))out.push(['Same month last year',ly]);
- for(let i=idx-1;i>=0;i--){if(hist[i].hijri===cur.hijri&&hist[i].month<=ly){out.push([`Last ${cur.hijri}`,hist[i].month]);break}}
  return out;
 }
 function pickPreset(m){document.getElementById('mxB').value=m;renderMonthCompare()}
