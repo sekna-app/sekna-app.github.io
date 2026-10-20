@@ -1976,6 +1976,59 @@ window.addEventListener('load',function(){
     .tour-next.go{flex:1}
     @media(prefers-reduced-motion:reduce){.tour-logo,.tour-bar,.tour-bar i{transition:none}.gc b,.gc i{display:none}}
 
+    /* Compare scoreboard (v97) */
+    .sbx{background:#0c1a46;border-radius:22px;padding:16px 14px;color:#fff;position:relative;overflow:hidden;margin:12px 0 4px}
+    .sbx::before{content:"";position:absolute;width:220px;height:220px;border-radius:50%;background:#3d6bff;filter:blur(60px);opacity:.45;top:-110px;left:-60px;pointer-events:none}
+    .sbx>*{position:relative}
+    .sbx-k{font-size:10.5px;font-weight:900;letter-spacing:.14em;color:#9fb0dd;text-align:center}
+    .sbx-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;margin-top:10px}
+    .sbx-m{text-align:center;padding:10px 4px;border-radius:16px;min-width:0}
+    .sbx-m b{display:block;font-size:15px;color:#fff}.sbx-m small{font-size:11px;color:#9fb0dd;font-weight:700}
+    .sbx-m.win{background:linear-gradient(160deg,rgba(243,215,159,.22),rgba(226,184,116,.08));box-shadow:inset 0 0 0 1.5px #e2b874}
+    .sbx-crown{display:block;font-size:18px;height:22px}
+    .sbx-s{font-size:40px;font-weight:900;letter-spacing:-.03em;display:flex;align-items:center;justify-content:center;gap:8px;line-height:1}
+    .sbx-s i{font-style:normal;font-size:18px;color:#9fb0dd}.sbx-s .w{color:#f3d79f}.sbx-s .l{color:#6f7fb3}
+    .sbx-of{display:block;font-size:10px;font-weight:800;letter-spacing:.1em;color:#9fb0dd;text-align:center;margin-top:4px}
+    .sbx-say{text-align:center;margin-top:10px;font-size:14px;font-weight:800}.sbx-say span{color:#f3d79f}
+    .sbx-split{margin-top:12px;background:rgba(255,255,255,.08);border:1px solid rgba(243,215,159,.35);border-radius:14px;padding:10px 12px;font-size:12.5px;line-height:1.5;font-weight:600;color:#dfe5fb}
+    .sbx-split b{color:#fff}.sbx-split>span{display:block;font-size:10.5px;font-weight:900;letter-spacing:.12em;color:#f3d79f;margin-bottom:3px}
+    .sbx-wt{margin-top:10px;font-size:10.5px;color:#9fb0dd;font-weight:700;text-align:center}
+    .sbx-tug{border:1.5px solid #e6e9f1;border-radius:16px;margin-top:12px;padding:2px 12px}
+    .sbx-tg{padding:11px 0;border-bottom:1px solid #eef0f5}.sbx-tg:last-child{border:0}
+    .sbx-tg-h{display:grid;grid-template-columns:1fr auto 1fr;align-items:baseline;gap:6px}
+    .sbx-tg-h b{font-size:14.5px;color:#1d2433}.sbx-tg-h b:last-child{text-align:right}
+    .sbx-tg-h small{font-size:10.5px;font-weight:900;letter-spacing:.06em;color:#8a93a6;text-transform:uppercase;text-align:center}
+    .sbx-tg-h small em{font-style:normal;color:#c28d3e;margin-left:4px}
+    .sbx-tg-h b.lose,.sbx-tr .v.l{color:#a2a9b8;font-weight:700}
+    .sbx-bar{display:flex;height:7px;border-radius:9px;overflow:hidden;margin-top:6px;gap:2px}
+    .sbx-bar i{display:block;background:#e4e7ef}.sbx-bar i.wa{background:#3d6bff}.sbx-bar i.wb{background:#0c1a46}.sbx-bar i.tie{background:#c3c9d6}
+    .sbx-tg.key .sbx-bar{height:10px}
+    .sbx-sp{margin-top:8px;font-size:11.5px;color:#6b7385;font-weight:700;text-align:center}
+    .sbx-sec{margin-top:14px;font-size:11px;font-weight:900;letter-spacing:.1em;color:#6b7385;display:flex;justify-content:space-between;gap:8px}
+    .sbx-sec span{color:#9aa2b3;letter-spacing:.02em}
+    .sbx-t{border:1.5px solid #e6e9f1;border-radius:16px;margin-top:8px;padding:12px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+    .sbx-t-h{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .sbx-t-h b{font-size:14px;color:#1d2433;display:flex;align-items:center;gap:7px}.sbx-t-h b i{width:9px;height:9px;border-radius:50%}
+    .sbx-who{font-size:11px;font-weight:900;border-radius:99px;padding:3px 9px;background:#f1f2f6;color:#7b8496;white-space:nowrap}
+    .sbx-who.a{background:#e6edff;color:#2349c9}.sbx-who.b{background:#e3e6ef;color:#0c1a46}.sbx-who.s{background:#fbf1e1;color:#9a6a22}
+    .sbx-tr{display:grid;grid-template-columns:62px 1fr 62px;gap:8px;align-items:center;margin-top:8px;font-size:12px}
+    .sbx-tr small{font-size:10px;font-weight:900;color:#8a93a6;letter-spacing:.05em}
+    .sbx-tr .sbx-bar{margin-top:3px}
+    .sbx-tr .v{font-weight:800;color:#1d2433}.sbx-tr .v:last-child{text-align:right}
+    .sbx-det{display:none;margin-top:10px;border-top:1px solid #eef0f5;padding-top:4px}
+    .sbx-t.open .sbx-det{display:block}
+    .sbx-dr{display:grid;grid-template-columns:1fr auto auto 74px;gap:10px;align-items:center;padding:6px 0;font-size:12px}
+    .sbx-dr span:first-child{color:#6b7385;font-weight:700}.sbx-dr b{text-align:right;color:#1d2433}.sbx-dr b.mut{color:#a2a9b8;font-weight:700}
+    .sbx-dr .mx-arrow{justify-self:end}
+    .sbx-dr.hd b{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#8a93a6}
+    .sbx-more{margin-top:8px;text-align:center;font-size:11px;font-weight:800;color:#3d6bff}
+    .sbx-more .c,.sbx-t.open .sbx-more .o{display:none}.sbx-t.open .sbx-more .c{display:inline}
+    body.dark-mode .sbx-tug,body.dark-mode .sbx-t{background:#151a22;border-color:#2a313c}
+    body.dark-mode .sbx-tg,body.dark-mode .sbx-det{border-color:#252a32}
+    body.dark-mode .sbx-tg-h b,body.dark-mode .sbx-tr .v,body.dark-mode .sbx-t-h b,body.dark-mode .sbx-dr b{color:#fff}
+    body.dark-mode .sbx-tg-h b.lose,body.dark-mode .sbx-tr .v.l,body.dark-mode .sbx-dr b.mut{color:#6f7787}
+    body.dark-mode .sbx-bar i{background:#2a313c}body.dark-mode .sbx-bar i.wb{background:#9fb0dd}body.dark-mode .sbx-bar i.wa{background:#3d6bff}body.dark-mode .sbx-bar i.tie{background:#4a5263}
+    body.dark-mode .sbx-who.b{background:#26304a;color:#c9d3f5}body.dark-mode .sbx-who.a{background:#1b2a5c;color:#9fb6ff}body.dark-mode .sbx-who.s{background:#3a2d16;color:#f3d79f}
     /* v93 — sections move in when they come into view; the side menu header spans the full drawer */
     .mv-pre{opacity:0;transform:translateX(-16px)}
     .mv-rise{animation:mvRise .6s cubic-bezier(.2,.8,.2,1) both}
@@ -5574,39 +5627,73 @@ function renderMonthCompare(){
  const note=partial&&!avg?`<div class="mx-note">${esc(monthName(partial.key,true))} is still running (${partial.days} days) — switch to <b>Per day</b> for a fair comparison.</div>`:'';
  if(chartEl)chartEl.innerHTML=monthChart(hist,ex,d,[aKey],[bKey],avg);
  if(mxTypes()&&(A.none||B.none)){body.innerHTML=noTypeData;return}
- body.innerHTML=mxVerdict(rows,aKey,bKey)+note+compareBody(rows,A,B,avg,aKey,bKey);
+ body.innerHTML=scoreBody(rows,A,B,avg,ha,hb)+note;
 
 }
  
-function compareBody(rows,A,B,avg,aKey,bKey){
- const ck=r=>r.m.better==='none'?'neutral':r.w==='a'?'good':r.w==='b'?'bad':'neutral';
- const bn=esc(monthName(bKey));
- const head=rows.filter(r=>['spend','conversions','value','roas'].includes(r.m.k));
- const rest=rows.filter(r=>!['spend','conversions','value','roas'].includes(r.m.k));
- const top=`<div class="mr3-grid">${head.map(r=>`<div class="mr3 ${r.m.k}"><small>${esc(r.m.l)}</small><b>${r.m.f(r.a,avg)}</b><div class="mr3-f"><span class="mr3-chip ${ck(r)}">${r.delta==null?'—':(r.delta>=0?'▲ ':'▼ ')+percent(Math.abs(r.delta))}</span><i>${bn} ${r.m.f(r.b,avg)}</i></div></div>`).join('')}</div>`;
- const more=`<div class="mr-list cmp"><div class="mr-li mr-lh"><span></span><b>${esc(monthName(aKey))}</b><b>${bn}</b><span></span></div>${rest.map(r=>`<div class="mr-li"><span>${esc(r.m.l)}</span><b>${r.m.f(r.a,avg)}</b><b class="mr-b">${r.m.f(r.b,avg)}</b>${mxArrow(r.delta,ck(r))}</div>`).join('')}</div>${extraState()==='ok'?'':extraWaitHtml('clicks, CTR, CPC and CVR')}`;
- return top+'<div class="mx-split"><div>'+more+'</div><div>'+compareChannels(A,B,avg,aKey,bKey)+'</div></div>'+'<div class="mx-foot">▲▼ the first month vs the second · <i class="good"></i> better <i class="bad"></i> worse <i class="neutral"></i> no better/worse</div>';
+
+const MX_POINTS={value:3,roas:3,conversions:2};
+const mxPts=k=>MX_POINTS[k]||1;
+function mxPoints(rows){
+ const pa=rows.filter(r=>r.w==='a').reduce((s,r)=>s+mxPts(r.m.k),0), pb=rows.filter(r=>r.w==='b').reduce((s,r)=>s+mxPts(r.m.k),0);
+ return {pa,pb,win:pa===pb?'':pa>pb?'a':'b'};
 }
-function compareChannels(A,B,avg,aKey,bKey){
- if((!A.channels||!B.channels)&&extraState()!=='ok')return `<div class="mx-sub">By channel</div>${extraWaitHtml('the channels')}`;
- if(!A.channels||!B.channels)return `<div class="mx-sub">By channel</div><div class="dx-empty">The channel split needs daily data${dailyStartText()}.</div>`;
- const la=channelList(A,avg), lb=channelList(B,avg);
- const tot=la.reduce((x,c)=>x+c.spend,0)||1, totB=lb.reduce((x,c)=>x+c.spend,0)||1;
+function mxLean(w){return `<i class="${w==='a'?'wa':w?'':'tie'}" style="width:${w==='a'?62:w?38:50}%"></i><i class="${w==='b'?'wb':w?'':'tie'}" style="width:${w==='b'?62:w?38:50}%"></i>`}
+function scoreBody(rows,A,B,avg,ha,hb){
+ const an=monthName(ha.month), bn=monthName(hb.month), {pa,pb,win}=mxPoints(rows);
+ const side=(h,n,w)=>`<div class="sbx-m${w?' win':''}"><span class="sbx-crown">${w?'👑':''}</span><b>${esc(n)}</b><small>${esc(h.hijri)}${h.partial?' · so far':''}</small></div>`;
+ const say=win?`<span>${esc(win==='a'?an:bn)}</span> is the better month`:'Even on points';
+ 
+ const rev=rows.find(r=>r.m.k==='value'), ro=rows.find(r=>r.m.k==='roas'), cv=rows.find(r=>r.m.k==='conversions');
+ let split='';
+ if(rev&&rev.w&&win&&rev.w!==win){
+   const big=rev.w==='a'?[A,B,an]:[B,A,bn], per=avg?' a day':'';
+   const sp=v=>avg?v/(big[0].days||1):v, sq=v=>avg?v/(big[1].days||1):v;
+   const dConv=cv&&cv.w===rev.w?` and ${fmt(Math.abs(cv.a-cv.b),avg?1:0)} more conversions`:'';
+   const dSpend=sp(big[0].spend)-sq(big[1].spend);
+   split=`<div class="sbx-split"><span>SPLIT RESULT</span><b>${esc(big[2])}</b> brought <b>${mpK(Math.abs(rev.a-rev.b))} more revenue${per}</b>${dConv}${dSpend>0?`, but spent ${mpK(dSpend)} more`:''}. <b>${esc(win==='a'?an:bn)}</b> made more from each £1${ro&&ro.w===win?` (ROAS ${ro.m.f(win==='a'?ro.a:ro.b)} vs ${ro.m.f(win==='a'?ro.b:ro.a)})`:''}.</div>`;
+ }
+ const board=`<div class="sbx"><div class="sbx-k">SCORE · POINTS${avg?' · PER DAY':''}</div>
+  <div class="sbx-row">${side(ha,an,win==='a')}<div><div class="sbx-s"><span class="${win==='a'?'w':'l'}">${pa}</span><i>–</i><span class="${win==='b'?'w':'l'}">${pb}</span></div><small class="sbx-of">OF ${pa+pb} POINTS</small></div>${side(hb,bn,win==='b')}</div>
+  <div class="sbx-say">${say}</div>${split}
+  <div class="sbx-wt">Revenue and ROAS = 3 points · Conversions = 2 · the rest = 1</div></div>`;
+ const spend=rows.find(r=>r.m.k==='spend');
+ const tug=`<div class="sbx-tug">${rows.filter(r=>r.m.better!=='none').sort((x,y)=>mxPts(y.m.k)-mxPts(x.m.k)||(x.m.k==='value'?-1:y.m.k==='value'?1:0)).map(r=>`<div class="sbx-tg${mxPts(r.m.k)>1?' key':''}"><div class="sbx-tg-h"><b class="${r.w==='b'?'lose':''}">${r.m.f(r.a,avg)}</b><small>${esc(r.m.l)}${mxPts(r.m.k)>1?`<em>×${mxPts(r.m.k)}</em>`:''}</small><b class="${r.w==='a'?'lose':''}">${r.m.f(r.b,avg)}</b></div><div class="sbx-bar">${mxLean(r.w)}</div></div>`).join('')}</div>
+  ${spend?`<div class="sbx-sp">Spend${avg?' per day':''} · ${esc(an)} ${spend.m.f(spend.a,avg)} · ${esc(bn)} ${spend.m.f(spend.b,avg)}</div>`:''}
+  ${extraState()==='ok'?'':extraWaitHtml('clicks, CTR, CPC and CVR')}`;
+ return board+`<div class="mx-split"><div>${tug}</div><div>${compareTypes(A,B,avg,an,bn)}</div></div>`;
+}
+
+function compareTypes(A,B,avg,an,bn){
+ const head=`<div class="sbx-sec">BY CAMPAIGN TYPE<span>${esc(an)} ◀ ▶ ${esc(bn)}</span></div>`;
+ if((!A.channels||!B.channels)&&extraState()!=='ok')return head+extraWaitHtml('the campaign types');
+ if(!A.channels||!B.channels)return head+`<div class="dx-empty">The campaign types need daily data${dailyStartText()}.</div>`;
+ const la=channelList(A,avg), lb=channelList(B,avg), totA=la.reduce((x,c)=>x+c.spend,0)||1, totB=lb.reduce((x,c)=>x+c.spend,0)||1;
  const names=[...new Set(la.map(x=>x.n).concat(lb.map(x=>x.n)))];
- const rows=names.map(n=>{
-   const a=la.find(x=>x.n===n)||{n,k:5,spend:0,value:0,roas:null}, b=lb.find(x=>x.n===n)||{spend:0,roas:null};
-   const k=(la.find(x=>x.n===n)||lb.find(x=>x.n===n)).k;
-   const w=a.roas!=null&&b.roas!=null&&Math.abs(a.roas/b.roas-1)>=.005?(a.roas>b.roas?'good':'bad'):'';
-   return `<div class="rc1-row"><i class="m${k}"></i><div class="rc1-n"><b>${esc(chName(n))}</b><small>${Math.round(a.spend/tot*100)}% of spend · was ${Math.round(b.spend/totB*100)}%</small></div><div class="rc1-v"><b>${money(a.spend)}</b><small>${esc(monthName(bKey))} ${money(b.spend)}</small></div><div class="rc1-r"><span class="rc-roas ${w||'neutral'}">${a.roas!=null?fmt(a.roas,2)+'x':'—'}</span><small>${b.roas!=null?fmt(b.roas,2)+'x':'—'}</small></div></div>`;
+ const zero={spend:0,value:0,conversions:0,clicks:0,roas:null};
+ const cmp=(a,b,hi)=>a==null||b==null||!b&&!a||b&&Math.abs(a/b-1)<.005?'':(hi?a>b:a<b)?'a':'b';
+ return head+names.map(n=>{
+   const a=la.find(x=>x.n===n)||zero, b=lb.find(x=>x.n===n)||zero, k=(la.find(x=>x.n===n)||lb.find(x=>x.n===n)).k;
+   const rv=cmp(a.value,b.value,true), ro=cmp(a.roas,b.roas,true), co=cmp(a.conversions,b.conversions,true);
+   const p=w=>(rv===w?3:0)+(ro===w?3:0)+(co===w?2:0), w=p('a')===p('b')?'':p('a')>p('b')?'a':'b';
+   const pill=rv&&ro&&rv!==ro?'<span class="sbx-who s">Split</span>':w?`<span class="sbx-who ${w}">${esc((w==='a'?an:bn).split(' ')[0])} 👑</span>`:'<span class="sbx-who">Even</span>';
+   const line=(l,x,y,w2)=>`<div class="sbx-tr"><span class="v${w2==='b'?' l':''}">${x}</span><div><small>${l}</small><div class="sbx-bar">${mxLean(w2)}</div></div><span class="v${w2==='a'?' l':''}">${y}</span></div>`;
+   const det=[['Spend',a.spend,b.spend,v=>money(v),'none'],['Revenue',a.value,b.value,v=>money(v),'high'],['ROAS',a.roas,b.roas,v=>v==null?'—':fmt(v,2)+'x','high'],
+     ['Conversions',a.conversions,b.conversions,v=>fmt(v,avg?1:0),'high'],['Clicks',a.clicks,b.clicks,v=>fmt(v,0),'high'],
+     ['CPA',a.conversions?a.spend/a.conversions:null,b.conversions?b.spend/b.conversions:null,v=>v==null?'—':money(v,2),'low'],
+     ['CPC',a.clicks?a.spend/a.clicks:null,b.clicks?b.spend/b.clicks:null,v=>v==null?'—':money(v,2),'low'],
+     ['CVR',a.clicks?a.conversions/a.clicks:null,b.clicks?b.conversions/b.clicks:null,v=>v==null?'—':percent(v),'high'],
+     ['Avg. donation',a.conversions?a.value/a.conversions:null,b.conversions?b.value/b.conversions:null,v=>v==null?'—':money(v,2),'high'],
+     ['Share of spend',a.spend/totA,b.spend/totB,v=>percent(v),'none']].map(([l,x,y,f,bt])=>{
+       const d=x!=null&&y?x/y-1:null, c=bt==='none'||d==null||Math.abs(d)<.005?'neutral':(bt==='high'?d>0:d<0)?'good':'bad';
+       return `<div class="sbx-dr"><span>${l}</span><b>${f(x)}</b><b class="mut">${f(y)}</b>${mxArrow(d,c)}</div>`}).join('');
+   return `<div class="sbx-t" onclick="this.classList.toggle('open')"><div class="sbx-t-h"><b><i class="m${k}"></i>${esc(chName(n))}</b>${pill}</div>
+    ${line('REVENUE',mpK(a.value),mpK(b.value),rv)}${line('ROAS',a.roas==null?'—':fmt(a.roas,2)+'x',b.roas==null?'—':fmt(b.roas,2)+'x',ro)}
+    <div class="sbx-det"><div class="sbx-dr hd"><span></span><b>${esc(an)}</b><b class="mut">${esc(bn)}</b><span></span></div>${det}</div>
+    <div class="sbx-more"><span class="o">Details</span><span class="c">Hide details</span> ▾</div></div>`;
  }).join('');
- return `<div class="mx-sub">By channel · ${esc(monthName(aKey))} vs ${esc(monthName(bKey))}</div><div class="rc1"><div class="rc1-bar">${la.map(c=>`<span class="m${c.k}" style="flex:${c.spend/tot}"></span>`).join('')}</div>${rows}</div>`;
 }
 function mxArrow(delta,cls){return `<span class="mx-arrow ${cls}">${delta==null?'—':(delta>=0?'▲ ':'▼ ')+percent(Math.abs(delta))}</span>`}
-function mxVerdict(rows,aKey,bKey){
- const wa=rows.filter(r=>r.w==='a').length, wb=rows.filter(r=>r.w==='b').length;
- return wa===wb?`<div class="mx-verdict tie">⚖️ Even — each month wins ${wa}</div>`
-  :`<div class="mx-verdict ${wa>wb?'a':'b'}">🏆 <b>${esc(monthName(wa>wb?aKey:bKey,true))}</b> is better · wins ${Math.max(wa,wb)} of ${wa+wb}</div>`;
-}
 
 const isVideoChannel=n=>/video|in-stream|youtube/i.test(String(n||''));
 const chName=n=>isVideoChannel(n)?'Video':n;
@@ -7665,9 +7752,9 @@ function compareShareHtml(){
  const A=monthStats(ha,c.ex,c.d), B=monthStats(hb,c.ex,c.d);
  const rows=MONTH_METRICS.map(m=>{const a=mxVal(A,m,c.avg),b=mxVal(B,m,c.avg);if(a==null||b==null)return null;
    const delta=b?a/b-1:null;let w='';if(m.better!=='none'&&Math.abs(delta||0)>=.005)w=(m.better==='high'?a>b:a<b)?'a':'b';return {m,a,b,delta,w}}).filter(Boolean);
- const wa=rows.filter(r=>r.w==='a').length, wb=rows.filter(r=>r.w==='b').length;
+ const {pa:wa,pb:wb}=mxPoints(rows);
  const an=monthName(aKey,true), bn=monthName(bKey,true);
- const lead=wa===wb?`Even — each month wins ${wa}`:`${wa>wb?an:bn} wins ${Math.max(wa,wb)} of ${wa+wb}`;
+ const lead=wa===wb?`Even on points — ${wa} each`:`${wa>wb?an:bn} wins ${Math.max(wa,wb)}–${Math.min(wa,wb)} on points`;
  const partial=[A,B].find(s=>s.partial);
  const la=channelList(A,c.avg), lb=channelList(B,c.avg);
  const names=[...new Set(la.map(x=>x.n).concat(lb.map(x=>x.n)))];
@@ -7721,12 +7808,12 @@ function compareShareText(d){
  const A=monthStats(ha,c.ex,c.d), B=monthStats(hb,c.ex,c.d), ac=accountMeta(d);
  let wa=0,wb=0;
  const lines=MONTH_METRICS.map(m=>{const x=mxVal(A,m,c.avg),y=mxVal(B,m,c.avg);if(x==null||y==null)return null;const dl=y?x/y-1:null;
-   let w='';if(m.better!=='none'&&Math.abs(dl||0)>=.005){w=(m.better==='high'?x>y:x<y)?'a':'b';w==='a'?wa++:wb++}
+   let w='';if(m.better!=='none'&&Math.abs(dl||0)>=.005){w=(m.better==='high'?x>y:x<y)?'a':'b';w==='a'?wa+=mxPts(m.k):wb+=mxPts(m.k)}
    return {m,x,y,dl,w}}).filter(Boolean);
  const pick=['spend','value','conversions','roas'].map(k=>lines.find(l=>l.m.k===k)).filter(Boolean);
  const an=monthName(aKey), bn=monthName(bKey);
  return [`📌 ${ac.shortLabel} Month vs Month ⚙️`,`${monthName(aKey,true)} vs. ${monthName(bKey,true)}${c.avg?' · per day':''}${mxTypeTag()}`,'',
-  wa===wb?`⚖️ Even — each month wins ${wa}`:`🏆 ${wa>wb?an:bn} wins ${Math.max(wa,wb)} of ${wa+wb}`,'',
+  wa===wb?`⚖️ Even on points — ${wa} each`:`🏆 ${wa>wb?an:bn} wins ${Math.max(wa,wb)}–${Math.min(wa,wb)} on points`,'',
   ...pick.map(l=>`${l.w==='a'?'🟢':l.w==='b'?'🔴':'⚪'} ${rsShortLabel(l.m)}: ${l.m.f(l.x,c.avg)} vs. ${l.m.f(l.y,c.avg)} (${l.dl>=0?'+':'−'}${percent(Math.abs(l.dl))})`)].join('\n');
 }
 
@@ -7878,7 +7965,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v96',date:'2026-10-25'};
+const DASHBOARD_RELEASE_CLIENT={version:'v97',date:'2026-10-25'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
