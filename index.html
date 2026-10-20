@@ -2570,6 +2570,10 @@ window.addEventListener('load',function(){
     .py-body{padding:12px 14px 26px}
     .py-hero{border-radius:22px;padding:16px 14px 10px;background:radial-gradient(circle at 85% 0,#3157c9,#203c8e 55%,#172d6e);color:#fff;box-shadow:0 14px 34px rgba(32,60,142,.25)}
     .py-hero small{font-size:10.5px;font-weight:900;letter-spacing:.1em;color:#c9d3f5}
+    .py-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#eef1f7;border-radius:14px;padding:4px;margin-bottom:10px}
+    .py-seg button{border:0;background:none;border-radius:10px;padding:9px 4px;font:inherit;font-size:13px;font-weight:900;color:#6b7385;cursor:pointer}
+    .py-seg button.on{background:#203c8e;color:#fff;box-shadow:0 4px 12px rgba(32,60,142,.25)}
+    body.dark-mode .py-seg{background:#151a22}body.dark-mode .py-seg button{color:#9aa3b5}body.dark-mode .py-seg button.on{background:#3d6bff;color:#fff}
     .py-chart{display:block;width:100%;height:auto;margin-top:6px}.py-chart circle{fill:#fff}.py-chart circle.win{fill:#39ff9a;filter:drop-shadow(0 0 6px #39ff9a)}
     .py-chart .v{fill:#fff;font-size:10.5px;font-weight:800;text-anchor:middle}.py-chart .y{fill:#c9d3f5;font-size:10px;font-weight:800;text-anchor:middle}
     .py-note{font-size:11.5px;color:#7b8396;font-weight:600;margin:10px 4px 0;line-height:1.5}
@@ -7221,7 +7225,10 @@ function compareShareText(d){
 
 
  
-let PY_OPEN=false, PY_PICK=null;
+let PY_OPEN=false, PY_PICK=null, PY_METRIC='value';
+
+const PY_METRICS={spend:{l:'Spend',t:'SPEND'},roas:{l:'ROAS',t:'ROAS'},value:{l:'Value',t:'CONV. VALUE'}};
+function pyMetric(k){PY_METRIC=k;renderPastYears()}
 const HIJRI_FMT=(()=>{try{return new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',year:'numeric',timeZone:'UTC'})}catch(e){return null}})();
 function hijriOf(dk){
  if(!HIJRI_FMT)return null;
@@ -7262,7 +7269,7 @@ function pyYears(){
  return out;
 }
 function openPastYears(){
- PY_OPEN=true; PY_PICK=null;
+ PY_OPEN=true; PY_PICK=null; PY_METRIC='value';
  const el=document.getElementById('pastYearsOverlay'); if(el)el.classList.add('open');
  if(!MONTH_EXTRA[CURRENT_ACCOUNT])loadMonthExtras();
  renderPastYears();
@@ -7299,10 +7306,12 @@ function renderPastYears(){
  const chip=(a,b,low)=>{if(b==null||!b)return '<span class="py-chip n">first year</span>';const dd=a/b-1,g=low?dd<=0:dd>=0;return `<span class="py-chip ${g?'g':'r'}">${dd>=0?'▲':'▼'} ${percent(Math.abs(dd))}</span>`};
  const dl=(a,b)=>{if(b==null||!b)return '';const dd=a/b-1;return `<em class="${dd>=0?'g':'r'}">${dd>=0?'▲':'▼'}${Math.abs(Math.round(dd*100))}%</em>`};
  
- const pts=[...ys].reverse(), mx=Math.max(...pts.map(y=>y.s.value),1), W=320, H=104;
+ const mk=PY_METRIC, val=y=>Number(y.s[mk])||0, lab=v=>mk==='roas'?fmt(v,2)+'x':'£'+(v/1000).toFixed(1)+'k';
+ const pts=[...ys].reverse(), mx=Math.max(...pts.map(val),mk==='roas'?0.01:1), best=pts.reduce((a,b)=>val(b)>val(a)?b:a), W=320, H=104;
  const X=i=>34+i*(W-68)/Math.max(1,pts.length-1), Y=v=>H-18-v/mx*(H-46);
- const chart=`<svg class="py-chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet"><polyline points="${pts.map((y,i)=>X(i).toFixed(1)+','+Y(y.s.value).toFixed(1)).join(' ')}" fill="none" stroke="#e2b874" stroke-width="3" stroke-linejoin="round"/>
-   ${pts.map((y,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(y.s.value).toFixed(1)}" r="${y===win?7:5}" class="${y===win?'win':''}"/><text x="${X(i).toFixed(1)}" y="${(Y(y.s.value)-11).toFixed(1)}" class="v">£${(y.s.value/1000).toFixed(1)}k</text><text x="${X(i).toFixed(1)}" y="${H-2}" class="y">${yr(y)}</text>`).join('')}</svg>`;
+ const chart=`<svg class="py-chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet"><polyline points="${pts.map((y,i)=>X(i).toFixed(1)+','+Y(val(y)).toFixed(1)).join(' ')}" fill="none" stroke="#e2b874" stroke-width="3" stroke-linejoin="round"/>
+   ${pts.map((y,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(val(y)).toFixed(1)}" r="${y===best?7:5}" class="${y===best?'win':''}"/><text x="${X(i).toFixed(1)}" y="${(Y(val(y))-11).toFixed(1)}" class="v">${lab(val(y))}</text><text x="${X(i).toFixed(1)}" y="${H-2}" class="y">${yr(y)}</text>`).join('')}</svg>`;
+ const seg=`<div class="py-seg">${Object.keys(PY_METRICS).map(k=>`<button type="button" class="${k===mk?'on':''}" onclick="pyMetric('${k}')">${PY_METRICS[k].l}</button>`).join('')}</div>`;
  const maxV=Math.max(...ys.map(y=>y.s.value),1);
  const cards=ys.map((y,i)=>{
    const p=ys[i+1], a=y.s, b=p?p.s:null, open=y.dk===PY_PICK, isWin=y===win;
@@ -7318,7 +7327,7 @@ function renderPastYears(){
      ${open?`<div class="py-more"><div class="py-day">${esc(day(y.dk))}</div><div class="py-q">${[['Clicks',fmt(a.clicks,0)],['CTR',percent(a.ctr)],['CPA',money(a.cpa,2)],['CVR',percent(a.cvr)]].map(([l,v])=>`<span>${l} <b>${v}</b></span>`).join('')}</div>${typeBlock}</div>`:''}
    </div>`;
  }).join('');
- body.innerHTML=`<div class="py-side"><div class="py-hero"><small>${esc(String(x.hijriDate||'').toUpperCase())} · CONV. VALUE BY YEAR</small>${chart}</div>
+ body.innerHTML=`<div class="py-side">${seg}<div class="py-hero"><small>${esc(String(x.hijriDate||'').toUpperCase())} · ${PY_METRICS[mk].t} BY YEAR</small>${chart}</div>
    <div class="py-note">Each year is the same Hijri date, from the daily data that starts in ${esc(shortDate(Object.keys((MONTH_EXTRA[CURRENT_ACCOUNT]||{}).days||{}).sort()[0]||''))}. Changes compare with the year before.</div>
    ${pySummary(ys,win,yr)}</div>
    <div class="py-col"><div class="py-list">${cards}</div>
