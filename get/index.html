@@ -211,7 +211,7 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
 
     <div class="ha">
       <div class="dl">
-        <a class="and" id="bA" href="https://sekna-app.github.io/get/SEKNA.apk" download="SEKNA-1.2.3.apk" onclick="openBox('a')">
+        <a class="and" id="bA" href="https://github.com/ibrahimamin6700-ui/human-appeal-media-plan/releases/latest" target="_blank" rel="noopener" onclick="openBox('a')">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22a11.5 11.5 0 0 0-9.84 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>
           <span><small>DOWNLOAD FOR</small><b>Android</b></span></a>
         <a class="web" id="bW" href="https://sekna-app.web.app/" onclick="openBox('w');return false">
@@ -220,14 +220,14 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
       </div>
 
       <div class="box" id="boxA"><div><div class="card a">
-        <h3><span class="spin"></span>Downloading SEKNA…</h3>
+        <h3><span class="spin"></span>Opening the download page…</h3>
         <p>SEKNA 1.2.3 · 2.9 MB · Android 7 or newer</p>
         <ol>
-          <li><span>Open the file when the download finishes.</span></li>
+          <li><span>Under <b>Assets</b>, tap <b>SEKNA.apk</b>, then open the file when it finishes.</span></li>
           <li><span>If asked, allow <b>Install unknown apps</b>.</span></li>
           <li><span>Tap <b>Install</b>, open SEKNA and allow notifications.</span></li>
         </ol>
-        <a class="again" href="https://sekna-app.github.io/get/SEKNA.apk" download="SEKNA-1.2.3.apk">Download didn’t start? Tap here</a>
+        <a class="again" href="https://github.com/ibrahimamin6700-ui/human-appeal-media-plan/releases/latest" target="_blank" rel="noopener">Page didn’t open? Tap here</a>
       </div></div></div>
 
       <div class="box" id="boxW"><div><div class="card w">
@@ -284,7 +284,7 @@ function openBox(k){
   document.getElementById('bW').classList.toggle('on',k==='w');
   var box=k==='a'?a:w;
   setTimeout(function(){var r=box.getBoundingClientRect();if(r.bottom>innerHeight)window.scrollBy({top:r.bottom-innerHeight+16,behavior:'smooth'})},460);
-  if(k==='a')setTimeout(function(){var h=a.querySelector('h3');h.textContent='Check your downloads';},2600);
+  if(k==='a')setTimeout(function(){var h=a.querySelector('h3');h.textContent='Tap SEKNA.apk under Assets';},2600);
 }
 function toGuide(e){var g=document.getElementById('guide');if(!g)return;e.preventDefault();g.scrollIntoView({behavior:'smooth',block:'start'})}
 function copyLink(btn){

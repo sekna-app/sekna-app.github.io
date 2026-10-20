@@ -6826,8 +6826,8 @@ function mvPlayFade(els,delay){els.forEach(el=>setTimeout(()=>{el.style.transiti
 
 function mvBoard(find,rows,bars,nums){
  return {find,
-  prep:r=>{mvPrepRise(mvQ(r,rows));mvPrepGrow(mvQ(r,bars));mvPrepCount(mvQ(r,nums))},
-  play:r=>{mvPlayRise(mvQ(r,rows),0,120);mvPlayGrow(mvQ(r,bars),'width',250,120);mvPlayCount(mvQ(r,nums),1000,150)}};
+  prep:r=>{mvPrepRise(mvQ(r,rows));mvPrepGrow(mvQ(r,bars));if(nums)mvPrepCount(mvQ(r,nums))},
+  play:r=>{mvPlayRise(mvQ(r,rows),0,120);mvPlayGrow(mvQ(r,bars),'width',250,120);if(nums)mvPlayCount(mvQ(r,nums),1000,150)}};
 }
 const mvSel=s=>p=>mvQ(p,s);
 const MV_SECTIONS=[
@@ -6842,8 +6842,8 @@ const MV_SECTIONS=[
   play:r=>{mvPlayDash(mvQ(r,'.sx-gauge-fill'),1300,0);mvPlayCount(mvQ(r,'.sx-gauge-in b'),1300)}},
  {find:mvSel('#yoyRows'),prep:r=>mvPrepRise(mvQ(r,'tr')),play:r=>mvPlayRise(mvQ(r,'tr'),250,80)},
  mvBoard(mvSel('#topProjectsBoard'),'.sx-lrow','.sx-lbar span','.sx-lroas'),
- mvBoard(mvSel('#dayChannelsSection'),'.ctd','.ctd-bar span','.ctd-roas'),
- mvBoard(mvSel('.sx-month'),'.sx-hero,.sx-ftile','.sx-fbar span,.sx-thin span','#mSpend,#mValue,#mRoas'),
+ mvBoard(mvSel('#dayChannelsSection'),'.ctd','.ctd-bar span'),
+ mvBoard(mvSel('.sx-month'),'.sx-hero,.sx-ftile','.sx-fbar span,.sx-thin span'),
  mvBoard(p=>{const r=p.querySelector('.cx-row');return r?[r.parentElement]:[]},'.cx-row','.cx-bar span','.cx-roas'),
  
  {find:p=>{const s=p.querySelector('#planAccuracyScore');return s?[s.closest('.card')||s.parentElement]:[]},
