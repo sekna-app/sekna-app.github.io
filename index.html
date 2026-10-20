@@ -3770,6 +3770,44 @@ window.addEventListener('load',function(){
     body.dark-mode .acc-strip{background:#151a22;border-color:#252a32}body.dark-mode .acc-strip .brand-name{color:#fff}body.dark-mode .acc-strip .brand-sub{color:#a7afbf!important}
     #dashboardTitle,.hero-title{display:none!important}
     #whatsNewOverlay .upx-head h2{margin:0;color:#fff;font-size:21px;letter-spacing:-.01em;text-transform:none}
+
+    /* v107 · Settings "Aurora header" */
+    #settingsOverlay .st-head,#adminOverlay .sk-admin-head{background:linear-gradient(150deg,#2f50b5,#1b347f)!important;border-bottom:0!important;color:#fff}
+    #settingsOverlay .st-head h2,#adminOverlay .sk-admin-head h2{color:#fff!important}
+    #settingsOverlay .st-head .sk-kicker,#adminOverlay .sk-admin-head .sk-kicker{color:#c9d3f5!important}
+    #settingsOverlay .st-head .sk-icon-btn,#adminOverlay .sk-admin-head .sk-icon-btn{background:rgba(255,255,255,.12)!important;border:1px solid rgba(255,255,255,.2)!important;color:#fff!important;box-shadow:none!important}
+    #settingsOverlay .st-head .sk-icon-btn svg,#adminOverlay .sk-admin-head .sk-icon-btn svg{stroke:#fff!important}
+    .st-hero{margin:0 -16px 6px;padding:2px 16px 18px;background:linear-gradient(170deg,#1b347f,#152a66);position:relative;overflow:hidden}
+    .st-hero::after{content:"";position:absolute;right:-60px;top:-90px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(226,184,116,.3),transparent 68%)}
+    .st-user{position:relative;z-index:1;max-width:648px;margin:0 auto;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:18px;padding:11px 12px;color:#fff}
+    .st-av{width:42px;height:42px;border-radius:50%;background:#e2b874;color:#0c1a46;display:grid;place-items:center;font-weight:900;font-size:14px;flex:none}
+    .st-ut{flex:1;min-width:0}.st-ut b{display:block;font-size:14.5px}.st-ut small{display:block;font-size:11.5px;color:#c9d3f5;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .st-role{font-size:10px;font-weight:900;letter-spacing:.06em;background:#e2b874;color:#0c1a46;border-radius:99px;padding:4px 10px;flex:none}
+    #settingsOverlay .sk-modal .switch input:checked+span{background:#e2b874}
+    .st-ver{text-align:center;font-size:11px;font-weight:700;color:#8a93a6;margin:16px 0 0}
+    /* v107 · Admin "Tabs and activity" */
+    .a3-tabs{position:relative;display:flex;gap:4px;margin:0 -16px 12px;padding:4px 16px 14px;background:linear-gradient(170deg,#1b347f,#152a66)}
+    .a3-tabs button{flex:1;border:0;border-radius:11px;padding:9px 0;font:inherit;font-size:12.5px;font-weight:800;color:#c9d3f5;background:rgba(255,255,255,.08);cursor:pointer}
+    .a3-tabs button.on{background:#fff;color:#203c8e}
+    .a3-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .a3-stats div{background:#fff;border:1px solid #e6e9f1;border-radius:14px;padding:10px 6px;text-align:center}
+    .a3-stats b{display:block;font-size:21px;color:#1d2433}.a3-stats small{font-size:10.5px;font-weight:800;color:#8a93a6}
+    .a3-stats div.alert{background:#fff8ec;border-color:#f1d9a8}.a3-stats div.alert b{color:#9a6a22}
+    .a3-card{margin-top:10px;background:#fff;border:1px solid #e6e9f1;border-radius:18px;padding:13px 14px}
+    .a3-ch small{display:block;font-size:10.5px;font-weight:900;letter-spacing:.1em;color:#8a93a6}.a3-ch b{font-size:26px;color:#1d2433}
+    .a3-bars{margin-top:8px;display:grid;gap:7px}
+    .a3-bars>div{display:grid;grid-template-columns:86px 1fr 34px;gap:8px;align-items:center;font-size:12px;font-weight:700;color:#4b5263}
+    .a3-bars span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.a3-bars b{text-align:right;color:#1d2433}
+    .a3-bars i{height:9px;border-radius:9px;background:#eef0f5;overflow:hidden}.a3-bars u{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#3d6bff,#203c8e)}
+    .a3-qa{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+    .a3-qa button{border:0;border-radius:14px;padding:12px 6px;font:inherit;font-size:12.5px;font-weight:900;color:#fff;cursor:pointer}
+    .a3-qa .green{background:#22c47c}.a3-qa .red{background:#e0566a}.a3-qa .navy{background:#203c8e}.a3-qa .gold{background:#c28d3e}
+    .a3-fi{display:flex;align-items:center;gap:11px;padding:10px 12px;border-top:1px solid #eef0f5}.a3-fi:first-child{border:0}
+    .a3-fi b{display:block;font-size:12.5px;color:#1d2433}.a3-fi small{font-size:10.5px;color:#8a93a6;font-weight:700}
+    .a3-ic{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;flex:none}
+    .a3-ic svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    body.dark-mode .a3-stats div,body.dark-mode .a3-card{background:#151a22;border-color:#252a32}body.dark-mode .a3-stats b,body.dark-mode .a3-ch b,body.dark-mode .a3-bars b,body.dark-mode .a3-fi b{color:#fff}
+    body.dark-mode .a3-fi{border-color:#252a32}body.dark-mode .a3-bars i{background:#252a32}
 </style>
 </head>
 <body>
@@ -3910,7 +3948,8 @@ window.addEventListener('load',function(){
 
 <div class="app-modal-overlay sk-page" id="settingsOverlay" onclick="closeSettings(event)" data-share-ui>
   <section class="app-modal sk-modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" onclick="event.stopPropagation()">
-    <div class="sk-modal-head"><div><div class="sk-kicker">SEKNA</div><h2 id="settingsTitle">Settings</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeSettings()" aria-label="Close settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+    <div class="sk-modal-head st-head"><div><div class="sk-kicker">SEKNA</div><h2 id="settingsTitle">Settings</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeSettings()" aria-label="Close settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+    <div class="st-hero"><div class="st-user"><span class="st-av" id="stAv">S</span><span class="st-ut"><b id="stName">SEKNA</b><small id="stEmail">Signed in</small></span><span class="st-role" id="stRole" hidden>ADMIN</span></div></div>
 
     <div class="sk-group-title">Appearance</div>
     <div class="sk-card">
@@ -3934,6 +3973,7 @@ window.addEventListener('load',function(){
       <input type="hidden" id="notificationSoundSetting" value="default">
     </div>
 
+    <div class="st-ver" id="stVer"></div>
     <button class="sk-primary-btn" type="button" onclick="closeSettings()">Done</button>
   </section>
 </div>
@@ -4570,8 +4610,15 @@ function syncNativeSettings(){
  catch(e){}
 }
 function openSettings(){
- closeSidebar();syncSettingsControls();renderProfileCard();
+ closeSidebar();syncSettingsControls();renderProfileCard();settingsUser();
  const el=document.getElementById('settingsOverlay');if(el)el.classList.add('open');
+}
+
+function settingsUser(){
+ const nm=(document.getElementById('profileName')||{}).textContent||'SEKNA', em=(document.getElementById('profileEmail')||{}).textContent||'';
+ text('stName',nm);text('stEmail',em);text('stAv',(nm.trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2)||'S').toUpperCase());
+ const r=document.getElementById('stRole');if(r)r.hidden=!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin);
+ const app=appVersion();text('stVer','SEKNA Dashboard '+DASHBOARD_RELEASE_CLIENT.version+(app?' · App '+app:''));
 }
 function closeSettings(event){
  if(event&&event.target!==event.currentTarget)return;
@@ -7430,7 +7477,7 @@ async function doSignOut(){
 }
 
 function openAdmin(){
- closeSidebar();
+ closeSidebar();ADMIN_VIEW='overview';ADMIN_OV_LOADED=false;
  const el=document.getElementById('adminOverlay');if(el)el.classList.add('open');
  loadAdmin();
 }
@@ -7503,7 +7550,18 @@ async function adminDeleteRow(id,btn){
  try{await serverCall('adminDelete',getAccessToken(),id);showSettingsToast('Record deleted');loadAdmin()}
  catch(err){if(btn){btn.disabled=false;btn.classList.remove('confirm');btn.textContent='Delete'}showSettingsToast(errorText(err))}
 }
-let ADMIN_LAST=null, ADMIN_TAB='';
+let ADMIN_LAST=null, ADMIN_TAB='', ADMIN_VIEW='overview', ADMIN_OV_LOADED=false;
+
+function adminView(v){
+ ADMIN_VIEW=v;if(v==='server')adminLoadExtra('server');
+ if(v==='tools'&&ADMIN_TAB==='server')ADMIN_TAB='';
+ if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
+ const b=document.querySelector('#adminOverlay .app-modal');if(b)b.scrollTop=0;
+}
+function adminGo(k){ADMIN_VIEW='tools';ADMIN_TAB=k;adminLoadExtra(k);if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+const AD_IC={eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+ bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/>',server:'<rect x="4" y="4" width="16" height="7" rx="2"/><rect x="4" y="13" width="16" height="7" rx="2"/><path d="M8 7.5h.01M8 16.5h.01"/>'};
+const adIco=(k,c,bg)=>`<span class="a3-ic" style="background:${bg};color:${c}"><svg viewBox="0 0 24 24" aria-hidden="true">${AD_IC[k]}</svg></span>`;
 
 function adminTab(k){ADMIN_TAB=ADMIN_TAB===k?'':k;if(ADMIN_TAB)adminLoadExtra(ADMIN_TAB);if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function renderAdmin(d){
@@ -7538,11 +7596,30 @@ function renderAdmin(d){
  const act=(k,ic,bg,t,sub)=>`<button type="button" class="a2-act${ADMIN_TAB===k?' on':''}" onclick="adminTab('${k}')"><span style="background:${bg}">${ic}</span><b>${t}</b><small>${sub}</small></button>`;
  const inviteView=`<div class="a2-sheet"><b class="ad-h">➕ Invite someone</b><small class="ad-sub">They get an email with a link to sign in to SEKNA.</small><form class="ad-invite" style="margin-top:12px" onsubmit="adminInviteSubmit(event)"><input id="adminInviteEmail" type="email" inputmode="email" autocapitalize="off" placeholder="name@company.com" onfocus="setTimeout(()=>this.scrollIntoView({block:'center'}),300)"><button id="adminInviteBtn" type="submit">Send invite</button></form></div>`;
  const sheet=ADMIN_TAB==='invite'?inviteView:ADMIN_TAB==='message'?`<div class="a2-sheet">${adminMessageHtml()}</div>`:ADMIN_TAB==='app'?`<div class="a2-sheet">${adminMaintHtml()}</div>`:ADMIN_TAB==='activity'?`<div class="a2-sheet">${adminActivityHtml()}</div>`:ADMIN_TAB==='ideas'?`<div class="a2-sheet">${adminIdeasHtml()}</div>`:ADMIN_TAB==='server'?`<div class="a2-sheet">${adminServerHtml()}</div>`:'';
- adminBody(`<div class="a2-tiles">${tile('t1','👥',users.length,'Users')}${tile('t3','⏳',waiting.length,'Waiting for approval')}${tile('t2','✉️',invited,'Invited')}${tile('t4','⚡',today,'Active today')}</div>
-   <div class="a2-acts">${act('app',m.on?'🔴':'🟢',m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message','📣','#e9eefc','Team message',annState)}${act('invite','➕','#fff3dc','Invite','Add someone')}${act('activity','📊','#e3f6ec','Activity','This month')}${act('ideas','💡','#fff3dc','Ideas',Array.isArray(ADMIN_IDEAS)?(ADMIN_IDEAS.filter(i=>i.status==='New').length+' new'):'From the team')}${act('server',serverNow().icon,serverNow().bg,'Server',serverNow().short)}</div>
-   ${sheet}
-   ${waiting.length?`<div class="ad-lbl">Waiting for approval</div><div class="ad-card ad-pend">${waiting.map(person).join('')}</div>`:''}
-   <div class="ad-lbl">People · ${team.length}</div><div class="ad-card">${team.map(person).join('')||'<div class="sk-admin-empty">No one has requested access yet.</div>'}</div>`);
+ const tabs=`<div class="a3-tabs">${[['overview','Overview'],['people','People'+(waiting.length?` · ${waiting.length}`:'')],['tools','Tools'],['server','Server']].map(([k,l])=>`<button type="button" class="${ADMIN_VIEW===k?'on':''}" onclick="adminView('${k}')">${l}</button>`).join('')}</div>`;
+ const peopleView=`${waiting.length?`<div class="ad-lbl">Waiting for approval</div><div class="ad-card ad-pend">${waiting.map(person).join('')}</div>`:''}
+   <div class="ad-lbl">People · ${team.length}</div><div class="ad-card">${team.map(person).join('')||'<div class="sk-admin-empty">No one has requested access yet.</div>'}</div>`;
+ let body='';
+ if(ADMIN_VIEW==='overview'){
+   if(!ADMIN_OV_LOADED){ADMIN_OV_LOADED=true;adminLoadExtra('activity');adminLoadExtra('ideas');if(!SRV_ADMIN.events)srvLoad()}
+   const a=ADMIN_ACTIVITY, op=a&&!a.error&&a.opens;
+   const mx=op?Math.max(1,...op.people.map(p=>p.n)):1;
+   const opens=`<div class="a3-card"><div class="a3-ch"><small>OPENS THIS MONTH</small>${op?`<b>${op.total}</b>`:'<b>…</b>'}</div>
+     ${op?(op.people.length?`<div class="a3-bars">${op.people.slice(0,4).map(p=>`<div><span>${esc(p.name)}</span><i><u style="width:${(p.n/mx*100).toFixed(1)}%"></u></i><b>${p.n}</b></div>`).join('')}</div>`:'<div class="sk-admin-empty">No one opened SEKNA yet this month.</div>'):`<div class="sk-admin-empty">${a&&a.error?esc(a.error):'Loading…'}</div>`}</div>`;
+   const quick=`<div class="ad-lbl">Quick actions</div><div class="a3-qa"><button type="button" class="${m.on?'red':'green'}" onclick="adminGo('app')">● ${m.on?'Maintenance':'Live'}</button><button type="button" class="navy" onclick="adminGo('message')">Message</button><button type="button" class="gold" onclick="adminGo('invite')">Invite</button></div>`;
+   const feed=[];
+   users.forEach(p=>{if(p.last)feed.push({at:p.last,ic:adIco('eye','#203c8e','#eef3ff'),t:`${esc(p.name)} opened SEKNA`})});
+   waiting.forEach(p=>feed.push({at:Math.max(0,...p.devices.map(x=>x.lastSeenMs||0))||now,ic:adIco('user','#9a6a22','#fbf1e1'),t:`${esc(p.name)} asked for access`}));
+   if(Array.isArray(ADMIN_IDEAS))ADMIN_IDEAS.forEach(i=>{const at=Date.parse(i.time);if(at)feed.push({at,ic:adIco('bulb','#c28d3e','#fff6e0'),t:`New idea: ${esc(i.title||'Untitled')}`})});
+   if(Array.isArray(SRV_ADMIN.events))SRV_ADMIN.events.forEach(e=>{if(e.at)feed.push({at:e.at,ic:adIco('server',/Backup/.test(e.server)?'#c43c50':'#0e8f5d',/Backup/.test(e.server)?'#fde8eb':'#e3f6ee'),t:/Backup/.test(e.server)?'Server moved to the backup':'Server back on Firebase'})});
+   feed.sort((x,y)=>y.at-x.at);
+   const recent=`<div class="ad-lbl">Recent</div><div class="ad-card">${feed.slice(0,8).map(f=>`<div class="a3-fi">${f.ic}<div><b>${f.t}</b><small>${esc(timeAgo(f.at,now))}</small></div></div>`).join('')||'<div class="sk-admin-empty">Nothing yet.</div>'}</div>`;
+   body=`<div class="a3-stats"><div><b>${users.length}</b><small>Users</small></div><div class="${waiting.length?'alert':''}"><b>${waiting.length}</b><small>Waiting</small></div><div><b>${invited}</b><small>Invited</small></div><div><b>${today}</b><small>Today</small></div></div>${opens}${quick}${recent}`;
+ }
+ else if(ADMIN_VIEW==='people')body=peopleView;
+ else if(ADMIN_VIEW==='server')body=`<div class="a2-sheet">${adminServerHtml()}</div>`;
+ else body=`<div class="a2-acts">${act('app',m.on?'🔴':'🟢',m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message','📣','#e9eefc','Team message',annState)}${act('invite','➕','#fff3dc','Invite','Add someone')}${act('activity','📊','#e3f6ec','Activity','This month')}${act('ideas','💡','#fff3dc','Ideas',Array.isArray(ADMIN_IDEAS)?(ADMIN_IDEAS.filter(i=>i.status==='New').length+' new'):'From the team')}</div>${ADMIN_TAB==='server'?'':sheet}`;
+ adminBody(tabs+`<div class="a3-body">${body}</div>`);
 }
 
 const PERSON_ACTIONS={approve:['Pending'],deny:['Pending'],revoke:['Approved'],restore:['Revoked','Denied']};
@@ -8306,7 +8383,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v106',date:'2026-10-30'};
+const DASHBOARD_RELEASE_CLIENT={version:'v107',date:'2026-10-31'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
