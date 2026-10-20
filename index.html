@@ -1983,6 +1983,46 @@ window.addEventListener('load',function(){
     .ctd-h b,.sbx-t-h b,.py-tn{display:inline-flex;align-items:center}
     .dx-chrow .channel-icon.ch-ico{width:18px;height:18px;flex-basis:18px;border-radius:5px;margin-right:0}.dx-chrow .channel-icon.ch-ico svg{width:11px;height:11px}
     .rl-h .channel-icon.ch-ico,.sbx-t-h .channel-icon.ch-ico{margin-right:0}
+    /* Day by Day · vs Last year (v101) */
+    .dx-switch .wx-tab{white-space:nowrap}
+    .lyx-sum{margin-top:12px;border-radius:20px;padding:14px;color:#fff;background:linear-gradient(150deg,#0c1a46,#203c8e);display:grid;gap:14px}
+    .lyx-sum small{font-size:10.5px;font-weight:900;letter-spacing:.12em;color:#9fb0dd}
+    .lyx-ring{display:flex;align-items:center;gap:12px;margin-top:6px}
+    .lyx-ring svg{width:70px;height:70px;transform:rotate(-90deg);flex:none}
+    .lyx-ring b{font-size:30px;font-weight:900;letter-spacing:-.02em}
+    .lyx-ring p{margin:2px 0 0;font-size:12px;color:#c9d3f5;font-weight:600}
+    .lyx-sum .up{color:#39e29a;font-style:normal}.lyx-sum .dn{color:#ff8f9a}
+    .lyx-cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:10px}
+    .lyx-cal i{font-style:normal;aspect-ratio:1;border-radius:9px;display:grid;place-items:center;font-size:12px;font-weight:900}
+    .lyx-cal i.w,.lyx-key i.w{background:#39e29a;color:#06301f}.lyx-cal i.l,.lyx-key i.l{background:rgba(255,143,154,.85);color:#3d0b13}
+    .lyx-cal i.f,.lyx-key i.f{background:rgba(255,255,255,.08);color:#6f7fb3}.lyx-cal i.n{background:rgba(255,255,255,.2);color:#c9d3f5}
+    .lyx-key,.lyx-lg{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:10.5px;font-weight:800;color:#c9d3f5;margin-top:8px}
+    .lyx-key i,.lyx-lg i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+    .lyx-b svg{display:block;width:100%;height:82px;margin-top:6px}
+    .lyx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:10px}
+    .lyx-t{border-radius:16px;padding:10px;background:#fff;position:relative;border:1.5px solid #e6e9f1}
+    .lyx-t.w{border-color:#9ee9c6;background:#f2fcf7;cursor:pointer}.lyx-t.l{border-color:#f7c3cb;background:#fff6f7;cursor:pointer}
+    .lyx-d{font-size:11px;font-weight:800;color:#6b7385;padding-right:52px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lyx-d b{font-size:16px;color:#1d2433;margin-right:4px}
+    .lyx-v{font-size:17px;font-weight:900;margin-top:4px;color:#1d2433}.lyx-ly{font-size:10.5px;color:#8a93a6;font-weight:700}
+    .lyx-dl{position:absolute;top:10px;right:9px;font-size:10.5px;font-weight:900}.lyx-dl.up{color:#0e8f5d}.lyx-dl.dn{color:#c43c50}
+    .lyx-sheet{position:fixed;inset:0;z-index:2000;background:rgba(9,14,30,.45);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
+    .lyx-sheet.open{opacity:1;pointer-events:auto}
+    .lyx-card{position:relative;width:100%;max-width:460px;background:#fff;border-radius:22px 22px 0 0;padding:16px 14px calc(18px + env(safe-area-inset-bottom));transform:translateY(30px);transition:transform .3s cubic-bezier(.2,.8,.2,1);max-height:88vh;overflow:auto}
+    .lyx-sheet.open .lyx-card{transform:none}
+    @media(min-width:700px){.lyx-sheet{align-items:center}.lyx-card{border-radius:22px}}
+    .lyx-card>.lyx-t{border:0;padding:4px 2px;background:transparent}.lyx-card>.lyx-t .lyx-dl{right:40px;top:6px;font-size:12px}.lyx-card .lyx-v{font-size:24px}
+    .lyx-x{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:0;background:#f1f3f8;color:#4b5263;font-size:13px;font-weight:900;cursor:pointer;z-index:1}
+    body.dark-mode .lyx-card{background:#151a22}body.dark-mode .lyx-x{background:#252a32;color:#c9d3f5}
+    .lyx-det{margin-top:12px;border-top:1px solid rgba(0,0,0,.06);padding-top:4px}
+    .lyx-dr{display:grid;grid-template-columns:1fr auto auto 74px;gap:10px;align-items:center;padding:5px 0;font-size:12px}
+    .lyx-dr span:first-child{color:#6b7385;font-weight:700}.lyx-dr b{text-align:right;color:#1d2433}.lyx-dr b.m{color:#a2a9b8;font-weight:700}
+    .lyx-dr .mx-arrow{justify-self:end}.lyx-dr.hd b{font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:#8a93a6}
+    .lyx-more{margin-top:6px;text-align:center;font-size:11px;font-weight:800;color:#3d6bff}
+    @media(min-width:900px){.lyx-sum{grid-template-columns:340px minmax(0,1fr);gap:28px;align-items:center;padding:18px 22px}.lyx-b svg{height:150px}}
+    body.desktop-site-mode .lyx-sum{grid-template-columns:340px minmax(0,1fr);gap:28px;align-items:center}body.desktop-site-mode .lyx-b svg{height:150px}
+    body.dark-mode .lyx-t{background:#151a22;border-color:#2a313c}body.dark-mode .lyx-t.w{background:#0f2a20;border-color:#1f6a4b}body.dark-mode .lyx-t.l{background:#2c161b;border-color:#6a2a35}
+    body.dark-mode .lyx-d b,body.dark-mode .lyx-v,body.dark-mode .lyx-dr b{color:#fff}body.dark-mode .lyx-dr b.m{color:#6f7787}
+    body.dark-mode .lyx-dl.up{color:#39e29a}body.dark-mode .lyx-dl.dn{color:#ff8f9a}
     /* One month · By channel leaderboard (v99) */
     .rl-sub{display:flex;justify-content:space-between;align-items:baseline}.rl-sub span{font-size:11px;color:#9aa2b3;letter-spacing:.02em;text-transform:none;font-weight:800}
     .rl{border:1.5px solid #e6e9f1;border-radius:16px;padding:4px 14px 12px}
@@ -4141,6 +4181,7 @@ window.addEventListener('load',function(){
       <div class="wx-tabs dx-switch" role="tablist">
         <button class="wx-tab on" type="button" id="dxPlanBtn" onclick="setDayView('plan')">Media Plan</button>
         <button class="wx-tab" type="button" id="dxResultsBtn" onclick="setDayView('results')">Results</button>
+        <button class="wx-tab" type="button" id="dxLyBtn" onclick="setDayView('ly')">vs Last year</button>
       </div>
       <div id="dxBody"></div>
     </section>
@@ -5202,9 +5243,10 @@ function renderExtraTab(d){
  
 let DAY_VIEW='plan', DAY_OPEN='';
 function setDayView(v){
- DAY_VIEW=v==='results'?'results':'plan';
+ DAY_VIEW=v==='results'||v==='ly'?v:'plan';
  document.getElementById('dxPlanBtn').classList.toggle('on',DAY_VIEW==='plan');
  document.getElementById('dxResultsBtn').classList.toggle('on',DAY_VIEW==='results');
+ document.getElementById('dxLyBtn').classList.toggle('on',DAY_VIEW==='ly');
  if(DASH_DATA){renderDays(DASH_DATA);mvArm(document.getElementById('dxBody'))}
 }
 
@@ -5226,14 +5268,62 @@ function dayTotals(days){
  p.roas=p.spend?p.value/p.spend:null;a.roas=a.spend?a.value/a.spend:null;
  return {p,a,live};
 }
+ 
+let LYX_SHEETS=[];
+function lyxOpen(i){
+ let o=document.getElementById('lyxSheet');
+ if(!o){o=document.createElement('div');o.id='lyxSheet';o.className='lyx-sheet';o.onclick=e=>{if(e.target===o||e.target.closest('.lyx-x'))lyxClose()};document.body.appendChild(o)}
+ o.innerHTML=`<div class="lyx-card"><button type="button" class="lyx-x" aria-label="Close">✕</button>${LYX_SHEETS[i]||''}</div>`;
+ requestAnimationFrame(()=>o.classList.add('open'));
+}
+function lyxClose(){const o=document.getElementById('lyxSheet');if(o)o.classList.remove('open')}
+function lyDays(days){
+ const ex=MONTH_EXTRA[CURRENT_ACCOUNT];
+ if(!ex){loadMonthExtras();return extraWaitHtml('last year’s days')}
+ const R=days.filter(x=>x.actual).map(x=>{const k=hijriDayInYear(x.date,1),l=k?dayParts(k,ex):null,a=x.actual;
+   return {x,k,a,l,w:l?a.value>l.value:null}});
+ if(!R.length)return '<div class="dx-empty">No day has results yet this month.</div>';
+ const has=R.filter(r=>r.l), wins=has.filter(r=>r.w).length;
+ if(!has.length)return `<div class="dx-empty">Last year has no daily data for these Hijri days${dailyStartText()}.</div>`;
+ const TA=has.reduce((t,r)=>t+r.a.value,0), TL=has.reduce((t,r)=>t+r.l.value,0), dl=TL?TA/TL-1:null;
+ const best=[...has].sort((p,q)=>(q.a.value-q.l.value)-(p.a.value-p.l.value))[0];
+ const C=2*Math.PI*28, share=wins/has.length;
+ const byDate={};R.forEach(r=>byDate[r.x.date]=r);
+ const cal=days.map(x=>{const r=byDate[x.date];return `<i class="${!r?'f':!r.l?'n':r.w?'w':'l'}" title="${esc(x.hijri||'')}">${x.dayNumber}</i>`}).join('');
+ let ca=0,cl=0;const cum=has.map(r=>[ca+=r.a.value,cl+=r.l.value]), cm=Math.max(ca,cl)||1;
+ const pts=k=>cum.map((c,i)=>`${(has.length>1?i/(has.length-1)*316+2:160).toFixed(1)},${(78-c[k]/cm*72).toFixed(1)}`).join(' ');
+ const chip=v=>v==null?'':`${v>=0?'▲':'▼'} ${percent(Math.abs(v))}`;
+ const sum=`<div class="lyx-sum"><div class="lyx-a"><small>VS THE SAME HIJRI DAYS LAST YEAR</small>
+   <div class="lyx-ring"><svg viewBox="0 0 70 70"><circle cx="35" cy="35" r="28" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="8"/><circle cx="35" cy="35" r="28" fill="none" stroke="#39e29a" stroke-width="8" stroke-linecap="round" stroke-dasharray="${(share*C).toFixed(1)} ${C.toFixed(1)}"/></svg>
+   <div><b>${wins}/${has.length}</b><p>days beat last year${best&&best.a.value>best.l.value?` · best ${esc(shortDate(best.x.date))} <em class="up">+${mpK(best.a.value-best.l.value)}</em>`:''}</p></div></div>
+   <div class="lyx-cal">${cal}</div>
+   <div class="lyx-key"><span><i class="w"></i>Beat last year</span><span><i class="l"></i>Under</span><span><i class="f"></i>To come</span></div></div>
+  <div class="lyx-b"><small>RUNNING TOTAL · VALUE</small>
+   <svg viewBox="0 0 320 82" preserveAspectRatio="none"><polyline points="${pts(1)}" fill="none" stroke="#9fb0dd" stroke-width="2" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/><polyline points="${pts(0)}" fill="none" stroke="#39e29a" stroke-width="3" vector-effect="non-scaling-stroke"/></svg>
+   <div class="lyx-lg"><span><i style="background:#39e29a"></i>This year ${mpK(TA)}</span><span><i style="background:#9fb0dd"></i>Last year ${mpK(TL)}</span><b class="${dl>=0?'up':'dn'}">${chip(dl)}</b></div></div></div>`;
+ const det=r=>{const a=r.a,l=r.l;
+   const rows=[['Value',a.value,l.value,v=>money(v),1],['Spend',a.spend,l.spend,v=>money(v),0],['ROAS',a.spend?a.value/a.spend:null,l.spend?l.value/l.spend:null,v=>v==null?'—':fmt(v,2)+'x',1],
+     ['Conversions',a.conversions,l.conversions,v=>fmt(v,0),1],['Clicks',a.clicks,l.extra?l.extra.clicks:null,v=>v==null?'—':fmt(v,0),1],
+     ['Avg. donation',a.conversions?a.value/a.conversions:null,l.conversions?l.value/l.conversions:null,v=>v==null?'—':money(v,2),1]];
+   return `<div class="lyx-det"><div class="lyx-dr hd"><span>Last year: ${esc(shortDay(r.k).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'}))}</span><b>This year</b><b>Last year</b><span></span></div>
+    ${rows.map(([t,x,y,f,g])=>{const d=x!=null&&y?x/y-1:null,c=!g||d==null||Math.abs(d)<.005?'neutral':d>0?'good':'bad';return `<div class="lyx-dr"><span>${t}</span><b>${f(x)}</b><b class="m">${f(y)}</b>${mxArrow(d,c)}</div>`}).join('')}</div>`};
+ const head=r=>{const x=r.x,d=r.l&&r.l.value?r.a.value/r.l.value-1:null;
+   return `<span class="lyx-dl ${r.w?'up':'dn'}">${chip(d)}</span><div class="lyx-d"><b>${x.dayNumber}</b>${esc(String(x.dayName||'').slice(0,3))} · ${esc(x.hijri||'')}</div>
+    <div class="lyx-v">${money(r.a.value)}</div><div class="lyx-ly">${r.l?`last year ${money(r.l.value)}`:'No data last year'}</div>`};
+ 
+ LYX_SHEETS=R.map(r=>r.l?`<div class="lyx-t ${r.w?'w':'l'}">${head(r)}${det(r)}</div>`:'');
+ const tiles=R.map((r,i)=>`<div class="lyx-t ${r.l?(r.w?'w':'l'):'n'}"${r.l?` onclick="lyxOpen(${i})"`:''}>${head(r)}${r.l?'<div class="lyx-more">Details ▾</div>':''}</div>`).join('');
+ return sum+`<div class="lyx-grid">${tiles}</div>`;
+}
 function renderDays(d){
  const body=document.getElementById('dxBody');
  if(!body)return;
  const days=d.dayPlan||[];
  const first=days[0], mName=first?monthName(first.date.slice(0,7),true):'';
  text('dxTitle',mName?`${mName} · Day by Day`:'Day by Day');
- text('dxSub',DAY_VIEW==='plan'?'The media plan for every day of the month':'Actual results against the plan, day by day');
+ text('dxSub',DAY_VIEW==='plan'?'The media plan for every day of the month':DAY_VIEW==='ly'?'Each day against the same Hijri day last year':'Actual results against the plan, day by day');
  if(!days.length){body.innerHTML='<div class="dx-empty">No days found in the Media Plan tab.</div>';return}
+ if(DAY_VIEW==='ly'){body.innerHTML=lyDays(days);return}
  const latest=(d.latest||{}).date;
  body.innerHTML=daysCards(days,latest,dayTotals(days));
  revealOnScroll(body,'.dc-card');
@@ -5453,8 +5543,8 @@ function loadMonthExtras(){
  if(!(window.google&&google.script&&google.script.run))return;
  MONTH_EXTRA_LOADING[key]=true;MONTH_EXTRA_FAIL[key]=false;
  google.script.run
-  .withSuccessHandler(r=>{MONTH_EXTRA_LOADING[key]=false;MONTH_EXTRA[key]=r||{months:{}};if(CURRENT_TAB==='months'&&key===CURRENT_ACCOUNT)renderMonthCompare();if(PY_OPEN&&key===CURRENT_ACCOUNT)renderPastYears()})
-  .withFailureHandler(()=>{MONTH_EXTRA_LOADING[key]=false;MONTH_EXTRA_FAIL[key]=true;if(CURRENT_TAB==='months'&&key===CURRENT_ACCOUNT)renderMonthCompare()})
+  .withSuccessHandler(r=>{MONTH_EXTRA_LOADING[key]=false;MONTH_EXTRA[key]=r||{months:{}};if(CURRENT_TAB==='months'&&key===CURRENT_ACCOUNT)renderMonthCompare();if(CURRENT_TAB==='days'&&DAY_VIEW==='ly'&&key===CURRENT_ACCOUNT&&DASH_DATA)renderDays(DASH_DATA);if(PY_OPEN&&key===CURRENT_ACCOUNT)renderPastYears()})
+  .withFailureHandler(()=>{MONTH_EXTRA_LOADING[key]=false;MONTH_EXTRA_FAIL[key]=true;if(CURRENT_TAB==='months'&&key===CURRENT_ACCOUNT)renderMonthCompare();if(CURRENT_TAB==='days'&&DAY_VIEW==='ly'&&key===CURRENT_ACCOUNT&&DASH_DATA)renderDays(DASH_DATA)})
   .getMonthCompareData(key,getAccessToken());
 }
 function renderMonths(d){
@@ -8002,7 +8092,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v100',date:'2026-10-27'};
+const DASHBOARD_RELEASE_CLIENT={version:'v101',date:'2026-10-27'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
