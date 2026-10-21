@@ -4364,6 +4364,34 @@ window.addEventListener('load',function(){
     .qd-p em{font-style:normal;font-size:10.5px;color:#6b7385;min-width:26px;text-align:right}
     .qd-lg{display:flex;gap:12px;justify-content:center;margin-top:7px;font-size:10.5px;font-weight:800;color:#6b7385}.qd-lg i{display:inline-block;width:8px;height:8px;border-radius:3px;margin-right:4px}
     body.dark-mode .qd-card{background:#151a22}body.dark-mode .qd-ring span{background:#151a22;color:#fff}body.dark-mode .qd-ring{background:conic-gradient(#22c47c calc(var(--p)*1%),#252a32 0)}
+
+    .tk-views{gap:4px!important}.tk-views button{padding:7px 8px!important;font-size:11.5px!important;flex:1 0 auto!important}
+    /* v133 · open quick requests in Team cards, Team Leave */
+    .tk-pq{margin-top:8px;border-radius:14px;background:#fffaf0;border:1px dashed #e9cf9a;padding:8px 10px}
+    .tk-pq-h{font-size:10.5px;font-weight:900;color:#a8701c;letter-spacing:.04em;margin-bottom:4px}
+    .tk-pqi{display:flex;align-items:center;gap:9px;padding:6px 0}.tk-pqi+.tk-pqi{border-top:1px solid #f3e6c8}
+    .tk-pqi .tk-tick{width:22px;height:22px;border-radius:7px;border-color:#e2b874}
+    .tk-pqi b{display:block;font-size:12.5px}.tk-pqi small{font-size:10.5px;color:#a8701c;font-weight:700}.tk-pqi.late small{color:#c43c50}
+    .tk-tag.off{background:#fff3dc;color:#a8701c}
+    .lv-sum{background:linear-gradient(150deg,#1d3683,#2c4fb8);border-radius:18px;padding:13px;color:#fff;margin-bottom:10px;box-shadow:0 10px 24px rgba(32,60,142,.22)}
+    .lv-sum small{font-size:10px;font-weight:900;letter-spacing:.12em;color:#f3d79f}
+    .lv-off{display:flex;align-items:center;gap:10px;margin-top:9px;background:rgba(255,255,255,.1);border-radius:12px;padding:8px}
+    .lv-off>div:nth-child(2){flex:1}.lv-off b{display:block;font-size:13px}.lv-off span{font-size:11px;color:#c9d3f5;font-weight:700}
+    .lv-bk{display:flex;align-items:center;gap:5px;font-size:11px}.lv-bk small{font-size:8.5px;color:#f3d79f;font-weight:900;letter-spacing:.08em}.lv-bk .tk-av{width:22px;height:22px;font-size:9px}.lv-bk.none{color:#c9d3f5;font-size:10.5px;font-weight:700}
+    .lv-all{margin-top:8px;font-size:14px;font-weight:800}
+    .lv-p{background:#fff;border-radius:16px;padding:11px 12px;margin-bottom:8px;box-shadow:0 4px 12px rgba(20,30,60,.05);animation:skRise .3s calc(var(--i)*40ms) both}
+    .lv-ph{display:flex;align-items:center;gap:10px}.lv-pn{flex:1;min-width:0}.lv-pn b{display:block;font-size:13.5px}.lv-pn .rb{margin-top:3px}
+    .lv-st{font-size:10px;font-weight:900;border-radius:99px;padding:3px 9px;background:#e3f6ec;color:#0e8f5d}.lv-st.off{background:#fff3dc;color:#a8701c}
+    .lv-l{margin-top:9px;border-top:1px dashed #e1e6f0;padding-top:8px}
+    .lv-ty{font-size:11px;font-weight:900;color:#a8701c}
+    .lv-days{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.lv-days i{font-style:normal;min-width:28px;text-align:center;border-radius:8px;padding:4px 0;font-size:12px;font-weight:900;background:#fff3dc;color:#a8701c}
+    .lv-days i.now{background:#e2b874;color:#3a2606;box-shadow:0 0 0 2px #fff,0 0 0 3.5px #e2b874}.lv-days i.past{opacity:.45}
+    .lv-ft{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:7px}
+    .lv-b{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:800;color:#6b7385}.lv-b .tk-av{width:20px;height:20px;font-size:9px}.lv-b b{color:#1d2433}.lv-b.none{color:#a2a9b8}
+    .lv-note{font-size:11px;color:#6b7385;font-weight:600}.lv-ft .tq-ed{margin-left:auto}
+    .lv-none{margin-top:6px;font-size:11.5px;color:#a2a9b8;font-weight:700}
+    .lv-add{margin-top:8px;width:100%;border:1.5px dashed #e9cf9a;background:#fffaf0;color:#a8701c;border-radius:12px;padding:8px;font:inherit;font-size:12px;font-weight:900;cursor:pointer}
+    body.dark-mode .lv-p{background:#151a22}body.dark-mode .tk-pq{background:#2a2216;border-color:#5a4520}
 </style>
 </head>
 <body>
@@ -4503,6 +4531,7 @@ window.addEventListener('load',function(){
     <button class="sk-nav-btn" type="button" onclick="openTasks('team')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.2c2.4-.3 4.4 1.2 5 4.3"/></svg></span><span>Team Board</span></button>
     <button class="sk-nav-btn" id="ttMineBtn" type="button" onclick="openTasks('mine')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 12.5l2.5 2.5 5-5.5"/></svg></span><span>My Tasks</span><i class="tk-ndot"></i></button>
     <button class="sk-nav-btn" type="button" onclick="openTasks('build')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l10-10-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></span><span>Task Builder</span><span class="sk-nav-lock" id="ttBuildLock"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span></button>
+    <button class="sk-nav-btn" type="button" onclick="openTasks('leave')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a8 8 0 0 1 8 8H4a8 8 0 0 1 8-8z"/><path d="M12 11v9M9 20h6"/></svg></span><span>Team Leave</span></button>
     <button class="sk-nav-btn" type="button" onclick="openTasks('quick')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/></svg></span><span>Quick Requests</span></button>
   </nav></div>
 
@@ -9166,7 +9195,7 @@ function tkMe(){return ((TK.data&&TK.data.me&&TK.data.me.email)||(ACCESS_PROFILE
 function tkPeople(){return (TK.data&&TK.data.people)||[]}
 function tkPerson(email){return tkPeople().find(p=>p.email===email)||{email,name:String(email||'').split('@')[0],role:'',avatar:0}}
 function tkAv(p){return `<span class="tk-av">${emblemHtml(p.avatar)||esc((String(p.name||'S').charAt(0)||'S').toUpperCase())}</span>`}
-const TK_VIEWS={team:['Team Board','The whole team, week by week'],mine:['My Tasks','What you need to do'],build:['Task Builder','Plan the month for the team'],quick:['Quick Requests','Small asks with a deadline']};
+const TK_VIEWS={team:['Team Board','The whole team, week by week'],mine:['My Tasks','What you need to do'],build:['Task Builder','Plan the month for the team'],leave:['Team Leave','Days off and backups'],quick:['Quick Requests','Small asks with a deadline']};
 
 function tkSetTitle(t){const el=document.getElementById('tkTitle');if(!el)return;const w=String(t).split(' '),l=w.pop();el.innerHTML=(w.length?esc(w.join(' '))+' ':'')+`<span>${esc(l)}</span>`}
 function openTasks(view){
@@ -9196,7 +9225,7 @@ function tkRender(){
  if(TK.form)return tkForm(true);
  const b=document.getElementById('tasksBody');if(!b)return;
  tkSetTitle(TK_VIEWS[TK.view][0]);
- const tabs=`<div class="tk-views">${Object.keys(TK_VIEWS).map(k=>`<button type="button" class="${k===TK.view?'on':''}" onclick="TK.view='${k}';${k==='mine'?'tkSeenNotice();':''}tkRender()">${TK_VIEWS[k][0].replace('Quick Requests','Quick').replace('Task Builder','Builder').replace('Team Board','Team')}${k==='build'&&!tkCanManage()?' 🔒':''}${k==='mine'&&tkNoticeNew()?'<i class="tk-dot"></i>':''}</button>`).join('')}</div>`;
+ const tabs=`<div class="tk-views">${Object.keys(TK_VIEWS).map(k=>`<button type="button" class="${k===TK.view?'on':''}" onclick="TK.view='${k}';${k==='mine'?'tkSeenNotice();':''}tkRender()">${TK_VIEWS[k][0].replace('Quick Requests','Quick').replace('Team Leave','Leave').replace('Task Builder','Builder').replace('Team Board','Team')}${k==='build'&&!tkCanManage()?' 🔒':''}${k==='mine'&&tkNoticeNew()?'<i class="tk-dot"></i>':''}</button>`).join('')}</div>`;
  if(TK.view==='build'&&!tkCanManage()){b.innerHTML=tabs+tkLockedHtml();return}
  const d=TK.data;
  if(!d){b.innerHTML=tabs+(TK.err&&!TK.busy?`<div class="tk-empty"><b>${TK.err==='server'?'Team Tasks is almost ready':'Could not load the tasks'}</b><small>${TK.err==='server'?'The SEKNA server needs its latest update first. Ask Ibrahim to deploy the new version.':'Check your connection and try again.'}</small><br><button type="button" class="tk-add" style="margin-top:12px" onclick="tkLoad()">↻ Try again</button></div>`:`<div class="tk-loading"><i></i><i></i><i></i></div>`);return}
@@ -9207,6 +9236,7 @@ function tkRender(){
  if(TK.view==='team')body=month+weeks+tkTeamHtml()+`<button type="button" class="tk-share" onclick="tkShare(this)">${WA_IC}Share the month on WhatsApp</button>`;
  else if(TK.view==='mine')body=month+weeks+tkMineHtml();
  else if(TK.view==='build')body=month+tkBuildHtml();
+ else if(TK.view==='leave')body=month+tkLeaveHtml();
  else body=tkQuickHtml();
  const key=[TK.view,TK.month,TK.week].join('|');
  b.classList.toggle('tk-still',TK.lastKey===key);TK.lastKey=key;
@@ -9240,11 +9270,51 @@ function tkTeamHtml(){
    const isOpen=(TK.tOpen||{})[p.email]!==undefined?TK.tOpen[p.email]:p.email===me, sn=ts.reduce((a,t)=>a+((t.data&&t.data.snaps)||[]).length,0);
    const accs=['usa','ar'].filter(a=>ts.some(t=>tkAccs(t.data).includes(a)));
    return `<div class="tk-person tk-card${isOpen?' open':''}" style="--i:${i}"><button type="button" class="tk-ph" onclick="tkTOpen('${esc(p.email)}')">${tkAv(p)}<div class="tk-pn"><b>${esc(p.name)}</b>${p.role?roleBadge(p.role):''}
-       <div class="tk-sumc"><span class="tk-tag">${ts.length} task${ts.length>1?'s':''}</span>${sn?`<span class="tk-tag snap">${TK_CAM}${sn}</span>`:''}${tkAccTxt(accs)}${open?`<span class="tk-tag q">⚡ ${open}</span>`:''}</div></div>
+       <div class="tk-sumc">${tkOffToday(p.email)?`<span class="tk-tag off">🌴 Off today${tkOffToday(p.email).data.backup?' · backup '+esc(tkPerson(tkOffToday(p.email).data.backup).name.split(' ')[0]):''}</span>`:''}<span class="tk-tag">${ts.length} task${ts.length>1?'s':''}</span>${sn?`<span class="tk-tag snap">${TK_CAM}${sn}</span>`:''}${tkAccTxt(accs)}${open?`<span class="tk-tag q">⚡ ${open}</span>`:''}</div></div>
      <div class="tk-ring" style="--p:${(pct*100).toFixed(0)}"><span>${n}/${ts.length}</span></div><span class="tk-cv">›</span></button>
-     ${isOpen?`<div class="tk-pd">${ts.map(t=>tkTaskRow(t,w,t.email===me||mgr)).join('')}${open?`<div class="tk-qn">⚡ ${open} quick request${open>1?'s':''} open</div>`:''}</div>`:''}</div>`;
+     ${isOpen?`<div class="tk-pd">${ts.map(t=>tkTaskRow(t,w,t.email===me||mgr)).join('')}${tkPersonQuick(p.email)}</div>`:''}</div>`;
  }).join('');
 }
+function tkPersonQuick(email){
+ const list=((TK.data&&TK.data.quick)||[]).filter(q=>q.email===email&&!(q.done&&q.done.at));if(!list.length)return '';
+ const me=tkMe(),mgr=tkCanManage();
+ return `<div class="tk-pq"><div class="tk-pq-h">⚡ Quick request${list.length>1?'s':''} · ${list.length} open</div>${list.map(q=>{const age=Math.max(0,Math.floor((Date.now()-q.at)/864e5)),due=tkDue(q.deadline),late=due!=null&&due<0;
+   return `<div class="tk-pqi${late?' late':''}"><button type="button" class="tk-tick" ${q.email===me||mgr?`onclick="tkTick('${q.id}',0,true,this)"`:'disabled'} aria-label="Mark as done"></button><div><b>${esc(q.title)}</b><small>Asked ${age?age+'d':'today'} ago${q.deadline?' · ':''}${q.deadline?(late?`${-due}d late`:due===0?'due today':`due in ${due}d`):''}</small></div></div>`}).join('')}</div>`;
+}
+
+const TK_LEAVE_TYPES=[['Vacation','🌴'],['Sick','🤒'],['Other','📌']];
+function tkLeaveOf(email){return ((TK.data&&TK.data.leave)||[]).filter(l=>l.email===email)}
+function tkOffToday(email){if(TK.month!==tkMonthNow())return null;const d=tkToday().d;return tkLeaveOf(email).find(l=>(l.data.days||[]).includes(d))||null}
+function tkNewLeave(email){TK.form={kind:'leave',title:'Vacation',email:email||'',weeks:[],data:{type:'Vacation',days:[],backup:'',msg:''}};tkForm()}
+function tkEditLeave(id){const t=(TK.data.leave||[]).find(x=>x.id===id);if(!t)return;TK.form=JSON.parse(JSON.stringify(t));TK.form.data=Object.assign({type:'Vacation',days:[],backup:'',msg:''},TK.form.data);TK.form.data.msg=TK.form.data.note||TK.form.data.msg||'';tkForm()}
+function tkLeaveHtml(){
+ const mgr=tkCanManage(), today=TK.month===tkMonthNow()?tkToday().d:0, people=tkPeople();
+ const off=people.filter(p=>tkOffToday(p.email));
+ const head=`<div class="lv-sum"><small>${today?'TODAY · '+esc(new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'})):'THIS MONTH'}</small>
+   ${today?(off.length?off.map(p=>{const l=tkOffToday(p.email),b=l.data.backup?tkPerson(l.data.backup):null;return `<div class="lv-off">${tkAv(p)}<div><b>${esc(p.name)}</b><span>${(TK_LEAVE_TYPES.find(x=>x[0]===l.data.type)||['','🌴'])[1]} ${esc(l.data.type||'Vacation')}</span></div>${b?`<div class="lv-bk"><small>BACKUP</small>${tkAv(b)}<b>${esc(b.name.split(' ')[0])}</b></div>`:'<div class="lv-bk none">No backup</div>'}</div>`}).join(''):'<div class="lv-all">✓ Everyone is working today</div>'):`<div class="lv-all">${((TK.data&&TK.data.leave)||[]).length} leave${((TK.data&&TK.data.leave)||[]).length===1?'':'s'} this month</div>`}</div>`;
+ const rows=people.map((p,i)=>{const ls=tkLeaveOf(p.email),offNow=tkOffToday(p.email);
+   return `<div class="lv-p" style="--i:${i}"><div class="lv-ph">${tkAv(p)}<div class="lv-pn"><b>${esc(p.name)}</b>${p.role?roleBadge(p.role):''}</div>${offNow?'<span class="lv-st off">Off today</span>':'<span class="lv-st">Working</span>'}</div>
+     ${ls.length?ls.map(l=>{const b=l.data.backup?tkPerson(l.data.backup):null,t=TK_LEAVE_TYPES.find(x=>x[0]===l.data.type)||TK_LEAVE_TYPES[0];
+       return `<div class="lv-l"><span class="lv-ty">${t[1]} ${esc(t[0])}</span><div class="lv-days">${(l.data.days||[]).map(d=>`<i class="${d===today?'now':d<today?'past':''}">${d}</i>`).join('')}</div>
+         <div class="lv-ft">${b?`<span class="lv-b">Backup ${tkAv(b)}<b>${esc(b.name.split(' ')[0])}</b></span>`:'<span class="lv-b none">No backup</span>'}${l.data.note?`<span class="lv-note">💬 ${esc(l.data.note)}</span>`:''}${mgr?`<button type="button" class="tq-ed" onclick="tkEditLeave('${l.id}')" aria-label="Edit">✎</button>`:''}</div></div>`}).join(''):'<div class="lv-none">No leave this month</div>'}
+     ${mgr?`<button type="button" class="lv-add" onclick="tkNewLeave('${esc(p.email)}')">＋ Add leave</button>`:''}</div>`}).join('');
+ return head+(people.length?rows:'<div class="tk-empty"><b>No one yet</b></div>');
+}
+function tkLeaveForm(f,sc,top,still){
+ const ppl=(sel,js,skip)=>tkPeople().filter(p=>p.email!==skip).map(p=>`<button type="button" class="${sel===p.email?'on':''}" onclick="${js}('${esc(p.email)}')">${tkAv(p)}<span>${esc(p.name.split(' ')[0])}</span></button>`).join('');
+ const b=document.getElementById('tasksBody');if(!b)return;
+ tkSetTitle(f.id?'Edit leave':'Add leave');
+ b.classList.toggle('tk-still',!!still);TK.lastKey='';
+ b.innerHTML=`<div class="tk-form tk-fpage">
+   <div class="tq-who" style="margin-top:0"><div class="tq-q">Who is off?</div><div class="tq-ppl">${ppl(f.email,"tkF('email',")}</div></div>
+   <label class="tk-l">Type</label><div class="tk-row">${TK_LEAVE_TYPES.map(t=>`<button type="button" class="tk-chip${f.data.type===t[0]?' on':''}" onclick="tkLvSet('type','${t[0]}')">${t[1]} ${t[0]}</button>`).join('')}</div>
+   <label class="tk-l">Days off <small>tap each day</small></label>${tkDayGrid(f)}
+   <div class="tq-who"><div class="tq-q">Backup <small style="font-size:11px;color:#8a93a6;font-weight:700">optional</small></div><div class="tq-ppl"><button type="button" class="${!f.data.backup?'on':''}" onclick="tkLvSet('backup','')"><span class="tk-av">—</span><span>No backup</span></button>${ppl(f.data.backup,"tkLvSet('backup',",f.email)}</div></div>
+   <label class="tk-l">Note <small>optional</small></label><textarea id="tkfMsg" class="tk-in" rows="2" maxlength="600" placeholder="e.g. Travelling, back on Sunday">${esc(f.data.msg||'')}</textarea>
+   <div class="tk-fa">${f.id?`<button type="button" class="tk-del" onclick="tkDelete(this)">Delete</button>`:''}<button type="button" class="tk-save" onclick="tkSave(this)">${f.id?'Save changes':'Save leave'}</button></div></div>`;
+ if(sc)sc.scrollTop=top;
+}
+function tkLvSet(k,v){tkFormRead();TK.form.data[k]=v;if(k==='backup'&&v===TK.form.email)TK.form.data.backup='';tkForm(false,true)}
 function tkTOpen(e){TK.tOpen=TK.tOpen||{};const me=tkMe(),cur=TK.tOpen[e]!==undefined?TK.tOpen[e]:e===me;TK.tOpen[e]=!cur;tkRender()}
 function tkMineHtml(){
  const w=TK.week, me=tkMe(), ts=tkTasksFor(me,w), n=ts.filter(t=>t.done&&t.done[w]).length;
@@ -9293,7 +9363,7 @@ function tkQuickHtml(){
  const me=tkMe(), mgr=tkCanManage(), all=(TK.data&&TK.data.quick)||[];
  const mine=mgr?all:all.filter(q=>q.email===me);
  const open=mine.filter(q=>!(q.done&&q.done.at)).sort((a,b)=>a.at-b.at), done=mine.filter(q=>q.done&&q.done.at);
- return `${tkQuickDash(mine)}<div class="tk-intro">Small asks that usually go to the WhatsApp group. Each one shows how long ago it was asked.</div>
+ return `${tkQuickDash(mine)}
    ${mgr?`<button type="button" class="tq-new" onclick="tkNewQuick()">＋ New request</button>`:''}
    ${open.length?open.map(q=>tkQuickRow(q,q.email===me||mgr)).join(''):`<div class="tk-empty"><b>No open requests</b><small>${mgr?'Add one when someone asks for something.':'Nothing waiting for you.'}</small></div>`}
    ${done.length?`<div class="ad-lbl">Done · last 14 days</div>${done.map(q=>tkQuickRow(q,q.email===me||mgr)).join('')}`:''}`;
@@ -9388,6 +9458,7 @@ function tkForm(keep,stay){
  if(keep||stay)tkFormRead();
  const sc=document.querySelector('#tasksOverlay .app-modal'), top=(keep||stay)&&sc?sc.scrollTop:0;
  const f=TK.form, q=f.kind==='quick';
+ if(f.kind==='leave')return tkLeaveForm(f,sc,top,keep||stay);
  const chip=(on,label,js,cls)=>`<button type="button" class="tk-chip${on?' on':''} ${cls||''}" onclick="${js}">${label}</button>`;
  const people=tkPeople().map(p=>`<button type="button" class="tk-pc${f.email===p.email?' on':''}" onclick="tkF('email','${esc(p.email)}')">${tkAv(p)}<span>${esc(p.name.split(' ')[0])}</span>${tkPeople().filter(x=>x.name.split(' ')[0]===p.name.split(' ')[0]).length>1?`<small>${esc(p.email.split('@')[0].slice(0,12))}</small>`:''}</button>`).join('');
  const hours=[12,1,2,3,4,5,6,7,8,9,10,11];
@@ -9421,6 +9492,7 @@ function tkForm(keep,stay){
 }
 async function tkSave(btn){
  tkFormRead();const f=TK.form;if(!f)return;
+ if(f.kind==='leave'){f.title=f.data.type||'Vacation';f.month=TK.month;if(!f.email)return showSettingsToast('Choose who is off');if(!(f.data.days||[]).length)return showSettingsToast('Pick the days off')}
  if(!f.title.trim())return showSettingsToast('Give it a name first');
  if(!f.email)return showSettingsToast('Choose who it is for');
  if(f.kind==='weekly')f.month=TK.month;
@@ -9429,7 +9501,7 @@ async function tkSave(btn){
  btn.disabled=true;btn.textContent='Saving…';
  try{
    const t=await serverCall('taskSave',getAccessToken(),f);
-   const list=f.kind==='quick'?TK.data.quick:TK.data.tasks, i=list.findIndex(x=>x.id===t.id);
+   const list=f.kind==='quick'?TK.data.quick:f.kind==='leave'?(TK.data.leave=TK.data.leave||[]):TK.data.tasks, i=list.findIndex(x=>x.id===t.id);
    if(i>=0)list[i]=t;else list.push(t);
    storeSet('sekna_tasks_'+TK.month,JSON.stringify(TK.data));
    tkSheetClose();tkRender();showSettingsToast(f.id?'Saved':'Added');
@@ -9438,7 +9510,7 @@ async function tkSave(btn){
 async function tkDelete(btn){
  if(!btn.classList.contains('confirm')){btn.classList.add('confirm');btn.textContent='Tap again to delete';return}
  const f=TK.form;btn.disabled=true;
- try{await serverCall('taskDelete',getAccessToken(),f.id);['tasks','quick'].forEach(k=>TK.data[k]=TK.data[k].filter(x=>x.id!==f.id));storeSet('sekna_tasks_'+TK.month,JSON.stringify(TK.data));tkSheetClose();tkRender();showSettingsToast('Deleted')}
+ try{await serverCall('taskDelete',getAccessToken(),f.id);['tasks','quick','leave'].forEach(k=>TK.data[k]=(TK.data[k]||[]).filter(x=>x.id!==f.id));storeSet('sekna_tasks_'+TK.month,JSON.stringify(TK.data));tkSheetClose();tkRender();showSettingsToast('Deleted')}
  catch(err){btn.disabled=false;showSettingsToast(errorText(err))}
 }
 async function tkCopyMonth(btn){
@@ -9496,7 +9568,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v132',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v133',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
