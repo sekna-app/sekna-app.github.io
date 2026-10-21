@@ -4325,6 +4325,30 @@ window.addEventListener('load',function(){
     .tkn-act{display:flex;gap:8px}.tkn-act button{flex:1;border:0;border-radius:14px;padding:12px;font:inherit;font-size:13.5px;font-weight:900;cursor:pointer}
     .tkn-later{background:rgba(255,255,255,.12);color:#fff}.tkn-go{background:linear-gradient(135deg,#fbecc8,#e2b874);color:#3a2606;flex:1.6!important}
     body.no-motion .tkn *{animation:none!important}body.no-motion .tkn-l i,body.no-motion .tkn-l b{transform:none}
+
+    /* v131 · month pill, ticket cards, who is it for */
+    .tk-mp{display:flex;align-items:center;justify-content:space-between;border-radius:99px;padding:5px;margin:2px 0 10px;background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);color:#fff;box-shadow:0 8px 18px rgba(61,107,255,.35)}
+    .tk-mp button{width:36px;height:36px;border-radius:50%;border:0;background:rgba(255,255,255,.15);color:#fff;font-size:20px;font-weight:900;cursor:pointer;line-height:1}
+    .tk-mp b{font-size:15.5px;text-align:center;line-height:1.2}.tk-mp small{display:block;font-size:9.5px;letter-spacing:.14em;color:#f3d79f;font-weight:900}
+    .tq{display:flex;align-items:stretch;background:#fff;border-radius:16px;margin-bottom:8px;overflow:hidden;box-shadow:0 4px 12px rgba(20,30,60,.05)}
+    .tq-bar{width:5px;flex:none;background:#5d86ff}.tq.wait .tq-bar{background:#e2b874}.tq.late .tq-bar{background:#e0566a}.tq.done .tq-bar{background:#22c47c}
+    .tq .tk-tick{margin:12px 0 0 10px}
+    .tq-b{flex:1;min-width:0;padding:11px 10px}.tq-b>b{display:block;font-size:13.5px}
+    .tq.done .tq-b>b{text-decoration:line-through;color:#8a93a6}
+    .tq.done .tk-tick{background:#22c47c;border-color:#22c47c}
+    .tq-m{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:6px;font-size:11px;font-weight:800;color:#6b7385}.tq-m .tk-av{width:20px;height:20px;font-size:9px}
+    .tk-dl.ok{background:#e3f6ec;color:#0e8f5d}
+    .tq-ed{border:0;background:#f1f3f8;color:#203c8e;border-radius:8px;width:26px;height:24px;cursor:pointer;font-size:12px}
+    .tq-age{flex:none;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 12px;border-left:1px dashed #e1e6f0;min-width:62px}
+    .tq-age b{font-size:19px;font-weight:900}.tq-age small{font-size:9px;font-weight:900;color:#8a93a6;letter-spacing:.06em}
+    .tq.late .tq-age b{color:#c43c50}.tq.wait .tq-age b{color:#a8701c}.tq.done .tq-age b{color:#0e8f5d}
+    .tq-new{width:100%;border:0;border-radius:14px;padding:12px;margin-bottom:10px;font:inherit;font-size:13.5px;font-weight:900;color:#fff;background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);box-shadow:0 8px 18px rgba(61,107,255,.3);cursor:pointer}
+    .tq-who{margin-top:14px}.tq-q{font-size:16px;font-weight:900;margin-bottom:10px}
+    .tq-ppl{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 4px}
+    .tq-ppl button{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:68px;border:2px solid transparent;background:#f6f8fc;border-radius:14px;padding:8px 6px;font:inherit;font-size:11.5px;font-weight:800;color:#4b5263;cursor:pointer;transition:all .2s}
+    .tq-ppl .tk-av{width:42px;height:42px}.tq-ppl small{font-size:9.5px;color:#8a93a6;margin-top:-3px}
+    .tq-ppl button.on{border-color:#e2b874;background:#fff8ea;color:#1d2433;box-shadow:0 6px 14px rgba(226,184,116,.25)}
+    body.dark-mode .tq{background:#151a22}body.dark-mode .tq-ppl button{background:#1b2130;color:#c9d3f5}body.dark-mode .tq-ppl button.on{background:#2a2216;color:#fff}
 </style>
 </head>
 <body>
@@ -9161,7 +9185,8 @@ function tkRender(){
  if(TK.view==='build'&&!tkCanManage()){b.innerHTML=tabs+tkLockedHtml();return}
  const d=TK.data;
  if(!d){b.innerHTML=tabs+(TK.err&&!TK.busy?`<div class="tk-empty"><b>${TK.err==='server'?'Team Tasks is almost ready':'Could not load the tasks'}</b><small>${TK.err==='server'?'The SEKNA server needs its latest update first. Ask Ibrahim to deploy the new version.':'Check your connection and try again.'}</small><br><button type="button" class="tk-add" style="margin-top:12px" onclick="tkLoad()">↻ Try again</button></div>`:`<div class="tk-loading"><i></i><i></i><i></i></div>`);return}
- const month=`<div class="tk-month"><button type="button" onclick="tkMonth(-1)" aria-label="Previous month">‹</button><b>${esc(tkMonthName(TK.month))}</b><button type="button" onclick="tkMonth(1)" aria-label="Next month">›</button>${TK.busy?'<span class="tk-sync">Syncing…</span>':''}</div>`;
+ const mn=new Date(+TK.month.slice(0,4),+TK.month.slice(5,7)-1,1);
+ const month=`<div class="tk-mp"><button type="button" onclick="tkMonth(-1)" aria-label="Previous month">‹</button><b>${esc(mn.toLocaleDateString('en-GB',{month:'long'}))}<small>${mn.getFullYear()}${TK.busy?' · syncing':''}</small></b><button type="button" onclick="tkMonth(1)" aria-label="Next month">›</button></div>`;
  const weeks=`<div class="tk-weeks">${[1,2,3,4].map(w=>`<button type="button" class="${w===TK.week?'on':''}" onclick="tkSetWeek(${w})"><b>W${w}</b><small>${esc(tkRange(TK.month,w))}</small></button>`).join('')}</div>`;
  let body='';
  if(TK.view==='team')body=month+weeks+tkTeamHtml()+`<button type="button" class="tk-share" onclick="tkShare(this)">${WA_IC}Share the month on WhatsApp</button>`;
@@ -9220,8 +9245,20 @@ function tkDeadline(s){
  const t=tkToday(), a=Date.UTC(t.y,t.m-1,t.d), b=Date.UTC(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8,10)), n=Math.round((b-a)/864e5);
  return `<span class="tk-dl ${n<0?'late':n<=1?'soon':''}">⏰ ${n<0?`${-n} day${n<-1?'s':''} late`:n===0?'Due today':n===1?'Due tomorrow':`Due in ${n} days`}</span>`;
 }
+function tkDue(s){if(!s)return null;const t=tkToday();return Math.round((Date.UTC(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8,10))-Date.UTC(t.y,t.m-1,t.d))/864e5)}
+function tkTicket(q,canTick,done,p){
+ const age=Math.max(0,Math.floor((Date.now()-q.at)/864e5)), due=tkDue(q.deadline);
+ const st=done?'done':due!=null&&due<0?'late':(due!=null&&due<=1)||age>=2?'wait':'new';
+ const chip=done?'<span class="tk-dl ok">✓ Done</span>':q.deadline?tkDeadline(q.deadline):'<span class="tk-dl">No deadline</span>';
+ return `<div class="tq ${st}"><i class="tq-bar"></i>
+   <button type="button" class="tk-tick" ${canTick?`onclick="tkTick('${q.id}',0,${!done},this)"`:'disabled'} aria-label="${done?'Mark as not done':'Mark as done'}">${done?'✓':''}</button>
+   <div class="tq-b"><b>${esc(q.title)}</b><div class="tq-m">${tkAv(p)}<span>${esc(String(p.name||'').split(' ')[0])}</span>${chip}${tkCanManage()?`<button type="button" class="tq-ed" onclick="tkEditQuick('${q.id}')" aria-label="Edit">✎</button>`:''}</div>
+   ${q.data&&q.data.msg?`<div class="tk-msg">💬 ${esc(q.data.msg)}</div>`:''}</div>
+   <div class="tq-age"><b>${age}d</b><small>${done?'DONE':age===0?'NEW':'WAITING'}</small></div></div>`;
+}
 function tkQuickRow(q,canTick){
  const done=!!(q.done&&q.done.at), p=tkPerson(q.email);
+ if(!TK.oldRows)return tkTicket(q,canTick,done,p);
  return `<div class="tk-task tk-q${done?' done':''}"><button type="button" class="tk-tick" ${canTick?`onclick="tkTick('${q.id}',0,${!done},this)"`:'disabled'}>${done?'✓':''}</button>
    <div class="tk-tb"><b>${esc(q.title)}</b><div class="tk-tags"><span class="tk-age">Asked ${tkDaysAgo(q.at)}</span>${done?'':tkDeadline(q.deadline)}</div>${q.data&&q.data.msg?`<div class="tk-msg">💬 ${esc(q.data.msg)}</div>`:''}</div>
    <span class="tk-qp">${tkAv(p)}</span>${tkCanManage()?`<button type="button" class="tk-ed" onclick="tkEditQuick('${q.id}')" aria-label="Edit">✎</button>`:''}</div>`;
@@ -9231,7 +9268,7 @@ function tkQuickHtml(){
  const mine=mgr?all:all.filter(q=>q.email===me);
  const open=mine.filter(q=>!(q.done&&q.done.at)).sort((a,b)=>a.at-b.at), done=mine.filter(q=>q.done&&q.done.at);
  return `<div class="tk-intro">Small asks that usually go to the WhatsApp group. Each one shows how long ago it was asked.</div>
-   ${mgr?`<button type="button" class="tk-add big" onclick="tkNewQuick()">＋ New request</button>`:''}
+   ${mgr?`<button type="button" class="tq-new" onclick="tkNewQuick()">＋ New request</button>`:''}
    ${open.length?open.map(q=>tkQuickRow(q,q.email===me||mgr)).join(''):`<div class="tk-empty"><b>No open requests</b><small>${mgr?'Add one when someone asks for something.':'Nothing waiting for you.'}</small></div>`}
    ${done.length?`<div class="ad-lbl">Done · last 14 days</div>${done.map(q=>tkQuickRow(q,q.email===me||mgr)).join('')}`:''}`;
 }
@@ -9340,7 +9377,7 @@ function tkForm(keep,stay){
    <label class="tk-l">${q?'What is needed':'Task name'}</label>
    <input id="tkfTitle" class="tk-in" value="${esc(f.title)}" placeholder="${q?'e.g. Performance report for Gaza':'e.g. SEKNA Report USA'}" maxlength="140">
    ${q?'':`<div class="tk-sug">${TK_TITLE_SUGGEST.map(s=>chip(false,esc(s),`tkSug('${s}')`)).join('')}</div>`}
-   <label class="tk-l">For</label><div class="tk-people">${people||'<small>No approved people yet.</small>'}</div>
+   ${q?`<div class="tq-who"><div class="tq-q">Who is it for?</div><div class="tq-ppl">${tkPeople().map(p=>`<button type="button" class="${f.email===p.email?'on':''}" onclick="tkF('email','${esc(p.email)}')">${tkAv(p)}<span>${esc(p.name.split(' ')[0])}</span>${tkPeople().filter(x=>x.name.split(' ')[0]===p.name.split(' ')[0]).length>1?`<small>${esc(p.email.split('@')[0].slice(0,12))}</small>`:''}</button>`).join('')||'<small>No approved people yet.</small>'}</div></div>`:`<label class="tk-l">For</label><div class="tk-people">${people||'<small>No approved people yet.</small>'}</div>`}
    ${q?`<label class="tk-l">Deadline <small>optional</small></label>${tkDlPicker(f)}`:`
    <label class="tk-l">Account <small>one or both</small></label><div class="tk-row">${['usa','ar'].map(a=>chip(f.data.accounts.includes(a),`${tkHaLogo()?`<img class="tk-ha" src="${tkHaLogo()}" alt="">`:''}HA-${a.toUpperCase()}${f.data.accounts.includes(a)?'<i class="tk-ck">✓</i>':''}`,`tkF('account','${a}')`,'acc')).join('')}</div>
    ${f.data.accounts.length?`<label class="tk-l">Platform</label><div class="tk-row">${chip(f.data.platforms.includes('google'),'Google',`tkF('platform','google')`,'g')}${chip(f.data.platforms.includes('microsoft'),'Microsoft',`tkF('platform','microsoft')`,'m')}</div>`:''}
@@ -9433,7 +9470,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v130',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v131',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
