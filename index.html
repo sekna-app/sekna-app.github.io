@@ -4109,6 +4109,20 @@ window.addEventListener('load',function(){
     .ad-avs button.none{background:#e9eefc;color:#203c8e;font-weight:900;font-size:15px;border-color:#e9eefc}
     .ad-avs button.on{border-color:#e2b874;box-shadow:0 0 0 2px #fff,0 0 0 4px #e2b874}
     .ad-avs button.busy{opacity:.5}
+
+    /* v124 · menu card "Rank plaque" */
+    .sk-drawer .sk-user-card[class*=tier]{position:relative;overflow:hidden;padding-left:16px!important;background:rgba(255,255,255,.06)!important;border:1px solid rgba(255,255,255,.1)!important;box-shadow:none}
+    .sk-drawer .sk-user-card[class*=tier]:before{content:'';position:absolute;left:0;top:0;bottom:0;width:5px}
+    .sk-drawer .sk-user-card .sk-user-text{flex:1;min-width:0}
+    .sk-drawer .sk-role{display:flex!important;align-items:center;justify-content:space-between;gap:8px;margin-top:6px}.sk-drawer .sk-role[hidden]{display:none!important}
+    .skr-t{font-size:9.5px;font-weight:900;letter-spacing:.1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .skr-p{display:flex;gap:4px;flex:none;padding-right:3px}.skr-p i{width:6px;height:6px;border-radius:2px;transform:rotate(45deg);background:rgba(255,255,255,.18)}
+    .sk-drawer .sk-user-card.tier1:before{background:linear-gradient(#5d86ff,#203c8e)}.sk-drawer .sk-user-card.tier1 .skr-t{color:#9fb6ff}.sk-drawer .sk-user-card.tier1 .skr-p i.on{background:#9fb6ff;box-shadow:0 0 6px #9fb6ff}.sk-drawer .sk-user-card.tier1 .sk-user-avatar{box-shadow:0 0 0 2px #9fb6ff!important}
+    .sk-drawer .sk-user-card.tier2:before{background:linear-gradient(#fbfcfe,#b9c2d0)}.sk-drawer .sk-user-card.tier2 .skr-t{color:#d5dbe6}.sk-drawer .sk-user-card.tier2 .skr-p i.on{background:#d5dbe6;box-shadow:0 0 6px #d5dbe6}.sk-drawer .sk-user-card.tier2 .sk-user-avatar{box-shadow:0 0 0 2px #d5dbe6!important}
+    .sk-drawer .sk-user-card.tier3:before{background:linear-gradient(#fbecc8,#c9933f)}.sk-drawer .sk-user-card.tier3 .skr-t{color:#e2b874}.sk-drawer .sk-user-card.tier3 .skr-p i.on{background:#e2b874;box-shadow:0 0 6px #e2b874}.sk-drawer .sk-user-card.tier3 .sk-user-avatar{box-shadow:0 0 0 2px #e2b874!important}
+    .sk-drawer .sk-user-card.tier4:before{background:linear-gradient(#fbe1d6,#b9735e)}.sk-drawer .sk-user-card.tier4 .skr-t{color:#e3a48f}.sk-drawer .sk-user-card.tier4 .skr-p i.on{background:#e3a48f;box-shadow:0 0 6px #e3a48f}.sk-drawer .sk-user-card.tier4 .sk-user-avatar{box-shadow:0 0 0 2px #e3a48f!important}
+    .sk-drawer .sk-user-card.tier5:before{background:linear-gradient(#f3d79f,#c9933f)}.sk-drawer .sk-user-card.tier5 .skr-t{color:#f3d79f}.sk-drawer .sk-user-card.tier5 .skr-p i.on{background:#f3d79f;box-shadow:0 0 6px #f3d79f}.sk-drawer .sk-user-card.tier5 .sk-user-avatar{box-shadow:0 0 0 2px #f3d79f!important}
+    .sk-drawer .sk-user-card.tier5{border-color:rgba(243,215,159,.5)!important;box-shadow:0 0 18px rgba(226,184,116,.25)!important}
 </style>
 </head>
 <body>
@@ -7614,7 +7628,7 @@ function updateProfileUI(){
  const role=(mem&&mem.role)||'', card=document.querySelector('.sk-drawer .sk-user-card');
  if(card){card.className='sk-user-card'+(roleTier(role)?' tier'+roleTier(role):'');}
  const myAv=mem&&mem.avatar?emblemHtml(mem.avatar):'';
- const rl=document.getElementById('profileRole');if(rl){rl.innerHTML=roleBadge(role);rl.hidden=!role}
+ const rl=document.getElementById('profileRole');if(rl){const t=roleTier(role);rl.innerHTML=t?`<span class="skr-t">${esc(role.toUpperCase())}</span><span class="skr-p">${[1,2,3,4,5].map(k=>`<i class="${k<=t?'on':''}"></i>`).join('')}</span>`:'';rl.hidden=!role}
  const name=p.name||storeGet(ACCESS_NAME_KEY)||'SEKNA';
  text('profileName',name);
  text('profileEmail',p.email||storeGet(ACCESS_EMAIL_KEY)||'Signed in');
@@ -8868,7 +8882,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v123',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v124',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
