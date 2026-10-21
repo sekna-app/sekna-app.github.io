@@ -4466,6 +4466,9 @@ window.addEventListener('load',function(){
     .lc-pp.off .tk-av::after{content:"🌴";position:absolute;right:-4px;bottom:-2px;font-size:16px}
     .lc-arr{flex:1;height:2px;margin:0 4px 26px;background:repeating-linear-gradient(90deg,#c89434 0 6px,transparent 6px 11px);position:relative}
     .lc-arr::after{content:"›";position:absolute;right:-4px;top:-13px;color:#c89434;font-weight:900;font-size:22px}
+    .lc-pp small.lc-off{color:#c62f45}
+    .lc-r em strong{color:#10141b;font-weight:900}body.dark-mode .lc-r em strong{color:#fff}
+    .lc-lk{display:grid!important;place-items:center;height:27px}.lc-lk svg{width:22px;height:22px;fill:none;stroke:#13894f;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.lc-st .fr .lc-lk svg{stroke:#c62f45}
     .lc-tasks{margin-top:12px;background:#f7f8fc;border-radius:12px;padding:8px 10px;font-size:11px;font-weight:800;color:#5b6375}
     .lc-fz{display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:10px 12px;margin-bottom:6px;box-shadow:0 4px 12px rgba(20,30,60,.05)}
     .lc-fz .lp-ft small{color:#8a93a6}
@@ -9589,12 +9592,12 @@ function tkLeaveHtml(){
  const off=people.map(p=>({p,l:tkOffToday(p.email)})).filter(x=>x.l);
  const first=n=>esc(String(n||'').split(' ')[0]);
  const day=esc(new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'}).toUpperCase());
- const stats=`<div class="lc-st"><div class="g"><b>${Math.max(0,people.length-off.length)}</b><small>Working today</small></div><div class="o"><b>${off.length}</b><small>Off today</small></div><div class="${fr?'fr':''}"><b>${fr?'🔒':'🔓'}</b><small>${fr?'Leave frozen':'Leave open'}</small></div></div>`;
+ const stats=`<div class="lc-st"><div class="g"><b>${Math.max(0,people.length-off.length)}</b><small>Working today</small></div><div class="o"><b>${off.length}</b><small>Off today</small></div><div class="${fr?'fr':''}"><b class="lc-lk">${fr?'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>':'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.6-1.7"/></svg>'}</b><small>${fr?'Leave frozen':'Leave open'}</small></div></div>`;
  const live=TK.month===tkMonthNow();
  const covers=off.length?off.map(({p,l},i)=>{const b=l.data.backup?tkPerson(l.data.backup):null;
    const n=live?tkTasksFor(p.email,tkWeekOf(tkToday().d)).filter(tkIsToday).length:0;
    return `<div class="lc-cv" style="--i:${i}"><small>TODAY · ${day}</small>
-    <div class="lc-pair"><div class="lc-pp off">${tkAv(p)}<b>${first(p.name)}</b><small>Off today</small></div><span class="lc-arr"></span>
+    <div class="lc-pair"><div class="lc-pp off">${tkAv(p)}<b>${first(p.name)}</b><small class="lc-off">Off today</small></div><span class="lc-arr"></span>
      <div class="lc-pp">${b?tkAv(b):'<span class="tk-av">—</span>'}<b>${b?first(b.name):'No backup'}</b><small>${b?'Covers':'Not set'}</small></div></div>
     ${n?`<div class="lc-tasks">↪ ${n} of ${first(p.name)}'s task${n===1?'':'s'} ${b?`move${n===1?'s':''} to ${first(b.name)} today`:`need${n===1?'s':''} a backup today`}</div>`:''}</div>`}).join('')
    :`<div class="lc-cv lc-all"><small>TODAY · ${day}</small><b>✓ Everyone is working today</b></div>`;
@@ -9604,7 +9607,7 @@ function tkLeaveHtml(){
    const wd=w?(w.data.weekdays||[]).map(d=>TK_DAYS[d]).join(', '):'';
    return `<button type="button" class="lc-r" style="--i:${i}" ${admin?`onclick="tkNewLeave('${esc(p.email)}')"`:''}>${tkAv(p)}<div class="lc-rn"><b>${esc(p.name)}</b>
      ${extra.length?`<div class="lp-ex">${extra.map(l=>{const t=TK_LEAVE_TYPES.find(x=>x[0]===l.data.type)||TK_LEAVE_TYPES[1];return `<span>${t[1]} ${(l.data.days||[]).join(', ')}</span>`}).join('')}</div>`:''}</div>
-     <em>${w?`<u>${esc(wd)}</u> · ${b?`backup ${first(b.name)}`:'no backup'}`:'No day off'}</em>${admin?'<i>›</i>':''}</button>`}).join('');
+     <em>${w?`<u>${esc(wd)}</u> · ${b?`backup <strong>${first(b.name)}</strong>`:'no backup'}`:'No day off'}</em>${admin?'<i>›</i>':''}</button>`}).join('');
  return stats+covers+freeze+(people.length?`<div class="lc-ls">${rows}</div>`:'<div class="tk-empty"><b>No one yet</b></div>');
 }
 async function tkFreezeToggle(btn){
