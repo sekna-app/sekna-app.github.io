@@ -4123,6 +4123,115 @@ window.addEventListener('load',function(){
     .sk-drawer .sk-user-card.tier4:before{background:linear-gradient(#fbe1d6,#b9735e)}.sk-drawer .sk-user-card.tier4 .skr-t{color:#e3a48f}.sk-drawer .sk-user-card.tier4 .skr-p i.on{background:#e3a48f;box-shadow:0 0 6px #e3a48f}.sk-drawer .sk-user-card.tier4 .sk-user-avatar{box-shadow:0 0 0 2px #e3a48f!important}
     .sk-drawer .sk-user-card.tier5:before{background:linear-gradient(#f3d79f,#c9933f)}.sk-drawer .sk-user-card.tier5 .skr-t{color:#f3d79f}.sk-drawer .sk-user-card.tier5 .skr-p i.on{background:#f3d79f;box-shadow:0 0 6px #f3d79f}.sk-drawer .sk-user-card.tier5 .sk-user-avatar{box-shadow:0 0 0 2px #f3d79f!important}
     .sk-drawer .sk-user-card.tier5{border-color:rgba(243,215,159,.5)!important;box-shadow:0 0 18px rgba(226,184,116,.25)!important}
+
+    /* v125 · Team Tasks */
+    .tk-ndot{display:none;width:8px;height:8px;border-radius:50%;background:#ff5d73;box-shadow:0 0 8px #ff5d73;margin-left:auto}
+    #ttMineBtn.tk-has-new .tk-ndot{display:block}
+    .sk-grp.tk-has-new .sk-gt b:after{content:'';display:inline-block;width:7px;height:7px;border-radius:50%;background:#ff5d73;margin-left:6px;vertical-align:2px;box-shadow:0 0 8px #ff5d73}
+    .tk-body{padding:12px 14px 28px;max-width:760px;margin:0 auto}
+    .tk-views{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none}
+    .tk-views button{flex:1;white-space:nowrap;border:1px solid #dfe3ec;background:#fff;color:#4b5263;border-radius:99px;padding:7px 12px;font:inherit;font-size:12px;font-weight:800;cursor:pointer;position:relative}
+    .tk-views button.on,.tk-weeks button.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%)!important;color:#fff!important;border-color:transparent!important;box-shadow:0 8px 18px rgba(61,107,255,.4)}
+    .tk-dot{position:absolute;top:4px;right:6px;width:7px;height:7px;border-radius:50%;background:#ff5d73}
+    .tk-month{display:flex;align-items:center;gap:10px;margin:2px 0 10px}.tk-month b{font-size:16px}
+    .tk-month button{width:32px;height:32px;border-radius:10px;border:1px solid #dfe3ec;background:#fff;font-size:18px;font-weight:900;color:#203c8e;cursor:pointer}
+    .tk-sync{margin-left:auto;font-size:11px;font-weight:700;color:#8a93a6}
+    .tk-weeks{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+    .tk-weeks button{border:1px solid #dfe3ec;background:#fff;border-radius:14px;padding:7px 4px;font:inherit;cursor:pointer;color:#1d2433;transition:all .25s}
+    .tk-weeks b{display:block;font-size:13px}.tk-weeks small{font-size:9.5px;font-weight:700;opacity:.75}
+    .tk-person,.tk-mine-h,.tk-wk,.tk-empty,.tk-task.tk-q{animation:skRise .35s calc(var(--i,0)*60ms) cubic-bezier(.2,.75,.25,1) both}
+    .tk-person{background:#fff;border-radius:18px;padding:12px;margin-bottom:10px;box-shadow:0 6px 18px rgba(20,30,60,.05)}
+    .tk-ph{display:flex;align-items:center;gap:10px;margin-bottom:6px}.tk-pn{flex:1;min-width:0}.tk-pn b{display:block;font-size:14px}.tk-pn .rb{margin-top:3px}
+    .tk-av{width:34px;height:34px;flex:none;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#e9eefc;color:#203c8e;font-weight:900;font-size:13px}
+    .tk-av .sk-emb,.tk-av svg{width:100%;height:100%;display:block}
+    .tk-ring{--p:0;width:44px;height:44px;border-radius:50%;background:conic-gradient(#22c47c calc(var(--p)*1%),#eef0f5 0);display:grid;place-items:center;flex:none}
+    .tk-ring span{width:34px;height:34px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:11px;font-weight:900}
+    .tk-task{display:flex;gap:10px;align-items:flex-start;padding:9px 2px;border-top:1px solid #f1f3f8}
+    .tk-person .tk-task:first-of-type{border-top:0}
+    .tk-tick{width:26px;height:26px;flex:none;border-radius:8px;border:2px solid #c9d0de;background:#fff;color:#fff;font-weight:900;font-size:14px;cursor:pointer;display:grid;place-items:center;transition:all .2s}
+    .tk-tick:disabled{cursor:default;opacity:.7}
+    .tk-task.done .tk-tick{background:#22c47c;border-color:#22c47c;animation:tkPop .35s}
+    @keyframes tkPop{50%{transform:scale(1.2)}}
+    .tk-task.done .tk-tb>b{text-decoration:line-through;color:#8a93a6}
+    .tk-tb{flex:1;min-width:0}.tk-tb>b{font-size:13.5px;display:block}
+    .tk-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+    .tk-tag{font-size:10px;font-weight:900;border-radius:99px;padding:2px 8px;background:#f1f3f8;color:#4b5263}
+    .tk-tag.acc{background:#e9eefc;color:#203c8e}.tk-tag.google{background:#e8f4ee;color:#0e8f5d}.tk-tag.microsoft{background:#fff1e0;color:#b25e00}.tk-tag.all{background:#fbefdc;color:#a8701c}
+    .tk-snaps{display:flex;flex-direction:column;gap:2px;margin-top:6px;font-size:11.5px;color:#4b5263;font-weight:600}
+    .tk-msg{margin-top:6px;font-size:11.5px;color:#4b5263;background:#f6f8fc;border-radius:10px;padding:6px 9px}
+    .tk-qn{margin-top:6px;font-size:11px;font-weight:800;color:#a8701c}
+    .tk-empty{text-align:center;padding:30px 14px;background:#fff;border-radius:18px;color:#6b7385}.tk-empty b{display:block;color:#1d2433;font-size:15px}.tk-empty small{font-size:12px}
+    .tk-mine-h{background:linear-gradient(150deg,#1d3683,#2c4fb8);color:#fff;border-radius:18px;padding:14px;margin-bottom:10px}
+    .tk-mine-h small{font-size:10px;font-weight:900;letter-spacing:.1em;color:#b9c6ef}.tk-mine-h b{display:block;font-size:20px;margin-top:2px}
+    .tk-bar{height:8px;border-radius:8px;background:rgba(255,255,255,.18);margin-top:10px;overflow:hidden}.tk-bar i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,#7dffb3,#22c47c);transition:width .5s}
+    .tk-mine-h~.tk-task{background:#fff;border-radius:14px;padding:11px;margin-bottom:8px;border:0}
+    .tk-task.tk-q{background:#fff;border-radius:14px;padding:11px;margin-bottom:8px;border:0;align-items:center}
+    .tk-age{font-size:10.5px;font-weight:800;color:#8a93a6}
+    .tk-dl{font-size:10px;font-weight:900;border-radius:99px;padding:2px 8px;background:#e9eefc;color:#203c8e}.tk-dl.soon{background:#fff1e0;color:#b25e00}.tk-dl.late{background:#fde8eb;color:#c43c50}
+    .tk-qp .tk-av{width:28px;height:28px;font-size:11px}
+    .tk-ed{width:30px;height:30px;flex:none;border-radius:9px;border:0;background:#f1f3f8;color:#203c8e;font-size:14px;cursor:pointer}
+    .tk-intro{font-size:12px;color:#6b7385;font-weight:600;margin:0 2px 10px}
+    .tk-add{border:1.5px dashed #c9d3f0;background:#f6f8fe;color:#203c8e;border-radius:12px;padding:9px 12px;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer}
+    .tk-add.big{width:100%;margin-bottom:10px;padding:12px}
+    .tk-copy{width:100%;text-align:left;border:0;border-radius:16px;padding:12px 14px;margin-bottom:12px;background:linear-gradient(135deg,#fbecc8,#e2b874);color:#3a2606;font:inherit;font-size:13px;font-weight:900;cursor:pointer;box-shadow:0 6px 16px rgba(194,138,58,.25)}
+    .tk-copy small{display:block;font-size:11px;font-weight:600;opacity:.8;margin-top:2px}.tk-copy.busy{opacity:.6}
+    .tk-wk{background:#fff;border-radius:18px;padding:12px;margin-bottom:10px;box-shadow:0 6px 18px rgba(20,30,60,.05);position:relative;overflow:hidden}
+    .tk-wk:before{content:'';position:absolute;left:0;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:linear-gradient(#f3d79f,#e2b874)}
+    .tk-wh{display:flex;align-items:baseline;gap:8px;margin-bottom:8px}.tk-wh b{font-size:15px}.tk-wh small{font-size:11px;color:#8a93a6;font-weight:700}.tk-wh span{margin-left:auto;font-size:10.5px;font-weight:900;color:#203c8e;background:#e9eefc;border-radius:99px;padding:2px 8px}
+    .tk-bp{border-top:1px solid #f1f3f8;padding:8px 0}.tk-bph{display:flex;align-items:center;gap:8px;margin-bottom:4px}.tk-bph .tk-av{width:26px;height:26px;font-size:11px}.tk-bph b{font-size:12.5px}
+    .tk-bt{display:flex;align-items:center;gap:8px;padding:5px 0 5px 34px}.tk-bt>div{flex:1;min-width:0}.tk-bt b{font-size:13px}
+    .tk-wf{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.tk-wf .tk-add{flex:1}
+    .tk-send{flex:1.4;border:0;border-radius:12px;padding:9px 12px;font:inherit;font-size:12px;font-weight:900;background:#203c8e;color:#fff;cursor:pointer}
+    .tk-send.sent{background:#e3f6ec;color:#0e8f5d}.tk-send.confirm{background:#c28a3a}.tk-send:disabled{opacity:.45;cursor:default}
+    .tk-share{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px;border:0;border-radius:14px;padding:12px;background:#1faa59;color:#fff;font:inherit;font-size:13px;font-weight:900;cursor:pointer;box-shadow:0 8px 18px rgba(31,170,89,.3)}
+    .tk-share svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linejoin:round}
+    .tk-loading{display:flex;gap:6px;justify-content:center;padding:40px}.tk-loading i{width:10px;height:10px;border-radius:50%;background:#5d86ff;animation:a3tw 1s infinite}.tk-loading i:nth-child(2){animation-delay:.2s}.tk-loading i:nth-child(3){animation-delay:.4s}
+    /* locked builder */
+    .tk-lock{text-align:center;padding:26px 10px;display:flex;flex-direction:column;align-items:center}
+    .tk-lk{width:86px;height:86px;border-radius:28px;display:grid;place-items:center;background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);box-shadow:0 14px 30px rgba(61,107,255,.35);animation:soonFloat 3s ease-in-out infinite}
+    .tk-lk svg{width:40px;height:40px;fill:none;stroke:#f3d79f;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .tk-lk .sh{animation:tkShackle 2.4s ease-in-out infinite;transform-origin:16px 11px}
+    @keyframes tkShackle{0%,60%,100%{transform:none}70%{transform:translateY(-1.5px) rotate(-8deg)}80%{transform:translateY(-1.5px) rotate(4deg)}}
+    .tk-lock h3{margin:18px 0 4px;font-size:20px}.tk-lock p{margin:0;color:#6b7385;font-size:13px}
+    .tk-who{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:420px;margin-top:16px}
+    .tk-who div{background:#fff;border-radius:16px;padding:12px 6px;box-shadow:0 6px 18px rgba(20,30,60,.06);animation:skRise .45s calc(var(--i)*120ms + .2s) cubic-bezier(.2,.75,.25,1) both;border-top:3px solid #e2b874}
+    .tk-who span{display:grid;place-items:center;width:38px;height:38px;margin:0 auto 6px;border-radius:50%;background:linear-gradient(135deg,#1a1f33,#0a0d18);color:#f3d79f;font-size:12px;font-weight:900;box-shadow:0 0 0 2px #e2b874}
+    .tk-who b{display:block;font-size:12px}.tk-who small{font-size:10.5px;color:#8a93a6;font-weight:600}
+    .tk-lock-n{margin-top:16px;color:#8a93a6;font-size:11.5px;font-weight:600}
+    /* form */
+    .tk-sheet .lyx-card{max-width:520px}
+    .tk-fh{font-size:17px;font-weight:900;margin:2px 0 6px}
+    .tk-l{display:block;font-size:10.5px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#6b7385;margin:12px 0 6px}.tk-l small{text-transform:none;letter-spacing:0;font-weight:700;color:#a2a9b8;margin-left:4px}
+    .tk-in{width:100%;border:1px solid #dfe3ec;border-radius:12px;padding:10px 12px;font:inherit;font-size:14px;background:#fff;color:#1d2433}
+    textarea.tk-in{resize:vertical}
+    .tk-sug,.tk-row{display:flex;flex-wrap:wrap;gap:6px}.tk-sug{margin-top:6px}
+    .tk-chip{border:1px solid #dfe3ec;background:#fff;color:#4b5263;border-radius:99px;padding:6px 12px;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+    .tk-chip.w{border-radius:12px;text-align:center}.tk-chip small{display:block;font-size:9px;font-weight:700;opacity:.75}
+    .tk-chip.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);color:#fff;border-color:transparent}
+    .tk-chip.g.on{background:#0e8f5d}.tk-chip.m.on{background:#d9730d}
+    .tk-people{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+    .tk-pc{display:flex;flex-direction:column;align-items:center;gap:4px;border:2px solid transparent;background:none;border-radius:14px;padding:6px;font:inherit;font-size:11px;font-weight:800;color:#4b5263;cursor:pointer;min-width:60px}
+    .tk-pc .tk-av{width:40px;height:40px}.tk-pc.on{border-color:#e2b874;background:#fff8ea;color:#1d2433}
+    .tk-snap{display:flex;gap:6px;align-items:center;margin-bottom:6px}.tk-snap input{flex:1;min-width:0;border:1px solid #dfe3ec;border-radius:10px;padding:8px 10px;font:inherit;font-size:13px}
+    .tk-snap select{border:1px solid #dfe3ec;border-radius:10px;padding:8px 4px;font:inherit;font-size:13px;background:#fff}
+    .tk-ap{display:flex;border:1px solid #dfe3ec;border-radius:10px;overflow:hidden}.tk-ap button{border:0;background:#fff;padding:8px 7px;font:inherit;font-size:11px;font-weight:900;color:#6b7385;cursor:pointer}.tk-ap button.on{background:#203c8e;color:#fff}
+    .tk-x{border:0;background:#f1f3f8;border-radius:9px;width:30px;height:32px;color:#8a93a6;cursor:pointer}
+    .tk-fa{display:flex;gap:8px;margin-top:16px}.tk-save{flex:1;border:0;border-radius:14px;padding:13px;font:inherit;font-size:14px;font-weight:900;color:#fff;background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);cursor:pointer}
+    .tk-del{border:0;border-radius:14px;padding:13px 14px;font:inherit;font-size:13px;font-weight:800;background:#fde8eb;color:#c43c50;cursor:pointer}.tk-del.confirm{background:#c43c50;color:#fff}
+    body.dark-mode .tk-person,body.dark-mode .tk-wk,body.dark-mode .tk-empty,body.dark-mode .tk-task.tk-q,body.dark-mode .tk-mine-h~.tk-task,body.dark-mode .tk-who div,body.dark-mode .tk-weeks button,body.dark-mode .tk-views button,body.dark-mode .tk-month button{background:#151a22;color:#fff;border-color:#252a32}
+    body.dark-mode .tk-ring span,body.dark-mode .tk-tick{background:#151a22}body.dark-mode .tk-task{border-color:#252a32}body.dark-mode .tk-msg{background:#1b2130;color:#c9d3f5}
+    body.dark-mode .tk-in,body.dark-mode .tk-chip,body.dark-mode .tk-snap input,body.dark-mode .tk-snap select,body.dark-mode .tk-ap button{background:#151a22;color:#fff;border-color:#2a303b}
+    /* WhatsApp image */
+    .tks-report{width:1200px!important}
+    .tks{background:#f3f5fb;padding:26px;font-family:Inter,system-ui,sans-serif;color:#1d2433}
+    .tks-h{display:flex;justify-content:space-between;align-items:flex-end;background:linear-gradient(150deg,#1d3683,#2c4fb8);color:#fff;border-radius:20px;padding:18px 22px;margin-bottom:14px}
+    .tks-h small{font-size:12px;font-weight:900;letter-spacing:.14em;color:#f3d79f}.tks-h b{display:block;font-size:28px}.tks-h span{font-size:13px;color:#c9d3f5;font-weight:700}
+    .tks-g{display:grid;gap:8px}
+    .tks-wh{background:#203c8e;color:#fff;border-radius:12px;padding:8px 10px;font-weight:900;font-size:14px}.tks-wh small{display:block;font-size:11px;color:#c9d3f5;font-weight:700}
+    .tks-p{display:flex;align-items:center;gap:8px;background:#fff;border-radius:12px;padding:8px}.tks-p b{font-size:13px}
+    .tks-c{background:#fff;border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:6px}
+    .tks-t b{display:block;font-size:12px}.tks-t small{display:block;font-size:10.5px;color:#6b7385;font-weight:600}.tks-t.d b{color:#0e8f5d}
+    .tks-e{color:#c9d0de;font-weight:900;text-align:center}
 </style>
 </head>
 <body>
@@ -4257,6 +4366,14 @@ window.addEventListener('load',function(){
     <button class="sk-nav-btn" type="button" onclick="openSoon('ask')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/><path d="M18.5 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg></span><span>Ask SEKNA</span><span class="sk-soon">Soon</span></button>
   </nav></div>
 
+  <button class="sk-grp" type="button" data-grp="tt" onclick="navGroup('tt')" aria-expanded="false"><span class="sk-gt"><b>Team Tasks</b><small class="sk-gn"></small></span><svg class="sk-gchev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+  <div class="sk-grp-body" id="grp-tt"><nav class="sk-nav" aria-label="Team Tasks">
+    <button class="sk-nav-btn" type="button" onclick="openTasks('team')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.2c2.4-.3 4.4 1.2 5 4.3"/></svg></span><span>Team Board</span></button>
+    <button class="sk-nav-btn" id="ttMineBtn" type="button" onclick="openTasks('mine')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 12.5l2.5 2.5 5-5.5"/></svg></span><span>My Tasks</span><i class="tk-ndot"></i></button>
+    <button class="sk-nav-btn" type="button" onclick="openTasks('build')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l10-10-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></span><span>Task Builder</span><span class="sk-nav-lock" id="ttBuildLock"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span></button>
+    <button class="sk-nav-btn" type="button" onclick="openTasks('quick')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/></svg></span><span>Quick Requests</span></button>
+  </nav></div>
+
   <div class="sk-section-label">App</div>
   <nav class="sk-nav" aria-label="App options">
     <button class="sk-nav-btn" type="button" onclick="openSettings()"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span><span>Settings</span></button>
@@ -4313,6 +4430,13 @@ window.addEventListener('load',function(){
   <section class="app-modal sk-modal py-page" role="dialog" aria-modal="true" aria-labelledby="pyTitle" onclick="event.stopPropagation()">
     <div class="sk-modal-head"><div><div class="sk-kicker" id="pyKicker">PAST YEARS</div><h2 id="pyTitle">Same Hijri day</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closePastYears()" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
     <div id="pyBody" class="py-body"></div>
+  </section>
+</div>
+
+<div class="app-modal-overlay sk-page" id="tasksOverlay" onclick="closeTasks(event)" data-share-ui>
+  <section class="app-modal sk-modal tk-page" role="dialog" aria-modal="true" aria-labelledby="tkTitle" onclick="event.stopPropagation()">
+    <div class="sk-modal-head"><div><div class="sk-kicker" id="tkKicker">TEAM TASKS</div><h2 id="tkTitle">Team Board</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeTasks()" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+    <div id="tasksBody" class="tk-body"></div>
   </section>
 </div>
 
@@ -5027,7 +5151,7 @@ function showSettingsToast(message){
 }
 
 
-const NAV_GRP={mp:false,ps:false,ai:false};
+const NAV_GRP={mp:false,ps:false,ai:false,tt:false};
 function navGroupState(){return NAV_GRP}
 function navGroupApply(){
  const st=navGroupState();
@@ -7615,6 +7739,7 @@ function fetchProfile(){
  serverCall('accessStatus',token).then(p=>{
    if(!p||(hasServer()&&p.status!=='Approved'))return;
    ACCESS_PROFILE=p;
+   if(/[?&]tasks=mine\b/.test(location.search)&&!TK.shown.link){TK.shown.link=1;setTimeout(()=>openTasks('mine'),900)}
    trackUsageStart();
    if(p.name)storeSet(ACCESS_NAME_KEY,p.name);
    updateProfileUI();
@@ -7628,6 +7753,7 @@ function updateProfileUI(){
  const role=(mem&&mem.role)||'', card=document.querySelector('.sk-drawer .sk-user-card');
  if(card){card.className='sk-user-card'+(roleTier(role)?' tier'+roleTier(role):'');}
  const myAv=mem&&mem.avatar?emblemHtml(mem.avatar):'';
+ setTimeout(tkNoticeUI,0);
  const rl=document.getElementById('profileRole');if(rl){const t=roleTier(role);rl.innerHTML=t?`<span class="skr-t">${esc(role.toUpperCase())}</span><span class="skr-p">${[1,2,3,4,5].map(k=>`<i class="${k<=t?'on':''}"></i>`).join('')}</span>`:'';rl.hidden=!role}
  const name=p.name||storeGet(ACCESS_NAME_KEY)||'SEKNA';
  text('profileName',name);
@@ -8458,6 +8584,10 @@ async function webPushStartup(){
        await serverCall('webPushSubscribe',getAccessToken(),token,true);
        storeSet(WEB_PUSH_KEY,token);
        serverCall('webPushSubscribe',getAccessToken(),saved,false).catch(()=>{});
+     }else if(token&&storeGet('sekna_push_u1')!=='1'){
+       
+       await serverCall('webPushSubscribe',getAccessToken(),token,true);
+       storeSet('sekna_push_u1','1');
      }
    }catch(e){}
    return;
@@ -8882,7 +9012,263 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v124',date:'2026-11-04'};
+
+const TK_MANAGER_ROLES=['Team Leader','Media Manager','Head of Media'];
+const TK_SNAP_SUGGEST=['Media Plan','Search Terms','Campaigns','Ads','Keywords','Devices'];
+const TK_TITLE_SUGGEST=['SEKNA Report USA','SEKNA Report AR'];
+let TK={view:'team',month:'',week:1,data:null,busy:false,form:null,shown:{}};
+function tkToday(){const n=muscatParts(Date.now());return {y:+n[0],m:+n[1],d:+n[2]}}
+function tkMonthNow(){const t=tkToday();return `${t.y}-${String(t.m).padStart(2,'0')}`}
+function tkWeekOf(d){return d<=7?1:d<=14?2:d<=21?3:4}
+function tkDim(month){return new Date(+month.slice(0,4),+month.slice(5,7),0).getDate()}
+function tkMonthName(month,short){return new Date(+month.slice(0,4),+month.slice(5,7)-1,1).toLocaleDateString('en-GB',{month:short?'short':'long',year:short?undefined:'numeric'})}
+function tkRange(month,w){const to=w===4?tkDim(month):w*7;return `${(w-1)*7+1}–${to} ${tkMonthName(month,true)}`}
+function tkShift(month,n){const d=new Date(+month.slice(0,4),+month.slice(5,7)-1+n,1);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
+function tkCanManage(){const p=ACCESS_PROFILE||{};let mem=p.member;if(!mem){try{mem=JSON.parse(storeGet('sekna_member')||'null')}catch(e){}}return !!(p.isAdmin||(mem&&TK_MANAGER_ROLES.includes(mem.role)))}
+function tkMe(){return ((TK.data&&TK.data.me&&TK.data.me.email)||(ACCESS_PROFILE&&ACCESS_PROFILE.email)||'').toLowerCase()}
+function tkPeople(){return (TK.data&&TK.data.people)||[]}
+function tkPerson(email){return tkPeople().find(p=>p.email===email)||{email,name:String(email||'').split('@')[0],role:'',avatar:0}}
+function tkAv(p){return `<span class="tk-av">${emblemHtml(p.avatar)||esc((String(p.name||'S').charAt(0)||'S').toUpperCase())}</span>`}
+const TK_VIEWS={team:['Team Board','The whole team, week by week'],mine:['My Tasks','What you need to do'],build:['Task Builder','Plan the month for the team'],quick:['Quick Requests','Small asks with a deadline']};
+
+function openTasks(view){
+ closeSidebar();
+ TK.view=view||'team';
+ if(!TK.month){TK.month=tkMonthNow();TK.week=tkWeekOf(tkToday().d)}
+ const o=document.getElementById('tasksOverlay');if(!o)return;
+ text('tkKicker','TEAM TASKS');text('tkTitle',TK_VIEWS[TK.view][0]);
+ o.classList.add('open');
+ if(TK.view==='mine')tkSeenNotice();
+ if(!TK.data||TK.data.month!==TK.month){try{const c=JSON.parse(storeGet('sekna_tasks_'+TK.month)||'null');if(c)TK.data=c}catch(e){}}
+ tkRender();tkLoad();
+}
+function closeTasks(e){if(e&&e.target!==e.currentTarget)return;const o=document.getElementById('tasksOverlay');if(o)o.classList.remove('open');tkSheetClose()}
+async function tkLoad(){
+ if(TK.view==='build'&&!tkCanManage()&&TK.data){tkRender();return}
+ TK.busy=true;tkRender();
+ try{
+   const d=await serverCall('tasksLoad',getAccessToken(),TK.month);
+   if(d&&d.month===TK.month){TK.data=d;storeSet('sekna_tasks_'+TK.month,JSON.stringify(d))}
+ }catch(err){showSettingsToast(errorText(err))}
+ TK.busy=false;tkRender();
+}
+function tkMonth(n){TK.month=tkShift(TK.month,n);TK.data=null;try{const c=JSON.parse(storeGet('sekna_tasks_'+TK.month)||'null');if(c)TK.data=c}catch(e){}TK.week=TK.month===tkMonthNow()?tkWeekOf(tkToday().d):1;tkRender();tkLoad()}
+function tkSetWeek(w){TK.week=w;tkRender()}
+function tkRender(){
+ const b=document.getElementById('tasksBody');if(!b)return;
+ text('tkTitle',TK_VIEWS[TK.view][0]);
+ const tabs=`<div class="tk-views">${Object.keys(TK_VIEWS).map(k=>`<button type="button" class="${k===TK.view?'on':''}" onclick="TK.view='${k}';${k==='mine'?'tkSeenNotice();':''}tkRender()">${TK_VIEWS[k][0].replace('Quick Requests','Quick').replace('Task Builder','Builder').replace('Team Board','Team')}${k==='build'&&!tkCanManage()?' 🔒':''}${k==='mine'&&tkNoticeNew()?'<i class="tk-dot"></i>':''}</button>`).join('')}</div>`;
+ if(TK.view==='build'&&!tkCanManage()){b.innerHTML=tabs+tkLockedHtml();return}
+ const d=TK.data;
+ if(!d){b.innerHTML=tabs+`<div class="tk-loading"><i></i><i></i><i></i></div>`;return}
+ const month=`<div class="tk-month"><button type="button" onclick="tkMonth(-1)" aria-label="Previous month">‹</button><b>${esc(tkMonthName(TK.month))}</b><button type="button" onclick="tkMonth(1)" aria-label="Next month">›</button>${TK.busy?'<span class="tk-sync">Syncing…</span>':''}</div>`;
+ const weeks=`<div class="tk-weeks">${[1,2,3,4].map(w=>`<button type="button" class="${w===TK.week?'on':''}" onclick="tkSetWeek(${w})"><b>W${w}</b><small>${esc(tkRange(TK.month,w))}</small></button>`).join('')}</div>`;
+ let body='';
+ if(TK.view==='team')body=month+weeks+tkTeamHtml()+`<button type="button" class="tk-share" onclick="tkShare(this)">${WA_IC}Share the month on WhatsApp</button>`;
+ else if(TK.view==='mine')body=month+weeks+tkMineHtml();
+ else if(TK.view==='build')body=month+tkBuildHtml();
+ else body=tkQuickHtml();
+ b.innerHTML=tabs+body;
+}
+const WA_IC='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z"/><path d="M8.5 8.5c.3 2.9 2.7 5.6 6 6.6l1.3-1.3-2-1-1 .8c-1-.5-1.9-1.4-2.4-2.4l.8-1-1-2z"/></svg>';
+function tkTasksFor(email,w){return ((TK.data&&TK.data.tasks)||[]).filter(t=>(!email||t.email===email)&&t.weeks.includes(w))}
+function tkTags(t){
+ const d=t.data||{},out=[];
+ if(d.account)out.push(`<span class="tk-tag acc">${d.account.toUpperCase()}</span>`);
+ (d.platforms||[]).forEach(p=>out.push(`<span class="tk-tag ${p}">${p==='google'?'Google':'Microsoft'}</span>`));
+ return out.join('');
+}
+function tkSnaps(t){const s=(t.data&&t.data.snaps)||[];return s.length?`<div class="tk-snaps">${s.map(x=>`<span>📸 ${esc(x.n)}${x.t?` · <b>${esc(x.t)}</b>`:''}</span>`).join('')}</div>`:''}
+function tkTaskRow(t,w,canTick){
+ const done=!!(t.done&&t.done[w]);
+ return `<div class="tk-task${done?' done':''}">
+   <button type="button" class="tk-tick" ${canTick?`onclick="tkTick('${t.id}',${w},${!done},this)"`:'disabled'} aria-label="${done?'Mark as not done':'Mark as done'}">${done?'✓':''}</button>
+   <div class="tk-tb"><b>${esc(t.title)}</b><div class="tk-tags">${tkTags(t)}</div>${tkSnaps(t)}${t.data&&t.data.msg?`<div class="tk-msg">💬 ${esc(t.data.msg)}</div>`:''}</div></div>`;
+}
+function tkTeamHtml(){
+ const w=TK.week, me=tkMe(), mgr=tkCanManage();
+ const people=tkPeople().filter(p=>tkTasksFor(p.email,w).length);
+ if(!people.length)return `<div class="tk-empty"><b>No tasks for week ${w} yet</b><small>${mgr?'Add them in the Builder.':'Your team leader will add them soon.'}</small></div>`;
+ return people.map((p,i)=>{
+   const ts=tkTasksFor(p.email,w), n=ts.filter(t=>t.done&&t.done[w]).length, open=(TK.data.quick||[]).filter(q=>q.email===p.email&&!(q.done&&q.done.at)).length;
+   const pct=ts.length?n/ts.length:0;
+   return `<div class="tk-person" style="--i:${i}"><div class="tk-ph">${tkAv(p)}<div class="tk-pn"><b>${esc(p.name)}</b>${p.role?roleBadge(p.role):''}</div>
+     <div class="tk-ring" style="--p:${(pct*100).toFixed(0)}"><span>${n}/${ts.length}</span></div></div>
+     ${ts.map(t=>tkTaskRow(t,w,t.email===me||mgr)).join('')}
+     ${open?`<div class="tk-qn">⚡ ${open} quick request${open>1?'s':''} open</div>`:''}</div>`;
+ }).join('');
+}
+function tkMineHtml(){
+ const w=TK.week, me=tkMe(), ts=tkTasksFor(me,w), n=ts.filter(t=>t.done&&t.done[w]).length;
+ const q=((TK.data&&TK.data.quick)||[]).filter(x=>x.email===me&&!(x.done&&x.done.at));
+ const head=`<div class="tk-mine-h"><div><small>WEEK ${w} · ${esc(tkRange(TK.month,w))}</small><b>${ts.length?`${n} of ${ts.length} done`:'Nothing this week'}</b></div><div class="tk-bar"><i style="width:${ts.length?(n/ts.length*100).toFixed(0):0}%"></i></div></div>`;
+ return head+(ts.length?ts.map(t=>tkTaskRow(t,w,true)).join(''):`<div class="tk-empty"><b>You're all clear</b><small>No tasks for week ${w}.</small></div>`)
+   +(q.length?`<div class="ad-lbl">Quick requests</div>${q.map(x=>tkQuickRow(x,true)).join('')}`:'');
+}
+function tkDaysAgo(ms){const d=Math.floor((Date.now()-ms)/864e5);return d<=0?'today':d===1?'1 day ago':d+' days ago'}
+function tkDeadline(s){
+ if(!s)return '';
+ const t=tkToday(), a=Date.UTC(t.y,t.m-1,t.d), b=Date.UTC(+s.slice(0,4),+s.slice(5,7)-1,+s.slice(8,10)), n=Math.round((b-a)/864e5);
+ return `<span class="tk-dl ${n<0?'late':n<=1?'soon':''}">⏰ ${n<0?`${-n} day${n<-1?'s':''} late`:n===0?'Due today':n===1?'Due tomorrow':`Due in ${n} days`}</span>`;
+}
+function tkQuickRow(q,canTick){
+ const done=!!(q.done&&q.done.at), p=tkPerson(q.email);
+ return `<div class="tk-task tk-q${done?' done':''}"><button type="button" class="tk-tick" ${canTick?`onclick="tkTick('${q.id}',0,${!done},this)"`:'disabled'}>${done?'✓':''}</button>
+   <div class="tk-tb"><b>${esc(q.title)}</b><div class="tk-tags"><span class="tk-age">Asked ${tkDaysAgo(q.at)}</span>${done?'':tkDeadline(q.deadline)}</div>${q.data&&q.data.msg?`<div class="tk-msg">💬 ${esc(q.data.msg)}</div>`:''}</div>
+   <span class="tk-qp">${tkAv(p)}</span>${tkCanManage()?`<button type="button" class="tk-ed" onclick="tkEditQuick('${q.id}')" aria-label="Edit">✎</button>`:''}</div>`;
+}
+function tkQuickHtml(){
+ const me=tkMe(), mgr=tkCanManage(), all=(TK.data&&TK.data.quick)||[];
+ const mine=mgr?all:all.filter(q=>q.email===me);
+ const open=mine.filter(q=>!(q.done&&q.done.at)).sort((a,b)=>a.at-b.at), done=mine.filter(q=>q.done&&q.done.at);
+ return `<div class="tk-intro">Small asks that usually go to the WhatsApp group. Each one shows how long ago it was asked.</div>
+   ${mgr?`<button type="button" class="tk-add big" onclick="tkNewQuick()">＋ New request</button>`:''}
+   ${open.length?open.map(q=>tkQuickRow(q,q.email===me||mgr)).join(''):`<div class="tk-empty"><b>No open requests</b><small>${mgr?'Add one when someone asks for something.':'Nothing waiting for you.'}</small></div>`}
+   ${done.length?`<div class="ad-lbl">Done · last 14 days</div>${done.map(q=>tkQuickRow(q,q.email===me||mgr)).join('')}`:''}`;
+}
+function tkBuildHtml(){
+ const d=TK.data, sent=d.sent||{};
+ const copy=d.prevCount?`<button type="button" class="tk-copy" onclick="tkCopyMonth(this)">⟲ Copy ${esc(tkMonthName(tkShift(TK.month,-1),true))}'s ${d.prevCount} task${d.prevCount>1?'s':''} into ${esc(tkMonthName(TK.month,true))}<small>Same tasks, nothing ticked. Edit anything after.</small></button>`:'';
+ const wk=w=>{
+   const ts=tkTasksFor('',w), by={};
+   ts.forEach(t=>(by[t.email]=by[t.email]||[]).push(t));
+   return `<div class="tk-wk"><div class="tk-wh"><b>Week ${w}</b><small>${esc(tkRange(TK.month,w))}</small><span>${ts.length} task${ts.length===1?'':'s'}</span></div>
+     ${Object.keys(by).map(e=>{const p=tkPerson(e);return `<div class="tk-bp"><div class="tk-bph">${tkAv(p)}<b>${esc(p.name)}</b></div>${by[e].map(t=>`<div class="tk-bt"><div><b>${esc(t.title)}</b><div class="tk-tags">${tkTags(t)}${(t.data.snaps||[]).length?`<span class="tk-tag snap">📸 ${t.data.snaps.length}</span>`:''}${t.weeks.length===4?'<span class="tk-tag all">All weeks</span>':''}</div></div><button type="button" class="tk-ed" onclick="tkEdit('${t.id}')" aria-label="Edit">✎</button></div>`).join('')}</div>`}).join('')}
+     <div class="tk-wf"><button type="button" class="tk-add" onclick="tkNew(${w})">＋ Add task</button>
+     <button type="button" class="tk-send${sent[w]?' sent':''}" onclick="tkSendWeek(${w},this)" ${ts.length?'':'disabled'}>${sent[w]?`✓ Sent ${new Date(sent[w]).toLocaleDateString('en-GB',{day:'numeric',month:'short'})} · Send again`:`✉ Send week ${w} to the team`}</button></div></div>`;
+ };
+ return copy+[1,2,3,4].map(wk).join('')+`<button type="button" class="tk-share" onclick="tkShare(this)">${WA_IC}Share the month on WhatsApp</button>`;
+}
+function tkLockedHtml(){
+ return `<div class="tk-lock"><div class="tk-lk"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path class="sh" d="M8 11V8a4 4 0 0 1 8 0v3"/><circle cx="12" cy="16" r="1.4"/></svg></div>
+   <h3>You don't have access</h3><p>Only these people can build the team's tasks:</p>
+   <div class="tk-who">${[['👑','Head of Media','Manager'],['◆◆◆','Team Leaders','Plan each week'],['IA','Ibrahim Amin','SEKNA admin']].map((x,i)=>`<div style="--i:${i}"><span>${x[0]}</span><b>${x[1]}</b><small>${x[2]}</small></div>`).join('')}</div>
+   <small class="tk-lock-n">You can still see the Team board and tick your own tasks.</small></div>`;
+}
+async function tkTick(id,w,done,btn){
+ const all=[...((TK.data&&TK.data.tasks)||[]),...((TK.data&&TK.data.quick)||[])], t=all.find(x=>x.id===id);if(!t)return;
+ const k=t.kind==='quick'?'at':String(w), before=Object.assign({},t.done);
+ t.done=t.done||{};if(done)t.done[k]=Date.now();else delete t.done[k];
+ tkRender();
+ try{const r=await serverCall('taskDone',getAccessToken(),id,w,done);if(r&&r.done)t.done=r.done;storeSet('sekna_tasks_'+TK.month,JSON.stringify(TK.data))}
+ catch(err){t.done=before;tkRender();showSettingsToast(errorText(err))}
+}
+
+function tkSheet(html){
+ let o=document.getElementById('tkSheet');
+ if(!o){o=document.createElement('div');o.id='tkSheet';o.className='lyx-sheet tk-sheet';o.onclick=e=>{if(e.target===o||e.target.closest('.lyx-x'))tkSheetClose()};document.body.appendChild(o)}
+ o.innerHTML=`<div class="lyx-card"><button type="button" class="lyx-x" aria-label="Close">✕</button>${html}</div>`;
+ requestAnimationFrame(()=>o.classList.add('open'));
+}
+function tkSheetClose(){const o=document.getElementById('tkSheet');if(o)o.classList.remove('open');TK.form=null}
+function tkNew(w){TK.form={kind:'weekly',title:'',email:'',weeks:[w],data:{account:'',platforms:[],snaps:[],msg:''}};tkForm()}
+function tkEdit(id){const t=TK.data.tasks.find(x=>x.id===id);if(!t)return;TK.form=JSON.parse(JSON.stringify(t));TK.form.data=Object.assign({account:'',platforms:[],snaps:[],msg:''},TK.form.data);tkForm()}
+function tkNewQuick(){TK.form={kind:'quick',title:'',email:'',deadline:'',data:{msg:''}};tkForm()}
+function tkEditQuick(id){const t=TK.data.quick.find(x=>x.id===id);if(!t)return;TK.form=JSON.parse(JSON.stringify(t));TK.form.data=Object.assign({msg:''},TK.form.data);tkForm()}
+function tkF(k,v){const f=TK.form;if(!f)return;
+ if(k==='weeks'){const i=f.weeks.indexOf(v);if(v==='all')f.weeks=f.weeks.length===4?[TK.week]:[1,2,3,4];else if(i>=0){if(f.weeks.length>1)f.weeks.splice(i,1)}else f.weeks.push(v);f.weeks.sort()}
+ else if(k==='platform'){const p=f.data.platforms,i=p.indexOf(v);if(i>=0)p.splice(i,1);else p.push(v)}
+ else if(k==='account'){f.data.account=f.data.account===v?'':v;if(!f.data.account)f.data.platforms=[];else if(!f.data.platforms.length)f.data.platforms=['google']}
+ else if(k==='snapAdd')f.data.snaps.push({n:'',t:'12:00 PM'});
+ else if(k==='snapDel')f.data.snaps.splice(v,1);
+ else f[k]=v;
+ tkForm(true);
+}
+function tkSug(s){tkFormRead();const f=TK.form;f.title=s;f.data.account=/AR$/.test(s)?'ar':'usa';if(!f.data.platforms.length)f.data.platforms=['google'];tkForm()}
+function tkSnapSet(i,part,val){const s=TK.form.data.snaps[i];if(!s)return;
+ if(part==='n')s.n=val;
+ else{const m=String(s.t||'12:00 PM').match(/^(\d+):(\d+) (AM|PM)$/)||[0,'12','00','PM'];if(part==='h')m[1]=val;if(part==='ap')m[3]=val;s.t=`${m[1]}:${m[2]} ${m[3]}`;if(part==='ap')tkForm(true)}
+}
+function tkFormRead(){const f=TK.form;if(!f)return;const g=id=>document.getElementById(id);if(g('tkfTitle'))f.title=g('tkfTitle').value;if(g('tkfMsg'))f.data.msg=g('tkfMsg').value;if(g('tkfDl'))f.deadline=g('tkfDl').value}
+function tkForm(keep){
+ if(keep)tkFormRead();
+ const f=TK.form, q=f.kind==='quick';
+ const chip=(on,label,js,cls)=>`<button type="button" class="tk-chip${on?' on':''} ${cls||''}" onclick="${js}">${label}</button>`;
+ const people=tkPeople().map(p=>`<button type="button" class="tk-pc${f.email===p.email?' on':''}" onclick="tkF('email','${esc(p.email)}')">${tkAv(p)}<span>${esc(p.name.split(' ')[0])}</span></button>`).join('');
+ const hours=[12,1,2,3,4,5,6,7,8,9,10,11];
+ const snaps=(f.data.snaps||[]).map((s,i)=>{const m=String(s.t||'12:00 PM').match(/^(\d+):(\d+) (AM|PM)$/)||[0,'12','00','PM'];
+   return `<div class="tk-snap"><input list="tkSnapList" value="${esc(s.n)}" placeholder="Snapshot, e.g. Media Plan" oninput="tkSnapSet(${i},'n',this.value)">
+     <select onchange="tkSnapSet(${i},'h',this.value)">${hours.map(h=>`<option ${+m[1]===h?'selected':''}>${h}</option>`).join('')}</select>
+     <span class="tk-ap">${['AM','PM'].map(a=>`<button type="button" class="${m[3]===a?'on':''}" onclick="tkSnapSet(${i},'ap','${a}')">${a}</button>`).join('')}</span>
+     <button type="button" class="tk-x" onclick="tkF('snapDel',${i})" aria-label="Remove">✕</button></div>`}).join('');
+ tkSheet(`<div class="tk-form"><div class="tk-fh">${q?'⚡ Quick request':f.id?'Edit task':'New task'}</div>
+   <label class="tk-l">${q?'What is needed':'Task name'}</label>
+   <input id="tkfTitle" class="tk-in" value="${esc(f.title)}" placeholder="${q?'e.g. Performance report for Gaza':'e.g. SEKNA Report USA'}" maxlength="140">
+   ${q?'':`<div class="tk-sug">${TK_TITLE_SUGGEST.map(s=>chip(false,esc(s),`tkSug('${s}')`)).join('')}</div>`}
+   <label class="tk-l">For</label><div class="tk-people">${people||'<small>No approved people yet.</small>'}</div>
+   ${q?`<label class="tk-l">Deadline <small>optional</small></label><input id="tkfDl" type="date" class="tk-in" value="${esc(f.deadline||'')}">`:`
+   <label class="tk-l">Account</label><div class="tk-row">${chip(f.data.account==='usa','🇺🇸 USA',`tkF('account','usa')`)}${chip(f.data.account==='ar','AR',`tkF('account','ar')`)}</div>
+   ${f.data.account?`<label class="tk-l">Platform</label><div class="tk-row">${chip(f.data.platforms.includes('google'),'Google',`tkF('platform','google')`,'g')}${chip(f.data.platforms.includes('microsoft'),'Microsoft',`tkF('platform','microsoft')`,'m')}</div>`:''}
+   <label class="tk-l">Snapshots <small>Egypt time</small></label>${snaps}<button type="button" class="tk-add" onclick="tkF('snapAdd')">＋ Add snapshot</button>
+   <datalist id="tkSnapList">${TK_SNAP_SUGGEST.map(s=>`<option value="${s}">`).join('')}</datalist>
+   <label class="tk-l">Weeks</label><div class="tk-row">${[1,2,3,4].map(w=>chip(f.weeks.includes(w),`W${w}<small>${esc(tkRange(TK.month,w))}</small>`,`tkF('weeks',${w})`,'w')).join('')}${chip(f.weeks.length===4,'All 4',`tkF('weeks','all')`)}</div>`}
+   <label class="tk-l">Message <small>optional</small></label><textarea id="tkfMsg" class="tk-in" rows="2" maxlength="600" placeholder="Anything they should know">${esc(f.data.msg||'')}</textarea>
+   <div class="tk-fa">${f.id?`<button type="button" class="tk-del" onclick="tkDelete(this)">Delete</button>`:''}<button type="button" class="tk-save" onclick="tkSave(this)">${f.id?'Save changes':q?'Add request':'Add task'}</button></div></div>`);
+}
+async function tkSave(btn){
+ tkFormRead();const f=TK.form;if(!f)return;
+ if(!f.title.trim())return showSettingsToast('Give it a name first');
+ if(!f.email)return showSettingsToast('Choose who it is for');
+ if(f.kind==='weekly')f.month=TK.month;
+ btn.disabled=true;btn.textContent='Saving…';
+ try{
+   const t=await serverCall('taskSave',getAccessToken(),f);
+   const list=f.kind==='quick'?TK.data.quick:TK.data.tasks, i=list.findIndex(x=>x.id===t.id);
+   if(i>=0)list[i]=t;else list.push(t);
+   storeSet('sekna_tasks_'+TK.month,JSON.stringify(TK.data));
+   tkSheetClose();tkRender();showSettingsToast(f.id?'Saved':'Added');
+ }catch(err){btn.disabled=false;btn.textContent='Try again';showSettingsToast(errorText(err))}
+}
+async function tkDelete(btn){
+ if(!btn.classList.contains('confirm')){btn.classList.add('confirm');btn.textContent='Tap again to delete';return}
+ const f=TK.form;btn.disabled=true;
+ try{await serverCall('taskDelete',getAccessToken(),f.id);['tasks','quick'].forEach(k=>TK.data[k]=TK.data[k].filter(x=>x.id!==f.id));storeSet('sekna_tasks_'+TK.month,JSON.stringify(TK.data));tkSheetClose();tkRender();showSettingsToast('Deleted')}
+ catch(err){btn.disabled=false;showSettingsToast(errorText(err))}
+}
+async function tkCopyMonth(btn){
+ btn.disabled=true;btn.classList.add('busy');
+ try{const r=await serverCall('tasksCopyMonth',getAccessToken(),tkShift(TK.month,-1),TK.month);showSettingsToast(r&&r.copied?`${r.copied} tasks copied`:'Already copied');await tkLoad()}
+ catch(err){btn.disabled=false;btn.classList.remove('busy');showSettingsToast(errorText(err))}
+}
+async function tkSendWeek(w,btn){
+ if(!btn.classList.contains('confirm')){btn.classList.add('confirm');btn.textContent=`Email each person their week ${w} tasks?  Tap to send`;return}
+ btn.disabled=true;btn.textContent='Sending…';
+ try{const r=await serverCall('tasksSendWeek',getAccessToken(),TK.month,w);(TK.data.sent=TK.data.sent||{})[w]=r.at||Date.now();showSettingsToast(`Sent to ${r.sent} ${r.sent===1?'person':'people'}`);tkRender()}
+ catch(err){btn.disabled=false;showSettingsToast(errorText(err))}
+}
+
+function tkShareHtml(){
+ const people=tkPeople().filter(p=>[1,2,3,4].some(w=>tkTasksFor(p.email,w).length));
+ const cell=(p,w)=>{const ts=tkTasksFor(p.email,w);return ts.length?ts.map(t=>`<div class="tks-t${t.done&&t.done[w]?' d':''}"><b>${t.done&&t.done[w]?'✓ ':''}${esc(t.title)}</b>${(t.data.snaps||[]).length?`<small>${t.data.snaps.map(s=>esc(s.n)+(s.t?' '+esc(s.t):'')).join(' · ')}</small>`:''}</div>`).join(''):'<div class="tks-e">—</div>'};
+ return `<div class="tks"><div class="tks-h"><div><small>SEKNA · TEAM TASKS</small><b>${esc(tkMonthName(TK.month))}</b></div><span>Times are Egypt time</span></div>
+   <div class="tks-g" style="grid-template-columns:150px repeat(4,1fr)"><div></div>${[1,2,3,4].map(w=>`<div class="tks-wh">Week ${w}<small>${esc(tkRange(TK.month,w))}</small></div>`).join('')}
+   ${people.map(p=>`<div class="tks-p">${tkAv(p)}<b>${esc(p.name)}</b></div>${[1,2,3,4].map(w=>`<div class="tks-c">${cell(p,w)}</div>`).join('')}`).join('')}</div></div>`;
+}
+async function tkShare(btn){
+ if(!TK.data||!TK.data.tasks.length)return showSettingsToast('No tasks to share yet');
+ btn.disabled=true;
+ try{
+   const canvas=await captureReport(tkShareHtml(),'tks-report');
+   const filename=`SEKNA-Team-Tasks-${TK.month}.png`;
+   if(window.AndroidShare&&typeof window.AndroidShare.shareImage==='function'){window.AndroidShare.shareImage(canvas.toDataURL('image/png'),'',filename);return}
+   const blob=await canvasToBlob(canvas), file=new File([blob],filename,{type:'image/png'});
+   if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){try{await navigator.share({title:'Team Tasks',files:[file]});return}catch(e){if(e&&e.name==='AbortError')return}}
+   downloadShareImage(blob,filename);showSettingsToast('Image saved — share it on WhatsApp');
+ }catch(err){showSettingsToast(errorText(err))}
+ finally{btn.disabled=false}
+}
+
+function tkNoticeNew(){const n=ACCESS_PROFILE&&ACCESS_PROFILE.taskNotice;return !!(n&&n.at>(+storeGet('sekna_task_seen')||0))}
+function tkSeenNotice(){const n=ACCESS_PROFILE&&ACCESS_PROFILE.taskNotice;if(n)storeSet('sekna_task_seen',String(n.at));tkNoticeUI()}
+function tkNoticeUI(){
+ const on=tkNoticeNew();
+ document.querySelectorAll('[data-grp="tt"],#ttMineBtn').forEach(el=>el.classList.toggle('tk-has-new',on));
+ const lk=document.getElementById('ttBuildLock');if(lk)lk.hidden=tkCanManage();
+ if(on&&!TK.shown.notice){TK.shown.notice=1;setTimeout(()=>showSettingsToast('📋 '+ACCESS_PROFILE.taskNotice.text+' — open My Tasks'),1800)}
+}
+
+ 
+const DASHBOARD_RELEASE_CLIENT={version:'v125',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 

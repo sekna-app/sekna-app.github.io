@@ -417,7 +417,9 @@ async function buildDashboardData(accountKey) {
     bestWorst: bestWorst,
     topProjects: bestProjects ? bestProjects.rows.slice(0, 3) : [],
     topProjectsDay: bestWorst ? bestWorst.day : '',
-    generatedAt: fmt(nowWall, 'yyyy-MM-dd HH:mm:ss')
+    generatedAt: fmt(nowWall, 'yyyy-MM-dd HH:mm:ss'),
+    // The exact moment, so the app can show it in Muscat time whatever the sheet's time zone is.
+    generatedAtMs: Date.now()
   };
 }
 

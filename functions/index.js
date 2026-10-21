@@ -106,7 +106,7 @@ async function appsScriptCall(fn, args) {
   return j.result;
 }
 
-const SKIP = { generatedAt: 1, userEmail: 1 };
+const SKIP = { generatedAt: 1, generatedAtMs: 1, userEmail: 1 };
 
 function diff(a, b, path, out) {
   if (out.length >= 40) return;
