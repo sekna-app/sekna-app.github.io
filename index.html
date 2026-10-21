@@ -4349,6 +4349,21 @@ window.addEventListener('load',function(){
     .tq-ppl .tk-av{width:42px;height:42px}.tq-ppl small{font-size:9.5px;color:#8a93a6;margin-top:-3px}
     .tq-ppl button.on{border-color:#e2b874;background:#fff8ea;color:#1d2433;box-shadow:0 6px 14px rgba(226,184,116,.25)}
     body.dark-mode .tq{background:#151a22}body.dark-mode .tq-ppl button{background:#1b2130;color:#c9d3f5}body.dark-mode .tq-ppl button.on{background:#2a2216;color:#fff}
+
+    /* v132 · Quick dashboard card (ring + people) */
+    .qd{margin-bottom:10px;animation:skRise .3s both}
+    .qd-card{background:#fff;border-radius:20px;padding:13px;box-shadow:0 6px 18px rgba(20,30,60,.06);display:flex;gap:12px;align-items:center}
+    .qd-ring{--p:0;width:84px;height:84px;border-radius:50%;background:conic-gradient(#22c47c calc(var(--p)*1%),#eef0f5 0);display:grid;place-items:center;flex:none}
+    .qd-ring span{width:66px;height:66px;border-radius:50%;background:#fff;display:grid;place-items:center;align-content:center;text-align:center;font-size:18px;font-weight:900;line-height:1}
+    .qd-ring small{display:block;font-size:9px;color:#8a93a6;font-weight:800;margin-top:3px}
+    .qd-ppl{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
+    .qd-p{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800}.qd-p .tk-av{width:22px;height:22px;font-size:9px}
+    .qd-n{width:52px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .qd-p i{flex:1;height:7px;border-radius:5px;background:#eef0f5;overflow:hidden;display:flex}.qd-p u{display:block;height:100%}
+    .qd u.d,.qd-lg i.d{background:#22c47c}.qd u.w,.qd-lg i.w{background:#e2b874}.qd u.l,.qd-lg i.l{background:#e0566a}
+    .qd-p em{font-style:normal;font-size:10.5px;color:#6b7385;min-width:26px;text-align:right}
+    .qd-lg{display:flex;gap:12px;justify-content:center;margin-top:7px;font-size:10.5px;font-weight:800;color:#6b7385}.qd-lg i{display:inline-block;width:8px;height:8px;border-radius:3px;margin-right:4px}
+    body.dark-mode .qd-card{background:#151a22}body.dark-mode .qd-ring span{background:#151a22;color:#fff}body.dark-mode .qd-ring{background:conic-gradient(#22c47c calc(var(--p)*1%),#252a32 0)}
 </style>
 </head>
 <body>
@@ -9263,11 +9278,22 @@ function tkQuickRow(q,canTick){
    <div class="tk-tb"><b>${esc(q.title)}</b><div class="tk-tags"><span class="tk-age">Asked ${tkDaysAgo(q.at)}</span>${done?'':tkDeadline(q.deadline)}</div>${q.data&&q.data.msg?`<div class="tk-msg">💬 ${esc(q.data.msg)}</div>`:''}</div>
    <span class="tk-qp">${tkAv(p)}</span>${tkCanManage()?`<button type="button" class="tk-ed" onclick="tkEditQuick('${q.id}')" aria-label="Edit">✎</button>`:''}</div>`;
 }
+
+function tkQuickDash(list){
+ if(!list.length)return '';
+ const st=q=>q.done&&q.done.at?'d':(tkDue(q.deadline)!=null&&tkDue(q.deadline)<0?'l':'w');
+ const done=list.filter(q=>st(q)==='d').length, pct=Math.round(done/list.length*100), by={};
+ list.forEach(q=>{const b=by[q.email]=by[q.email]||{d:0,w:0,l:0,n:0};b[st(q)]++;b.n++});
+ const rows=Object.keys(by).sort((a,b)=>by[b].n-by[a].n).slice(0,5).map(e=>{const p=tkPerson(e),b=by[e],w=x=>(x/b.n*100).toFixed(1)+'%';
+   return `<div class="qd-p">${tkAv(p)}<span class="qd-n">${esc(String(p.name||'').split(' ')[0])}</span><i>${b.d?`<u class="d" style="width:${w(b.d)}"></u>`:''}${b.w?`<u class="w" style="width:${w(b.w)}"></u>`:''}${b.l?`<u class="l" style="width:${w(b.l)}"></u>`:''}</i><em>${b.d}/${b.n}</em></div>`}).join('');
+ return `<div class="qd"><div class="qd-card"><div class="qd-ring" style="--p:${pct}"><span>${done}/${list.length}<small>DONE</small></span></div><div class="qd-ppl">${rows}</div></div>
+   <div class="qd-lg"><span><i class="d"></i>Done</span><span><i class="w"></i>Waiting</span><span><i class="l"></i>Late</span></div></div>`;
+}
 function tkQuickHtml(){
  const me=tkMe(), mgr=tkCanManage(), all=(TK.data&&TK.data.quick)||[];
  const mine=mgr?all:all.filter(q=>q.email===me);
  const open=mine.filter(q=>!(q.done&&q.done.at)).sort((a,b)=>a.at-b.at), done=mine.filter(q=>q.done&&q.done.at);
- return `<div class="tk-intro">Small asks that usually go to the WhatsApp group. Each one shows how long ago it was asked.</div>
+ return `${tkQuickDash(mine)}<div class="tk-intro">Small asks that usually go to the WhatsApp group. Each one shows how long ago it was asked.</div>
    ${mgr?`<button type="button" class="tq-new" onclick="tkNewQuick()">＋ New request</button>`:''}
    ${open.length?open.map(q=>tkQuickRow(q,q.email===me||mgr)).join(''):`<div class="tk-empty"><b>No open requests</b><small>${mgr?'Add one when someone asks for something.':'Nothing waiting for you.'}</small></div>`}
    ${done.length?`<div class="ad-lbl">Done · last 14 days</div>${done.map(q=>tkQuickRow(q,q.email===me||mgr)).join('')}`:''}`;
@@ -9470,7 +9496,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v131',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v132',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
