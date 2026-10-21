@@ -216,6 +216,8 @@ exports.api = onRequest({
     // New day / team message / app version notifications (after the rest moved here).
     let pushed = null;
     try { pushed = await rest.pushChecks(latest); } catch (e) { pushed = { error: errorText(e) }; console.error('Push checks: ' + errorText(e)); }
+    // The 9 AM Cairo backup push rides on this check (no schedule of its own).
+    try { const m = await tasks.morningPushIfDue(); if (m) pushed = Object.assign({}, pushed, { morning: m }); } catch (e) { console.error('Morning push: ' + errorText(e)); }
     // Kept for /diag/push: the latest day seen per account, and what the check did with it.
     stats.lastPush = { at: Date.now(), seen: Object.fromEntries(Object.entries(latest).map(([k, v]) => [k, v && v.date])), pushed };
     if (pushed && Object.keys(pushed).some(k => k !== 'skipped' && k !== 'error')) stats.lastPushSent = stats.lastPush;
@@ -344,17 +346,3 @@ exports.keepWarm = onSchedule({
   if (!res.ok) throw new Error('Warm-up answered ' + res.status);
 });
 
-/* ---------- 9 AM Cairo: a push to everyone who is a backup today ----------
- * Only after Team Tasks moved here; until then Apps Script sends it. */
-exports.leaveMorningPush = onSchedule({
-  schedule: '0 9 * * *',
-  timeZone: 'Africa/Cairo',
-  region: 'europe-west2',
-  serviceAccount: SERVER_ACCOUNT,
-  memory: '256MiB',
-  maxInstances: 1,
-  retryCount: 0
-}, async () => {
-  const r = await tasks.morningPush();
-  console.log('Backup pushes: ' + JSON.stringify(r));
-});

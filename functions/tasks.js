@@ -430,6 +430,27 @@ async function morningPush() {
   return relay({ pushes });
 }
 
+/**
+ * The 9 AM Cairo backup push, run from the 2-minute warm-up instead of its own schedule
+ * (one scheduled job less). Sent once a day, between 09:00 and 12:00 Cairo time; the day is
+ * claimed in team/morning first, so two servers waking together never send it twice.
+ */
+async function morningPushIfDue() {
+  const p = {};
+  new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Cairo', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', hourCycle: 'h23' })
+    .formatToParts(new Date()).forEach(x => { p[x.type] = x.value; });
+  const hour = Number(p.hour), day = `${p.year}-${p.month}-${p.day}`;
+  if (hour < 9 || hour >= 12) return null;
+  let claimed = false;
+  await fsUpdate('team/morning', s => {
+    claimed = false;
+    if (s && s.day === day) return undefined;
+    claimed = true;
+    return { day, at: Date.now() };
+  });
+  return claimed ? morningPush() : null;
+}
+
 /** Router: before the move every call goes to Apps Script unchanged. */
 async function call(fn, args) {
   if (fn === 'adminTasksMove') return adminTasksMove(args);
@@ -443,4 +464,4 @@ async function call(fn, args) {
 }
 const FNS = Object.keys(T).concat(['adminTasksMove', 'adminTasksMoveStatus']);
 
-module.exports = { moved, call, FNS, morningPush, muscatToday, leavesToday, frozenOn, weekOf, prevMonth, appsScript, relay, teamStatusFor, members };
+module.exports = { moved, call, FNS, morningPush, morningPushIfDue, muscatToday, leavesToday, frozenOn, weekOf, prevMonth, appsScript, relay, teamStatusFor, members };
