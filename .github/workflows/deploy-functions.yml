@@ -51,9 +51,9 @@ jobs:
             echo "::add-mask::$pw"
             current=$(npx --yes firebase-tools@14.27.0 functions:secrets:access GMAIL_APP_PASSWORD --project human-appeal-media-plan 2>/dev/null || true)
             if [ "$current" = "$pw" ]; then
-              echo 'SEKNA_MAIL=1' > functions/.env  # firebase reads this file; it is only the on-switch, not the password
+              echo on > functions/mail-on.txt  # only the on-switch, never the password
             elif printf '%s' "$pw" | npx --yes firebase-tools@14.27.0 functions:secrets:set GMAIL_APP_PASSWORD --data-file=- --project human-appeal-media-plan --non-interactive --force >/dev/null; then
-              echo 'SEKNA_MAIL=1' > functions/.env  # firebase reads this file; it is only the on-switch, not the password
+              echo on > functions/mail-on.txt  # only the on-switch, never the password
             else
               echo "::warning::Could not save the Gmail App Password in Secret Manager; emails keep going through Apps Script."
             fi
