@@ -4111,9 +4111,9 @@ window.addEventListener('load',function(){
     .rb2{background:linear-gradient(135deg,#fbfcfe,#d5dbe6 55%,#eef1f6);color:#2b3445;box-shadow:inset 0 0 0 1px rgba(43,52,69,.12)}
     .rb3{background:linear-gradient(135deg,#fbecc8,#e2b874 50%,#c9933f);color:#3a2606;box-shadow:0 3px 10px rgba(194,138,58,.35)}
     .rb4{background:linear-gradient(135deg,#fbe1d6,#e3a48f 50%,#b9735e);color:#3d1a10;box-shadow:0 3px 12px rgba(185,115,94,.4)}
-    .rb5{background:linear-gradient(135deg,#1a1f33,#0a0d18);color:#f3d79f;box-shadow:0 0 0 1px #e2b874,0 4px 14px rgba(226,184,116,.45)}
+    .rb5{background:linear-gradient(135deg,#fff4c9,#f6c94f 35%,#d6971c 68%,#fbe28d);color:#3b2500;box-shadow:0 0 0 1px #f3d27a,0 4px 16px rgba(214,151,28,.55)}
     .rb3:after,.rb4:after,.rb5:after{content:'';position:absolute;top:0;bottom:0;width:40%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.7),transparent);animation:rbShine 3.2s ease-in-out infinite}
-    .rb5:after{background:linear-gradient(100deg,transparent,rgba(243,215,159,.55),transparent)}
+    .rb5:after{background:linear-gradient(100deg,transparent,rgba(255,255,255,.85),transparent)}
     @keyframes rbShine{0%,55%{left:-60%}100%{left:130%}}
     body.no-motion .rb:after{animation:none;display:none}
     .sk-role{display:block;margin-top:5px}.sk-role[hidden]{display:none}
@@ -8135,7 +8135,7 @@ function updateProfileUI(){
  if(card){card.className='sk-user-card'+(roleTier(role)?' tier'+roleTier(role):'');}
  const myAv=mem&&mem.avatar?emblemHtml(mem.avatar):'';
  setTimeout(tkNoticeUI,0);
- const rl=document.getElementById('profileRole');if(rl){const t=roleTier(role);rl.innerHTML=t?`<span class="skr-t">${esc(role.toUpperCase())}</span><span class="skr-p">${[1,2,3,4,5].map(k=>`<i class="${k<=t?'on':''}"></i>`).join('')}</span>`:'';rl.hidden=!role}
+ const rl=document.getElementById('profileRole');if(rl){const t=roleTier(role);rl.innerHTML=t?`<span class="skr-t">${esc(roleLabel(role).toUpperCase())}</span><span class="skr-p">${[1,2,3,4,5].map(k=>`<i class="${k<=t?'on':''}"></i>`).join('')}</span>`:'';rl.hidden=!role}
  const name=p.name||storeGet(ACCESS_NAME_KEY)||'SEKNA';
  text('profileName',name);
  text('profileEmail',p.email||storeGet(ACCESS_EMAIL_KEY)||'Signed in');
@@ -8467,7 +8467,7 @@ function closeAdmin(event){
 }
 function adminBody(html){const b=document.getElementById('adminBody');if(b)b.innerHTML=html}
 function adminLockedView(){
- adminBody(`<div class="sk-admin-state"><div class="sk-gate-icon sk-gate-icon--warn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><h3>Admin only</h3><p>This area is only available to Ibrahim Amin.</p></div>`);
+ adminBody(`<div class="sk-admin-state"><div class="sk-gate-icon sk-gate-icon--warn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><h3>Admin only</h3><p>This area is for the SEKNA admin only.</p></div>`);
  const r=document.getElementById('adminRefreshBtn');if(r)r.hidden=true;
 }
 
@@ -9892,7 +9892,7 @@ function tkShareHtml(){
  const people=tkPeople().filter(p=>[1,2,3,4].some(w=>tkTasksFor(p.email,w).length)), x=tkShareStats();
  const list=e=>((TK.data&&TK.data.tasks)||[]).filter(t=>t.email===e);
  const card=p=>{const w=tkWeeklyOf(p.email),b=w&&w.data.backup?tkPerson(w.data.backup):null;
-   return `<div class="t2c"><div class="t2p">${tkAv(p)}<div><b>${esc(p.name)}</b>${p.role?`<small>${esc(p.role)}</small>`:''}</div></div>
+   return `<div class="t2c"><div class="t2p">${tkAv(p)}<div><b>${esc(p.name)}</b>${p.role?`<small>${esc(roleLabel(p.role))}</small>`:''}</div></div>
     ${w?`<span class="t2lv">🌴 Off every ${esc((w.data.weekdays||[]).map(d=>TK_DAYS_L[d]).join(', '))}${b?` · ${esc(b.name.split(' ')[0])} covers`:''}</span>`:''}
     ${list(p.email).map(t=>`<div class="t2t"><div><b>${esc(t.title)}</b>${(t.data.snaps||[]).length?`<small>${t.data.snaps.map(s=>esc(s.n)+(s.t?' '+esc(s.t):'')).join(' · ')}</small>`:''}</div>
       ${(t.data.days||[]).length?`<span class="t2d">Day ${t.data.days.join(', ')}</span>`:`<span class="t2w">${[1,2,3,4].map(n=>`<i class="${t.weeks.includes(n)?'on':''}">W${n}</i>`).join('')}</span>`}</div>`).join('')}</div>`};
@@ -10068,10 +10068,12 @@ const ROLES=['Media Buyer','Senior Media Buyer','Team Leader','Media Manager','H
 const ROLE_IC='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/></svg>';
 function roleTier(r){return ROLES.indexOf(r)+1}
 const ROLE_STAR='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z"/></svg>';
+
+function roleLabel(r){return r==='Senior Media Buyer'?'S.R Media Buyer':String(r||'')}
 function roleBadge(r){
  const t=roleTier(r);if(!t)return '';
  
- return `<span class="rb rb${t}">${t===5?ROLE_IC:ROLE_STAR}${esc(r)}</span>`;
+ return `<span class="rb rb${t}">${t===5?ROLE_IC:ROLE_STAR}${esc(roleLabel(r))}</span>`;
 }
 
 
@@ -10655,9 +10657,9 @@ function adminServerHtml(){
   ${n.cls==='backup'?'<button type="button" class="srv-btn" onclick="srvRetry()">Try Firebase again</button>':''}
   <div class="srv-box"><b>This month's cost</b><small>Limit $3 · at the limit Firebase stops and SEKNA keeps working on Apps Script.</small>${cost}</div>
   <div class="srv-box"><b>Firebase server</b><small>Europe (London)</small>${health}</div>
-  <div class="srv-box"><b>Sign-in</b><small>Devices, approvals, invites, maintenance and the team message.</small>${srvAccessHtml()}</div>
-  <div class="srv-box"><b>Everything else</b><small>Usage and shares, ideas, plan history, the monthly report and the new-day notifications.</small>${srvRestHtml()}</div>
-  <div class="srv-box"><b>Team Tasks</b><small>Tasks, days off, backups, positions and avatars.</small>${srvTasksHtml()}</div>
+  ${(SRV_ADMIN.access||{}).mode==='firebase'?'':`<div class="srv-box"><b>Sign-in</b><small>Devices, approvals, invites, maintenance and the team message.</small>${srvAccessHtml()}</div>`}
+  ${(SRV_ADMIN.rest||{}).mode==='firebase'?'':`<div class="srv-box"><b>Everything else</b><small>Usage and shares, ideas, plan history, the monthly report and the new-day notifications.</small>${srvRestHtml()}</div>`}
+  ${(SRV_ADMIN.tasks||{}).mode==='firebase'?'':`<div class="srv-box"><b>Team Tasks</b><small>Tasks, days off, backups, positions and avatars.</small>${srvTasksHtml()}</div>`}
   <div class="srv-box"><b>Same numbers?</b><small>Reads ${esc(CURRENT_ACCOUNT.toUpperCase())} on both servers and compares every figure.</small>
     <button type="button" class="srv-btn soft" onclick="srvParity()" ${SRV_ADMIN.busy||!fb?'disabled':''}>Compare with Apps Script</button>${parity}</div>
   ${fb?`<div class="srv-box"><b>This device</b><small>For testing: which server this phone or computer uses.</small><div class="act-seg">${seg('auto','Automatic')}${seg('firebase','Firebase')}${seg('appsscript','Apps Script')}</div></div>`:''}
