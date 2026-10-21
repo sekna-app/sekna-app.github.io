@@ -94,7 +94,12 @@ window.addEventListener('load',function(){
     getMonthCompareData:{w:45000,a:0,t:1,data:1},
     adminArchiveStatus:{w:60000,a:1,t:0},
     // Longer than the server's own limit (120 s), so Apps Script never runs a move at the same time.
-    adminArchiveMove:{w:130000,a:1,t:0}
+    adminArchiveMove:{w:130000,a:1,t:0},
+    // Team Tasks: the server answers (it passes calls to Apps Script until the admin moves them).
+    // tk: once this device has seen them on the server, never fall back to the old sheet.
+    tasksLoad:{w:25000,t:0,tk:1},taskSave:{w:25000,t:0,tk:1},taskDelete:{w:25000,t:0,tk:1},taskDone:{w:25000,t:0,tk:1},
+    tasksCopyMonth:{w:30000,t:0,tk:1},tasksSendWeek:{w:90000,t:0,tk:1},leaveFreezeSet:{w:25000,t:0,tk:1},
+    adminSetMember:{w:25000,t:0,tk:1},teamStatus:{w:15000,t:0,tk:1},adminTasksMove:{w:120000,t:0,tk:2},adminTasksMoveStatus:{w:15000,t:0,tk:2}
    };
    var SRV=window.SEKNA_SERVER={primary:FB_PRIMARY,mode:'appsscript',since:0,reason:'',hold:0,ms:0};
    function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
@@ -114,8 +119,8 @@ window.addEventListener('load',function(){
     var ctl=window.AbortController?new AbortController():null, t0=Date.now();
     var timer=setTimeout(function(){if(ctl)ctl.abort()},wait||20000);
     return fetch(FB+path,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),signal:ctl?ctl.signal:undefined})
-     .then(function(r){if(!r.ok)throw new Error('Firebase answered '+r.status);return r.json()},
-           function(e){throw new Error(e&&e.name==='AbortError'?'Firebase took too long to answer':'Firebase could not be reached')})
+     .then(function(r){if(!r.ok){var x=new Error('Firebase answered '+r.status);x.net=true;throw x}return r.json()},
+           function(e){var x=new Error(e&&e.name==='AbortError'?'Firebase took too long to answer':'Firebase could not be reached');x.net=true;throw x})
      .then(function(j){
        clearTimeout(timer);
        if(j&&j.ok){SRV.ms=Date.now()-t0;return j.result}
@@ -142,6 +147,13 @@ window.addEventListener('load',function(){
    }
    function call(name,args){
     var f=FB_FNS[name];
+    // Team Tasks: the server first; the old sheet only if the server cannot be reached before the move.
+    if(f&&f.tk&&load('sekna_fb_device')!=='appsscript'){
+     return fbPost('/call',{fn:name,args:args},f.w).then(function(r){if(r&&r.store==='firebase')save('sekna_tasks_fb','1');return r},function(e){
+      if(f.tk===2||!e.net||load('sekna_tasks_fb')==='1')throw e;
+      return asCall(name,args);
+     });
+    }
     if(f&&fbWanted(args[f.a])&&(!f.data||Date.now()>SRV.hold)){
      var token=args[f.t];
      return fbPost('/call',{fn:name,args:args},f.w).then(function(r){if(f.data)setMode('firebase','',token);return r},function(e){
@@ -8066,6 +8078,13 @@ function fetchProfile(){
    updateProfileUI();
    applyAppState(p.app,p.isAdmin);
    if(p.isAdmin)setTimeout(()=>adminFetch().catch(()=>{}),4000);
+   
+   serverCall('teamStatus',token).then(t=>{
+     if(!t||!ACCESS_PROFILE)return;
+     const add={};['member','taskNotice','backupToday'].forEach(k=>{if(k in t)add[k]=t[k]});
+     ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE,add);
+     updateProfileUI();
+   }).catch(()=>{});
  }).catch(()=>{});
 }
 function updateProfileUI(){
@@ -9894,7 +9913,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v150',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v151',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
@@ -10465,6 +10484,7 @@ function srvLoad(){
  });
  if(!fb){SRV_ADMIN.status={error:'Open SEKNA from the app or sekna-app.web.app to see the Firebase server.'};return}
  fb.post('/status',{token:getAccessToken()},20000).then(r=>{SRV_ADMIN.status=r;rerender()}).catch(err=>{SRV_ADMIN.status={error:errorText(err)};rerender()});
+ srvTasksLoad();
 }
 function srvDevice(v){
  if(!window.SEKNA_FB)return;
@@ -10479,6 +10499,23 @@ async function srvClearLog(btn){
  Promise.all([fb?fb.post('/events/clear',{token},20000):Promise.resolve(),serverCall('adminClearServerEvents',token)])
   .then(()=>{SRV_ADMIN.events=[];if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})
   .catch(err=>{if(btn){btn.disabled=false;btn.textContent='↺ Clear log'}tellSekna(errorText(err))});
+}
+
+function srvTasksLoad(){serverCall('adminTasksMoveStatus',getAccessToken()).then(r=>{SRV_ADMIN.tasks=r||{mode:'appsscript'};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{SRV_ADMIN.tasks={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
+async function srvTasksMove(btn){
+ if(!await askSekna({title:'Move Team Tasks?',text:'Every task, day off, backup, position and avatar is copied to the SEKNA server, and Team Tasks works from there. The old sheet stays as it is but is no longer used. Do it once, when nobody is editing tasks.',ok:'Move now',tone:'info',icon:'mail'}))return;
+ if(btn){btn.disabled=true;btn.textContent='Moving…'}
+ try{const r=await serverCall('adminTasksMove',getAccessToken());SRV_ADMIN.tasks={mode:'firebase',at:Date.now(),counts:r};try{localStorage.setItem('sekna_tasks_fb','1')}catch(e){}
+   TK.data=null;showSettingsToast('Team Tasks moved');}
+ catch(err){if(btn){btn.disabled=false;btn.textContent='Move Team Tasks now'}tellSekna(errorText(err))}
+ if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
+}
+function srvTasksHtml(){
+ const t=SRV_ADMIN.tasks;
+ if(!t)return '<small>Loading…</small>';
+ if(t.error)return `<small>${esc(t.error)}</small>`;
+ if(t.mode==='firebase'){const c=t.counts||{};return `<div class="srv-res"><div class="ok">✅ On the SEKNA server since ${esc(srvAgo(t.at))}<code>${fmt(c.weekly||0)} weekly tasks · ${fmt(c.quick||0)} quick requests · ${fmt(c.leave||0)} days off · ${fmt(c.members||0)} positions</code></div></div>`}
+ return `<small>Still on the Apps Script sheet.</small><button type="button" class="srv-btn" onclick="srvTasksMove(this)">Move Team Tasks now</button>`;
 }
 function srvRetry(){if(window.SEKNA_FB){SEKNA_FB.retry();loadData({force:true,silent:true})}}
 function srvParity(){
@@ -10529,6 +10566,7 @@ function adminServerHtml(){
   ${n.cls==='backup'?'<button type="button" class="srv-btn" onclick="srvRetry()">Try Firebase again</button>':''}
   <div class="srv-box"><b>This month's cost</b><small>Limit $3 · at the limit Firebase stops and SEKNA keeps working on Apps Script.</small>${cost}</div>
   <div class="srv-box"><b>Firebase server</b><small>Europe (London)</small>${health}</div>
+  <div class="srv-box"><b>Team Tasks</b><small>Tasks, days off, backups, positions and avatars.</small>${srvTasksHtml()}</div>
   <div class="srv-box"><b>Same numbers?</b><small>Reads ${esc(CURRENT_ACCOUNT.toUpperCase())} on both servers and compares every figure.</small>
     <button type="button" class="srv-btn soft" onclick="srvParity()" ${SRV_ADMIN.busy||!fb?'disabled':''}>Compare with Apps Script</button>${parity}</div>
   ${fb?`<div class="srv-box"><b>This device</b><small>For testing: which server this phone or computer uses.</small><div class="act-seg">${seg('auto','Automatic')}${seg('firebase','Firebase')}${seg('appsscript','Apps Script')}</div></div>`:''}
