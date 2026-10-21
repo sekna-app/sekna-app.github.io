@@ -19,12 +19,15 @@ const ACCOUNTS = {
   },
   ar: {
     key: 'ar', label: 'Human Appeal AR', shortLabel: 'AR', dashboardTitle: 'Media Plan AR',
-    spreadsheetUrl: 'https://docs.google.com/spreadsheets/d/1uW5nGWhHaBbPpCct1bG0HxQWDFsi_jITdQxG2h-WrBk/edit',
+    spreadsheetUrl: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit',
     sheets: {
-      mediaPlan: 'https://docs.google.com/spreadsheets/d/1uW5nGWhHaBbPpCct1bG0HxQWDFsi_jITdQxG2h-WrBk/edit#gid=1947816574',
-      month: 'https://docs.google.com/spreadsheets/d/1uW5nGWhHaBbPpCct1bG0HxQWDFsi_jITdQxG2h-WrBk/edit#gid=1989614597',
-      currentMonth: 'https://docs.google.com/spreadsheets/d/1uW5nGWhHaBbPpCct1bG0HxQWDFsi_jITdQxG2h-WrBk/edit#gid=2089588650',
-      lastYear: 'https://docs.google.com/spreadsheets/d/1uW5nGWhHaBbPpCct1bG0HxQWDFsi_jITdQxG2h-WrBk/edit#gid=2020716325'
+      mediaPlan: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=412916944',
+      month: 'AUTO',
+      currentMonth: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=931555565',
+      lastYear: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=554156069',
+      archive: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=554156069',
+      history: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=1926854839',
+      bestWorst: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=1295411279'
     }
   }
 };
