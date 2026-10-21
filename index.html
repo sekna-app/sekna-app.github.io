@@ -4484,6 +4484,8 @@ window.addEventListener('load',function(){
     .rb svg{width:10px;height:10px;fill:currentColor}
     .tk-nm{display:flex;align-items:center;gap:8px;min-width:0}.tk-nm b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tk-nm .rb{margin:0!important;flex:none;font-size:9px;padding:2px 8px 2px 6px}
     .lp-rk{flex:none;margin-left:auto;align-self:flex-start;margin-top:2px}.lp-rk .rb{font-size:9px;padding:2px 8px 2px 6px}
+    .tk-dlg .tk-dg button{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05}.tk-dlg .tk-dg button small{display:block;font-size:8px;font-weight:900;color:#8a92a6;letter-spacing:.03em;margin-bottom:1px}
+    .tk-dlg .tk-dg button.on small{color:#dbe4ff}.tk-dlg{margin-top:8px}
 </style>
 </head>
 <body>
@@ -9432,15 +9434,36 @@ function tkOffToday(email){
  return tkLeaveAll().find(l=>l.email===email&&l.data&&(l.data.type==='Weekly'?!fr&&(l.data.weekdays||[]).includes(wd):l.month===m&&(l.data.days||[]).includes(t.d)&&!(fr&&l.data.type==='Vacation')))||null;
 }
 
+
+function tkOffOn(email,iso){
+ if(!email||!iso)return null;
+ const y=+iso.slice(0,4),m=+iso.slice(5,7),d=+iso.slice(8,10),mon=iso.slice(0,7),f=(TK.data&&TK.data.freeze)||{},t=tkToday(),now=tkIso(t.y,t.m,t.d);
+ const frozen=!!((f.on&&iso>=now)||(f.seasons||[]).some(x=>x.from<=iso&&iso<=x.to)), wd=(new Date(Date.UTC(y,m-1,d)).getUTCDay()+1)%7;
+ return tkLeaveAll().find(l=>l.email===email&&l.data&&(l.data.type==='Weekly'?(l.data.weekdays||[]).includes(wd)&&!frozen:l.month===mon&&(l.data.days||[]).includes(d)&&!(l.data.type==='Vacation'&&frozen)))||null;
+}
 function tkOffDays(email){
  const out={};if(!email||!TK.month)return out;
- const y=+TK.month.slice(0,4),m=+TK.month.slice(5,7),dim=tkDim(TK.month),f=(TK.data&&TK.data.freeze)||{},t=tkToday(),now=tkIso(t.y,t.m,t.d);
- const frozen=iso=>!!((f.on&&iso>=now)||(f.seasons||[]).some(x=>x.from<=iso&&iso<=x.to));
- tkLeaveAll().forEach(l=>{if(l.email!==email||!l.data)return;const d=l.data;
-   for(let x=1;x<=dim;x++){const iso=tkIso(y,m,x),wd=(new Date(Date.UTC(y,m-1,x)).getUTCDay()+1)%7;
-     const hit=d.type==='Weekly'?(d.weekdays||[]).includes(wd)&&!frozen(iso):l.month===TK.month&&(d.days||[]).includes(x)&&!(d.type==='Vacation'&&frozen(iso));
-     if(hit&&!out[x])out[x]={type:d.type,backup:d.backup||''}}});
+ const y=+TK.month.slice(0,4),m=+TK.month.slice(5,7),dim=tkDim(TK.month);
+ for(let x=1;x<=dim;x++){const l=tkOffOn(email,tkIso(y,m,x));if(l)out[x]={type:l.data.type,backup:l.data.backup||''}}
  return out;
+}
+
+function tkQuickWarn(f){
+ if(f.kind!=='quick'||!f.email)return '';
+ const t=tkAddDays(0),days=[t];if(f.deadline&&f.deadline!==t)days.push(f.deadline);
+ const hit=days.map(iso=>({iso,l:tkOffOn(f.email,iso)})).filter(x=>x.l);if(!hit.length)return '';
+ const nm=esc(tkPerson(f.email).name.split(' ')[0]);
+ const when=hit.length>1?'today and on the deadline':hit[0].iso===t?'today':'on the deadline day';
+ return `<div class="tk-lw"><i>🌴</i><div><b>${nm} is off ${when}</b>${hit.map(x=>`<small>${x.iso===t?'Today':esc(tkDlLabel(x.iso))} · ${x.l.data.backup?`<u>${esc(tkPerson(x.l.data.backup).name.split(' ')[0])}</u> covers`:'no backup set'}</small>`).join('')}</div></div>`;
+}
+
+function tkDlGrid(f){
+ const first=(new Date(tkAddDays(0)+'T00:00:00Z').getUTCDay()+1)%7, cells=[];
+ for(let i=0;i<first;i++)cells.push('<i></i>');
+ let off=0;
+ for(let i=0;i<35-first;i++){const iso=tkAddDays(i),d=+iso.slice(8,10),o=tkOffOn(f.email,iso);if(o)off++;
+   cells.push(`<button type="button" class="${f.deadline===iso?'on':''}${o?' off':''}" onclick="TK.form.dlOpen=false;tkF('deadline','${iso}')">${d===1||i===0?`<small>${esc(new Date(iso+'T00:00:00Z').toLocaleDateString('en-GB',{month:'short',timeZone:'UTC'}))}</small>`:''}${d}</button>`)}
+ return `<div class="tk-days tk-dlg"><div class="tk-dh">${TK_DAYS.map(x=>`<span>${x}</span>`).join('')}</div><div class="tk-dg">${cells.join('')}</div>${off?`<small class="tk-dof"><i></i>Red = ${esc(tkPerson(f.email).name.split(' ')[0])} is off</small>`:''}</div>`;
 }
 function tkDayLbl(x){const y=+TK.month.slice(0,4),m=+TK.month.slice(5,7);return TK_DAYS[(new Date(Date.UTC(y,m-1,x)).getUTCDay()+1)%7]+' '+x}
 
@@ -9488,7 +9511,7 @@ function tkFzSet(i,k,v){tkFormRead();const s=TK.form.data.seasons;if(k==='add')s
 function tkFreezeForm(f,sc,top,still){
  const b=document.getElementById('tasksBody');if(!b)return;
  tkSetTitle('Freeze leave');b.classList.toggle('tk-still',!!still);TK.lastKey='';
- const dl=(i,k,v)=>`<label class="tk-chip tk-pick${v?' on':''}">📅 ${v?esc(tkDlLabel(v)):k==='from'?'From':'To'}<input type="date" lang="en" value="${esc(v||'')}" onchange="tkFzSet(${i},'${k}',this.value)"></label>`;
+ const dl=(i,k,v)=>`<label class="tk-chip tk-pick${v?' on':''}">📅 ${v?esc(tkDlLabel(v)):k==='from'?'From':'To'}<input type="date" lang="en" value="${esc(v||'')}" onclick="try{this.showPicker()}catch(e){}" onchange="tkFzSet(${i},'${k}',this.value)"></label>`;
  b.innerHTML=`<div class="tk-form tk-fpage"><div class="lp-fh"><span class="lp-im big" role="img" aria-label="Moon and sheep"></span><div><b>Freeze leave for a season</b><small>Weekly days off stop while it is on. Sick days still count.</small></div></div>
    <div class="sw-row"><span>Freeze now</span><button type="button" class="lp-tg dk${f.data.on?' on':''}" onclick="tkFzSet(0,'on')"><i></i></button></div>
    <label class="tk-l">Seasons <small>frozen automatically between the dates</small></label>
@@ -9669,7 +9692,7 @@ function tkDlPicker(f){
  const opts=[['','None'],[tkAddDays(0),'Today'],[tkAddDays(1),'Tomorrow'],[tkAddDays(3),'In 3 days'],[tkAddDays(7),'In a week']];
  const custom=f.deadline&&!opts.some(o=>o[0]===f.deadline);
  return `<div class="tk-row">${opts.map(o=>`<button type="button" class="tk-chip${(f.deadline||'')===o[0]?' on':''}" onclick="tkF('deadline','${o[0]}')">${o[1]}</button>`).join('')}
-   <label class="tk-chip tk-pick${custom?' on':''}">📅 ${custom?esc(tkDlLabel(f.deadline)):'Pick a day'}<input type="date" lang="en" value="${esc(f.deadline||'')}" onchange="tkF('deadline',this.value)"></label></div>
+   <button type="button" class="tk-chip${custom||f.dlOpen?' on':''}" onclick="tkF('dlOpen',!TK.form.dlOpen)">📅 ${custom?esc(tkDlLabel(f.deadline)):'Pick a day'}</button></div>${f.dlOpen?tkDlGrid(f):''}
    <div class="tk-dl-sel">${f.deadline?`Due <b>${esc(tkDlLabel(f.deadline))}</b>`:'No deadline'}</div>`;
 }
 function tkFormRead(){const f=TK.form;if(!f)return;const g=id=>document.getElementById(id);if(g('tkfTitle'))f.title=g('tkfTitle').value;if(g('tkfMsg'))f.data.msg=g('tkfMsg').value;if(g('tkSnapOwn'))f._own=g('tkSnapOwn').value}
@@ -9694,7 +9717,7 @@ function tkForm(keep,stay){
    <input id="tkfTitle" class="tk-in${bad('title')?' tk-bad':''}" oninput="this.classList.remove('tk-bad')" value="${esc(f.title)}" placeholder="${q?'e.g. Performance report for Gaza':'e.g. SEKNA Report USA'}" maxlength="140">
    ${q?'':`<div class="tk-sug">${TK_TITLE_SUGGEST.map(s=>chip(false,esc(s),`tkSug('${s}')`)).join('')}</div>`}
    ${q?`<div class="tq-who${bad('email')?' tk-bad':''}"><div class="tq-q">Who is it for?</div><div class="tq-ppl">${tkPeople().map(p=>`<button type="button" class="${f.email===p.email?'on':''}" onclick="tkF('email','${esc(p.email)}')">${tkAv(p)}<span>${esc(p.name.split(' ')[0])}</span>${tkPeople().filter(x=>x.name.split(' ')[0]===p.name.split(' ')[0]).length>1?`<small>${esc(p.email.split('@')[0].slice(0,12))}</small>`:''}</button>`).join('')||'<small>No approved people yet.</small>'}</div></div>`:`<label class="tk-l">For</label><div class="tk-people${bad('email')?' tk-bad':''}">${people||'<small>No approved people yet.</small>'}</div>`}
-   ${q?`<label class="tk-l">Deadline <small>optional</small></label>${tkDlPicker(f)}`:`
+   ${q?`<label class="tk-l">Deadline <small>optional</small></label>${tkDlPicker(f)}${tkQuickWarn(f)}`:`
    <label class="tk-l">Account <small>one or both</small></label><div class="tk-row">${['usa','ar'].map(a=>chip(f.data.accounts.includes(a),`${tkHaLogo()?`<img class="tk-ha" src="${tkHaLogo()}" alt="">`:''}HA-${a.toUpperCase()}${f.data.accounts.includes(a)?'<i class="tk-ck">✓</i>':''}`,`tkF('account','${a}')`,'acc')).join('')}</div>
    ${f.data.accounts.length?`<label class="tk-l">Platform</label><div class="tk-row">${chip(f.data.platforms.includes('google'),'Google',`tkF('platform','google')`,'g')}${chip(f.data.platforms.includes('microsoft'),'Microsoft',`tkF('platform','microsoft')`,'m')}</div>`:''}
    <label class="tk-l">Snapshots <small>Egypt time</small></label>${snaps}
@@ -9718,7 +9741,7 @@ async function tkSave(btn){
    if(miss.length){TK.bad=miss;tkForm(true);const el=document.querySelector('#tasksBody .tk-bad');if(el)el.scrollIntoView({behavior:'smooth',block:'center'});if(miss[0]==='title'){const i=document.getElementById('tkfTitle');if(i)setTimeout(()=>i.focus({preventScroll:true}),350)}return showSettingsToast(miss[0]==='title'?'Give it a name first':'Choose who it is for')}
  }
  if(f.kind==='weekly')f.month=TK.month;
- delete f._own;delete f.daysOn;
+ delete f._own;delete f.daysOn;delete f.dlOpen;
  if(f.kind==='weekly'&&f.data.days&&f.data.days.length)f.weeks=[...new Set(f.data.days.map(tkWeekOf))];
  btn.disabled=true;btn.textContent='Saving…';
  try{
@@ -9817,7 +9840,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v146',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v147',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
