@@ -9,7 +9,8 @@
       "**/.*",
       ".github/**",
       "**/*.apk",
-      "functions/**"
+      "functions/**",
+      "source/**"
     ],
     "headers": [
       {
