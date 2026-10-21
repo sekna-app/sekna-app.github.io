@@ -26,7 +26,7 @@ let lastWarm = 0;
 const MONTHS_CACHE_MS = 30 * 60 * 1000;
 
 const started = Date.now();
-const stats = { served: 0, errors: 0, lastError: '', lastErrorAt: 0 };
+const stats = { served: 0, errors: 0, lastError: '', lastErrorAt: 0, warmErrors: {} };
 const cache = {};
 
 /** One build at a time per key; later callers share it, and the result is kept for ttl. */
@@ -205,8 +205,12 @@ exports.api = onRequest({
     lastWarm = Date.now();
     const done = [], latest = {};
     for (const key of WARM_ACCOUNTS) {
-      try { const d = await cached('dash:' + key, DASH_CACHE_MS, true, () => buildDashboardData(key)); done.push(key); latest[key] = d && d.latest; }
-      catch (e) { stats.errors++; stats.lastError = errorText(e); stats.lastErrorAt = Date.now(); }
+      try { const d = await cached('dash:' + key, DASH_CACHE_MS, true, () => buildDashboardData(key)); done.push(key); latest[key] = d && d.latest; delete stats.warmErrors[key]; }
+      catch (e) {
+        // Shown on Admin → Server; USA failing also counts as a server error.
+        stats.warmErrors[key] = { error: errorText(e), at: Date.now() };
+        if (key === 'usa') { stats.errors++; stats.lastError = errorText(e); stats.lastErrorAt = Date.now(); }
+      }
       try { await cached('months:' + key, MONTHS_CACHE_MS, false, () => getMonthCompareData(key)); } catch (e) {}
     }
     // New day / team message / app version notifications (after the rest moved here).
@@ -269,7 +273,7 @@ exports.api = onRequest({
       try { billing = await fsGet('server/billing'); } catch (e) { billingError = errorText(e); }
       res.json({ ok: true, result: {
         version: VERSION, region: 'europe-west2', now: Date.now(), startedAt: started,
-        served: stats.served, errors: stats.errors, lastError: stats.lastError, lastErrorAt: stats.lastErrorAt,
+        served: stats.served, errors: stats.errors, lastError: stats.lastError, lastErrorAt: stats.lastErrorAt, warmErrors: stats.warmErrors,
         billing, billingError
       } });
       return;
@@ -283,7 +287,8 @@ exports.api = onRequest({
   } catch (err) {
     const text = errorText(err);
     if (err && err.access) { res.json({ ok: false, error: text, access: true }); return; }
-    stats.errors++; stats.lastError = text; stats.lastErrorAt = Date.now();
+    const refusal = !(err && err.response) && /^(Error: )?(SEKNA_|Please |This |Choose |Give |Pick |Only |Unknown |That code|Too many|A code was|Revoke or deny|Already|Sign-in already|Team Tasks already|The report|The month|The media plan|There is no one|Your own device)/.test(text);
+    if (!refusal) { stats.errors++; stats.lastError = text; stats.lastErrorAt = Date.now(); }
     console.error(route, text);
     res.json({ ok: false, error: text, fallback: true });
   }
