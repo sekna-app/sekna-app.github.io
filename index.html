@@ -4278,6 +4278,21 @@ window.addEventListener('load',function(){
     .b4-t{padding:8px 0}.b4-t+.b4-t{border-top:1px solid #f1f3f8}.b4-tt{display:flex;align-items:center;gap:8px}.b4-tt b{flex:1;font-size:13px}
     .b4-act{display:flex;gap:8px;margin:10px 0 6px}.b4-act .tk-add{flex:1}.b4-act .tk-send{flex:1.3}
     body.dark-mode .b4-row{background:#151a22}body.dark-mode .tk-acc{background:#2a1e3d;color:#c9a2ff}
+
+    /* v129 · Team Tasks titles, cards, camera icon */
+    #tasksOverlay #tkTitle{font-family:"DM Serif Display",Georgia,"Times New Roman",serif!important;font-weight:400!important;letter-spacing:0!important;color:#0c1a46!important}
+    #tasksOverlay #tkTitle span{background:linear-gradient(transparent 58%,rgba(226,184,116,.55) 58%,rgba(226,184,116,.55) 92%,transparent 92%);padding:0 2px}
+    body.dark-mode #tasksOverlay #tkTitle{color:#fff!important}
+    .tk-cam{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round;vertical-align:-2px;margin-right:5px;color:#3d6bff;flex:none}
+    .tk-tag.snap{display:inline-flex;align-items:center;background:#e9eefc;color:#203c8e}.tk-tag.snap .tk-cam{width:12px;height:12px;margin-right:3px;color:#203c8e}
+    .tk-snaps span{display:block}
+    .tk-card{padding:0!important;overflow:hidden;transition:box-shadow .2s}
+    .tk-card .tk-ph{width:100%;border:0;background:none;font:inherit;color:inherit;text-align:left;padding:12px;margin:0;cursor:pointer}
+    .tk-card.open{box-shadow:0 0 0 1.5px #e2b874,0 8px 20px rgba(226,184,116,.16)!important}
+    .tk-sumc{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}.tk-tag.q{background:#fff3dc;color:#a8701c}
+    .tk-cv{color:#a2a9b8;font-size:20px;font-weight:900;margin-left:2px;transition:transform .25s}.tk-card.open .tk-cv{transform:rotate(90deg);color:#e2b874}
+    .tk-pd{border-top:1px dashed #e1e6f0;padding:2px 12px 10px;animation:skRise .25s both}
+    .tk-card .tk-ring{width:40px;height:40px}.tk-card .tk-ring span{width:31px;height:31px;font-size:10.5px}
 </style>
 </head>
 <body>
@@ -9063,6 +9078,7 @@ async function captureReport(html,extraClass){
  
 
 const TK_MANAGER_ROLES=['Team Leader','Media Manager','Head of Media'];
+const TK_CAM='<svg class="tk-cam" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.6l1.4-2h5l1.4 2h1.6A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><circle cx="12" cy="12.5" r="3.4"/></svg>';
 const TK_SNAP_EX=['Media Plan','Search Terms','Campaigns'];
 const TK_SNAP_SUGGEST=['Media Plan','Search Terms','Campaigns','Ads','Keywords','Devices'];
 const TK_TITLE_SUGGEST=['SEKNA Report USA','SEKNA Report AR'];
@@ -9081,12 +9097,13 @@ function tkPerson(email){return tkPeople().find(p=>p.email===email)||{email,name
 function tkAv(p){return `<span class="tk-av">${emblemHtml(p.avatar)||esc((String(p.name||'S').charAt(0)||'S').toUpperCase())}</span>`}
 const TK_VIEWS={team:['Team Board','The whole team, week by week'],mine:['My Tasks','What you need to do'],build:['Task Builder','Plan the month for the team'],quick:['Quick Requests','Small asks with a deadline']};
 
+function tkSetTitle(t){const el=document.getElementById('tkTitle');if(!el)return;const w=String(t).split(' '),l=w.pop();el.innerHTML=(w.length?esc(w.join(' '))+' ':'')+`<span>${esc(l)}</span>`}
 function openTasks(view){
  closeSidebar();
  TK.view=view||'team';
  if(!TK.month){TK.month=tkMonthNow();TK.week=tkWeekOf(tkToday().d)}
  const o=document.getElementById('tasksOverlay');if(!o)return;
- text('tkKicker','TEAM TASKS');text('tkTitle',TK_VIEWS[TK.view][0]);
+ text('tkKicker','TEAM TASKS');tkSetTitle(TK_VIEWS[TK.view][0]);
  o.classList.add('open');
  if(TK.view==='mine')tkSeenNotice();
  if(!TK.data||TK.data.month!==TK.month){try{const c=JSON.parse(storeGet('sekna_tasks_'+TK.month)||'null');if(c)TK.data=c}catch(e){}}
@@ -9107,7 +9124,7 @@ function tkSetWeek(w){TK.week=w;tkRender()}
 function tkRender(){
  if(TK.form)return tkForm(true);
  const b=document.getElementById('tasksBody');if(!b)return;
- text('tkTitle',TK_VIEWS[TK.view][0]);
+ tkSetTitle(TK_VIEWS[TK.view][0]);
  const tabs=`<div class="tk-views">${Object.keys(TK_VIEWS).map(k=>`<button type="button" class="${k===TK.view?'on':''}" onclick="TK.view='${k}';${k==='mine'?'tkSeenNotice();':''}tkRender()">${TK_VIEWS[k][0].replace('Quick Requests','Quick').replace('Task Builder','Builder').replace('Team Board','Team')}${k==='build'&&!tkCanManage()?' 🔒':''}${k==='mine'&&tkNoticeNew()?'<i class="tk-dot"></i>':''}</button>`).join('')}</div>`;
  if(TK.view==='build'&&!tkCanManage()){b.innerHTML=tabs+tkLockedHtml();return}
  const d=TK.data;
@@ -9131,7 +9148,7 @@ function tkTags(t){
  (d.platforms||[]).forEach(p=>out.push(`<span class="tk-tag ${p}">${p==='google'?'Google':'Microsoft'}</span>`));
  return out.join('');
 }
-function tkSnaps(t){const s=(t.data&&t.data.snaps)||[];return s.length?`<div class="tk-snaps">${s.map(x=>`<span>📸 ${esc(x.n)}${x.t?` · <b>${esc(x.t)}</b>`:''}</span>`).join('')}</div>`:''}
+function tkSnaps(t){const s=(t.data&&t.data.snaps)||[];return s.length?`<div class="tk-snaps">${s.map(x=>`<span>${TK_CAM}${esc(x.n)}${x.t?` · <b>${esc(x.t)}</b>`:''}</span>`).join('')}</div>`:''}
 function tkTaskRow(t,w,canTick){
  const done=!!(t.done&&t.done[w]);
  return `<div class="tk-task${done?' done':''}">
@@ -9145,12 +9162,15 @@ function tkTeamHtml(){
  return people.map((p,i)=>{
    const ts=tkTasksFor(p.email,w), n=ts.filter(t=>t.done&&t.done[w]).length, open=(TK.data.quick||[]).filter(q=>q.email===p.email&&!(q.done&&q.done.at)).length;
    const pct=ts.length?n/ts.length:0;
-   return `<div class="tk-person" style="--i:${i}"><div class="tk-ph">${tkAv(p)}<div class="tk-pn"><b>${esc(p.name)}</b>${p.role?roleBadge(p.role):''}</div>
-     <div class="tk-ring" style="--p:${(pct*100).toFixed(0)}"><span>${n}/${ts.length}</span></div></div>
-     ${ts.map(t=>tkTaskRow(t,w,t.email===me||mgr)).join('')}
-     ${open?`<div class="tk-qn">⚡ ${open} quick request${open>1?'s':''} open</div>`:''}</div>`;
+   const isOpen=(TK.tOpen||{})[p.email]!==undefined?TK.tOpen[p.email]:p.email===me, sn=ts.reduce((a,t)=>a+((t.data&&t.data.snaps)||[]).length,0);
+   const accs=['usa','ar'].filter(a=>ts.some(t=>tkAccs(t.data).includes(a)));
+   return `<div class="tk-person tk-card${isOpen?' open':''}" style="--i:${i}"><button type="button" class="tk-ph" onclick="tkTOpen('${esc(p.email)}')">${tkAv(p)}<div class="tk-pn"><b>${esc(p.name)}</b>${p.role?roleBadge(p.role):''}
+       <div class="tk-sumc"><span class="tk-tag">${ts.length} task${ts.length>1?'s':''}</span>${sn?`<span class="tk-tag snap">${TK_CAM}${sn}</span>`:''}${tkAccTxt(accs)}${open?`<span class="tk-tag q">⚡ ${open}</span>`:''}</div></div>
+     <div class="tk-ring" style="--p:${(pct*100).toFixed(0)}"><span>${n}/${ts.length}</span></div><span class="tk-cv">›</span></button>
+     ${isOpen?`<div class="tk-pd">${ts.map(t=>tkTaskRow(t,w,t.email===me||mgr)).join('')}${open?`<div class="tk-qn">⚡ ${open} quick request${open>1?'s':''} open</div>`:''}</div>`:''}</div>`;
  }).join('');
 }
+function tkTOpen(e){TK.tOpen=TK.tOpen||{};const me=tkMe(),cur=TK.tOpen[e]!==undefined?TK.tOpen[e]:e===me;TK.tOpen[e]=!cur;tkRender()}
 function tkMineHtml(){
  const w=TK.week, me=tkMe(), ts=tkTasksFor(me,w), n=ts.filter(t=>t.done&&t.done[w]).length;
  const q=((TK.data&&TK.data.quick)||[]).filter(x=>x.email===me&&!(x.done&&x.done.at));
@@ -9193,7 +9213,7 @@ function tkBuildHtml(){
    <div class="b4-k"><div><b>${ts.length}</b><span>tasks</span></div><div><b>${Object.keys(by).length}</b><span>people</span></div><div><b>${snapN(ts)}</b><span>snapshots</span></div></div>
    <div class="b4-sw">${[1,2,3,4].map(x=>`<span class="${sent[x]?'ok':''}${x===w?' cur':''}">W${x} ${sent[x]?'✓ sent':x===w?'not sent':''}</span>`).join('')}</div></div>`;
  const rows=Object.keys(by).map((e,i)=>{const p=tkPerson(e),list=by[e],open=TK.bOpen===e,n=snapN(list);
-   return `<div class="b4-row${open?' open':''}" style="--i:${i}"><button type="button" class="b4-h" onclick="tkBOpen('${esc(e)}')">${tkAv(p)}<div class="b4-n"><b>${esc(p.name)}</b><div class="b4-c"><span class="tk-tag">${list.length} task${list.length>1?'s':''}</span>${n?`<span class="tk-tag snap">📸 ${n}</span>`:''}${tkAccTxt(accOf(list))}</div></div><span class="b4-cv">›</span></button>
+   return `<div class="b4-row${open?' open':''}" style="--i:${i}"><button type="button" class="b4-h" onclick="tkBOpen('${esc(e)}')">${tkAv(p)}<div class="b4-n"><b>${esc(p.name)}</b><div class="b4-c"><span class="tk-tag">${list.length} task${list.length>1?'s':''}</span>${n?`<span class="tk-tag snap">${TK_CAM}${n}</span>`:''}${tkAccTxt(accOf(list))}</div></div><span class="b4-cv">›</span></button>
      ${open?`<div class="b4-d">${list.map(t=>`<div class="b4-t"><div class="b4-tt"><b>${esc(t.title)}</b><button type="button" class="tk-ed" onclick="tkEdit('${t.id}')" aria-label="Edit">✎</button></div>
        <div class="tk-tags">${tkAccTxt(tkAccs(t.data))}${(t.data.platforms||[]).map(x=>`<span class="tk-tag ${x}">${x==='google'?'Google':'Microsoft'}</span>`).join('')}${t.weeks.length===4?'<span class="tk-tag all">All weeks</span>':`<span class="tk-tag">W${t.weeks.join(', W')}</span>`}</div>
        ${tkSnaps(t)}${t.data&&t.data.msg?`<div class="tk-msg">💬 ${esc(t.data.msg)}</div>`:''}</div>`).join('')}</div>`:''}</div>`}).join('');
@@ -9275,7 +9295,7 @@ function tkForm(keep,stay){
    <label class="tk-l">Message <small>optional</small></label><textarea id="tkfMsg" class="tk-in" rows="2" maxlength="600" placeholder="Anything they should know">${esc(f.data.msg||'')}</textarea>
    <div class="tk-fa">${f.id?`<button type="button" class="tk-del" onclick="tkDelete(this)">Delete</button>`:''}<button type="button" class="tk-save" onclick="tkSave(this)">${f.id?'Save changes':q?'Add request':'Add task'}</button></div></div>`);
  const b=document.getElementById('tasksBody');if(!b)return;
- text('tkTitle',q?'Quick request':f.id?'Edit task':'New task');
+ tkSetTitle(q?'Quick request':f.id?'Edit task':'New task');
  b.innerHTML=html;
  if(sc)sc.scrollTop=top;
 }
@@ -9343,7 +9363,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v128',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v129',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
