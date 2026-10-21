@@ -198,7 +198,7 @@ exports.api = onRequest({
   if (req.method === 'OPTIONS') { res.status(204).send(''); return; }
 
   const route = String(req.path || '/').replace(/\/+$/, '') || '/';
-  if (route === '/ping') { res.json({ ok: true, version: VERSION }); return; }
+  if (route === '/ping') { res.json({ ok: true, version: VERSION, mail: notify.mailReady() ? 'gmail' : 'apps-script' }); return; }
   if (route === '/warm') {
     // Called by keepWarm. At most once a minute; it only refreshes the shared data.
     if (Date.now() - lastWarm < 60 * 1000) { res.json({ ok: true, skipped: true }); return; }
