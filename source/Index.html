@@ -4318,6 +4318,32 @@ window.addEventListener('load',function(){
     .bk-ag em{font-style:normal;margin-left:auto;color:#f3d79f;font-size:11px}.bk-ag .tk-cam{color:#f3d79f}
     body.no-motion .bk-z{display:none}
 
+    /* Team Leave · Who covers whom */
+    .lc-st{display:flex;gap:8px;margin-bottom:10px}
+    .lc-st div{flex:1;background:#fff;border-radius:16px;padding:10px 6px;text-align:center;box-shadow:0 4px 12px rgba(20,30,60,.05);animation:skRise .3s both}
+    .lc-st b{display:block;font-size:22px;font-weight:900;line-height:1.2}.lc-st small{font-size:10px;font-weight:800;color:#8a93a6}
+    .lc-st .g b{color:#13894f}.lc-st .o b{color:#c89434}.lc-st .fr small{color:#c62f45}
+    .lc-cv{background:#fff;border-radius:22px;padding:14px;margin-bottom:10px;box-shadow:0 8px 20px rgba(20,30,60,.06);animation:skRise .3s both;animation-delay:calc(var(--i,0)*60ms)}
+    .lc-cv>small{font-size:10px;font-weight:900;letter-spacing:.12em;color:#c89434}
+    .lc-all b{display:block;margin-top:8px;font-size:14px;color:#13894f}
+    .lc-pair{display:flex;align-items:center;justify-content:space-between;margin-top:12px}
+    .lc-pp{text-align:center;width:40%;min-width:0}
+    .lc-pp .tk-av{width:56px!important;height:56px!important;margin:0 auto 6px;font-size:20px;display:grid;position:relative}
+    .lc-pp b{display:block;font-size:13px;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lc-pp small{font-size:10px;font-weight:800;color:#8a93a6}
+    .lc-pp.off .tk-av{filter:grayscale(.6);opacity:.75}
+    .lc-pp.off .tk-av::after{content:"🌴";position:absolute;right:-4px;bottom:-2px;font-size:16px}
+    .lc-arr{flex:1;height:2px;margin:0 4px 26px;background:repeating-linear-gradient(90deg,#c89434 0 6px,transparent 6px 11px);position:relative}
+    .lc-arr::after{content:"›";position:absolute;right:-4px;top:-13px;color:#c89434;font-weight:900;font-size:22px}
+    .lc-tasks{margin-top:12px;background:#f7f8fc;border-radius:12px;padding:8px 10px;font-size:11px;font-weight:800;color:#5b6375}
+    .lc-fz{display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:10px 12px;margin-bottom:6px;box-shadow:0 4px 12px rgba(20,30,60,.05)}
+    .lc-fz .lp-ft small{color:#8a93a6}
+    .lc-ls{margin-top:4px}
+    .lc-r{width:100%;display:flex;align-items:center;gap:10px;border:0;border-bottom:1px solid #e7eaf2;background:none;font:inherit;color:inherit;text-align:left;padding:10px 4px;cursor:pointer;animation:skRise .3s both;animation-delay:calc(var(--i,0)*40ms)}
+    .lc-r .tk-av{width:32px;height:32px;font-size:12px}
+    .lc-rn{flex:1;min-width:0}.lc-rn b{display:block;font-size:13px;font-weight:800}
+    .lc-r em{font-style:normal;font-size:11px;font-weight:800;color:#8a93a6;white-space:nowrap}.lc-r em u{text-decoration:none;color:#a8701c;font-weight:900}
+    .lc-r>i{font-style:normal;color:#a2a9b8;font-weight:900;font-size:18px}
+    body.dark-mode .lc-st div,body.dark-mode .lc-cv,body.dark-mode .lc-fz{background:#151a22}body.dark-mode .lc-tasks{background:#1b2130;color:#c9d3f5}body.dark-mode .lc-r{border-color:#2b313a}
     /* v138 · Team Leave: LP3 card (baton line), weekly day off form, freeze */
     .lp-card{background:linear-gradient(150deg,#1d3683,#2c4fb8);border-radius:18px;padding:12px;color:#fff;margin-bottom:10px;box-shadow:0 10px 24px rgba(32,60,142,.25);animation:skRise .3s both}
     .lp-tr{display:flex;align-items:center;justify-content:space-between;gap:8px}.lp-tr small{font-size:9.5px;font-weight:900;letter-spacing:.12em;color:#f3d79f}
@@ -9424,23 +9450,30 @@ function tkNewLeave(email){
 }
 function tkNewLeaveDays(email,type){tkFormRead();TK.form={kind:'leave',title:type,email:email,weeks:[],data:{type:type,days:[],backup:'',msg:''}};tkForm()}
 function tkEditLeave(id){const t=tkLeaveAll().find(x=>x.id===id);if(!t)return;TK.form=JSON.parse(JSON.stringify(t));TK.form.data=Object.assign({type:'Sick',days:[],weekdays:[],backup:'',msg:''},TK.form.data);TK.form.data.msg=TK.form.data.note||TK.form.data.msg||'';tkForm()}
+
+
 function tkLeaveHtml(){
  const admin=tkCanManage(), people=tkPeople(), fr=tkFrozenToday(), f=(TK.data&&TK.data.freeze)||{on:false,seasons:[]};
  const off=people.map(p=>({p,l:tkOffToday(p.email)})).filter(x=>x.l);
- const zz='<span class="lp-zz">z<i>z</i><b>Z</b></span>';
- const lines=off.length?off.map(({p,l})=>{const b=l.data.backup?tkPerson(l.data.backup):null;
-   return `<div class="lp-b">${tkAv(p)}<span class="lp-x">${esc(p.name.split(' ')[0])}</span>${zz}<span class="lp-to">→</span>${b?`<span class="lp-y">${esc(b.name.split(' ')[0])}</span>`:'<span class="lp-y mut">no backup</span>'}</div>`}).join('')
-   :'<div class="lp-all">✓ Everyone is working today</div>';
- const card=`<div class="lp-card"><div class="lp-tr"><small>TODAY · ${esc(new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'}).toUpperCase())}</small><span class="lp-pill${fr?' fr':''}">${fr?'🔒 Leave frozen':'🔓 Leave open'}</span></div>
-   <div class="lp-lines">${lines}</div>
-   <div class="lp-fz"><span class="lp-im" role="img" aria-label="Moon and sheep"></span><button type="button" class="lp-ft" ${admin?'onclick="tkFreezeEdit()"':''}><b>Freeze leave for a season</b><small>${fr?'On now':'Off now'}</small></button>
-   <button type="button" class="lp-tg${f.on?' on':''}" ${admin?'onclick="tkFreezeToggle(this)"':'disabled'} role="switch" aria-checked="${!!f.on}" aria-label="Freeze leave now"><i></i></button></div></div>`;
+ const first=n=>esc(String(n||'').split(' ')[0]);
+ const day=esc(new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'}).toUpperCase());
+ const stats=`<div class="lc-st"><div class="g"><b>${Math.max(0,people.length-off.length)}</b><small>Working today</small></div><div class="o"><b>${off.length}</b><small>Off today</small></div><div class="${fr?'fr':''}"><b>${fr?'🔒':'🔓'}</b><small>${fr?'Leave frozen':'Leave open'}</small></div></div>`;
+ const live=TK.month===tkMonthNow();
+ const covers=off.length?off.map(({p,l},i)=>{const b=l.data.backup?tkPerson(l.data.backup):null;
+   const n=live?tkTasksFor(p.email,tkWeekOf(tkToday().d)).filter(tkIsToday).length:0;
+   return `<div class="lc-cv" style="--i:${i}"><small>TODAY · ${day}</small>
+    <div class="lc-pair"><div class="lc-pp off">${tkAv(p)}<b>${first(p.name)}</b><small>Off today</small></div><span class="lc-arr"></span>
+     <div class="lc-pp">${b?tkAv(b):'<span class="tk-av">—</span>'}<b>${b?first(b.name):'No backup'}</b><small>${b?'Covers':'Not set'}</small></div></div>
+    ${n?`<div class="lc-tasks">↪ ${n} of ${first(p.name)}'s task${n===1?'':'s'} ${b?`move${n===1?'s':''} to ${first(b.name)} today`:`need${n===1?'s':''} a backup today`}</div>`:''}</div>`}).join('')
+   :`<div class="lc-cv lc-all"><small>TODAY · ${day}</small><b>✓ Everyone is working today</b></div>`;
+ const freeze=`<div class="lc-fz"><span class="lp-im" role="img" aria-label="Moon and sheep"></span><button type="button" class="lp-ft" ${admin?'onclick="tkFreezeEdit()"':''}><b>Freeze leave for a season</b><small>${fr?'On now':'Off now'}</small></button>
+   <button type="button" class="lp-tg dk${f.on?' on':''}" ${admin?'onclick="tkFreezeToggle(this)"':'disabled'} role="switch" aria-checked="${!!f.on}" aria-label="Freeze leave now"><i></i></button></div>`;
  const rows=people.map((p,i)=>{const w=tkWeeklyOf(p.email),b=w&&w.data.backup?tkPerson(w.data.backup):null, extra=tkLeaveOf(p.email).filter(l=>l.data.type!=='Weekly');
-   const wd=w?(w.data.weekdays||[]).map(d=>TK_DAYS_L[d]).join(', '):'';
-   return `<button type="button" class="lp-p" style="--i:${i}" ${admin?`onclick="tkNewLeave('${esc(p.email)}')"`:''}>${tkAv(p)}<div class="lp-pn"><b>${esc(p.name)}</b>
-     <span>${w?`Off every <u>${esc(wd)}</u> · ${b?`backup <strong class="lp-bk">${esc(b.name.split(' ')[0])}</strong>`:'no backup'}`:'No weekly day off'}</span>
-     ${extra.length?`<div class="lp-ex">${extra.map(l=>{const t=TK_LEAVE_TYPES.find(x=>x[0]===l.data.type)||TK_LEAVE_TYPES[1];return `<span>${t[1]} ${(l.data.days||[]).join(', ')}</span>`}).join('')}</div>`:''}</div>${p.role?`<span class="lp-rk">${roleBadge(p.role)}</span>`:''}${admin?'<em>›</em>':''}</button>`}).join('');
- return card+(people.length?rows:'<div class="tk-empty"><b>No one yet</b></div>');
+   const wd=w?(w.data.weekdays||[]).map(d=>TK_DAYS[d]).join(', '):'';
+   return `<button type="button" class="lc-r" style="--i:${i}" ${admin?`onclick="tkNewLeave('${esc(p.email)}')"`:''}>${tkAv(p)}<div class="lc-rn"><b>${esc(p.name)}</b>
+     ${extra.length?`<div class="lp-ex">${extra.map(l=>{const t=TK_LEAVE_TYPES.find(x=>x[0]===l.data.type)||TK_LEAVE_TYPES[1];return `<span>${t[1]} ${(l.data.days||[]).join(', ')}</span>`}).join('')}</div>`:''}</div>
+     <em>${w?`<u>${esc(wd)}</u> · ${b?`backup ${first(b.name)}`:'no backup'}`:'No day off'}</em>${admin?'<i>›</i>':''}</button>`}).join('');
+ return stats+covers+freeze+(people.length?`<div class="lc-ls">${rows}</div>`:'<div class="tk-empty"><b>No one yet</b></div>');
 }
 async function tkFreezeToggle(btn){
  const f=Object.assign({on:false,seasons:[]},TK.data.freeze);f.on=!f.on;btn.disabled=true;
