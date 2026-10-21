@@ -4982,7 +4982,7 @@ window.addEventListener('load',function(){
         <div class="ox-legs">
           <div class="ox-leg"><i class="spend"></i><span>Spend plan <em>40%</em></span><b id="accuracySpend">—</b></div>
           <div class="ox-leg"><i class="revenue"></i><span>Revenue target <em>40%</em></span><b id="accuracyRevenue">—</b></div>
-          <div class="ox-leg"><i class="roas"></i><span>ROAS <em>20%</em></span><b id="accuracyRoas">—</b></div>
+          <div class="ox-leg"><i class="roas"></i><span>Conversions <em>20%</em></span><b id="accuracyRoas">—</b></div>
         </div>
       </div>
 
@@ -5840,25 +5840,25 @@ function kpi(valueId,targetId,deltaId,barId,value,target,achievement,isSpend){
 
  
 function planAccuracy(d){
- const m=d.mtd||{};
+ const m=d.mtd||{}, rows=d.dayPlan||[];
  const aS=Number(m.actualSpend)||0, aV=Number(m.actualValue)||0;
  const pS=Number(m.planSpend)||0, pV=Number(m.planValue)||0;
+ const aC=dxSum(rows.filter(x=>x.actual),x=>x.actual.conversions), pC=dxSum(rows,x=>x.plan&&x.plan.conversions);
  const clamp=v=>Math.max(0,Math.min(1,v));
  const spend=pS>0?clamp(1-Math.abs(aS/pS-1)):0;
  const revenue=pV>0?clamp(aV/pV):0;
- const aR=aS?aV/aS:0, pR=pS?pV/pS:0;
- const roas=pR>0?clamp(aR/pR):0;
- return {spend,revenue,roas,score:spend*.4+revenue*.4+roas*.2,aS,pS,aV,pV,aR,pR};
+ const conv=pC>0?clamp(aC/pC):0;
+ return {spend,revenue,conv,score:spend*.4+revenue*.4+conv*.2,aS,pS,aV,pV,aC,pC};
 }
 function renderPlanAccuracy(d){
  const a=planAccuracy(d);
  text('planAccuracyScore',(a.score*100).toFixed(1)+'%');
  text('accuracySpend',percent(a.spend));
  text('accuracyRevenue',percent(a.revenue));
- text('accuracyRoas',percent(a.roas));
+ text('accuracyRoas',percent(a.conv));
  setAccuracyBar('accuracySpendBar',a.spend);
  setAccuracyBar('accuracyRevenueBar',a.revenue);
- setAccuracyBar('accuracyRoasBar',a.roas);
+ setAccuracyBar('accuracyRoasBar',a.conv);
 }
 
 function setAccuracyBar(id,ratio){
@@ -10299,8 +10299,8 @@ function phAcc(s){
  const p=s.plan, a=s.actual, clamp=v=>Math.max(0,Math.min(1,v));
  if(!(p&&a&&p.spend>0))return {p:p||{},all:null};
  const spend=clamp(1-Math.abs(a.spend/p.spend-1)), revenue=p.value>0?clamp(a.value/p.value):0;
- const aR=a.spend?a.value/a.spend:0, pR=p.value/p.spend, roas=pR>0?clamp(aR/pR):0;
- return {p,all:spend*.4+revenue*.4+roas*.2};
+ const conv=p.conversions>0?clamp(a.conversions/p.conversions):0;
+ return {p,all:spend*.4+revenue*.4+conv*.2};
 }
 function phToggle(k){PH.open=PH.open===k?'':k;drawPlanHistory()}
 function drawPlanHistory(){
