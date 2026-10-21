@@ -203,6 +203,17 @@ exports.api = onRequest({
     res.json({ ok: true, warmed: done });
     return;
   }
+  if (route === '/diag/push') {
+    // Can this server send notifications itself? validate_only: nothing reaches any phone.
+    const out = {};
+    try {
+      const r = await request(`https://fcm.googleapis.com/v1/projects/${PROJECT_ID}/messages:send`, { method: 'POST',
+        data: { validate_only: true, message: { topic: 'sekna-diag', data: { title: 'check' } } } });
+      out.fcm = r && r.name ? 'ok' : 'unexpected';
+    } catch (e) { out.fcm = String((e.response && e.response.status) || '') + ' ' + errorText(e).slice(0, 160); }
+    res.json({ ok: true, result: out });
+    return;
+  }
   if (route === '/review' && req.method === 'GET') {
     // The page the admin opens from an access request email (approve / deny / revoke).
     try { res.set('Content-Type', 'text/html; charset=utf-8').send(await accounts.reviewPage(req.query || {})); }
