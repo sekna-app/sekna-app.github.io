@@ -4399,6 +4399,24 @@ window.addEventListener('load',function(){
     .tk-tsw i:after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .2s}
     .tk-tsw.on{color:#1d2433}.tk-tsw.on i{background:#22c47c}.tk-tsw.on i:after{transform:translateX(12px)}
     .tk-tsw small{font-size:10.5px;color:#8a93a6;font-weight:700}
+
+    /* v136 · backup notice "Rising zzz" */
+    .bk-k{font-size:10px;font-weight:900;letter-spacing:.14em;color:#f3d79f}
+    .bk-stage{position:relative;height:124px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-bottom:4px}
+    .bk-off{position:relative;display:inline-block;font-size:15px;font-weight:800;color:#8fa2da}
+    .bk-off i{display:inline-block;font-style:normal;text-decoration:line-through;text-decoration-color:rgba(255,159,172,.9);text-decoration-thickness:2px}
+    .bk-z{position:absolute;right:-6px;top:-4px;font-family:"DM Serif Display",Georgia,serif;font-weight:400;color:#c9d3f5;opacity:0;animation:bkZ 2.6s ease-in infinite}
+    .bk-z.a{font-size:10px}.bk-z.b{font-size:13px;animation-delay:.85s}.bk-z.c{font-size:17px;animation-delay:1.7s}
+    @keyframes bkZ{0%{opacity:0;transform:translate(0,0) rotate(-10deg)}20%{opacity:1}100%{opacity:0;transform:translate(26px,-58px) rotate(14deg)}}
+    .bk-on{font-family:"DM Serif Display",Georgia,serif;font-size:40px;line-height:1.1;color:#fff;margin-top:4px}
+    .bk-on i{display:inline-block;font-style:normal;animation:bkDrop .55s cubic-bezier(.3,1.6,.5,1) both}
+    @keyframes bkDrop{from{transform:translateY(-26px) rotate(-12deg);opacity:0}}
+    .bk-on span{background:linear-gradient(transparent 60%,rgba(226,184,116,.55) 60%,rgba(226,184,116,.55) 92%,transparent 92%)}
+    .bk-card p{margin:6px 0 0;color:#c9d3f5;font-size:12.5px}
+    .bk-ag{margin:12px 0 14px;text-align:left;background:rgba(255,255,255,.08);border-radius:14px;padding:6px 10px;max-height:190px;overflow:auto}
+    .bk-ag div{display:flex;align-items:center;gap:4px;padding:6px 0;font-size:12px;font-weight:800}.bk-ag div+div{border-top:1px solid rgba(255,255,255,.1)}
+    .bk-ag em{font-style:normal;margin-left:auto;color:#f3d79f;font-size:11px}.bk-ag .tk-cam{color:#f3d79f}
+    body.no-motion .bk-z{display:none}
 </style>
 </head>
 <body>
@@ -9573,16 +9591,43 @@ function tkNoticeShow(){
    <div class="tkn-act"><button type="button" class="tkn-later" onclick="tkNoticeClose()">Later</button><button type="button" class="tkn-go" onclick="tkNoticeClose();openTasks('mine')">Open My Tasks</button></div></div>`;
  requestAnimationFrame(()=>o.classList.add('open'));
 }
+
+function tkBkKey(b){return tkIso(tkToday().y,tkToday().m,tkToday().d)+'|'+b.email}
+function tkBackupPending(){const l=(ACCESS_PROFILE&&ACCESS_PROFILE.backupToday)||[];return l.find(b=>storeGet('sekna_bk_seen_'+tkBkKey(b))!=='1')||null}
+function tkTimeVal(t){const m=String(t||'').match(/^(\d+):(\d+) (AM|PM)$/);if(!m)return 9999;return (+m[1]%12+(m[3]==='PM'?12:0))*60+ +m[2]}
+function tkBackupShow(b){
+ let o=document.getElementById('tkNotice');
+ if(!o){o=document.createElement('div');o.id='tkNotice';o.className='tkn';o.setAttribute('data-share-ui','');document.body.appendChild(o)}
+ o.onclick=e=>{if(e.target===o)tkBackupClose(b)};
+ const me=(ACCESS_PROFILE&&ACCESS_PROFILE.name)||'You', first=String(me).split(' ')[0];
+ const L=(w,d0)=>[...String(w)].map((ch,k)=>`<i style="animation-delay:${(d0+k*.07).toFixed(2)}s">${ch===' '?'&nbsp;':esc(ch)}</i>`).join('');
+ const snaps=(b.snaps||[]).slice().sort((x,y)=>tkTimeVal(x.t)-tkTimeVal(y.t));
+ const type=b.type==='Sick'?'off sick 🤒':b.type==='Other'?'off today':'on vacation 🌴';
+ o.innerHTML=`<div class="tkn-card bk-card" role="dialog" aria-label="You are the backup today"><div class="bk-k">TODAY'S BACKUP</div>
+   <div class="bk-stage"><span class="bk-off">${L(b.name,0)}<span class="bk-z a">z</span><span class="bk-z b">z</span><span class="bk-z c">Z</span></span><div class="bk-on"><span>${L(first,.6)}</span></div></div>
+   <p>${esc(String(b.name).split(' ')[0])} is ${type} — the work passes to you today.</p>
+   ${snaps.length?`<div class="bk-ag">${snaps.map(x=>`<div>${TK_CAM}${esc(x.n)}${x.acc?' · '+esc(x.acc):''}<em>${esc(x.t||'')}</em></div>`).join('')}</div>`:`<div class="bk-ag"><div>${b.tasks?`${b.tasks} task${b.tasks>1?'s':''} today`:'No tasks planned for today'}</div></div>`}
+   <div class="tkn-act"><button type="button" class="tkn-later" onclick="tkBackupClose()">Later</button><button type="button" class="tkn-go" onclick="tkBackupClose(null,'${esc(b.email)}')">Open the tasks</button></div></div>`;
+ o._bk=b;requestAnimationFrame(()=>o.classList.add('open'));
+}
+function tkBackupClose(_,openEmail){
+ const o=document.getElementById('tkNotice'),b=o&&o._bk;if(b)storeSet('sekna_bk_seen_'+tkBkKey(b),'1');
+ if(o){o.classList.remove('open');o._bk=null}
+ if(openEmail){TK.month=tkMonthNow();TK.week=tkWeekOf(tkToday().d);TK.today=true;TK.tOpen=Object.assign({},TK.tOpen,{[openEmail]:true});openTasks('team');return}
+ const next=tkBackupPending();if(next)setTimeout(()=>tkBackupShow(next),400);else if(tkNoticeNew()&&!TK.shown.notice){TK.shown.notice=1;setTimeout(tkNoticeShow,500)}
+}
 function tkNoticeClose(){const o=document.getElementById('tkNotice');if(o)o.classList.remove('open');tkSeenNotice()}
 function tkNoticeUI(){
  const on=tkNoticeNew();
  document.querySelectorAll('[data-grp="tt"],#ttMineBtn').forEach(el=>el.classList.toggle('tk-has-new',on));
  const lk=document.getElementById('ttBuildLock');if(lk)lk.hidden=tkCanManage();
- if(on&&!TK.shown.notice){TK.shown.notice=1;setTimeout(tkNoticeShow,1600)}
+ const bk=tkBackupPending();
+ if(bk&&!TK.shown.bk){TK.shown.bk=1;setTimeout(()=>tkBackupShow(bk),1600)}
+ else if(on&&!TK.shown.notice&&!bk){TK.shown.notice=1;setTimeout(tkNoticeShow,1600)}
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v135',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v136',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
