@@ -65,6 +65,12 @@ async function valuesUpdate(ssId, range, values) {
     { method: 'PUT', data: { range, majorDimension: 'ROWS', values } });
 }
 
+/** Writes values as if typed in Sheets (so "2026-10-21 15:52:00" becomes a date). */
+async function valuesUpdateTyped(ssId, range, values) {
+  return request(`https://sheets.googleapis.com/v4/spreadsheets/${ssId}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`,
+    { method: 'PUT', data: { range, majorDimension: 'ROWS', values } });
+}
+
 /** Empties the values of a range and keeps its formatting (like clearContent). */
 async function valuesClear(ssId, range) {
   return request(`https://sheets.googleapis.com/v4/spreadsheets/${ssId}/values/${encodeURIComponent(range)}:clear`, { method: 'POST', data: {} });
@@ -145,4 +151,4 @@ async function fsUpdate(path, change) {
 function forgetMeta(ssId) { delete metaCache[ssId]; }
 
 module.exports = { PROJECT_ID, request, sheetMeta, batchGet, a1, fsGet, fsSet, fsUpdate, fsAppend, fsList, fsClearList,
-  valuesUpdate, valuesClear, sheetsBatchUpdate, forgetMeta };
+  valuesUpdate, valuesUpdateTyped, valuesClear, sheetsBatchUpdate, forgetMeta };

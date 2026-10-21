@@ -53,7 +53,7 @@ async function identityToken() {
 }
 /** Emails (wrapped in the SEKNA email design by Apps Script) and pushes to one person each. */
 async function relay(payload) {
-  if (!(payload.emails || []).length && !(payload.pushes || []).length) return { emails: 0, pushes: 0 };
+  if (!(payload.emails || []).length && !(payload.pushes || []).length && !(payload.topics || []).length && !payload.appState) return { emails: 0, pushes: 0 };
   return appsScript('relaySend', [await identityToken(), payload]);
 }
 
@@ -369,6 +369,13 @@ const T = {
   }
 };
 
+/** Position, "new tasks" notice and today's backups for one signed-in person (used by the access status). */
+async function teamStatusFor(a) {
+  if (!(await moved())) return null;
+  const [mem, notices] = await Promise.all([members(), fsGet(DOC.notices)]);
+  return { member: mem[a.email] || {}, taskNotice: (notices || {})[a.email] || null, backupToday: await backupTodayFor(a.email, {}) };
+}
+
 /* ---------- the move (admin, once) ---------- */
 
 /** Copies the SEKNA Tasks sheet and the Apps Script settings into Firestore, then switches Team Tasks over. */
@@ -447,4 +454,4 @@ async function call(fn, args) {
 }
 const FNS = Object.keys(T).concat(['adminTasksMove', 'adminTasksMoveStatus']);
 
-module.exports = { call, FNS, morningPush, muscatToday, leavesToday, frozenOn, weekOf, prevMonth };
+module.exports = { call, FNS, morningPush, muscatToday, leavesToday, frozenOn, weekOf, prevMonth, appsScript, relay, teamStatusFor, members };

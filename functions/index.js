@@ -9,6 +9,7 @@ const { assertAccess, assertAdmin } = require('./access');
 const { fsGet, fsSet, fsAppend, fsList, fsClearList, request, PROJECT_ID } = require('./google');
 const { archiveStatus, archiveMove } = require('./archive');
 const tasks = require('./tasks');
+const accounts = require('./accounts');
 
 const VERSION = 'server-1';
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzjgZ1nXxLTcFdeFCIEznOj2H0XCo9YGUeu1YF2pJdsQiOo_aM-Mn6HxKKNk8peEuM1Ig/exec';
@@ -46,6 +47,7 @@ function cached(key, ttl, fresh, build) {
 async function withAccess(token, dataPromise) {
   const [access, data] = await Promise.allSettled([assertAccess(token), dataPromise]);
   if (access.status === 'rejected') throw access.reason;
+  if (await accounts.maintenanceBlocks(access.value.email)) { const e = new Error('SEKNA_MAINTENANCE'); e.access = true; throw e; }
   if (data.status === 'rejected') throw data.reason;
   return data.value;
 }
@@ -75,6 +77,8 @@ const CALLS = {
 };
 // Team Tasks, days off and members (tasks.js): Apps Script answers until the admin moves them.
 tasks.FNS.forEach(fn => { CALLS[fn] = args => tasks.call(fn, args); });
+// Sign-in, approvals, devices and app state (accounts.js): Apps Script answers until the admin moves them.
+accounts.FNS.forEach(fn => { CALLS[fn] = args => accounts.call(fn, args); });
 
 /* ---------- Switch log (Firestore) ---------- */
 
@@ -197,6 +201,12 @@ exports.api = onRequest({
       try { await cached('months:' + key, MONTHS_CACHE_MS, false, () => getMonthCompareData(key)); } catch (e) {}
     }
     res.json({ ok: true, warmed: done });
+    return;
+  }
+  if (route === '/review' && req.method === 'GET') {
+    // The page the admin opens from an access request email (approve / deny / revoke).
+    try { res.set('Content-Type', 'text/html; charset=utf-8').send(await accounts.reviewPage(req.query || {})); }
+    catch (err) { res.status(500).send('Something went wrong. Please try again.'); }
     return;
   }
   if (req.method !== 'POST') { res.status(405).json({ ok: false, error: 'POST only.' }); return; }
