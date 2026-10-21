@@ -4417,6 +4417,40 @@ window.addEventListener('load',function(){
     .bk-ag div{display:flex;align-items:center;gap:4px;padding:6px 0;font-size:12px;font-weight:800}.bk-ag div+div{border-top:1px solid rgba(255,255,255,.1)}
     .bk-ag em{font-style:normal;margin-left:auto;color:#f3d79f;font-size:11px}.bk-ag .tk-cam{color:#f3d79f}
     body.no-motion .bk-z{display:none}
+
+    /* v138 · Team Leave: LP3 card (baton line), weekly day off form, freeze */
+    .lp-card{background:linear-gradient(150deg,#1d3683,#2c4fb8);border-radius:18px;padding:12px;color:#fff;margin-bottom:10px;box-shadow:0 10px 24px rgba(32,60,142,.25);animation:skRise .3s both}
+    .lp-tr{display:flex;align-items:center;justify-content:space-between;gap:8px}.lp-tr small{font-size:9.5px;font-weight:900;letter-spacing:.12em;color:#f3d79f}
+    .lp-pill{font-size:10px;font-weight:900;border-radius:99px;padding:3px 8px;background:rgba(125,255,179,.18);color:#7dffb3;white-space:nowrap}.lp-pill.fr{background:rgba(255,159,172,.2);color:#ffb3bd}
+    .lp-lines{margin-top:9px;display:flex;flex-direction:column;gap:6px}
+    .lp-b{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.08);border-radius:12px;padding:7px 10px;font-size:13px;font-weight:800}
+    .lp-b .tk-av{width:28px;height:28px;font-size:11px;opacity:.8}
+    .lp-x{color:#8fa2da;text-decoration:line-through;text-decoration-color:#ff9fac;text-decoration-thickness:2px}
+    .lp-zz{font-family:"DM Serif Display",Georgia,serif;font-weight:400;color:#c9d3f5;font-size:10px;position:relative;top:-6px;animation:lpZ 2.4s ease-in-out infinite}.lp-zz i{font-style:normal;font-size:12px;position:relative;top:-3px}.lp-zz b{font-weight:400;font-size:15px;position:relative;top:-7px}
+    @keyframes lpZ{50%{transform:translateY(-3px);opacity:.6}}
+    .lp-to{margin-left:auto;color:#f3d79f;font-weight:900}.lp-y{color:#f3d79f;font-weight:900}.lp-y.mut{color:#8fa2da;font-weight:800}
+    .lp-all{font-size:13.5px;font-weight:800;padding:4px 2px}
+    .lp-fz{display:flex;align-items:center;gap:9px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.15)}
+    .lp-ic{display:flex;flex:none}.lp-ic i{font-style:normal;width:28px;height:28px;border-radius:50%;background:rgba(243,215,159,.18);display:grid;place-items:center;font-size:14px;box-shadow:0 0 0 2px #1d3683}.lp-ic i+i{margin-left:-8px}
+    .lp-ic.big i{width:38px;height:38px;font-size:19px;background:#fff3dc;box-shadow:0 0 0 2px #fff}
+    .lp-ft{flex:1;min-width:0;text-align:left;border:0;background:none;color:inherit;font:inherit;padding:0;cursor:pointer}.lp-ft b{display:block;font-size:12.5px}.lp-ft small{font-size:10px;color:#c9d3f5;font-weight:700}
+    .lp-tg{flex:none;width:38px;height:22px;border-radius:99px;border:0;background:rgba(255,255,255,.25);position:relative;cursor:pointer;padding:0}.lp-tg i{position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s}
+    .lp-tg.on{background:#e0566a}.lp-tg.on i{transform:translateX(16px)}.lp-tg:disabled{cursor:default;opacity:.8}.lp-tg.dk{background:#d6dbe6}.lp-tg.dk.on{background:#e0566a}
+    .lp-p{width:100%;display:flex;align-items:center;gap:10px;border:0;text-align:left;font:inherit;color:inherit;background:#fff;border-radius:14px;padding:10px 12px;margin-bottom:6px;box-shadow:0 4px 12px rgba(20,30,60,.05);cursor:pointer;animation:skRise .3s calc(var(--i)*40ms) both}
+    .lp-pn{flex:1;min-width:0}.lp-pn b{display:block;font-size:13px}.lp-pn>span{font-size:11px;color:#8a93a6;font-weight:700}.lp-pn u{text-decoration:none;color:#a8701c;font-weight:900}
+    .lp-ex{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}.lp-ex span{font-size:10px;font-weight:900;border-radius:99px;padding:2px 7px;background:#fdecef;color:#9b2c3d}
+    .lp-p em{font-style:normal;color:#a2a9b8;font-weight:900;font-size:18px}
+    .lf-who{display:flex;align-items:center;gap:10px;font-size:15px}.lf-who .tk-av{width:38px;height:38px}
+    .lf-wk{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.lf-wk button{border:0;border-radius:10px;padding:10px 0;font:inherit;font-size:11.5px;font-weight:900;background:#f3f6fd;color:#4b5263;cursor:pointer}
+    .lf-wk button.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);color:#fff;box-shadow:0 4px 10px rgba(61,107,255,.35)}
+    .lf-hint{margin-top:8px;font-size:12px;color:#6b7385;font-weight:700}.lf-hint b{color:#203c8e}
+    .lf-xs{display:grid;grid-template-columns:1fr 1fr;gap:6px}.lf-x{text-align:left;border:1.5px dashed #d6e2fd;background:#fff;border-radius:12px;padding:9px 10px;font:inherit;cursor:pointer}
+    .lf-x b{display:block;font-size:12.5px}.lf-x span{display:block;font-size:10.5px;color:#8a93a6;font-weight:700;margin-top:2px}.lf-x.on{border-style:solid;border-color:#e2b874;background:#fff8ea}.lf-x.on span{color:#a8701c}.lf-x:disabled{opacity:.5}
+    .lp-fh{display:flex;align-items:center;gap:10px}.lp-fh b{display:block;font-size:15px}.lp-fh small{font-size:11.5px;color:#6b7385;font-weight:600}
+    .sw-row{display:flex;align-items:center;justify-content:space-between;margin-top:14px;background:#f6f8fc;border-radius:12px;padding:10px 12px;font-size:13px;font-weight:800}
+    .fz-s{background:#f6f8fc;border-radius:12px;padding:8px;margin-bottom:6px}.fz-s .tk-in{margin-bottom:6px;padding:8px 10px;font-size:13px;font-weight:800}
+    .lp-none{font-size:12px;color:#a2a9b8;font-weight:700;padding:4px 2px}
+    body.dark-mode .lp-p,body.dark-mode .lf-x{background:#151a22}body.dark-mode .lf-wk button{background:#1b2130;color:#c9d3f5}
 </style>
 </head>
 <body>
@@ -9314,38 +9348,101 @@ function tkPersonQuick(email){
    return `<div class="tk-pqi${late?' late':''}"><button type="button" class="tk-tick" ${q.email===me||mgr?`onclick="tkTick('${q.id}',0,true,this)"`:'disabled'} aria-label="Mark as done"></button><div><b>${esc(q.title)}</b><small>Asked ${age?age+'d':'today'} ago${q.deadline?' · ':''}${q.deadline?(late?`${-due}d late`:due===0?'due today':`due in ${due}d`):''}</small></div></div>`}).join('')}</div>`;
 }
 
-const TK_LEAVE_TYPES=[['Vacation','🌴'],['Sick','🤒'],['Other','📌']];
-function tkLeaveOf(email){return ((TK.data&&TK.data.leave)||[]).filter(l=>l.email===email)}
-function tkOffToday(email){if(TK.month!==tkMonthNow())return null;const d=tkToday().d;return tkLeaveOf(email).find(l=>(l.data.days||[]).includes(d))||null}
-function tkNewLeave(email){TK.form={kind:'leave',title:'Vacation',email:email||'',weeks:[],data:{type:'Vacation',days:[],backup:'',msg:''}};tkForm()}
-function tkEditLeave(id){const t=(TK.data.leave||[]).find(x=>x.id===id);if(!t)return;TK.form=JSON.parse(JSON.stringify(t));TK.form.data=Object.assign({type:'Vacation',days:[],backup:'',msg:''},TK.form.data);TK.form.data.msg=TK.form.data.note||TK.form.data.msg||'';tkForm()}
-function tkLeaveHtml(){
- const mgr=!!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin), today=TK.month===tkMonthNow()?tkToday().d:0, people=tkPeople();
- const off=people.filter(p=>tkOffToday(p.email));
- const head=`<div class="lv-sum"><small>${today?'TODAY · '+esc(new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'})):'THIS MONTH'}</small>
-   ${today?(off.length?off.map(p=>{const l=tkOffToday(p.email),b=l.data.backup?tkPerson(l.data.backup):null;return `<div class="lv-off">${tkAv(p)}<div><b>${esc(p.name)}</b><span>${(TK_LEAVE_TYPES.find(x=>x[0]===l.data.type)||['','🌴'])[1]} ${esc(l.data.type||'Vacation')}</span></div>${b?`<div class="lv-bk"><small>BACKUP</small>${tkAv(b)}<b>${esc(b.name.split(' ')[0])}</b></div>`:'<div class="lv-bk none">No backup</div>'}</div>`}).join(''):'<div class="lv-all">✓ Everyone is working today</div>'):`<div class="lv-all">${((TK.data&&TK.data.leave)||[]).length} leave${((TK.data&&TK.data.leave)||[]).length===1?'':'s'} this month</div>`}</div>`;
- const rows=people.map((p,i)=>{const ls=tkLeaveOf(p.email),offNow=tkOffToday(p.email);
-   return `<div class="lv-p" style="--i:${i}"><div class="lv-ph">${tkAv(p)}<div class="lv-pn"><b>${esc(p.name)}</b>${p.role?roleBadge(p.role):''}</div>${offNow?'<span class="lv-st off">Off today</span>':'<span class="lv-st">Working</span>'}</div>
-     ${ls.length?ls.map(l=>{const b=l.data.backup?tkPerson(l.data.backup):null,t=TK_LEAVE_TYPES.find(x=>x[0]===l.data.type)||TK_LEAVE_TYPES[0];
-       return `<div class="lv-l"><span class="lv-ty">${t[1]} ${esc(t[0])}</span><div class="lv-days">${(l.data.days||[]).map(d=>`<i class="${d===today?'now':d<today?'past':''}">${d}</i>`).join('')}</div>
-         <div class="lv-ft">${b?`<span class="lv-b">Backup ${tkAv(b)}<b>${esc(b.name.split(' ')[0])}</b></span>`:'<span class="lv-b none">No backup</span>'}${l.data.note?`<span class="lv-note">💬 ${esc(l.data.note)}</span>`:''}${mgr?`<button type="button" class="tq-ed" onclick="tkEditLeave('${l.id}')" aria-label="Edit">✎</button>`:''}</div></div>`}).join(''):'<div class="lv-none">No leave this month</div>'}
-     ${mgr?`<button type="button" class="lv-add" onclick="tkNewLeave('${esc(p.email)}')">＋ Add leave</button>`:''}</div>`}).join('');
- return head+(people.length?rows:'<div class="tk-empty"><b>No one yet</b></div>');
+
+const TK_DAYS=['Sat','Sun','Mon','Tue','Wed','Thu','Fri'], TK_DAYS_L=['Saturday','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday'];
+const TK_LEAVE_TYPES=[['Sick','🤒'],['Other','📌'],['Vacation','🌴']];
+function tkIsAdmin(){return !!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)}
+function tkWdToday(){const t=tkToday();return (new Date(Date.UTC(t.y,t.m-1,t.d)).getUTCDay()+1)%7}
+function tkLeaveAll(){return (TK.data&&TK.data.leave)||[]}
+function tkLeaveOf(email){return tkLeaveAll().filter(l=>l.email===email&&(l.month==='ALL'||l.month===TK.month))}
+function tkWeeklyOf(email){return tkLeaveAll().find(l=>l.email===email&&l.data&&l.data.type==='Weekly')||null}
+function tkFrozenToday(){const f=(TK.data&&TK.data.freeze)||{},t=tkToday(),iso=tkIso(t.y,t.m,t.d);return !!(f.on||(f.seasons||[]).some(s=>s.from<=iso&&iso<=s.to))}
+function tkOffToday(email){
+ const t=tkToday(),m=`${t.y}-${String(t.m).padStart(2,'0')}`,fr=tkFrozenToday(),wd=tkWdToday();
+ return tkLeaveAll().find(l=>l.email===email&&l.data&&(l.data.type==='Weekly'?!fr&&(l.data.weekdays||[]).includes(wd):l.month===m&&(l.data.days||[]).includes(t.d)&&!(fr&&l.data.type==='Vacation')))||null;
 }
-function tkLeaveForm(f,sc,top,still){
- const ppl=(sel,js,skip)=>tkPeople().filter(p=>p.email!==skip).map(p=>`<button type="button" class="${sel===p.email?'on':''}" onclick="${js}('${esc(p.email)}')">${tkAv(p)}<span>${esc(p.name.split(' ')[0])}</span></button>`).join('');
+function tkNewLeave(email){
+ const w=email&&tkWeeklyOf(email);
+ if(w){TK.form=JSON.parse(JSON.stringify(w));TK.form.data=Object.assign({weekdays:[],backup:'',msg:''},TK.form.data);TK.form.data.msg=TK.form.data.note||'';}
+ else TK.form={kind:'leave',title:'Weekly',email:email||'',weeks:[],data:{type:'Weekly',weekdays:[],backup:'',msg:''}};
+ tkForm();
+}
+function tkNewLeaveDays(email,type){tkFormRead();TK.form={kind:'leave',title:type,email:email,weeks:[],data:{type:type,days:[],backup:'',msg:''}};tkForm()}
+function tkEditLeave(id){const t=tkLeaveAll().find(x=>x.id===id);if(!t)return;TK.form=JSON.parse(JSON.stringify(t));TK.form.data=Object.assign({type:'Sick',days:[],weekdays:[],backup:'',msg:''},TK.form.data);TK.form.data.msg=TK.form.data.note||TK.form.data.msg||'';tkForm()}
+function tkLeaveHtml(){
+ const admin=tkIsAdmin(), people=tkPeople(), fr=tkFrozenToday(), f=(TK.data&&TK.data.freeze)||{on:false,seasons:[]};
+ const off=people.map(p=>({p,l:tkOffToday(p.email)})).filter(x=>x.l);
+ const zz='<span class="lp-zz">z<i>z</i><b>Z</b></span>';
+ const lines=off.length?off.map(({p,l})=>{const b=l.data.backup?tkPerson(l.data.backup):null;
+   return `<div class="lp-b">${tkAv(p)}<span class="lp-x">${esc(p.name.split(' ')[0])}</span>${zz}<span class="lp-to">→</span>${b?`<span class="lp-y">${esc(b.name.split(' ')[0])}</span>`:'<span class="lp-y mut">no backup</span>'}</div>`}).join('')
+   :'<div class="lp-all">✓ Everyone is working today</div>';
+ const seasons=(f.seasons||[]).map(s=>esc(s.name)).join(' · ');
+ const card=`<div class="lp-card"><div class="lp-tr"><small>TODAY · ${esc(new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'}).toUpperCase())}</small><span class="lp-pill${fr?' fr':''}">${fr?'🔒 Leave frozen':'🔓 Leave open'}</span></div>
+   <div class="lp-lines">${lines}</div>
+   <div class="lp-fz"><span class="lp-ic"><i>🌙</i><i>🐑</i></span><button type="button" class="lp-ft" ${admin?'onclick="tkFreezeEdit()"':''}><b>Freeze leave for a season</b><small>${fr?'On now':'Off now'}${seasons?' · '+seasons:''}</small></button>
+   <button type="button" class="lp-tg${f.on?' on':''}" ${admin?'onclick="tkFreezeToggle(this)"':'disabled'} role="switch" aria-checked="${!!f.on}" aria-label="Freeze leave now"><i></i></button></div></div>`;
+ const rows=people.map((p,i)=>{const w=tkWeeklyOf(p.email),b=w&&w.data.backup?tkPerson(w.data.backup):null, extra=tkLeaveOf(p.email).filter(l=>l.data.type!=='Weekly');
+   const wd=w?(w.data.weekdays||[]).map(d=>TK_DAYS[d]).join(', '):'';
+   return `<button type="button" class="lp-p" style="--i:${i}" ${admin?`onclick="tkNewLeave('${esc(p.email)}')"`:''}>${tkAv(p)}<div class="lp-pn"><b>${esc(p.name)}</b>
+     <span>${w?`Off every <u>${esc(wd)}</u> · ${b?'backup '+esc(b.name.split(' ')[0]):'no backup'}`:'No weekly day off'}</span>
+     ${extra.length?`<div class="lp-ex">${extra.map(l=>{const t=TK_LEAVE_TYPES.find(x=>x[0]===l.data.type)||TK_LEAVE_TYPES[1];return `<span>${t[1]} ${(l.data.days||[]).join(', ')}</span>`}).join('')}</div>`:''}</div>${admin?'<em>›</em>':''}</button>`}).join('');
+ return card+(people.length?rows:'<div class="tk-empty"><b>No one yet</b></div>');
+}
+async function tkFreezeToggle(btn){
+ const f=Object.assign({on:false,seasons:[]},TK.data.freeze);f.on=!f.on;btn.disabled=true;
+ try{TK.data.freeze=await serverCall('leaveFreezeSet',getAccessToken(),f);storeSet('sekna_tasks_'+TK.month,JSON.stringify(TK.data));showSettingsToast(f.on?'Leave frozen':'Leave open');tkRender()}
+ catch(err){btn.disabled=false;showSettingsToast(errorText(err))}
+}
+function tkFreezeEdit(){TK.form={kind:'freeze',title:'Freeze',email:'-',data:JSON.parse(JSON.stringify(Object.assign({on:false,seasons:[]},TK.data.freeze)))};tkForm()}
+function tkFzSet(i,k,v){tkFormRead();const s=TK.form.data.seasons;if(k==='add')s.push({name:v,from:'',to:''});else if(k==='del')s.splice(i,1);else if(k==='on')TK.form.data.on=!TK.form.data.on;else s[i][k]=v;tkForm(false,true)}
+function tkFreezeForm(f,sc,top,still){
  const b=document.getElementById('tasksBody');if(!b)return;
- tkSetTitle(f.id?'Edit leave':'Add leave');
- b.classList.toggle('tk-still',!!still);TK.lastKey='';
- b.innerHTML=`<div class="tk-form tk-fpage">
-   <div class="tq-who" style="margin-top:0"><div class="tq-q">Who is off?</div><div class="tq-ppl">${ppl(f.email,"tkF('email',")}</div></div>
-   <label class="tk-l">Type</label><div class="tk-row">${TK_LEAVE_TYPES.map(t=>`<button type="button" class="tk-chip${f.data.type===t[0]?' on':''}" onclick="tkLvSet('type','${t[0]}')">${t[1]} ${t[0]}</button>`).join('')}</div>
-   <label class="tk-l">Days off <small>tap each day</small></label>${tkDayGrid(f)}
-   <div class="tq-who"><div class="tq-q">Backup <small style="font-size:11px;color:#8a93a6;font-weight:700">optional</small></div><div class="tq-ppl"><button type="button" class="${!f.data.backup?'on':''}" onclick="tkLvSet('backup','')"><span class="tk-av">—</span><span>No backup</span></button>${ppl(f.data.backup,"tkLvSet('backup',",f.email)}</div></div>
-   <label class="tk-l">Note <small>optional</small></label><textarea id="tkfMsg" class="tk-in" rows="2" maxlength="600" placeholder="e.g. Travelling, back on Sunday">${esc(f.data.msg||'')}</textarea>
-   <div class="tk-fa">${f.id?`<button type="button" class="tk-del" onclick="tkDelete(this)">Delete</button>`:''}<button type="button" class="tk-save" onclick="tkSave(this)">${f.id?'Save changes':'Save leave'}</button></div></div>`;
+ tkSetTitle('Freeze leave');b.classList.toggle('tk-still',!!still);TK.lastKey='';
+ const dl=(i,k,v)=>`<label class="tk-chip tk-pick${v?' on':''}">📅 ${v?esc(tkDlLabel(v)):k==='from'?'From':'To'}<input type="date" lang="en" value="${esc(v||'')}" onchange="tkFzSet(${i},'${k}',this.value)"></label>`;
+ b.innerHTML=`<div class="tk-form tk-fpage"><div class="lp-fh"><span class="lp-ic big"><i>🌙</i><i>🐑</i></span><div><b>Freeze leave for a season</b><small>Weekly days off stop while it is on. Sick days still count.</small></div></div>
+   <div class="sw-row"><span>Freeze now</span><button type="button" class="lp-tg dk${f.data.on?' on':''}" onclick="tkFzSet(0,'on')"><i></i></button></div>
+   <label class="tk-l">Seasons <small>frozen automatically between the dates</small></label>
+   ${f.data.seasons.map((s,i)=>`<div class="fz-s"><input class="tk-in" value="${esc(s.name)}" maxlength="40" oninput="TK.form.data.seasons[${i}].name=this.value"><div class="tk-row">${dl(i,'from',s.from)}${dl(i,'to',s.to)}<button type="button" class="tk-x" onclick="tkFzSet(${i},'del')">✕</button></div></div>`).join('')||'<div class="lp-none">No seasons yet.</div>'}
+   <div class="tk-row" style="margin-top:8px"><button type="button" class="tk-chip" onclick="tkFzSet(0,'add','Ramadan')">🌙 Ramadan</button><button type="button" class="tk-chip" onclick="tkFzSet(0,'add','Eid al-Adha')">🐑 Eid al-Adha</button><button type="button" class="tk-chip" onclick="tkFzSet(0,'add','Season')">＋ Custom</button></div>
+   <div class="tk-fa"><button type="button" class="tk-save" onclick="tkFreezeSave(this)">Save</button></div></div>`;
  if(sc)sc.scrollTop=top;
 }
+async function tkFreezeSave(btn){
+ const f=TK.form;if(!f)return;btn.disabled=true;btn.textContent='Saving…';
+ const bad=f.data.seasons.find(s=>!s.from||!s.to);if(bad){btn.disabled=false;btn.textContent='Save';return showSettingsToast('Pick both dates for '+(bad.name||'each season'))}
+ try{TK.data.freeze=await serverCall('leaveFreezeSet',getAccessToken(),f.data);storeSet('sekna_tasks_'+TK.month,JSON.stringify(TK.data));tkSheetClose();showSettingsToast('Saved')}
+ catch(err){btn.disabled=false;btn.textContent='Try again';showSettingsToast(errorText(err))}
+}
+function tkLeaveForm(f,sc,top,still){
+ const b=document.getElementById('tasksBody');if(!b)return;
+ if(f.kind==='freeze')return tkFreezeForm(f,sc,top,still);
+ const weekly=f.data.type==='Weekly';
+ const ppl=(sel,js,skip)=>tkPeople().filter(p=>p.email!==skip).map(p=>`<button type="button" class="${sel===p.email?'on':''}" onclick="${js}('${esc(p.email)}')">${tkAv(p)}<span>${esc(p.name.split(' ')[0])}</span></button>`).join('');
+ tkSetTitle(weekly?(f.id?'Edit day off':'Add day off'):(f.data.type==='Sick'?'Sick days':'Other days'));
+ b.classList.toggle('tk-still',!!still);TK.lastKey='';
+ const who=`<div class="tq-who" style="margin-top:0"><div class="tq-q">Who is off?</div><div class="tq-ppl">${ppl(f.email,"tkF('email',")}</div></div>`;
+ const backup=`<div class="tq-who"><div class="tq-q">Backup <small style="font-size:11px;color:#8a93a6;font-weight:700">optional</small></div><div class="tq-ppl"><button type="button" class="${!f.data.backup?'on':''}" onclick="tkLvSet('backup','')"><span class="tk-av">—</span><span>None</span></button>${ppl(f.data.backup,"tkLvSet('backup',",f.email)}</div></div>`;
+ let body;
+ if(weekly){
+   const extra=f.email?tkLeaveOf(f.email).filter(l=>l.data.type!=='Weekly'):[];
+   const card=t=>{const ls=extra.filter(l=>l.data.type===t[0]);return `<button type="button" class="lf-x${ls.length?' on':''}" onclick="${ls.length?`tkEditLeave('${ls[0].id}')`:`tkNewLeaveDays('${esc(f.email)}','${t[0]}')`}" ${f.email?'':'disabled'}><b>${t[1]} ${t[0]==='Sick'?'Sick days':'Other'}</b><span>${ls.length?ls.map(l=>(l.data.days||[]).join(', ')).join(' · ')+' '+esc(tkMonthName(TK.month,true).split(' ')[0]):'Add days'}</span></button>`};
+   const wd=f.data.weekdays||[];
+   body=`${f.id?'':who}${f.id?`<div class="lf-who">${tkAv(tkPerson(f.email))}<b>${esc(tkPerson(f.email).name)}</b></div>`:''}
+     <label class="tk-l">Weekly day off <small>every week</small></label>
+     <div class="lf-wk">${TK_DAYS.map((d,i)=>`<button type="button" class="${wd.includes(i)?'on':''}" onclick="tkLvDay(${i})">${d}</button>`).join('')}</div>
+     <div class="lf-hint">${wd.length?`🌴 Off every <b>${wd.map(i=>TK_DAYS_L[i]).join(' & ')}</b>`:'Tap the day this person is off every week'}</div>
+     <label class="tk-l">Extra <small>optional</small></label><div class="lf-xs">${card(TK_LEAVE_TYPES[0])}${card(TK_LEAVE_TYPES[1])}</div>
+     ${backup}`;
+ }else{
+   body=`${f.id?'':who}<label class="tk-l">Type</label><div class="tk-row">${TK_LEAVE_TYPES.filter(t=>t[0]!=='Vacation'||f.data.type==='Vacation').map(t=>`<button type="button" class="tk-chip${f.data.type===t[0]?' on':''}" onclick="tkLvSet('type','${t[0]}')">${t[1]} ${t[0]}</button>`).join('')}</div>
+     <label class="tk-l">Days <small>tap each day</small></label>${tkDayGrid(f)}${backup}`;
+ }
+ b.innerHTML=`<div class="tk-form tk-fpage">${body}
+   <label class="tk-l">Note <small>optional</small></label><textarea id="tkfMsg" class="tk-in" rows="2" maxlength="600" placeholder="${weekly?'e.g. Friday is family day':'e.g. Back on Sunday'}">${esc(f.data.msg||'')}</textarea>
+   <div class="tk-fa">${f.id?`<button type="button" class="tk-del" onclick="tkDelete(this)">Delete</button>`:''}<button type="button" class="tk-save" onclick="tkSave(this)">Save</button></div></div>`;
+ if(sc)sc.scrollTop=top;
+}
+function tkLvDay(i){tkFormRead();const a=TK.form.data.weekdays=TK.form.data.weekdays||[],k=a.indexOf(i);if(k>=0)a.splice(k,1);else a.push(i);a.sort();tkForm(false,true)}
 function tkLvSet(k,v){tkFormRead();TK.form.data[k]=v;if(k==='backup'&&v===TK.form.email)TK.form.data.backup='';tkForm(false,true)}
 function tkTOpen(e){TK.tOpen=TK.tOpen||{};const me=tkMe(),cur=TK.tOpen[e]!==undefined?TK.tOpen[e]:e===me;TK.tOpen[e]=!cur;tkRender()}
 function tkMineHtml(){
@@ -9490,7 +9587,7 @@ function tkForm(keep,stay){
  if(keep||stay)tkFormRead();
  const sc=document.querySelector('#tasksOverlay .app-modal'), top=(keep||stay)&&sc?sc.scrollTop:0;
  const f=TK.form, q=f.kind==='quick';
- if(f.kind==='leave')return tkLeaveForm(f,sc,top,keep||stay);
+ if(f.kind==='leave'||f.kind==='freeze')return tkLeaveForm(f,sc,top,keep||stay);
  const chip=(on,label,js,cls)=>`<button type="button" class="tk-chip${on?' on':''} ${cls||''}" onclick="${js}">${label}</button>`;
  const people=tkPeople().map(p=>`<button type="button" class="tk-pc${f.email===p.email?' on':''}" onclick="tkF('email','${esc(p.email)}')">${tkAv(p)}<span>${esc(p.name.split(' ')[0])}</span>${tkPeople().filter(x=>x.name.split(' ')[0]===p.name.split(' ')[0]).length>1?`<small>${esc(p.email.split('@')[0].slice(0,12))}</small>`:''}</button>`).join('');
  const hours=[12,1,2,3,4,5,6,7,8,9,10,11];
@@ -9524,7 +9621,7 @@ function tkForm(keep,stay){
 }
 async function tkSave(btn){
  tkFormRead();const f=TK.form;if(!f)return;
- if(f.kind==='leave'){f.title=f.data.type||'Vacation';f.month=TK.month;if(!f.email)return showSettingsToast('Choose who is off');if(!(f.data.days||[]).length)return showSettingsToast('Pick the days off')}
+ if(f.kind==='leave'){f.title=f.data.type||'Weekly';f.month=TK.month;if(!f.email)return showSettingsToast('Choose who is off');if(f.data.type==='Weekly'?!(f.data.weekdays||[]).length:!(f.data.days||[]).length)return showSettingsToast(f.data.type==='Weekly'?'Pick the weekly day off':'Pick the days')}
  if(!f.title.trim())return showSettingsToast('Give it a name first');
  if(!f.email)return showSettingsToast('Choose who it is for');
  if(f.kind==='weekly')f.month=TK.month;
@@ -9627,7 +9724,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v137',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v138',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
