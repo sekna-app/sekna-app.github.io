@@ -4232,6 +4232,16 @@ window.addEventListener('load',function(){
     .tks-c{background:#fff;border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:6px}
     .tks-t b{display:block;font-size:12px}.tks-t small{display:block;font-size:10.5px;color:#6b7385;font-weight:600}.tks-t.d b{color:#0e8f5d}
     .tks-e{color:#c9d0de;font-weight:900;text-align:center}
+
+    /* v127 · task form as a page, HA accounts */
+    .tk-fpage{background:#fff;border-radius:20px;padding:16px 14px 18px;box-shadow:0 6px 18px rgba(20,30,60,.05);animation:skRise .3s cubic-bezier(.2,.75,.25,1) both}
+    .tk-fpage .tk-fh{display:none}
+    .tk-chip.acc{display:inline-flex;align-items:center;gap:7px;padding:7px 12px 7px 7px;border-radius:12px;font-size:13px}
+    .tk-ha{width:22px;height:22px;border-radius:6px;object-fit:contain;background:#fff;box-shadow:0 0 0 1px #e8ebf2}
+    .tk-chip.acc.on{background:#fff8ea;color:#1d2433;border:1.5px solid #e2b874;box-shadow:0 4px 12px rgba(226,184,116,.25)}
+    .tk-ck{font-style:normal;width:16px;height:16px;border-radius:50%;background:#e2b874;color:#fff;font-size:10px;display:grid;place-items:center}
+    .tk-pc small{font-size:9.5px;font-weight:700;color:#8a93a6;margin-top:-3px}
+    body.dark-mode .tk-fpage{background:#151a22}body.dark-mode .tk-chip.acc.on{background:#2a2216;color:#fff}
 </style>
 </head>
 <body>
@@ -9045,7 +9055,7 @@ function openTasks(view){
  if(!TK.data||TK.data.month!==TK.month){try{const c=JSON.parse(storeGet('sekna_tasks_'+TK.month)||'null');if(c)TK.data=c}catch(e){}}
  tkRender();tkLoad();
 }
-function closeTasks(e){if(e&&e.target!==e.currentTarget)return;const o=document.getElementById('tasksOverlay');if(o)o.classList.remove('open');tkSheetClose()}
+function closeTasks(e){if(e&&e.target!==e.currentTarget)return;if(TK.form&&!e){tkSheetClose();return}TK.form=null;const o=document.getElementById('tasksOverlay');if(o)o.classList.remove('open')}
 async function tkLoad(){
  if(TK.view==='build'&&!tkCanManage()&&TK.data){tkRender();return}
  TK.busy=true;TK.err='';tkRender();
@@ -9058,6 +9068,7 @@ async function tkLoad(){
 function tkMonth(n){TK.month=tkShift(TK.month,n);TK.data=null;try{const c=JSON.parse(storeGet('sekna_tasks_'+TK.month)||'null');if(c)TK.data=c}catch(e){}TK.week=TK.month===tkMonthNow()?tkWeekOf(tkToday().d):1;tkRender();tkLoad()}
 function tkSetWeek(w){TK.week=w;tkRender()}
 function tkRender(){
+ if(TK.form)return tkForm(true);
  const b=document.getElementById('tasksBody');if(!b)return;
  text('tkTitle',TK_VIEWS[TK.view][0]);
  const tabs=`<div class="tk-views">${Object.keys(TK_VIEWS).map(k=>`<button type="button" class="${k===TK.view?'on':''}" onclick="TK.view='${k}';${k==='mine'?'tkSeenNotice();':''}tkRender()">${TK_VIEWS[k][0].replace('Quick Requests','Quick').replace('Task Builder','Builder').replace('Team Board','Team')}${k==='build'&&!tkCanManage()?' 🔒':''}${k==='mine'&&tkNoticeNew()?'<i class="tk-dot"></i>':''}</button>`).join('')}</div>`;
@@ -9075,9 +9086,11 @@ function tkRender(){
 }
 const WA_IC='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z"/><path d="M8.5 8.5c.3 2.9 2.7 5.6 6 6.6l1.3-1.3-2-1-1 .8c-1-.5-1.9-1.4-2.4-2.4l.8-1-1-2z"/></svg>';
 function tkTasksFor(email,w){return ((TK.data&&TK.data.tasks)||[]).filter(t=>(!email||t.email===email)&&t.weeks.includes(w))}
+function tkAccs(d){return Array.isArray(d&&d.accounts)&&d.accounts.length?d.accounts:(d&&d.account?[d.account]:[])}
+function tkHaLogo(){return document.querySelector('.logo img')?.src||''}
 function tkTags(t){
  const d=t.data||{},out=[];
- if(d.account)out.push(`<span class="tk-tag acc">${d.account.toUpperCase()}</span>`);
+ tkAccs(d).forEach(a=>out.push(`<span class="tk-tag acc">HA-${a.toUpperCase()}</span>`));
  (d.platforms||[]).forEach(p=>out.push(`<span class="tk-tag ${p}">${p==='google'?'Google':'Microsoft'}</span>`));
  return out.join('');
 }
@@ -9163,50 +9176,55 @@ function tkSheet(html){
  o.innerHTML=`<div class="lyx-card"><button type="button" class="lyx-x" aria-label="Close">✕</button>${html}</div>`;
  requestAnimationFrame(()=>o.classList.add('open'));
 }
-function tkSheetClose(){const o=document.getElementById('tkSheet');if(o)o.classList.remove('open');TK.form=null}
-function tkNew(w){TK.form={kind:'weekly',title:'',email:'',weeks:[w],data:{account:'',platforms:[],snaps:[],msg:''}};tkForm()}
-function tkEdit(id){const t=TK.data.tasks.find(x=>x.id===id);if(!t)return;TK.form=JSON.parse(JSON.stringify(t));TK.form.data=Object.assign({account:'',platforms:[],snaps:[],msg:''},TK.form.data);tkForm()}
+function tkSheetClose(){const o=document.getElementById('tkSheet');if(o)o.classList.remove('open');const had=!!TK.form;TK.form=null;if(had)tkRender()}
+function tkNew(w){TK.form={kind:'weekly',title:'',email:'',weeks:[w],data:{accounts:[],platforms:[],snaps:[],msg:''}};tkForm()}
+function tkEdit(id){const t=TK.data.tasks.find(x=>x.id===id);if(!t)return;TK.form=JSON.parse(JSON.stringify(t));TK.form.data=Object.assign({platforms:[],snaps:[],msg:''},TK.form.data);TK.form.data.accounts=tkAccs(TK.form.data).slice();delete TK.form.data.account;tkForm()}
 function tkNewQuick(){TK.form={kind:'quick',title:'',email:'',deadline:'',data:{msg:''}};tkForm()}
 function tkEditQuick(id){const t=TK.data.quick.find(x=>x.id===id);if(!t)return;TK.form=JSON.parse(JSON.stringify(t));TK.form.data=Object.assign({msg:''},TK.form.data);tkForm()}
 function tkF(k,v){const f=TK.form;if(!f)return;
  if(k==='weeks'){const i=f.weeks.indexOf(v);if(v==='all')f.weeks=f.weeks.length===4?[TK.week]:[1,2,3,4];else if(i>=0){if(f.weeks.length>1)f.weeks.splice(i,1)}else f.weeks.push(v);f.weeks.sort()}
  else if(k==='platform'){const p=f.data.platforms,i=p.indexOf(v);if(i>=0)p.splice(i,1);else p.push(v)}
- else if(k==='account'){f.data.account=f.data.account===v?'':v;if(!f.data.account)f.data.platforms=[];else if(!f.data.platforms.length)f.data.platforms=['google']}
+ else if(k==='account'){const a=f.data.accounts,i=a.indexOf(v);if(i>=0)a.splice(i,1);else a.push(v);a.sort((x,y)=>x==='usa'?-1:1);if(!a.length)f.data.platforms=[];else if(!f.data.platforms.length)f.data.platforms=['google']}
  else if(k==='snapAdd')f.data.snaps.push({n:'',t:'12:00 PM'});
  else if(k==='snapDel')f.data.snaps.splice(v,1);
  else f[k]=v;
  tkForm(true);
 }
-function tkSug(s){tkFormRead();const f=TK.form;f.title=s;f.data.account=/AR$/.test(s)?'ar':'usa';if(!f.data.platforms.length)f.data.platforms=['google'];tkForm()}
+function tkSug(s){const el=document.getElementById('tkfTitle');if(el)el.value=s;tkFormRead();const f=TK.form;f.title=s;const a=/AR$/.test(s)?'ar':'usa';if(!f.data.accounts.includes(a))f.data.accounts.push(a);if(!f.data.platforms.length)f.data.platforms=['google'];tkForm(false,true)}
 function tkSnapSet(i,part,val){const s=TK.form.data.snaps[i];if(!s)return;
  if(part==='n')s.n=val;
  else{const m=String(s.t||'12:00 PM').match(/^(\d+):(\d+) (AM|PM)$/)||[0,'12','00','PM'];if(part==='h')m[1]=val;if(part==='ap')m[3]=val;s.t=`${m[1]}:${m[2]} ${m[3]}`;if(part==='ap')tkForm(true)}
 }
 function tkFormRead(){const f=TK.form;if(!f)return;const g=id=>document.getElementById(id);if(g('tkfTitle'))f.title=g('tkfTitle').value;if(g('tkfMsg'))f.data.msg=g('tkfMsg').value;if(g('tkfDl'))f.deadline=g('tkfDl').value}
-function tkForm(keep){
- if(keep)tkFormRead();
+function tkForm(keep,stay){
+ if(keep||stay)tkFormRead();
+ const sc=document.querySelector('#tasksOverlay .app-modal'), top=(keep||stay)&&sc?sc.scrollTop:0;
  const f=TK.form, q=f.kind==='quick';
  const chip=(on,label,js,cls)=>`<button type="button" class="tk-chip${on?' on':''} ${cls||''}" onclick="${js}">${label}</button>`;
- const people=tkPeople().map(p=>`<button type="button" class="tk-pc${f.email===p.email?' on':''}" onclick="tkF('email','${esc(p.email)}')">${tkAv(p)}<span>${esc(p.name.split(' ')[0])}</span></button>`).join('');
+ const people=tkPeople().map(p=>`<button type="button" class="tk-pc${f.email===p.email?' on':''}" onclick="tkF('email','${esc(p.email)}')">${tkAv(p)}<span>${esc(p.name.split(' ')[0])}</span>${tkPeople().filter(x=>x.name.split(' ')[0]===p.name.split(' ')[0]).length>1?`<small>${esc(p.email.split('@')[0].slice(0,12))}</small>`:''}</button>`).join('');
  const hours=[12,1,2,3,4,5,6,7,8,9,10,11];
  const snaps=(f.data.snaps||[]).map((s,i)=>{const m=String(s.t||'12:00 PM').match(/^(\d+):(\d+) (AM|PM)$/)||[0,'12','00','PM'];
    return `<div class="tk-snap"><input list="tkSnapList" value="${esc(s.n)}" placeholder="Snapshot, e.g. Media Plan" oninput="tkSnapSet(${i},'n',this.value)">
      <select onchange="tkSnapSet(${i},'h',this.value)">${hours.map(h=>`<option ${+m[1]===h?'selected':''}>${h}</option>`).join('')}</select>
      <span class="tk-ap">${['AM','PM'].map(a=>`<button type="button" class="${m[3]===a?'on':''}" onclick="tkSnapSet(${i},'ap','${a}')">${a}</button>`).join('')}</span>
      <button type="button" class="tk-x" onclick="tkF('snapDel',${i})" aria-label="Remove">✕</button></div>`}).join('');
- tkSheet(`<div class="tk-form"><div class="tk-fh">${q?'⚡ Quick request':f.id?'Edit task':'New task'}</div>
+ const html=(`<div class="tk-form tk-fpage"><div class="tk-fh">${q?'⚡ Quick request':f.id?'Edit task':'New task'}</div>
    <label class="tk-l">${q?'What is needed':'Task name'}</label>
    <input id="tkfTitle" class="tk-in" value="${esc(f.title)}" placeholder="${q?'e.g. Performance report for Gaza':'e.g. SEKNA Report USA'}" maxlength="140">
    ${q?'':`<div class="tk-sug">${TK_TITLE_SUGGEST.map(s=>chip(false,esc(s),`tkSug('${s}')`)).join('')}</div>`}
    <label class="tk-l">For</label><div class="tk-people">${people||'<small>No approved people yet.</small>'}</div>
    ${q?`<label class="tk-l">Deadline <small>optional</small></label><input id="tkfDl" type="date" class="tk-in" value="${esc(f.deadline||'')}">`:`
-   <label class="tk-l">Account</label><div class="tk-row">${chip(f.data.account==='usa','🇺🇸 USA',`tkF('account','usa')`)}${chip(f.data.account==='ar','AR',`tkF('account','ar')`)}</div>
-   ${f.data.account?`<label class="tk-l">Platform</label><div class="tk-row">${chip(f.data.platforms.includes('google'),'Google',`tkF('platform','google')`,'g')}${chip(f.data.platforms.includes('microsoft'),'Microsoft',`tkF('platform','microsoft')`,'m')}</div>`:''}
+   <label class="tk-l">Account <small>one or both</small></label><div class="tk-row">${['usa','ar'].map(a=>chip(f.data.accounts.includes(a),`${tkHaLogo()?`<img class="tk-ha" src="${tkHaLogo()}" alt="">`:''}HA-${a.toUpperCase()}${f.data.accounts.includes(a)?'<i class="tk-ck">✓</i>':''}`,`tkF('account','${a}')`,'acc')).join('')}</div>
+   ${f.data.accounts.length?`<label class="tk-l">Platform</label><div class="tk-row">${chip(f.data.platforms.includes('google'),'Google',`tkF('platform','google')`,'g')}${chip(f.data.platforms.includes('microsoft'),'Microsoft',`tkF('platform','microsoft')`,'m')}</div>`:''}
    <label class="tk-l">Snapshots <small>Egypt time</small></label>${snaps}<button type="button" class="tk-add" onclick="tkF('snapAdd')">＋ Add snapshot</button>
    <datalist id="tkSnapList">${TK_SNAP_SUGGEST.map(s=>`<option value="${s}">`).join('')}</datalist>
    <label class="tk-l">Weeks</label><div class="tk-row">${[1,2,3,4].map(w=>chip(f.weeks.includes(w),`W${w}<small>${esc(tkRange(TK.month,w))}</small>`,`tkF('weeks',${w})`,'w')).join('')}${chip(f.weeks.length===4,'All 4',`tkF('weeks','all')`)}</div>`}
    <label class="tk-l">Message <small>optional</small></label><textarea id="tkfMsg" class="tk-in" rows="2" maxlength="600" placeholder="Anything they should know">${esc(f.data.msg||'')}</textarea>
    <div class="tk-fa">${f.id?`<button type="button" class="tk-del" onclick="tkDelete(this)">Delete</button>`:''}<button type="button" class="tk-save" onclick="tkSave(this)">${f.id?'Save changes':q?'Add request':'Add task'}</button></div></div>`);
+ const b=document.getElementById('tasksBody');if(!b)return;
+ text('tkTitle',q?'Quick request':f.id?'Edit task':'New task');
+ b.innerHTML=html;
+ if(sc)sc.scrollTop=top;
 }
 async function tkSave(btn){
  tkFormRead();const f=TK.form;if(!f)return;
@@ -9271,7 +9289,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v126',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v127',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
