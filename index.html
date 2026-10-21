@@ -7739,6 +7739,8 @@ function fetchProfile(){
  serverCall('accessStatus',token).then(p=>{
    if(!p||(hasServer()&&p.status!=='Approved'))return;
    ACCESS_PROFILE=p;
+   
+   try{if(p.pushTopic&&window.AndroidShare&&AndroidShare.setPushUser)AndroidShare.setPushUser(p.pushTopic)}catch(e){}
    if(/[?&]tasks=mine\b/.test(location.search)&&!TK.shown.link){TK.shown.link=1;setTimeout(()=>openTasks('mine'),900)}
    trackUsageStart();
    if(p.name)storeSet(ACCESS_NAME_KEY,p.name);
@@ -8063,6 +8065,7 @@ async function doSignOut(){
  const btn=document.getElementById('signOutBtn');
  setGateBusy(btn,true);
  if(window.SEKNA_WEB){try{await webPushOff()}catch(e){}}
+ try{if(window.AndroidShare&&AndroidShare.setPushUser)AndroidShare.setPushUser('')}catch(e){}
  try{await serverCall('accessSignOut',getAccessToken())}catch(e){}
  storeRemove(ACCESS_TOKEN_KEY);storeRemove(ACCESS_STATE_KEY);storeRemove(ADMIN_CACHE_KEY);
  stopDashboardRefresh();
@@ -9045,11 +9048,11 @@ function openTasks(view){
 function closeTasks(e){if(e&&e.target!==e.currentTarget)return;const o=document.getElementById('tasksOverlay');if(o)o.classList.remove('open');tkSheetClose()}
 async function tkLoad(){
  if(TK.view==='build'&&!tkCanManage()&&TK.data){tkRender();return}
- TK.busy=true;tkRender();
+ TK.busy=true;TK.err='';tkRender();
  try{
    const d=await serverCall('tasksLoad',getAccessToken(),TK.month);
    if(d&&d.month===TK.month){TK.data=d;storeSet('sekna_tasks_'+TK.month,JSON.stringify(d))}
- }catch(err){showSettingsToast(errorText(err))}
+ }catch(err){TK.err=/Unknown request/i.test(String(err&&err.message||err))?'server':'net';if(TK.data)showSettingsToast(errorText(err))}
  TK.busy=false;tkRender();
 }
 function tkMonth(n){TK.month=tkShift(TK.month,n);TK.data=null;try{const c=JSON.parse(storeGet('sekna_tasks_'+TK.month)||'null');if(c)TK.data=c}catch(e){}TK.week=TK.month===tkMonthNow()?tkWeekOf(tkToday().d):1;tkRender();tkLoad()}
@@ -9060,7 +9063,7 @@ function tkRender(){
  const tabs=`<div class="tk-views">${Object.keys(TK_VIEWS).map(k=>`<button type="button" class="${k===TK.view?'on':''}" onclick="TK.view='${k}';${k==='mine'?'tkSeenNotice();':''}tkRender()">${TK_VIEWS[k][0].replace('Quick Requests','Quick').replace('Task Builder','Builder').replace('Team Board','Team')}${k==='build'&&!tkCanManage()?' 🔒':''}${k==='mine'&&tkNoticeNew()?'<i class="tk-dot"></i>':''}</button>`).join('')}</div>`;
  if(TK.view==='build'&&!tkCanManage()){b.innerHTML=tabs+tkLockedHtml();return}
  const d=TK.data;
- if(!d){b.innerHTML=tabs+`<div class="tk-loading"><i></i><i></i><i></i></div>`;return}
+ if(!d){b.innerHTML=tabs+(TK.err&&!TK.busy?`<div class="tk-empty"><b>${TK.err==='server'?'Team Tasks is almost ready':'Could not load the tasks'}</b><small>${TK.err==='server'?'The SEKNA server needs its latest update first. Ask Ibrahim to deploy the new version.':'Check your connection and try again.'}</small><br><button type="button" class="tk-add" style="margin-top:12px" onclick="tkLoad()">↻ Try again</button></div>`:`<div class="tk-loading"><i></i><i></i><i></i></div>`);return}
  const month=`<div class="tk-month"><button type="button" onclick="tkMonth(-1)" aria-label="Previous month">‹</button><b>${esc(tkMonthName(TK.month))}</b><button type="button" onclick="tkMonth(1)" aria-label="Next month">›</button>${TK.busy?'<span class="tk-sync">Syncing…</span>':''}</div>`;
  const weeks=`<div class="tk-weeks">${[1,2,3,4].map(w=>`<button type="button" class="${w===TK.week?'on':''}" onclick="tkSetWeek(${w})"><b>W${w}</b><small>${esc(tkRange(TK.month,w))}</small></button>`).join('')}</div>`;
  let body='';
@@ -9268,7 +9271,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v125',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v126',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
