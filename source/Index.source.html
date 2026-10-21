@@ -10269,10 +10269,14 @@ function renderPlanHistory(){
    serverCall('getPlanHistory',getAccessToken(),CURRENT_ACCOUNT).then(r=>{PH.busy=false;PH.list=r||[];drawPlanHistory()}).catch(err=>{PH.busy=false;PH.list=[];PH.msg=errorText(err);drawPlanHistory()})}
  drawPlanHistory();
 }
+// Plan achievement, the same score as Monthly Progress: against the full-month plan,
+// spend 40% (over or under both lose), revenue 40% and ROAS 20% (each capped at 100%).
 function phAcc(s){
- const p=s.daysLive<s.daysTotal?s.planToDate:s.plan, a=s.actual;
- const v=[mpAcc(a.spend,p.spend),mpAcc(a.conversions,p.conversions),mpAcc(a.value,p.value)].filter(x=>x!=null);
- return {p,all:v.length?v.reduce((x,y)=>x+y,0)/v.length:null};
+ const p=s.plan, a=s.actual, clamp=v=>Math.max(0,Math.min(1,v));
+ if(!(p&&a&&p.spend>0))return {p:p||{},all:null};
+ const spend=clamp(1-Math.abs(a.spend/p.spend-1)), revenue=p.value>0?clamp(a.value/p.value):0;
+ const aR=a.spend?a.value/a.spend:0, pR=p.value/p.spend, roas=pR>0?clamp(aR/pR):0;
+ return {p,all:spend*.4+revenue*.4+roas*.2};
 }
 function phToggle(k){PH.open=PH.open===k?'':k;drawPlanHistory()}
 function drawPlanHistory(){
@@ -10282,12 +10286,12 @@ function drawPlanHistory(){
  body.innerHTML=`<div class="phx-list">${PH.list.map(s=>{
    const {p,all}=phAcc(s), a=s.actual, open=PH.open===s.month, col=all>=.9?'good':all>=.8?'watch':'bad';
    const bar=(l,av,pv,f)=>`<div class="phx-m"><small>${l}</small><b>${f(av)}</b><span>Plan ${f(pv)} · ${pv?mpPct(av/pv):'—'}</span><i><u style="width:${pv?Math.min(100,av/pv*100).toFixed(1):0}%"></u></i></div>`;
-   const ch=(s.channels||[]).map(c=>Object.assign({},c,{n:chName(c.channel)})).sort((x,y)=>(y.roas||0)-(x.roas||0)).map(c=>`<tr><td class="mp-n">${chIco(c.channel)}${esc(CHANNEL_SHORT[c.channel]||c.n)}</td><td>${mpK(c.planSpend)}</td><td>${mpK(c.spend)}</td><td>${mpPct(mpAcc(c.spend,c.planSpend))}</td><td>${mpK(c.value)}</td><td><b>${c.roas!=null?fmt(c.roas,2)+'x':'—'}</b></td></tr>`).join('');
+   const ch=(s.channels||[]).map(c=>Object.assign({},c,{n:chName(c.channel)})).sort((x,y)=>(y.roas||0)-(x.roas||0)).map(c=>`<tr><td class="mp-n">${chIco(c.channel)}${esc(CHANNEL_SHORT[c.channel]||c.n)}</td><td>${mpK(c.planSpend)}</td><td>${mpK(c.spend)}</td><td>${c.planSpend?mpPct(c.spend/c.planSpend):'—'}</td><td>${mpK(c.value)}</td><td><b>${c.roas!=null?fmt(c.roas,2)+'x':'—'}</b></td></tr>`).join('');
    return `<div class="phx-item ${col}${open?' open':''}" onclick="phToggle('${s.month}')">
-    <div class="phx-top"><div><b>${esc(monthName(s.month,true))}</b><small>${esc(s.hijriFrom)} – ${esc(s.hijriTo)}${s.daysLive<s.daysTotal?` · saved on day ${s.daysLive} of ${s.daysTotal}`:''}</small></div><div class="phx-acc"><b>${mpPct(all)}</b><small>accuracy</small></div></div>
+    <div class="phx-top"><div><b>${esc(monthName(s.month,true))}</b><small>${esc(s.hijriFrom)} – ${esc(s.hijriTo)}${s.daysLive<s.daysTotal?` · saved on day ${s.daysLive} of ${s.daysTotal}`:''}</small></div><div class="phx-acc"><b>${mpPct(all)}</b><small>achievement</small></div></div>
     <div class="phx-ms">${bar('Conv. Value',a.value,p.value,mpK)}${bar('Spend',a.spend,p.spend,mpK)}${bar('Conv.',a.conversions,p.conversions,v=>fmt(v,0))}</div>
     <div class="phx-foot"><span>ROAS <b>${fmt(a.roas,2)}x</b> · plan ${fmt(p.roas,2)}x</span><span class="phx-more">${open?'Hide types ▲':'By campaign type ▼'}</span></div>
-    ${open?`<div class="phx-tw"><table class="mp-t phx-t"><thead><tr><th class="mp-n">Type</th><th>Plan spend</th><th>Spend</th><th>Accuracy</th><th>Value</th><th>ROAS</th></tr></thead><tbody>${ch}</tbody></table></div>`:''}
+    ${open?`<div class="phx-tw"><table class="mp-t phx-t"><thead><tr><th class="mp-n">Type</th><th>Plan spend</th><th>Spend</th><th>Of plan</th><th>Value</th><th>ROAS</th></tr></thead><tbody>${ch}</tbody></table></div>`:''}
    </div>`}).join('')}</div>`;
 }
 // Media Plan Lab: keep the month's plan and results in Plan History.
