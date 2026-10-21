@@ -4097,6 +4097,18 @@ window.addEventListener('load',function(){
     .ad-roles button{border:2px solid transparent;background:none;padding:2px;border-radius:99px;cursor:pointer}
     .ad-roles button.on{border-color:#3d6bff}.ad-roles button.busy{opacity:.5}
     body.dark-mode .ad-mem{background:#151a22;border-color:#2a303b}body.dark-mode .ad-mem-h{color:#fff}
+
+    /* v123 · "Gold emblems" avatars */
+    .sk-emb,.sk-emb svg{display:block;width:100%;height:100%}
+    .sk-user-avatar.has-emb,.sk-person-avatar.has-emb{background:none!important;padding:0!important;border-radius:50%!important;overflow:hidden}
+    .sk-drawer .sk-user-card .sk-user-avatar.has-emb{box-shadow:0 0 0 2px #e2b874}
+    .ad-mem-h2{margin-top:14px}
+    .ad-avs{display:grid;grid-template-columns:repeat(auto-fill,minmax(42px,1fr));gap:8px;margin-top:10px}
+    .ad-avs button{aspect-ratio:1;border:2px solid transparent;border-radius:50%;padding:2px;background:none;cursor:pointer;display:grid;place-items:center}
+    .ad-avs button svg{width:100%;height:100%;display:block;border-radius:50%}
+    .ad-avs button.none{background:#e9eefc;color:#203c8e;font-weight:900;font-size:15px;border-color:#e9eefc}
+    .ad-avs button.on{border-color:#e2b874;box-shadow:0 0 0 2px #fff,0 0 0 4px #e2b874}
+    .ad-avs button.busy{opacity:.5}
 </style>
 </head>
 <body>
@@ -7601,11 +7613,12 @@ function updateProfileUI(){
  let mem=p.member;if(mem)storeSet('sekna_member',JSON.stringify(mem));else{try{mem=JSON.parse(storeGet('sekna_member')||'null')}catch(e){}}
  const role=(mem&&mem.role)||'', card=document.querySelector('.sk-drawer .sk-user-card');
  if(card){card.className='sk-user-card'+(roleTier(role)?' tier'+roleTier(role):'');}
+ const myAv=mem&&mem.avatar?emblemHtml(mem.avatar):'';
  const rl=document.getElementById('profileRole');if(rl){rl.innerHTML=roleBadge(role);rl.hidden=!role}
  const name=p.name||storeGet(ACCESS_NAME_KEY)||'SEKNA';
  text('profileName',name);
  text('profileEmail',p.email||storeGet(ACCESS_EMAIL_KEY)||'Signed in');
- const av=document.getElementById('profileAvatar');if(av)av.innerHTML=avatarHtml(p.photo,name);
+ const av=document.getElementById('profileAvatar');if(av){av.innerHTML=myAv||avatarHtml(p.photo,name);av.classList.toggle('has-emb',!!myAv)}
  renderProfileCard();
  const lock=document.getElementById('adminNavLock');
  if(lock)lock.hidden=!!p.isAdmin;
@@ -8033,7 +8046,7 @@ function renderAdmin(d){
    ['Active today',users.filter(p=>now-p.last<86400000).length,'']
  ];
  const person=p=>`<div class="ad-person">
-   <span class="sk-person-avatar">${avatarHtml(photos[p.email],p.name)}</span>
+   <span class="sk-person-avatar${memberOf(p.email).avatar?' has-emb':''}">${emblemHtml(memberOf(p.email).avatar)||avatarHtml(photos[p.email],p.name)}</span>
    <span class="ad-pt"><b>${esc(p.name)}</b><small>${esc(p.email)}</small>${roleBadge(memberOf(p.email).role)}<span class="sk-seen">${seenHtml(p.last,now)}</span></span>
    <span class="ad-pr">${statusChip(p.status)}<span class="ad-acts">${personActions(p)}<button class="sk-mini-btn ghost" type="button" onclick="adminEditMember('${esc(p.email)}')">${ADMIN_EDIT===p.email?'Done':'Position'}</button></span></span>
  </div>${ADMIN_EDIT===p.email?memberEditor(p):''}`;
@@ -8089,17 +8102,21 @@ function personActions(p){
 function memberOf(email){return ((ADMIN_LAST&&ADMIN_LAST.members)||{})[email]||{}}
 function adminEditMember(email){ADMIN_EDIT=ADMIN_EDIT===email?'':email;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function memberEditor(p){
- const cur=memberOf(p.email).role||'';
+ const cur=memberOf(p.email).role||'', curAv=+memberOf(p.email).avatar||0;
  return `<div class="ad-mem"><div class="ad-mem-h">Position for ${esc(p.name)}<small>Only shows on their menu. They are not notified.</small></div>
-   <div class="ad-roles">${['',...ROLES].map(r=>`<button type="button" class="${r===cur?'on':''}" onclick="adminSetRole('${esc(p.email)}','${r}',this)">${r?roleBadge(r):'<span class="rb rb0">No title</span>'}</button>`).join('')}</div></div>`;
+   <div class="ad-roles">${['',...ROLES].map(r=>`<button type="button" class="${r===cur?'on':''}" onclick="adminSetRole('${esc(p.email)}','${r}',this)">${r?roleBadge(r):'<span class="rb rb0">No title</span>'}</button>`).join('')}</div>
+   <div class="ad-mem-h ad-mem-h2">Avatar</div>
+   <div class="ad-avs"><button type="button" class="none${!curAv?' on':''}" onclick="adminSetAvatar('${esc(p.email)}',0,this)" title="No avatar">${esc((String(p.name||'S').charAt(0)||'S').toUpperCase())}</button>${AVATARS.map((a,i)=>`<button type="button" class="${curAv===i+1?'on':''}" onclick="adminSetAvatar('${esc(p.email)}',${i+1},this)" title="${AVATAR_NAMES[i]}">${a}</button>`).join('')}</div></div>`;
 }
-async function adminSetRole(email,role,btn){
+function adminSetAvatar(email,n,btn){return adminSetRole(email,n,btn,'avatar')}
+async function adminSetRole(email,role,btn,field){
+ field=field||'role';
  if(btn)btn.classList.add('busy');
  try{
-   const r=await serverCall('adminSetMember',getAccessToken(),email,'role',role);
+   const r=await serverCall('adminSetMember',getAccessToken(),email,field,role);
    if(ADMIN_LAST){ADMIN_LAST.members=ADMIN_LAST.members||{};if(r&&r.member&&(r.member.role||r.member.avatar))ADMIN_LAST.members[email]=r.member;else delete ADMIN_LAST.members[email];renderAdmin(ADMIN_LAST)}
    if(ACCESS_PROFILE&&ACCESS_PROFILE.email===email){ACCESS_PROFILE.member=(r&&r.member)||{};updateProfileUI()}
-   showSettingsToast(role?`${role} saved`:'Title removed');
+   showSettingsToast(field==='avatar'?(role?'Avatar saved':'Avatar removed'):role?`${role} saved`:'Title removed');
  }catch(err){if(btn)btn.classList.remove('busy');showSettingsToast(errorText(err))}
 }
 function adminPersonRows(email){return ((ADMIN_LAST&&ADMIN_LAST.rows)||[]).filter(r=>r.email===email)}
@@ -8851,7 +8868,7 @@ async function captureReport(html,extraClass){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v122',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v123',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
@@ -8957,6 +8974,10 @@ function roleBadge(r){
  const t=roleTier(r);if(!t)return '';
  return `<span class="rb rb${t}">${t>=4?ROLE_IC:''}<i>${'◆'.repeat(t)}</i>${esc(r)}</span>`;
 }
+
+const AVATARS=["<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav0\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav0)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M28 64l-4-26 14 12 12-18 12 18 14-12-4 26z\"/><path d=\"M28 72h44\"/></g></svg>", "<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav1\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav1)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M50 24l7.6 16.4 18 2-13.4 12.2 3.8 17.8L50 63.6 34 72.4l3.8-17.8L24.4 42.4l18-2z\"/></g></svg>", "<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav2\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav2)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M32 30h36l10 14-28 30-28-30z\"/><path d=\"M22 44h56M42 30l8 44 8-44\"/></g></svg>", "<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav3\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav3)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M50 22c12 8 16 24 12 38H38c-4-14 0-30 12-38z\"/><circle cx=\"50\" cy=\"40\" r=\"5\"/><path d=\"M38 60l-8 10 10-2M62 60l8 10-10-2M46 66l4 10 4-10\"/></g></svg>", "<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav4\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav4)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"50\" cy=\"50\" r=\"24\"/><circle cx=\"50\" cy=\"50\" r=\"14\"/><circle cx=\"50\" cy=\"50\" r=\"4\" fill=\"#f3d79f\"/></g></svg>", "<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav5\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav5)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M40 64h20M42 72h16M50 22a18 18 0 0 0-10 33c2 2 2 5 2 9h16c0-4 0-7 2-9a18 18 0 0 0-10-33z\"/></g></svg>", "<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav6\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav6)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"50\" cy=\"50\" r=\"26\"/><path d=\"M58 42l-6 14-10 2 6-14z\"/></g></svg>", "<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav7\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav7)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M50 22l24 9v17c0 16-10 26-24 32-14-6-24-16-24-32V31z\"/><path d=\"M40 50l7 7 14-14\"/></g></svg>", "<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav8\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav8)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M26 74h48M32 66V50M44 66V38M56 66V46M68 66V28\"/></g></svg>", "<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav9\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav9)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M36 26h28v14a14 14 0 0 1-28 0zM36 32H26a10 10 0 0 0 12 12M64 32h10a10 10 0 0 1-12 12M50 54v10M40 72h20l-2-8H42z\"/></g></svg>"];
+const AVATAR_NAMES=["Crown", "Star", "Diamond", "Rocket", "Target", "Idea", "Compass", "Shield", "Growth", "Trophy"];
+function emblemHtml(n){const a=AVATARS[(+n||0)-1];return a?`<span class="sk-emb">${a}</span>`:''}
 function avatarHtml(photo,name){
  return photo?`<img class="sk-avatar-img" src="${esc(photo)}" alt="" referrerpolicy="no-referrer" onerror="this.replaceWith(document.createTextNode('${esc((String(name||'S').charAt(0)||'S').toUpperCase())}'))">`:esc((String(name||'S').charAt(0)||'S').toUpperCase());
 }
