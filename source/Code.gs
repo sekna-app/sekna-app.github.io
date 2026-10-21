@@ -3095,7 +3095,7 @@ function adminSavePlanHistory(token, accountKey) {
 
 function getPlanHistory(token, accountKey) {
   assertRestHere_();
-  assertAdmin_(token);
+  assertAccess_(token);
   const key = normalizeAccountKey_(accountKey);
   const out = [];
   v87Rows_(v87Sheet_(V87.PLAN_HISTORY_SHEET, PLAN_HISTORY_COLS), PLAN_HISTORY_COLS.length).forEach(r => {

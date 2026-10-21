@@ -2560,6 +2560,7 @@ window.addEventListener('load',function(){
 
 
     /* v86 — By Campaign Type (latest day) */
+    .ctd-sec{margin-top:16px}
     .ctd-sec .section-head{margin-bottom:14px}
     .ctd-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
     .ctd{--c:#203c8e;--s:#e8edfa;position:relative;overflow:hidden;background:#fff;border:1px solid rgba(29,36,51,.08);border-radius:20px;padding:19px 16px 14px;color:#1d2433}
@@ -4364,9 +4365,9 @@ window.addEventListener('load',function(){
     .a3tg svg{width:30px;height:30px;fill:#fff;flex:none}.a3tg span{flex:1}.a3tg b{display:block;font-size:14px}.a3tg small{font-size:11.5px;opacity:.85;font-weight:700}.a3tg i{font-style:normal;font-size:22px}
     .quick-metric{align-items:flex-start!important}
     .quick-metric .quick-icon{margin-top:-2px}
-    .kx-c{margin-top:7px;font-size:11px;font-weight:700;color:#8a92a6;white-space:nowrap}.kx-c:empty{display:none}.kx-c b{color:#1d2433;font-weight:850}
+    .kx-c{margin-top:7px;font-size:11px;font-weight:700;color:#8a92a6;white-space:nowrap}.kx-c:empty{display:none}.kx-c b{color:inherit;font-weight:850}
     .kx-r{position:absolute;right:14px;bottom:12px;font-size:12px;font-weight:900;white-space:nowrap}.kx-r.up{color:#13894f}.kx-r.dn{color:#c62f45}
-    body.dark-mode .kx-c b{color:#fff}body.dark-mode .kx-r.up{color:#39e29a}body.dark-mode .kx-r.dn{color:#ff8a98}
+    body.dark-mode .kx-r.up{color:#39e29a}body.dark-mode .kx-r.dn{color:#ff8a98}
     .ox-bar .conv{background:linear-gradient(90deg,#6d4bd8,#9b7bff)}
     .ox-hero{position:relative}.ox-day{position:absolute;top:16px;right:16px;font-size:10px;font-weight:850;letter-spacing:.02em;background:rgba(255,255,255,.14);color:#f3d79f;padding:3px 8px;border-radius:99px}.ox-day:empty{display:none}
     .ox-strip{margin-top:10px;border-radius:16px;padding:14px;background:linear-gradient(135deg,#eceff4,#dde2ea 55%,#eef1f5);box-shadow:inset 0 0 0 1px rgba(43,52,69,.08),0 4px 12px rgba(43,52,69,.06)}
@@ -4528,8 +4529,8 @@ window.addEventListener('load',function(){
     <button class="sk-nav-btn active" id="overviewTabBtn" type="button" onclick="switchDashboardTab('overview')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></span><span>Daily Performance</span></button>
     <button class="sk-nav-btn" id="daysTabBtn" type="button" onclick="switchDashboardTab('days')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M8 14h2M12 14h2M16 14h0M8 17h2M12 17h2"/></svg></span><span>Day by Day Performance</span></button>
     <button class="sk-nav-btn" id="channelTabBtn" type="button" onclick="switchDashboardTab('channel')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg></span><span>Monthly Progress</span></button>
-    <button class="sk-nav-btn" id="labTabBtn" type="button" onclick="switchDashboardTab('lab')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-9V3"/><path d="M7.5 15h9"/></svg></span><span>Media Plan Lab</span><span class="sk-nav-lock" id="labNavLock" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span></button>
-    <button class="sk-nav-btn" id="plansTabBtn" type="button" onclick="switchDashboardTab('plans')" hidden><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v4H4zM4 11h16v8H4z"/><path d="M9 15h6"/></svg></span><span>Plan Performance History</span></button>
+    <button class="sk-nav-btn" id="labTabBtn" type="button" onclick="switchDashboardTab('lab')" hidden><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-9V3"/><path d="M7.5 15h9"/></svg></span><span>Media Plan Lab</span><span class="sk-nav-lock" id="labNavLock" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span></button>
+    <button class="sk-nav-btn" id="plansTabBtn" type="button" onclick="switchDashboardTab('plans')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v4H4zM4 11h16v8H4z"/><path d="M9 15h6"/></svg></span><span>Plan Performance History</span></button>
   </nav></div>
 
   <button class="sk-grp" type="button" data-grp="ps" onclick="navGroup('ps')" aria-expanded="false"><span class="sk-gt"><b>Performance Snapshots</b><small class="sk-gn"></small></span><svg class="sk-gchev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
@@ -4550,7 +4551,7 @@ window.addEventListener('load',function(){
     <button class="sk-nav-btn" id="ttMineBtn" type="button" onclick="openTasks('mine')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 12.5l2.5 2.5 5-5.5"/></svg></span><span>My Tasks</span><i class="tk-ndot"></i></button>
     <button class="sk-nav-btn" type="button" onclick="openTasks('build')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l10-10-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></span><span>Task Builder</span><span class="sk-nav-lock" id="ttBuildLock"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span></button>
     <button class="sk-nav-btn" type="button" onclick="openTasks('leave')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a8 8 0 0 1 8 8H4a8 8 0 0 1 8-8z"/><path d="M12 11v9M9 20h6"/></svg></span><span>Team Leave</span></button>
-    <button class="sk-nav-btn" type="button" onclick="openTasks('quick')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/></svg></span><span>Quick Requests</span></button>
+    <button class="sk-nav-btn" id="ttQuickBtn" type="button" onclick="openTasks('quick')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/></svg></span><span>Quick Requests</span></button>
   </nav></div>
 
   <div class="sk-section-label">App</div>
@@ -6420,11 +6421,11 @@ function planHero(days,T){
 
  
 function resultsHero(days,T){
- const a=T.a,p=T.p;
- const cls=(r,spend)=>r==null?'':spend?(r>1.1||r<.9?'watch':'good'):(r>=1?'good':r>=.9?'watch':'bad');
+ const a=T.a,p=T.p, pace=days.length?a.days/days.length:1;
+ const cls=(r,spend)=>{if(r==null)return '';const q=pace?r/pace:r;return spend?(q>1.1?'watch':'good'):(q>=1?'good':q>=.9?'watch':'bad')};
  const pct=(v,b)=>b?(Math.round(v/b*1000)/10)+'%':'—';
- const sR=a.target?a.spend/a.target:null, vR=a.planValue?a.value/a.planValue:null, cR=a.planConv?a.conversions/a.planConv:null;
- const tR=a.target?a.planValue/a.target:p.roas, rR=tR&&a.roas!=null?a.roas/tR:null;
+ const sR=p.spend?a.spend/p.spend:null, vR=p.value?a.value/p.value:null, cR=p.conversions?a.conversions/p.conversions:null;
+ const tR=p.roas, rR=tR&&a.roas!=null?a.roas/tR:null;
  const R=30,C=2*Math.PI*R,f=Math.max(0,Math.min(1,sR||0));
  const ch=(DASH_DATA&&DASH_DATA.channels)||[];
  const idx=n=>{const k=['Search Brand','Search Non-Brand','Performance Max','Demand Gen','Video (YouTube)'].indexOf(n);return k<0?4:k};
@@ -6432,9 +6433,9 @@ function resultsHero(days,T){
  const tot=mix.reduce((x,m)=>x+m.s,0)||1;
  const tile=(l,v,r,sub,c)=>`<div class="mt-t"><small>${l}</small><b>${v}</b><span class="mt-chip ${c}">${sub}</span></div>`;
  return `<div class="mt"><div class="mt-top"><div><small>Month to date</small><b>${a.days} of ${days.length} days</b></div><div class="mt-days"><span style="width:${(days.length?a.days/days.length*100:0).toFixed(1)}%"></span></div></div>
-  <div class="mt-hero"><div><small>Spend</small><b>${money(a.spend)}</b><i>target ${money(a.target)}</i></div>
+  <div class="mt-hero"><div><small>Spend</small><b>${money(a.spend)}</b><i>month plan ${money(p.spend)}</i></div>
    <div class="mt-ring ${cls(sR,true)}"><svg viewBox="0 0 72 72"><circle r="${R}" cx="36" cy="36" class="t"/><circle r="${R}" cx="36" cy="36" class="f" stroke-dasharray="${(f*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 36 36)"/></svg><b>${sR!=null?Math.round(sR*100)+'%':'—'}</b></div></div>
-  <div class="mt-grid">${tile('Conversions',fmt(a.conversions,0),cR,`${pct(a.conversions,a.planConv)} of plan`,cls(cR))}${tile('Value',money(a.value),vR,`${pct(a.value,a.planValue)} of plan`,cls(vR))}${tile('ROAS',fmt(a.roas,2)+'x',rR,`target ${fmt(tR,2)}x`,rR==null?'':rR>=1?'good':'bad')}</div>
+  <div class="mt-grid">${tile('Conversions',fmt(a.conversions,0),cR,`${pct(a.conversions,p.conversions)} of plan`,cls(cR))}${tile('Value',money(a.value),vR,`${pct(a.value,p.value)} of plan`,cls(vR))}${tile('ROAS',fmt(a.roas,2)+'x',rR,`target ${fmt(tR,2)}x`,rR==null?'':rR>=1?'good':'bad')}</div>
   ${mix.length?`<div class="mt-mix">${mix.map(m=>`<span class="m${m.k}" style="flex:${m.s/tot}"></span>`).join('')}</div><div class="mt-legend">${mix.map(m=>`<span><i class="m${m.k}"></i>${PLAN_MIX_LABELS[m.k]} ${Math.round(m.s/tot*100)}%</span>`).join('')}</div>`:''}</div>`;
 }
  
@@ -6473,8 +6474,8 @@ const PLAN_MIX_LABELS=['Search Brand','Non-Brand','PMax','Demand Gen','Video'];
 let LAB_STATE=null, LAB_BUSY=false, LAB_MSG='';
 function renderLab(){
  const body=document.getElementById('labBody'); if(!body)return;
- if(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin===false){
-   body.innerHTML='<div class="lab-locked"><div class="lock-ic anim"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="sh" d="M8 11V8a4 4 0 0 1 8 0v3"/><rect x="5" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1.4" fill="currentColor"/></svg></div><b>Admins only</b><small>Media Plan Lab is open to SEKNA administrators.</small></div>';return;
+ if(!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)){
+   body.innerHTML='<div class="lab-locked"><div class="lock-ic anim"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="sh" d="M8 11V8a4 4 0 0 1 8 0v3"/><rect x="5" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1.4" fill="currentColor"/></svg></div><b>Admin only</b><small>Media Plan Lab is open to the SEKNA admin only.</small></div>';return;
  }
  drawLabSave();
  if(!LAB_STATE||LAB_STATE.account!==CURRENT_ACCOUNT){drawLabIdle();return}
@@ -7982,7 +7983,8 @@ function updateProfileUI(){
  if(lock)lock.hidden=!!p.isAdmin;
  const labLock=document.getElementById('labNavLock');
  if(labLock)labLock.hidden=!!p.isAdmin;
- ['mrSection','plansTabBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.hidden=!p.isAdmin});
+ ['mrSection','labTabBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.hidden=!p.isAdmin});
+ tkQuickNav();
  if(p.isAdmin&&CURRENT_TAB==='channel')renderMonthlyReport();
 }
 
@@ -9252,6 +9254,8 @@ function tkMonthName(month,short){return new Date(+month.slice(0,4),+month.slice
 function tkRange(month,w){const to=w===4?tkDim(month):w*7;return `${(w-1)*7+1}–${to} ${tkMonthName(month,true)}`}
 function tkShift(month,n){const d=new Date(+month.slice(0,4),+month.slice(5,7)-1+n,1);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
 function tkCanManage(){const p=ACCESS_PROFILE||{};let mem=p.member;if(!mem){try{mem=JSON.parse(storeGet('sekna_member')||'null')}catch(e){}}return !!(p.isAdmin||(mem&&TK_MANAGER_ROLES.includes(mem.role)))}
+
+function tkQuickNav(){const b=document.getElementById('ttQuickBtn');if(b)b.hidden=!tkCanManage()}
 function tkMe(){return ((TK.data&&TK.data.me&&TK.data.me.email)||(ACCESS_PROFILE&&ACCESS_PROFILE.email)||'').toLowerCase()}
 function tkPeople(){return ((TK.data&&TK.data.people)||[]).slice().sort((a,b)=>roleTier(b.role)-roleTier(a.role)||String(a.name).localeCompare(String(b.name)))}
 function tkPerson(email){return tkPeople().find(p=>p.email===email)||{email,name:String(email||'').split('@')[0],role:'',avatar:0}}
@@ -9286,9 +9290,10 @@ function tkSetWeek(w){TK.week=w;if(TK.today&&w!==tkWeekOf(tkToday().d))TK.today=
 function tkWaShow(on){const w=document.getElementById('tkWa');if(!w)return;if(on&&!w.firstChild){const ic=document.querySelector('.top-share-btn .wa-ic');w.innerHTML=ic?ic.outerHTML:WA_IC}w.hidden=!on}
 function tkRender(){
  if(TK.form)return tkForm(true);
+ if(TK.view==='quick'&&!tkCanManage())TK.view='team';
  const b=document.getElementById('tasksBody');if(!b)return;
  tkSetTitle(TK_VIEWS[TK.view][0]);tkWaShow(TK.view==='build'&&tkCanManage());
- const tabs=`<div class="tk-views">${Object.keys(TK_VIEWS).map(k=>`<button type="button" class="${k===TK.view?'on':''}" onclick="TK.view='${k}';${k==='mine'?'tkSeenNotice();':''}tkRender()">${TK_VIEWS[k][0].replace('Quick Requests','Quick').replace('Team Leave','Leave').replace('Task Builder','Builder').replace('Team Board','Team')}${k==='build'&&!tkCanManage()?' 🔒':''}${k==='mine'&&tkNoticeNew()?'<i class="tk-dot"></i>':''}</button>`).join('')}</div>`;
+ const tabs=`<div class="tk-views">${Object.keys(TK_VIEWS).filter(k=>k!=='quick'||tkCanManage()).map(k=>`<button type="button" class="${k===TK.view?'on':''}" onclick="TK.view='${k}';${k==='mine'?'tkSeenNotice();':''}tkRender()">${TK_VIEWS[k][0].replace('Quick Requests','Quick').replace('Team Leave','Leave').replace('Task Builder','Builder').replace('Team Board','Team')}${k==='build'&&!tkCanManage()?' 🔒':''}${k==='mine'&&tkNoticeNew()?'<i class="tk-dot"></i>':''}</button>`).join('')}</div>`;
  if(TK.view==='build'&&!tkCanManage()){b.innerHTML=tabs+tkLockedHtml();return}
  const d=TK.data;
  if(!d){b.innerHTML=tabs+(TK.err&&!TK.busy?`<div class="tk-empty"><b>${TK.err==='server'?'Team Tasks is almost ready':'Could not load the tasks'}</b><small>${TK.err==='server'?'The SEKNA server needs its latest update first. Ask Ibrahim to deploy the new version.':'Check your connection and try again.'}</small><br><button type="button" class="tk-add" style="margin-top:12px" onclick="tkLoad()">↻ Try again</button></div>`:`<div class="tk-loading"><i></i><i></i><i></i></div>`);return}
@@ -10244,7 +10249,6 @@ function drawMonthlyReport(){
 let PH={account:'',list:null,open:'',busy:false,msg:''};
 function renderPlanHistory(){
  const body=document.getElementById('phBody');if(!body)return;
- if(!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)){body.innerHTML='<div class="lab-locked"><div class="lock-ic anim"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="sh" d="M8 11V8a4 4 0 0 1 8 0v3"/><rect x="5" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1.4" fill="currentColor"/></svg></div><b>Admins only</b><small>Plan Performance History is kept by the SEKNA admin.</small></div>';return}
  if(PH.account!==CURRENT_ACCOUNT){PH={account:CURRENT_ACCOUNT,list:null,open:'',busy:false,msg:''}}
  if(PH.list===null&&!PH.busy){PH.busy=true;
    serverCall('getPlanHistory',getAccessToken(),CURRENT_ACCOUNT).then(r=>{PH.busy=false;PH.list=r||[];drawPlanHistory()}).catch(err=>{PH.busy=false;PH.list=[];PH.msg=errorText(err);drawPlanHistory()})}

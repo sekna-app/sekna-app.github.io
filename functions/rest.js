@@ -193,7 +193,7 @@ const R = {
     return snap;
   },
   async getPlanHistory([token, accountKey]) {
-    await assertAdmin(token);
+    await assertAccess(token);
     const key = require('./dash').normalizeAccountKey_(accountKey);
     return (((await fsGet(DOC.plans(key))) || {}).items || []).slice().sort((a, b) => String(b.month).localeCompare(String(a.month)));
   },
