@@ -5073,7 +5073,7 @@ window.addEventListener('load',function(){
       </div>
 
       <div class="ox-hero">
-        <span class="ox-lbl">Media plan accuracy · to date</span><span class="ox-day" id="mtdDayBadge"></span>
+        <span class="ox-lbl">Plan achievement · full month</span><span class="ox-day" id="mtdDayBadge"></span>
         <b class="ox-score" id="planAccuracyScore">—</b>
         <div class="ox-accbar">
           <div class="ox-seg" style="flex:40"><span id="accuracySpendBar" class="spend"></span></div>
@@ -5941,23 +5941,15 @@ function kpi(valueId,targetId,deltaId,barId,value,target,achievement,isSpend){
 
  
 function planAccuracy(d){
- const live=(d.dayPlan||[]).filter(x=>x.actual);
- let aS,aV,pS,pV;
- if(live.length){
-   aS=dxSum(live,x=>x.actual.spend); aV=dxSum(live,x=>x.actual.value);
-   pS=dxSum(live,x=>x.actual.target||x.plan.spend); pV=dxSum(live,x=>x.plan.value);
- }else{
-   const m=d.mtd||{}, x=d.latest||{};
-   const day=Number(x.dayNumber)||0, dim=daysInMonthOf(x.date)||30, share=day?day/dim:1;
-   aS=Number(m.actualSpend)||0; aV=Number(m.actualValue)||0;
-   pS=(Number(m.planSpend)||0)*share; pV=(Number(m.planValue)||0)*share;
- }
+ const m=d.mtd||{};
+ const aS=Number(m.actualSpend)||0, aV=Number(m.actualValue)||0;
+ const pS=Number(m.planSpend)||0, pV=Number(m.planValue)||0;
  const clamp=v=>Math.max(0,Math.min(1,v));
  const spend=pS>0?clamp(1-Math.abs(aS/pS-1)):0;
  const revenue=pV>0?clamp(aV/pV):0;
  const aR=aS?aV/aS:0, pR=pS?pV/pS:0;
  const roas=pR>0?clamp(aR/pR):0;
- return {spend,revenue,roas,score:spend*.4+revenue*.4+roas*.2,aS,pS,aV,pV,aR,pR,days:live.length};
+ return {spend,revenue,roas,score:spend*.4+revenue*.4+roas*.2,aS,pS,aV,pV,aR,pR};
 }
 function renderPlanAccuracy(d){
  const a=planAccuracy(d);

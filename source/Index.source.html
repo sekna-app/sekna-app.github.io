@@ -4942,7 +4942,7 @@ window.addEventListener('load',function(){
       </div>
 
       <div class="ox-hero">
-        <span class="ox-lbl">Media plan accuracy · to date</span><span class="ox-day" id="mtdDayBadge"></span>
+        <span class="ox-lbl">Plan achievement · full month</span><span class="ox-day" id="mtdDayBadge"></span>
         <b class="ox-score" id="planAccuracyScore">—</b>
         <div class="ox-accbar">
           <div class="ox-seg" style="flex:40"><span id="accuracySpendBar" class="spend"></span></div>
@@ -5809,31 +5809,23 @@ function kpi(valueId,targetId,deltaId,barId,value,target,achievement,isSpend){
 
 
 /**
- * Overall media plan accuracy, measured against the plan for the days that have
- * already run (not the full month, which would always look low mid-month).
- *  - Spend (40%): how close spend is to the planned spend — 10% over or under
- *    both score 90%, so overspending is not rewarded.
- *  - Revenue (40%): revenue ÷ planned revenue, capped at 100%.
- *  - ROAS (20%): actual ROAS ÷ planned ROAS for the same days, capped at 100%.
+ * Overall media plan achievement, measured against the full-month plan, so it
+ * climbs through the month and reaches 100% when the whole plan is delivered.
+ *  - Spend (40%): how close spend is to the month's planned spend — 10% over
+ *    or under both score 90%, so overspending is not rewarded.
+ *  - Revenue (40%): revenue ÷ the month's planned revenue, capped at 100%.
+ *  - ROAS (20%): actual ROAS ÷ planned ROAS, capped at 100%.
  */
 function planAccuracy(d){
- const live=(d.dayPlan||[]).filter(x=>x.actual);
- let aS,aV,pS,pV;
- if(live.length){
-   aS=dxSum(live,x=>x.actual.spend); aV=dxSum(live,x=>x.actual.value);
-   pS=dxSum(live,x=>x.actual.target||x.plan.spend); pV=dxSum(live,x=>x.plan.value);
- }else{
-   const m=d.mtd||{}, x=d.latest||{};
-   const day=Number(x.dayNumber)||0, dim=daysInMonthOf(x.date)||30, share=day?day/dim:1;
-   aS=Number(m.actualSpend)||0; aV=Number(m.actualValue)||0;
-   pS=(Number(m.planSpend)||0)*share; pV=(Number(m.planValue)||0)*share;
- }
+ const m=d.mtd||{};
+ const aS=Number(m.actualSpend)||0, aV=Number(m.actualValue)||0;
+ const pS=Number(m.planSpend)||0, pV=Number(m.planValue)||0;
  const clamp=v=>Math.max(0,Math.min(1,v));
  const spend=pS>0?clamp(1-Math.abs(aS/pS-1)):0;
  const revenue=pV>0?clamp(aV/pV):0;
  const aR=aS?aV/aS:0, pR=pS?pV/pS:0;
  const roas=pR>0?clamp(aR/pR):0;
- return {spend,revenue,roas,score:spend*.4+revenue*.4+roas*.2,aS,pS,aV,pV,aR,pR,days:live.length};
+ return {spend,revenue,roas,score:spend*.4+revenue*.4+roas*.2,aS,pS,aV,pV,aR,pR};
 }
 function renderPlanAccuracy(d){
  const a=planAccuracy(d);
@@ -8208,7 +8200,7 @@ const MV_SECTIONS=[
  mvSoft(mvSel('#dayChannelsSection'),'.ctd'),
  mvSoft(mvSel('.sx-month'),'.sx-hero,.sx-ftile'),
  mvBoard(p=>{const r=p.querySelector('.cx-row');return r?[r.parentElement]:[]},'.cx-row','.cx-bar span','.cx-roas'),
- // Accuracy to date: the score and the three parts count up, their bars fill.
+ // Plan achievement: the score and the three parts count up, their bars fill.
  {find:p=>{const s=p.querySelector('#planAccuracyScore');return s?[s.closest('.card')||s.parentElement]:[]},
   prep:r=>{mvPrepCount(mvQ(r,'#planAccuracyScore,#accuracySpend,#accuracyRevenue,#accuracyRoas'));mvPrepGrow(mvQ(r,'#accuracySpendBar,#accuracyRevenueBar,#accuracyRoasBar'))},
   play:r=>{mvPlayCount(mvQ(r,'#planAccuracyScore'),1400);mvPlayCount(mvQ(r,'#accuracySpend,#accuracyRevenue,#accuracyRoas'),1100,200);mvPlayGrow(mvQ(r,'#accuracySpendBar,#accuracyRevenueBar,#accuracyRoasBar'),'width',200,120)}},
