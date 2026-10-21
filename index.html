@@ -4464,6 +4464,23 @@ window.addEventListener('load',function(){
     @keyframes tkUp{from{opacity:0;transform:translateY(6px)}}
     .a3tg{width:100%;margin-top:18px;display:flex;align-items:center;gap:12px;text-align:left;border:0;border-radius:16px;padding:12px 14px;background:linear-gradient(135deg,#2aabee,#1d8fd6);color:#fff;font:inherit;cursor:pointer;box-shadow:0 8px 20px rgba(42,171,238,.35)}
     .a3tg svg{width:30px;height:30px;fill:#fff;flex:none}.a3tg span{flex:1}.a3tg b{display:block;font-size:14px}.a3tg small{font-size:11.5px;opacity:.85;font-weight:700}.a3tg i{font-style:normal;font-size:22px}
+    .quick-metric{align-items:flex-start!important}
+    .quick-metric .quick-icon{margin-top:-2px}
+    .kx-c{margin-top:7px;font-size:11px;font-weight:700;color:#8a92a6;white-space:nowrap}.kx-c:empty{display:none}.kx-c b{color:#1d2433;font-weight:850}
+    .kx-r{position:absolute;right:14px;bottom:12px;font-size:12px;font-weight:900;white-space:nowrap}.kx-r.up{color:#13894f}.kx-r.dn{color:#c62f45}
+    body.dark-mode .kx-c b{color:#fff}body.dark-mode .kx-r.up{color:#39e29a}body.dark-mode .kx-r.dn{color:#ff8a98}
+    .ox-bar .conv{background:linear-gradient(90deg,#6d4bd8,#9b7bff)}
+    .ox-hero{position:relative}.ox-day{position:absolute;top:16px;right:16px;font-size:10px;font-weight:850;letter-spacing:.02em;background:rgba(255,255,255,.14);color:#f3d79f;padding:3px 8px;border-radius:99px}.ox-day:empty{display:none}
+    .ox-strip{margin-top:10px;border-radius:16px;padding:14px;background:linear-gradient(135deg,#eceff4,#dde2ea 55%,#eef1f5);box-shadow:inset 0 0 0 1px rgba(43,52,69,.08),0 4px 12px rgba(43,52,69,.06)}
+    .ox-sr{display:flex;align-items:flex-end;justify-content:space-between;gap:10px}.ox-sr b{display:block;font-size:22px;font-weight:900;color:#10141b;letter-spacing:-.02em;margin-top:3px;direction:ltr}
+    .ox-strip .ox-hs{min-height:0;text-align:right;color:#4f5869}.ox-strip .ox-bar{background:#cdd3de}
+    #mtdVarianceCard.over .ox-bar .budget{background:linear-gradient(90deg,#e0584d,#f08a7f)}
+    .ox-cl{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:10px;border-top:1px dashed #c3c9d5;font-size:12px;font-weight:700;color:#4f5869}
+    .ox-cl svg{width:16px;height:16px;fill:none;stroke:#cf8734;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.ox-cl b{color:#1d2433;font-weight:900}
+    .ox-cl em{margin-left:auto;font-style:normal;font-weight:900}.ox-cl em.up{color:#13894f}.ox-cl em.dn{color:#c62f45}
+    body.dark-mode .ox-strip{background:linear-gradient(135deg,#1a1f27,#232933);box-shadow:inset 0 0 0 1px #2c333e}body.dark-mode .ox-sr b,body.dark-mode .ox-cl b{color:#fff}body.dark-mode .ox-strip .ox-bar{background:#313844}
+    .lp-nm{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.lp-nm .rb{font-size:8.5px;padding:2px 7px 2px 6px}.lp-nm .rb i{font-size:5.5px}
+    .lp-bk{color:#10141b;font-weight:900}body.dark-mode .lp-bk{color:#fff}
 </style>
 </head>
 <body>
@@ -4869,8 +4886,10 @@ window.addEventListener('load',function(){
       <div class="quick-copy">
         <span class="quick-name">Clicks</span>
         <span class="quick-value" id="topClicks">—</span>
+        <span class="kx-c" id="topClicksPlan"></span>
         
       </div>
+      <span class="kx-r" id="topClicksPct"></span>
     </div>
     <div class="quick-metric ctr">
       <div class="quick-icon" aria-hidden="true">
@@ -4882,7 +4901,9 @@ window.addEventListener('load',function(){
       <div class="quick-copy">
         <span class="quick-name">CTR</span>
         <span class="quick-value" id="topCTR">—</span>
+        <span class="kx-c" id="topCTRPlan"></span>
       </div>
+      <span class="kx-r" id="topCTRPct"></span>
     </div>
     <div class="quick-metric cpa">
       <div class="quick-icon" aria-hidden="true">
@@ -4894,7 +4915,9 @@ window.addEventListener('load',function(){
       <div class="quick-copy">
         <span class="quick-name">CPA</span>
         <span class="quick-value" id="topCPA">—</span>
+        <span class="kx-c" id="topCPAPlan"></span>
       </div>
+      <span class="kx-r" id="topCPAPct"></span>
     </div>
     <div class="quick-metric cvr">
       <div class="quick-icon" aria-hidden="true">
@@ -4906,7 +4929,9 @@ window.addEventListener('load',function(){
       <div class="quick-copy">
         <span class="quick-name">CVR</span>
         <span class="quick-value" id="topCVR">—</span>
+        <span class="kx-c" id="topCVRPlan"></span>
       </div>
+      <span class="kx-r" id="topCVRPct"></span>
     </div>
   </section>
 <section class="card section yoy">
@@ -4987,7 +5012,7 @@ window.addEventListener('load',function(){
       </div>
 
       <div class="ox-hero">
-        <span class="ox-lbl">Media plan accuracy · to date</span>
+        <span class="ox-lbl">Media plan accuracy · to date</span><span class="ox-day" id="mtdDayBadge"></span>
         <b class="ox-score" id="planAccuracyScore">—</b>
         <div class="ox-accbar">
           <div class="ox-seg" style="flex:40"><span id="accuracySpendBar" class="spend"></span></div>
@@ -5004,13 +5029,16 @@ window.addEventListener('load',function(){
       <div class="ox-tiles">
         <div class="ox-tile"><span class="ox-lbl">Spend</span><b id="mtdSpend">—</b><span class="ox-hs" id="mtdSpendPlan">—</span>
           <div class="ox-bar"><span class="spend" id="mtdSpendBar"></span><em class="ox-tick" id="mtdSpendTick"></em></div></div>
-        <div class="ox-tile"><span class="ox-lbl">Revenue</span><b id="mtdRevenue">—</b><span class="ox-hs" id="mtdRevenuePlan">—</span>
+        <div class="ox-tile"><span class="ox-lbl">Conversions</span><b id="mtdConv">—</b><span class="ox-hs" id="mtdConvPlan">—</span>
+          <div class="ox-bar"><span class="conv" id="mtdConvBar"></span><em class="ox-tick" id="mtdConvTick"></em></div></div>
+        <div class="ox-tile"><span class="ox-lbl">Value</span><b id="mtdRevenue">—</b><span class="ox-hs" id="mtdRevenuePlan">—</span>
           <div class="ox-bar"><span class="revenue" id="mtdRevenueBar"></span><em class="ox-tick" id="mtdRevenueTick"></em></div></div>
         <div class="ox-tile"><span class="ox-lbl">ROAS</span><b id="mtdRoas">—</b><span class="ox-hs" id="mtdRoasPlan">—</span>
           <div class="ox-bar"><span class="roas" id="mtdRoasBar"></span></div></div>
-        <div class="ox-tile" id="mtdVarianceCard"><span class="ox-lbl" id="mtdVarianceLabel">Budget remaining</span><b id="mtdVariance">—</b><span class="ox-hs" id="mtdVarianceSub">—</span>
-          <div class="ox-bar"><span class="budget" id="mtdVarianceBar"></span></div></div>
       </div>
+      <div class="ox-strip" id="mtdVarianceCard"><div class="ox-sr"><div><span class="ox-lbl" id="mtdVarianceLabel">Budget remaining</span><b id="mtdVariance">—</b></div><span class="ox-hs" id="mtdVarianceSub">—</span></div>
+        <div class="ox-bar"><span class="budget" id="mtdVarianceBar"></span></div>
+        <div class="ox-cl" id="mtdClicksRow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l9 8-4 1-1 4-4-13z"/><path d="M15 15l4 4"/></svg><span id="mtdClicks">Clicks —</span><em id="mtdClicksPct"></em></div></div>
       <div class="ox-legend" id="mtdTickLegend"><i></i><span>Black tick = expected by today</span></div>
     </section>
 
@@ -5731,6 +5759,7 @@ function render(d,opts){
  text('topCTR',percent(x.ctr));
  text('topCVR',percent(x.cvr));
  text('topClicks',fmt(x.clicks,0));
+ drawKpiPlans(d);
  renderPlanAccuracy(d);
 
  renderMtd(d);
@@ -5922,6 +5951,18 @@ function renderMtdSparklines(m){
  drawKpiCircle('mtdVarianceSpark', isOver ? Math.min(overRatio,1) : remainRatio, isOver ? '#ef5c70' : '#f0aa35', Math.round((isOver ? Math.min(overRatio,1) : remainRatio)*100)+'%');
 }
 
+
+function drawKpiPlans(d){
+ const x=d.latest||{},dp=((d.dayPlan||[]).find(r=>r.date===x.date)||{}).plan||{},ly=d.yoy&&d.yoy.hasData?d.yoy.ctr:null;
+ const set=(id,a,plan,cap,lowGood)=>{const c=document.getElementById(id+'Plan'),r=document.getElementById(id+'Pct');
+   const ok=a!=null&&isFinite(a)&&plan&&isFinite(plan);if(c)c.innerHTML=ok?cap:'';if(!r)return;
+   if(!ok){r.textContent='';r.className='kx-r';return}
+   const ratio=a/plan,good=lowGood?ratio<=1:ratio>=1;r.textContent=`${ratio>=1?'▲':'▼'} ${Math.round(ratio*100)}%`;r.className='kx-r '+(good?'up':'dn')};
+ set('topClicks',x.clicks,x.planClicks,`Plan <b>${fmt(x.planClicks,0)}</b>`);
+ set('topCTR',x.ctr,ly,`Last year <b>${percent(ly)}</b>`);
+ set('topCPA',x.cpa,dp.cpa,`Plan <b>${money(dp.cpa,2)}</b>`,true);
+ set('topCVR',x.cvr,dp.cvr,`Plan <b>${percent(dp.cvr)}</b>`);
+}
 function renderMtd(d){
  const m=d.mtd||{};
  const x=d.latest||{};
@@ -5955,6 +5996,16 @@ function renderMtd(d){
  }
  setProgress('mtdRoasBar',roasAch);
 
+ 
+ const rows=d.dayPlan||[],live=rows.filter(r=>r.actual),sum=(a,f)=>a.reduce((t,r)=>t+(Number(f(r))||0),0);
+ const cA=sum(live,r=>r.actual.conversions),cP=sum(rows,r=>r.plan&&r.plan.conversions),cE=sum(live,r=>r.plan&&r.plan.conversions);
+ text('mtdConv',fmt(cA,0));text('mtdConvPlan',cP?`${percent(cA/cP)} of ${fmt(cP,0)}`:'—');setProgress('mtdConvBar',cP?cA/cP:0);
+ const ct=document.getElementById('mtdConvTick');if(ct){ct.style.display=cP?'':'none';if(cP)ct.style.left=Math.min(100,cE/cP*100)+'%'}
+ const kA=sum(live,r=>r.actual.clicks),kP=sum(rows,r=>r.plan&&r.plan.clicks),kE=sum(live,r=>r.plan&&r.plan.clicks);
+ const kRow=document.getElementById('mtdClicksRow');if(kRow)kRow.style.display=kP?'':'none';
+ if(kP){const K=v=>v>=1e4?(v/1e3).toFixed(1)+'k':fmt(v,0);document.getElementById('mtdClicks').innerHTML=`Clicks <b>${K(kA)}</b> of ${K(kP)}`;
+   const e=document.getElementById('mtdClicksPct');e.textContent=`${kA>=kE?'▲':'▼'} ${Math.round(kA/kP*100)}%`;e.className=kA>=kE?'up':'dn'}
+ text('mtdDayBadge',day&&dim?`Day ${day} of ${dim}`:'');
  ['mtdSpendTick','mtdRevenueTick'].forEach(id=>{
    const t=document.getElementById(id);
    if(t){t.style.display=pace==null?'none':'';if(pace!=null)t.style.left=(pace*100)+'%';}
@@ -9418,9 +9469,9 @@ function tkLeaveHtml(){
    <div class="lp-fz"><span class="lp-im" role="img" aria-label="Moon and sheep"></span><button type="button" class="lp-ft" ${admin?'onclick="tkFreezeEdit()"':''}><b>Freeze leave for a season</b><small>${fr?'On now':'Off now'}</small></button>
    <button type="button" class="lp-tg${f.on?' on':''}" ${admin?'onclick="tkFreezeToggle(this)"':'disabled'} role="switch" aria-checked="${!!f.on}" aria-label="Freeze leave now"><i></i></button></div></div>`;
  const rows=people.map((p,i)=>{const w=tkWeeklyOf(p.email),b=w&&w.data.backup?tkPerson(w.data.backup):null, extra=tkLeaveOf(p.email).filter(l=>l.data.type!=='Weekly');
-   const wd=w?(w.data.weekdays||[]).map(d=>TK_DAYS[d]).join(', '):'';
-   return `<button type="button" class="lp-p" style="--i:${i}" ${admin?`onclick="tkNewLeave('${esc(p.email)}')"`:''}>${tkAv(p)}<div class="lp-pn"><b>${esc(p.name)}</b>
-     <span>${w?`Off every <u>${esc(wd)}</u> · ${b?'backup '+esc(b.name.split(' ')[0]):'no backup'}`:'No weekly day off'}</span>
+   const wd=w?(w.data.weekdays||[]).map(d=>TK_DAYS_L[d]).join(', '):'';
+   return `<button type="button" class="lp-p" style="--i:${i}" ${admin?`onclick="tkNewLeave('${esc(p.email)}')"`:''}>${tkAv(p)}<div class="lp-pn"><div class="lp-nm"><b>${esc(p.name)}</b>${p.role?roleBadge(p.role):''}</div>
+     <span>${w?`Off every <u>${esc(wd)}</u> · ${b?`backup <strong class="lp-bk">${esc(b.name.split(' ')[0])}</strong>`:'no backup'}`:'No weekly day off'}</span>
      ${extra.length?`<div class="lp-ex">${extra.map(l=>{const t=TK_LEAVE_TYPES.find(x=>x[0]===l.data.type)||TK_LEAVE_TYPES[1];return `<span>${t[1]} ${(l.data.days||[]).join(', ')}</span>`}).join('')}</div>`:''}</div>${admin?'<em>›</em>':''}</button>`}).join('');
  return card+(people.length?rows:'<div class="tk-empty"><b>No one yet</b></div>');
 }
@@ -9763,7 +9814,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v140',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v141',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
