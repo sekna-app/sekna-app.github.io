@@ -6,9 +6,10 @@ const crypto = require('crypto');
 const { defineSecret } = require('firebase-functions/params');
 const { request, PROJECT_ID } = require('./google');
 
-const GMAIL_PASSWORD = defineSecret('GMAIL_APP_PASSWORD');
-// Set by the deploy workflow only when the password exists, so the server can be deployed without it.
+// Set by the deploy workflow only when the password exists, so the server can be deployed without it
+// (declaring a secret makes the deploy look for it in Google Secret Manager).
 const MAIL_ON_DEPLOY = process.env.SEKNA_MAIL === '1';
+const GMAIL_PASSWORD = MAIL_ON_DEPLOY ? defineSecret('GMAIL_APP_PASSWORD') : null;
 const SENDER = { email: 'seknaapp@gmail.com', name: 'SEKNA' };
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzjgZ1nXxLTcFdeFCIEznOj2H0XCo9YGUeu1YF2pJdsQiOo_aM-Mn6HxKKNk8peEuM1Ig/exec';
 const MEDIA_TOPIC = 'media-plan-updates';
