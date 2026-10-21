@@ -4481,6 +4481,9 @@ window.addEventListener('load',function(){
     body.dark-mode .ox-strip{background:linear-gradient(135deg,#1a1f27,#232933);box-shadow:inset 0 0 0 1px #2c333e}body.dark-mode .ox-sr b,body.dark-mode .ox-cl b{color:#fff}body.dark-mode .ox-strip .ox-bar{background:#313844}
     .lp-nm{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.lp-nm .rb{font-size:8.5px;padding:2px 7px 2px 6px}.lp-nm .rb i{font-size:5.5px}
     .lp-bk{color:#10141b;font-weight:900}body.dark-mode .lp-bk{color:#fff}
+    .rb svg{width:10px;height:10px;fill:currentColor}
+    .tk-nm{display:flex;align-items:center;gap:8px;min-width:0}.tk-nm b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tk-nm .rb{margin:0!important;flex:none;font-size:9px;padding:2px 8px 2px 6px}
+    .lp-rk{flex:none;margin-left:auto;align-self:center}.lp-rk .rb{font-size:9px;padding:2px 8px 2px 6px}
 </style>
 </head>
 <body>
@@ -9318,7 +9321,7 @@ function tkRange(month,w){const to=w===4?tkDim(month):w*7;return `${(w-1)*7+1}�
 function tkShift(month,n){const d=new Date(+month.slice(0,4),+month.slice(5,7)-1+n,1);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
 function tkCanManage(){const p=ACCESS_PROFILE||{};let mem=p.member;if(!mem){try{mem=JSON.parse(storeGet('sekna_member')||'null')}catch(e){}}return !!(p.isAdmin||(mem&&TK_MANAGER_ROLES.includes(mem.role)))}
 function tkMe(){return ((TK.data&&TK.data.me&&TK.data.me.email)||(ACCESS_PROFILE&&ACCESS_PROFILE.email)||'').toLowerCase()}
-function tkPeople(){return (TK.data&&TK.data.people)||[]}
+function tkPeople(){return ((TK.data&&TK.data.people)||[]).slice().sort((a,b)=>roleTier(b.role)-roleTier(a.role)||String(a.name).localeCompare(String(b.name)))}
 function tkPerson(email){return tkPeople().find(p=>p.email===email)||{email,name:String(email||'').split('@')[0],role:'',avatar:0}}
 function tkAv(p){return `<span class="tk-av">${emblemHtml(p.avatar)||esc((String(p.name||'S').charAt(0)||'S').toUpperCase())}</span>`}
 const TK_VIEWS={team:['Team Board','The whole team, week by week'],mine:['My Tasks','What you need to do'],build:['Task Builder','Plan the month for the team'],quick:['Quick Requests','Small asks with a deadline'],leave:['Team Leave','Days off and backups']};
@@ -9402,7 +9405,7 @@ function tkTeamHtml(){
    const pct=ts.length?n/ts.length:0;
    const isOpen=(TK.tOpen||{})[p.email]!==undefined?TK.tOpen[p.email]:p.email===me, sn=ts.reduce((a,t)=>a+((t.data&&t.data.snaps)||[]).length,0);
    const accs=['usa','ar'].filter(a=>ts.some(t=>tkAccs(t.data).includes(a)));
-   return `<div class="tk-person tk-card${isOpen?' open':''}" style="--i:${i}"><button type="button" class="tk-ph" onclick="tkTOpen('${esc(p.email)}')">${tkAv(p)}<div class="tk-pn"><b>${esc(p.name)}</b>${p.role?roleBadge(p.role):''}
+   return `<div class="tk-person tk-card${isOpen?' open':''}" style="--i:${i}"><button type="button" class="tk-ph" onclick="tkTOpen('${esc(p.email)}')">${tkAv(p)}<div class="tk-pn"><div class="tk-nm"><b>${esc(p.name)}</b>${p.role?roleBadge(p.role):''}</div>
        <div class="tk-sumc">${tkOffToday(p.email)?`<span class="tk-tag off">🌴 Off today${tkOffToday(p.email).data.backup?' · backup '+esc(tkPerson(tkOffToday(p.email).data.backup).name.split(' ')[0]):''}</span>`:''}<span class="tk-tag">${ts.length} task${ts.length>1?'s':''}</span>${sn?`<span class="tk-tag snap">${TK_CAM}${sn}</span>`:''}${tkAccTxt(accs)}${open?`<span class="tk-tag q">⚡ ${open}</span>`:''}</div></div>
      <div class="tk-ring" style="--p:${(pct*100).toFixed(0)}"><span>${n}/${ts.length}</span></div><span class="tk-cv">›</span></button>
      ${isOpen?`<div class="tk-pd">${ts.map(t=>tkTaskRow(t,w,t.email===me||mgr)).join('')}${tkPersonQuick(p.email)}</div>`:''}</div>`;
@@ -9470,9 +9473,9 @@ function tkLeaveHtml(){
    <button type="button" class="lp-tg${f.on?' on':''}" ${admin?'onclick="tkFreezeToggle(this)"':'disabled'} role="switch" aria-checked="${!!f.on}" aria-label="Freeze leave now"><i></i></button></div></div>`;
  const rows=people.map((p,i)=>{const w=tkWeeklyOf(p.email),b=w&&w.data.backup?tkPerson(w.data.backup):null, extra=tkLeaveOf(p.email).filter(l=>l.data.type!=='Weekly');
    const wd=w?(w.data.weekdays||[]).map(d=>TK_DAYS_L[d]).join(', '):'';
-   return `<button type="button" class="lp-p" style="--i:${i}" ${admin?`onclick="tkNewLeave('${esc(p.email)}')"`:''}>${tkAv(p)}<div class="lp-pn"><div class="lp-nm"><b>${esc(p.name)}</b>${p.role?roleBadge(p.role):''}</div>
+   return `<button type="button" class="lp-p" style="--i:${i}" ${admin?`onclick="tkNewLeave('${esc(p.email)}')"`:''}>${tkAv(p)}<div class="lp-pn"><b>${esc(p.name)}</b>
      <span>${w?`Off every <u>${esc(wd)}</u> · ${b?`backup <strong class="lp-bk">${esc(b.name.split(' ')[0])}</strong>`:'no backup'}`:'No weekly day off'}</span>
-     ${extra.length?`<div class="lp-ex">${extra.map(l=>{const t=TK_LEAVE_TYPES.find(x=>x[0]===l.data.type)||TK_LEAVE_TYPES[1];return `<span>${t[1]} ${(l.data.days||[]).join(', ')}</span>`}).join('')}</div>`:''}</div>${admin?'<em>›</em>':''}</button>`}).join('');
+     ${extra.length?`<div class="lp-ex">${extra.map(l=>{const t=TK_LEAVE_TYPES.find(x=>x[0]===l.data.type)||TK_LEAVE_TYPES[1];return `<span>${t[1]} ${(l.data.days||[]).join(', ')}</span>`}).join('')}</div>`:''}</div>${p.role?`<span class="lp-rk">${roleBadge(p.role)}</span>`:''}${admin?'<em>›</em>':''}</button>`}).join('');
  return card+(people.length?rows:'<div class="tk-empty"><b>No one yet</b></div>');
 }
 async function tkFreezeToggle(btn){
@@ -9597,8 +9600,8 @@ function tkBuildHtml(){
  const sum=`<div class="b4-sum"><small>${esc(tkMonthName(TK.month,true).toUpperCase())} · WEEK ${w} · ${esc(tkRange(TK.month,w))}</small>
    <div class="b4-k"><div><b>${ts.length}</b><span>tasks</span></div><div><b>${Object.keys(by).length}</b><span>people</span></div><div><b>${snapN(ts)}</b><span>snapshots</span></div></div>
    <div class="b4-sw">${[1,2,3,4].map(x=>`<span class="${sent[x]?'ok':''}${x===w?' cur':''}">W${x} ${sent[x]?'✓ sent':x===w?'not sent':''}</span>`).join('')}</div></div>`;
- const rows=Object.keys(by).map((e,i)=>{const p=tkPerson(e),list=by[e],open=TK.bOpen===e,n=snapN(list);
-   return `<div class="b4-row${open?' open':''}" style="--i:${i}"><button type="button" class="b4-h" onclick="tkBOpen('${esc(e)}')">${tkAv(p)}<div class="b4-n"><b>${esc(p.name)}</b><div class="b4-c"><span class="tk-tag">${list.length} task${list.length>1?'s':''}</span>${n?`<span class="tk-tag snap">${TK_CAM}${n}</span>`:''}${tkAccTxt(accOf(list))}</div></div><span class="b4-cv">›</span></button>
+ const rows=Object.keys(by).sort((a,b)=>roleTier(tkPerson(b).role)-roleTier(tkPerson(a).role)||tkPerson(a).name.localeCompare(tkPerson(b).name)).map((e,i)=>{const p=tkPerson(e),list=by[e],open=TK.bOpen===e,n=snapN(list);
+   return `<div class="b4-row${open?' open':''}" style="--i:${i}"><button type="button" class="b4-h" onclick="tkBOpen('${esc(e)}')">${tkAv(p)}<div class="b4-n"><div class="tk-nm"><b>${esc(p.name)}</b>${p.role?roleBadge(p.role):''}</div><div class="b4-c"><span class="tk-tag">${list.length} task${list.length>1?'s':''}</span>${n?`<span class="tk-tag snap">${TK_CAM}${n}</span>`:''}${tkAccTxt(accOf(list))}</div></div><span class="b4-cv">›</span></button>
      ${open?`<div class="b4-d">${list.map(t=>`<div class="b4-t"><div class="b4-tt"><b>${esc(t.title)}</b><button type="button" class="tk-ed" onclick="tkEdit('${t.id}')" aria-label="Edit">✎</button></div>
        <div class="tk-tags">${tkAccTxt(tkAccs(t.data))}${(t.data.platforms||[]).map(x=>`<span class="tk-tag ${x}">${x==='google'?'Google':'Microsoft'}</span>`).join('')}${t.weeks.length===4?'<span class="tk-tag all">All weeks</span>':`<span class="tk-tag">W${t.weeks.join(', W')}</span>`}</div>
        ${tkSnaps(t)}${t.data&&t.data.msg?`<div class="tk-msg">💬 ${esc(t.data.msg)}</div>`:''}</div>`).join('')}</div>`:''}</div>`}).join('');
@@ -9814,7 +9817,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v141',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v142',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
@@ -9916,9 +9919,11 @@ async function checkForUpdates(){
 const ROLES=['Media Buyer','Senior Media Buyer','Team Leader','Media Manager','Head of Media'];
 const ROLE_IC='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/></svg>';
 function roleTier(r){return ROLES.indexOf(r)+1}
+const ROLE_STAR='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z"/></svg>';
 function roleBadge(r){
  const t=roleTier(r);if(!t)return '';
- return `<span class="rb rb${t}">${t>=4?ROLE_IC:''}<i>${'◆'.repeat(t)}</i>${esc(r)}</span>`;
+ 
+ return `<span class="rb rb${t}">${t===5?ROLE_IC:ROLE_STAR}${esc(r)}</span>`;
 }
 
 const AVATARS=["<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav0\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav0)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M28 64l-4-26 14 12 12-18 12 18 14-12-4 26z\"/><path d=\"M28 72h44\"/></g></svg>", "<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav1\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav1)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M50 24l7.6 16.4 18 2-13.4 12.2 3.8 17.8L50 63.6 34 72.4l3.8-17.8L24.4 42.4l18-2z\"/></g></svg>", "<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav2\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav2)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M32 30h36l10 14-28 30-28-30z\"/><path d=\"M22 44h56M42 30l8 44 8-44\"/></g></svg>", "<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav3\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav3)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M50 22c12 8 16 24 12 38H38c-4-14 0-30 12-38z\"/><circle cx=\"50\" cy=\"40\" r=\"5\"/><path d=\"M38 60l-8 10 10-2M62 60l8 10-10-2M46 66l4 10 4-10\"/></g></svg>", "<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav4\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav4)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"50\" cy=\"50\" r=\"24\"/><circle cx=\"50\" cy=\"50\" r=\"14\"/><circle cx=\"50\" cy=\"50\" r=\"4\" fill=\"#f3d79f\"/></g></svg>", "<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav5\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav5)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M40 64h20M42 72h16M50 22a18 18 0 0 0-10 33c2 2 2 5 2 9h16c0-4 0-7 2-9a18 18 0 0 0-10-33z\"/></g></svg>", "<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav6\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav6)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"50\" cy=\"50\" r=\"26\"/><path d=\"M58 42l-6 14-10 2 6-14z\"/></g></svg>", "<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav7\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav7)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M50 22l24 9v17c0 16-10 26-24 32-14-6-24-16-24-32V31z\"/><path d=\"M40 50l7 7 14-14\"/></g></svg>", "<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav8\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav8)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M26 74h48M32 66V50M44 66V38M56 66V46M68 66V28\"/></g></svg>", "<svg viewBox=\"0 0 100 100\"><defs><radialGradient id=\"skav9\" cx=\"30%\" cy=\"25%\" r=\"85%\"><stop offset=\"0\" stop-color=\"#5d86ff\"/><stop offset=\".55\" stop-color=\"#203c8e\"/><stop offset=\"1\" stop-color=\"#0c1c55\"/></radialGradient></defs><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"url(#skav9)\"/><g fill=\"none\" stroke=\"#f3d79f\" stroke-width=\"3.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M36 26h28v14a14 14 0 0 1-28 0zM36 32H26a10 10 0 0 0 12 12M64 32h10a10 10 0 0 1-12 12M50 54v10M40 72h20l-2-8H42z\"/></g></svg>"];
