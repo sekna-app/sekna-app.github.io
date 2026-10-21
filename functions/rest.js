@@ -257,6 +257,12 @@ async function serverSwitchEmail(who, reason) {
 }
 
 /* ---------- new day, due team message, new app version (runs with keepWarm, every 2 minutes) ---------- */
+/** The last day each account was announced for (dates only), for /diag/push. */
+async function pushState() {
+  const st = (await fsGet(DOC.push)) || {};
+  return { days: Object.fromEntries(Object.entries(st.days || {}).map(([k, v]) => [k, v && v.date])), releaseTag: st.releaseTag || '' };
+}
+
 async function pushChecks(latestByAccount) {
   if (!(await moved())) return { skipped: true };
   const out = {};
@@ -300,8 +306,8 @@ async function pushChecks(latestByAccount) {
     if (prev && prev.date === snap.date) continue;
     if (prev && !maintenance) {
       const label = snap.monthName && snap.dayNumber ? snap.monthName + ' ' + snap.dayNumber : snap.date;
-      await notify.send({ topics: [{ title: key === 'ar' ? 'Media Plan AR' : 'Media Plan USA', body: 'New data for ' + label + ' is now available.', snapshot: snap, account: key, eventType: 'new_day' }] });
-      out[key] = snap.date;
+      const sent = await notify.send({ topics: [{ title: key === 'ar' ? 'Media Plan AR' : 'Media Plan USA', body: 'New data for ' + label + ' is now available.', snapshot: snap, account: key, eventType: 'new_day' }] });
+      out[key] = { date: snap.date, sent };
     }
     save.days = Object.assign({}, state.days || {}, save.days || {}, { [key]: snap });
   }
@@ -363,4 +369,4 @@ async function call(fn, args) {
 }
 const FNS = Object.keys(R).concat(['adminRestMove', 'adminRestMoveStatus']);
 
-module.exports = { call, FNS, pushChecks, serverSwitchEmail, moved };
+module.exports = { call, FNS, pushChecks, pushState, serverSwitchEmail, moved };

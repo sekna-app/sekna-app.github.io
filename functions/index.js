@@ -215,7 +215,10 @@ exports.api = onRequest({
     }
     // New day / team message / app version notifications (after the rest moved here).
     let pushed = null;
-    try { pushed = await rest.pushChecks(latest); } catch (e) { console.error('Push checks: ' + errorText(e)); }
+    try { pushed = await rest.pushChecks(latest); } catch (e) { pushed = { error: errorText(e) }; console.error('Push checks: ' + errorText(e)); }
+    // Kept for /diag/push: the latest day seen per account, and what the check did with it.
+    stats.lastPush = { at: Date.now(), seen: Object.fromEntries(Object.entries(latest).map(([k, v]) => [k, v && v.date])), pushed };
+    if (pushed && Object.keys(pushed).some(k => k !== 'skipped' && k !== 'error')) stats.lastPushSent = stats.lastPush;
     res.json({ ok: true, warmed: done, pushed });
     return;
   }
@@ -227,6 +230,9 @@ exports.api = onRequest({
         data: { validate_only: true, message: { topic: 'sekna-diag', data: { title: 'check' } } } });
       out.fcm = r && r.name ? 'ok' : 'unexpected';
     } catch (e) { out.fcm = String((e.response && e.response.status) || '') + ' ' + errorText(e).slice(0, 160); }
+    out.lastCheck = stats.lastPush || null;
+    out.lastSent = stats.lastPushSent || null;
+    try { const st = await rest.pushState(); out.stored = st; } catch (e) { out.stored = errorText(e); }
     res.json({ ok: true, result: out });
     return;
   }
