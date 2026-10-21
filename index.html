@@ -4490,6 +4490,28 @@ window.addEventListener('load',function(){
     .lys-m.lose{background:rgba(229,72,77,.12);border-color:#e5484d}
     .tk-wa{margin-left:auto;flex:none;width:42px;height:42px;border:0;border-radius:24%;display:block;cursor:pointer;background:none;padding:0}
     .tk-wa[hidden]{display:none}.tk-wa img{width:42px;height:42px;border-radius:24%;display:block;box-shadow:0 0 14px rgba(243,215,159,.55),0 4px 10px rgba(12,26,70,.25)}.tk-wa svg{width:26px;height:26px}.tk-wa:disabled{opacity:.6}
+    .rs-m3{padding:4px 24px}.rs-m3 .r{display:grid;grid-template-columns:1.1fr 1fr 1fr 110px;align-items:center;padding:12px 0;border-top:1px solid #eef0f5;font-size:22px;color:#1d2433}.rs-m3 .r:first-child{border-top:0}
+    .rs-m3 .h{font-size:13px;font-weight:900;letter-spacing:.1em;color:#8a92a6}.rs-m3 .h .b{color:#a8701c}.rs-m3 .h span:last-child{text-align:right}
+    .rs-m3 .l{font-size:16px;font-weight:900;color:#6b7385}.rs-m3 b{font-weight:900}.rs-m3 b.w{color:#10141b}.rs-m3 b.lo{color:#a9afbd;font-weight:700}
+    .rs-m3 em{justify-self:end;font-style:normal;white-space:nowrap;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:900;background:#eef0f5;color:#6b7385}.rs-m3 em.good{background:#dff5ea;color:#13804f}.rs-m3 em.bad{background:#fde3e1;color:#c2382f}
+    .rs-hero{display:flex;align-items:center;gap:26px;padding:22px 26px;color:#1d2433}.rs-hero small{display:block;font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#6b7385}.rs-hero>div>b{display:block;font-size:56px;font-weight:900;letter-spacing:-.02em;line-height:1.05;margin-top:4px}
+    .rs-hs{margin-left:auto;display:grid;grid-template-columns:repeat(3,auto);gap:26px}.rs-hs b{display:block;font-size:26px;font-weight:900;margin-top:4px}
+    .rs-mg{display:grid;grid-template-columns:1fr 1fr;gap:10px}.rs-mg>div{background:#fff;color:#1d2433;border-radius:16px;padding:13px 18px;display:flex;align-items:center;justify-content:space-between}.rs-mg span{font-size:16px;font-weight:800;color:#6b7385}.rs-mg b{font-size:21px;font-weight:900}
+    .tks-report{width:1080px!important}
+    .t2{color:#fff}.t2h{display:flex;align-items:center}.t2h small{font-size:15px;font-weight:900;letter-spacing:.14em;color:#f3d79f}.t2h b{display:block;font:400 44px "DM Serif Display",Georgia,serif;margin-top:2px}.t2h>span{margin-left:auto;font-size:38px;font-weight:900}
+    .t2s{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}.t2s div{background:rgba(255,255,255,.1);border-radius:18px;padding:13px 18px}.t2s b{display:block;font-size:32px;font-weight:900}.t2s span{font-size:15px;font-weight:800;color:#c9d3f5}
+    .t2s .y{background:rgba(255,210,63,.16);box-shadow:inset 0 0 0 2px rgba(255,210,63,.5)}.t2s .y b{color:#ffd23f}
+    .t2g{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px;align-items:start}.t2c{background:#fff;color:#1d2433;border-radius:22px;padding:16px 18px}
+    .t2p{display:flex;align-items:center;gap:12px}.t2p .tk-av{width:48px;height:48px;font-size:18px;flex:none}.t2p b{font-size:19px;font-weight:900}.t2p small{display:block;font-size:13px;font-weight:800;color:#8a92a6}
+    .t2lv{display:inline-block;margin-top:9px;font-size:13px;font-weight:900;color:#8a5a12;background:#fff1c7;border-radius:999px;padding:4px 10px}
+    .t2t{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:11px;padding-top:10px;border-top:1px solid #eef0f5}.t2t b{font-size:15.5px;font-weight:900}.t2t small{display:block;font-size:12.5px;font-weight:600;color:#6b7385;margin-top:2px}
+    .t2w{display:flex;gap:4px;flex:none}.t2w i{font-style:normal;width:32px;height:24px;border-radius:7px;background:#eef1f7;color:#a3abbd;font-size:11.5px;font-weight:900;display:grid;place-items:center}.t2w i.on{background:#203c8e;color:#fff}
+    .t2d{flex:none;font-size:12px;font-weight:900;color:#203c8e;background:#e9eefc;border-radius:999px;padding:4px 9px}
+    .t2n{margin-top:12px;font-size:14px;color:#c9d3f5;font-weight:700}
+    .tk-tag.cov{background:#fff1c7;color:#8a5a12}
+    .tk-covr{margin:8px 0;padding:2px 10px 10px;border:2px solid #f5c84c;border-radius:16px;background:#fffaeb}.tk-covr .tk-task{border:0!important;background:none}
+    .tk-from{display:inline-flex;font-size:11.5px;font-weight:900;color:#8a5a12;background:#ffe9a8;border-radius:999px;padding:3px 9px;margin-left:34px}
+    body.dark-mode .tk-covr{background:#2a2414;border-color:#8a6a1f}
 </style>
 </head>
 <body>
@@ -9078,17 +9100,16 @@ function oneMonthShareHtml(){
  const c=rsMonthCtx(), sel=periodSel(), L=periodLabel(sel,c.hist);
  const S=periodStats(sel,c.hist,c.ex,c.d); if(!S.days)return '';
  const U=periodBaseline(sel,c.hist,c.ex,c.d,S.days), rows=reportRows(S,U,c.avg);
- const by=k=>rows.find(r=>r.m.k===k);
- const cc={spend:'navy',conversions:'blue',value:'green',roas:'gold'};
- const cards=`<div class="rs-kg">${['spend','conversions','value','roas'].map(k=>{const r=by(k);return r?rsCard(cc[k],r.m.l,r.m.f(r.v,c.avg),rsChip(r.delta)):''}).join('')}</div>`;
+ const by=k=>rows.find(r=>r.m.k===k), v=by('value');
  const rest=rows.filter(r=>!['spend','conversions','value','roas'].includes(r.m.k));
  const list=channelList(S,c.avg), all=S.spend?S.value/S.spend:0;
- const months=sel.kind==='days'?[...new Set(sel.days.map(k=>k.slice(0,7)))]:sel.months;
+ 
  return `${rsHead('Report · '+L.title+mxTypeTag())}
-  ${rsT(esc(L.title),esc(L.sub))}${cards}<div class="rs-note">${c.avg?'Per day · ':''}Changes are against a usual month${S.partial?` · still running (${S.days} days)`:''}</div>
-  <div class="rp-box rs-list">${rest.map(r=>`<div><span>${esc(r.m.l)}</span><b>${r.m.f(r.v,c.avg)}</b><em class="${r.cls}">${rsChip(r.delta)}</em></div>`).join('')}</div>
+  ${rsT(esc(L.title),esc(S.partial?`${S.days} days so far`:L.sub)+(c.avg?' · per day':''))}
+  <div class="rp-box rs-hero"><div><small>${esc(v?v.m.l:'Revenue')}</small><b>${v?v.m.f(v.v,c.avg):'—'}</b></div>
+   <div class="rs-hs">${['spend','conversions','roas'].map(k=>{const r=by(k);return r?`<div><small>${esc(r.m.l)}</small><b>${r.m.f(r.v,c.avg)}</b></div>`:''}).join('')}</div></div>
+  ${rest.length?rsT('More numbers')+`<div class="rs-mg">${rest.map(r=>`<div><span>${esc(r.m.l)}</span><b>${r.m.f(r.v,c.avg)}</b></div>`).join('')}</div>`:''}
   ${list.length?rsT('By channel','spend · ROAS')+rsChannelBars(list,all):''}
-  ${rsT('Revenue, last 14 months')}${rsTrend(c,months,[])}
   ${SHARE_FOOT}`;
 }
 function compareShareHtml(){
@@ -9109,8 +9130,8 @@ function compareShareHtml(){
  return `${rsHead(`Month vs Month · ${monthName(aKey)} vs ${monthName(bKey)}${mxTypeTag()}`)}
   <div class="rs-two"><div class="a"><small>Month</small><b>${esc(an)}</b><span>${esc(ha.hijri)}${ha.partial?` · ${A.days} days so far`:' · full month'}</span></div><div class="b"><small>Compared with</small><b>${esc(bn)}</b><span>${esc(hb.hijri)}${hb.partial?` · ${B.days} days so far`:' · full month'}</span></div></div>
   <div class="rs-score"><b>${Math.max(wa,wb)}/${wa+wb}</b><div><strong>${esc(lead)}</strong><span>${partial&&!c.avg?`${esc(monthName(partial.key,true))} is still running (${partial.days} days) — totals favour the full month`:c.avg?'Per day averages':'Full-month totals'}</span></div></div>
-  ${rsT('Head to head')}<div class="rp-box rs-h2h"><div class="rs-vs hd"><b class="a">${esc(monthName(aKey).toUpperCase())}</b><span></span><b class="b">${esc(monthName(bKey).toUpperCase())}</b></div>
-  ${rows.map(r=>{const good=r.m.better==='none'?'':(r.m.better==='high'?r.delta>=0:r.delta<=0)?'good':'bad';return `<div class="rs-vs"><b class="${r.w==='a'?'win a':r.w==='b'?'lose':''}">${r.w==='a'?'👑 ':''}${r.m.f(r.a,c.avg)}</b><span><small>${esc(r.m.l)}</small><em class="${good}">${rsChip(r.delta)}</em></span><b class="${r.w==='b'?'win b':r.w==='a'?'lose':''}">${r.m.f(r.b,c.avg)}${r.w==='b'?' 👑':''}</b></div>`}).join('')}</div>
+  ${rsT('Head to head')}<div class="rp-box rs-m3"><div class="r h"><span>METRIC</span><span>${esc(capMon(aKey).toUpperCase())}</span><span class="b">${esc(capMon(bKey).toUpperCase())}</span><span>CHANGE</span></div>
+  ${rows.map(r=>{const good=r.m.better==='none'?'':(r.m.better==='high'?r.delta>=0:r.delta<=0)?'good':'bad';return `<div class="r"><span class="l">${esc(r.m.l)}</span><b class="${r.w==='a'?'w':r.w==='b'?'lo':''}">${r.w==='a'?'👑 ':''}${r.m.f(r.a,c.avg)}</b><b class="${r.w==='b'?'w':r.w==='a'?'lo':''}">${r.w==='b'?'👑 ':''}${r.m.f(r.b,c.avg)}</b><em class="${good}">${rsChip(r.delta)}</em></div>`}).join('')}</div>
   ${chans}${SHARE_FOOT}`;
 }
 
@@ -9414,17 +9435,20 @@ function tkToggleToday(){TK.today=!TK.today;if(TK.today&&TK.month!==tkMonthNow()
 function tkTeamHtml(){
  const w=TK.week, me=tkMe(), mgr=tkCanManage();
  const pick=e=>tkTasksFor(e,w).filter(t=>!TK.today||tkIsToday(t));
- const people=tkPeople().filter(p=>pick(p.email).length);
+ 
+ const live=TK.month===tkMonthNow()&&w===tkWeekOf(tkToday().d);
+ const cover=e=>live?tkPeople().filter(q=>{const o=tkOffToday(q.email);return o&&o.data&&o.data.backup===e}).map(q=>({q,ts:tkTasksFor(q.email,w).filter(tkIsToday)})).filter(x=>x.ts.length):[];
+ const people=tkPeople().filter(p=>pick(p.email).length||cover(p.email).length);
  if(!people.length)return `<div class="tk-empty"><b>No tasks for week ${w} yet</b><small>${mgr?'Add them in the Builder.':'Your team leader will add them soon.'}</small></div>`;
  return people.map((p,i)=>{
-   const ts=pick(p.email), n=ts.filter(t=>t.done&&t.done[w]).length, open=(TK.data.quick||[]).filter(q=>q.email===p.email&&!(q.done&&q.done.at)).length;
+   const ts=pick(p.email), cov=cover(p.email), covN=cov.reduce((a,x)=>a+x.ts.length,0), n=ts.filter(t=>t.done&&t.done[w]).length, open=(TK.data.quick||[]).filter(q=>q.email===p.email&&!(q.done&&q.done.at)).length;
    const pct=ts.length?n/ts.length:0;
    const isOpen=(TK.tOpen||{})[p.email]!==undefined?TK.tOpen[p.email]:p.email===me, sn=ts.reduce((a,t)=>a+((t.data&&t.data.snaps)||[]).length,0);
    const accs=['usa','ar'].filter(a=>ts.some(t=>tkAccs(t.data).includes(a)));
    return `<div class="tk-person tk-card${isOpen?' open':''}" style="--i:${i}"><button type="button" class="tk-ph" onclick="tkTOpen('${esc(p.email)}')">${tkAv(p)}<div class="tk-pn"><b>${esc(p.name)}</b>
-       <div class="tk-sumc">${tkOffToday(p.email)?`<span class="tk-tag off">🌴 Off today${tkOffToday(p.email).data.backup?' · backup '+esc(tkPerson(tkOffToday(p.email).data.backup).name.split(' ')[0]):''}</span>`:''}<span class="tk-tag">${ts.length} task${ts.length>1?'s':''}</span>${sn?`<span class="tk-tag snap">${TK_CAM}${sn}</span>`:''}${tkAccTxt(accs)}${open?`<span class="tk-tag q">⚡ ${open}</span>`:''}</div></div>
+       <div class="tk-sumc">${tkOffToday(p.email)?`<span class="tk-tag off">🌴 Off today${tkOffToday(p.email).data.backup?' · backup '+esc(tkPerson(tkOffToday(p.email).data.backup).name.split(' ')[0]):''}</span>`:''}<span class="tk-tag">${ts.length} task${ts.length===1?'':'s'}</span>${covN?`<span class="tk-tag cov">↪ +${covN} from ${cov.map(x=>esc(x.q.name.split(' ')[0])).join(', ')}</span>`:''}${sn?`<span class="tk-tag snap">${TK_CAM}${sn}</span>`:''}${tkAccTxt(accs)}${open?`<span class="tk-tag q">⚡ ${open}</span>`:''}</div></div>
      <div class="tk-ring" style="--p:${(pct*100).toFixed(0)}"><span>${n}/${ts.length}</span></div><span class="tk-cv">›</span></button>
-     ${isOpen?`<div class="tk-pd">${ts.map(t=>tkTaskRow(t,w,t.email===me||mgr)).join('')}${tkPersonQuick(p.email)}</div>`:''}</div>`;
+     ${isOpen?`<div class="tk-pd">${ts.map(t=>tkTaskRow(t,w,t.email===me||mgr)).join('')}${cov.map(x=>x.ts.map(t=>`<div class="tk-covr">${tkTaskRow(t,w,t.email===me||mgr||p.email===me)}<span class="tk-from">🌴 ${esc(x.q.name.split(' ')[0])} is off · yours today</span></div>`).join('')).join('')}${tkPersonQuick(p.email)}</div>`:''}</div>`;
  }).join('');
 }
 function tkPersonQuick(email){
@@ -9784,12 +9808,27 @@ async function tkSendWeek(w,btn){
  catch(err){btn.disabled=false;showSettingsToast(errorText(err))}
 }
 
+function tkShareStats(){
+ const ts=(TK.data&&TK.data.tasks)||[], ppl=new Set(ts.map(t=>t.email));
+ return {people:ppl.size,tasks:ts.length,snaps:ts.reduce((a,t)=>a+((t.data&&t.data.snaps)||[]).length,0),off:tkPeople().filter(p=>tkWeeklyOf(p.email)).length};
+}
+function tkShareCaption(){
+ const x=tkShareStats(), m=capMon(TK.month);
+ return [`📌 Team Tasks — ${m} ⚙️`,'',`👥 ${x.people} ${x.people===1?'person':'people'} · 📋 ${x.tasks} task${x.tasks===1?'':'s'} · 📸 ${x.snaps} snapshot${x.snaps===1?'':'s'}`,'🌴 On a day off, tasks move to the backup'].join('\n');
+}
+
 function tkShareHtml(){
- const people=tkPeople().filter(p=>[1,2,3,4].some(w=>tkTasksFor(p.email,w).length));
- const cell=(p,w)=>{const ts=tkTasksFor(p.email,w);return ts.length?ts.map(t=>`<div class="tks-t${t.done&&t.done[w]?' d':''}"><b>${t.done&&t.done[w]?'✓ ':''}${esc(t.title)}</b>${(t.data.snaps||[]).length?`<small>${t.data.snaps.map(s=>esc(s.n)+(s.t?' '+esc(s.t):'')).join(' · ')}</small>`:''}</div>`).join(''):'<div class="tks-e">—</div>'};
- return `<div class="tks"><div class="tks-h"><div><small>SEKNA · TEAM TASKS</small><b>${esc(tkMonthName(TK.month))}</b></div><span>Times are Egypt time</span></div>
-   <div class="tks-g" style="grid-template-columns:150px repeat(4,1fr)"><div></div>${[1,2,3,4].map(w=>`<div class="tks-wh">Week ${w}<small>${esc(tkRange(TK.month,w))}</small></div>`).join('')}
-   ${people.map(p=>`<div class="tks-p">${tkAv(p)}<b>${esc(p.name)}</b></div>${[1,2,3,4].map(w=>`<div class="tks-c">${cell(p,w)}</div>`).join('')}`).join('')}</div></div>`;
+ const people=tkPeople().filter(p=>[1,2,3,4].some(w=>tkTasksFor(p.email,w).length)), x=tkShareStats();
+ const list=e=>((TK.data&&TK.data.tasks)||[]).filter(t=>t.email===e);
+ const card=p=>{const w=tkWeeklyOf(p.email),b=w&&w.data.backup?tkPerson(w.data.backup):null;
+   return `<div class="t2c"><div class="t2p">${tkAv(p)}<div><b>${esc(p.name)}</b>${p.role?`<small>${esc(p.role)}</small>`:''}</div></div>
+    ${w?`<span class="t2lv">🌴 Off every ${esc((w.data.weekdays||[]).map(d=>TK_DAYS_L[d]).join(', '))}${b?` · ${esc(b.name.split(' ')[0])} covers`:''}</span>`:''}
+    ${list(p.email).map(t=>`<div class="t2t"><div><b>${esc(t.title)}</b>${(t.data.snaps||[]).length?`<small>${t.data.snaps.map(s=>esc(s.n)+(s.t?' '+esc(s.t):'')).join(' · ')}</small>`:''}</div>
+      ${(t.data.days||[]).length?`<span class="t2d">Day ${t.data.days.join(', ')}</span>`:`<span class="t2w">${[1,2,3,4].map(n=>`<i class="${t.weeks.includes(n)?'on':''}">W${n}</i>`).join('')}</span>`}</div>`).join('')}</div>`};
+ return `<div class="t2"><div class="t2h"><div><small>SEKNA · TEAM TASKS</small><b>${esc(tkMonthName(TK.month))}</b></div><span>SEKNA</span></div>
+  <div class="t2s"><div><b>${x.people}</b><span>people</span></div><div><b>${x.tasks}</b><span>tasks</span></div><div><b>${x.snaps}</b><span>snapshots</span></div><div class="y"><b>${x.off}</b><span>weekly days off</span></div></div>
+  <div class="t2g">${people.map(card).join('')}</div>
+  <div class="t2n">Times are Egypt time</div>${SHARE_FOOT}</div>`;
 }
 async function tkShare(btn){
  if(!TK.data||!TK.data.tasks.length)return showSettingsToast('No tasks to share yet');
@@ -9797,9 +9836,10 @@ async function tkShare(btn){
  try{
    const canvas=await captureReport(tkShareHtml(),'tks-report');
    const filename=`SEKNA-Team-Tasks-${TK.month}.png`;
-   if(window.AndroidShare&&typeof window.AndroidShare.shareImage==='function'){window.AndroidShare.shareImage(canvas.toDataURL('image/png'),'',filename);return}
+   const cap=tkShareCaption();copyTextQuietly(cap);
+   if(window.AndroidShare&&typeof window.AndroidShare.shareImage==='function'){window.AndroidShare.shareImage(canvas.toDataURL('image/png'),cap,filename);return}
    const blob=await canvasToBlob(canvas), file=new File([blob],filename,{type:'image/png'});
-   if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){try{await navigator.share({title:'Team Tasks',files:[file]});return}catch(e){if(e&&e.name==='AbortError')return}}
+   if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){try{await navigator.share({title:'Team Tasks',text:cap,files:[file]});return}catch(e){if(e&&e.name==='AbortError')return}}
    downloadShareImage(blob,filename);showSettingsToast('Image saved — share it on WhatsApp');
  }catch(err){showSettingsToast(errorText(err))}
  finally{btn.disabled=false}
@@ -9854,7 +9894,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v149',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v150',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
