@@ -57,4 +57,6 @@ async function assertAdmin(token) {
   return a;
 }
 
-module.exports = { assertAccess, assertAdmin };
+function isAdminEmail(email) { return ACCESS.ADMIN_EMAILS.indexOf(String(email || '').toLowerCase()) >= 0; }
+
+module.exports = { assertAccess, assertAdmin, accessRows, isAdminEmail };

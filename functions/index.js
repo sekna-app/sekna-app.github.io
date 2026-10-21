@@ -8,6 +8,7 @@ const { buildDashboardData, getMonthCompareData, normalizeAccountKey_ } = requir
 const { assertAccess, assertAdmin } = require('./access');
 const { fsGet, fsSet, fsAppend, fsList, fsClearList, request, PROJECT_ID } = require('./google');
 const { archiveStatus, archiveMove } = require('./archive');
+const tasks = require('./tasks');
 
 const VERSION = 'server-1';
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzjgZ1nXxLTcFdeFCIEznOj2H0XCo9YGUeu1YF2pJdsQiOo_aM-Mn6HxKKNk8peEuM1Ig/exec';
@@ -72,6 +73,8 @@ const CALLS = {
     return result;
   }
 };
+// Team Tasks, days off and members (tasks.js): Apps Script answers until the admin moves them.
+tasks.FNS.forEach(fn => { CALLS[fn] = args => tasks.call(fn, args); });
 
 /* ---------- Switch log (Firestore) ---------- */
 
@@ -166,7 +169,7 @@ exports.api = onRequest({
   cpu: 1,
   concurrency: 20,
   minInstances: 0,
-  maxInstances: 2,
+  maxInstances: 5,
   timeoutSeconds: 120,
   invoker: 'public'
 }, async (req, res) => {
@@ -293,4 +296,19 @@ exports.keepWarm = onSchedule({
 }, async () => {
   const res = await fetch(API_URL + '/warm', { method: 'POST', body: '{}', headers: { 'Content-Type': 'text/plain' } });
   if (!res.ok) throw new Error('Warm-up answered ' + res.status);
+});
+
+/* ---------- 9 AM Cairo: a push to everyone who is a backup today ----------
+ * Only after Team Tasks moved here; until then Apps Script sends it. */
+exports.leaveMorningPush = onSchedule({
+  schedule: '0 9 * * *',
+  timeZone: 'Africa/Cairo',
+  region: 'europe-west2',
+  serviceAccount: SERVER_ACCOUNT,
+  memory: '256MiB',
+  maxInstances: 1,
+  retryCount: 0
+}, async () => {
+  const r = await tasks.morningPush();
+  console.log('Backup pushes: ' + JSON.stringify(r));
 });

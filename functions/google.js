@@ -116,8 +116,33 @@ async function fsClearList(path) {
   await request(`${FS}/${path}`, { method: 'PATCH', data: { fields: { items: { arrayValue: { values: [] } } } } });
 }
 
+/**
+ * Read-change-write of one JSON document that never loses a change made at the same moment:
+ * the write only goes through if the document is still the version that was read, else it retries.
+ */
+async function fsUpdate(path, change) {
+  for (let attempt = 0; attempt < 6; attempt++) {
+    let doc = null;
+    try { doc = await request(`${FS}/${path}`); } catch (err) { if (!(err && err.response && err.response.status === 404)) throw err; }
+    const f = doc && doc.fields && doc.fields.json;
+    const before = f && f.stringValue ? JSON.parse(f.stringValue) : null;
+    const out = await change(before);
+    if (out === undefined) return before;
+    const pre = doc ? `currentDocument.updateTime=${encodeURIComponent(doc.updateTime)}` : 'currentDocument.exists=false';
+    try {
+      await request(`${FS}/${path}?${pre}`, { method: 'PATCH', data: { fields: { json: { stringValue: JSON.stringify(out) } } } });
+      return out;
+    } catch (err) {
+      const st = err && err.response && err.response.status;
+      if (st !== 400 && st !== 409 && st !== 412) throw err;
+      await new Promise(r => setTimeout(r, 80 + Math.random() * 200));
+    }
+  }
+  throw new Error('Someone else is saving at the same time. Please try again.');
+}
+
 /** Forgets the cached tab list, so the next read sees a sheet's new size. */
 function forgetMeta(ssId) { delete metaCache[ssId]; }
 
-module.exports = { PROJECT_ID, request, sheetMeta, batchGet, a1, fsGet, fsSet, fsAppend, fsList, fsClearList,
+module.exports = { PROJECT_ID, request, sheetMeta, batchGet, a1, fsGet, fsSet, fsUpdate, fsAppend, fsList, fsClearList,
   valuesUpdate, valuesClear, sheetsBatchUpdate, forgetMeta };
