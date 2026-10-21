@@ -10,6 +10,8 @@ const { fsGet, fsSet, fsAppend, fsList, fsClearList, request, PROJECT_ID } = req
 const { archiveStatus, archiveMove } = require('./archive');
 const tasks = require('./tasks');
 const accounts = require('./accounts');
+const rest = require('./rest');
+const notify = require('./notify');
 
 const VERSION = 'server-1';
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzjgZ1nXxLTcFdeFCIEznOj2H0XCo9YGUeu1YF2pJdsQiOo_aM-Mn6HxKKNk8peEuM1Ig/exec';
@@ -18,7 +20,7 @@ const ORIGINS = ['https://sekna-app.web.app', 'https://sekna-app.firebaseapp.com
 // The keep-warm job rebuilds the data every 2 minutes, so people get it ready-made;
 // Refresh in the app (forceFresh) still reads the sheets on the spot.
 const DASH_CACHE_MS = 150 * 1000;
-const WARM_ACCOUNTS = ['usa'];
+const WARM_ACCOUNTS = ['usa', 'ar'];
 const API_URL = 'https://europe-west2-human-appeal-media-plan.cloudfunctions.net/api';
 let lastWarm = 0;
 const MONTHS_CACHE_MS = 30 * 60 * 1000;
@@ -79,6 +81,8 @@ const CALLS = {
 tasks.FNS.forEach(fn => { CALLS[fn] = args => tasks.call(fn, args); });
 // Sign-in, approvals, devices and app state (accounts.js): Apps Script answers until the admin moves them.
 accounts.FNS.forEach(fn => { CALLS[fn] = args => accounts.call(fn, args); });
+// Usage, shares, ideas, plan history, monthly report, web notifications (rest.js): same rule.
+rest.FNS.forEach(fn => { CALLS[fn] = args => rest.call(fn, args); });
 
 /* ---------- Switch log (Firestore) ---------- */
 
@@ -91,7 +95,10 @@ async function logEvent(b) {
   await fsAppend(EVENTS, { at: Date.now(), name: who.name || '', email: who.email || '',
     server: backup ? 'Backup (Apps Script)' : 'Firebase', reason, device: String(b.device || '').slice(0, 120), id: Math.random().toString(36).slice(2, 10) });
   // Apps Script sends the email (at most one every 3 hours); the log itself stays here.
-  if (backup) await appsScriptCall('notifyServerSwitch', [b.token, reason]).catch(() => {});
+  if (backup) {
+    if (await rest.moved()) await rest.serverSwitchEmail(who, reason).catch(() => {});
+    else await appsScriptCall('notifyServerSwitch', [b.token, reason]).catch(() => {});
+  }
 }
 
 function body(req) {
@@ -168,6 +175,8 @@ async function parity(token, account) {
 
 exports.api = onRequest({
   region: 'europe-west2',
+  // The Gmail App Password, only once it has been added (the deploy workflow says so).
+  ...(notify.MAIL_ON_DEPLOY ? { secrets: [notify.GMAIL_PASSWORD] } : {}),
   serviceAccount: SERVER_ACCOUNT,
   memory: '512MiB',
   cpu: 1,
@@ -194,13 +203,16 @@ exports.api = onRequest({
     // Called by keepWarm. At most once a minute; it only refreshes the shared data.
     if (Date.now() - lastWarm < 60 * 1000) { res.json({ ok: true, skipped: true }); return; }
     lastWarm = Date.now();
-    const done = [];
+    const done = [], latest = {};
     for (const key of WARM_ACCOUNTS) {
-      try { await cached('dash:' + key, DASH_CACHE_MS, true, () => buildDashboardData(key)); done.push(key); }
+      try { const d = await cached('dash:' + key, DASH_CACHE_MS, true, () => buildDashboardData(key)); done.push(key); latest[key] = d && d.latest; }
       catch (e) { stats.errors++; stats.lastError = errorText(e); stats.lastErrorAt = Date.now(); }
       try { await cached('months:' + key, MONTHS_CACHE_MS, false, () => getMonthCompareData(key)); } catch (e) {}
     }
-    res.json({ ok: true, warmed: done });
+    // New day / team message / app version notifications (after the rest moved here).
+    let pushed = null;
+    try { pushed = await rest.pushChecks(latest); } catch (e) { console.error('Push checks: ' + errorText(e)); }
+    res.json({ ok: true, warmed: done, pushed });
     return;
   }
   if (route === '/diag/push') {
@@ -229,7 +241,9 @@ exports.api = onRequest({
       if (!Object.prototype.hasOwnProperty.call(CALLS, fn)) { res.json({ ok: false, error: 'Unknown request.', fallback: true }); return; }
       const result = await CALLS[fn](Array.isArray(b.args) ? b.args.slice(0, 6) : []);
       stats.served++;
-      res.json({ ok: true, result, server: VERSION });
+      // Which parts already live here, so the app never falls back to an out-of-date copy.
+      const moved = await Promise.all([tasks.moved(), accounts.accessMovedFlag(), rest.moved()]).catch(() => null);
+      res.json({ ok: true, result, server: VERSION, moved: moved ? { tasks: moved[0], access: moved[1], rest: moved[2] } : null });
       return;
     }
     if (route === '/event') {

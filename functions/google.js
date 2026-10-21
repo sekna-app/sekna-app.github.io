@@ -13,7 +13,7 @@ const auth = new GoogleAuth({
 
 async function request(url, opts = {}) {
   const client = await auth.getClient();
-  const res = await client.request({ url, method: opts.method || 'GET', data: opts.data, timeout: opts.timeout || 25000 });
+  const res = await client.request({ url, method: opts.method || 'GET', data: opts.data, headers: opts.headers, timeout: opts.timeout || 25000 });
   return res.data;
 }
 
@@ -118,6 +118,11 @@ async function fsList(path) {
   }
 }
 
+/** Writes a whole list document at once (used when copying old logs over). */
+async function fsSetList(path, list) {
+  await request(`${FS}/${path}`, { method: 'PATCH', data: { fields: { items: { arrayValue: { values: list.map(o => ({ stringValue: JSON.stringify(o) })) } } } } });
+}
+
 async function fsClearList(path) {
   await request(`${FS}/${path}`, { method: 'PATCH', data: { fields: { items: { arrayValue: { values: [] } } } } });
 }
@@ -150,5 +155,5 @@ async function fsUpdate(path, change) {
 /** Forgets the cached tab list, so the next read sees a sheet's new size. */
 function forgetMeta(ssId) { delete metaCache[ssId]; }
 
-module.exports = { PROJECT_ID, request, sheetMeta, batchGet, a1, fsGet, fsSet, fsUpdate, fsAppend, fsList, fsClearList,
+module.exports = { PROJECT_ID, request, sheetMeta, batchGet, a1, fsGet, fsSet, fsUpdate, fsAppend, fsList, fsSetList, fsClearList,
   valuesUpdate, valuesUpdateTyped, valuesClear, sheetsBatchUpdate, forgetMeta };

@@ -415,4 +415,4 @@ async function maintenanceBlocks(email) {
   return !!(await appState()).maintenance.on;
 }
 
-module.exports = { call, FNS, reviewPage, maintenanceBlocks, serialToMs, sheetDate, isoLocal };
+module.exports = { accessMovedFlag: accessMoved, call, FNS, reviewPage, maintenanceBlocks, serialToMs, sheetDate, isoLocal };

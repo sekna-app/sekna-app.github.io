@@ -35,6 +35,7 @@ jobs:
         shell: bash
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
         run: |
           if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
             echo "::error::The FIREBASE_SERVICE_ACCOUNT secret is not set."
@@ -43,8 +44,36 @@ jobs:
           # The key only lives in a temporary file for this step and is never printed.
           printf '%s' "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/deploy-key.json"
           export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/deploy-key.json"
+          # The Gmail App Password (optional): kept in Google Secret Manager for the server, never printed.
+          # Without it the server deploys as before and its emails go out through Apps Script.
+          if [ -n "$GMAIL_APP_PASSWORD" ]; then
+            pw=$(printf '%s' "$GMAIL_APP_PASSWORD" | tr -d ' \n\r')
+            echo "::add-mask::$pw"
+            current=$(npx --yes firebase-tools@14.27.0 functions:secrets:access GMAIL_APP_PASSWORD --project human-appeal-media-plan 2>/dev/null || true)
+            if [ "$current" = "$pw" ]; then
+              export SEKNA_MAIL=1
+            elif printf '%s' "$pw" | npx --yes firebase-tools@14.27.0 functions:secrets:set GMAIL_APP_PASSWORD --data-file=- --project human-appeal-media-plan --non-interactive --force >/dev/null; then
+              export SEKNA_MAIL=1
+            else
+              echo "::warning::Could not save the Gmail App Password in Secret Manager; emails keep going through Apps Script."
+            fi
+            unset pw current
+          fi
           # --force also sets the clean-up policy that deletes old builds (stays in the free storage).
           npx --yes firebase-tools@14.27.0 deploy --only functions --project human-appeal-media-plan --non-interactive --force
+
+      - name: Remove old password versions
+        if: success()
+        shell: bash
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+        run: |
+          # Keeps Secret Manager inside its free versions: only the password in use stays.
+          if [ -n "$GMAIL_APP_PASSWORD" ] && [ -f "$RUNNER_TEMP/deploy-key.json" ]; then
+            export GOOGLE_APPLICATION_CREDENTIALS="$RUNNER_TEMP/deploy-key.json"
+            npx --yes firebase-tools@14.27.0 functions:secrets:prune --project human-appeal-media-plan --force >/dev/null 2>&1 || true
+          fi
 
       - name: Remove key file
         if: always()

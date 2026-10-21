@@ -2,10 +2,13 @@
   "name": "sekna-functions",
   "private": true,
   "main": "index.js",
-  "engines": { "node": "22" },
+  "engines": {
+    "node": "22"
+  },
   "dependencies": {
     "firebase-admin": "13.6.0",
     "firebase-functions": "6.6.0",
-    "google-auth-library": "9.15.1"
+    "google-auth-library": "9.15.1",
+    "nodemailer": "6.9.16"
   }
 }

@@ -1,7 +1,6 @@
 // Team Tasks, days off and team members on the SEKNA server (Firestore), ported from Code.gs.
 // Until the admin moves the data over (adminTasksMove), every call is passed to Apps Script,
-// so nothing changes for anyone before the move. Emails and pushes still go out through
-// Apps Script (relaySend), called with this server's own Google identity, not a stored key.
+// so nothing changes for anyone before the move. Emails and pushes go out through notify.js.
 const crypto = require('crypto');
 const { fsGet, fsSet, fsUpdate, batchGet, a1 } = require('./google');
 const { assertAccess, accessRows, isAdminEmail } = require('./access');
@@ -44,18 +43,8 @@ async function appsScript(fn, args) {
   if (!j || !j.ok) throw new Error((j && j.error) || 'Apps Script did not answer.');
   return j.result;
 }
-/** This server's Google identity token; Apps Script checks it with Google before sending anything. */
-async function identityToken() {
-  const r = await fetch('http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity?audience=sekna-relay&format=full',
-    { headers: { 'Metadata-Flavor': 'Google' } });
-  if (!r.ok) throw new Error('No server identity (' + r.status + ')');
-  return r.text();
-}
-/** Emails (wrapped in the SEKNA email design by Apps Script) and pushes to one person each. */
-async function relay(payload) {
-  if (!(payload.emails || []).length && !(payload.pushes || []).length && !(payload.topics || []).length && !payload.appState) return { emails: 0, pushes: 0 };
-  return appsScript('relaySend', [await identityToken(), payload]);
-}
+/** Emails and pushes: straight from this server when it can, else through Apps Script (notify.js). */
+function relay(payload) { return require('./notify').send(payload); }
 
 /* ---------- moved yet? ---------- */
 
@@ -454,4 +443,4 @@ async function call(fn, args) {
 }
 const FNS = Object.keys(T).concat(['adminTasksMove', 'adminTasksMoveStatus']);
 
-module.exports = { call, FNS, morningPush, muscatToday, leavesToday, frozenOn, weekOf, prevMonth, appsScript, relay, teamStatusFor, members };
+module.exports = { moved, call, FNS, morningPush, muscatToday, leavesToday, frozenOn, weekOf, prevMonth, appsScript, relay, teamStatusFor, members };
