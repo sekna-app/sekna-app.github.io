@@ -4392,6 +4392,13 @@ window.addEventListener('load',function(){
     .lv-none{margin-top:6px;font-size:11.5px;color:#a2a9b8;font-weight:700}
     .lv-add{margin-top:8px;width:100%;border:1.5px dashed #e9cf9a;background:#fffaf0;color:#a8701c;border-radius:12px;padding:8px;font:inherit;font-size:12px;font-weight:900;cursor:pointer}
     body.dark-mode .lv-p{background:#151a22}body.dark-mode .tk-pq{background:#2a2216;border-color:#5a4520}
+
+    /* v134 · slim "Today only" switch */
+    .tk-tsw{display:inline-flex;align-items:center;gap:7px;margin:0 0 10px 2px;border:0;background:none;padding:2px 0;font:inherit;font-size:11.5px;font-weight:800;color:#6b7385;cursor:pointer}
+    .tk-tsw i{position:relative;width:28px;height:16px;border-radius:99px;background:#d6dbe6;transition:background .2s;flex:none}
+    .tk-tsw i:after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .2s}
+    .tk-tsw.on{color:#1d2433}.tk-tsw.on i{background:#22c47c}.tk-tsw.on i:after{transform:translateX(12px)}
+    .tk-tsw small{font-size:10.5px;color:#8a93a6;font-weight:700}
 </style>
 </head>
 <body>
@@ -9220,7 +9227,7 @@ async function tkLoad(){
  TK.busy=false;tkRender();
 }
 function tkMonth(n){TK.month=tkShift(TK.month,n);TK.data=null;try{const c=JSON.parse(storeGet('sekna_tasks_'+TK.month)||'null');if(c)TK.data=c}catch(e){}TK.week=TK.month===tkMonthNow()?tkWeekOf(tkToday().d):1;tkRender();tkLoad()}
-function tkSetWeek(w){TK.week=w;tkRender()}
+function tkSetWeek(w){TK.week=w;if(TK.today&&w!==tkWeekOf(tkToday().d))TK.today=false;tkRender()}
 function tkRender(){
  if(TK.form)return tkForm(true);
  const b=document.getElementById('tasksBody');if(!b)return;
@@ -9233,7 +9240,7 @@ function tkRender(){
  const month=`<div class="tk-mp"><button type="button" onclick="tkMonth(-1)" aria-label="Previous month">‹</button><b>${esc(mn.toLocaleDateString('en-GB',{month:'long'}))}<small>${mn.getFullYear()}${TK.busy?' · syncing':''}</small></b><button type="button" onclick="tkMonth(1)" aria-label="Next month">›</button></div>`;
  const weeks=`<div class="tk-weeks">${[1,2,3,4].map(w=>`<button type="button" class="${w===TK.week?'on':''}" onclick="tkSetWeek(${w})"><b>W${w}</b><small>${esc(tkRange(TK.month,w))}</small></button>`).join('')}</div>`;
  let body='';
- if(TK.view==='team')body=month+weeks+tkTeamHtml()+`<button type="button" class="tk-share" onclick="tkShare(this)">${WA_IC}Share the month on WhatsApp</button>`;
+ if(TK.view==='team')body=month+weeks+tkTodaySw()+tkTeamHtml()+`<button type="button" class="tk-share" onclick="tkShare(this)">${WA_IC}Share the month on WhatsApp</button>`;
  else if(TK.view==='mine')body=month+weeks+tkMineHtml();
  else if(TK.view==='build')body=month+tkBuildHtml();
  else if(TK.view==='leave')body=month+tkLeaveHtml();
@@ -9260,12 +9267,19 @@ function tkTaskRow(t,w,canTick){
    <button type="button" class="tk-tick" ${canTick?`onclick="tkTick('${t.id}',${w},${!done},this)"`:'disabled'} aria-label="${done?'Mark as not done':'Mark as done'}">${done?'✓':''}</button>
    <div class="tk-tb"><b>${esc(t.title)}</b><div class="tk-tags">${tkTags(t)}</div>${tkSnaps(t)}${t.data&&t.data.msg?`<div class="tk-msg">💬 ${esc(t.data.msg)}</div>`:''}</div></div>`;
 }
+
+function tkIsToday(t){const d=tkToday().d,days=(t.data&&t.data.days)||[];return TK.month===tkMonthNow()&&t.weeks.includes(tkWeekOf(d))&&(!days.length||days.includes(d))}
+function tkTodaySw(){
+ return `<button type="button" class="tk-tsw${TK.today?' on':''}" onclick="tkToggleToday()" role="switch" aria-checked="${!!TK.today}"><i></i><span>Today only</span>${TK.today?`<small>${esc(new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}))}</small>`:''}</button>`;
+}
+function tkToggleToday(){TK.today=!TK.today;if(TK.today&&TK.month!==tkMonthNow()){TK.month=tkMonthNow();TK.data=null;try{const c=JSON.parse(storeGet('sekna_tasks_'+TK.month)||'null');if(c)TK.data=c}catch(e){}tkLoad()}if(TK.today)TK.week=tkWeekOf(tkToday().d);tkRender()}
 function tkTeamHtml(){
  const w=TK.week, me=tkMe(), mgr=tkCanManage();
- const people=tkPeople().filter(p=>tkTasksFor(p.email,w).length);
+ const pick=e=>tkTasksFor(e,w).filter(t=>!TK.today||tkIsToday(t));
+ const people=tkPeople().filter(p=>pick(p.email).length);
  if(!people.length)return `<div class="tk-empty"><b>No tasks for week ${w} yet</b><small>${mgr?'Add them in the Builder.':'Your team leader will add them soon.'}</small></div>`;
  return people.map((p,i)=>{
-   const ts=tkTasksFor(p.email,w), n=ts.filter(t=>t.done&&t.done[w]).length, open=(TK.data.quick||[]).filter(q=>q.email===p.email&&!(q.done&&q.done.at)).length;
+   const ts=pick(p.email), n=ts.filter(t=>t.done&&t.done[w]).length, open=(TK.data.quick||[]).filter(q=>q.email===p.email&&!(q.done&&q.done.at)).length;
    const pct=ts.length?n/ts.length:0;
    const isOpen=(TK.tOpen||{})[p.email]!==undefined?TK.tOpen[p.email]:p.email===me, sn=ts.reduce((a,t)=>a+((t.data&&t.data.snaps)||[]).length,0);
    const accs=['usa','ar'].filter(a=>ts.some(t=>tkAccs(t.data).includes(a)));
@@ -9568,7 +9582,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v134',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v135',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
