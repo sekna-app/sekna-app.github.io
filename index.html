@@ -4486,6 +4486,10 @@ window.addEventListener('load',function(){
     .lp-rk{flex:none;margin-left:auto;align-self:flex-start;margin-top:2px}.lp-rk .rb{font-size:9px;padding:2px 8px 2px 6px}
     .tk-dlg .tk-dg button{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.05}.tk-dlg .tk-dg button small{display:block;font-size:8px;font-weight:900;color:#8a92a6;letter-spacing:.03em;margin-bottom:1px}
     .tk-dlg .tk-dg button.on small{color:#dbe4ff}.tk-dlg{margin-top:8px}
+    body.no-share-tab .topbar .top-share-btn{display:none!important}
+    .lys-m.lose{background:rgba(229,72,77,.12);border-color:#e5484d}
+    .tk-wa{margin-left:auto;flex:none;width:42px;height:42px;border:0;border-radius:24%;display:block;cursor:pointer;background:none;padding:0}
+    .tk-wa[hidden]{display:none}.tk-wa img{width:42px;height:42px;border-radius:24%;display:block;box-shadow:0 0 14px rgba(243,215,159,.55),0 4px 10px rgba(12,26,70,.25)}.tk-wa svg{width:26px;height:26px}.tk-wa:disabled{opacity:.6}
 </style>
 </head>
 <body>
@@ -4690,7 +4694,7 @@ window.addEventListener('load',function(){
 
 <div class="app-modal-overlay sk-page" id="tasksOverlay" onclick="closeTasks(event)" data-share-ui>
   <section class="app-modal sk-modal tk-page" role="dialog" aria-modal="true" aria-labelledby="tkTitle" onclick="event.stopPropagation()">
-    <div class="sk-modal-head"><div><div class="sk-kicker" id="tkKicker">TEAM TASKS</div><h2 id="tkTitle">Team Board</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeTasks()" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+    <div class="sk-modal-head"><button type="button" class="tk-wa" id="tkWa" onclick="tkShare(this)" aria-label="Share the month on WhatsApp" hidden></button><div><div class="sk-kicker" id="tkKicker">TEAM TASKS</div><h2 id="tkTitle">Team Board</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeTasks()" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
     <div id="tasksBody" class="tk-body"></div>
   </section>
 </div>
@@ -6414,7 +6418,7 @@ function lyShareHtml(){
  const {R,has,wins}=D, {A,B}=lySums(has), mName=rsMonthOf(days), n=has.length, toCome=R.filter(r=>!r.a).length;
  const vw=A.v>=B.v?'a':'b', gap=Math.abs(A.v-B.v);
  const ay=days[0].date.slice(0,4), by=String(Number(ay)-1);
- const side=(w,y,t)=>`<div class="lys-m${w?' win':''}"><span>${w?'👑':''}</span><b>${y}</b><small>${t}</small></div>`;
+ const side=(w,y,t)=>`<div class="lys-m${w?' win':' lose'}"><span>${w?'👑':''}</span><b>${y}</b><small>${t}</small></div>`;
  const tug=(l,a,b,f,hi)=>{const w=hi==null||a==null||b==null||Math.abs(a/b-1)<.005?'':(hi?a>b:a<b)?'a':'b';
    return `<div class="lys-tg"><div class="lys-tg-h"><b class="${w==='b'?'lo':''}">${f(a)}</b><small>${l}</small><b class="${w==='a'?'lo':''}">${f(b)}</b></div><div class="lys-bar"><i class="${w==='a'?'a':''}" style="width:${w==='a'?62:w?38:50}%"></i><i class="${w==='b'?'b':''}" style="width:${w==='b'?62:w?38:50}%"></i></div></div>`};
  const strip=R.map(r=>`<i class="${!r.a?'f':!r.l?'n':r.w?'w':'l'}">${r.x.dayNumber}</i>`).join('');
@@ -6433,12 +6437,12 @@ function lyShareHtml(){
 function lyShareText(d){
  const days=(d&&d.dayPlan)||[], D=lyData(days); if(!D||!D.has.length)return '';
  const a=accountMeta(d), {A,B}=lySums(D.has), ahead=A.v>=B.v;
- return [`📌 ${a.shortLabel} vs Last Year — ${rsMonthOf(days)} ⚙️`,'Same Hijri days, value decides','',
-  `👑 ${ahead?'This year':'Last year'} is ahead by ${money(Math.abs(A.v-B.v))}`,
-  `${D.wins*2>=D.has.length?'🟢':'🔴'} We beat last year on ${D.wins} of ${D.has.length} days`,
-  `💚 Value: ${money(A.v)} vs. ${money(B.v)}`,
-  `💰 Spend: ${money(A.s)} vs. ${money(B.s)}`,
-  A.r!=null&&B.r!=null?`📈 ROAS: ${fmt(A.r,2)}x vs. ${fmt(B.r,2)}x`:null].filter(x=>x!==null).join('\n');
+ return [`📌 ${a.shortLabel} vs LY — ${capMon(days[0].date.slice(0,7))} ⚙️`,'',
+  `👑 ${ahead?'This Year':'LY'} Ahead: ${capK(Math.abs(A.v-B.v),1)}`,
+  `💚 Value: ${capK(A.v,1)} vs ${capK(B.v,1)}`,
+  `💰 Spend: ${capK(A.s,1)} vs ${capK(B.s,1)}`,
+  A.r!=null&&B.r!=null?`📈 ROAS: ${fmt(A.r,2)}x vs ${fmt(B.r,2)}x`:null,
+  `${D.wins*2>=D.has.length?'🟢':'🔴'} Won: ${D.wins}/${D.has.length} Days`].filter(x=>x!==null).join('\n');
 }
 function renderDays(d){
  const body=document.getElementById('dxBody');
@@ -9111,38 +9115,41 @@ function compareShareHtml(){
 }
 
  
+
+const capK=(v,cur)=>{if(v==null||!isFinite(v))return '—';const a=Math.abs(v),p=cur?'£':'';return a>=1e6?p+(v/1e6).toFixed(2)+'M':a>=1e3?p+(v/1e3).toFixed(1)+'K':p+Math.round(v)};
+const M3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const capMon=k=>{const p=String(k||'').split('-');return p[1]?M3[+p[1]-1]+' '+p[0]:String(k||'')};
 const rsShortLabel=m=>({conversions:'Conv.',value:'Conv. Value'})[m.k]||m.l;
 const rsEm=(good)=>good==null?'⚪':good?'🟢':'🔴';
 function planShareText(d){
  const days=d.dayPlan||[]; if(!days.length)return '';
- const T=dayTotals(days).p, top=[...days].sort((x,y)=>y.plan.spend-x.plan.spend)[0], a=accountMeta(d);
- return [`📌 ${a.shortLabel} Media Plan — ${rsMonthOf(days)} ⚙️`,'',
-  `💰 Spend plan: ${money(T.spend)} (${days.length} days)`,`💚 Conv. Value plan: ${money(T.value)}`,`🎯 Conv.: ${fmt(T.conversions,0)}`,`📈 ROAS target: ${fmt(T.roas,2)}x`,
-  `📅 Biggest day: ${String(top.dayName||'').slice(0,3)} ${top.dayNumber} ${monthName(top.date.slice(0,7)).slice(0,3)} — ${money(top.plan.spend)}`].join('\n');
+ const T=dayTotals(days).p, a=accountMeta(d);
+ return [`📌 ${a.shortLabel} Media Plan - ${capMon(days[0].date.slice(0,7))} ⚙️`,'',
+  `💰 Spend: ${capK(T.spend,1)}`,`💚 Value: ${capK(T.value,1)}`,`🎯 Conv.: ${capK(T.conversions)}`].join('\n');
 }
 function resultsShareText(d){
  const days=d.dayPlan||[], live=days.filter(x=>x.actual); if(!live.length)return '';
  const {a}=dayTotals(days), tR=a.target?a.planValue/a.target:null, ac=accountMeta(d);
  const p=r=>r==null?'—':Math.round(r*1000)/10+'%';
  const by=[...live].filter(x=>x.actual.roas!=null).sort((x,y)=>y.actual.roas-x.actual.roas);
- const dn=x=>`${String(x.dayName||'').slice(0,3)} ${x.dayNumber} ${monthName(x.date.slice(0,7)).slice(0,3)}`;
+ const mon=capMon(days[0].date.slice(0,7)).split(' ')[0];
  const hit=live.filter(x=>x.plan.value&&x.actual.value>=x.plan.value).length;
- return [`📌 ${ac.shortLabel} Media Plan Results — ${live[0].dayNumber}–${live[live.length-1].dayNumber} ${rsMonthOf(days)} ⚙️`,'',
-  `📊 Month to date (${live.length} of ${days.length} days)`,
-  `${summaryAchEmoji(a.target?a.spend/a.target:null,true)} Spend: ${p(a.target?a.spend/a.target:null)} of target`,
-  `${summaryAchEmoji(a.planValue?a.value/a.planValue:null,false)} Conv. Value: ${p(a.planValue?a.value/a.planValue:null)} of plan`,
-  `${summaryAchEmoji(a.planConv?a.conversions/a.planConv:null,false)} Conv.: ${p(a.planConv?a.conversions/a.planConv:null)} of plan`,
-  `${rsEm(a.roas!=null&&tR?a.roas>=tR:null)} ROAS: ${fmt(a.roas,2)}x vs. ${fmt(tR,2)}x target`,'',
-  `✅ Days on Conv. Value plan: ${hit} of ${live.length}`,
-  by.length?`🏆 Best ROAS: ${dn(by[0])} — ${fmt(by[0].actual.roas,2)}x`:null,
-  by.length>1?`⚠️ Lowest ROAS: ${dn(by[by.length-1])} — ${fmt(by[by.length-1].actual.roas,2)}x`:null].filter(x=>x!==null).join('\n');
+ return [`📌 ${ac.shortLabel} Results — ${mon} ${live[0].dayNumber}–${live[live.length-1].dayNumber} ⚙️`,'',
+  `${summaryAchEmoji(a.target?a.spend/a.target:null,true)} Spend: ${p(a.target?a.spend/a.target:null)}`,
+  `${summaryAchEmoji(a.planValue?a.value/a.planValue:null,false)} Value: ${p(a.planValue?a.value/a.planValue:null)}`,
+  `${summaryAchEmoji(a.planConv?a.conversions/a.planConv:null,false)} Conv.: ${p(a.planConv?a.conversions/a.planConv:null)}`,
+  `${rsEm(a.roas!=null&&tR?a.roas>=tR:null)} ROAS: ${fmt(a.roas,2)}x`,'',
+  `✅ On Plan: ${hit}/${live.length} Days`,
+  by.length?`🏆 Best ROAS: ${fmt(by[0].actual.roas,2)}x — ${mon} ${by[0].dayNumber}`:null,
+  tR?`📈 ROAS: ${fmt(tR,2)}x`:null].filter(x=>x!==null).join('\n');
 }
 function oneMonthShareText(d){
  const c=rsMonthCtx(), sel=periodSel(), L=periodLabel(sel,c.hist), S=periodStats(sel,c.hist,c.ex,c.d); if(!S.days)return '';
  const U=periodBaseline(sel,c.hist,c.ex,c.d,S.days), rows=reportRows(S,U,c.avg), a=accountMeta(d);
- const line=k=>{const r=rows.find(x=>x.m.k===k);if(!r)return null;return `${r.cls==='good'?'🟢':r.cls==='bad'?'🔴':'⚪'} ${rsShortLabel(r.m)}: ${r.m.f(r.v,c.avg)}${r.delta!=null?` (${r.delta>=0?'+':'−'}${percent(Math.abs(r.delta))} vs usual)`:''}`};
- const best=channelList(S,c.avg).filter(x=>x.roas!=null).sort((x,y)=>y.roas-x.roas)[0];
- return [`📌 ${a.shortLabel} Report — ${L.title} ⚙️`,`${L.sub}${c.avg?' · per day':''}${mxTypeTag()}`,'',line('spend'),line('conversions'),line('value'),line('roas'),best?`\n🏆 Best channel: ${best.short} — ${fmt(best.roas,2)}x`:null].filter(x=>x!==null).join('\n');
+ const short=t=>String(t).replace(/\b(January|February|March|April|May|June|July|August|September|October|November|December|Sept)\b/g,m=>m.slice(0,3));
+ const val=(k,v)=>k==='roas'?fmt(v,2)+'x':c.avg?null:capK(v,k==='spend'||k==='value');
+ const line=(k,l)=>{const r=rows.find(x=>x.m.k===k);if(!r)return null;return `${r.cls==='good'?'🟢':r.cls==='bad'?'🔴':'🟡'} ${l}: ${val(k,r.v)||r.m.f(r.v,c.avg)}`};
+ return [`📌 ${a.shortLabel} Report — ${short(L.title)} ⚙️`,'',line('spend','Spend'),line('conversions','Conv.'),line('value','Value'),line('roas','ROAS')].filter(x=>x!==null).join('\n');
 }
 function compareShareText(d){
  const c=rsMonthCtx(), aKey=document.getElementById('mxA').value, bKey=document.getElementById('mxB').value;
@@ -9152,11 +9159,16 @@ function compareShareText(d){
  const lines=CMP_METRICS().map(m=>{const x=mxVal(A,m,c.avg),y=mxVal(B,m,c.avg);if(x==null||y==null)return null;const dl=y?x/y-1:null;
    let w='';if(m.better!=='none'&&Math.abs(dl||0)>=.005){w=(m.better==='high'?x>y:x<y)?'a':'b';w==='a'?wa+=mxPts(m.k):wb+=mxPts(m.k)}
    return {m,x,y,dl,w}}).filter(Boolean);
- const pick=['spend','value','conversions','roas'].map(k=>lines.find(l=>l.m.k===k)).filter(Boolean);
- const an=monthName(aKey), bn=monthName(bKey);
- return [`📌 ${ac.shortLabel} Month vs Month ⚙️`,`${monthName(aKey,true)} vs. ${monthName(bKey,true)}${c.avg?' · per day':''}${mxTypeTag()}`,'',
-  wa===wb?`⚖️ Even on points (${wa}–${wb}) — ${lines.find(l=>l.m.k==='value')&&lines.find(l=>l.m.k==='value').w==='a'?an:bn} wins on revenue`:`🏆 ${wa>wb?an:bn} wins ${Math.max(wa,wb)}–${Math.min(wa,wb)} on points`,'',
-  ...pick.map(l=>`${l.w==='a'?'🟢':l.w==='b'?'🔴':'⚪'} ${rsShortLabel(l.m)}: ${l.m.f(l.x,c.avg)} vs. ${l.m.f(l.y,c.avg)} (${l.dl>=0?'+':'−'}${percent(Math.abs(l.dl))})`)].join('\n');
+ const get=k=>lines.find(l=>l.m.k===k);
+ const sa=capMon(aKey).split(' '), sb=capMon(bKey).split(' ');
+ const title=sa[1]===sb[1]?`${sa[0]} vs ${sb[0]} ${sa[1]}`:`${sa.join(' ')} vs ${sb.join(' ')}`;
+ const v=get('value'), win=wa===wb?(v&&v.w==='b'?bKey:aKey):(wa>wb?aKey:bKey);
+ const f=(l,cur)=>l?(c.avg?`${l.m.f(l.x,1)} vs ${l.m.f(l.y,1)}`:`${capK(l.x,cur)} vs ${capK(l.y,cur)}`):null;
+ const r=get('roas');
+ return [`📌 ${ac.shortLabel} MoM — ${title} ⚙️`,'',
+  `🏆 Winner: ${monthName(win,true)}`,
+  v?`💚 Value: ${f(v,1)}`:null, get('conversions')?`🎯 Conv.: ${f(get('conversions'),0)}`:null,
+  r?`📈 ROAS: ${fmt(r.x,2)}x vs ${fmt(r.y,2)}x`:null, get('spend')?`💰 Spend: ${f(get('spend'),1)}`:null].filter(x=>x!==null).join('\n');
 }
 
 
@@ -9352,10 +9364,12 @@ async function tkLoad(){
 }
 function tkMonth(n){TK.month=tkShift(TK.month,n);TK.data=null;try{const c=JSON.parse(storeGet('sekna_tasks_'+TK.month)||'null');if(c)TK.data=c}catch(e){}TK.week=TK.month===tkMonthNow()?tkWeekOf(tkToday().d):1;tkRender();tkLoad()}
 function tkSetWeek(w){TK.week=w;if(TK.today&&w!==tkWeekOf(tkToday().d))TK.today=false;tkRender()}
+
+function tkWaShow(on){const w=document.getElementById('tkWa');if(!w)return;if(on&&!w.firstChild){const ic=document.querySelector('.top-share-btn .wa-ic');w.innerHTML=ic?ic.outerHTML:WA_IC}w.hidden=!on}
 function tkRender(){
  if(TK.form)return tkForm(true);
  const b=document.getElementById('tasksBody');if(!b)return;
- tkSetTitle(TK_VIEWS[TK.view][0]);
+ tkSetTitle(TK_VIEWS[TK.view][0]);tkWaShow(TK.view==='build'&&tkCanManage());
  const tabs=`<div class="tk-views">${Object.keys(TK_VIEWS).map(k=>`<button type="button" class="${k===TK.view?'on':''}" onclick="TK.view='${k}';${k==='mine'?'tkSeenNotice();':''}tkRender()">${TK_VIEWS[k][0].replace('Quick Requests','Quick').replace('Team Leave','Leave').replace('Task Builder','Builder').replace('Team Board','Team')}${k==='build'&&!tkCanManage()?' 🔒':''}${k==='mine'&&tkNoticeNew()?'<i class="tk-dot"></i>':''}</button>`).join('')}</div>`;
  if(TK.view==='build'&&!tkCanManage()){b.innerHTML=tabs+tkLockedHtml();return}
  const d=TK.data;
@@ -9364,7 +9378,7 @@ function tkRender(){
  const month=`<div class="tk-mp"><button type="button" onclick="tkMonth(-1)" aria-label="Previous month">‹</button><b>${esc(mn.toLocaleDateString('en-GB',{month:'long'}))}<small>${mn.getFullYear()}${TK.busy?' · syncing':''}</small></b><button type="button" onclick="tkMonth(1)" aria-label="Next month">›</button></div>`;
  const weeks=`<div class="tk-weeks">${[1,2,3,4].map(w=>`<button type="button" class="${w===TK.week?'on':''}" onclick="tkSetWeek(${w})"><b>W${w}</b><small>${esc(tkRange(TK.month,w))}</small></button>`).join('')}</div>`;
  let body='';
- if(TK.view==='team')body=month+weeks+tkTodaySw()+tkTeamHtml()+(tkCanManage()?`<button type="button" class="tk-share" onclick="tkShare(this)">${WA_IC}Share the month on WhatsApp</button>`:'');
+ if(TK.view==='team')body=month+weeks+tkTodaySw()+tkTeamHtml();
  else if(TK.view==='mine')body=month+weeks+tkMineHtml();
  else if(TK.view==='build')body=month+tkBuildHtml();
  else if(TK.view==='leave')body=month+tkLeaveHtml();
@@ -9630,8 +9644,7 @@ function tkBuildHtml(){
        ${tkSnaps(t)}${t.data&&t.data.msg?`<div class="tk-msg">💬 ${esc(t.data.msg)}</div>`:''}</div>`).join('')}</div>`:''}</div>`}).join('');
  const empty=ts.length?'':`<div class="tk-empty"><b>No tasks for week ${w} yet</b><small>Add the first one below.</small></div>`;
  return `${copy}${weeks}${sum}${rows}${empty}
-   <div class="b4-act"><button type="button" class="tk-add" onclick="tkNew(${w})">＋ Add task</button><button type="button" class="tk-send${sent[w]?' sent':''}" onclick="tkSendWeek(${w},this)" ${ts.length?'':'disabled'}>${sent[w]?`✓ Sent ${new Date(sent[w]).toLocaleDateString('en-GB',{day:'numeric',month:'short'})} · Send again`:`✉ Send week ${w}`}</button></div>
-   <button type="button" class="tk-share" onclick="tkShare(this)">${WA_IC}Share the month on WhatsApp</button>`;
+   <div class="b4-act"><button type="button" class="tk-add" onclick="tkNew(${w})">＋ Add task</button><button type="button" class="tk-send${sent[w]?' sent':''}" onclick="tkSendWeek(${w},this)" ${ts.length?'':'disabled'}>${sent[w]?`✓ Sent ${new Date(sent[w]).toLocaleDateString('en-GB',{day:'numeric',month:'short'})} · Send again`:`✉ Send week ${w}`}</button></div>`;
 }
 function tkLockedHtml(){
  return `<div class="tk-lock"><div class="tk-lk"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path class="sh" d="M8 11V8a4 4 0 0 1 8 0v3"/><circle cx="12" cy="16" r="1.4"/></svg></div>
@@ -9697,6 +9710,7 @@ function tkDlPicker(f){
 }
 function tkFormRead(){const f=TK.form;if(!f)return;const g=id=>document.getElementById(id);if(g('tkfTitle'))f.title=g('tkfTitle').value;if(g('tkfMsg'))f.data.msg=g('tkfMsg').value;if(g('tkSnapOwn'))f._own=g('tkSnapOwn').value}
 function tkForm(keep,stay){
+ tkWaShow(false);
  if(keep||stay)tkFormRead();
  const sc=document.querySelector('#tasksOverlay .app-modal'), top=(keep||stay)&&sc?sc.scrollTop:0;
  const f=TK.form, q=f.kind==='quick', bad=k=>(TK.bad||[]).includes(k)&&(k==='title'?!String(f.title||'').trim():!f[k]);
@@ -9840,7 +9854,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v148',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v149',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
