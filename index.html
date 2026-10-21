@@ -99,7 +99,13 @@ window.addEventListener('load',function(){
     // tk: once this device has seen them on the server, never fall back to the old sheet.
     tasksLoad:{w:25000,t:0,tk:1},taskSave:{w:25000,t:0,tk:1},taskDelete:{w:25000,t:0,tk:1},taskDone:{w:25000,t:0,tk:1},
     tasksCopyMonth:{w:30000,t:0,tk:1},tasksSendWeek:{w:90000,t:0,tk:1},leaveFreezeSet:{w:25000,t:0,tk:1},
-    adminSetMember:{w:25000,t:0,tk:1},teamStatus:{w:15000,t:0,tk:1},adminTasksMove:{w:120000,t:0,tk:2},adminTasksMoveStatus:{w:15000,t:0,tk:2}
+    adminSetMember:{w:25000,t:0,tk:1},teamStatus:{w:15000,t:0,tk:1},adminTasksMove:{w:120000,t:0,tk:2},adminTasksMoveStatus:{w:15000,t:0,tk:2},
+    // Sign-in, devices and app state: same rule, with their own "moved" mark.
+    accessRequestCode:{w:30000,tk:1,k:'sekna_access_fb'},accessVerifyCode:{w:30000,tk:1,k:'sekna_access_fb'},accessStatus:{w:20000,tk:1,k:'sekna_access_fb'},
+    accessSignOut:{w:20000,tk:1,k:'sekna_access_fb'},adminOverview:{w:30000,tk:1,k:'sekna_access_fb'},adminSetStatus:{w:30000,tk:1,k:'sekna_access_fb'},
+    adminInvite:{w:30000,tk:1,k:'sekna_access_fb'},adminDelete:{w:30000,tk:1,k:'sekna_access_fb'},adminGetAppState:{w:20000,tk:1,k:'sekna_access_fb'},
+    adminSetMaintenance:{w:30000,tk:1,k:'sekna_access_fb'},adminPublishAnnouncement:{w:45000,tk:1,k:'sekna_access_fb'},adminClearAnnouncement:{w:30000,tk:1,k:'sekna_access_fb'},
+    adminClearRecent:{w:20000,tk:1,k:'sekna_access_fb'},adminAccessMove:{w:120000,tk:2},adminAccessMoveStatus:{w:15000,tk:2}
    };
    var SRV=window.SEKNA_SERVER={primary:FB_PRIMARY,mode:'appsscript',since:0,reason:'',hold:0,ms:0};
    function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
@@ -149,8 +155,12 @@ window.addEventListener('load',function(){
     var f=FB_FNS[name];
     // Team Tasks: the server first; the old sheet only if the server cannot be reached before the move.
     if(f&&f.tk&&load('sekna_fb_device')!=='appsscript'){
-     return fbPost('/call',{fn:name,args:args},f.w).then(function(r){if(r&&r.store==='firebase')save('sekna_tasks_fb','1');return r},function(e){
-      if(f.tk===2||!e.net||load('sekna_tasks_fb')==='1')throw e;
+     var mk=f.k||'sekna_tasks_fb';
+     return fbPost('/call',{fn:name,args:args},f.w).then(function(r){
+      if(r&&r.store==='firebase')save('sekna_tasks_fb','1');
+      if(r&&r.dashboard&&r.dashboard.version==='server')save('sekna_access_fb','1');
+      return r},function(e){
+      if(f.tk===2||!e.net||load(mk)==='1')throw e;
       return asCall(name,args);
      });
     }
@@ -9913,7 +9923,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v151',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v152',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
@@ -10484,7 +10494,7 @@ function srvLoad(){
  });
  if(!fb){SRV_ADMIN.status={error:'Open SEKNA from the app or sekna-app.web.app to see the Firebase server.'};return}
  fb.post('/status',{token:getAccessToken()},20000).then(r=>{SRV_ADMIN.status=r;rerender()}).catch(err=>{SRV_ADMIN.status={error:errorText(err)};rerender()});
- srvTasksLoad();
+ srvTasksLoad();srvAccessLoad();
 }
 function srvDevice(v){
  if(!window.SEKNA_FB)return;
@@ -10509,6 +10519,22 @@ async function srvTasksMove(btn){
    TK.data=null;showSettingsToast('Team Tasks moved');}
  catch(err){if(btn){btn.disabled=false;btn.textContent='Move Team Tasks now'}tellSekna(errorText(err))}
  if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
+}
+
+function srvAccessLoad(){serverCall('adminAccessMoveStatus',getAccessToken()).then(r=>{SRV_ADMIN.access=r||{mode:'appsscript'};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{SRV_ADMIN.access={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
+async function srvAccessMove(btn){
+ if(!await askSekna({title:'Move sign-in?',text:'Every device, approval, invite, maintenance setting and team message is copied to the SEKNA server, and sign-in works from there. Nobody has to sign in again. Do it once, when nobody is signing in.',ok:'Move now',tone:'info',icon:'mail'}))return;
+ if(btn){btn.disabled=true;btn.textContent='Moving…'}
+ try{const r=await serverCall('adminAccessMove',getAccessToken());SRV_ADMIN.access={mode:'firebase',at:Date.now(),counts:r};try{localStorage.setItem('sekna_access_fb','1')}catch(e){}showSettingsToast('Sign-in moved')}
+ catch(err){if(btn){btn.disabled=false;btn.textContent='Move sign-in now'}tellSekna(errorText(err))}
+ if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
+}
+function srvAccessHtml(){
+ const t=SRV_ADMIN.access;
+ if(!t)return '<small>Loading…</small>';
+ if(t.error)return `<small>${esc(t.error)}</small>`;
+ if(t.mode==='firebase'){const c=t.counts||{};return `<div class="srv-res"><div class="ok">✅ On the SEKNA server since ${esc(srvAgo(t.at))}<code>${fmt(c.rows||0)} devices · ${fmt(c.approved||0)} approved · ${fmt(c.people||0)} people</code></div></div>`}
+ return `<small>Still on the Apps Script sheet.</small><button type="button" class="srv-btn" onclick="srvAccessMove(this)">Move sign-in now</button>`;
 }
 function srvTasksHtml(){
  const t=SRV_ADMIN.tasks;
@@ -10566,6 +10592,7 @@ function adminServerHtml(){
   ${n.cls==='backup'?'<button type="button" class="srv-btn" onclick="srvRetry()">Try Firebase again</button>':''}
   <div class="srv-box"><b>This month's cost</b><small>Limit $3 · at the limit Firebase stops and SEKNA keeps working on Apps Script.</small>${cost}</div>
   <div class="srv-box"><b>Firebase server</b><small>Europe (London)</small>${health}</div>
+  <div class="srv-box"><b>Sign-in</b><small>Devices, approvals, invites, maintenance and the team message.</small>${srvAccessHtml()}</div>
   <div class="srv-box"><b>Team Tasks</b><small>Tasks, days off, backups, positions and avatars.</small>${srvTasksHtml()}</div>
   <div class="srv-box"><b>Same numbers?</b><small>Reads ${esc(CURRENT_ACCOUNT.toUpperCase())} on both servers and compares every figure.</small>
     <button type="button" class="srv-btn soft" onclick="srvParity()" ${SRV_ADMIN.busy||!fb?'disabled':''}>Compare with Apps Script</button>${parity}</div>
