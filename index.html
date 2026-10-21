@@ -9507,7 +9507,7 @@ function tkLeaveForm(f,sc,top,still){
  const b=document.getElementById('tasksBody');if(!b)return;
  if(f.kind==='freeze')return tkFreezeForm(f,sc,top,still);
  const weekly=f.data.type==='Weekly';
- const ppl=(sel,js,skip)=>tkPeople().filter(p=>p.email!==skip).map(p=>`<button type="button" class="${sel===p.email?'on':''}" onclick="${js}('${esc(p.email)}')">${tkAv(p)}<span>${esc(p.name.split(' ')[0])}</span></button>`).join('');
+ const ppl=(sel,js,skip)=>tkPeople().filter(p=>p.email!==skip).map(p=>`<button type="button" class="${sel===p.email?'on':''}" onclick="${js}'${esc(p.email)}')">${tkAv(p)}<span>${esc(p.name.split(' ')[0])}</span></button>`).join('');
  tkSetTitle(weekly?(f.id?'Edit day off':'Add day off'):(f.data.type==='Sick'?'Sick days':'Other days'));
  b.classList.toggle('tk-still',!!still);TK.lastKey='';
  const who=`<div class="tq-who" style="margin-top:0"><div class="tq-q">Who is off?</div><div class="tq-ppl">${ppl(f.email,"tkF('email',")}</div></div>`;
@@ -9817,7 +9817,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v143',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v144',date:'2026-11-04'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
