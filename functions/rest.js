@@ -272,7 +272,10 @@ async function serverSwitchEmail(who, reason) {
 /** The last day each account was announced for (dates only), for /diag/push. */
 async function pushState() {
   const st = (await fsGet(DOC.push)) || {};
-  return { days: Object.fromEntries(Object.entries(st.days || {}).map(([k, v]) => [k, v && v.date])), releaseTag: st.releaseTag || '' };
+  // When each account's latest day was first seen, and whether its notification went out (for /diag/push).
+  return { days: Object.fromEntries(Object.entries(st.days || {}).map(([k, v]) => [k, v && v.date])),
+    seen: Object.fromEntries(Object.entries(st.days || {}).map(([k, v]) => [k, { date: v && v.date, at: v && v.at ? new Date(v.at).toISOString() : '', sent: (v && v.sent) || null }])),
+    releaseTag: st.releaseTag || '' };
 }
 
 async function pushChecks(latestByAccount) {
@@ -316,11 +319,13 @@ async function pushChecks(latestByAccount) {
     const snap = { accountKey: key, date: x.date, dayNumber: Number(x.dayNumber) || 0, monthName: x.monthName || '',
       spend: Math.round((Number(x.spend) || 0) * 100) / 100, conversions: Math.round((Number(x.conversions) || 0) * 100) / 100, value: Math.round((Number(x.value) || 0) * 100) / 100 };
     if (prev && prev.date === snap.date) continue;
+    snap.at = Date.now();
     if (prev && !maintenance) {
       const label = snap.monthName && snap.dayNumber ? snap.monthName + ' ' + snap.dayNumber : snap.date;
       const sent = await notify.send({ topics: [{ title: key === 'ar' ? 'Media Plan AR' : 'Media Plan USA', body: 'New data for ' + label + ' is now available.', snapshot: snap, account: key, eventType: 'new_day' }] });
       out[key] = { date: snap.date, sent };
-    }
+      snap.sent = sent;
+    } else snap.sent = maintenance ? 'maintenance' : 'first-run';
     save.days = Object.assign({}, state.days || {}, save.days || {}, { [key]: snap });
   }
   if (Object.keys(save).length) await fsUpdate(DOC.push, s => Object.assign(s || {}, save, save.days ? { days: Object.assign({}, (s && s.days) || {}, save.days) } : {}));
