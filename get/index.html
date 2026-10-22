@@ -72,11 +72,7 @@ p.l{font-size:18px;color:var(--sub);margin:0 0 26px;max-width:480px}
 .fr .scn{position:relative;width:100%;height:100%;overflow:hidden;border-radius:calc(var(--pw) * .13);background:#f4f6fb}
 .fr .ly{position:absolute;inset:0;opacity:0;transition:opacity .8s ease}
 .fr .ly.on{opacity:1}
-.fr .ly img{display:block;width:100%;height:auto;min-height:100%;object-fit:cover;object-position:top;will-change:transform}
-.rp.front .ly.on img.sc{animation:pscroll var(--dur,4s) cubic-bezier(.45,0,.4,1) forwards}
-.rp.front .ly.on img.kb{animation:kb var(--dur,4s) ease-in-out forwards;transform-origin:50% 20%}
-@keyframes pscroll{0%,12%{transform:translateY(0)}88%,100%{transform:translateY(var(--dy,0))}}
-@keyframes kb{0%{transform:scale(1)}100%{transform:scale(1.07) translateY(-2%)}}
+.fr .ly img{display:block;width:100%;height:auto;min-height:100%;object-fit:cover;object-position:top}
 .fr:after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(115deg,rgba(255,255,255,.22) 0,rgba(255,255,255,0) 28%,rgba(255,255,255,0) 70%,rgba(255,255,255,.06));pointer-events:none}
 .bk{transform:rotateY(180deg) translateZ(calc(var(--t) / 2));background:radial-gradient(circle at 30% 20%,#33478f,#101a4a 70%);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.14);display:grid;place-items:center}
 .bk img{width:46%;opacity:.9}
@@ -207,7 +203,7 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
 .ipg{display:grid;grid-template-columns:300px 1fr;gap:40px;align-items:center;margin-top:28px}
 .ip-wrap{position:relative;perspective:1400px;display:flex;flex-direction:column;align-items:center;animation:ipbob 6s ease-in-out infinite}
 @keyframes ipbob{50%{transform:translateY(-8px)}}
-.ip{--w:250px;position:relative;width:var(--w);height:calc(var(--w) * 2.05);transform-style:preserve-3d;transform:rotateY(180deg) rotateX(4deg);transition:transform 2s cubic-bezier(.55,0,.25,1)}
+.ip{--w:250px;position:relative;width:var(--w);height:calc(var(--w) * 2.05);transform-style:preserve-3d;transform:rotateY(180deg) rotateX(4deg);transition:transform 1.3s cubic-bezier(.55,0,.25,1)}
 .ip.in{transform:rotateY(0) rotateX(4deg)}
 .ip-front,.ip-back{position:absolute;inset:0;border-radius:calc(var(--w) * .17);backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .ip-front{transform:translateZ(5px);padding:9px;background:linear-gradient(145deg,#5a6182,#1a1f36 55%,#3a405c);box-shadow:inset 0 0 0 2px rgba(255,255,255,.18)}
@@ -240,7 +236,7 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
 .ip-steps li.on .n{background:var(--gold);color:#1c1405}
 .ip-steps b{display:block;font-size:15px}.ip-steps small{display:block;font-size:12.5px;color:var(--sub);font-weight:600}
 .ip-steps em{position:absolute;left:0;bottom:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2))}
-.ip-steps li.on em{animation:ltab var(--sd,3200ms) linear forwards}
+.ip-steps li.on em{animation:ltab var(--sd,2200ms) linear forwards}
 @media (max-width:760px){
   .ipg{grid-template-columns:1fr;gap:22px}
   .ip{--w:210px}
@@ -368,7 +364,7 @@ function copyLink(btn){
 }
 
 // 3D phones on a turning ring: one screen at a time comes to the front, and its
-// screen plays (long pages scroll, two-screen phones switch between them).
+// two-screen phones switch between their screens.
 (function(){
   var S=[[['tasks','leave'],'Team Tasks & Leave','The week board, and who covers whom','Every person’s tasks for the week, ticked as they go. When someone is off, you see who covers and which tasks move to them.'],
          [['types'],'By Campaign Type','Search, PMax, Demand Gen, Video','Each campaign type for the day, ranked by ROAS, with spend against its plan.'],
@@ -377,7 +373,7 @@ function copyLink(btn){
          [['ranks'],'Top & Bottom 5','Projects, campaigns, keywords','The best and the weakest projects, campaigns and keywords at a glance.'],
          [['studio','compare'],'Reports Studio','One month, or two side by side','Build a report for any month, or compare two months point by point and see which one wins.'],
          [['home-dark'],'Daily Performance','Dark mode','Today against target in a calm dark theme, easy on the eyes at night.']];
-  var N=S.length, step=360/N, cur=0, timer=null, LAYER=3800;
+  var N=S.length, step=360/N, cur=0, timer=null, LAYER=2400;
   var ring=document.getElementById('ring'), stage=document.getElementById('stage'), dots=document.getElementById('dots');
   var capT=document.getElementById('capT'), capS=document.getElementById('capS'), capD=document.getElementById('capD'), cap=capT.parentNode;
   S.forEach(function(x,i){
@@ -390,14 +386,10 @@ function copyLink(btn){
   var phones=ring.children, dl=dots.children, lt=null;
   function radius(){return parseFloat(getComputedStyle(stage).getPropertyValue('--r'))||260}
   function place(){var r=radius();for(var i=0;i<N;i++)phones[i].style.transform='rotateY('+(i*step)+'deg) translateZ('+r+'px)';show(false)}
-  // One layer of the front phone: a long page scrolls to its end, a short one zooms in a little.
+  // The front phone shows one of its screens (they stay still).
   function playLayer(ph,k){
     var ls=ph.querySelectorAll('.ly');
     for(var j=0;j<ls.length;j++)ls[j].classList.toggle('on',j===k);
-    var img=ls[k].querySelector('img'), box=ph.querySelector('.scn');
-    var go=function(){var dy=img.clientHeight-box.clientHeight;img.className='';void img.offsetWidth;
-      img.style.setProperty('--dur',LAYER+'ms');img.style.setProperty('--dy',(-Math.max(0,dy))+'px');img.className=dy>30?'sc':'kb'};
-    if(img.complete)go();else img.onload=go;
   }
   function show(anim){
     var r=radius(), k=((cur%N)+N)%N;
@@ -447,7 +439,7 @@ function copyLink(btn){
 (function(){
   var ip=document.getElementById('ip'), k=document.getElementById('ipK'), scr=document.getElementById('ipScr'), list=document.getElementById('ipSteps');
   if(!ip)return;
-  var st=k.children, li=list.children, cur=0, t=null, D=3200;
+  var st=k.children, li=list.children, cur=0, t=null, D=2200;
   document.documentElement.style.setProperty('--sd',D+'ms');
   function fit(){var w=scr.clientWidth,h=scr.clientHeight,z=w/180;k.style.transform='scale('+z+')';k.style.height=(h/z)+'px'}
   function show(i){cur=(i+st.length)%st.length;
@@ -457,7 +449,7 @@ function copyLink(btn){
   for(var n=0;n<li.length;n++)(function(n){li[n].onclick=function(){show(n)}})(n);
   fit();window.addEventListener('resize',fit);
   for(var n=0;n<li.length;n++)li[n].classList.remove('on');
-  var start=function(){ip.classList.add('in');setTimeout(function(){show(0)},2000)};
+  var start=function(){ip.classList.add('in');setTimeout(function(){show(0)},1300)};
   if(!('IntersectionObserver' in window)){start();return}
   new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){start();o.disconnect()}})},{threshold:.4}).observe(ip);
 })();
