@@ -9263,7 +9263,7 @@ function resultsShareText(d){
  const by=[...live].filter(x=>x.actual.roas!=null).sort((x,y)=>y.actual.roas-x.actual.roas);
  const mon=capMon(days[0].date.slice(0,7)).split(' ')[0];
  const hit=live.filter(x=>x.plan.value&&x.actual.value>=x.plan.value).length;
- return [`🗓️ Day ${live.length} of ${days.length} · vs Full-Month Plan`,'',
+ return [`🗓️ ${ac.shortLabel} · Day ${live.length} of ${days.length} · vs Full-Month Plan`,'',
   `${em(sR,true)} Spend: ${p(sR)}`,
   `${em(vR,false)} Value: ${p(vR)}`,
   `${em(cR,false)} Conv.: ${p(cR)}`,
@@ -10009,7 +10009,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v159',date:'2026-11-05'};
+const DASHBOARD_RELEASE_CLIENT={version:'v160',date:'2026-11-05'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
