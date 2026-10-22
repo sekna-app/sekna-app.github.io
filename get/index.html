@@ -186,6 +186,40 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
 .kk.ki{display:inline-flex;align-items:center;gap:7px}
 .kk .ap{width:17px;height:17px;margin-top:-3px}
 .lapgrid .txt h2{margin-top:0}
+/* What's new: tap a feature, the phone shows it */
+.wn{display:grid;grid-template-columns:1fr 300px;gap:46px;align-items:center}
+.wn-h{margin-bottom:18px}.wn-h h2{margin:6px 0 4px}
+.wn-l{display:flex;flex-direction:column;gap:10px}
+.wn-i{position:relative;overflow:hidden;display:flex;gap:14px;align-items:flex-start;text-align:left;width:100%;padding:14px 16px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:#fff;font:inherit;cursor:pointer;transition:background .25s ease,border-color .25s ease,transform .2s ease}
+.wn-i:hover{background:rgba(255,255,255,.07)}.wn-i:active{transform:scale(.99)}
+.wn-i.on{background:rgba(226,184,116,.1);border-color:rgba(226,184,116,.55)}
+.wn-ic{flex:0 0 40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.08)}
+.wn-i.on .wn-ic{background:linear-gradient(135deg,var(--gold),#c89434);color:#1c1405}
+.wn-ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.wn-t b{display:block;font-size:15.5px;font-weight:900}
+.wn>div{min-width:0}
+.wn-t>span{display:block;font-size:13px;color:var(--sub);font-weight:600;line-height:1.45;margin-top:2px}
+.wn-i em{position:absolute;left:0;bottom:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.wn-i.on em{animation:wnbar var(--d,4.5s) linear forwards}
+@keyframes wnbar{to{width:100%}}
+.wn-t b .wn-tag{display:inline-block;margin-left:6px;font-size:10px;font-weight:900;letter-spacing:.06em;color:#1c1405;background:var(--green);border-radius:99px;padding:2px 7px;vertical-align:2px}
+.wn-ph{position:relative;width:280px;aspect-ratio:390/844;margin:0 auto;border-radius:44px;padding:10px;background:linear-gradient(145deg,#3a4888,#0b1236 60%);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.18),0 40px 80px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.06);touch-action:pan-y}
+.wn-ph:before{content:"";position:absolute;inset:-40px;border-radius:50%;background:radial-gradient(circle,rgba(79,124,255,.4),transparent 65%);filter:blur(14px);z-index:-1}
+.wn-scr{position:relative;width:100%;height:100%;border-radius:35px;overflow:hidden;background:#f4f6fb}
+.wn-scr img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;transform:scale(1.04);transition:opacity .6s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+.wn-scr img.on{opacity:1;transform:none}
+.wn-dots{display:none;justify-content:center;gap:7px;margin-top:16px}
+.wn-dots i{width:7px;height:7px;border-radius:99px;background:rgba(255,255,255,.25);transition:width .35s ease,background .35s ease}
+.wn-dots i.on{width:22px;background:var(--gold)}
+@media (max-width:900px){
+  .wn{grid-template-columns:1fr;gap:22px}
+  .wn-side{order:-1}
+  .wn-l{flex-direction:row;overflow-x:auto;scroll-snap-type:x mandatory;gap:8px;padding-bottom:4px;scrollbar-width:none}
+  .wn-l::-webkit-scrollbar{display:none}
+  .wn-i{flex:0 0 78%;scroll-snap-align:center}
+  .wn-ph{width:240px}.wn-dots{display:flex}
+}
+@media (prefers-reduced-motion:reduce){.wn-scr img{transition:opacity .2s}.wn-i.on em{animation:none;width:100%}}
 </style>
 </head>
 <body>
@@ -240,6 +274,14 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
       <div class="meta"><span>Version <b>1.2.6</b></span><span>Size <b>2.9 MB</b></span><span>Android <b>7+</b></span><span>By <b>Ibrahim Amin</b></span></div>
     </div>
   </div>
+
+  <section class="sec" id="new">
+    <div class="wn-h"><span class="kk">New in this update</span><h2>What’s new in SEKNA</h2><p class="s">Tap a feature to see it on the phone. It updates by itself, no new download needed.</p></div>
+    <div class="wn">
+      <div class="wn-side"><div class="wn-l" id="wnList"></div></div>
+      <div><div class="wn-ph" id="wnPh"><div class="wn-scr" id="wnScr"></div></div><div class="wn-dots" id="wnDots"></div></div>
+    </div>
+  </section>
 
   <section class="sec">
     <div class="lapgrid">
@@ -301,6 +343,7 @@ function copyLink(btn){
          ['results','Day by Day','Results against the plan'],
          ['years','Same Hijri day','This day in every past year'],
          ['ranks','Top & Bottom 5','Projects, campaigns, keywords'],
+         ['tasks','Team Tasks','The team’s week, who covers whom'],
          ['home-dark','Dark mode','Easy on the eyes at night']];
   var N=S.length, step=360/N, cur=0, timer=null;
   var ring=document.getElementById('ring'), stage=document.getElementById('stage'), dots=document.getElementById('dots');
@@ -337,6 +380,42 @@ function copyLink(btn){
 // The laptop lid settles open when it scrolls into view.
 (function(){var l=document.getElementById('lap');if(!('IntersectionObserver' in window)){l.classList.add('in');return}
   new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){l.classList.add('in');o.disconnect()}})},{threshold:.3}).observe(l)})();
+
+// What's new: one feature at a time; tap, swipe or let it run.
+(function(){
+  var I={chart:'<path d="M4 19h16"/><path d="M6 15l4-4 3 3 5-6"/>',cal:'<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>',team:'<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><path d="M16 11a2.6 2.6 0 1 0 0-5.2M17.5 19c-.2-1.8-.9-3.2-2-4"/>',swap:'<path d="M7 7h11l-3-3M17 17H6l3 3"/>',check:'<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 12.5l2.5 2.5 4.5-5"/>'};
+  var F=[['achieve','chart','Plan achievement','How much of the full month’s plan is done: spend, revenue and conversions in one score.',1],
+         ['month','cal','Results on the full month','Day by Day now measures spend, conversions and value against the whole month’s plan.',0],
+         ['tasks','team','Team Tasks','The team’s week on one board: every person, their tasks and how many are done.',1],
+         ['leave','swap','Who covers whom','Who is off today, who covers them, and the tasks that move to the backup.',1],
+         ['mytasks','check','My Tasks','Your own week and its progress; tick a task the moment it is done.',0]];
+  var list=document.getElementById('wnList'),scr=document.getElementById('wnScr'),dots=document.getElementById('wnDots'),ph=document.getElementById('wnPh');
+  if(!list)return;
+  var cur=0,timer=null,D=4500;
+  F.forEach(function(f,i){
+    var b=document.createElement('button');b.type='button';b.className='wn-i';
+    b.innerHTML='<span class="wn-ic"><svg viewBox="0 0 24 24" aria-hidden="true">'+I[f[1]]+'</svg></span><span class="wn-t"><b>'+f[2]+(f[4]?'<span class="wn-tag">NEW</span>':'')+'</b><span>'+f[3]+'</span></span><em></em>';
+    b.onclick=function(){show(i,true);play()};list.appendChild(b);
+    var im=document.createElement('img');im.src='/get/shots/'+f[0]+'.webp';im.alt=f[2];if(i)im.loading='lazy';scr.appendChild(im);
+    dots.appendChild(document.createElement('i'));
+  });
+  function show(i,user){
+    cur=(i+F.length)%F.length;
+    for(var k=0;k<F.length;k++){list.children[k].classList.toggle('on',k===cur);scr.children[k].classList.toggle('on',k===cur);dots.children[k].classList.toggle('on',k===cur)}
+    var b=list.children[cur];b.style.setProperty('--d',D+'ms');var em=b.querySelector('em');em.style.animation='none';void em.offsetWidth;em.style.animation='';
+    if(getComputedStyle(list).flexDirection==='row')list.scrollTo({left:b.offsetLeft-(list.clientWidth-b.clientWidth)/2,behavior:user?'smooth':'auto'});
+  }
+  function play(){stop();timer=setInterval(function(){show(cur+1)},D)}
+  function stop(){if(timer)clearInterval(timer);timer=null}
+  var x0=null;
+  ph.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
+  ph.addEventListener('touchend',function(e){if(x0==null)return;var dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40){show(cur+(dx<0?1:-1),true);play()}},{passive:true});
+  ph.addEventListener('mouseenter',stop);ph.addEventListener('mouseleave',play);
+  document.addEventListener('visibilitychange',function(){document.hidden?stop():play()});
+  show(0);
+  // Start running when the section comes into view.
+  if('IntersectionObserver' in window)new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){show(0);play();o.disconnect()}})},{threshold:.35}).observe(ph);else play();
+})();
 </script>
 </body>
 </html>
