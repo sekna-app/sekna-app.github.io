@@ -2937,6 +2937,9 @@ window.addEventListener('load',function(){
     .rx-main{flex:1;min-width:0}
     .rx-top{display:flex;gap:8px;align-items:flex-start}
     .rx-name{flex:1;min-width:0;font-size:13.5px;color:#1d2433;overflow-wrap:anywhere;line-height:1.3}
+    .rx-row.stale{border-color:#f09aa3}.rx-row.stale .rx-name,body.dark-mode .rx-row.stale .rx-name{color:#d93025}
+    .rx-stale{display:inline-block;margin-top:4px;padding:2px 8px;border-radius:999px;background:#fdecea;color:#c2382f;font-size:11px;font-weight:800}
+    body.dark-mode .rx-stale{background:rgba(217,48,37,.18);color:#ff8a80}
     .rx-roas{font-weight:900;font-size:16px;color:#203c8e;flex:none;direction:ltr}
     .rx-row.g.first .rx-roas{color:#0e9f68}.rx-row.w .rx-roas{color:#c2382f}
     .rx-det{display:flex;flex-wrap:wrap;gap:3px 12px;font-size:11.5px;color:#8b92a0;margin-top:3px}.rx-det b{color:#4b5263}
@@ -7175,11 +7178,13 @@ function rankSpy(){
  if(c!==RANK_CAT||!document.querySelector(`#rxCats .rx-cat.on[data-cat="${c}"]`))markRankChip(c);
 }
 window.addEventListener('scroll',()=>{if(RANK_SPY)return;RANK_SPY=requestAnimationFrame(()=>{RANK_SPY=null;rankSpy()})},{passive:true});
+let RANK_DAY='';
 function renderRanks(d){
  const bw=d.bestWorst, body=document.getElementById('rxBody'), cats=document.getElementById('rxCats');
  if(!body)return;
  document.documentElement.style.setProperty('--rx-top',rankTopOffset()+'px');
  if(!bw){cats.innerHTML='';text('rxSub','Not linked yet');body.innerHTML='<div class="dx-empty">The Best &amp; Worst tab is not linked for this account yet.</div>';return}
+ RANK_DAY=bw.day||'';
  text('rxSub',`${shortDate(bw.day)} · last closed day · ranked by ${bw.rankBy}`);
  document.querySelector('.rx-card').dataset.side=RANK_SIDE;
  const blocks=(bw[RANK_SIDE]||[]).slice().sort((a,b)=>RANK_CATS.findIndex(c=>c[0]===a.key)-RANK_CATS.findIndex(c=>c[0]===b.key));
@@ -7223,10 +7228,33 @@ const RANK_ICONS={
  searchTerms:'<svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="#4285F4" stroke-width="2.6"/><path d="M15 15l5 5" stroke="#4285F4" stroke-width="2.8" stroke-linecap="round"/></svg>',
  keywords:'<svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4.6" fill="none" stroke="#C89434" stroke-width="2.6"/><path d="M12.4 12H21M18 12v3.5M15.4 12v2.5" stroke="#C89434" stroke-width="2.6" stroke-linecap="round"/></svg>'
 };
+/* A seasonal page (Ramadan, Eid, Qurbani…) still getting spend outside its season: the ad's
+   link most likely redirects now, so the row is marked red. Seasons by the Hijri date of the ranked day. */
+const SEASON_WORDS={
+ ramadan:/رمضان|إفطار|افطار|سحور|زكا[ةه] ?الفطر|ليلة ?القدر|العشر ?الأواخر|ramadan|iftar|suhoor|fitrana|zakat[\s_-]*(ul|al)?[\s_-]*fitr|laylat/i,
+ adha:/قربان|أضاحي|اضاحي|أضحي[ةه]|اضحي[ةه]|الأضحى|الاضحى|ذبائح|ذ[يو] ?الحج[ةه]|qurban|udhi|adha|dhul[\s_-]*hij|hajj/i,
+ eid:/(^|[\s_-])(ال)?عيد(ي[ةه]?)?($|[\s_-])|كسو[ةه]|(^|[^a-z])eid([^a-z]|$)/i
+};
+function hijriDay(day){
+ // The day comes as 2026-10-21 or as text like "Oct 21, 2026"; no day = today.
+ const t=String(day||''), iso=/^\d{4}-\d{2}-\d{2}/.test(t)?t.slice(0,10):'', loose=!iso&&t?new Date(t):null;
+ const at=iso?new Date(iso+'T12:00:00Z'):loose&&!isNaN(loose)?new Date(Date.UTC(loose.getFullYear(),loose.getMonth(),loose.getDate(),12)):new Date();
+ try{const p={};new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn',{day:'numeric',month:'numeric',timeZone:'UTC'}).formatToParts(at).forEach(x=>{p[x.type]=x.value});
+  const m=parseInt(p.month,10),d=parseInt(p.day,10);return m&&d?{m,d}:null}catch(e){return null}
+}
+function offSeason(name,iso){
+ const h=hijriDay(iso);if(!h)return false;
+ const ramadan=(h.m===8&&h.d>=15)||h.m===9||(h.m===10&&h.d<=3), adha=h.m===11||(h.m===12&&h.d<=13);
+ const n=String(name||'');
+ if(SEASON_WORDS.ramadan.test(n))return !ramadan;
+ if(SEASON_WORDS.adha.test(n))return !adha;
+ if(SEASON_WORDS.eid.test(n))return !(ramadan||adha);
+ return false;
+}
 function rankCardSec(b,worst){
- const icon=RANK_ICONS[b.key]||RANK_ICONS.campaigns;
- return `<div class="rx-list">${b.rows.map((r,i)=>{const det=rxDetails(r);return `<div class="rx-row ${worst?'w':'g'}${i===0?' first':''}"><span class="rx-icon">${icon}<em>${r.rank||i+1}</em></span><div class="rx-main">
-   <div class="rx-top"><b class="rx-name">${rxName(r.name)}</b><span class="rx-roas">${fmt(r.roas,2)}x</span></div>${det?`<div class="rx-det">${det}</div>`:''}
+ const icon=RANK_ICONS[b.key]||RANK_ICONS.campaigns, day=RANK_DAY;
+ return `<div class="rx-list">${b.rows.map((r,i)=>{const det=rxDetails(r), stale=b.key==='projects'&&offSeason(r.name,day);return `<div class="rx-row ${worst?'w':'g'}${i===0?' first':''}${stale?' stale':''}"><span class="rx-icon">${icon}<em>${r.rank||i+1}</em></span><div class="rx-main">
+   <div class="rx-top"><b class="rx-name">${rxName(r.name)}</b><span class="rx-roas">${fmt(r.roas,2)}x</span></div>${stale?'<div class="rx-stale">Redirected page · out of season</div>':''}${det?`<div class="rx-det">${det}</div>`:''}
    <div class="rx-bar"><span style="width:${rxBarW(b,r,worst)}%"></span></div>
    <div class="sx-lmeta"><span>Spend <b>${money(r.spend)}</b></span><span>Conv. <b>${fmt(r.conversions,0)}</b></span><span>Value <b>${money(r.value)}</b></span></div>${rxSplit(r)}</div></div>`}).join('')}</div>${rxTotal(b,worst)}`;
 }
@@ -9847,7 +9875,7 @@ function tkNoticeUI(){
 }
 
 /* ---------- v72: loading bar, Updates screen, profile photos, presence ---------- */
-const DASHBOARD_RELEASE_CLIENT={version:'v153',date:'2026-11-04'};
+const DASHBOARD_RELEASE_CLIENT={version:'v154',date:'2026-11-05'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 // A thin bar at the top replaces the old grey-out while data loads.
