@@ -73,6 +73,8 @@ p.l{font-size:18px;color:var(--sub);margin:0 0 26px;max-width:480px}
 .fr .ly{position:absolute;inset:0;opacity:0;transition:opacity .8s ease}
 .fr .ly.on{opacity:1}
 .fr .ly img{display:block;width:100%;height:auto;min-height:100%;object-fit:cover;object-position:top}
+.rp.front .ly.on img.sc{animation:pscroll var(--dur,4s) cubic-bezier(.45,0,.4,1) forwards}
+@keyframes pscroll{0%,10%{transform:translateY(0)}90%,100%{transform:translateY(var(--dy,0))}}
 .fr:after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(115deg,rgba(255,255,255,.22) 0,rgba(255,255,255,0) 28%,rgba(255,255,255,0) 70%,rgba(255,255,255,.06));pointer-events:none}
 .bk{transform:rotateY(180deg) translateZ(calc(var(--t) / 2));background:radial-gradient(circle at 30% 20%,#33478f,#101a4a 70%);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.14);display:grid;place-items:center}
 .bk img{width:46%;opacity:.9}
@@ -270,7 +272,7 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
 
     <div class="ha">
       <div class="dl">
-        <a class="and" id="bA" href="https://github.com/ibrahimamin6700-ui/human-appeal-media-plan/releases/latest" target="_blank" rel="noopener" onclick="openBox('a')">
+        <a class="and" id="bA" href="/get/SEKNA.apk" download="SEKNA.apk" onclick="openBox('a')">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22a11.5 11.5 0 0 0-9.84 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>
           <span><small>DOWNLOAD FOR</small><b>Android</b></span></a>
         <a class="web" id="bW" href="https://sekna-app.web.app/" onclick="openBox('w');return false">
@@ -279,14 +281,14 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
       </div>
 
       <div class="box" id="boxA"><div><div class="card a">
-        <h3><span class="spin"></span>Opening the download page…</h3>
+        <h3><span class="spin"></span>Downloading SEKNA…</h3>
         <p>SEKNA 1.2.6 · 2.9 MB · Android 7 or newer</p>
         <ol>
-          <li><span>Under <b>Assets</b>, tap <b>SEKNA.apk</b>, then open the file when it finishes.</span></li>
+          <li><span>When <b>SEKNA.apk</b> finishes downloading, open it.</span></li>
           <li><span>If asked, allow <b>Install unknown apps</b>.</span></li>
           <li><span>Tap <b>Install</b>, open SEKNA and allow notifications.</span></li>
         </ol>
-        <a class="again" href="https://github.com/ibrahimamin6700-ui/human-appeal-media-plan/releases/latest" target="_blank" rel="noopener">Page didn’t open? Tap here</a>
+        <a class="again" href="/get/SEKNA.apk" download="SEKNA.apk">Download didn’t start? Tap here</a> · <a class="again" href="https://github.com/ibrahimamin6700-ui/human-appeal-media-plan/releases/latest" target="_blank" rel="noopener">Get it from GitHub</a>
       </div></div></div>
 
       <div class="box" id="boxW"><div><div class="card w">
@@ -353,7 +355,7 @@ function openBox(k){
   document.getElementById('bW').classList.toggle('on',k==='w');
   var box=k==='a'?a:w;
   setTimeout(function(){var r=box.getBoundingClientRect();if(r.bottom>innerHeight)window.scrollBy({top:r.bottom-innerHeight+16,behavior:'smooth'})},460);
-  if(k==='a')setTimeout(function(){var h=a.querySelector('h3');h.textContent='Tap SEKNA.apk under Assets';},2600);
+  if(k==='a')setTimeout(function(){var h=a.querySelector('h3');h.textContent='Open SEKNA.apk to install';},2600);
 }
 function toGuide(e){var g=document.getElementById('guide');if(!g)return;e.preventDefault();g.scrollIntoView({behavior:'smooth',block:'start'})}
 function copyLink(btn){
@@ -366,14 +368,14 @@ function copyLink(btn){
 // 3D phones on a turning ring: one screen at a time comes to the front, and its
 // two-screen phones switch between their screens.
 (function(){
-  var S=[[['tasks','leave'],'Team Tasks & Leave','The week board, and who covers whom','Every person’s tasks for the week, ticked as they go. When someone is off, you see who covers and which tasks move to them.'],
+  var S=[[['home-dark'],'Daily Performance','Dark mode','Today against target, in a calm dark theme that is easy on the eyes at night.'],
          [['types'],'By Campaign Type','Search, PMax, Demand Gen, Video','Each campaign type for the day, ranked by ROAS, with spend against its plan.'],
          [['results'],'Day by Day','Results against the plan','Every day of the month against the plan, and the month so far against the full month’s plan.'],
          [['years'],'Same Hijri day','This day in every past year','How the same Hijri date did last year and every year before, side by side.'],
-         [['ranks'],'Top & Bottom 5','Projects, campaigns, keywords','The best and the weakest projects, campaigns and keywords at a glance.'],
          [['studio','compare'],'Reports Studio','One month, or two side by side','Build a report for any month, or compare two months point by point and see which one wins.'],
-         [['home-dark'],'Daily Performance','Dark mode','Today against target in a calm dark theme, easy on the eyes at night.']];
-  var N=S.length, step=360/N, cur=0, timer=null, LAYER=2400;
+         [['ranks'],'Top & Bottom 5','Projects, campaigns, keywords','The best and the weakest projects, campaigns and keywords at a glance.'],
+         [['tasks','leave'],'Team Tasks & Leave','The week board, and who covers whom','Every person’s tasks for the week, ticked as they go. When someone is off, you see who covers and which tasks move to them.']];
+  var N=S.length, step=360/N, cur=0, timer=null, LAYER=2400, SCROLL=4200;
   var ring=document.getElementById('ring'), stage=document.getElementById('stage'), dots=document.getElementById('dots');
   var capT=document.getElementById('capT'), capS=document.getElementById('capS'), capD=document.getElementById('capD'), cap=capT.parentNode;
   S.forEach(function(x,i){
@@ -386,10 +388,14 @@ function copyLink(btn){
   var phones=ring.children, dl=dots.children, lt=null;
   function radius(){return parseFloat(getComputedStyle(stage).getPropertyValue('--r'))||260}
   function place(){var r=radius();for(var i=0;i<N;i++)phones[i].style.transform='rotateY('+(i*step)+'deg) translateZ('+r+'px)';show(false)}
-  // The front phone shows one of its screens (they stay still).
+  // The front phone shows one of its screens; a long one scrolls down to its end.
   function playLayer(ph,k){
     var ls=ph.querySelectorAll('.ly');
     for(var j=0;j<ls.length;j++)ls[j].classList.toggle('on',j===k);
+    var img=ls[k].querySelector('img'), box=ph.querySelector('.scn');
+    var go=function(){var dy=img.clientHeight-box.clientHeight;img.className='';void img.offsetWidth;
+      img.style.setProperty('--dur',dur(img)+'ms');img.style.setProperty('--dy',(-Math.max(0,dy))+'px');if(dy>30)img.className='sc'};
+    if(img.complete)go();else img.onload=go;
   }
   function show(anim){
     var r=radius(), k=((cur%N)+N)%N;
@@ -399,9 +405,12 @@ function copyLink(btn){
     if(anim){[cap,capD].forEach(function(e){e.classList.remove('swap');void e.offsetWidth;e.classList.add('swap')})}
     // The screen starts once the ring has turned; a two-screen phone switches halfway.
     clearTimeout(lt);var ph=phones[k],n=S[k][0].length;
-    lt=setTimeout(function(){playLayer(ph,0);if(n>1)lt=setTimeout(function(){playLayer(ph,1)},LAYER+300)},anim?900:200);
+    lt=setTimeout(function(){playLayer(ph,0);if(n>1)lt=setTimeout(function(){playLayer(ph,1)},layerMs(k,0)+300)},anim?900:200);
   }
-  function hold(){var k=((cur%N)+N)%N;return 900+S[k][0].length*(LAYER+300)+600}
+  // A long screen gets time to scroll; a short one stays for LAYER.
+  function dur(img){return img.naturalHeight/img.naturalWidth>2.4?SCROLL:LAYER}
+  function layerMs(k,j){var im=phones[k].querySelectorAll('.ly img')[j];return im&&im.naturalWidth?dur(im):(/tasks|studio|compare/.test(S[k][0][j])?SCROLL:LAYER)}
+  function hold(){var k=((cur%N)+N)%N,t=900+600;for(var j=0;j<S[k][0].length;j++)t+=layerMs(k,j)+300;return t}
   function go(n){cur+=n;show(true)}
   function play(){stop();timer=setTimeout(function next(){go(1);timer=setTimeout(next,hold())},hold())}
   function stop(){if(timer)clearTimeout(timer);timer=null}

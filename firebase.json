@@ -8,7 +8,6 @@
       "README.md",
       "**/.*",
       ".github/**",
-      "**/*.apk",
       "functions/**",
       "source/**"
     ],
@@ -46,6 +45,23 @@
           {
             "key": "Cache-Control",
             "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "/get/SEKNA.apk",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/vnd.android.package-archive"
+          },
+          {
+            "key": "Content-Disposition",
+            "value": "attachment; filename=\"SEKNA.apk\""
           }
         ]
       }
