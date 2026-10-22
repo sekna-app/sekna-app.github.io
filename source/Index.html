@@ -3508,6 +3508,30 @@ window.addEventListener('load',function(){
     .id-lock{font-size:12.5px;font-weight:800;color:#6b7385;background:#f2f4f9;border-radius:10px;padding:8px 10px}
     .id-in{width:100%;box-sizing:border-box;border:1.5px solid #e6e9f1;border-radius:12px;padding:11px 12px;font:inherit;font-size:14.5px;background:#fff;color:#1d2433;resize:vertical}
     .id-list{display:grid;gap:10px}
+    /* Admin · Ideas */
+    .ai-fs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:12px 0 4px;padding-bottom:2px}.ai-fs::-webkit-scrollbar{display:none}
+    .ai-f{flex:none;display:inline-flex;align-items:center;gap:6px;border:1.5px solid #e6e9f1;background:#fff;border-radius:99px;padding:6px 11px;font:inherit;font-size:12px;font-weight:800;color:#4b5263;cursor:pointer}
+    .ai-f em{font-style:normal;font-size:10.5px;font-weight:900;background:#eef1f8;color:#203c8e;border-radius:99px;padding:1px 7px}
+    .ai-f.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);color:#fff;border-color:transparent}.ai-f.on em{background:rgba(255,255,255,.2);color:#fff}
+    .ai-card{position:relative;margin-top:10px;background:#fff;border:1.5px solid #e6e9f1;border-radius:18px;padding:13px 14px;box-shadow:0 6px 16px rgba(20,30,60,.05);border-left:5px solid #2453d6}
+    .ai-card.st-Planned{border-left-color:#e2b874}.ai-card.st-Done{border-left-color:#22b07d}.ai-card.st-Declined{border-left-color:#c4c9d4}.ai-card.st-New{border-left-color:#8a63e8}
+    .ai-who{display:flex;align-items:center;gap:10px}
+    .ai-av{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:14px;color:#203c8e;background:#e8eefc}
+    .ai-who>div{flex:1;min-width:0}.ai-who b{display:block;font-size:13.5px;color:#1d2433}.ai-who small{display:block;font-size:11px;color:#9aa1b2;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .ai-del{flex:none;width:34px;height:34px;border-radius:11px;border:1.5px solid #f3d0d5;background:#fff5f6;color:#c62f45;display:grid;place-items:center;cursor:pointer}
+    .ai-del svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.ai-del:disabled{opacity:.5}
+    .ai-body{margin:10px 0 0;background:#f7f8fc;border-radius:12px;padding:10px 12px}.ai-body b{display:block;font-size:14px;color:#1d2433}
+    .ai-body p{margin:4px 0 0;font-size:13px;line-height:1.5;color:#4b5263;white-space:pre-wrap}
+    .ai-sts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+    .ai-s{border:1.5px solid #e6e9f1;background:#fff;border-radius:99px;padding:6px 11px;font:inherit;font-size:12px;font-weight:800;color:#6b7385;cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+    .ai-s.on.New{background:#efe9fd;border-color:#c9b6f6;color:#5b34c9}.ai-s.on.Reviewing{background:#e8eefc;border-color:#b9cbf6;color:#2453d6}.ai-s.on.Planned{background:#fff3dc;border-color:#efd395;color:#a8701c}
+    .ai-s.on.Done{background:#dff5ea;border-color:#a9e2c6;color:#13804f}.ai-s.on.Declined{background:#f2f2f4;border-color:#d6d9e0;color:#5f6676}
+    .ai-rp{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:10px;align-items:end}
+    .ai-rp textarea{border:1.5px solid #e6e9f1;border-radius:12px;padding:9px 10px;font:inherit;font-size:13px;background:#fff;color:#1d2433;resize:vertical;min-height:40px;min-width:0}
+    .ai-save{border:0;border-radius:12px;padding:11px 16px;font:inherit;font-size:13px;font-weight:900;color:#fff;background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);cursor:pointer}.ai-save:disabled{opacity:.6}
+    body.dark-mode .ai-f,body.dark-mode .ai-card,body.dark-mode .ai-s,body.dark-mode .ai-rp textarea{background:#151a22;border-color:#2a313c;color:#d7dce6}
+    body.dark-mode .ai-body{background:#1b212b}body.dark-mode .ai-body b,body.dark-mode .ai-who b{color:#fff}body.dark-mode .ai-body p{color:#c3c9d6}
+    body.dark-mode .ai-del{background:rgba(198,47,69,.14);border-color:rgba(198,47,69,.4);color:#ff8a98}body.dark-mode .ai-av{background:#1f2a4a;color:#9db4ff}
     .id-item,.ai-item{background:#fff;border:1.5px solid #e6e9f1;border-radius:16px;padding:12px 14px}
     .ai-item{margin-top:10px}
     .id-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}.id-top b{font-size:14.5px;color:#1d2433}
@@ -9877,7 +9901,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v160',date:'2026-11-05'};
+const DASHBOARD_RELEASE_CLIENT={version:'v161',date:'2026-11-05'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
@@ -10608,23 +10632,48 @@ async function adminResetActivity(kind,btn){
  serverCall('adminResetActivity',getAccessToken(),kind).then(()=>{ADMIN_ACTIVITY=null;adminLoadExtra('activity');if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})
   .catch(err=>{if(btn)btn.disabled=false;tellSekna(errorText(err))});
 }
+
+let ADMIN_IDEA_F='all', ADMIN_IDEA_EDIT={};
+const IDEA_ORDER=['New','Reviewing','Planned','Done','Declined'];
 function adminIdeasHtml(){
  const L=ADMIN_IDEAS;
  if(!L)return '<b class="ad-h">💡 Ideas</b><div class="sk-admin-empty">Loading…</div>';
  if(L.error)return `<b class="ad-h">💡 Ideas</b><div class="sk-admin-empty">${esc(L.error)}</div>`;
- const opts=s=>['New','Reviewing','Planned','Done','Declined'].map(o=>`<option value="${o}"${o===s?' selected':''}>${IDEA_LABEL[o]}</option>`).join('');
+ const n=s=>L.filter(i=>i.status===s).length;
+ const chips=[['all','All',L.length],...IDEA_ORDER.map(s=>[s,IDEA_LABEL[s],n(s)])].filter(c=>c[0]==='all'||c[2])
+   .map(([k,l,c])=>`<button type="button" class="ai-f${ADMIN_IDEA_F===k?' on':''} ${k}" onclick="ADMIN_IDEA_F='${k}';renderAdmin(ADMIN_LAST)">${esc(l)}<em>${c}</em></button>`).join('');
+ const list=L.filter(i=>ADMIN_IDEA_F==='all'||i.status===ADMIN_IDEA_F);
+ const card=i=>{const id=esc(i.id), cur=ADMIN_IDEA_EDIT[i.id]||i.status, nm=i.name||String(i.email||'').split('@')[0];
+   return `<div class="ai-card st-${esc(i.status)}"><div class="ai-who"><span class="ai-av">${esc((nm.charAt(0)||'?').toUpperCase())}</span><div><b>${esc(nm)}</b><small>${esc(i.email)} · ${esc((i.time||'').slice(0,10))}</small></div>
+     <button type="button" class="ai-del" onclick="adminIdeaDelete('${id}',this)" aria-label="Delete idea" title="Delete"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></button></div>
+    <div class="ai-body"><b>${esc(i.title||'Idea')}</b><p>${esc(i.text)}</p></div>
+    <div class="ai-sts">${IDEA_ORDER.map(s=>`<button type="button" class="ai-s ${s}${cur===s?' on':''}" onclick="ADMIN_IDEA_EDIT['${id}']='${s}';adminIdeaPick('${id}','${s}')">${IDEA_LABEL[s]}</button>`).join('')}</div>
+    <div class="ai-rp"><textarea id="air-${id}" rows="2" placeholder="Reply to ${esc(nm)} (optional)">${esc(i.reply)}</textarea><button type="button" class="ai-save" onclick="adminIdeaSave('${id}',this)">Save</button></div></div>`};
  return `<b class="ad-h">💡 Ideas · ${L.length}</b><small class="ad-sub">Only you can see these. The sender gets an email when you change the status or reply.</small>
-  ${L.length?L.map(i=>`<div class="ai-item"><div class="id-top"><b>${esc(i.title||'Idea')}</b><span class="id-st ${i.status}">${IDEA_LABEL[i.status]||esc(i.status)}</span></div>
-   <p>${esc(i.text)}</p><small class="id-when">${esc(i.name)} · ${esc(i.email)} · ${esc((i.time||'').slice(0,10))}</small>
-   <div class="ai-edit"><select id="ais-${esc(i.id)}">${opts(i.status)}</select><input id="air-${esc(i.id)}" placeholder="Reply (optional)" value="${esc(i.reply)}"><button type="button" class="sk-mini-btn" onclick="adminIdeaSave('${esc(i.id)}',this)">Save</button></div></div>`).join(''):'<div class="sk-admin-empty">No ideas yet.</div>'}`;
+  ${L.length?`<div class="ai-fs">${chips}</div>${list.map(card).join('')||'<div class="sk-admin-empty">Nothing here.</div>'}`:'<div class="sk-admin-empty">No ideas yet.</div>'}`;
+}
+function adminIdeaPick(id,s){
+ const c=document.getElementById('air-'+id);const card=c&&c.closest('.ai-card');if(!card)return;
+ card.querySelectorAll('.ai-s').forEach(b=>b.classList.toggle('on',b.classList.contains(s)));
 }
 function adminIdeaSave(id,btn){
- const st=document.getElementById('ais-'+id),rp=document.getElementById('air-'+id);
+ const rp=document.getElementById('air-'+id), i=(ADMIN_IDEAS||[]).find(x=>x.id===id); if(!i)return;
+ const st=ADMIN_IDEA_EDIT[id]||i.status;
  if(btn){btn.disabled=true;btn.textContent='Saving…'}
- serverCall('adminIdeaUpdate',getAccessToken(),id,st.value,rp.value).then(()=>{
-   const i=(ADMIN_IDEAS||[]).find(x=>x.id===id);if(i){i.status=st.value;i.reply=rp.value}
+ serverCall('adminIdeaUpdate',getAccessToken(),id,st,rp.value).then(()=>{
+   i.status=st;i.reply=rp.value;delete ADMIN_IDEA_EDIT[id];showSettingsToast('Saved');
    if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
  }).catch(err=>{if(btn){btn.disabled=false;btn.textContent='Save'}tellSekna(errorText(err))});
+}
+async function adminIdeaDelete(id,btn){
+ const i=(ADMIN_IDEAS||[]).find(x=>x.id===id); if(!i)return;
+ if(!await askSekna({title:'Delete this idea?',text:`“${i.title||'Idea'}” from ${i.name||i.email} is removed for good. The sender is not told.`,ok:'Delete'}))return;
+ if(btn)btn.disabled=true;
+ serverCall('adminIdeaDelete',getAccessToken(),id).then(()=>{
+   ADMIN_IDEAS=(ADMIN_IDEAS||[]).filter(x=>x.id!==id);delete ADMIN_IDEA_EDIT[id];
+   if(ADMIN_IDEA_F!=='all'&&!ADMIN_IDEAS.some(x=>x.status===ADMIN_IDEA_F))ADMIN_IDEA_F='all';
+   showSettingsToast('Idea deleted');if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
+ }).catch(err=>{if(btn)btn.disabled=false;tellSekna(errorText(err))});
 }
 
 window.SEKNA_READY=true;

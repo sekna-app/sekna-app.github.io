@@ -146,6 +146,18 @@ const R = {
     return (((await fsGet(DOC.ideas)) || {}).items || []).filter(i => norm(i.email) === norm(a.email)).map(ideaOut).reverse();
   },
   async adminIdeas([token]) { await assertAdmin(token); return (((await fsGet(DOC.ideas)) || {}).items || []).map(ideaOut).reverse(); },
+  async adminIdeaDelete([token, id]) {
+    await assertAdmin(token);
+    let found = false;
+    await fsUpdate(DOC.ideas, doc => {
+      const list = (doc && doc.items) || [];
+      const keep = list.filter(x => x.id !== String(id));
+      found = keep.length !== list.length;
+      return { items: keep };
+    });
+    if (!found) throw new Error('This idea no longer exists.');
+    return { ok: true };
+  },
   async adminIdeaUpdate([token, id, status, reply]) {
     await assertAdmin(token);
     if (IDEA_STATUSES.indexOf(status) < 0) throw new Error('Unknown status.');
