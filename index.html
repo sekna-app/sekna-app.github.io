@@ -4715,7 +4715,7 @@ window.addEventListener('load',function(){
   <div class="sk-grp-body" id="grp-tt"><nav class="sk-nav" aria-label="Team Tasks">
     <button class="sk-nav-btn" type="button" onclick="openTasks('team')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.2c2.4-.3 4.4 1.2 5 4.3"/></svg></span><span>Team Board</span></button>
     <button class="sk-nav-btn" id="ttMineBtn" type="button" onclick="openTasks('mine')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 12.5l2.5 2.5 5-5.5"/></svg></span><span>My Tasks</span><i class="tk-ndot"></i></button>
-    <button class="sk-nav-btn" type="button" onclick="openTasks('build')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l10-10-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></span><span>Task Builder</span><span class="sk-nav-lock" id="ttBuildLock"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span></button>
+    <button class="sk-nav-btn" id="ttBuildBtn" type="button" onclick="openTasks('build')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l10-10-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></span><span>Task Builder</span><span class="sk-nav-lock" id="ttBuildLock"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span></button>
     <button class="sk-nav-btn" type="button" onclick="openTasks('leave')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a8 8 0 0 1 8 8H4a8 8 0 0 1 8-8z"/><path d="M12 11v9M9 20h6"/></svg></span><span>Team Leave</span></button>
     <button class="sk-nav-btn" id="ttQuickBtn" type="button" onclick="openTasks('quick')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/></svg></span><span>Quick Requests</span></button>
   </nav></div>
@@ -7770,6 +7770,7 @@ async function shareWhatsApp(tab,btn){
  const summary=getShareSummary(tab);
  try{
    const kind=SHARE_KINDS[shareKind(tab)];
+   mvSettle();
    const html=kind.html();
    if(!html)throw new Error('Nothing to share on this page yet');
    const canvas=await captureReport(html,kind.cls);
@@ -7793,7 +7794,7 @@ async function shareWhatsApp(tab,btn){
    const canShareFiles=navigator.share && (!navigator.canShare || navigator.canShare({files:[file]}));
    if(canShareFiles){
      try{
-       await navigator.share({title:accountMeta(DASH_DATA).dashboardTitle,files:[file]});
+       await navigator.share({title:accountMeta(DASH_DATA).dashboardTitle,text:summary,files:[file]});
        showShareToast('Screenshot ready to share. Summary copied.',3200);
        return;
      }catch(err){
@@ -8334,20 +8335,34 @@ function mvNum(el){
 function mvPrepCount(els){els.forEach(el=>{const n=mvNum(el);if(n)n.node.nodeValue=n.f(0)})}
 function mvPlayCount(els,dur,delay){
  els.forEach(el=>{const n=mvNum(el);if(!n)return;
-   setTimeout(()=>{const t0=performance.now();
-     const step=t=>{const k=Math.min(1,(t-t0)/dur);n.node.nodeValue=k<1?n.f(n.target*(1-Math.pow(1-k,3))):n.txt;if(k<1)requestAnimationFrame(step);else el._mvN=null};
+   setTimeout(()=>{if(el._mvN!==n)return;const t0=performance.now();
+     const step=t=>{if(el._mvN!==n)return;const k=Math.min(1,(t-t0)/dur);n.node.nodeValue=k<1?n.f(n.target*(1-Math.pow(1-k,3))):n.txt;if(k<1)requestAnimationFrame(step);else el._mvN=null};
      requestAnimationFrame(step)},delay||0)});
 }
 function mvPrepGrow(els,prop){prop=prop||'width';els.forEach(el=>{if(el._mvT==null)el._mvT=el.style[prop];if(!el._mvT)return;el.style.transition='none';el.style[prop]='0%'})}
 function mvPlayGrow(els,prop,delay,stagger){prop=prop||'width';els.forEach((el,i)=>{if(!el._mvT)return;void el.offsetWidth;
- setTimeout(()=>{el.style.transition=`${prop} .9s ${MV_EASE}`;el.style[prop]=el._mvT;el._mvT=null},(delay||0)+i*(stagger==null?90:stagger))})}
+ setTimeout(()=>{if(el._mvT==null)return;el.style.transition=`${prop} .9s ${MV_EASE}`;el.style[prop]=el._mvT;el._mvT=null},(delay||0)+i*(stagger==null?90:stagger))})}
 function mvPrepDash(els){els.forEach(el=>{if(el._mvD==null)el._mvD=el.getAttribute('stroke-dasharray')||'';const p=el._mvD.split(/[ ,]+/);if(p.length<2)return;el.style.transition='none';el.style.strokeDasharray='0 '+p[1]})}
 function mvPlayDash(els,dur,delay,stagger){els.forEach((el,i)=>{if(!el._mvD)return;el.getBoundingClientRect();
- setTimeout(()=>{el.style.transition=`stroke-dasharray ${dur}ms ${MV_EASE}`;el.style.strokeDasharray=el._mvD;el._mvD=null},(delay||0)+i*(stagger||0))})}
+ setTimeout(()=>{if(!el._mvD)return;el.style.transition=`stroke-dasharray ${dur}ms ${MV_EASE}`;el.style.strokeDasharray=el._mvD;el._mvD=null},(delay||0)+i*(stagger||0))})}
 function mvPrepDraw(els){els.forEach(el=>{let L=0;try{L=el.getTotalLength()}catch(e){}if(!L)return;el._mvL=L;el.style.transition='none';el.style.strokeDasharray=L;el.style.strokeDashoffset=L})}
 function mvPlayDraw(els,dur,delay){els.forEach(el=>{if(!el._mvL)return;el.getBoundingClientRect();
  setTimeout(()=>{el.style.transition=`stroke-dashoffset ${dur}ms cubic-bezier(.4,0,.2,1)`;el.style.strokeDashoffset='0'},delay||0);
  setTimeout(()=>{el.style.transition='';el.style.strokeDasharray='';el.style.strokeDashoffset='';el._mvL=0},(delay||0)+dur+60)})}
+
+
+function mvSettle(root){
+ [...(root||document).querySelectorAll('*')].forEach(el=>{
+   if(el._mvN){el._mvN.node.nodeValue=el._mvN.txt;el._mvN=null}
+   if(el._mvT!=null){el.style.transition='none';if(el._mvT)el.style.width=el._mvT;el._mvT=null}
+   if(el._mvD){el.style.transition='none';el.style.strokeDasharray=el._mvD;el._mvD=null}
+   if(el._mvL){el.style.transition='';el.style.strokeDasharray='';el.style.strokeDashoffset='';el._mvL=0}
+   if(el.classList&&el.classList.contains('mv-pre')){el.classList.remove('mv-pre');el.style.animationDelay=''}
+   if(el.classList&&el.classList.contains('mv-rise')){el.classList.remove('mv-rise');el.style.animationDelay=''}
+   if(el.style&&el.style.opacity==='0'&&el.style.transition==='none')el.style.opacity='';
+   if(el.classList&&el.classList.contains('rv'))el.classList.add('in');
+ });
+}
 function mvPrepRise(els){els.forEach(el=>{el.classList.remove('mv-rise');el.classList.add('mv-pre')})}
 function mvPlayRise(els,delay,stagger){els.forEach((el,i)=>{el.style.animationDelay=((delay||0)+i*(stagger==null?110:stagger))+'ms';el.classList.remove('mv-pre');el.classList.add('mv-rise')})}
 function mvPrepFade(els){els.forEach(el=>{el.style.transition='none';el.style.opacity='0'})}
@@ -9392,7 +9407,7 @@ function renderPastYears(){
  if(PY_ANIM){PY_ANIM=false;pyAnimate(body)}
 }
 
-function captureDailyReport(){return captureReport(shareReportHtml(),'')}
+function captureDailyReport(){mvSettle();return captureReport(shareReportHtml(),'')}
 
 function shareKind(tab){
  if(tab==='channel')return 'channel';
@@ -9409,7 +9424,7 @@ const SHARE_KINDS={
  compare:{html:()=>compareShareHtml(),cls:'rp-narrow',name:'Month-vs-Month'},
  ly:{html:()=>lyShareHtml(),cls:'rp-narrow',name:'Vs-Last-Year'}
 };
-function captureChannelReport(){return captureReport(channelReportHtml(),'rp-narrow')}
+function captureChannelReport(){mvSettle();return captureReport(channelReportHtml(),'rp-narrow')}
 async function captureReport(html,extraClass){
  const h2c=await ensureHtml2Canvas();
  const host=document.createElement('div');
@@ -9445,7 +9460,7 @@ function tkRange(month,w){const to=w===4?tkDim(month):w*7;return `${(w-1)*7+1}�
 function tkShift(month,n){const d=new Date(+month.slice(0,4),+month.slice(5,7)-1+n,1);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
 function tkCanManage(){const p=ACCESS_PROFILE||{};let mem=p.member;if(!mem){try{mem=JSON.parse(storeGet('sekna_member')||'null')}catch(e){}}return !!(p.isAdmin||(mem&&TK_MANAGER_ROLES.includes(mem.role)))}
 
-function tkQuickNav(){const b=document.getElementById('ttQuickBtn');if(b)b.hidden=!tkCanManage()}
+function tkQuickNav(){['ttQuickBtn','ttBuildBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.hidden=!tkCanManage()})}
 function tkMe(){return ((TK.data&&TK.data.me&&TK.data.me.email)||(ACCESS_PROFILE&&ACCESS_PROFILE.email)||'').toLowerCase()}
 function tkPeople(){return ((TK.data&&TK.data.people)||[]).slice().sort((a,b)=>roleTier(b.role)-roleTier(a.role)||String(a.name).localeCompare(String(b.name)))}
 function tkPerson(email){return tkPeople().find(p=>p.email===email)||{email,name:String(email||'').split('@')[0],role:'',avatar:0}}
@@ -9480,10 +9495,10 @@ function tkSetWeek(w){TK.week=w;if(TK.today&&w!==tkWeekOf(tkToday().d))TK.today=
 function tkWaShow(on){const w=document.getElementById('tkWa');if(!w)return;if(on&&!w.firstChild){const ic=document.querySelector('.top-share-btn .wa-ic');w.innerHTML=ic?ic.outerHTML:WA_IC}w.hidden=!on}
 function tkRender(){
  if(TK.form)return tkForm(true);
- if(TK.view==='quick'&&!tkCanManage())TK.view='team';
+ if((TK.view==='quick'||TK.view==='build')&&!tkCanManage())TK.view='team';
  const b=document.getElementById('tasksBody');if(!b)return;
  tkSetTitle(TK_VIEWS[TK.view][0]);tkWaShow(TK.view==='build'&&tkCanManage());
- const tabs=`<div class="tk-views">${Object.keys(TK_VIEWS).filter(k=>k!=='quick'||tkCanManage()).map(k=>`<button type="button" class="${k===TK.view?'on':''}" onclick="TK.view='${k}';${k==='mine'?'tkSeenNotice();':''}tkRender()">${TK_VIEWS[k][0].replace('Quick Requests','Quick').replace('Team Leave','Leave').replace('Task Builder','Builder').replace('Team Board','Team')}${k==='build'&&!tkCanManage()?' 🔒':''}${k==='mine'&&tkNoticeNew()?'<i class="tk-dot"></i>':''}</button>`).join('')}</div>`;
+ const tabs=`<div class="tk-views">${Object.keys(TK_VIEWS).filter(k=>(k!=='quick'&&k!=='build')||tkCanManage()).map(k=>`<button type="button" class="${k===TK.view?'on':''}" onclick="TK.view='${k}';${k==='mine'?'tkSeenNotice();':''}tkRender()">${TK_VIEWS[k][0].replace('Quick Requests','Quick').replace('Team Leave','Leave').replace('Task Builder','Builder').replace('Team Board','Team')}${k==='build'&&!tkCanManage()?' 🔒':''}${k==='mine'&&tkNoticeNew()?'<i class="tk-dot"></i>':''}</button>`).join('')}</div>`;
  if(TK.view==='build'&&!tkCanManage()){b.innerHTML=tabs+tkLockedHtml();return}
  const d=TK.data;
  if(!d){b.innerHTML=tabs+(TK.err&&!TK.busy?`<div class="tk-empty"><b>${TK.err==='server'?'Team Tasks is almost ready':'Could not load the tasks'}</b><small>${TK.err==='server'?'The SEKNA server needs its latest update first. Ask Ibrahim to deploy the new version.':'Check your connection and try again.'}</small><br><button type="button" class="tk-add" style="margin-top:12px" onclick="tkLoad()">↻ Try again</button></div>`:`<div class="tk-loading"><i></i><i></i><i></i></div>`);return}
@@ -9636,7 +9651,7 @@ function tkLeaveHtml(){
    return `<button type="button" class="lc-r" style="--i:${i}" ${admin?`onclick="tkNewLeave('${esc(p.email)}')"`:''}>${tkAv(p)}<div class="lc-rn"><b>${esc(p.name)}</b>
      ${extra.length?`<div class="lp-ex">${extra.map(l=>{const t=TK_LEAVE_TYPES.find(x=>x[0]===l.data.type)||TK_LEAVE_TYPES[1];return `<span>${t[1]} ${(l.data.days||[]).join(', ')}</span>`}).join('')}</div>`:''}</div>
      <em>${w?`<u>${esc(wd)}</u> · ${b?`backup <strong>${first(b.name)}</strong>`:'no backup'}`:'No day off'}</em>${admin?'<i>›</i>':''}</button>`}).join('');
- return stats+covers+freeze+(people.length?`<div class="lc-ls">${rows}</div>`:'<div class="tk-empty"><b>No one yet</b></div>');
+ return stats+covers+(admin?freeze:'')+(people.length?`<div class="lc-ls">${rows}</div>`:'<div class="tk-empty"><b>No one yet</b></div>');
 }
 async function tkFreezeToggle(btn){
  const f=Object.assign({on:false,seasons:[]},TK.data.freeze);f.on=!f.on;btn.disabled=true;
@@ -9993,7 +10008,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v156',date:'2026-11-05'};
+const DASHBOARD_RELEASE_CLIENT={version:'v157',date:'2026-11-05'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
@@ -10371,7 +10386,7 @@ async function mrBuild(){
  if(MR.busy)return;
  MR.busy='Loading last year…';MR.msg='';drawMonthlyReport();
  try{
-   await ensureMonthExtras();
+   await ensureMonthExtras();mvSettle();
    const m=mpData();if(!m)throw new Error('The media plan has no days yet.');
    const steps=[['Building the cover…',()=>mpCapture(mpCover(m))],
      ['Adding the Results page…',()=>captureReport(resultsShareHtml(),'rp-narrow')],
