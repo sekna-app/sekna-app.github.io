@@ -2505,7 +2505,7 @@ function adminDelete(token, id) {
 /* ---------- Profile photos and dashboard release info (v72) ---------- */
 
 /** Shown on the Updates screen. Change it whenever a new dashboard version is deployed. */
-const DASHBOARD_RELEASE = { version: 'v162', date: '2026-11-05' };
+const DASHBOARD_RELEASE = { version: 'v163', date: '2026-11-05' };
 
 function getProfilesSheet_() {
   const ss = SpreadsheetApp.openById(ACCESS.SPREADSHEET_ID);
@@ -3717,6 +3717,8 @@ function tasksExportProps(token, lock) {
 /** Position, "new tasks" notice and today's backups, as the access status gives them. */
 function teamStatus(token) {
   const a = assertAccess_(token);
+  // After the move the server holds the notices; the old copy here would show stale ones.
+  if (tasksMoved_()) return { member: getMembers_()[normalizeEmail_(a.email)] || {}, taskNotice: null, backupToday: [] };
   return { member: getMembers_()[normalizeEmail_(a.email)] || {}, taskNotice: taskNoticeFor_(a.email), backupToday: backupTodayFor_(a.email) };
 }
 /**

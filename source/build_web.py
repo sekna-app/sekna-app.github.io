@@ -53,8 +53,15 @@ head = '''<meta name="theme-color" content="#203C8E">
    var SRV=window.SEKNA_SERVER={primary:FB_PRIMARY,mode:'appsscript',since:0,reason:'',hold:0,ms:0};
    function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
    function save(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}
+   // The "This device" test switch (Admin → Server) lasts one hour, then the device is back on Automatic.
+   // A switch saved without a time (older versions) is cleared at once.
+   function dev(){
+    var v=load('sekna_fb_device'), at=+load('sekna_fb_device_at')||0;
+    if(v&&(!at||Date.now()-at>60*60000)){save('sekna_fb_device',null);save('sekna_fb_device_at',null);return null}
+    return v;
+   }
    function fbWanted(account){
-    var t=load('sekna_fb_device');
+    var t=dev();
     if(t==='firebase')return true;
     if(t==='appsscript')return false;
     return FB_PRIMARY&&(account===undefined||!!FB_ACCOUNTS[String(account||'usa').toLowerCase()]);
@@ -99,8 +106,9 @@ head = '''<meta name="theme-color" content="#203C8E">
    function call(name,args){
     var f=FB_FNS[name];
     // Team Tasks: the server first; the old sheet only if the server cannot be reached before the move.
-    if(f&&f.tk&&load('sekna_fb_device')!=='appsscript'){
-     var mk=f.k||'sekna_tasks_fb';
+    // Once a part has moved to the server, the test switch never sends it back to the old sheet.
+    var mk=f&&(f.k||'sekna_tasks_fb');
+    if(f&&f.tk&&(dev()!=='appsscript'||load(mk)==='1')){
      return fbPost('/call',{fn:name,args:args},f.w).then(function(r){
       if(r&&r.store==='firebase')save('sekna_tasks_fb','1');
       if(r&&r.dashboard&&r.dashboard.version==='server')save('sekna_access_fb','1');
@@ -120,13 +128,13 @@ head = '''<meta name="theme-color" content="#203C8E">
      });
     }
     // An account that stays on Apps Script (AR, also loaded in the background) does not change this device's status.
-    if(f&&f.data&&load('sekna_fb_device')==='appsscript'&&SRV.mode!=='appsscript'){SRV.mode='appsscript';SRV.since=Date.now()}
+    if(f&&f.data&&dev()==='appsscript'&&SRV.mode!=='appsscript'){SRV.mode='appsscript';SRV.since=Date.now()}
     return asCall(name,args);
    }
    window.SEKNA_FB={
     post:fbPost,
     wanted:fbWanted,
-    device:function(v){if(v!==undefined){save('sekna_fb_device',v||null);SRV.hold=0}return load('sekna_fb_device')||'auto'},
+    device:function(v){if(v!==undefined){save('sekna_fb_device',v&&v!=='auto'?v:null);save('sekna_fb_device_at',v&&v!=='auto'?String(Date.now()):null);SRV.hold=0}return dev()||'auto'},
     retry:function(){SRV.hold=0}
    };
    function runner(ok,fail){

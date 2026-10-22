@@ -9912,7 +9912,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v162',date:'2026-11-05'};
+const DASHBOARD_RELEASE_CLIENT={version:'v163',date:'2026-11-05'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
@@ -10609,7 +10609,7 @@ function adminServerHtml(){
   ${(SRV_ADMIN.tasks||{}).mode==='firebase'?'':`<div class="srv-box"><b>Team Tasks</b><small>Tasks, days off, backups, positions and avatars.</small>${srvTasksHtml()}</div>`}
   <div class="srv-box"><b>Same numbers?</b><small>Reads ${esc(CURRENT_ACCOUNT.toUpperCase())} on both servers and compares every figure.</small>
     <button type="button" class="srv-btn soft" onclick="srvParity()" ${SRV_ADMIN.busy||!fb?'disabled':''}>Compare with Apps Script</button>${parity}</div>
-  ${fb?`<div class="srv-box"><b>This device</b><small>For testing: which server this phone or computer uses.</small><div class="act-seg">${seg('auto','Automatic')}${seg('firebase','Firebase')}${seg('appsscript','Apps Script')}</div></div>`:''}
+  ${fb?`<div class="srv-box"><b>This device</b><small>For testing: which server this phone or computer uses. It goes back to Automatic after one hour.</small><div class="act-seg">${seg('auto','Automatic')}${seg('firebase','Firebase')}${seg('appsscript','Apps Script')}</div></div>`:''}
   <div class="srv-box"><b>Switch log</b><small>From every device in the team.</small>${log}
     ${Array.isArray(ev)&&ev.length?'<button type="button" class="sh-reset" onclick="srvClearLog(this)">↺ Clear log</button>':''}</div>`;
 }

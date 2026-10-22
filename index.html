@@ -116,8 +116,15 @@ window.addEventListener('load',function(){
    var SRV=window.SEKNA_SERVER={primary:FB_PRIMARY,mode:'appsscript',since:0,reason:'',hold:0,ms:0};
    function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
    function save(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}
+   // The "This device" test switch (Admin → Server) lasts one hour, then the device is back on Automatic.
+   // A switch saved without a time (older versions) is cleared at once.
+   function dev(){
+    var v=load('sekna_fb_device'), at=+load('sekna_fb_device_at')||0;
+    if(v&&(!at||Date.now()-at>60*60000)){save('sekna_fb_device',null);save('sekna_fb_device_at',null);return null}
+    return v;
+   }
    function fbWanted(account){
-    var t=load('sekna_fb_device');
+    var t=dev();
     if(t==='firebase')return true;
     if(t==='appsscript')return false;
     return FB_PRIMARY&&(account===undefined||!!FB_ACCOUNTS[String(account||'usa').toLowerCase()]);
@@ -162,8 +169,9 @@ window.addEventListener('load',function(){
    function call(name,args){
     var f=FB_FNS[name];
     // Team Tasks: the server first; the old sheet only if the server cannot be reached before the move.
-    if(f&&f.tk&&load('sekna_fb_device')!=='appsscript'){
-     var mk=f.k||'sekna_tasks_fb';
+    // Once a part has moved to the server, the test switch never sends it back to the old sheet.
+    var mk=f&&(f.k||'sekna_tasks_fb');
+    if(f&&f.tk&&(dev()!=='appsscript'||load(mk)==='1')){
      return fbPost('/call',{fn:name,args:args},f.w).then(function(r){
       if(r&&r.store==='firebase')save('sekna_tasks_fb','1');
       if(r&&r.dashboard&&r.dashboard.version==='server')save('sekna_access_fb','1');
@@ -183,13 +191,13 @@ window.addEventListener('load',function(){
      });
     }
     // An account that stays on Apps Script (AR, also loaded in the background) does not change this device's status.
-    if(f&&f.data&&load('sekna_fb_device')==='appsscript'&&SRV.mode!=='appsscript'){SRV.mode='appsscript';SRV.since=Date.now()}
+    if(f&&f.data&&dev()==='appsscript'&&SRV.mode!=='appsscript'){SRV.mode='appsscript';SRV.since=Date.now()}
     return asCall(name,args);
    }
    window.SEKNA_FB={
     post:fbPost,
     wanted:fbWanted,
-    device:function(v){if(v!==undefined){save('sekna_fb_device',v||null);SRV.hold=0}return load('sekna_fb_device')||'auto'},
+    device:function(v){if(v!==undefined){save('sekna_fb_device',v&&v!=='auto'?v:null);save('sekna_fb_device_at',v&&v!=='auto'?String(Date.now()):null);SRV.hold=0}return dev()||'auto'},
     retry:function(){SRV.hold=0}
    };
    function runner(ok,fail){
@@ -10044,7 +10052,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v162',date:'2026-11-05'};
+const DASHBOARD_RELEASE_CLIENT={version:'v163',date:'2026-11-05'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
@@ -10741,7 +10749,7 @@ function adminServerHtml(){
   ${(SRV_ADMIN.tasks||{}).mode==='firebase'?'':`<div class="srv-box"><b>Team Tasks</b><small>Tasks, days off, backups, positions and avatars.</small>${srvTasksHtml()}</div>`}
   <div class="srv-box"><b>Same numbers?</b><small>Reads ${esc(CURRENT_ACCOUNT.toUpperCase())} on both servers and compares every figure.</small>
     <button type="button" class="srv-btn soft" onclick="srvParity()" ${SRV_ADMIN.busy||!fb?'disabled':''}>Compare with Apps Script</button>${parity}</div>
-  ${fb?`<div class="srv-box"><b>This device</b><small>For testing: which server this phone or computer uses.</small><div class="act-seg">${seg('auto','Automatic')}${seg('firebase','Firebase')}${seg('appsscript','Apps Script')}</div></div>`:''}
+  ${fb?`<div class="srv-box"><b>This device</b><small>For testing: which server this phone or computer uses. It goes back to Automatic after one hour.</small><div class="act-seg">${seg('auto','Automatic')}${seg('firebase','Firebase')}${seg('appsscript','Apps Script')}</div></div>`:''}
   <div class="srv-box"><b>Switch log</b><small>From every device in the team.</small>${log}
     ${Array.isArray(ev)&&ev.length?'<button type="button" class="sh-reset" onclick="srvClearLog(this)">↺ Clear log</button>':''}</div>`;
 }
