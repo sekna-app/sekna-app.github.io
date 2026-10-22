@@ -5703,7 +5703,11 @@ function loadData(options){
    .withSuccessHandler(d=>{
      if(slowTimer)clearTimeout(slowTimer);
      saveAccountCache(d);
-     if(accountAtRequest===CURRENT_ACCOUNT)render(d,{animate:!silent&&!shownFromCache});
+     if(accountAtRequest!==CURRENT_ACCOUNT)return;
+     // Same numbers as on screen (the minute refresh, or the fresh copy after the cached one):
+     // only the sync time changes, so nothing is redrawn and nothing blinks.
+     if((silent||shownFromCache)&&DASH_DATA&&dataSig(d)===dataSig(DASH_DATA)){DASH_DATA.generatedAt=d.generatedAt;DASH_DATA.generatedAtMs=d.generatedAtMs;text('syncText',`Last sync: ${d.generatedAt||'—'}`);tbLive(DASH_DATA);return}
+     render(d,{animate:!silent&&!shownFromCache});
    })
    .withFailureHandler(err=>{
      if(slowTimer)clearTimeout(slowTimer);
@@ -5725,8 +5729,13 @@ function loadData(options){
  },140);
 }
 
+// The data without the time it was made, to tell a real change from a refresh.
+const SIG_SKIP={generatedAt:1,generatedAtMs:1,userEmail:1};
+function dataSig(d){try{return JSON.stringify(d,(k,v)=>SIG_SKIP[k]?undefined:v)}catch(e){return Math.random()}}
+let RENDER_QUIET=false;
 function render(d,opts){
  const animate=!(opts&&opts.animate===false);
+ RENDER_QUIET=!animate;
  DASH_DATA=d; saveAccountCache(d); document.getElementById('app').classList.remove('loading');
  applyAccountBrand(d);
  const x=d.latest,y=d.yoy,m=d.month;
@@ -5771,6 +5780,7 @@ function render(d,opts){
  if(animate)setTimeout(()=>{animateScene('right');replayDashboardMotion();},35);
  notifyAndroidDashboard(d);
 
+ RENDER_QUIET=false;
  if(refreshTimer)clearInterval(refreshTimer);
  refreshTimer=setInterval(()=>loadData({silent:true}),(d.refreshSeconds||60)*1000);
  if(!PREFETCH_STARTED){PREFETCH_STARTED=true;setTimeout(prefetchOtherAccount,350)}
@@ -6255,7 +6265,8 @@ function renderYoy(x,y){
 let REVEAL2=null;
 function revealOnScroll(root,sel){
  const els=[...root.querySelectorAll(sel)];
- if(!('IntersectionObserver' in window)||!motionOn()){return}
+ // A background refresh redraws in place: no fade-in, so cards already on screen do not blink.
+ if(RENDER_QUIET||!('IntersectionObserver' in window)||!motionOn()){return}
  if(!REVEAL2)REVEAL2=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');REVEAL2.unobserve(e.target)}}),{rootMargin:'0px 0px -6% 0px',threshold:.05});
  els.forEach(el=>{el.classList.add('rv');REVEAL2.observe(el)});
 }
@@ -9916,7 +9927,7 @@ function tkNoticeUI(){
 }
 
 /* ---------- v72: loading bar, Updates screen, profile photos, presence ---------- */
-const DASHBOARD_RELEASE_CLIENT={version:'v161',date:'2026-11-05'};
+const DASHBOARD_RELEASE_CLIENT={version:'v162',date:'2026-11-05'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 // A thin bar at the top replaces the old grey-out while data loads.

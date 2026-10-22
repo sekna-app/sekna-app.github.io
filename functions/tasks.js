@@ -98,7 +98,8 @@ async function backupTodayFor(email, ctx) {
   email = norm(email);
   const t = muscatToday();
   const leave = ctx.leave || items(await fsGet(DOC.leave)), meta = ctx.meta || (await fsGet(DOC.meta)) || {};
-  const mine = leavesToday(leave, meta).filter(l => l.data.backup === email);
+  const ok = ctx.approved || await approvedEmails();
+  const mine = ok[email] ? leavesToday(leave, meta).filter(l => l.data.backup === email && ok[norm(l.email)]) : [];
   if (!mine.length) return [];
   const month = ctx.monthItems || items(await fsGet(DOC.month(t.month)));
   const names = {};
@@ -123,13 +124,49 @@ async function indexSet(changes) {
 }
 const docOf = loc => loc === 'quick' ? DOC.quick : loc === 'leave' ? DOC.leave : DOC.month(loc.slice(2));
 
-async function setNotices(emails, text, countOf) {
+// The "new tasks" notice keeps the ids it is about, so deleting those tasks takes it away.
+async function setNotices(emails, text, countOf, idsOf) {
   if (!emails.length) return;
   await fsUpdate(DOC.notices, all => {
     all = all || {};
-    emails.forEach(e => { all[e] = { at: Date.now(), text: String(text).slice(0, 120), count: countOf ? countOf(e) : 1 }; });
+    emails.forEach(e => { all[e] = { at: Date.now(), text: String(text).slice(0, 120), count: countOf ? countOf(e) : 1, ids: idsOf ? idsOf(e) : [] }; });
     return all;
   });
+}
+async function dropFromNotices(id) {
+  await fsUpdate(DOC.notices, all => {
+    if (!all) return undefined;
+    let changed = false;
+    Object.keys(all).forEach(e => {
+      const n = all[e], ids = (n && n.ids) || [];
+      if (ids.indexOf(id) < 0) return;
+      changed = true;
+      const left = ids.filter(x => x !== id);
+      if (left.length) { n.ids = left; n.count = Math.min(n.count || left.length, left.length); } else delete all[e];
+    });
+    return changed ? all : undefined;
+  });
+}
+/** A notice only while what it is about still exists: deleted tasks (or a deleted quick request
+ *  saved before notices kept their ids) never show a stale "new tasks" popup. Week notices last 14 days. */
+async function liveNotice(email, n) {
+  if (!n) return null;
+  if (n.ids && n.ids.length) {
+    const ix = (await fsGet(DOC.index)) || {};
+    const left = n.ids.filter(id => ix[id]);
+    return left.length ? Object.assign({}, n, { ids: left, count: Math.min(n.count || left.length, left.length) }) : null;
+  }
+  if (/^New request: /.test(n.text || '')) {
+    const title = String(n.text).slice(13);
+    return items(await fsGet(DOC.quick)).some(q => q.email === norm(email) && q.title.slice(0, 107) === title.slice(0, 107) && !(q.done && q.done.at)) ? n : null;
+  }
+  return Date.now() - (n.at || 0) < 14 * 864e5 ? n : null;
+}
+/** Emails with an approved device: nobody the admin deleted or revoked gets a notice or a push. */
+async function approvedEmails() {
+  const set = {};
+  (await accessRows()).forEach(r => { if (r.email && r.status === 'Approved') set[norm(r.email)] = 1; });
+  return set;
 }
 
 /* ---------- the calls (same names and arguments as Code.gs) ---------- */
@@ -215,7 +252,7 @@ const T = {
       return { items: list };
     });
     if (oldLoc !== loc || isNew) await indexSet({ [saved.id]: loc });
-    if (kind === 'quick' && isNew) await setNotices([email], 'New request: ' + title);
+    if (kind === 'quick' && isNew) await setNotices([email], 'New request: ' + title, null, () => [saved.id]);
     return pub(saved);
   },
 
@@ -226,6 +263,7 @@ const T = {
     if (loc === 'leave' && !canManage(a.email, mem)) throw new Error('Only Team Leaders, Media Managers, the Head of Media and Ibrahim Amin can change days off.');
     await fsUpdate(docOf(loc), doc => ({ items: items(doc).filter(x => x.id !== String(id)) }));
     await indexSet({ [String(id)]: null });
+    await dropFromNotices(String(id));
     return { ok: true };
   },
 
@@ -277,6 +315,8 @@ const T = {
     const from = (week - 1) * 7 + 1, to = week === 4 ? dim : week * 7;
     const monthName = new Date(Date.UTC(y, m - 1, 1)).toLocaleDateString('en-GB', { month: 'long', timeZone: 'UTC' });
     const range = from + '–' + to + ' ' + monthName;
+    // Only people still on the team (approved device) get the week's email and push.
+    Object.keys(mine).forEach(e => { if (!people[e]) delete mine[e]; });
     const emails = Object.keys(mine);
     const mails = emails.map(email => {
       const p = people[email] || { name: email.split('@')[0] };
@@ -296,7 +336,7 @@ const T = {
         html: '<p style="margin:0 0 14px;font-size:14px;color:#4c5464">Hi ' + esc(String(p.name).split(' ')[0]) + ', here are your tasks for this week.</p>' + list,
         button: { url: WEB_PAGE_URL + '/?tasks=mine', label: 'Open My Tasks' } };
     });
-    await setNotices(emails, 'Week ' + week + ' · ' + range, e => mine[e].length);
+    await setNotices(emails, 'Week ' + week + ' · ' + range, e => mine[e].length, e => mine[e].map(t => t.id));
     let sentAt = Date.now();
     await fsUpdate(DOC.meta, meta => {
       meta = meta || {};
@@ -354,7 +394,7 @@ const T = {
   async teamStatus([token]) {
     const a = await assertAccess(token);
     const [mem, notices] = await Promise.all([members(), fsGet(DOC.notices)]);
-    return { member: mem[a.email] || {}, taskNotice: (notices || {})[a.email] || null, backupToday: await backupTodayFor(a.email, {}) };
+    return { member: mem[a.email] || {}, taskNotice: await liveNotice(a.email, (notices || {})[a.email]), backupToday: await backupTodayFor(a.email, {}) };
   }
 };
 
@@ -362,7 +402,7 @@ const T = {
 async function teamStatusFor(a) {
   if (!(await moved())) return null;
   const [mem, notices] = await Promise.all([members(), fsGet(DOC.notices)]);
-  return { member: mem[a.email] || {}, taskNotice: (notices || {})[a.email] || null, backupToday: await backupTodayFor(a.email, {}) };
+  return { member: mem[a.email] || {}, taskNotice: await liveNotice(a.email, (notices || {})[a.email]), backupToday: await backupTodayFor(a.email, {}) };
 }
 
 /* ---------- the move (admin, once) ---------- */
@@ -415,12 +455,13 @@ async function morningPush() {
   const [leave, meta] = await Promise.all([fsGet(DOC.leave), fsGet(DOC.meta)]);
   const lv = items(leave), mt = meta || {};
   const monthItems = items(await fsGet(DOC.month(muscatToday().month)));
+  const approved = await approvedEmails();
   const backups = {};
-  leavesToday(lv, mt).filter(l => l.data.backup).forEach(l => { backups[l.data.backup] = 1; });
+  leavesToday(lv, mt).filter(l => l.data.backup && approved[norm(l.data.backup)] && approved[norm(l.email)]).forEach(l => { backups[l.data.backup] = 1; });
   const toMin = s => { const m = String(s || '').match(/^(\d+):(\d+) (AM|PM)$/); return m ? (Number(m[1]) % 12 + (m[3] === 'PM' ? 12 : 0)) * 60 + Number(m[2]) : 9999; };
   const pushes = [];
   for (const email of Object.keys(backups)) {
-    (await backupTodayFor(email, { leave: lv, meta: mt, monthItems })).forEach(b => {
+    (await backupTodayFor(email, { leave: lv, meta: mt, monthItems, approved })).forEach(b => {
       const snaps = (b.snaps || []).slice().sort((x, y) => toMin(x.t) - toMin(y.t));
       const first = String(b.name).split(' ')[0];
       pushes.push({ email, title: 'SEKNA · You are the backup today',
