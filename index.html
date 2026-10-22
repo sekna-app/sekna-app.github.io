@@ -7568,14 +7568,13 @@ function buildChannelSummary(d){
    const medals=['🥇','🥈','🥉','4️⃣','5️⃣'];
    return `${medals[i]||'•'} ${chName(c.channel)} — ${fmt(c.roas,2)}x | Value ${money(c.actualValue||0)}`;
  }).join('\n');
- const a=accountMeta(d), pa=planAccuracy(d);
- return `📊 ${a.dashboardTitle} • Channel Delivery — ${mon} ${x.dayNumber||''}
+ const a=accountMeta(d), pa=planAccuracy(d), pct1=v=>v==null||!isFinite(v)?'—':(Math.round(v*1000)/10).toFixed(1)+'%';
+ return `🎯 ${a.shortLabel} Plan Achievement: ${pct1(pa.score)}
 
-🎯 Plan achievement: ${percent(pa.score)} of the full month (Spend ${percent(pa.spend)} · Value ${percent(pa.revenue)} · Conv. ${percent(pa.conv)})
-💰 Spend: ${money(m.actualSpend||0)} / ${money(m.planSpend||0)} (${percent(m.spendAchievement)})
-💚 Value: ${money(m.actualValue||0)} / ${money(m.planValue||0)} (${percent(m.valueAchievement)})
-🎯 Conv.: ${fmt(pa.aC,0)} / ${fmt(pa.pC,0)} (${percent(pa.pC?pa.aC/pa.pC:null)})
-📈 ROAS: ${fmt(m.actualRoas,2)}x${targetRoas?` / ${fmt(targetRoas,2)}x plan`:''}
+💰 Spend: ${pct1(pa.pS?pa.aS/pa.pS:null)}
+💚 Value: ${pct1(pa.pV?pa.aV/pa.pV:null)}
+🎯 Conv.: ${pct1(pa.pC?pa.aC/pa.pC:null)}
+📈 ROAS: ${fmt(m.actualRoas,2)}x${targetRoas?` vs ${fmt(targetRoas,2)}x Plan`:''}
 
 🏆 Channel ROAS
 ${lines||'—'}`;
@@ -9257,21 +9256,18 @@ function planShareText(d){
 function resultsShareText(d){
  const days=d.dayPlan||[], live=days.filter(x=>x.actual); if(!live.length)return '';
  const {a,p:P}=dayTotals(days), tR=P.roas, ac=accountMeta(d), pace=days.length?live.length/days.length:1;
- const p=r=>r==null?'—':Math.round(r*1000)/10+'%';
+ const p=r=>r==null?'—':(Math.round(r*1000)/10).toFixed(1)+'%';
  
  const em=(r,spend)=>r==null?'⚪':summaryAchEmoji(pace?r/pace:r,spend);
  const sR=P.spend?a.spend/P.spend:null, vR=P.value?a.value/P.value:null, cR=P.conversions?a.conversions/P.conversions:null;
  const by=[...live].filter(x=>x.actual.roas!=null).sort((x,y)=>y.actual.roas-x.actual.roas);
  const mon=capMon(days[0].date.slice(0,7)).split(' ')[0];
  const hit=live.filter(x=>x.plan.value&&x.actual.value>=x.plan.value).length;
- return [`📌 ${ac.shortLabel} Results — ${mon} ${live[0].dayNumber}–${live[live.length-1].dayNumber} ⚙️`,
-  `🗓️ Day ${live.length} of ${days.length} · vs the full-month plan`,'',
-  `${em(sR,true)} Spend: ${p(sR)} of ${money(P.spend)}`,
-  `${em(vR,false)} Value: ${p(vR)} of ${money(P.value)}`,
-  `${em(cR,false)} Conv.: ${p(cR)} of ${fmt(P.conversions,0)}`,
-  `${rsEm(a.roas!=null&&tR?a.roas>=tR:null)} ROAS: ${fmt(a.roas,2)}x${tR?` / ${fmt(tR,2)}x plan`:''}`,'',
-  `✅ On Plan: ${hit}/${live.length} Days`,
-  by.length?`🏆 Best ROAS: ${fmt(by[0].actual.roas,2)}x — ${mon} ${by[0].dayNumber}`:null].filter(x=>x!==null).join('\n');
+ return [`🗓️ Day ${live.length} of ${days.length} · vs Full-Month Plan`,'',
+  `${em(sR,true)} Spend: ${p(sR)}`,
+  `${em(vR,false)} Value: ${p(vR)}`,
+  `${em(cR,false)} Conv.: ${p(cR)}`,
+  `${rsEm(a.roas!=null&&tR?a.roas>=tR:null)} ROAS: ${fmt(a.roas,2)}x${tR?` vs ${fmt(tR,2)}x Plan`:''}`].filter(x=>x!==null).join('\n');
 }
 function oneMonthShareText(d){
  const c=rsMonthCtx(), sel=periodSel(), L=periodLabel(sel,c.hist), S=periodStats(sel,c.hist,c.ex,c.d); if(!S.days)return '';
@@ -10013,7 +10009,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v158',date:'2026-11-05'};
+const DASHBOARD_RELEASE_CLIENT={version:'v159',date:'2026-11-05'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
