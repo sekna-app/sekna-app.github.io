@@ -7568,11 +7568,13 @@ function buildChannelSummary(d){
    const medals=['🥇','🥈','🥉','4️⃣','5️⃣'];
    return `${medals[i]||'•'} ${chName(c.channel)} — ${fmt(c.roas,2)}x | Value ${money(c.actualValue||0)}`;
  }).join('\n');
- const a=accountMeta(d);
+ const a=accountMeta(d), pa=planAccuracy(d);
  return `📊 ${a.dashboardTitle} • Channel Delivery — ${mon} ${x.dayNumber||''}
 
+🎯 Plan achievement: ${percent(pa.score)} of the full month (Spend ${percent(pa.spend)} · Value ${percent(pa.revenue)} · Conv. ${percent(pa.conv)})
 💰 Spend: ${money(m.actualSpend||0)} / ${money(m.planSpend||0)} (${percent(m.spendAchievement)})
 💚 Value: ${money(m.actualValue||0)} / ${money(m.planValue||0)} (${percent(m.valueAchievement)})
+🎯 Conv.: ${fmt(pa.aC,0)} / ${fmt(pa.pC,0)} (${percent(pa.pC?pa.aC/pa.pC:null)})
 📈 ROAS: ${fmt(m.actualRoas,2)}x${targetRoas?` / ${fmt(targetRoas,2)}x plan`:''}
 
 🏆 Channel ROAS
@@ -9165,12 +9167,12 @@ function planShareHtml(){
  
 function resultsShareHtml(){
  const d=DASH_DATA||{}, days=d.dayPlan||[]; if(!days.length)return '';
- const {a}=dayTotals(days), mName=rsMonthOf(days);
+ const {a,p:P}=dayTotals(days), mName=rsMonthOf(days);
  const live=days.filter(x=>x.actual);
- const tR=a.target?a.planValue/a.target:null;
+ const tR=P.roas;
  const sCls=r=>r==null?'watch':r>1.1||r<.9?'watch':'good', vCls=r=>r==null?'watch':r>=1?'good':r>=.9?'watch':'bad';
  const pct=r=>r==null?'—':Math.round(r*100)+'%';
- const cards=`<div class="rs-kg">${rsCard('navy','Spend',money(a.spend),`${pct(a.target?a.spend/a.target:null)} of target`)}${rsCard('blue','Conversions',fmt(a.conversions,0),`${pct(a.planConv?a.conversions/a.planConv:null)} of plan`)}${rsCard('green','Value',money(a.value),`${pct(a.planValue?a.value/a.planValue:null)} of plan`)}${rsCard('gold','ROAS',fmt(a.roas,2)+'x',`target ${fmt(tR,2)}x`)}</div>`;
+ const cards=`<div class="rs-kg">${rsCard('navy','Spend',money(a.spend),`${pct(P.spend?a.spend/P.spend:null)} of month plan`)}${rsCard('blue','Conversions',fmt(a.conversions,0),`${pct(P.conversions?a.conversions/P.conversions:null)} of month plan`)}${rsCard('green','Value',money(a.value),`${pct(P.value?a.value/P.value:null)} of month plan`)}${rsCard('gold','ROAS',fmt(a.roas,2)+'x',`target ${fmt(tR,2)}x`)}</div>`;
  const cal=rsCalendar(days,x=>{
    const r=x.actual;
    if(!r)return `<div class="rs-cd fut"><div class="rs-n"><b>${x.dayNumber}</b></div><div class="rs-s" style="margin-top:12px">plan</div><div class="rs-s"><b>${rsK(x.plan.value)}</b> · ${fmt(x.plan.roas,2)}x</div></div>`;
@@ -9179,7 +9181,7 @@ function resultsShareHtml(){
     <div class="rs-roas">${r.roas!=null?fmt(r.roas,2)+'x':'—'}</div><div class="rs-tg ${hit?'up':'down'}">${hit==null?'':hit?'▲':'▼'} target ${fmt(x.plan.roas,2)}x</div><div class="rs-s">Value ${pct(va)}</div></div>`});
  const range=live.length?`${live[0].dayNumber}–${live[live.length-1].dayNumber} ${mName}`:mName;
  return `${rsHead('Results · '+range)}
-  ${rsT('Month to date',`${live.length} of ${days.length} days`)}${cards}
+  ${rsT('Month to date',`${live.length} of ${days.length} days · vs the full-month plan`)}${cards}
   ${rsT('Day by day','<b style="color:#5fd39b">● value on plan</b> &nbsp;<b style="color:#f2c46d">● 90–99%</b> &nbsp;<b style="color:#f0838f">● under 90%</b> · big number = ROAS')}<div class="rp-box">${cal}</div>
   ${SHARE_FOOT}`;
 }
@@ -9254,19 +9256,22 @@ function planShareText(d){
 }
 function resultsShareText(d){
  const days=d.dayPlan||[], live=days.filter(x=>x.actual); if(!live.length)return '';
- const {a}=dayTotals(days), tR=a.target?a.planValue/a.target:null, ac=accountMeta(d);
+ const {a,p:P}=dayTotals(days), tR=P.roas, ac=accountMeta(d), pace=days.length?live.length/days.length:1;
  const p=r=>r==null?'—':Math.round(r*1000)/10+'%';
+ 
+ const em=(r,spend)=>r==null?'⚪':summaryAchEmoji(pace?r/pace:r,spend);
+ const sR=P.spend?a.spend/P.spend:null, vR=P.value?a.value/P.value:null, cR=P.conversions?a.conversions/P.conversions:null;
  const by=[...live].filter(x=>x.actual.roas!=null).sort((x,y)=>y.actual.roas-x.actual.roas);
  const mon=capMon(days[0].date.slice(0,7)).split(' ')[0];
  const hit=live.filter(x=>x.plan.value&&x.actual.value>=x.plan.value).length;
- return [`📌 ${ac.shortLabel} Results — ${mon} ${live[0].dayNumber}–${live[live.length-1].dayNumber} ⚙️`,'',
-  `${summaryAchEmoji(a.target?a.spend/a.target:null,true)} Spend: ${p(a.target?a.spend/a.target:null)}`,
-  `${summaryAchEmoji(a.planValue?a.value/a.planValue:null,false)} Value: ${p(a.planValue?a.value/a.planValue:null)}`,
-  `${summaryAchEmoji(a.planConv?a.conversions/a.planConv:null,false)} Conv.: ${p(a.planConv?a.conversions/a.planConv:null)}`,
-  `${rsEm(a.roas!=null&&tR?a.roas>=tR:null)} ROAS: ${fmt(a.roas,2)}x`,'',
+ return [`📌 ${ac.shortLabel} Results — ${mon} ${live[0].dayNumber}–${live[live.length-1].dayNumber} ⚙️`,
+  `🗓️ Day ${live.length} of ${days.length} · vs the full-month plan`,'',
+  `${em(sR,true)} Spend: ${p(sR)} of ${money(P.spend)}`,
+  `${em(vR,false)} Value: ${p(vR)} of ${money(P.value)}`,
+  `${em(cR,false)} Conv.: ${p(cR)} of ${fmt(P.conversions,0)}`,
+  `${rsEm(a.roas!=null&&tR?a.roas>=tR:null)} ROAS: ${fmt(a.roas,2)}x${tR?` / ${fmt(tR,2)}x plan`:''}`,'',
   `✅ On Plan: ${hit}/${live.length} Days`,
-  by.length?`🏆 Best ROAS: ${fmt(by[0].actual.roas,2)}x — ${mon} ${by[0].dayNumber}`:null,
-  tR?`📈 ROAS: ${fmt(tR,2)}x`:null].filter(x=>x!==null).join('\n');
+  by.length?`🏆 Best ROAS: ${fmt(by[0].actual.roas,2)}x — ${mon} ${by[0].dayNumber}`:null].filter(x=>x!==null).join('\n');
 }
 function oneMonthShareText(d){
  const c=rsMonthCtx(), sel=periodSel(), L=periodLabel(sel,c.hist), S=periodStats(sel,c.hist,c.ex,c.d); if(!S.days)return '';
@@ -10008,7 +10013,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v157',date:'2026-11-05'};
+const DASHBOARD_RELEASE_CLIENT={version:'v158',date:'2026-11-05'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
@@ -10235,11 +10240,11 @@ function mpData(){
  const d=DASH_DATA||{}, days=d.dayPlan||[];
  if(!days.length)return null;
  const {p,a,live}=dayTotals(days);
- const pt={spend:dxSum(live,x=>x.plan.spend),conversions:a.planConv,value:a.planValue};
- pt.roas=pt.spend?pt.value/pt.spend:null;
+ 
+ const pt={spend:p.spend,conversions:p.conversions,value:p.value,roas:p.roas};
  const acc={spend:mpAcc(a.spend,pt.spend),conversions:mpAcc(a.conversions,pt.conversions),value:mpAcc(a.value,pt.value)};
- const accs=Object.values(acc).filter(v=>v!=null);
- acc.all=accs.length?accs.reduce((x,y)=>x+y,0)/accs.length:null;
+ const cl=v=>Math.max(0,Math.min(1,v));
+ acc.all=pt.spend>0?cl(1-Math.abs(a.spend/pt.spend-1))*.4+(pt.value>0?cl(a.value/pt.value):0)*.4+(pt.conversions>0?cl(a.conversions/pt.conversions):0)*.2:null;
  const month=days[0].date.slice(0,7), meta=accountMeta(d);
  const ex=MONTH_EXTRA[CURRENT_ACCOUNT]||{days:{}};
  
@@ -10283,7 +10288,7 @@ function mpWords(m){
 function mpHighlights(m){
  const out=[], v=m.pt.value?m.a.value/m.pt.value:null;
  if(v!=null)out.push(`Conversion value reached ${mpPct(v)} of the plan: ${mpK(m.a.value)} against ${mpK(m.pt.value)}.`);
- if(m.acc.all!=null)out.push(`Plan accuracy was ${mpPct(m.acc.all)} across spend, conversions and value.`);
+ if(m.acc.all!=null)out.push(`Plan achievement was ${mpPct(m.acc.all)} of the full month's plan (spend, value and conversions).`);
  if(m.best)out.push(`Best day: ${shortDay(m.best.date).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}, ${mpK(m.best.actual.value)} at ${fmt(m.best.actual.roas,2)}x ROAS.`);
  const top=m.chans.filter(c=>c.spend>0)[0];
  if(top)out.push(`${CHANNEL_SHORT[top.name]||top.name} led on ROAS at ${fmt(top.roas,2)}x.`);
@@ -10310,8 +10315,8 @@ function mpCover(m){
   <div class="mp-kick">MEDIA PLAN RESULTS</div>
   <h1>${esc(m.label)}</h1>
   <div class="mp-sub">${esc(m.hijri)} · ${m.live.length} of ${m.days.length} days</div>
-  <div class="mp-acc"><div class="mp-ring">${mpRing(m.acc.all,260,accCol)}<div><b>${mpPct(m.acc.all)}</b><span>Plan accuracy</span></div></div>
-   <div class="mp-words"><b>${esc(mpWords(m))}</b><span>Accuracy shows how close the month came to its plan for spend, conversions and value.</span></div></div>
+  <div class="mp-acc"><div class="mp-ring">${mpRing(m.acc.all,260,accCol)}<div><b>${mpPct(m.acc.all)}</b><span>Plan achievement</span></div></div>
+   <div class="mp-words"><b>${esc(mpWords(m))}</b><span>Plan achievement scores the month against its full plan: spend 40%, value 40%, conversions 20%.</span></div></div>
   <div class="mp-ks">${k('Spend',mpK(m.a.spend),mpK(m.pt.spend),m.pt.spend?m.a.spend/m.pt.spend:null)}${k('Conv.',fmt(m.a.conversions,0),fmt(m.pt.conversions,0),m.pt.conversions?m.a.conversions/m.pt.conversions:null)}${k('Conv. Value',mpK(m.a.value),mpK(m.pt.value),m.pt.value?m.a.value/m.pt.value:null)}${k('ROAS',fmt(m.a.roas,2)+'x',fmt(m.pt.roas,2)+'x',m.pt.roas&&m.a.roas!=null?m.a.roas/m.pt.roas:null)}</div>
   <div class="mp-hl">${mpHighlights(m).slice(0,4).map(t=>`<div>✦ ${esc(t)}</div>`).join('')}</div>
   ${mpFoot('1')}
