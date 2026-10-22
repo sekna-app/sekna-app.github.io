@@ -3390,8 +3390,8 @@ function teamPeople_(me) {
   const rows = readAccessRows_(getAccessSheet_());
   rows.forEach(r => { if (r.email) status[r.email] = status[r.email] === 'Approved' ? 'Approved' : r.status; });
   rows.forEach(r => { if (r.status === 'Approved') add(r.email, r.name); });
-  // Leaders and managers with a position, and the person asking, so they can get tasks too.
-  Object.keys(members).forEach(e => { if (members[e] && members[e].role && (!status[e] || status[e] === 'Approved')) add(e, ''); });
+  // Only people with an approved device (someone the admin deleted or revoked drops off the
+  // team even if a position is still saved for them), and the person asking.
   if (me && me.email) add(normalizeEmail_(me.email), me.name);
   return out.sort((a, b) => a.name.localeCompare(b.name));
 }

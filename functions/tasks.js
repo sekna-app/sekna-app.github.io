@@ -67,7 +67,7 @@ async function assertManager(token) {
   return { a, mem };
 }
 async function teamPeople(mem, me) {
-  const seen = {}, out = [], status = {};
+  const seen = {}, out = [];
   const add = (email, name) => {
     if (!email || seen[email]) return;
     seen[email] = 1;
@@ -75,9 +75,9 @@ async function teamPeople(mem, me) {
     out.push({ email, name: name || m.name || email.split('@')[0], role: m.role || '', avatar: m.avatar || 0 });
   };
   const rows = await accessRows();
-  rows.forEach(r => { if (r.email) status[r.email] = status[r.email] === 'Approved' ? 'Approved' : r.status; });
   rows.forEach(r => { if (r.status === 'Approved') add(r.email, r.name); });
-  Object.keys(mem).forEach(e => { if (mem[e] && mem[e].role && (!status[e] || status[e] === 'Approved')) add(e, ''); });
+  // Only people with an approved device (someone the admin deleted or revoked drops off the
+  // team even if a position is still saved for them), and the person asking.
   if (me && me.email) add(norm(me.email), me.name);
   return out.sort((x, y) => x.name.localeCompare(y.name));
 }
