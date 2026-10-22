@@ -144,6 +144,7 @@ function callWebApi_(name, args) {
     myIdeas: myIdeas,
     adminIdeas: adminIdeas,
     adminIdeaUpdate: adminIdeaUpdate,
+    adminIdeaDelete: adminIdeaDelete,
     adminSavePlanHistory: adminSavePlanHistory,
     getPlanHistory: getPlanHistory,
     reportServerEvent: reportServerEvent,
@@ -3001,6 +3002,18 @@ function adminIdeas(token) {
   assertAdmin_(token);
   const tz = Session.getScriptTimeZone();
   return v87Rows_(v87Sheet_(V87.IDEAS_SHEET, IDEA_COLS), IDEA_COLS.length).map(r => ideaFromRow_(r, tz)).reverse();
+}
+
+/** The admin deletes an idea for good; the person who sent it is not told. */
+function adminIdeaDelete(token, id) {
+  assertRestHere_();
+  assertAdmin_(token);
+  const sh = v87Sheet_(V87.IDEAS_SHEET, IDEA_COLS);
+  const rows = v87Rows_(sh, IDEA_COLS.length);
+  const i = rows.findIndex(r => String(r[0]) === String(id));
+  if (i < 0) throw new Error('This idea no longer exists.');
+  sh.deleteRow(i + 2);
+  return { ok: true };
 }
 
 /** The admin sets the status and/or a reply; the person who sent the idea gets an email. */
