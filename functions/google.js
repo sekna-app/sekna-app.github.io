@@ -99,6 +99,11 @@ async function fsSet(path, obj) {
   await request(`${FS}/${path}`, { method: 'PATCH', data: { fields: { json: { stringValue: JSON.stringify(obj) } } } });
 }
 
+async function fsDelete(path) {
+  try { await request(`${FS}/${path}`, { method: 'DELETE' }); }
+  catch (err) { if (!(err && err.response && err.response.status === 404)) throw err; }
+}
+
 /** Adds one JSON item to a list document in a single write, so two devices never overwrite each other. */
 async function fsAppend(path, obj) {
   const name = `projects/${PROJECT_ID}/databases/(default)/documents/${path}`;
@@ -155,5 +160,5 @@ async function fsUpdate(path, change) {
 /** Forgets the cached tab list, so the next read sees a sheet's new size. */
 function forgetMeta(ssId) { delete metaCache[ssId]; }
 
-module.exports = { PROJECT_ID, request, sheetMeta, batchGet, a1, fsGet, fsSet, fsUpdate, fsAppend, fsList, fsSetList, fsClearList,
+module.exports = { PROJECT_ID, request, sheetMeta, batchGet, a1, fsGet, fsSet, fsDelete, fsUpdate, fsAppend, fsList, fsSetList, fsClearList,
   valuesUpdate, valuesUpdateTyped, valuesClear, sheetsBatchUpdate, forgetMeta };

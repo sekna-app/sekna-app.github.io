@@ -13,7 +13,7 @@ const REPORT_MAX_BYTES = 15 * 1024 * 1024;
 const DOC = {
   mode: 'rest/mode', shareMonths: 'rest/share-months', usageDays: 'rest/usage-days', ideas: 'rest/ideas',
   shares: m => 'rest/shares-' + m, usage: d => 'rest/usage-' + d, plans: k => 'rest/plan-' + k,
-  push: 'rest/push', serverMail: 'rest/server-mail'
+  push: 'rest/push', serverMail: 'rest/server-mail', fx: 'rest/fx'
 };
 
 const norm = e => String(e || '').trim().toLowerCase();
@@ -140,6 +140,29 @@ const R = {
         '<p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#4c5464;white-space:pre-wrap">' + esc(text) + '</p>',
       button: { url: WEB_PAGE_URL, label: 'Open SEKNA' } }] }).catch(e => console.error('Idea email: ' + e.message));
     return { ok: true, id };
+  },
+  /**
+   * Exchange rates for the currency switch, from 1 pound. Free, no key; fetched at most every 6 hours
+   * and kept in Firestore, so one fetch serves the whole team.
+   */
+  async fxRates([token]) {
+    await assertAccess(token);
+    const have = await fsGet(DOC.fx);
+    if (have && have.rates && Date.now() - have.at < 6 * 3600e3) return have;
+    try {
+      const r = await fetch('https://open.er-api.com/v6/latest/GBP', { signal: AbortSignal.timeout(8000) });
+      const j = await r.json();
+      const pick = {};
+      ['USD', 'EGP', 'EUR', 'AED', 'OMR'].forEach(c => { const v = Number(j && j.rates && j.rates[c]); if (v > 0) pick[c] = v; });
+      if (!pick.USD || !pick.EGP) throw new Error('No rates');
+      const out = { base: 'GBP', rates: pick, at: Date.now(), day: String((j && j.time_last_update_utc) || '') };
+      await fsSet(DOC.fx, out);
+      return out;
+    } catch (e) {
+      console.error('Rates: ' + e.message);
+      if (have && have.rates) return have;
+      throw new Error('Exchange rates are not available right now.');
+    }
   },
   /** The notifications list (menu → Notifications). */
   async myNotifications([token]) {

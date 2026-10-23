@@ -2,7 +2,7 @@
 // Until the admin moves the data over (adminTasksMove), every call is passed to Apps Script,
 // so nothing changes for anyone before the move. Emails and pushes go out through notify.js.
 const crypto = require('crypto');
-const { fsGet, fsSet, fsUpdate, batchGet, a1 } = require('./google');
+const { fsGet, fsSet, fsDelete, fsUpdate, batchGet, a1 } = require('./google');
 const { assertAccess, accessRows, isAdminEmail } = require('./access');
 
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzjgZ1nXxLTcFdeFCIEznOj2H0XCo9YGUeu1YF2pJdsQiOo_aM-Mn6HxKKNk8peEuM1Ig/exec';
@@ -13,7 +13,7 @@ const LEAVE_TYPES = ['Weekly', 'Sick', 'Other', 'Vacation'];
 const WEB_PAGE_URL = 'https://sekna-app.web.app';
 const DOC = {
   mode: 'team/mode', members: 'team/members', index: 'team/index', quick: 'team/quick',
-  leave: 'team/leave', meta: 'team/meta', notices: 'team/notices', month: m => 'team/m-' + m
+  leave: 'team/leave', meta: 'team/meta', notices: 'team/notices', month: m => 'team/m-' + m, seasonGoals: 'team/season-goals'
 };
 
 /* ---------- small helpers ---------- */
@@ -22,6 +22,7 @@ const norm = e => String(e || '').trim().toLowerCase();
 const uid = p => p + crypto.randomBytes(4).toString('hex').toUpperCase();
 function monthOk(m) { if (!/^\d{4}-\d{2}$/.test(String(m || ''))) throw new Error('Bad month'); return String(m); }
 function weekOf(d) { return d <= 7 ? 1 : d <= 14 ? 2 : d <= 21 ? 3 : 4; }
+function nextMonth(m) { const y = +m.slice(0, 4), mo = +m.slice(5, 7); const d = new Date(Date.UTC(y, mo, 1)); return d.toISOString().slice(0, 7); }
 function prevMonth(m) { const y = +m.slice(0, 4), mo = +m.slice(5, 7); const d = new Date(Date.UTC(y, mo - 2, 1)); return d.toISOString().slice(0, 7); }
 /** Today in Muscat: { iso, month, day, wd } with wd 0 = Saturday … 6 = Friday, like Code.gs. */
 function muscatToday(ms) {
@@ -163,6 +164,38 @@ async function liveNotice(email, n) {
   return Date.now() - (n.at || 0) < 14 * 864e5 ? n : null;
 }
 /** Emails with an approved device: nobody the admin deleted or revoked gets a notice or a push. */
+/* ---------- photos on Quick requests (one Firestore document each, made small on the phone first) ---------- */
+const PHOTO_MAX = 4, PHOTO_CHARS = 900000, PHOTO_KEEP_DAYS = 30;
+const photoDoc = id => 'taskphotos/' + id;
+const photoIdOk = id => /^P-[A-Za-z0-9-]{4,40}$/.test(String(id || ''));
+/** New photos (data URLs) are stored and get an id; photos already on the task keep theirs. */
+async function storePhotos(list, by) {
+  const out = [];
+  for (const x of (Array.isArray(list) ? list : []).slice(0, PHOTO_MAX)) {
+    if (x && photoIdOk(x.id)) { out.push(String(x.id)); continue; }
+    const data = String((x && x.data) || '');
+    if (!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(data)) continue;
+    if (data.length > PHOTO_CHARS) throw new Error('A photo is too big. Please try a smaller one.');
+    const id = uid('P-');
+    await fsSet(photoDoc(id), { data, by, at: Date.now() });
+    out.push(id);
+  }
+  return out;
+}
+function dropPhotos(ids) { return Promise.all((ids || []).filter(photoIdOk).map(id => fsDelete(photoDoc(id)).catch(e => console.error('Photo delete: ' + e.message)))); }
+/** Once a day: photos of requests done more than 30 days ago are deleted. */
+async function prunePhotos() {
+  const cut = Date.now() - PHOTO_KEEP_DAYS * 864e5, gone = [];
+  await fsUpdate(DOC.quick, doc => {
+    gone.length = 0;
+    const list = items(doc);
+    list.forEach(t => { const ph = (t.data && t.data.photos) || []; if (ph.length && t.done && t.done.at && t.done.at < cut) { gone.push(...ph); t.data.photos = []; } });
+    return gone.length ? { items: list } : undefined;
+  });
+  await dropPhotos(gone);
+  return gone.length;
+}
+
 async function approvedEmails() {
   const set = {};
   (await accessRows()).forEach(r => { if (r.email && r.status === 'Approved') set[norm(r.email)] = 1; });
@@ -209,6 +242,7 @@ const T = {
       msg: String(d.msg || '').trim().slice(0, 600),
       days: (Array.isArray(d.days) ? d.days : []).map(Number).filter((n, i, all) => n >= 1 && n <= 31 && Math.round(n) === n && all.indexOf(n) === i).sort((x, y) => x - y)
     };
+    if (kind === 'quick') clean.photos = await storePhotos(d.photos, a.email);
     if (kind === 'leave') {
       if (!canManage(a.email, mem)) throw new Error('Only Team Leaders, Media Managers, the Head of Media and Ibrahim Amin can set days off.');
       const backup = norm(d.backup);
@@ -231,7 +265,7 @@ const T = {
 
     const oldLoc = task.id ? await locate(task.id) : '';
     const loc = kind === 'quick' ? 'quick' : kind === 'leave' ? 'leave' : 'm-' + month;
-    let saved = null, isNew = false;
+    let saved = null, isNew = false, oldPhotos = [];
     // An edit that moves a weekly task to another month leaves its old document.
     if (oldLoc && oldLoc !== loc) {
       let old = null;
@@ -245,6 +279,7 @@ const T = {
       // One weekly day-off row per person: a second one updates the first.
       if (!t && kind === 'leave' && leaveType === 'Weekly') t = list.find(x => x.email === email && (x.data || {}).type === 'Weekly') || null;
       if (!t) { t = { id: uid(kind === 'quick' ? 'Q-' : kind === 'leave' ? 'L-' : 'T-'), kind, at: Date.now(), by: a.email, done: {} }; list.push(t); isNew = true; }
+      oldPhotos = ((t.data && t.data.photos) || []).slice();
       t.kind = kind; t.email = email; t.title = title; t.data = clean; t.weeks = weeks; t.deadline = deadline; t.upd = Date.now();
       t.month = kind === 'quick' ? (t.month || muscatToday().month) : month;
       t.done = t.done || {};
@@ -252,6 +287,7 @@ const T = {
       return { items: list };
     });
     if (oldLoc !== loc || isNew) await indexSet({ [saved.id]: loc });
+    await dropPhotos(oldPhotos.filter(id => (clean.photos || []).indexOf(id) < 0));
     if (kind === 'quick' && isNew) await setNotices([email], 'New request: ' + title, null, () => [saved.id]);
     return pub(saved);
   },
@@ -261,10 +297,51 @@ const T = {
     const loc = await locate(id);
     if (!loc) return { ok: true };
     if (loc === 'leave' && !canManage(a.email, mem)) throw new Error('Only Team Leaders, Media Managers, the Head of Media and Ibrahim Amin can change days off.');
-    await fsUpdate(docOf(loc), doc => ({ items: items(doc).filter(x => x.id !== String(id)) }));
+    let photos = [];
+    await fsUpdate(docOf(loc), doc => { const list = items(doc), t = list.find(x => x.id === String(id)); photos = (t && t.data && t.data.photos) || []; return { items: list.filter(x => x.id !== String(id)) }; });
     await indexSet({ [String(id)]: null });
+    await dropPhotos(photos);
     await dropFromNotices(String(id));
     return { ok: true };
+  },
+
+  /**
+   * Seasons page: the goal set for each season, and how many prep tasks mention it.
+   * words: { seasonKey: ['ramadan', 'رمضان', …] }, matched as plain text in task names.
+   */
+  async seasonsInfo([token, words]) {
+    await assertAccess(token);
+    const now = muscatToday().month, months = [now];
+    for (let i = 0; i < 4; i++) months.push(nextMonth(months[months.length - 1]));
+    const [goals, quick, ...ms] = await Promise.all([fsGet(DOC.seasonGoals), fsGet(DOC.quick), ...months.map(m => fsGet(DOC.month(m)))]);
+    const list = items(quick).concat(...ms.map(items));
+    const prep = {};
+    Object.keys(words && typeof words === 'object' ? words : {}).slice(0, 40).forEach(key => {
+      const w = (Array.isArray(words[key]) ? words[key] : []).slice(0, 12).map(x => String(x || '').trim().toLowerCase()).filter(x => x.length >= 3);
+      if (!w.length) return;
+      const hit = list.filter(t => { const n = String(t.title || '').toLowerCase(); return w.some(x => n.indexOf(x) >= 0); });
+      const isDone = t => t.kind === 'quick' ? !!(t.done && t.done.at) : (t.weeks || []).length > 0 && t.weeks.every(k => t.done && t.done[k]);
+      if (hit.length) prep[key] = { n: hit.length, done: hit.filter(isDone).length };
+    });
+    return { goals: goals || {}, prep };
+  },
+  async seasonGoalSet([token, key, goal]) {
+    const a = await assertAccess(token), mem = await members();
+    if (!canManage(a.email, mem)) throw new Error('Only Team Leaders, Media Managers, the Head of Media and Ibrahim Amin can set season goals.');
+    key = String(key || '');
+    if (!/^[a-z0-9-]{3,40}$/.test(key)) throw new Error('Unknown season.');
+    const g = Math.round(Number(goal) || 0);
+    if (g < 0 || g > 1e9) throw new Error('Please type a number.');
+    return fsUpdate(DOC.seasonGoals, doc => { const out = Object.assign({}, doc || {}); if (g) out[key] = { goal: g, by: a.email, at: Date.now() }; else delete out[key]; return out; });
+  },
+
+  /** One photo of a Quick request, for anyone on the team. */
+  async taskPhoto([token, id]) {
+    await assertAccess(token);
+    if (!photoIdOk(id)) throw new Error('Photo not found.');
+    const p = await fsGet(photoDoc(id));
+    if (!p || !p.data) throw new Error('This photo was deleted.');
+    return { id: String(id), data: p.data };
   },
 
   async taskDone([token, id, week, done]) {
@@ -489,7 +566,9 @@ async function morningPushIfDue() {
     claimed = true;
     return { day, at: Date.now() };
   });
-  return claimed ? morningPush() : null;
+  if (!claimed) return null;
+  await prunePhotos().catch(e => console.error('Photo clean-up: ' + e.message));
+  return morningPush();
 }
 
 /** Router: before the move every call goes to Apps Script unchanged. */
@@ -505,4 +584,4 @@ async function call(fn, args) {
 }
 const FNS = Object.keys(T).concat(['adminTasksMove', 'adminTasksMoveStatus']);
 
-module.exports = { moved, call, FNS, morningPush, morningPushIfDue, muscatToday, leavesToday, frozenOn, weekOf, prevMonth, appsScript, relay, teamStatusFor, members };
+module.exports = { moved, call, FNS, canManage, morningPush, morningPushIfDue, muscatToday, leavesToday, frozenOn, weekOf, prevMonth, appsScript, relay, teamStatusFor, members };

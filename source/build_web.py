@@ -34,7 +34,7 @@ head = '''<meta name="theme-color" content="#203C8E">
     adminArchiveMove:{w:130000,a:1,t:0},
     // Team Tasks: the server answers (it passes calls to Apps Script until the admin moves them).
     // tk: once this device has seen them on the server, never fall back to the old sheet.
-    tasksLoad:{w:25000,t:0,tk:1},taskSave:{w:25000,t:0,tk:1},taskDelete:{w:25000,t:0,tk:1},taskDone:{w:25000,t:0,tk:1},
+    tasksLoad:{w:25000,t:0,tk:1},taskSave:{w:45000,t:0,tk:1},taskPhoto:{w:25000,t:0,tk:1},seasonsInfo:{w:20000,t:0,tk:1},seasonGoalSet:{w:20000,t:0,tk:1},taskDelete:{w:25000,t:0,tk:1},taskDone:{w:25000,t:0,tk:1},
     tasksCopyMonth:{w:30000,t:0,tk:1},tasksSendWeek:{w:90000,t:0,tk:1},leaveFreezeSet:{w:25000,t:0,tk:1},
     adminSetMember:{w:25000,t:0,tk:1},teamStatus:{w:15000,t:0,tk:1},adminTasksMove:{w:120000,t:0,tk:2},adminTasksMoveStatus:{w:15000,t:0,tk:2},
     // Sign-in, devices and app state: same rule, with their own "moved" mark.
@@ -46,7 +46,7 @@ head = '''<meta name="theme-color" content="#203C8E">
     // Usage, shares, ideas, plan history, the monthly report and web notifications.
     logShare:{w:20000,tk:1,k:'sekna_rest_fb'},adminShareStats:{w:30000,tk:1,k:'sekna_rest_fb'},adminResetShares:{w:30000,tk:1,k:'sekna_rest_fb'},
     logUsage:{w:20000,tk:1,k:'sekna_rest_fb'},adminActivity:{w:30000,tk:1,k:'sekna_rest_fb'},adminResetActivity:{w:60000,tk:1,k:'sekna_rest_fb'},
-    submitIdea:{w:30000,tk:1,k:'sekna_rest_fb'},myNotifications:{w:20000,tk:1,k:'sekna_rest_fb'},myIdeas:{w:20000,tk:1,k:'sekna_rest_fb'},adminIdeas:{w:20000,tk:1,k:'sekna_rest_fb'},adminIdeaUpdate:{w:30000,tk:1,k:'sekna_rest_fb'},
+    submitIdea:{w:30000,tk:1,k:'sekna_rest_fb'},myNotifications:{w:20000,tk:1,k:'sekna_rest_fb'},fxRates:{w:20000,tk:1,k:'sekna_rest_fb'},myIdeas:{w:20000,tk:1,k:'sekna_rest_fb'},adminIdeas:{w:20000,tk:1,k:'sekna_rest_fb'},adminIdeaUpdate:{w:30000,tk:1,k:'sekna_rest_fb'},
     adminSavePlanHistory:{w:60000,tk:1,k:'sekna_rest_fb'},getPlanHistory:{w:20000,tk:1,k:'sekna_rest_fb'},webPushSubscribe:{w:30000,tk:1,k:'sekna_rest_fb'},
     adminReportRecipients:{w:30000,tk:1,k:'sekna_rest_fb'},adminSendMonthlyReport:{w:300000,tk:1,k:'sekna_rest_fb'},adminRestMove:{w:120000,tk:2},adminRestMoveStatus:{w:20000,tk:2}
    };
