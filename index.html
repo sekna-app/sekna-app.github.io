@@ -95,6 +95,7 @@ window.addEventListener('load',function(){
     adminArchiveStatus:{w:60000,a:1,t:0},
     // Longer than the server's own limit (120 s), so Apps Script never runs a move at the same time.
     adminArchiveMove:{w:130000,a:1,t:0},
+    adminArchiveProgress:{w:15000,a:1,t:0},
     // Team Tasks: the server answers (it passes calls to Apps Script until the admin moves them).
     // tk: once this device has seen them on the server, never fall back to the old sheet.
     tasksLoad:{w:25000,t:0,tk:1},taskSave:{w:45000,t:0,tk:1},taskPhoto:{w:25000,t:0,tk:1},seasonsInfo:{w:20000,t:0,tk:1},seasonGoalSet:{w:20000,t:0,tk:1},taskDelete:{w:25000,t:0,tk:1},taskDone:{w:25000,t:0,tk:1},
@@ -2047,6 +2048,20 @@ window.addEventListener('load',function(){
     .lyx-dl{position:absolute;top:10px;right:9px;font-size:10.5px;font-weight:900}.lyx-dl.up{color:#0e8f5d}.lyx-dl.dn{color:#c43c50}
     .lyx-sheet{position:fixed;inset:0;z-index:2000;background:rgba(9,14,30,.45);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s}
     .lyx-sheet.open{opacity:1;pointer-events:auto}
+    /* v170: Close the month, step by step */
+    .ls-card{padding:22px 18px 20px!important}
+    .ls-k{font-size:10px;font-weight:900;letter-spacing:.12em;color:#8a92a6}
+    .ls-card h3{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:25px;margin:2px 0 10px;color:#0c1a46}
+    .ls-pb{height:8px;border-radius:9px;background:#eef1f8;overflow:hidden;margin:6px 0 4px}.ls-pb u{display:block;height:100%;background:linear-gradient(90deg,#5d86ff,#203c8e);border-radius:9px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+    .ls-pb.ok u{background:linear-gradient(90deg,#3fbf86,#13894f)}.ls-pb.bad u{background:#d33b4f}
+    .ls-pt{font-size:11px;font-weight:800;color:#8a92a6}
+    .ls-st{margin-top:6px}.ls-s{display:flex;align-items:center;gap:11px;padding:9px 0}
+    .ls-s i{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:13px;font-weight:900;background:#eef1f8;color:#a7adbb;transition:background .3s}
+    .ls-s.ok i{background:#13894f;color:#fff}.ls-s.now i{background:#fff;border:3px solid #5d86ff;color:#203c8e;animation:lsPulse 1.2s ease-in-out infinite}.ls-s.bad i{background:#d33b4f;color:#fff}
+    @keyframes lsPulse{50%{box-shadow:0 0 0 6px rgba(93,134,255,.18)}}
+    .ls-s b{display:block;font-size:13.5px;color:#1d2433}.ls-s span{font-size:11px;color:#8a92a6;font-weight:700}.ls-s.off b{color:#a7adbb}.ls-s.bad span{color:#d33b4f}
+    .ls-close{display:block;width:100%;margin-top:14px;border:0;border-radius:14px;padding:13px;font:inherit;font-size:14px;font-weight:900;color:#fff;background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);cursor:pointer}
+    body.dark-mode .ls-card h3,body.dark-mode .ls-s b{color:#fff}body.dark-mode .ls-pb,body.dark-mode .ls-s i{background:#1d2330}
     .lyx-card{position:relative;width:100%;max-width:460px;background:#fff;border-radius:22px 22px 0 0;padding:16px 14px calc(18px + env(safe-area-inset-bottom));transform:translateY(30px);transition:transform .3s cubic-bezier(.2,.8,.2,1);max-height:88vh;overflow:auto}
     .lyx-sheet.open .lyx-card{transform:none}
     @media(min-width:700px){.lyx-sheet{align-items:center}.lyx-card{border-radius:22px}}
@@ -6929,14 +6944,46 @@ async function labMove(){
  if(!await askSekna({title:'Close the month?',text:`${list}\n\nThe results move to the history and are cleared from the current month, ready for the new month.`,ok:'Close the month',tone:'info',icon:'box'}))return;
  if(LAB_BUSY)return;
  LAB_BUSY=true; drawLab();
- serverCall('adminArchiveMove',getAccessToken(),CURRENT_ACCOUNT).then(r=>{
+ 
+ const acc=CURRENT_ACCOUNT, t0=Date.now(), first=ready[0];
+ LAB_STEPS={n:1,done:false,err:'',rows:ready.reduce((a,m)=>a+(m.rows||0),0),months:ready.map(m=>m.key),have:first.have,need:first.need,archiveName:(LAB_STATE&&LAB_STATE.archiveName)||'History'};
+ labStepsDraw();
+ const poll=setInterval(()=>{serverCall('adminArchiveProgress',getAccessToken(),acc).then(p=>{
+   if(!LAB_STEPS||LAB_STEPS.done||!p||p.run<t0-5000||p.error)return;
+   if(p.n>LAB_STEPS.n){LAB_STEPS.n=Math.min(4,p.n);if(p.rows)LAB_STEPS.rows=p.rows;if(p.archiveName)LAB_STEPS.archiveName=p.archiveName;labStepsDraw()}}).catch(()=>{})},1500);
+ serverCall('adminArchiveMove',getAccessToken(),acc).then(r=>{
+   clearInterval(poll);
    LAB_BUSY=false;
-   LAB_STATE=Object.assign({account:CURRENT_ACCOUNT},LAB_STATE,{months:r.months,archiveRows:r.archiveRows});
+   LAB_STATE=Object.assign({account:acc},LAB_STATE,{months:r.months,archiveRows:r.archiveRows});
    LAB_MSG=r.moved.length?'':'Nothing was ready to move.';
    LAB_DONE=r.moved.length?`${esc(r.moved.map(k=>monthName(k,true)).join(', '))} ${r.moved.length>1?'are':'is'} now in the history (${fmt(r.rows,0)} rows). The new month can start.`:'';
-   delete MONTH_EXTRA[CURRENT_ACCOUNT];
+   delete MONTH_EXTRA[acc];SS.ex={};
+   if(LAB_STEPS){LAB_STEPS=Object.assign(LAB_STEPS,{n:5,done:true,rows:r.rows||LAB_STEPS.rows,empty:!r.moved.length});labStepsDraw()}
    drawLab();
- }).catch(err=>{LAB_BUSY=false;LAB_MSG='⚠️ '+esc(errorText(err));drawLab()});
+ }).catch(err=>{
+   clearInterval(poll);
+   LAB_BUSY=false;LAB_MSG='⚠️ '+esc(errorText(err));drawLab();
+   
+   serverCall('adminArchiveProgress',getAccessToken(),acc).then(p=>{if(p&&p.run>=t0-5000&&p.n)LAB_STEPS.n=Math.min(4,p.n)}).catch(()=>{}).finally(()=>{if(LAB_STEPS){LAB_STEPS.err=errorText(err);labStepsDraw()}});
+ });
+}
+let LAB_STEPS=null;
+function labStepsDraw(){
+ const st=LAB_STEPS;if(!st)return;
+ let o=document.getElementById('labSteps');
+ if(!o){o=document.createElement('div');o.id='labSteps';o.className='lyx-sheet ls-sheet';o.onclick=e=>{if((e.target===o||e.target.closest('.ls-close'))&&(LAB_STEPS.done||LAB_STEPS.err)){o.classList.remove('open');LAB_STEPS=null}};document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'))}
+ const name=st.months.map(k=>monthName(k,true)).join(', '), next=monthName(tkShift(st.months[st.months.length-1],1),true);
+ const steps=[[`Checked ${st.have} of ${st.need} days`,'Nothing missing'],[`Copied ${fmt(st.rows,0)} rows`,`To the ${esc(st.archiveName)} tab`],['Checking the copy','Every row must match before anything is removed'],['Clearing the current month',`Ready for ${esc(next)}`]];
+ const cur=st.done?5:st.n;
+ const rows=steps.map((x,i)=>{const k=i+1,cls=st.err&&k===cur?'bad':k<cur?'ok':k===cur?'now':'off';
+   const title=k>=cur&&!st.done?(k===1?'Checking the days':k===2?`Copying ${fmt(st.rows,0)} rows`:x[0]):x[0];
+   return `<div class="ls-s ${cls}"><i>${cls==='ok'?'✓':cls==='bad'?'!':k}</i><div><b>${title}</b><span>${cls==='bad'?esc(st.err):x[1]}</span></div></div>`}).join('');
+ const pct=st.done?100:Math.round((cur-1)/4*100+(st.err?0:12));
+ const head=st.err?(cur<4?'Stopped · nothing was removed':'Stopped'):st.done?(st.empty?'Nothing to move':'Done'):'Please wait…';
+ o.innerHTML=`<div class="lyx-card ls-card"><small class="ls-k">${st.done&&!st.err?'CLOSED':'CLOSING'} · ${esc(name.toUpperCase())}</small><h3>${head}</h3>
+   <div class="ls-pb${st.err?' bad':st.done?' ok':''}"><u style="width:${pct}%"></u></div><div class="ls-pt"><span>${st.done?'All 4 steps done':st.err?'Step '+cur+' of 4':'Step '+cur+' of 4'}</span></div>
+   <div class="ls-st">${rows}</div>
+   ${st.done||st.err?`<button type="button" class="ls-close">${st.done?'Done':'Close'}</button>`:''}</div>`;
 }
  
 let MONTH_BASIS='total', MONTH_MODE='compare', MONTH_EXTRA={}, MONTH_EXTRA_LOADING={}, MONTH_EXTRA_FAIL={}, MONTH_PICK={}, MONTH_CHART='value', MONTH_TIP='';

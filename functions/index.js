@@ -7,7 +7,7 @@ const { onSchedule } = require('firebase-functions/v2/scheduler');
 const { buildDashboardData, getMonthCompareData, normalizeAccountKey_ } = require('./dash');
 const { assertAccess, assertAdmin } = require('./access');
 const { fsGet, fsSet, fsAppend, fsList, fsClearList, request, PROJECT_ID } = require('./google');
-const { archiveStatus, archiveMove } = require('./archive');
+const { archiveStatus, archiveMove, archiveProgress } = require('./archive');
 const tasks = require('./tasks');
 const accounts = require('./accounts');
 const rest = require('./rest');
@@ -67,6 +67,10 @@ const CALLS = {
   async adminArchiveStatus(args) {
     await assertAdmin(args[0]);
     return archiveStatus(args[1]);
+  },
+  async adminArchiveProgress(args) {
+    await assertAdmin(args[0]);
+    return archiveProgress(args[1]);
   },
   async adminArchiveMove(args) {
     const who = await assertAdmin(args[0]);

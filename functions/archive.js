@@ -67,23 +67,31 @@ async function archiveStatus(accountKey) {
 
 // One move at a time, across server instances.
 const LOCK = 'server/archiveLock';
+// Where the move is up to (1 check, 2 copy, 3 read back, 4 clear, 5 done), so the Lab can show each step.
+const PROGRESS = k => 'server/archiveProgress-' + k;
+async function archiveProgress(accountKey) { return (await fsGet(PROGRESS(normalizeAccountKey_(accountKey)))) || null; }
 const LOCK_MS = 3 * 60 * 1000;
 
 async function archiveMove(accountKey, who) {
-  const account = ACCOUNTS[normalizeAccountKey_(accountKey)];
+  const key = normalizeAccountKey_(accountKey), account = ACCOUNTS[key];
+  const run = Date.now();
+  const step = (n, extra) => fsSet(PROGRESS(key), Object.assign({ run, n, at: Date.now() }, extra || {})).catch(() => {});
   const lock = await fsGet(LOCK);
   if (lock && Date.now() - lock.at < LOCK_MS) throw new Error('Another move is running. Please try again in a minute.');
   await fsSet(LOCK, { at: Date.now(), by: who.email });
+  let at = 1;
   try {
+    await step(1);
     const plan = await archivePlan(account);
     const ready = plan.months.filter(m => m.status === 'ready');
-    if (!ready.length) return { moved: [], rows: 0, months: plan.months, archiveRows: plan.archiveRows };
+    if (!ready.length) { await step(5, { rows: 0 }); return { moved: [], rows: 0, months: plan.months, archiveRows: plan.archiveRows }; }
 
     const rows = [], moved = {};
     ready.forEach(m => plan.groups[m.key].idx.forEach(i => { rows.push(plan.srcRows[i]); moved[i] = true; }));
     const { book, src, dst } = plan;
     const start = Math.max(plan.dstLast, 1) + 1;
     const end = start + rows.length - 1;
+    at = 2; await step(2, { rows: rows.length, months: ready.map(m => m.key), archiveName: dst.title, sourceName: src.title });
 
     if (dst.rows < end) await sheetsBatchUpdate(book.id, [{ appendDimension: { sheetId: dst.sheetId, dimension: 'ROWS', length: end - dst.rows } }]);
     await valuesUpdate(book.id, a1(dst.title, `A${start}:J${end}`), rows);
@@ -96,10 +104,12 @@ async function archiveMove(accountKey, who) {
       } }]);
     }
 
+    at = 3; await step(3, { rows: rows.length, months: ready.map(m => m.key), archiveName: dst.title, sourceName: src.title });
     const written = grid((await batchGet(book.id, [a1(dst.title, `A${start}:J${end}`)]))[0], rows.length, 10);
     const same = written.every((r, i) => r.every((v, j) => String(v) === String(rows[i][j])));
     if (!same) throw new Error('The archive did not save every row, so nothing was removed from ' + src.title + '.');
 
+    at = 4; await step(4, { rows: rows.length, months: ready.map(m => m.key), archiveName: dst.title, sourceName: src.title });
     const keep = plan.srcRows.filter((r, i) => !moved[i] && r.some(v => v !== '' && v !== null));
     await valuesClear(book.id, a1(src.title, `A2:J${plan.srcRows.length + 1}`));
     if (keep.length) await valuesUpdate(book.id, a1(src.title, `A2:J${keep.length + 1}`), keep);
@@ -107,10 +117,14 @@ async function archiveMove(accountKey, who) {
     forgetArchive();
     console.log(who.email + ' moved ' + rows.length + ' rows (' + ready.map(m => m.key).join(', ') + ') to the archive.');
     const after = await archivePlan(account);
+    await step(5, { rows: rows.length, months: ready.map(m => m.key), archiveName: dst.title, sourceName: src.title });
     return { moved: ready.map(m => m.key), rows: rows.length, startRow: start, months: after.months, archiveRows: after.archiveRows };
+  } catch (err) {
+    await step(at, { error: String((err && err.message) || err) });
+    throw err;
   } finally {
     await fsSet(LOCK, { at: 0 }).catch(() => {});
   }
 }
 
-module.exports = { archiveStatus, archiveMove };
+module.exports = { archiveStatus, archiveMove, archiveProgress };
