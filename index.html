@@ -4003,6 +4003,11 @@ window.addEventListener('load',function(){
     .ss-gn{display:block;font-size:10.5px;color:#8a92a6;font-weight:700;margin-top:5px}
     .ss-hd .ss-ge span,.ss-hd .ss-gn{color:#d4f3e3}
     .ss-ld{color:#8a92a6}
+    .ss-af{display:inline-flex;background:#f2f4f9;border-radius:11px;padding:3px;gap:2px;margin:0 0 6px}
+    .ss-af button{border:0;background:none;font:inherit;font-size:11.5px;font-weight:800;padding:5px 12px;border-radius:8px;color:#5b6375;cursor:pointer}
+    .ss-af button.on{background:#fff;color:#203c8e;box-shadow:0 2px 6px rgba(20,30,60,.1)}
+    .ss-hd .ss-af{background:rgba(255,255,255,.14)}.ss-hd .ss-af button{color:#d4f3e3}.ss-hd .ss-af button.on{background:#fff;color:#0f6b45}
+    body.dark-mode .ss-af{background:#1d2330}body.dark-mode .ss-af button.on{background:#2a3242;color:#fff}
     .ss-fs{display:flex;gap:6px;margin:16px 0 0}
     .ss-fs button{border:1.5px solid #e7eaf2;background:#fff;font:inherit;font-size:12px;font-weight:800;border-radius:99px;padding:6px 12px;color:#4b5263;cursor:pointer}
     .ss-fs button.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);color:#fff;border-color:transparent}
@@ -9594,7 +9599,7 @@ const SS_US=[
  {k:'givingtuesday',name:'Giving Tuesday',sub:'The biggest giving day',len:1,big:1,at:y=>isoAdd(ssNth(y,11,4,4),5),w:['giving tuesday','givingtuesday']},
  {k:'yearend',name:'Year-end giving',sub:'Last days for tax receipts',len:6,at:y=>y+'-12-26',w:['year-end','year end','yearend']}
 ];
-let SS={f:'all',open:'',more:false,info:null,infoAt:0,ex:{},exBusy:false,edit:''};
+let SS={f:'all',acc:{},open:'',more:false,info:null,infoAt:0,ex:{},exBusy:false,edit:''};
 let SS_MAP=null;
 
 function ssMap(){
@@ -9624,7 +9629,10 @@ function ssSum(accs,from,to){
  return n?{spend:sp,value:val,days:n}:null;
 }
 
-function ssAccs(s){return s.type==='u'?['usa']:['usa','ar']}
+const SS_ACC={all:{l:'All',who:'both accounts',a:['usa','ar']},usa:{l:'US',who:'USA',a:['usa']},ar:{l:'AR',who:'AR',a:['ar']}};
+function ssAccOf(s){return SS_ACC[(SS.acc||{})[s.id]]?SS.acc[s.id]:'all'}
+function ssAccs(s){return SS_ACC[ssAccOf(s)].a}
+function ssAccSet(id,k,e){if(e)e.stopPropagation();SS.acc=Object.assign({},SS.acc,{[id]:k});renderSeasons()}
 function ssLoadExtras(){
  if(SS.exBusy)return;
  const need=['usa','ar'].filter(a=>!SS.ex[a]);if(!need.length)return;
@@ -9650,7 +9658,8 @@ async function ssGoalSave(id,btn){
 }
 
 function ssDetail(s,all){
- const prev=ssPrev(s,all), accs=ssAccs(s), who=s.type==='u'?'USA':'both accounts';
+ const prev=ssPrev(s,all), ak=ssAccOf(s), accs=SS_ACC[ak].a, who=SS_ACC[ak].who;
+ const tabs=`<div class="ss-af" onclick="event.stopPropagation()">${Object.keys(SS_ACC).map(k=>`<button type="button" class="${k===ak?'on':''}" onclick="ssAccSet('${s.id}','${k}',event)">${SS_ACC[k].l}</button>`).join('')}</div>`;
  let txt;
  if(!prev)txt='No last year date to compare with.';
  else if(SS.exBusy&&!SS.ex.usa)txt='<span class="ss-ld">Loading last year…</span>';
@@ -9666,7 +9675,7 @@ function ssDetail(s,all){
  const chips=[g?`<button type="button" class="ss-ch" ${mgr?`onclick="ssGoalEdit('${s.id}',event)"`:'disabled'}>🎯 Goal ${money(g.goal)}</button>`:mgr?`<button type="button" class="ss-ch add" onclick="ssGoalEdit('${s.id}',event)">＋ Set a goal</button>`:'',
    p?`<span class="ss-ch">✅ ${p.done} of ${p.n} prep task${p.n>1?'s':''}</span>`:''].filter(Boolean).join('');
  const edit=SS.edit===s.id?`<div class="ss-ge" onclick="event.stopPropagation()"><span>£</span><input id="ssGoalIn" inputmode="numeric" value="${g?g.goal:''}" placeholder="Goal in pounds" onkeydown="if(event.key==='Enter')this.nextElementSibling.click()"><button type="button" onclick="ssGoalSave('${s.id}',this)">Save</button></div><small class="ss-gn">In pounds, like the sheet. Leave it empty to remove the goal.</small>`:'';
- return `<div class="ss-dt"><p>${txt}</p>${chips?`<div class="ss-chs">${chips}</div>`:''}${edit}</div>`;
+ return `<div class="ss-dt">${tabs}<p>${txt}</p>${chips?`<div class="ss-chs">${chips}</div>`:''}${edit}</div>`;
 }
 function ssRow(s,t,all,i){
  const open=SS.open===s.id, live=s.from<=t&&t<=s.to, n=ssDays(t,s.from);
