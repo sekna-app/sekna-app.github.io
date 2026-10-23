@@ -3508,6 +3508,21 @@ window.addEventListener('load',function(){
     .id-lock{font-size:12.5px;font-weight:800;color:#6b7385;background:#f2f4f9;border-radius:10px;padding:8px 10px}
     .id-in{width:100%;box-sizing:border-box;border:1.5px solid #e6e9f1;border-radius:12px;padding:11px 12px;font:inherit;font-size:14.5px;background:#fff;color:#1d2433;resize:vertical}
     .id-list{display:grid;gap:10px}
+    /* Media Plan Lab · Checklist */
+    .lc2{background:#fff;border-radius:20px;padding:15px 16px;box-shadow:0 6px 18px rgba(20,30,60,.05);margin-bottom:12px}
+    .lc2-h{display:flex;justify-content:space-between;align-items:center;gap:8px}.lc2-h b{font-size:16px;color:#1d2433}
+    .lc2-h em{font-style:normal;font-size:11px;font-weight:900;border-radius:99px;padding:4px 10px;background:#eef1f8;color:#203c8e;white-space:nowrap}.lc2-h em.ok{background:#dff5ea;color:#13894f}
+    .lc2-bar{height:8px;border-radius:9px;background:#edf0f6;margin:12px 0 6px;overflow:hidden}.lc2-bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#203c8e,#5d86ff)}
+    .lc2-bar.ok i{background:linear-gradient(90deg,#13894f,#34d399)}
+    .lc2-note{display:block;font-size:11.5px;color:#8a92a6;font-weight:700}
+    .lc2-r{display:flex;align-items:center;gap:11px;padding:12px 0 0;margin-top:12px;border-top:1px solid #e7eaf2}
+    .lc2-n{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:900;background:#eef1f8;color:#9aa1b2}
+    .lc2-r.on .lc2-n{background:#203c8e;color:#fff}.lc2-r.off{opacity:.55}
+    .lc2-r>div{flex:1;min-width:0}.lc2-r b{display:block;font-size:14px;color:#1d2433}.lc2-r small{display:block;font-size:11.5px;color:#8a92a6;font-weight:600;margin-top:1px}
+    .lc2-b{flex:none;border:0;border-radius:12px;padding:9px 16px;font:inherit;font-size:13px;font-weight:900;color:#fff;background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);cursor:pointer;min-width:72px;display:grid;place-items:center}
+    .lc2-b.g{background:linear-gradient(135deg,#e2b874,#c89434);color:#1c1405}.lc2-b:disabled{opacity:.7}
+    .lc2-msg{margin:10px 0 0 41px}
+    body.dark-mode .lc2{background:#151a22}body.dark-mode .lc2-h b,body.dark-mode .lc2-r b{color:#fff}body.dark-mode .lc2-r{border-color:#2a313c}body.dark-mode .lc2-bar{background:#232a36}
     /* Notifications list */
     .nf-badge{margin-left:auto;font-style:normal;min-width:20px;height:20px;border-radius:99px;padding:0 6px;background:#ff5d73;color:#fff;font-size:11px;font-weight:900;display:grid;place-items:center}
     .nf-body{padding:12px 14px 30px;max-width:680px;margin:0 auto}
@@ -6630,21 +6645,13 @@ function renderLab(){
  if(!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)){
    body.innerHTML='<div class="lab-locked"><div class="lock-ic anim"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="sh" d="M8 11V8a4 4 0 0 1 8 0v3"/><rect x="5" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1.4" fill="currentColor"/></svg></div><b>Admin only</b><small>Media Plan Lab is for the SEKNA admin only.</small></div>';return;
  }
- // The month-end jobs only show once the month is complete (Close the month also in the first
- // ten days of the next month, after the new plan has replaced the old one).
- const days=(DASH_DATA&&DASH_DATA.dayPlan)||[], live=days.filter(x=>x.actual).length, done=days.length>0&&live>=days.length;
- const early=tkToday().d<=10;
- if(!done&&!early){
-   const save=document.getElementById('labSave');if(save)save.innerHTML='';
-   const label=days[0]?monthName(days[0].date.slice(0,7),true):'This month';
-   body.innerHTML=`<div class="lab-box"><div class="lab-idle"><span class="lab-idle-ic">🗓️</span><b>${esc(label)} is still running</b><small>${live} of ${days.length} days are in. Save to Plan History and Close the month open here when the month is complete, and you get a notification.</small></div></div>`;
-   return;
- }
- if(done)drawLabSave();else{const save=document.getElementById('labSave');if(save)save.innerHTML=''}
- if(!LAB_STATE||LAB_STATE.account!==CURRENT_ACCOUNT){drawLabIdle();return}
+ drawLabSave();
+ // The months list shows once Check has been pressed for this account.
+ if(LAB_CHECKING){drawLabIdle();return}
+ if(!LAB_STATE||LAB_STATE.account!==CURRENT_ACCOUNT){body.innerHTML='';return}
  drawLab();
 }
-const LAB_INTRO='<div class="lab-head"><div><b>Close the month</b><small>When a month is over and every day of it is in, move its results into the history. That keeps the reports and comparisons complete and makes room for the new month\'s plan.</small></div></div>';
+const LAB_INTRO='<div class="lab-head"><div><b>Months in the sheet</b><small>A month that is complete can move to the history. That keeps the reports complete and makes room for the new month\'s plan.</small></div></div>';
 // Nothing is read until the admin asks, so opening the tab never waits on the sheet.
 function drawLabIdle(note){
  const body=document.getElementById('labBody');if(!body)return;
@@ -6655,10 +6662,10 @@ function drawLabIdle(note){
 let LAB_CHECKING=false, LAB_DONE='';
 function loadLab(){
  if(LAB_CHECKING)return;
- LAB_CHECKING=true;LAB_DONE='';
+ LAB_CHECKING=true;LAB_DONE='';drawLabSave();
  if(LAB_STATE&&LAB_STATE.account===CURRENT_ACCOUNT)drawLab();else drawLabIdle();
- serverCall('adminArchiveStatus',getAccessToken(),CURRENT_ACCOUNT).then(r=>{LAB_CHECKING=false;LAB_STATE=Object.assign({account:CURRENT_ACCOUNT},r);if(CURRENT_TAB==='lab')drawLab()})
-  .catch(err=>{LAB_CHECKING=false;if(/SEKNA_ADMIN_ONLY/.test(errorText(err))){ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE,{isAdmin:false});renderLab();return}
+ serverCall('adminArchiveStatus',getAccessToken(),CURRENT_ACCOUNT).then(r=>{LAB_CHECKING=false;LAB_STATE=Object.assign({account:CURRENT_ACCOUNT},r);drawLabSave();if(CURRENT_TAB==='lab')drawLab()})
+  .catch(err=>{LAB_CHECKING=false;drawLabSave();if(/SEKNA_ADMIN_ONLY/.test(errorText(err))){ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE,{isAdmin:false});renderLab();return}
    if(LAB_STATE&&LAB_STATE.account===CURRENT_ACCOUNT){LAB_MSG='⚠️ '+esc(errorText(err));drawLab()}else drawLabIdle(errorText(err))});
 }
 function drawLab(){
@@ -10012,7 +10019,7 @@ function tkNoticeUI(){
 }
 
 /* ---------- v72: loading bar, Updates screen, profile photos, presence ---------- */
-const DASHBOARD_RELEASE_CLIENT={version:'v164',date:'2026-11-05'};
+const DASHBOARD_RELEASE_CLIENT={version:'v165',date:'2026-11-05'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 // A thin bar at the top replaces the old grey-out while data loads.
@@ -10499,15 +10506,22 @@ function drawPlanHistory(){
 }
 // Media Plan Lab: keep the month's plan and results in Plan History.
 let LAB_SAVE={busy:false,msg:''};
+// Media Plan Lab · Checklist: the month's progress, then the two month-end steps in order.
+// Both open once every day of the month is in (Close the month also in the first ten days of
+// the next month, after the new plan has replaced the old one).
 function drawLabSave(){
  const host=document.getElementById('labSave');if(!host)return;
  if(!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)){host.innerHTML='';return}
- const days=(DASH_DATA&&DASH_DATA.dayPlan)||[], label=days[0]?monthName(days[0].date.slice(0,7),true):'this month';
- const live=days.filter(x=>x.actual).length, done=days.length>0&&live>=days.length;
- host.innerHTML=`<div class="lab-save"><div class="lab-save-t"><span>🏛️</span><div><b>Save ${esc(label)} to Plan History</b><small>Keeps the month's plan and what we achieved as our reference. Do it on the last day, before the new month's plan is added.</small></div></div>
-  ${LAB_SAVE.msg?`<div class="mrp-msg">${LAB_SAVE.msg}</div>`:''}
-  ${done?'':`<div class="lab-wait">🔒 Opens when the month is closed: ${live} of ${days.length} days are in.</div>`}
-  <button type="button" class="lab-go" onclick="labSavePlan()" ${LAB_SAVE.busy||!done?'disabled':''}>${LAB_SAVE.busy?'<span class="lab-spin"></span>Saving…':'Save to Plan History'}</button></div>`;
+ const days=(DASH_DATA&&DASH_DATA.dayPlan)||[], label=days[0]?monthName(days[0].date.slice(0,7),true):'This month';
+ const live=days.filter(x=>x.actual).length, n=days.length, done=n>0&&live>=n, closeOpen=done||tkToday().d<=10;
+ const pct=n?Math.round(live/n*100):0;
+ const row=(k,on,title,sub,btn)=>`<div class="lc2-r${on?' on':' off'}"><span class="lc2-n">${k}</span><div><b>${title}</b><small>${sub}</small></div>${on?btn:''}</div>`;
+ host.innerHTML=`<div class="lc2"><div class="lc2-h"><b>${esc(label)}</b><em class="${done?'ok':''}">${done?'✓ ':''}${live} of ${n} days</em></div>
+  <div class="lc2-bar${done?' ok':''}"><i style="width:${pct}%"></i></div>
+  <small class="lc2-note">${done?'Do step 1, then step 2.':closeOpen?'Close last month if it is complete. Plan History opens when this month is complete.':'The month-end steps open when every day is in. You get a notification.'}</small>
+  ${row(1,done,'Save to Plan History','Keeps the month’s plan and what we achieved',`<button type="button" class="lc2-b g" onclick="labSavePlan()" ${LAB_SAVE.busy?'disabled':''}>${LAB_SAVE.busy?'<span class="lab-spin"></span>':'Save'}</button>`)}
+  ${LAB_SAVE.msg?`<div class="mrp-msg lc2-msg">${LAB_SAVE.msg}</div>`:''}
+  ${row(2,closeOpen,'Close the month','Moves the finished month into the history',`<button type="button" class="lc2-b" onclick="loadLab()" ${LAB_CHECKING||LAB_BUSY?'disabled':''}>${LAB_CHECKING?'<span class="lab-spin"></span>':'Check'}</button>`)}</div>`;
 }
 function labSavePlan(){
  if(LAB_SAVE.busy)return;
