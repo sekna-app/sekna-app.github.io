@@ -79,6 +79,40 @@ async function resetShares() {
 const ideaOut = i => ({ id: i.id, time: isoLocal(i.t), email: i.email, name: i.name, title: i.title, text: i.text, status: i.status || 'New', reply: i.reply || '', updated: isoLocal(i.upd) });
 
 /* ---------- the calls (same names and arguments as Code.gs) ---------- */
+/* ---------- exchange rates (currency switch) ---------- */
+// Free, no key. One fetch a day, after 12:00 PM Muscat time, kept in Firestore for the whole team.
+let fxMemo = 0, fxTry = 0;
+function fxLastNoon(now) {
+  const p = parts(now), noon = Date.UTC(+p.year, +p.month - 1, +p.day, 8, 0, 0); // 12:00 in Muscat = 08:00 UTC
+  return now >= noon ? noon : noon - 864e5;
+}
+async function fxFresh() {
+  const have = await fsGet(DOC.fx);
+  if (have && have.rates && have.at >= fxLastNoon(Date.now())) return have;
+  try {
+    const r = await fetch('https://open.er-api.com/v6/latest/GBP', { signal: AbortSignal.timeout(8000) });
+    const j = await r.json(), pick = {};
+    ['USD', 'EUR', 'AED', 'SAR', 'OMR', 'QAR', 'KWD', 'BHD'].forEach(c => { const v = Number(j && j.rates && j.rates[c]); if (v > 0) pick[c] = v; });
+    if (!pick.USD) throw new Error('No rates');
+    const out = { base: 'GBP', rates: pick, at: Date.now() };
+    await fsSet(DOC.fx, out);
+    return out;
+  } catch (e) {
+    console.error('Rates: ' + e.message);
+    if (have && have.rates) return have;
+    throw new Error('Exchange rates are not available right now.');
+  }
+}
+/** From the 2-minute warm-up: the day's rates right after 12:00 PM, so nobody waits for them. */
+async function fxRefreshIfDue() {
+  const noon = fxLastNoon(Date.now());
+  if (fxMemo === noon || Date.now() - fxTry < 30 * 6e4) return null; // a failed try waits 30 minutes
+  fxTry = Date.now();
+  const r = await fxFresh();
+  if (r && r.at >= noon) fxMemo = noon;
+  return r;
+}
+
 const R = {
   async logShare([token, kind, accountKey]) {
     const a = await assertAccess(token), t = Date.now(), m = monthOf(t);
@@ -141,28 +175,10 @@ const R = {
       button: { url: WEB_PAGE_URL, label: 'Open SEKNA' } }] }).catch(e => console.error('Idea email: ' + e.message));
     return { ok: true, id };
   },
-  /**
-   * Exchange rates for the currency switch, from 1 pound. Free, no key; fetched at most every 6 hours
-   * and kept in Firestore, so one fetch serves the whole team.
-   */
+  /** Exchange rates for the currency switch, from 1 pound (refreshed every day at 12:00 PM Muscat time). */
   async fxRates([token]) {
     await assertAccess(token);
-    const have = await fsGet(DOC.fx);
-    if (have && have.rates && Date.now() - have.at < 6 * 3600e3) return have;
-    try {
-      const r = await fetch('https://open.er-api.com/v6/latest/GBP', { signal: AbortSignal.timeout(8000) });
-      const j = await r.json();
-      const pick = {};
-      ['USD', 'EGP', 'EUR', 'AED', 'OMR'].forEach(c => { const v = Number(j && j.rates && j.rates[c]); if (v > 0) pick[c] = v; });
-      if (!pick.USD || !pick.EGP) throw new Error('No rates');
-      const out = { base: 'GBP', rates: pick, at: Date.now(), day: String((j && j.time_last_update_utc) || '') };
-      await fsSet(DOC.fx, out);
-      return out;
-    } catch (e) {
-      console.error('Rates: ' + e.message);
-      if (have && have.rates) return have;
-      throw new Error('Exchange rates are not available right now.');
-    }
+    return fxFresh();
   },
   /** The notifications list (menu → Notifications). */
   async myNotifications([token]) {
@@ -423,4 +439,4 @@ async function call(fn, args) {
 }
 const FNS = Object.keys(R).concat(['adminRestMove', 'adminRestMoveStatus']);
 
-module.exports = { call, FNS, pushChecks, pushState, serverSwitchEmail, moved };
+module.exports = { call, FNS, pushChecks, pushState, serverSwitchEmail, moved, fxRefreshIfDue };

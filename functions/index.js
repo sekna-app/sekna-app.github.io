@@ -218,6 +218,7 @@ exports.api = onRequest({
     try { pushed = await rest.pushChecks(latest); } catch (e) { pushed = { error: errorText(e) }; console.error('Push checks: ' + errorText(e)); }
     // The 9 AM Cairo backup push rides on this check (no schedule of its own).
     try { const m = await tasks.morningPushIfDue(); if (m) pushed = Object.assign({}, pushed, { morning: m }); } catch (e) { console.error('Morning push: ' + errorText(e)); }
+    try { await rest.fxRefreshIfDue(); } catch (e) { console.error('Rates: ' + errorText(e)); }
     // Kept for /diag/push: the latest day seen per account, and what the check did with it.
     stats.lastPush = { at: Date.now(), seen: Object.fromEntries(Object.entries(latest).map(([k, v]) => [k, v && v.date])), pushed };
     if (pushed && Object.keys(pushed).some(k => k !== 'skipped' && k !== 'error')) stats.lastPushSent = stats.lastPush;
