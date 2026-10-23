@@ -3508,6 +3508,23 @@ window.addEventListener('load',function(){
     .id-lock{font-size:12.5px;font-weight:800;color:#6b7385;background:#f2f4f9;border-radius:10px;padding:8px 10px}
     .id-in{width:100%;box-sizing:border-box;border:1.5px solid #e6e9f1;border-radius:12px;padding:11px 12px;font:inherit;font-size:14.5px;background:#fff;color:#1d2433;resize:vertical}
     .id-list{display:grid;gap:10px}
+    /* Team Leave · people as the menu's navy card */
+    .ln-c{position:relative;width:100%;display:flex;align-items:center;gap:12px;border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:12px 12px 12px 16px;margin-bottom:9px;overflow:hidden;
+      background:radial-gradient(circle at 85% 0%,rgba(93,134,255,.25),transparent 55%),linear-gradient(150deg,#1b2d78,#0f1a4a);color:#fff;font:inherit;text-align:left;cursor:pointer;animation:skRise .3s both;animation-delay:calc(var(--i,0)*40ms)}
+    .ln-c:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(#5d86ff,#203c8e)}
+    .ln-c .tk-av{flex:none;width:44px!important;height:44px!important;box-shadow:0 0 0 2px rgba(255,255,255,.9)}
+    .ln-m{flex:1;min-width:0}.ln-m b{display:block;font-size:15px;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .ln-r{display:flex;align-items:center;gap:10px;margin-top:5px}.ln-r span{font-size:10px;font-weight:900;letter-spacing:.1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#9fb6ff}
+    .ln-d{display:flex;gap:4px;flex:none;padding-left:2px}.ln-d i{width:6px;height:6px;border-radius:2px;transform:rotate(45deg);background:rgba(255,255,255,.2)}
+    .ln-c em{flex:none;font-style:normal;font-size:11.5px;font-weight:800;color:#c6d2f5;text-align:right;white-space:nowrap}.ln-c em u{text-decoration:none;color:#f3d79f}.ln-c em strong{color:#fff;font-weight:900}
+    .ln-go{font-style:normal;color:rgba(255,255,255,.45);font-weight:900;font-size:18px}
+    .ln-c .lp-ex{margin-top:6px}
+    .ln-c.tier1:before{background:linear-gradient(#5d86ff,#203c8e)}.ln-c.tier1 .ln-r span{color:#9fb6ff}.ln-c.tier1 .ln-d i.on{background:#9fb6ff;box-shadow:0 0 6px #9fb6ff}
+    .ln-c.tier2:before{background:linear-gradient(#fbfcfe,#b9c2d0)}.ln-c.tier2 .ln-r span{color:#d5dbe6}.ln-c.tier2 .ln-d i.on{background:#d5dbe6;box-shadow:0 0 6px #d5dbe6}
+    .ln-c.tier3:before{background:linear-gradient(#fbecc8,#c9933f)}.ln-c.tier3 .ln-r span{color:#e2b874}.ln-c.tier3 .ln-d i.on{background:#e2b874;box-shadow:0 0 6px #e2b874}
+    .ln-c.tier4:before{background:linear-gradient(#fbe1d6,#b9735e)}.ln-c.tier4 .ln-r span{color:#e3a48f}.ln-c.tier4 .ln-d i.on{background:#e3a48f;box-shadow:0 0 6px #e3a48f}
+    .ln-c.tier5:before{background:linear-gradient(#f3d79f,#c9933f)}.ln-c.tier5 .ln-r span{color:#f3d79f}.ln-c.tier5 .ln-d i.on{background:#f3d79f;box-shadow:0 0 6px #f3d79f}
+    .ln-c.tier0:before{background:rgba(255,255,255,.25)}
     /* Media Plan Lab · Checklist */
     .lc2{background:#fff;border-radius:20px;padding:15px 16px;box-shadow:0 6px 18px rgba(20,30,60,.05);margin-bottom:12px}
     .lc2-h{display:flex;justify-content:space-between;align-items:center;gap:8px}.lc2-h b{font-size:16px;color:#1d2433}
@@ -9658,11 +9675,14 @@ function tkLeaveHtml(){
    :`<div class="lc-cv lc-all"><small>TODAY · ${day}</small><b>✓ Everyone is working today</b></div>`;
  const freeze=`<div class="lc-fz"><span class="lp-im" role="img" aria-label="Moon and sheep"></span><button type="button" class="lp-ft" ${admin?'onclick="tkFreezeEdit()"':''}><b>Freeze leave for a season</b><small>${fr?'On now':'Off now'}</small></button>
    <button type="button" class="lp-tg dk${f.on?' on':''}" ${admin?'onclick="tkFreezeToggle(this)"':'disabled'} role="switch" aria-checked="${!!f.on}" aria-label="Freeze leave now"><i></i></button></div>`;
+ 
  const rows=people.map((p,i)=>{const w=tkWeeklyOf(p.email),b=w&&w.data.backup?tkPerson(w.data.backup):null, extra=tkLeaveOf(p.email).filter(l=>l.data.type!=='Weekly');
-   const wd=w?(w.data.weekdays||[]).map(d=>TK_DAYS[d]).join(', '):'';
-   return `<button type="button" class="lc-r" style="--i:${i}" ${admin?`onclick="tkNewLeave('${esc(p.email)}')"`:''}>${tkAv(p)}<div class="lc-rn"><b>${esc(p.name)}</b>
-     ${extra.length?`<div class="lp-ex">${extra.map(l=>{const t=TK_LEAVE_TYPES.find(x=>x[0]===l.data.type)||TK_LEAVE_TYPES[1];return `<span>${t[1]} ${(l.data.days||[]).join(', ')}</span>`}).join('')}</div>`:''}</div>
-     <em>${w?`<u>${esc(wd)}</u> · ${b?`backup <strong>${first(b.name)}</strong>`:'no backup'}`:'No day off'}</em>${admin?'<i>›</i>':''}</button>`}).join('');
+   const wd=w?(w.data.weekdays||[]).map(d=>TK_DAYS[d]).join(', '):'', t=roleTier(p.role);
+   const dots=t?`<span class="ln-d">${[1,2,3,4,5].map(k=>`<i class="${k<=t?'on':''}"></i>`).join('')}</span>`:'';
+   return `<button type="button" class="ln-c tier${t}" style="--i:${i}" ${admin?`onclick="tkNewLeave('${esc(p.email)}')"`:''}>${tkAv(p)}<div class="ln-m"><b>${esc(p.name)}</b>
+     ${p.role?`<div class="ln-r"><span>${esc(roleLabel(p.role).toUpperCase())}</span>${dots}</div>`:''}
+     ${extra.length?`<div class="lp-ex">${extra.map(l=>{const tt=TK_LEAVE_TYPES.find(x=>x[0]===l.data.type)||TK_LEAVE_TYPES[1];return `<span>${tt[1]} ${(l.data.days||[]).join(', ')}</span>`}).join('')}</div>`:''}</div>
+     <em>${w?`<u>${esc(wd)}</u>${b?` · <strong>${first(b.name)}</strong>`:''}`:'No day off'}</em>${admin?'<i class="ln-go">›</i>':''}</button>`}).join('');
  return stats+covers+(admin?freeze:'')+(people.length?`<div class="lc-ls">${rows}</div>`:'<div class="tk-empty"><b>No one yet</b></div>');
 }
 async function tkFreezeToggle(btn){
@@ -10020,7 +10040,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v167',date:'2026-11-05'};
+const DASHBOARD_RELEASE_CLIENT={version:'v168',date:'2026-11-05'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 

@@ -2505,7 +2505,7 @@ function adminDelete(token, id) {
 /* ---------- Profile photos and dashboard release info (v72) ---------- */
 
 /** Shown on the Updates screen. Change it whenever a new dashboard version is deployed. */
-const DASHBOARD_RELEASE = { version: 'v167', date: '2026-11-05' };
+const DASHBOARD_RELEASE = { version: 'v168', date: '2026-11-05' };
 
 function getProfilesSheet_() {
   const ss = SpreadsheetApp.openById(ACCESS.SPREADSHEET_ID);
