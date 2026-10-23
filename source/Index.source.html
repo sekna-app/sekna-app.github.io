@@ -3867,7 +3867,7 @@ window.addEventListener('load',function(){
     .ss-fs button{border:1.5px solid #e7eaf2;background:#fff;font:inherit;font-size:12px;font-weight:800;border-radius:99px;padding:6px 12px;color:#4b5263;cursor:pointer}
     .ss-fs button.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);color:#fff;border-color:transparent}
     .ss-r{background:#fff;border-radius:16px;padding:10px 12px;margin-bottom:7px;border-left:4px solid #2453d6;cursor:pointer;box-shadow:0 3px 10px rgba(20,30,60,.04)}
-    .ss-r.h{border-left-color:#13894f}.ss-r.g{border-left-color:#c89434}
+    .ss-r.h{border-left-color:#13894f}
     .ss-rh{display:flex;align-items:center;gap:11px}
     .ss-dt0{flex:none;width:42px;text-align:center}.ss-dt0 b{display:block;font-size:18px;line-height:1;color:#1d2433}.ss-dt0 small{font-size:9.5px;font-weight:900;color:#8a92a6;letter-spacing:.08em}
     .ss-m{flex:1;min-width:0}.ss-m b{display:block;font-size:13.5px;color:#1d2433}.ss-m span{font-size:11px;color:#8a92a6;font-weight:700}
@@ -9450,19 +9450,13 @@ function compareShareText(d){
 /* ---------- v170: Seasons Calendar (Hijri seasons and US giving days, under Reports Studio) ---------- */
 // w: words that mark a prep task for the season (matched in task names on the server).
 const SS_HIJRI=[
- {k:'rajab',m:7,d:1,len:1,name:'Rajab begins',sub:'One of the sacred months',w:['rajab','رجب']},
- {k:'israa',m:7,d:27,len:1,name:"Isra' and Mi'raj",sub:'27 Rajab',w:['isra','miraj',"mi'raj",'الإسراء']},
- {k:'shaban',m:8,d:15,len:1,name:"Mid-Sha'ban",sub:"15 Sha'ban",w:['shaban',"sha'ban",'شعبان']},
  {k:'ramadan',m:9,d:1,len:30,name:'Ramadan',big:1,w:['ramadan','ramadhan','رمضان']},
  {k:'last10',m:9,d:21,len:10,name:'Last 10 nights',sub:'Laylat al-Qadr',w:['last 10','last ten','laylat','العشر','ليلة القدر']},
- {k:'eidfitr',m:10,d:1,len:3,name:'Eid al-Fitr',w:['eid al-fitr','eid ul fitr','eid al fitr','عيد الفطر']},
+ {k:'eidfitr',m:10,d:1,len:3,name:'Eid al-Fitr',sub:'Last day for Zakat al-Fitr',w:['eid al-fitr','eid ul fitr','eid al fitr','عيد الفطر']},
  {k:'dhulhijjah',m:12,d:1,len:10,name:'First 10 days of Dhul Hijjah',big:1,w:['dhul hijjah','qurbani','qurban','udhiyah','أضاحي','اضاحي']},
- {k:'arafah',m:12,d:9,len:1,name:'Day of Arafah',w:['arafah','arafat','عرفة']},
- {k:'eidadha',m:12,d:10,len:4,name:'Eid al-Adha',w:['eid al-adha','eid ul adha','eid al adha','الأضحى']},
- {k:'newyear',m:1,d:1,len:1,name:'Islamic New Year',sub:'1 Muharram',w:['muharram','hijri new year','islamic new year','محرم']},
- {k:'ashura',m:1,d:10,len:1,name:'Ashura',sub:'10 Muharram',w:['ashura','عاشوراء']},
- // Gulf days on the Hijri calendar (type g).
- {k:'zayed',m:9,d:19,len:1,name:'Zayed Humanitarian Day',sub:'🇦🇪 UAE · 19 Ramadan',g:1,w:['zayed','زايد']}
+ {k:'arafah',m:12,d:9,len:1,name:'Day of Arafah',sub:'9 Dhul Hijjah · a big giving day',w:['arafah','arafat','عرفة']},
+ {k:'eidadha',m:12,d:10,len:4,name:'Eid al-Adha',sub:'Last days for Qurbani',w:['eid al-adha','eid ul adha','eid al adha','الأضحى']},
+ {k:'ashura',m:1,d:10,len:1,name:'Ashura',sub:'10 Muharram · Ashura appeals',w:['ashura','عاشوراء']}
 ];
 const SS_HM=['Muharram','Safar',"Rabi' I","Rabi' II",'Jumada I','Jumada II','Rajab',"Sha'ban",'Ramadan','Shawwal',"Dhu al-Qi'dah",'Dhul Hijjah'];
 // US days, worked out for any year: n-th weekday of a month (n<0 = the last one).
@@ -9471,24 +9465,9 @@ function ssNth(y,mo,wd,n){
  const last=new Date(Date.UTC(y,mo,0)),l=last.getUTCDay();return new Date(Date.UTC(y,mo-1,last.getUTCDate()-(l-wd+7)%7)).toISOString().slice(0,10);
 }
 const SS_US=[
- {k:'mlk',name:'MLK Day',sub:'Day of service',len:1,at:y=>ssNth(y,1,1,3),w:['mlk','martin luther']},
- {k:'mothers',name:"Mother's Day",sub:'Gifts in honour of mums',len:1,at:y=>ssNth(y,5,0,2),w:["mother's day",'mothers day']},
- {k:'memorial',name:'Memorial Day',sub:'Long weekend',len:1,at:y=>ssNth(y,5,1,-1),w:['memorial day']},
- {k:'fathers',name:"Father's Day",sub:'Gifts in honour of dads',len:1,at:y=>ssNth(y,6,0,3),w:["father's day",'fathers day']},
  {k:'thanksgiving',name:'Thanksgiving',sub:'Giving week starts',len:1,at:y=>ssNth(y,11,4,4),w:['thanksgiving']},
  {k:'givingtuesday',name:'Giving Tuesday',sub:'The biggest giving day',len:1,big:1,at:y=>isoAdd(ssNth(y,11,4,4),5),w:['giving tuesday','givingtuesday']},
  {k:'yearend',name:'Year-end giving',sub:'Last days for tax receipts',len:6,at:y=>y+'-12-26',w:['year-end','year end','yearend']}
-];
-// Gulf national days (fixed dates every year).
-const SS_GULF=[
- {k:'sa-founding',name:'Saudi Founding Day',sub:'🇸🇦 Saudi Arabia',md:'02-22',len:1,w:['founding day','يوم التأسيس']},
- {k:'kw-national',name:'Kuwait National & Liberation Days',sub:'🇰🇼 Kuwait',md:'02-25',len:2,w:['kuwait national','liberation day','العيد الوطني الكويتي']},
- {k:'sa-national',name:'Saudi National Day',sub:'🇸🇦 Saudi Arabia',md:'09-23',len:1,w:['saudi national','اليوم الوطني السعودي']},
- {k:'om-national',name:'Oman National Day',sub:'🇴🇲 Oman',md:'11-20',len:1,w:['oman national','العيد الوطني العماني']},
- {k:'ae-commem',name:'UAE Commemoration Day',sub:'🇦🇪 UAE · Martyrs\' Day',md:'11-30',len:1,w:['commemoration day','يوم الشهيد']},
- {k:'ae-national',name:'UAE National Day',sub:'🇦🇪 UAE · Eid Al Etihad',md:'12-02',len:2,w:['uae national','eid al etihad','عيد الاتحاد']},
- {k:'bh-national',name:'Bahrain National Day',sub:'🇧🇭 Bahrain',md:'12-16',len:2,w:['bahrain national','العيد الوطني البحريني']},
- {k:'qa-national',name:'Qatar National Day',sub:'🇶🇦 Qatar',md:'12-18',len:1,w:['qatar national','اليوم الوطني القطري']}
 ];
 let SS={f:'all',open:'',more:false,info:null,infoAt:0,ex:{},exBusy:false,edit:''};
 let SS_MAP=null;
@@ -9504,9 +9483,8 @@ function ssToday(){return new Date(Date.now()-new Date().getTimezoneOffset()*6e4
 function ssList(){
  const mp=ssMap(),t=ssToday(),hy=(hijriOf(t)||{}).y,out=[];
  if(hy)[hy-1,hy,hy+1].forEach(y=>SS_HIJRI.forEach(s=>{const from=mp[y+'-'+s.m+'-'+s.d];if(!from)return;
-   out.push({key:s.k,id:s.k+'-'+y,name:s.name+(s.big?' '+y:''),sub:s.sub||(s.d+' '+SS_HM[s.m-1]+' '+y),hsub:s.d+' '+SS_HM[s.m-1]+' '+y,type:s.g?'g':'h',from,to:isoAdd(from,s.len-1),big:!!s.big,len:s.len,hy:y,w:s.w})}));
+   out.push({key:s.k,id:s.k+'-'+y,name:s.name+(s.big?' '+y:''),sub:s.sub||(s.d+' '+SS_HM[s.m-1]+' '+y),hsub:s.d+' '+SS_HM[s.m-1]+' '+y,type:'h',from,to:isoAdd(from,s.len-1),big:!!s.big,len:s.len,hy:y,w:s.w})}));
  const gy=+t.slice(0,4);
- [gy-1,gy,gy+1].forEach(y=>SS_GULF.forEach(s=>{const from=y+'-'+s.md;out.push({key:s.k,id:s.k+'-'+y,name:s.name,sub:s.sub,type:'g',from,to:isoAdd(from,s.len-1),big:false,len:s.len,gy:y,w:s.w})}));
  [gy-1,gy,gy+1].forEach(y=>SS_US.forEach(s=>{const from=s.at(y);out.push({key:s.k,id:s.k+'-'+y,name:s.name,sub:s.sub,type:'u',from,to:isoAdd(from,s.len-1),big:!!s.big,len:s.len,gy:y,w:s.w})}));
  return out.sort((a,b)=>a.from<b.from?-1:a.from>b.from?1:0);
 }
@@ -9520,8 +9498,8 @@ function ssSum(accs,from,to){
    for(let k=from;k<=to;k=isoAdd(k,1)){const r=days[k];if(!r)continue;n++;for(let i=0;i<r.length;i+=5){sp+=+r[i]||0;val+=+r[i+4]||0}}});
  return n?{spend:sp,value:val,days:n}:null;
 }
-// US days count USA, Gulf days count AR, Hijri seasons count both.
-function ssAccs(s){return s.type==='u'?['usa']:s.type==='g'?['ar']:['usa','ar']}
+// US days count USA, Hijri seasons count both accounts.
+function ssAccs(s){return s.type==='u'?['usa']:['usa','ar']}
 function ssLoadExtras(){
  if(SS.exBusy)return;
  const need=['usa','ar'].filter(a=>!SS.ex[a]);if(!need.length)return;
@@ -9531,7 +9509,7 @@ function ssLoadExtras(){
 }
 function ssLoadInfo(force){
  if(!force&&SS.info&&Date.now()-SS.infoAt<5*6e4)return;
- const words={};SS_HIJRI.concat(SS_US,SS_GULF).forEach(s=>{words[s.k]=s.w});
+ const words={};SS_HIJRI.concat(SS_US).forEach(s=>{words[s.k]=s.w});
  SS.infoAt=Date.now();
  serverCall('seasonsInfo',getAccessToken(),words).then(r=>{SS.info=r||{goals:{},prep:{}};if(CURRENT_TAB==='seasons')renderSeasons()}).catch(()=>{SS.info=SS.info||{goals:{},prep:{},fail:1}});
 }
@@ -9547,7 +9525,7 @@ async function ssGoalSave(id,btn){
 }
 // What last year's same season brought, with the goal and the prep tasks for this one.
 function ssDetail(s,all){
- const prev=ssPrev(s,all), accs=ssAccs(s), who=s.type==='u'?'USA':s.type==='g'?'AR':'both accounts';
+ const prev=ssPrev(s,all), accs=ssAccs(s), who=s.type==='u'?'USA':'both accounts';
  let txt;
  if(!prev)txt='No last year date to compare with.';
  else if(SS.exBusy&&!SS.ex.usa)txt='<span class="ss-ld">Loading last year…</span>';
@@ -9568,7 +9546,7 @@ function ssDetail(s,all){
 function ssRow(s,t,all,i){
  const open=SS.open===s.id, live=s.from<=t&&t<=s.to, n=ssDays(t,s.from);
  return `<div class="ss-r ${s.type}${open?' open':''}" style="--i:${i}" onclick="ssToggle('${s.id}')"><div class="ss-rh"><div class="ss-dt0"><b>${+s.from.slice(8,10)}</b><small>${esc(ssD(s.from,{day:undefined}).toUpperCase())}</small></div>
-   <div class="ss-m"><b>${esc(s.name)}</b><span>${s.type==='u'?'US':s.type==='g'?'Gulf':'Hijri'} · ${esc(s.sub)}</span></div><em>${live?'<i class="ss-on">On now</i>':n===1?'Tomorrow':n+' days'}</em></div>
+   <div class="ss-m"><b>${esc(s.name)}</b><span>${s.type==='u'?'US':'Hijri'} · ${esc(s.sub)}</span></div><em>${live?'<i class="ss-on">On now</i>':n===1?'Tomorrow':n+' days'}</em></div>
    ${open?ssDetail(s,all):''}</div>`;
 }
 function renderSeasons(){
@@ -9585,11 +9563,11 @@ function renderSeasons(){
      <div class="ss-hd">${ssDetail(big,all)}</div></div>`}
  const list=next.filter(s=>SS.f==='all'||s.type===SS.f), show=SS.more?list:list.slice(0,10);
  el.innerHTML=`${hero}
-   <div class="ss-fs">${[['all','All'],['h','🌙 Hijri'],['g','🌴 Gulf'],['u','🇺🇸 US']].map(x=>`<button type="button" class="${SS.f===x[0]?'on':''}" onclick="ssFilter('${x[0]}')">${x[1]}</button>`).join('')}</div>
+   <div class="ss-fs">${[['all','All'],['h','🌙 Hijri'],['u','🇺🇸 US']].map(x=>`<button type="button" class="${SS.f===x[0]?'on':''}" onclick="ssFilter('${x[0]}')">${x[1]}</button>`).join('')}</div>
    <div class="ss-lbl">COMING UP · TAP ONE FOR LAST YEAR</div>
    ${show.map((s,i)=>ssRow(s,t,all,i)).join('')}
    ${list.length>show.length?`<button type="button" class="ss-more" onclick="SS.more=true;renderSeasons()">Show ${list.length-show.length} more ›</button>`:''}
-   <p class="ss-note">Hijri dates use the Umm al-Qura calendar and can move by a day with the moon sighting. US days are worked out every year by themselves. Gulf national days are fixed dates. Numbers are from the sheet's daily history.</p>`;
+   <p class="ss-note">Hijri dates use the Umm al-Qura calendar and can move by a day with the moon sighting. US days are worked out every year by themselves. Numbers are from the sheet's daily history.</p>`;
 }
 
 
