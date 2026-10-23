@@ -3523,18 +3523,26 @@ window.addEventListener('load',function(){
     .lc2-b.g{background:linear-gradient(135deg,#e2b874,#c89434);color:#1c1405}.lc2-b:disabled{opacity:.7}
     .lc2-msg{margin:10px 0 0 41px}
     body.dark-mode .lc2{background:#151a22}body.dark-mode .lc2-h b,body.dark-mode .lc2-r b{color:#fff}body.dark-mode .lc2-r{border-color:#2a313c}body.dark-mode .lc2-bar{background:#232a36}
-    /* Notifications list */
+    /* Notifications list · Filters + compact */
     .nf-badge{margin-left:auto;font-style:normal;min-width:20px;height:20px;border-radius:99px;padding:0 6px;background:#ff5d73;color:#fff;font-size:11px;font-weight:900;display:grid;place-items:center}
     .nf-body{padding:12px 14px 30px;max-width:680px;margin:0 auto}
-    .nf-day{font-size:10.5px;font-weight:900;letter-spacing:.12em;color:#8a92a6;margin:14px 4px 6px}
-    .nf-it{width:100%;display:flex;gap:12px;align-items:flex-start;text-align:left;border:0;font:inherit;color:inherit;background:#fff;border-radius:16px;padding:12px 14px;margin-bottom:8px;box-shadow:0 4px 14px rgba(20,30,60,.05);cursor:pointer;position:relative}
-    .nf-it.new:after{content:"";position:absolute;top:14px;right:14px;width:8px;height:8px;border-radius:50%;background:#ff5d73}
-    .nf-ic{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:18px;background:#e8eefc}
-    .nf-ic.month_closed{background:#dff5ea}.nf-ic.announcement{background:#fff3dc}.nf-ic.app_update{background:#efe9fd}.nf-ic.tasks{background:#e6f7ee}
-    .nf-tx{flex:1;min-width:0;padding-right:12px}.nf-tx b{display:block;font-size:13.5px;color:#1d2433}.nf-tx span{display:block;font-size:12.5px;color:#5b6375;line-height:1.45;margin-top:2px}
-    .nf-tx small{display:flex;gap:6px;align-items:center;margin-top:5px;font-size:11px;color:#9aa1b2;font-weight:700}.nf-tx small em{font-style:normal;font-size:10px;font-weight:900;border-radius:99px;padding:1px 7px;background:#eef1f8;color:#203c8e}
+    .nf-fs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:2px 0 12px}.nf-fs::-webkit-scrollbar{display:none}
+    .nf-fs button{flex:none;border:1.5px solid #e7eaf2;background:#fff;border-radius:99px;padding:7px 13px;font:inherit;font-size:12.5px;font-weight:800;color:#4b5263;cursor:pointer}
+    .nf-fs button.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);color:#fff;border-color:transparent}
+    .nf-box{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 4px 14px rgba(20,30,60,.05)}
+    .nf-r{width:100%;display:flex;align-items:center;gap:11px;border:0;background:none;font:inherit;color:inherit;text-align:left;padding:12px 13px;cursor:pointer}
+    .nf-r+.nf-r{border-top:1px solid #eef0f5}
+    .nf-ic{flex:none;width:36px;height:36px;border-radius:11px;display:grid;place-items:center;font-size:17px;background:#e8eefc}
+    .nf-ic.g{background:#dff5ea}.nf-ic.y{background:#fff3dc}.nf-ic.p{background:#efe9fd}.nf-ic.t{background:#e6f7ee}
+    .nf-tx{flex:1;min-width:0}.nf-tx b{display:block;font-size:13.5px;color:#1d2433;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .nf-tx b em{font-style:normal;font-size:10px;font-weight:900;border-radius:99px;padding:1px 7px;background:#eef1f8;color:#203c8e;vertical-align:1px}
+    .nf-tx span{display:block;font-size:12px;color:#8a92a6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+    .nf-t{flex:none;font-style:normal;font-size:11px;font-weight:800;color:#9aa1b2;text-align:right;white-space:nowrap}
+    .nf-t i{display:block;width:8px;height:8px;border-radius:50%;background:#ff5d73;margin:5px 0 0 auto}
+    .nf-more{display:block;margin:12px auto 0;border:0;background:none;font:inherit;font-size:12.5px;font-weight:800;color:#203c8e;cursor:pointer}
     .nf-empty{text-align:center;padding:50px 20px;color:#8a92a6;font-weight:700}.nf-empty b{display:block;font-size:30px;margin-bottom:8px}
-    body.dark-mode .nf-it{background:#151a22}body.dark-mode .nf-tx b{color:#fff}body.dark-mode .nf-tx span{color:#c3c9d6}body.dark-mode .nf-ic{background:#1f2a4a}
+    body.dark-mode .nf-box,body.dark-mode .nf-fs button:not(.on){background:#151a22;border-color:#2a313c;color:#d7dce6}body.dark-mode .nf-r+.nf-r{border-color:#2a313c}
+    body.dark-mode .nf-tx b{color:#fff}body.dark-mode .nf-ic{background:#1f2a4a}
     /* Admin · Ideas */
     .ai-fs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:12px 0 4px;padding-bottom:2px}.ai-fs::-webkit-scrollbar{display:none}
     .ai-f{flex:none;display:inline-flex;align-items:center;gap:6px;border:1.5px solid #e6e9f1;background:#fff;border-radius:99px;padding:6px 11px;font:inherit;font-size:12px;font-weight:800;color:#4b5263;cursor:pointer}
@@ -6593,26 +6601,33 @@ function localWhen(ms,withDay){
  if(!withDay)return t;
  return diff===0?t:diff===1?'Yesterday · '+t:d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' · '+t;
 }
+
+const NF_FILTERS=[['all','All'],['data','Data'],['tasks','Tasks'],['team','Team'],['app','App']];
+const NF_GROUP={new_day:'data',month_closed:'data',updated:'data',tasks:'tasks',announcement:'team',app_update:'app'};
+const NF_TINT={new_day:'',updated:'',month_closed:'g',tasks:'t',announcement:'y',app_update:'p'};
+function nfShort(ms){
+ const d=new Date(ms),now=new Date(),k=x=>new Date(x.getFullYear(),x.getMonth(),x.getDate()).getTime(),df=Math.round((k(now)-k(d))/864e5);
+ return df===0?localWhen(ms):df===1?'Yesterday':d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+}
+function nfFilter(f){NF.filter=f;NF.all=false;nfRender()}
 function nfRender(){
  const body=document.getElementById('nfBody');if(!body||!document.getElementById('notifsOverlay').classList.contains('open'))return;
  if(NF.list===null){body.innerHTML=NF.err?`<div class="nf-empty"><b>⚠️</b>${esc(NF.err)}</div>`:'<div class="dx-empty"><span class="lab-spin dark"></span>Loading…</div>';return}
  if(!NF.list.length){body.innerHTML='<div class="nf-empty"><b>🔔</b>No notifications yet.</div>';return}
- const seen=+(NF.openSeen||0), now=new Date(), day=x=>new Date(x.getFullYear(),x.getMonth(),x.getDate()).getTime();
- let last='', html='';
- NF.list.forEach(x=>{
-   const d=new Date(x.at), diff=Math.round((day(now)-day(d))/864e5);
-   const g=diff===0?'TODAY':diff===1?'YESTERDAY':d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'}).toUpperCase();
-   if(g!==last){html+=`<div class="nf-day">${esc(g)}</div>`;last=g}
-   const acc=x.account?`<em>${x.account==='ar'?'AR':'USA'}</em>`:'';
-   html+=`<button type="button" class="nf-it${x.at>seen?' new':''}" onclick="nfOpen('${esc(x.id)}')"><span class="nf-ic ${esc(x.type)}">${NF_ICON[x.type]||'🔔'}</span>
-    <span class="nf-tx"><b>${esc(x.title)}</b>${x.body?`<span>${esc(x.body)}</span>`:''}<small>${acc}${esc(localWhen(x.at))}</small></span></button>`;
- });
- body.innerHTML=html;
+ const f=NF.filter||'all', seen=+(NF.openSeen||0);
+ const has=g=>g==='all'||NF.list.some(x=>(NF_GROUP[x.type]||'data')===g);
+ const chips=`<div class="nf-fs">${NF_FILTERS.filter(([k])=>has(k)).map(([k,l])=>`<button type="button" class="${f===k?'on':''}" onclick="nfFilter('${k}')">${l}</button>`).join('')}</div>`;
+ const list=NF.list.filter(x=>f==='all'||(NF_GROUP[x.type]||'data')===f), shown=NF.all?list:list.slice(0,20);
+ const rows=shown.map(x=>`<button type="button" class="nf-r" onclick="nfOpen('${esc(x.id)}')"><span class="nf-ic ${NF_TINT[x.type]||''}">${NF_ICON[x.type]||'🔔'}</span>
+   <span class="nf-tx"><b>${esc(x.title)}${x.account&&!/ (AR|USA)$| · (AR|USA)$/.test(x.title)?` <em>${x.account==='ar'?'AR':'USA'}</em>`:''}</b><span>${esc(x.body||'')}</span></span>
+   <em class="nf-t">${esc(nfShort(x.at))}${x.at>seen?'<i></i>':''}</em></button>`).join('');
+ body.innerHTML=chips+(rows?`<div class="nf-box">${rows}</div>`:'<div class="nf-empty">Nothing here.</div>')
+  +(list.length>shown.length?`<button type="button" class="nf-more" onclick="NF.all=true;nfRender()">Older notifications ›</button>`:'');
 }
 function openNotifs(){
  closeSidebar();
  const o=document.getElementById('notifsOverlay');if(!o)return;
- NF.openSeen=nfSeen();o.classList.add('open');nfRender();nfLoad();
+ NF.openSeen=nfSeen();NF.filter='all';NF.all=false;o.classList.add('open');nfRender();nfLoad();
  
  const top=Math.max(Date.now(),...((NF.list||[]).map(x=>x.at)));storeSet('sekna_nf_seen',String(top));setTimeout(nfBadge,0);
 }
@@ -10004,7 +10019,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v165',date:'2026-11-05'};
+const DASHBOARD_RELEASE_CLIENT={version:'v166',date:'2026-11-05'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
