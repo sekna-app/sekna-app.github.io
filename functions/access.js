@@ -87,17 +87,46 @@ async function assertAccess(token) {
   return a;
 }
 
-async function assertAdmin(token) {
+function isAdminEmail(email) { return ACCESS.ADMIN_EMAILS.indexOf(String(email || '').toLowerCase()) >= 0; }
+
+/* ---------- permissions (Admin → Permissions, set by the SEKNA admin only) ---------- */
+// lab: Media Plan Lab and Plan History · build: Task Builder · quick: Quick requests · leave: days off · admin: the Admin page.
+// The role gives the start (leaders get build, quick and leave); a switch set in Admin wins over the role.
+const PERM_KEYS = ['lab', 'build', 'quick', 'leave', 'admin'];
+const LEADER_ROLES = ['Team Leader', 'Media Manager', 'Head of Media'];
+const PERM_DOC = 'team/perms';
+let permCache = null;
+async function permTable() {
+  if (permCache && Date.now() - permCache.at < 30000) return permCache;
+  const [mem, over] = await Promise.all([fsGet('team/members'), fsGet(PERM_DOC)]);
+  permCache = { at: Date.now(), mem: mem || {}, over: over || {} };
+  return permCache;
+}
+function forgetPerms() { permCache = null; }
+function permDefaults(role) { const lead = LEADER_ROLES.indexOf(role) >= 0; return { lab: false, build: lead, quick: lead, leave: lead, admin: false }; }
+function permsOf(email, t) {
+  email = String(email || '').trim().toLowerCase();
+  const out = {};
+  if (isAdminEmail(email)) { PERM_KEYS.forEach(k => { out[k] = true; }); return out; }
+  const def = permDefaults((t.mem[email] || {}).role), o = t.over[email] || {};
+  PERM_KEYS.forEach(k => { out[k] = typeof o[k] === 'boolean' ? o[k] : def[k]; });
+  return out;
+}
+async function permsFor(email) { return permsOf(email, await permTable()); }
+async function can(email, key) { return !!(await permsFor(email))[key]; }
+/** Lets the call through when the person has this permission; else SEKNA_ADMIN_ONLY (the page shows its lock). */
+async function assertPerm(token, key) {
   const a = await assertAccess(token);
-  if (ACCESS.ADMIN_EMAILS.indexOf(a.email) < 0) {
-    const err = new Error('SEKNA_ADMIN_ONLY');
-    err.access = true;
-    throw err;
-  }
+  if (!(await can(a.email, key))) { const err = new Error('SEKNA_ADMIN_ONLY'); err.access = true; throw err; }
+  return a;
+}
+async function assertAdmin(token) { return assertPerm(token, 'admin'); }
+/** Only the SEKNA admin (not people given Admin): changing permissions. */
+async function assertOwner(token) {
+  const a = await assertAccess(token);
+  if (!isAdminEmail(a.email)) { const err = new Error('SEKNA_ADMIN_ONLY'); err.access = true; throw err; }
   return a;
 }
 
-function isAdminEmail(email) { return ACCESS.ADMIN_EMAILS.indexOf(String(email || '').toLowerCase()) >= 0; }
-
 module.exports = { ACCESS, ACC, sha256, assertAccess, assertAdmin, checkAccessToken, accessRows, storeRows, forgetRows,
-  accessMoved, markMoved, isAdminEmail };
+  accessMoved, markMoved, isAdminEmail, PERM_KEYS, PERM_DOC, permDefaults, permsFor, can, assertPerm, assertOwner, forgetPerms };

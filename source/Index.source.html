@@ -3506,6 +3506,41 @@ window.addEventListener('load',function(){
     .phx-m i{display:block;height:6px;border-radius:4px;background:#eef0f5;margin-top:6px;overflow:hidden}.phx-m u{display:block;height:100%;border-radius:4px;background:#3d6bff}
     .phx-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:12.5px;color:#6b7385;font-weight:700}.phx-foot b{color:#1d2433}
     .phx-more{color:#203c8e;font-weight:900}
+    /* v170: Celebrate with the team */
+    .phs-cel{display:block;width:100%;margin-top:12px;border:0;border-radius:13px;padding:11px;font:inherit;font-size:13px;font-weight:900;color:#fff;background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);cursor:pointer}
+    .cel-comp{padding:22px 18px 20px!important;max-height:92vh;overflow:auto}
+    .cel-h{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:23px;margin:2px 0 10px;color:#0c1a46}
+    .cel-comp textarea{width:100%;border:1.5px solid #e7eaf2;border-radius:12px;padding:10px 12px;font:inherit;font-size:13px;font-weight:600;line-height:1.45;resize:vertical;box-sizing:border-box}
+    .cel-n{display:block;font-size:11px;color:#8a92a6;font-weight:700;margin:8px 2px 10px}
+    .cel-card{position:relative;overflow:hidden;border-radius:24px;padding:26px 18px 20px;text-align:center;color:#fff;background:radial-gradient(circle at 50% 0%,#4f78f2,transparent 60%),linear-gradient(160deg,#26469f,#14245e)}
+    .cel-card.pv{padding:18px 14px 16px;border-radius:20px}
+    .cel-cf{position:absolute;inset:0;pointer-events:none}
+    .cel-cf i{position:absolute;left:var(--x);top:-14px;width:7px;height:12px;border-radius:2px;background:var(--c);transform:rotate(var(--r));animation:celFall 3.6s linear var(--d) infinite}
+    @keyframes celFall{to{transform:translateY(560px) rotate(calc(var(--r) + 540deg))}}
+    .cel-tro{font-size:46px;line-height:1}.cel-card small{display:block;font-size:10px;font-weight:900;letter-spacing:.16em;color:#c6d2f5;margin-top:6px}
+    .cel-card h3{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:28px;margin:4px 0 8px;color:#fff}
+    .cel-card p{font-size:13px;color:#e3e9fb;line-height:1.55;font-weight:600;margin:0 auto;max-width:320px;white-space:pre-wrap}
+    .cel-k{display:flex;gap:7px;justify-content:center;margin-top:14px}.cel-k span{background:rgba(255,255,255,.14);border-radius:12px;padding:7px 11px;font-size:10.5px;font-weight:800;color:#dfe6fb}.cel-k b{display:block;font-size:16px;color:#fff}
+    .cel-rx{display:flex;justify-content:center;gap:8px;margin-top:16px}
+    .cel-rx button{border:0;background:#fff;color:#1d2433;border-radius:99px;padding:8px 13px;font:inherit;font-size:14px;font-weight:800;cursor:pointer;transition:transform .15s}
+    .cel-rx button.on{background:#ffd200;transform:scale(1.06)}.cel-rx b{font-size:12.5px}
+    .cel-x{position:absolute;top:12px;right:12px;z-index:2;width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;font-size:14px;font-weight:900;cursor:pointer}
+    .cel-view{position:fixed;inset:0;z-index:10040;background:rgba(8,12,24,.72);display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;pointer-events:none;transition:opacity .25s}
+    .cel-view.open{opacity:1;pointer-events:auto}.cel-view .cel-card{width:100%;max-width:400px;transform:scale(.92);transition:transform .35s cubic-bezier(.2,.8,.2,1)}.cel-view.open .cel-card{transform:none}
+    body.dark-mode .cel-h{color:#fff}body.dark-mode .cel-comp textarea{background:#10141b;border-color:#252a32;color:#fff}
+    /* v170: Admin → Permissions */
+    .pm-t{background:#fff;border:1px solid #e7eaf2;border-radius:16px;overflow:hidden;margin-top:12px}
+    .pm-r{display:grid;grid-template-columns:minmax(0,1fr) repeat(5,40px);align-items:center;gap:2px;padding:9px 10px}.pm-r+.pm-r{border-top:1px solid #eef0f5}
+    .pm-h{background:#f7f8fc;font-size:8.5px;font-weight:900;letter-spacing:.04em;color:#8a92a6;text-align:center}.pm-h span:first-child{text-align:left}
+    .pm-p{display:flex;align-items:center;gap:8px;min-width:0}.pm-p div{min-width:0}.pm-p b{display:block;font-size:12.5px;color:#1d2433;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .pm-p small{display:block;font-size:8px;font-weight:900;letter-spacing:.04em;color:#8a92a6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .pm-av{flex:none;width:30px;height:30px;display:block}.pm-av .sk-emb,.pm-av svg,.pm-av img{width:30px;height:30px;display:block;border-radius:50%}
+    .pm-sw{justify-self:center;width:32px;height:19px;border-radius:99px;border:0;padding:0;background:#d9dee8;position:relative;cursor:pointer;transition:background .2s}
+    .pm-sw:after{content:"";position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:left .2s}
+    .pm-sw.on{background:#2453d6}.pm-sw.on:after{left:15px}.pm-sw.lk{opacity:.45;cursor:default}.pm-sw.ch{box-shadow:0 0 0 2px #ffd200}
+    .pm-note{display:block;font-size:10.5px;color:#8a92a6;font-weight:700;line-height:1.45;margin:10px 2px 0}
+    .pm-save{display:block;width:100%;margin-top:12px;border:0;border-radius:13px;padding:12px;font:inherit;font-size:13.5px;font-weight:900;color:#fff;background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);cursor:pointer}.pm-save:disabled{opacity:.45;cursor:default}
+    body.dark-mode .pm-t{background:#151a22;border-color:#252a32}body.dark-mode .pm-h{background:#1d2330}body.dark-mode .pm-r+.pm-r{border-color:#252a32}body.dark-mode .pm-p b{color:#fff}body.dark-mode .pm-sw{background:#2a3242}body.dark-mode .pm-sw.on{background:#2453d6}
     /* v170: Plan History as a statement */
     .phs{background:#fff;border-radius:18px;padding:16px;box-shadow:0 10px 24px rgba(20,30,60,.08);border-top:5px solid #203c8e;cursor:pointer;min-width:0}
     .phs-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
@@ -6722,7 +6757,7 @@ const PLAN_MIX_LABELS=['Search Brand','Non-Brand','PMax','Demand Gen','Video'];
 /* ---------- Notifications list (menu → Notifications) ---------- */
 // What SEKNA sent the team and this person, newest first; times in this device's own time zone.
 let NF={list:null,busy:false,err:''};
-const NF_ICON={new_day:'📊',month_closed:'🗓️',announcement:'📣',app_update:'⬇️',tasks:'✅',updated:'📊'};
+const NF_ICON={new_day:'📊',month_closed:'🗓️',announcement:'📣',app_update:'⬇️',tasks:'✅',updated:'📊',celebrate:'🏆'};
 function nfSeen(){return +storeGet('sekna_nf_seen')||0}
 function nfBadge(){
  const b=document.getElementById('nfBadge');if(!b)return;
@@ -6742,8 +6777,8 @@ function localWhen(ms,withDay){
 }
 // Filters + compact: chips on top, one short row per notification, like a mail inbox.
 const NF_FILTERS=[['all','All'],['data','Data'],['tasks','Tasks'],['team','Team'],['app','App']];
-const NF_GROUP={new_day:'data',month_closed:'data',updated:'data',tasks:'tasks',announcement:'team',app_update:'app'};
-const NF_TINT={new_day:'',updated:'',month_closed:'g',tasks:'t',announcement:'y',app_update:'p'};
+const NF_GROUP={new_day:'data',month_closed:'data',updated:'data',tasks:'tasks',announcement:'team',app_update:'app',celebrate:'team'};
+const NF_TINT={new_day:'',updated:'',month_closed:'g',tasks:'t',announcement:'y',app_update:'p',celebrate:'y'};
 function nfShort(ms){
  const d=new Date(ms),now=new Date(),k=x=>new Date(x.getFullYear(),x.getMonth(),x.getDate()).getTime(),df=Math.round((k(now)-k(d))/864e5);
  return df===0?localWhen(ms):df===1?'Yesterday':d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
@@ -6777,6 +6812,7 @@ function nfOpen(id){
  closeNotifs();
  if(x.type==='tasks'){openTasks('mine');return}
  if(x.type==='app_update'){openUpdates();return}
+ if(x.type==='celebrate'){serverCall('celebrationLatest',getAccessToken()).then(c=>{if(c&&c.id)celShow(c,true)}).catch(()=>{});return}
  if(x.account&&x.account!==CURRENT_ACCOUNT)switchAccount(x.account);
  if(x.type==='month_closed'){switchDashboardTab('lab');return}
  if(x.type==='new_day')switchDashboardTab('overview');
@@ -6786,7 +6822,7 @@ function nfOpen(id){
 let LAB_STATE=null, LAB_BUSY=false, LAB_MSG='';
 function renderLab(){
  const body=document.getElementById('labBody'); if(!body)return;
- if(!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)){
+ if(!canDo('lab')){
    body.innerHTML='<div class="lab-locked"><div class="lock-ic anim"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="sh" d="M8 11V8a4 4 0 0 1 8 0v3"/><rect x="5" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1.4" fill="currentColor"/></svg></div><b>Admin only</b><small>Media Plan Lab is for the SEKNA admin only.</small></div>';return;
  }
  drawLabSave();
@@ -6809,7 +6845,7 @@ function loadLab(){
  LAB_CHECKING=true;LAB_DONE='';drawLabSave();
  if(LAB_STATE&&LAB_STATE.account===CURRENT_ACCOUNT)drawLab();else drawLabIdle();
  serverCall('adminArchiveStatus',getAccessToken(),CURRENT_ACCOUNT).then(r=>{LAB_CHECKING=false;LAB_STATE=Object.assign({account:CURRENT_ACCOUNT},r);drawLabSave();if(CURRENT_TAB==='lab')drawLab()})
-  .catch(err=>{LAB_CHECKING=false;drawLabSave();if(/SEKNA_ADMIN_ONLY/.test(errorText(err))){ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE,{isAdmin:false});renderLab();return}
+  .catch(err=>{LAB_CHECKING=false;drawLabSave();if(/SEKNA_ADMIN_ONLY/.test(errorText(err))){ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE,{perms:Object.assign({},myPerms(),{lab:false})});renderLab();return}
    if(LAB_STATE&&LAB_STATE.account===CURRENT_ACCOUNT){LAB_MSG='⚠️ '+esc(errorText(err));drawLab()}else drawLabIdle(errorText(err))});
 }
 function drawLab(){
@@ -8365,6 +8401,7 @@ function fetchProfile(){
    // Position, the "new tasks" notice and today's backups come from the Team Tasks server.
    setTimeout(nfLoad,2500);
    setTimeout(()=>{fxLoad().catch(()=>{});curDraw()},3500);
+   setTimeout(celCheck,4500);
    serverCall('teamStatus',token).then(t=>{
      if(!t||!ACCESS_PROFILE)return;
      const add={};['member','taskNotice','backupToday'].forEach(k=>{if(k in t)add[k]=t[k]});
@@ -8389,7 +8426,7 @@ function updateProfileUI(){
  const lock=document.getElementById('adminNavLock');
  if(lock)lock.hidden=!!p.isAdmin;
  const labLock=document.getElementById('labNavLock');
- if(labLock)labLock.hidden=!!p.isAdmin;
+ if(labLock)labLock.hidden=canDo('lab');
  ['mrSection'].forEach(id=>{const b=document.getElementById(id);if(b)b.hidden=!p.isAdmin});
  tkQuickNav();
  if(p.isAdmin&&CURRENT_TAB==='channel')renderMonthlyReport();
@@ -8844,7 +8881,7 @@ function renderAdmin(d){
  const annState=ann?(ann.showFrom&&ann.showFrom>isoDay(0)?'Scheduled':'Showing now'):'None yet';
  const act=(k,ic,bg,t,sub)=>`<button type="button" class="a2-act${ADMIN_TAB===k?' on':''}" onclick="adminTab('${k}')"><span style="background:${bg}">${ic}</span><b>${t}</b><small>${sub}</small></button>`;
  const inviteView=`<div class="a2-sheet"><b class="ad-h">➕ Invite someone</b><small class="ad-sub">They get an email with a link to sign in to SEKNA.</small><form class="ad-invite" style="margin-top:12px" onsubmit="adminInviteSubmit(event)"><input id="adminInviteEmail" type="email" inputmode="email" autocapitalize="off" placeholder="name@company.com" onfocus="setTimeout(()=>this.scrollIntoView({block:'center'}),300)"><button id="adminInviteBtn" type="submit">Send invite</button></form></div>`;
- const sheet=ADMIN_TAB==='invite'?inviteView:ADMIN_TAB==='message'?`<div class="a2-sheet">${adminMessageHtml()}</div>`:ADMIN_TAB==='app'?`<div class="a2-sheet">${adminMaintHtml()}</div>`:ADMIN_TAB==='activity'?`<div class="a2-sheet">${adminActivityHtml()}</div>`:ADMIN_TAB==='ideas'?`<div class="a2-sheet">${adminIdeasHtml()}</div>`:ADMIN_TAB==='server'?`<div class="a2-sheet">${adminServerHtml()}</div>`:'';
+ const sheet=ADMIN_TAB==='invite'?inviteView:ADMIN_TAB==='message'?`<div class="a2-sheet">${adminMessageHtml()}</div>`:ADMIN_TAB==='app'?`<div class="a2-sheet">${adminMaintHtml()}</div>`:ADMIN_TAB==='activity'?`<div class="a2-sheet">${adminActivityHtml()}</div>`:ADMIN_TAB==='ideas'?`<div class="a2-sheet">${adminIdeasHtml()}</div>`:ADMIN_TAB==='server'?`<div class="a2-sheet">${adminServerHtml()}</div>`:ADMIN_TAB==='perms'?`<div class="a2-sheet">${adminPermsHtml()}</div>`:'';
  const tabs=`<div class="a3-tabs">${[['overview','Overview'],['people','People'+(waiting.length?` · ${waiting.length}`:'')],['tools','Tools'],['server','Server']].map(([k,l])=>`<button type="button" class="${ADMIN_VIEW===k?'on':''}" onclick="adminView('${k}')">${l}</button>`).join('')}</div>`;
  const peopleView=`${waiting.length?`<div class="ad-lbl">Waiting for approval</div><div class="ad-card ad-pend">${waiting.map(person).join('')}</div>`:''}
    <div class="ad-lbl">People · ${team.length}</div><div class="ad-card">${team.map(person).join('')||'<div class="sk-admin-empty">No one has requested access yet.</div>'}</div>`;
@@ -8868,7 +8905,7 @@ function renderAdmin(d){
  }
  else if(ADMIN_VIEW==='people')body=peopleView;
  else if(ADMIN_VIEW==='server')body=`<div class="a2-sheet">${adminServerHtml()}</div>`;
- else body=`<div class="a2-acts">${act('app',m.on?'🔴':'🟢',m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message','📣','#e9eefc','Team message',annState)}${act('invite','➕','#fff3dc','Invite','Add someone')}${act('activity','📊','#e3f6ec','Activity','This month')}${act('ideas','💡','#fff3dc','Ideas',Array.isArray(ADMIN_IDEAS)?(ADMIN_IDEAS.filter(i=>i.status==='New').length+' new'):'From the team')}</div>${ADMIN_TAB==='server'?'':sheet}`;
+ else body=`<div class="a2-acts">${act('app',m.on?'🔴':'🟢',m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message','📣','#e9eefc','Team message',annState)}${act('invite','➕','#fff3dc','Invite','Add someone')}${act('activity','📊','#e3f6ec','Activity','This month')}${act('ideas','💡','#fff3dc','Ideas',Array.isArray(ADMIN_IDEAS)?(ADMIN_IDEAS.filter(i=>i.status==='New').length+' new'):'From the team')}${ACCESS_PROFILE&&ACCESS_PROFILE.owner?act('perms','🔐','#e9eefc','Permissions','Who can use what'):''}</div>${ADMIN_TAB==='server'?'':sheet}`;
  adminBody(tabs+`<div class="a3-body">${body}</div>`);
  const hd=document.querySelector('#adminOverlay .sk-modal-head'),tb=document.querySelector('.a3-tabs');if(hd&&tb)tb.style.top=hd.offsetHeight+'px';
 }
@@ -9806,9 +9843,20 @@ function tkDim(month){return new Date(+month.slice(0,4),+month.slice(5,7),0).get
 function tkMonthName(month,short){return new Date(+month.slice(0,4),+month.slice(5,7)-1,1).toLocaleDateString('en-GB',{month:short?'short':'long',year:short?undefined:'numeric'})}
 function tkRange(month,w){const to=w===4?tkDim(month):w*7;return `${(w-1)*7+1}–${to} ${tkMonthName(month,true)}`}
 function tkShift(month,n){const d=new Date(+month.slice(0,4),+month.slice(5,7)-1+n,1);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
-function tkCanManage(){const p=ACCESS_PROFILE||{};let mem=p.member;if(!mem){try{mem=JSON.parse(storeGet('sekna_member')||'null')}catch(e){}}return !!(p.isAdmin||(mem&&TK_MANAGER_ROLES.includes(mem.role)))}
+// v170: what this person can use, from Admin → Permissions (sent with the access status and the tasks).
+// Without it (an older answer): leaders get build, quick and leave; the admin gets everything.
+function myPerms(){
+ const p=ACCESS_PROFILE||{};if(p.perms)return p.perms;
+ let tp=null;try{tp=TK.data&&TK.data.me&&TK.data.me.perms}catch(e){}if(tp)return tp;
+ let mem=p.member;if(!mem){try{mem=JSON.parse(storeGet('sekna_member')||'null')}catch(e){}}
+ const lead=!!(mem&&TK_MANAGER_ROLES.includes(mem.role)),a=!!p.isAdmin;
+ return {lab:a,build:a||lead,quick:a||lead,leave:a||lead,admin:a};
+}
+function canDo(k){return !!myPerms()[k]}
+function tkCan(k){return canDo(k)}
+function tkCanManage(){const p=myPerms();return !!(p.build||p.quick||p.leave)}
 // Builder and Quick Requests: managers, team leaders and the admin only (people still see their quick requests in My Tasks).
-function tkQuickNav(){['ttQuickBtn','ttBuildBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.hidden=!tkCanManage()})}
+function tkQuickNav(){[['ttQuickBtn','quick'],['ttBuildBtn','build']].forEach(([id,k])=>{const b=document.getElementById(id);if(b)b.hidden=!tkCan(k)})}
 function tkMe(){return ((TK.data&&TK.data.me&&TK.data.me.email)||(ACCESS_PROFILE&&ACCESS_PROFILE.email)||'').toLowerCase()}
 function tkPeople(){return ((TK.data&&TK.data.people)||[]).slice().sort((a,b)=>roleTier(b.role)-roleTier(a.role)||String(a.name).localeCompare(String(b.name)))}
 function tkPerson(email){return tkPeople().find(p=>p.email===email)||{email,name:String(email||'').split('@')[0],role:'',avatar:0}}
@@ -9829,7 +9877,7 @@ function openTasks(view){
 }
 function closeTasks(e){if(e&&e.target!==e.currentTarget)return;if(TK.form&&!e){tkSheetClose();return}TK.form=null;const o=document.getElementById('tasksOverlay');if(o)o.classList.remove('open')}
 async function tkLoad(){
- if(TK.view==='build'&&!tkCanManage()&&TK.data){tkRender();return}
+ if(TK.view==='build'&&!tkCan('build')&&TK.data){tkRender();return}
  TK.busy=true;TK.err='';tkRender();
  try{
    const d=await serverCall('tasksLoad',getAccessToken(),TK.month);
@@ -9843,11 +9891,11 @@ function tkSetWeek(w){TK.week=w;if(TK.today&&w!==tkWeekOf(tkToday().d))TK.today=
 function tkWaShow(on){const w=document.getElementById('tkWa');if(!w)return;if(on&&!w.firstChild){const ic=document.querySelector('.top-share-btn .wa-ic');w.innerHTML=ic?ic.outerHTML:WA_IC}w.hidden=!on}
 function tkRender(){
  if(TK.form)return tkForm(true);
- if((TK.view==='quick'||TK.view==='build')&&!tkCanManage())TK.view='team';
+ if((TK.view==='quick'||TK.view==='build')&&!tkCan(TK.view))TK.view='team';
  const b=document.getElementById('tasksBody');if(!b)return;
- tkSetTitle(TK_VIEWS[TK.view][0]);tkWaShow(TK.view==='build'&&tkCanManage());
- const tabs=`<div class="tk-views">${Object.keys(TK_VIEWS).filter(k=>(k!=='quick'&&k!=='build')||tkCanManage()).map(k=>`<button type="button" class="${k===TK.view?'on':''}" onclick="TK.view='${k}';${k==='mine'?'tkSeenNotice();':''}tkRender()">${TK_VIEWS[k][0].replace('Quick Requests','Quick').replace('Team Leave','Leave').replace('Task Builder','Builder').replace('Team Board','Team')}${k==='build'&&!tkCanManage()?' 🔒':''}${k==='mine'&&tkNoticeNew()?'<i class="tk-dot"></i>':''}</button>`).join('')}</div>`;
- if(TK.view==='build'&&!tkCanManage()){b.innerHTML=tabs+tkLockedHtml();return}
+ tkSetTitle(TK_VIEWS[TK.view][0]);tkWaShow(TK.view==='build'&&tkCan('build'));
+ const tabs=`<div class="tk-views">${Object.keys(TK_VIEWS).filter(k=>(k!=='quick'&&k!=='build')||tkCan(k)).map(k=>`<button type="button" class="${k===TK.view?'on':''}" onclick="TK.view='${k}';${k==='mine'?'tkSeenNotice();':''}tkRender()">${TK_VIEWS[k][0].replace('Quick Requests','Quick').replace('Team Leave','Leave').replace('Task Builder','Builder').replace('Team Board','Team')}${k==='build'&&!tkCanManage()?' 🔒':''}${k==='mine'&&tkNoticeNew()?'<i class="tk-dot"></i>':''}</button>`).join('')}</div>`;
+ if(TK.view==='build'&&!tkCan('build')){b.innerHTML=tabs+tkLockedHtml();return}
  const d=TK.data;
  if(!d){b.innerHTML=tabs+(TK.err&&!TK.busy?`<div class="tk-empty"><b>${TK.err==='server'?'Team Tasks is almost ready':'Could not load the tasks'}</b><small>${TK.err==='server'?'The SEKNA server needs its latest update first. Ask Ibrahim to deploy the new version.':'Check your connection and try again.'}</small><br><button type="button" class="tk-add" style="margin-top:12px" onclick="tkLoad()">↻ Try again</button></div>`:`<div class="tk-loading"><i></i><i></i><i></i></div>`);return}
  const mn=new Date(+TK.month.slice(0,4),+TK.month.slice(5,7)-1,1);
@@ -9979,7 +10027,7 @@ function tkEditLeave(id){const t=tkLeaveAll().find(x=>x.id===id);if(!t)return;TK
 // Team Leave · "Who covers whom": today's counts, a card per person off today (who covers them,
 // and how many of today's tasks move), the freeze switch, then everyone's weekly day off.
 function tkLeaveHtml(){
- const admin=tkCanManage(), people=tkPeople(), fr=tkFrozenToday(), f=(TK.data&&TK.data.freeze)||{on:false,seasons:[]};
+ const admin=tkCan('leave'), people=tkPeople(), fr=tkFrozenToday(), f=(TK.data&&TK.data.freeze)||{on:false,seasons:[]};
  const off=people.map(p=>({p,l:tkOffToday(p.email)})).filter(x=>x.l);
  const first=n=>esc(String(n||'').split(' ')[0]);
  const day=esc(new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'}).toUpperCase());
@@ -10082,7 +10130,7 @@ function tkTicket(q,canTick,done,p){
  const chip=done?'<span class="tk-dl ok">✓ Done</span>':q.deadline?tkDeadline(q.deadline):'<span class="tk-dl">No deadline</span>';
  return `<div class="tq ${st}"><i class="tq-bar"></i>
    <button type="button" class="tk-tick" ${canTick?`onclick="tkTick('${q.id}',0,${!done},this)"`:'disabled'} aria-label="${done?'Mark as not done':'Mark as done'}">${done?'✓':''}</button>
-   <div class="tq-b"><b>${esc(q.title)}</b><div class="tq-m">${tkAv(p)}<span>${esc(String(p.name||'').split(' ')[0])}</span>${chip}${tkCanManage()?`<button type="button" class="tq-ed" onclick="tkEditQuick('${q.id}')" aria-label="Edit">✎</button>`:''}</div>
+   <div class="tq-b"><b>${esc(q.title)}</b><div class="tq-m">${tkAv(p)}<span>${esc(String(p.name||'').split(' ')[0])}</span>${chip}${tkCan('quick')?`<button type="button" class="tq-ed" onclick="tkEditQuick('${q.id}')" aria-label="Edit">✎</button>`:''}</div>
    ${q.data&&q.data.msg?`<div class="tk-msg">💬 ${esc(q.data.msg)}</div>`:''}${tkPhRow(q)}</div>
    <div class="tq-age"><b>${age}d</b><small>${done?'DONE':age===0?'NEW':'WAITING'}</small></div></div>`;
 }
@@ -10091,7 +10139,7 @@ function tkQuickRow(q,canTick){
  if(!TK.oldRows)return tkTicket(q,canTick,done,p);
  return `<div class="tk-task tk-q${done?' done':''}"><button type="button" class="tk-tick" ${canTick?`onclick="tkTick('${q.id}',0,${!done},this)"`:'disabled'}>${done?'✓':''}</button>
    <div class="tk-tb"><b>${esc(q.title)}</b><div class="tk-tags"><span class="tk-age">Asked ${tkDaysAgo(q.at)}</span>${done?'':tkDeadline(q.deadline)}</div>${q.data&&q.data.msg?`<div class="tk-msg">💬 ${esc(q.data.msg)}</div>`:''}${tkPhRow(q)}</div>
-   <span class="tk-qp">${tkAv(p)}</span>${tkCanManage()?`<button type="button" class="tk-ed" onclick="tkEditQuick('${q.id}')" aria-label="Edit">✎</button>`:''}</div>`;
+   <span class="tk-qp">${tkAv(p)}</span>${tkCan('quick')?`<button type="button" class="tk-ed" onclick="tkEditQuick('${q.id}')" aria-label="Edit">✎</button>`:''}</div>`;
 }
 // Ring for done out of all, and one bar per person: done, waiting, late.
 function tkQuickDash(list){
@@ -10105,7 +10153,7 @@ function tkQuickDash(list){
    <div class="qd-lg"><span><i class="d"></i>Done</span><span><i class="w"></i>Waiting</span><span><i class="l"></i>Late</span></div></div>`;
 }
 function tkQuickHtml(){
- const me=tkMe(), mgr=tkCanManage(), all=(TK.data&&TK.data.quick)||[];
+ const me=tkMe(), mgr=tkCan('quick'), all=(TK.data&&TK.data.quick)||[];
  const mine=mgr?all:all.filter(q=>q.email===me);
  const open=mine.filter(q=>!(q.done&&q.done.at)).sort((a,b)=>a.at-b.at), done=mine.filter(q=>q.done&&q.done.at);
  return `${tkQuickDash(mine)}
@@ -10414,7 +10462,7 @@ function tkNoticeClose(){const o=document.getElementById('tkNotice');if(o)o.clas
 function tkNoticeUI(){
  const on=tkNoticeNew();
  document.querySelectorAll('[data-grp="tt"],#ttMineBtn').forEach(el=>el.classList.toggle('tk-has-new',on));
- const lk=document.getElementById('ttBuildLock');if(lk)lk.hidden=tkCanManage();
+ const lk=document.getElementById('ttBuildLock');if(lk)lk.hidden=tkCan('build');
  const bk=tkBackupPending();
  if(bk&&!TK.shown.bk){TK.shown.bk=1;setTimeout(()=>tkBackupShow(bk),1600)}
  else if(on&&!TK.shown.notice&&!bk){TK.shown.notice=1;setTimeout(tkNoticeShow,1600)}
@@ -10579,7 +10627,7 @@ function swipeTabs(){
  return DASH_TABS.filter(t=>{
    const b=document.getElementById(t+'TabBtn');
    if(!b||b.hidden)return false;
-   return !(t==='lab'&&ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin===false);
+   return !(t==='lab'&&ACCESS_PROFILE&&!canDo('lab'));
  });
 }
 function scrollsSideways(el){
@@ -10920,10 +10968,76 @@ function drawPlanHistory(){
     <div class="phs-li"><div class="phs-t"><span>ROAS</span><b>${fmt(a.roas,2)}x</b></div><div class="phs-q">Plan ${fmt(p.roas,2)}x<i><u style="width:${roasR!=null?Math.min(100,roasR*100).toFixed(1):0}%"></u></i><em class="${roasR>=1?'ok':'bd'}">${roasR==null?'—':roasR>=1?'▲':'▼'}</em></div></div>
     <div class="phs-big"><div><small>PLAN ACHIEVEMENT</small><b>${mpPct(all)}</b></div><span class="phs-ok">✓ SAVED</span></div>
     <div class="phs-ft"><span>${saved?'Saved '+esc(saved):''}</span><span>Spend 40% · Value 40% · Conv. 20%</span></div>
+    ${canDo('lab')?`<button type="button" class="phs-cel" onclick="event.stopPropagation();celCompose('${s.month}')">🎉 Celebrate this month</button>`:''}
     <div class="phs-more">${open?'Hide campaign types ▲':'By campaign type ▼'}</div>
     ${open?`<div class="phx-tw"><table class="mp-t phx-t"><thead><tr><th class="mp-n">Type</th><th>Plan spend</th><th>Spend</th><th>Of plan</th><th>Value</th><th>ROAS</th></tr></thead><tbody>${ch}</tbody></table></div>`:''}
    </div>`}).join('')}</div>`;
 }
+
+/* ---------- v170: Celebrate with the team (Plan History → Celebrate this month) ----------
+ * The team gets a notification. The full-screen card then shows once to each person, the next
+ * time they open SEKNA (within 7 days); after Close it stays in Notifications to open again.
+ */
+const CEL_REACTS=['❤️','🤲','🔥'];
+let CEL={msg:'',month:'',busy:false,cur:null};
+function celStats(month){
+ const s=((PH&&PH.list)||[]).find(x=>x.month===month);if(!s)return null;
+ const {all}=phAcc(s);return {ach:all,value:s.actual.value,roas:s.actual.roas};
+}
+function celDefault(month,st){const m=monthName(month,true).split(' ')[0];return `We closed ${m} at ${mpPct(st&&st.ach)} of the plan. Every campaign, every late night, it counted.`}
+function celCardHtml(c,preview){
+ const st=c.stats||{}, acc=c.account==='ar'?'AR':'USA';
+ const k=(v,l)=>`<span><b>${v}</b>${l}</span>`;
+ return `<div class="cel-card${preview?' pv':''}">${preview?'':'<button type="button" class="cel-x" aria-label="Close">✕</button>'}
+   <div class="cel-cf">${Array.from({length:preview?8:22},(_,i)=>`<i style="--x:${(i*37)%100}%;--d:${(i%7)*.35}s;--c:${['#ffd200','#3fdc97','#ff8aa0','#9fb6ff','#f3d79f'][i%5]};--r:${(i*53)%360}deg"></i>`).join('')}</div>
+   <div class="cel-tro">🏆</div><small>${esc(monthName(c.month,true).toUpperCase())} · ${acc}</small><h3>Thank you, team!</h3>
+   <p>${esc(c.msg||'')}</p>
+   <div class="cel-k">${k(st.ach!=null?mpPct(st.ach):'—','achieved')}${k(st.value!=null?mpK(st.value):'—','raised')}${k(st.roas!=null?fmt(st.roas,2)+'x':'—','ROAS')}</div>
+   ${preview?'':`<div class="cel-rx">${CEL_REACTS.map(r=>`<button type="button" class="${(c.mine||[]).includes(r)?'on':''}" onclick="celReact('${r}',this)">${r} <b>${(c.counts||{})[r]||0}</b></button>`).join('')}</div>`}</div>`;
+}
+function celCompose(month){
+ const st=celStats(month);
+ CEL.month=month;CEL.msg=celDefault(month,st);
+ let o=document.getElementById('celSheet');
+ if(!o){o=document.createElement('div');o.id='celSheet';o.className='lyx-sheet';o.onclick=e=>{if(e.target===o||e.target.closest('.lyx-x'))o.classList.remove('open')};document.body.appendChild(o)}
+ celComposeDraw();requestAnimationFrame(()=>o.classList.add('open'));
+}
+function celComposeDraw(){
+ const o=document.getElementById('celSheet');if(!o)return;
+ const c={month:CEL.month,account:CURRENT_ACCOUNT,msg:CEL.msg,stats:celStats(CEL.month)||{}};
+ o.innerHTML=`<div class="lyx-card cel-comp"><button type="button" class="lyx-x" aria-label="Close">✕</button>
+   <small class="ls-k">CELEBRATE · ${esc(monthName(CEL.month,true).toUpperCase())}</small><h3 class="cel-h">A thank-you to the team</h3>
+   <textarea id="celMsg" rows="3" maxlength="400" oninput="CEL.msg=this.value;const p=document.querySelector('#celSheet .cel-card p');if(p)p.textContent=this.value">${esc(CEL.msg)}</textarea>
+   <small class="cel-n">Everyone in the team gets a notification. When they open SEKNA, they see this:</small>
+   ${celCardHtml(c,true)}
+   <button type="button" class="ls-close" onclick="celSend(this)" ${CEL.busy?'disabled':''}>${CEL.busy?'Sending…':'Send to the team 🎉'}</button></div>`;
+}
+async function celSend(btn){
+ const t=document.getElementById('celMsg');if(t)CEL.msg=t.value;
+ if(!String(CEL.msg).trim())return showSettingsToast('Write a message first');
+ CEL.busy=true;celComposeDraw();
+ try{await serverCall('adminCelebrate',getAccessToken(),{account:CURRENT_ACCOUNT,month:CEL.month,msg:CEL.msg,stats:celStats(CEL.month)||{}});
+   CEL.busy=false;const o=document.getElementById('celSheet');if(o)o.classList.remove('open');showSettingsToast('Sent to the team 🎉')}
+ catch(err){CEL.busy=false;celComposeDraw();showSettingsToast(errorText(err))}
+}
+function celShow(c,again){
+ CEL.cur=c;
+ let o=document.getElementById('celView');
+ if(!o){o=document.createElement('div');o.id='celView';o.className='cel-view';document.body.appendChild(o)}
+ o.innerHTML=celCardHtml(c,false);
+ o.onclick=e=>{if(e.target===o||e.target.closest('.cel-x'))celClose()};
+ requestAnimationFrame(()=>o.classList.add('open'));
+ if(!again)serverCall('celebrationSeen',getAccessToken(),c.id).catch(()=>{});
+}
+function celClose(){const o=document.getElementById('celView');if(o)o.classList.remove('open')}
+async function celReact(r,btn){
+ const c=CEL.cur;if(!c)return;
+ const had=(c.mine||[]).includes(r);
+ c.mine=had?c.mine.filter(x=>x!==r):[...(c.mine||[]),r];c.counts=Object.assign({},c.counts,{[r]:Math.max(0,((c.counts||{})[r]||0)+(had?-1:1))});
+ btn.classList.toggle('on',!had);btn.querySelector('b').textContent=c.counts[r];
+ try{const n=await serverCall('celebrationReact',getAccessToken(),c.id,r);if(n){CEL.cur=n}}catch(e){}
+}
+function celCheck(){serverCall('myCelebration',getAccessToken()).then(c=>{if(c&&c.id)celShow(c)}).catch(()=>{})}
 // Media Plan Lab: keep the month's plan and results in Plan History.
 let LAB_SAVE={busy:false,msg:''};
 // Media Plan Lab · Checklist: the month's progress, then the two month-end steps in order.
@@ -10931,7 +11045,7 @@ let LAB_SAVE={busy:false,msg:''};
 // the next month, after the new plan has replaced the old one).
 function drawLabSave(){
  const host=document.getElementById('labSave');if(!host)return;
- if(!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)){host.innerHTML='';return}
+ if(!canDo('lab')){host.innerHTML='';return}
  const days=(DASH_DATA&&DASH_DATA.dayPlan)||[], label=days[0]?monthName(days[0].date.slice(0,7),true):'This month';
  const live=days.filter(x=>x.actual).length, n=days.length, done=n>0&&live>=n, closeOpen=done||tkToday().d<=10;
  const pct=n?Math.round(live/n*100):0;
@@ -10993,10 +11107,42 @@ let ADMIN_ACTIVITY=null, ADMIN_IDEAS=null, ADMIN_ACT_VIEW='shares';
 const SHARE_NAMES={daily:'Daily Performance',channel:'Channel Delivery',plan:'Media Plan',results:'Results',report:'Report',compare:'Month vs Month'};
 function adminLoadExtra(k){
  if(k==='server')srvLoad();
+ if(k==='perms'&&!PERM.data&&!PERM.busy){PERM.busy=true;serverCall('adminPerms',getAccessToken()).then(r=>{PERM.busy=false;PERM.data=r;PERM.edit={};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{PERM.busy=false;PERM.data={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
  if(k==='activity'&&!ADMIN_ACTIVITY)serverCall('adminActivity',getAccessToken()).then(r=>{ADMIN_ACTIVITY=r;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{ADMIN_ACTIVITY={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)});
  if(k==='ideas'&&!ADMIN_IDEAS)serverCall('adminIdeas',getAccessToken()).then(r=>{ADMIN_IDEAS=r||[];if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{ADMIN_IDEAS={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)});
 }
 function actView(v){ADMIN_ACT_VIEW=v;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+
+/* ---------- v170: Admin → Permissions (One table; the SEKNA admin only) ---------- */
+let PERM={data:null,busy:false,edit:{},saving:false};
+const PERM_COLS=[['lab','LAB','Media Plan Lab and Plan History'],['build','BUILD','Task Builder'],['quick','QUICK','Quick requests'],['leave','LEAVE','Days off'],['admin','ADMIN','The Admin page']];
+function permVal(p,k){const e=PERM.edit[p.email];return e&&k in e?e[k]:!!p.perms[k]}
+function permFlip(email,k){
+ const p=((PERM.data&&PERM.data.people)||[]).find(x=>x.email===email);if(!p||p.owner)return;
+ const e=PERM.edit[email]=PERM.edit[email]||{},v=!permVal(p,k);
+ if(v===!!p.perms[k])delete e[k];else e[k]=v;
+ if(!Object.keys(e).length)delete PERM.edit[email];
+ if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
+}
+function adminPermsHtml(){
+ const d=PERM.data;
+ if(!d)return '<div class="dx-empty"><span class="lab-spin dark"></span>Loading…</div>';
+ if(d.error)return `<div class="mrp-msg">⚠️ ${esc(d.error)}</div>`;
+ const n=Object.keys(PERM.edit).length;
+ const ppl=(d.people||[]).slice().sort((a,b)=>(b.owner-a.owner)||roleTier(b.role)-roleTier(a.role)||String(a.name).localeCompare(String(b.name)));
+ const rows=ppl.map(p=>`<div class="pm-r${p.owner?' own':''}"><div class="pm-p"><span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span><div><b>${esc(String(p.name||p.email).split(' ')[0])}</b><small>${p.owner?'ADMIN':esc(roleLabel(p.role||'')).toUpperCase()||'NO TITLE'}</small></div></div>
+   ${PERM_COLS.map(([k,l,t])=>`<button type="button" class="pm-sw${permVal(p,k)?' on':''}${p.owner?' lk':''}${PERM.edit[p.email]&&k in PERM.edit[p.email]?' ch':''}" ${p.owner?'disabled':`onclick="permFlip('${esc(p.email)}','${k}')"`} aria-label="${esc(t)} for ${esc(p.name)}" aria-pressed="${permVal(p,k)}"></button>`).join('')}</div>`).join('');
+ return `<b class="ad-h">🔐 Permissions</b><small class="ad-sub">Who can use each part of SEKNA. A Team Leader, Media Manager or Head of Media starts with Build, Quick and Leave.</small>
+   <div class="pm-t"><div class="pm-r pm-h"><span>PERSON</span>${PERM_COLS.map(([k,l,t])=>`<span title="${esc(t)}">${l}</span>`).join('')}</div>${rows||'<div class="sk-admin-empty">No one approved yet.</div>'}</div>
+   <small class="pm-note">🔒 You always have everything, so your row can't be changed. Everyone keeps the Team board and their own tasks. A change works within a minute.</small>
+   <button type="button" class="pm-save" onclick="adminPermsSave(this)" ${n&&!PERM.saving?'':'disabled'}>${PERM.saving?'Saving…':n?`Save changes (${n} ${n===1?'person':'people'})`:'No changes'}</button>`;
+}
+async function adminPermsSave(btn){
+ if(PERM.saving||!Object.keys(PERM.edit).length)return;
+ PERM.saving=true;if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
+ try{await serverCall('adminPermsSet',getAccessToken(),PERM.edit);PERM.data=null;PERM.edit={};PERM.saving=false;adminLoadExtra('perms');showSettingsToast('Permissions saved')}
+ catch(err){PERM.saving=false;if(ADMIN_LAST)renderAdmin(ADMIN_LAST);showSettingsToast(errorText(err))}
+}
 
 /* ---------- v89: admin — Server ----------
  * Which server this device uses now (Firebase, or Apps Script as the backup), the

@@ -5,7 +5,7 @@ const { onRequest } = require('firebase-functions/v2/https');
 const { onMessagePublished } = require('firebase-functions/v2/pubsub');
 const { onSchedule } = require('firebase-functions/v2/scheduler');
 const { buildDashboardData, getMonthCompareData, normalizeAccountKey_ } = require('./dash');
-const { assertAccess, assertAdmin } = require('./access');
+const { assertAccess, assertAdmin, assertPerm } = require('./access');
 const { fsGet, fsSet, fsAppend, fsList, fsClearList, request, PROJECT_ID } = require('./google');
 const { archiveStatus, archiveMove, archiveProgress } = require('./archive');
 const tasks = require('./tasks');
@@ -63,17 +63,17 @@ const CALLS = {
     const key = normalizeAccountKey_(args[0]);
     return withAccess(args[1], cached('months:' + key, MONTHS_CACHE_MS, false, () => getMonthCompareData(key)));
   },
-  // Media Plan Lab → Close the month (admins only).
+  // Media Plan Lab → Close the month (Admin → Permissions → Lab).
   async adminArchiveStatus(args) {
-    await assertAdmin(args[0]);
+    await assertPerm(args[0], 'lab');
     return archiveStatus(args[1]);
   },
   async adminArchiveProgress(args) {
-    await assertAdmin(args[0]);
+    await assertPerm(args[0], 'lab');
     return archiveProgress(args[1]);
   },
   async adminArchiveMove(args) {
-    const who = await assertAdmin(args[0]);
+    const who = await assertPerm(args[0], 'lab');
     const key = normalizeAccountKey_(args[1]);
     const result = await archiveMove(key, who);
     delete cache['dash:' + key];

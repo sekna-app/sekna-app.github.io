@@ -2,7 +2,7 @@
 // the monthly report email, web notifications, and the "new day" phone notifications.
 // Until the admin moves them (adminRestMove), every call is passed to Apps Script.
 const { fsGet, fsSet, fsUpdate, fsAppend, fsList, fsSetList, batchGet, a1, sheetMeta } = require('./google');
-const { ACCESS, assertAccess, assertAdmin, storeRows } = require('./access');
+const { ACCESS, assertAccess, assertAdmin, assertPerm, storeRows } = require('./access');
 const notify = require('./notify');
 
 const SHEETS = { shares: 'SEKNA Shares', usage: 'SEKNA Usage', ideas: 'SEKNA Ideas', plans: 'SEKNA Plan History' };
@@ -13,7 +13,7 @@ const REPORT_MAX_BYTES = 15 * 1024 * 1024;
 const DOC = {
   mode: 'rest/mode', shareMonths: 'rest/share-months', usageDays: 'rest/usage-days', ideas: 'rest/ideas',
   shares: m => 'rest/shares-' + m, usage: d => 'rest/usage-' + d, plans: k => 'rest/plan-' + k,
-  push: 'rest/push', serverMail: 'rest/server-mail', fx: 'rest/fx'
+  push: 'rest/push', serverMail: 'rest/server-mail', fx: 'rest/fx', celebrate: 'rest/celebrations'
 };
 
 const norm = e => String(e || '').trim().toLowerCase();
@@ -79,6 +79,26 @@ async function resetShares() {
 const ideaOut = i => ({ id: i.id, time: isoLocal(i.t), email: i.email, name: i.name, title: i.title, text: i.text, status: i.status || 'New', reply: i.reply || '', updated: isoLocal(i.upd) });
 
 /* ---------- the calls (same names and arguments as Code.gs) ---------- */
+/* ---------- celebrations (Plan History → Celebrate this month) ---------- */
+// The team gets a notification; the full-screen card shows once to each person (then it stays in Notifications).
+const CELEBRATE_REACTS = ['❤️', '🤲', '🔥'];
+const CELEBRATE_DAYS = 7;
+function celebrationOut(c, email) {
+  const counts = {}, mine = [];
+  CELEBRATE_REACTS.forEach(r => { const who = (c.react || {})[r] || []; counts[r] = who.length; if (who.indexOf(email) >= 0) mine.push(r); });
+  return { id: c.id, at: c.at, account: c.account, month: c.month, msg: c.msg, stats: c.stats || {}, counts, mine };
+}
+async function celebrationEdit(id, change) {
+  let found = null;
+  await fsUpdate(DOC.celebrate, doc => {
+    const list = (doc && doc.items) || [], c = list.find(x => x.id === String(id));
+    if (!c) throw new Error('This message no longer exists.');
+    change(c); found = c;
+    return { items: list };
+  });
+  return found;
+}
+
 /* ---------- exchange rates (currency switch) ---------- */
 // Free, no key. One fetch a day, after 12:00 PM Muscat time, kept in Firestore for the whole team.
 let fxMemo = 0, fxTry = 0;
@@ -180,6 +200,47 @@ const R = {
     await assertAccess(token);
     return fxFresh();
   },
+  async adminCelebrate([token, c]) {
+    const me = await assertPerm(token, 'lab');
+    c = c || {};
+    const msg = String(c.msg || '').trim().slice(0, 400);
+    if (!msg) throw new Error('Write a message first.');
+    const account = c.account === 'ar' ? 'ar' : 'usa';
+    const month = /^\d{4}-\d{2}$/.test(String(c.month || '')) ? String(c.month) : monthOf(Date.now());
+    const num = v => (isFinite(Number(v)) ? Number(v) : null);
+    const st = c.stats || {};
+    const item = { id: 'C-' + shortId() + shortId(), at: Date.now(), by: me.email, account, month, msg,
+      stats: { ach: num(st.ach), value: num(st.value), roas: num(st.roas) }, react: {}, seen: {} };
+    await fsUpdate(DOC.celebrate, doc => ({ items: ((doc && doc.items) || []).concat([item]).slice(-10) }));
+    await notify.send({ topics: [{ title: '🏆 Thank you, team!', body: msg, account, eventType: 'celebrate' }] });
+    return celebrationOut(item, me.email);
+  },
+  /** The newest celebration this person hasn't seen yet (from the last 7 days), or null. */
+  async myCelebration([token]) {
+    const a = await assertAccess(token), e = norm(a.email), cut = Date.now() - CELEBRATE_DAYS * 864e5;
+    const list = (((await fsGet(DOC.celebrate)) || {}).items || []).filter(c => c.at > cut && !(c.seen || {})[e]);
+    return list.length ? celebrationOut(list[list.length - 1], e) : null;
+  },
+  /** Opened again from Notifications: the newest one, seen or not. */
+  async celebrationLatest([token]) {
+    const a = await assertAccess(token), list = ((await fsGet(DOC.celebrate)) || {}).items || [];
+    return list.length ? celebrationOut(list[list.length - 1], norm(a.email)) : null;
+  },
+  async celebrationSeen([token, id]) {
+    const a = await assertAccess(token), e = norm(a.email);
+    await celebrationEdit(id, c => { c.seen = c.seen || {}; c.seen[e] = Date.now(); });
+    return { ok: true };
+  },
+  async celebrationReact([token, id, r]) {
+    const a = await assertAccess(token), e = norm(a.email);
+    if (CELEBRATE_REACTS.indexOf(r) < 0) throw new Error('Unknown reaction.');
+    const c = await celebrationEdit(id, x => {
+      x.react = x.react || {};
+      const had = (x.react[r] || []).indexOf(e) >= 0; // a second tap takes it back
+      x.react[r] = (x.react[r] || []).filter(v => v !== e).concat(had ? [] : [e]);
+    });
+    return celebrationOut(c, e);
+  },
   /** The notifications list (menu → Notifications). */
   async myNotifications([token]) {
     const a = await assertAccess(token);
@@ -226,7 +287,7 @@ const R = {
 
   /** Saves a closed month's plan and results from the sheet itself (the app's numbers are not trusted). */
   async adminSavePlanHistory([token, accountKey]) {
-    const me = await assertAdmin(token);
+    const me = await assertPerm(token, 'lab');
     const { buildDashboardData, normalizeAccountKey_ } = require('./dash');
     const key = normalizeAccountKey_(accountKey);
     const data = await buildDashboardData(key);

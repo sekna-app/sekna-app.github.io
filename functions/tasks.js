@@ -3,7 +3,7 @@
 // so nothing changes for anyone before the move. Emails and pushes go out through notify.js.
 const crypto = require('crypto');
 const { fsGet, fsSet, fsDelete, fsUpdate, batchGet, a1 } = require('./google');
-const { assertAccess, accessRows, isAdminEmail } = require('./access');
+const { assertAccess, accessRows, isAdminEmail, permsFor, can, forgetPerms } = require('./access');
 
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzjgZ1nXxLTcFdeFCIEznOj2H0XCo9YGUeu1YF2pJdsQiOo_aM-Mn6HxKKNk8peEuM1Ig/exec';
 const TASKS_SHEET = { ID: '1PWV9exRy9dwW3H66bt7W4E1SQb63EJbgVz96yS6fQkI', NAME: 'SEKNA Tasks' };
@@ -61,12 +61,17 @@ async function moved() {
 /* ---------- people ---------- */
 
 async function members() { return (await fsGet(DOC.members)) || {}; }
-function canManage(email, mem) { email = norm(email); return isAdminEmail(email) || MANAGER_ROLES.indexOf((mem[email] || {}).role) >= 0; }
-async function assertManager(token) {
+// Who may do what comes from Admin → Permissions (access.js): build, quick and leave start from the role.
+const NO_PERM = { build: 'You don\'t have access to the Task Builder.', quick: 'You don\'t have access to Quick requests.', leave: 'You don\'t have access to days off.' };
+/** Any of the three team permissions (ticking someone else's task, season goals). */
+async function canManage(email) { const p = await permsFor(email); return !!(p.build || p.quick || p.leave); }
+async function assertManager(token, key) {
   const a = await assertAccess(token), mem = await members();
-  if (!canManage(a.email, mem)) throw new Error('Only the Head of Media, Media Managers, Team Leaders and Ibrahim Amin can build tasks.');
+  if (key ? !(await can(a.email, key)) : !(await canManage(a.email))) throw new Error(NO_PERM[key] || 'You don\'t have access to build tasks.');
   return { a, mem };
 }
+const keyOfKind = kind => (kind === 'quick' ? 'quick' : kind === 'leave' ? 'leave' : 'build');
+const keyOfLoc = loc => (loc === 'quick' ? 'quick' : loc === 'leave' ? 'leave' : 'build');
 async function teamPeople(mem, me) {
   const seen = {}, out = [];
   const add = (email, name) => {
@@ -213,7 +218,7 @@ const T = {
     const twoWeeks = Date.now() - 14 * 864e5;
     return {
       store: 'firebase',
-      me: { email: a.email, name: a.name || '', canManage: canManage(a.email, mem) },
+      me: { email: a.email, name: a.name || '', canManage: await canManage(a.email), perms: await permsFor(a.email) },
       people: await teamPeople(mem, a),
       month,
       tasks: items(cur).map(pub),
@@ -226,9 +231,9 @@ const T = {
   },
 
   async taskSave([token, task]) {
-    const { a, mem } = await assertManager(token);
     task = task || {};
     const kind = ['quick', 'leave'].indexOf(task.kind) >= 0 ? task.kind : 'weekly';
+    const { a } = await assertManager(token, keyOfKind(kind));
     const email = norm(task.email);
     const d = task.data || {};
     const leaveType = LEAVE_TYPES.indexOf(d.type) >= 0 ? d.type : 'Weekly';
@@ -244,7 +249,6 @@ const T = {
     };
     if (kind === 'quick') clean.photos = await storePhotos(d.photos, a.email);
     if (kind === 'leave') {
-      if (!canManage(a.email, mem)) throw new Error('Only Team Leaders, Media Managers, the Head of Media and Ibrahim Amin can set days off.');
       const backup = norm(d.backup);
       clean.type = leaveType;
       clean.backup = backup && backup !== email ? backup : '';
@@ -293,10 +297,10 @@ const T = {
   },
 
   async taskDelete([token, id]) {
-    const { a, mem } = await assertManager(token);
+    const a = await assertAccess(token);
     const loc = await locate(id);
     if (!loc) return { ok: true };
-    if (loc === 'leave' && !canManage(a.email, mem)) throw new Error('Only Team Leaders, Media Managers, the Head of Media and Ibrahim Amin can change days off.');
+    if (!(await can(a.email, keyOfLoc(loc)))) throw new Error(NO_PERM[keyOfLoc(loc)]);
     let photos = [];
     await fsUpdate(docOf(loc), doc => { const list = items(doc), t = list.find(x => x.id === String(id)); photos = (t && t.data && t.data.photos) || []; return { items: list.filter(x => x.id !== String(id)) }; });
     await indexSet({ [String(id)]: null });
@@ -326,8 +330,8 @@ const T = {
     return { goals: goals || {}, prep };
   },
   async seasonGoalSet([token, key, goal]) {
-    const a = await assertAccess(token), mem = await members();
-    if (!canManage(a.email, mem)) throw new Error('Only Team Leaders, Media Managers, the Head of Media and Ibrahim Amin can set season goals.');
+    const a = await assertAccess(token);
+    if (!(await canManage(a.email))) throw new Error('You don\'t have access to set season goals.');
     key = String(key || '');
     if (!/^[a-z0-9-]{3,40}$/.test(key)) throw new Error('Unknown season.');
     const g = Math.round(Number(goal) || 0);
@@ -345,14 +349,14 @@ const T = {
   },
 
   async taskDone([token, id, week, done]) {
-    const a = await assertAccess(token), mem = await members();
+    const a = await assertAccess(token), mgr = await canManage(a.email);
     const loc = await locate(id);
     if (!loc) throw new Error('This task was removed.');
     let out = null;
     await fsUpdate(docOf(loc), doc => {
       const list = items(doc), t = list.find(x => x.id === String(id));
       if (!t) throw new Error('This task was removed.');
-      if (t.email !== a.email && !canManage(a.email, mem)) throw new Error('Only the person on the task can tick it.');
+      if (t.email !== a.email && !mgr) throw new Error('Only the person on the task can tick it.');
       const k = t.kind === 'quick' ? 'at' : String(Math.max(1, Math.min(4, Number(week) || 1)));
       t.done = t.done || {};
       if (done) t.done[k] = Date.now(); else delete t.done[k];
@@ -363,7 +367,7 @@ const T = {
   },
 
   async tasksCopyMonth([token, fromMonth, toMonth]) {
-    const { a } = await assertManager(token);
+    const { a } = await assertManager(token, 'build');
     fromMonth = monthOk(fromMonth); toMonth = monthOk(toMonth);
     const from = items(await fsGet(DOC.month(fromMonth)));
     const added = [];
@@ -382,7 +386,7 @@ const T = {
   },
 
   async tasksSendWeek([token, month, week]) {
-    const { a, mem } = await assertManager(token);
+    const { a, mem } = await assertManager(token, 'build');
     month = monthOk(month); week = Math.max(1, Math.min(4, Number(week) || 1));
     const people = {};
     (await teamPeople(mem)).forEach(p => { people[p.email] = p; });
@@ -428,8 +432,8 @@ const T = {
   },
 
   async leaveFreezeSet([token, cfg]) {
-    const a = await assertAccess(token), mem = await members();
-    if (!canManage(a.email, mem)) throw new Error('Only Team Leaders, Media Managers, the Head of Media and Ibrahim Amin can freeze leave.');
+    const a = await assertAccess(token);
+    if (!(await can(a.email, 'leave'))) throw new Error(NO_PERM.leave);
     cfg = cfg || {};
     const ok = s => /^\d{4}-\d{2}-\d{2}$/.test(String(s || ''));
     const seasons = (Array.isArray(cfg.seasons) ? cfg.seasons : []).slice(0, 12)
@@ -443,7 +447,8 @@ const T = {
   /** Position or avatar for one email (admin). Apps Script keeps a copy until it is retired. */
   async adminSetMember([token, email, field, value]) {
     const a = await assertAccess(token);
-    if (!isAdminEmail(a.email)) { const e = new Error('SEKNA_ADMIN_ONLY'); e.access = true; throw e; }
+    if (!(await can(a.email, 'admin'))) { const e = new Error('SEKNA_ADMIN_ONLY'); e.access = true; throw e; }
+    forgetPerms(); // a new position changes what the role gives
     email = norm(email);
     if (!email) throw new Error('Missing email');
     let result = null;

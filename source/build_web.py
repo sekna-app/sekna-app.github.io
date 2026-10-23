@@ -43,11 +43,11 @@ head = '''<meta name="theme-color" content="#203C8E">
     accessSignOut:{w:20000,tk:1,k:'sekna_access_fb'},adminOverview:{w:30000,tk:1,k:'sekna_access_fb'},adminSetStatus:{w:30000,tk:1,k:'sekna_access_fb'},
     adminInvite:{w:30000,tk:1,k:'sekna_access_fb'},adminDelete:{w:30000,tk:1,k:'sekna_access_fb'},adminGetAppState:{w:20000,tk:1,k:'sekna_access_fb'},
     adminSetMaintenance:{w:30000,tk:1,k:'sekna_access_fb'},adminPublishAnnouncement:{w:45000,tk:1,k:'sekna_access_fb'},adminClearAnnouncement:{w:30000,tk:1,k:'sekna_access_fb'},
-    adminClearRecent:{w:20000,tk:1,k:'sekna_access_fb'},adminAccessMove:{w:120000,tk:2},adminAccessMoveStatus:{w:15000,tk:2},
+    adminClearRecent:{w:20000,tk:1,k:'sekna_access_fb'},adminPerms:{w:20000,tk:1,k:'sekna_access_fb'},adminPermsSet:{w:20000,tk:1,k:'sekna_access_fb'},adminAccessMove:{w:120000,tk:2},adminAccessMoveStatus:{w:15000,tk:2},
     // Usage, shares, ideas, plan history, the monthly report and web notifications.
     logShare:{w:20000,tk:1,k:'sekna_rest_fb'},adminShareStats:{w:30000,tk:1,k:'sekna_rest_fb'},adminResetShares:{w:30000,tk:1,k:'sekna_rest_fb'},
     logUsage:{w:20000,tk:1,k:'sekna_rest_fb'},adminActivity:{w:30000,tk:1,k:'sekna_rest_fb'},adminResetActivity:{w:60000,tk:1,k:'sekna_rest_fb'},
-    submitIdea:{w:30000,tk:1,k:'sekna_rest_fb'},myNotifications:{w:20000,tk:1,k:'sekna_rest_fb'},fxRates:{w:20000,tk:1,k:'sekna_rest_fb'},myIdeas:{w:20000,tk:1,k:'sekna_rest_fb'},adminIdeas:{w:20000,tk:1,k:'sekna_rest_fb'},adminIdeaUpdate:{w:30000,tk:1,k:'sekna_rest_fb'},
+    submitIdea:{w:30000,tk:1,k:'sekna_rest_fb'},myNotifications:{w:20000,tk:1,k:'sekna_rest_fb'},adminCelebrate:{w:30000,tk:1,k:'sekna_rest_fb'},myCelebration:{w:15000,tk:1,k:'sekna_rest_fb'},celebrationLatest:{w:15000,tk:1,k:'sekna_rest_fb'},celebrationSeen:{w:15000,tk:1,k:'sekna_rest_fb'},celebrationReact:{w:15000,tk:1,k:'sekna_rest_fb'},fxRates:{w:20000,tk:1,k:'sekna_rest_fb'},myIdeas:{w:20000,tk:1,k:'sekna_rest_fb'},adminIdeas:{w:20000,tk:1,k:'sekna_rest_fb'},adminIdeaUpdate:{w:30000,tk:1,k:'sekna_rest_fb'},
     adminSavePlanHistory:{w:60000,tk:1,k:'sekna_rest_fb'},getPlanHistory:{w:20000,tk:1,k:'sekna_rest_fb'},webPushSubscribe:{w:30000,tk:1,k:'sekna_rest_fb'},
     adminReportRecipients:{w:30000,tk:1,k:'sekna_rest_fb'},adminSendMonthlyReport:{w:300000,tk:1,k:'sekna_rest_fb'},adminRestMove:{w:120000,tk:2},adminRestMoveStatus:{w:20000,tk:2}
    };

@@ -4,7 +4,8 @@
 // change), because the Apps Script parts that are not moved yet still check tokens there.
 const crypto = require('crypto');
 const { fsGet, fsSet, fsUpdate, batchGet, a1, valuesUpdate, valuesUpdateTyped, valuesClear, sheetMeta } = require('./google');
-const { ACCESS, ACC, sha256, assertAccess, assertAdmin, checkAccessToken, storeRows, forgetRows, accessMoved, markMoved, isAdminEmail } = require('./access');
+const { ACCESS, ACC, sha256, assertAccess, assertAdmin, assertOwner, checkAccessToken, storeRows, forgetRows, accessMoved, markMoved, isAdminEmail,
+  PERM_KEYS, PERM_DOC, permDefaults, permsFor, forgetPerms } = require('./access');
 const tasks = require('./tasks');
 
 const API_URL = 'https://europe-west2-human-appeal-media-plan.cloudfunctions.net/api';
@@ -204,7 +205,8 @@ const A = {
 
   async accessStatus([token]) {
     const a = await checkAccessToken(token);
-    const out = { status: a.status, name: a.name || '', email: a.email || '', isAdmin: !!(a.ok && isAdminEmail(a.email)),
+    const perms = a.ok ? await permsFor(a.email) : null;
+    const out = { status: a.status, name: a.name || '', email: a.email || '', isAdmin: !!(perms && perms.admin), owner: !!(a.ok && isAdminEmail(a.email)), perms,
       photo: '', member: {}, taskNotice: null, backupToday: [], pushTopic: '', dashboard: { version: 'server' }, app: null };
     if (!a.ok) return out;
     const [ph, team, st] = await Promise.all([photos(), tasks.teamStatusFor(a).catch(() => null), appState()]);
@@ -239,8 +241,40 @@ const A = {
     return { me: me.email, now: Date.now(), rows, photos: ph, members: mem };
   },
 
+  /** Admin → Permissions: everyone approved, with their role and what they can use (the SEKNA admin only). */
+  async adminPerms([token]) {
+    await assertOwner(token);
+    const [rows, mem, over] = await Promise.all([storeRows(), tasks.members(), fsGet(PERM_DOC)]);
+    const seen = {}, people = [];
+    rows.filter(r => r.status === 'Approved').forEach(r => {
+      const e = norm(r.email); if (seen[e]) return; seen[e] = 1;
+      const role = (mem[e] || {}).role || '';
+      people.push({ email: e, name: r.name || '', role, owner: isAdminEmail(e), defaults: permDefaults(role), set: (over || {})[e] || {} });
+    });
+    for (const p of people) p.perms = await permsFor(p.email);
+    return { keys: PERM_KEYS, people };
+  },
+  async adminPermsSet([token, changes]) {
+    const me = await assertOwner(token);
+    const out = await fsUpdate(PERM_DOC, doc => {
+      const all = Object.assign({}, doc || {});
+      Object.keys(changes && typeof changes === 'object' ? changes : {}).slice(0, 200).forEach(email => {
+        const e = norm(email);
+        if (!e || isAdminEmail(e)) return;
+        const c = changes[email] || {}, cur = Object.assign({}, all[e] || {});
+        PERM_KEYS.forEach(k => { if (c[k] === true || c[k] === false) cur[k] = c[k]; else if (c[k] === null) delete cur[k]; });
+        if (Object.keys(cur).length) all[e] = cur; else delete all[e];
+      });
+      all._by = me.email; all._at = Date.now();
+      return all;
+    });
+    forgetPerms();
+    return { ok: true, at: out._at };
+  },
+
   async adminSetStatus([token, id, action]) {
-    await assertAdmin(token);
+    const me = await assertAdmin(token);
+    await guardOwner(me, id);
     const map = { approve: 'Approved', restore: 'Approved', deny: 'Denied', revoke: 'Revoked' };
     if (!map[action]) throw new Error('Unknown action.');
     return decide(String(id || ''), map[action]);
@@ -268,7 +302,8 @@ const A = {
   },
 
   async adminDelete([token, id]) {
-    await assertAdmin(token);
+    const me = await assertAdmin(token);
+    await guardOwner(me, id);
     let name = '';
     await saveRows(list => {
       const r = list.find(x => x.id === String(id || ''));
@@ -309,6 +344,13 @@ const A = {
   },
   async adminClearAnnouncement([token]) { await assertAdmin(token); return setApp(s => { s.announcement = null; }); }
 };
+
+/** People given Admin can't turn off or delete the SEKNA admin's own devices. */
+async function guardOwner(me, id) {
+  if (isAdminEmail(me.email)) return;
+  const r = (await storeRows()).find(x => x.id === String(id || ''));
+  if (r && isAdminEmail(r.email)) throw new Error('Only the SEKNA admin can change this.');
+}
 
 async function decide(id, status) {
   let row = null, before = '';
