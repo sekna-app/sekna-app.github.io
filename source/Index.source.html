@@ -3508,6 +3508,18 @@ window.addEventListener('load',function(){
     .id-lock{font-size:12.5px;font-weight:800;color:#6b7385;background:#f2f4f9;border-radius:10px;padding:8px 10px}
     .id-in{width:100%;box-sizing:border-box;border:1.5px solid #e6e9f1;border-radius:12px;padding:11px 12px;font:inherit;font-size:14.5px;background:#fff;color:#1d2433;resize:vertical}
     .id-list{display:grid;gap:10px}
+    /* Notifications list */
+    .nf-badge{margin-left:auto;font-style:normal;min-width:20px;height:20px;border-radius:99px;padding:0 6px;background:#ff5d73;color:#fff;font-size:11px;font-weight:900;display:grid;place-items:center}
+    .nf-body{padding:12px 14px 30px;max-width:680px;margin:0 auto}
+    .nf-day{font-size:10.5px;font-weight:900;letter-spacing:.12em;color:#8a92a6;margin:14px 4px 6px}
+    .nf-it{width:100%;display:flex;gap:12px;align-items:flex-start;text-align:left;border:0;font:inherit;color:inherit;background:#fff;border-radius:16px;padding:12px 14px;margin-bottom:8px;box-shadow:0 4px 14px rgba(20,30,60,.05);cursor:pointer;position:relative}
+    .nf-it.new:after{content:"";position:absolute;top:14px;right:14px;width:8px;height:8px;border-radius:50%;background:#ff5d73}
+    .nf-ic{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-size:18px;background:#e8eefc}
+    .nf-ic.month_closed{background:#dff5ea}.nf-ic.announcement{background:#fff3dc}.nf-ic.app_update{background:#efe9fd}.nf-ic.tasks{background:#e6f7ee}
+    .nf-tx{flex:1;min-width:0;padding-right:12px}.nf-tx b{display:block;font-size:13.5px;color:#1d2433}.nf-tx span{display:block;font-size:12.5px;color:#5b6375;line-height:1.45;margin-top:2px}
+    .nf-tx small{display:flex;gap:6px;align-items:center;margin-top:5px;font-size:11px;color:#9aa1b2;font-weight:700}.nf-tx small em{font-style:normal;font-size:10px;font-weight:900;border-radius:99px;padding:1px 7px;background:#eef1f8;color:#203c8e}
+    .nf-empty{text-align:center;padding:50px 20px;color:#8a92a6;font-weight:700}.nf-empty b{display:block;font-size:30px;margin-bottom:8px}
+    body.dark-mode .nf-it{background:#151a22}body.dark-mode .nf-tx b{color:#fff}body.dark-mode .nf-tx span{color:#c3c9d6}body.dark-mode .nf-ic{background:#1f2a4a}
     /* Admin · Ideas */
     .ai-fs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:12px 0 4px;padding-bottom:2px}.ai-fs::-webkit-scrollbar{display:none}
     .ai-f{flex:none;display:inline-flex;align-items:center;gap:6px;border:1.5px solid #e6e9f1;background:#fff;border-radius:99px;padding:6px 11px;font:inherit;font-size:12px;font-weight:800;color:#4b5263;cursor:pointer}
@@ -4615,6 +4627,7 @@ window.addEventListener('load',function(){
 
   <div class="sk-section-label">App</div>
   <nav class="sk-nav" aria-label="App options">
+    <button class="sk-nav-btn" id="nfNavBtn" type="button" onclick="openNotifs()"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.3 20a1.9 1.9 0 0 0 3.4 0"/></svg></span><span>Notifications</span><em class="nf-badge" id="nfBadge" hidden></em></button>
     <button class="sk-nav-btn" type="button" onclick="openSettings()"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span><span>Settings</span></button>
     <button class="sk-nav-btn" type="button" onclick="openUpdates()"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/></svg></span><span>Updates</span></button>
     <button class="sk-nav-btn" type="button" onclick="openAbout()"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span><span>About SEKNA</span></button>
@@ -4665,6 +4678,12 @@ window.addEventListener('load',function(){
   </section>
 </div>
 
+<div class="app-modal-overlay sk-page" id="notifsOverlay" onclick="closeNotifs(event)" data-share-ui>
+  <section class="app-modal sk-modal nf-page" role="dialog" aria-modal="true" aria-labelledby="nfTitle" onclick="event.stopPropagation()">
+    <div class="sk-modal-head"><div><div class="sk-kicker">SEKNA</div><h2 id="nfTitle">Notifications</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeNotifs()" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+    <div id="nfBody" class="nf-body"></div>
+  </section>
+</div>
 <div class="app-modal-overlay sk-page" id="pastYearsOverlay" onclick="closePastYears(event)" data-share-ui>
   <section class="app-modal sk-modal py-page" role="dialog" aria-modal="true" aria-labelledby="pyTitle" onclick="event.stopPropagation()">
     <div class="sk-modal-head"><div><div class="sk-kicker" id="pyKicker">PAST YEARS</div><h2 id="pyTitle">Same Hijri day</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closePastYears()" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
@@ -5333,17 +5352,15 @@ function muscatParts(ms){
  const o={};new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Muscat',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(ms)).forEach(x=>o[x.type]=x.value);
  return [o.year,o.month,o.day,o.hour,o.minute];
 }
+// The update time in this phone's or computer's own time zone (Cairo, London…), named under it.
+function tzName(){try{const z=Intl.DateTimeFormat().resolvedOptions().timeZone||'';return z?z.split('/').pop().replace(/_/g,' ')+' time':''}catch(e){return ''}}
 function tbLive(d){
  const el=document.getElementById('brandSub');if(!el)return;
- let m=null;
- if(d&&Number(d.generatedAtMs))m=[''].concat(muscatParts(Number(d.generatedAtMs)));
- else{m=String((d&&d.generatedAt)||'').match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/)}
+ const ms=d&&Number(d.generatedAtMs);
  let when='';
- if(m){const n=muscatParts(Date.now()),dt=Date.UTC(+m[1],+m[2]-1,+m[3]),days=Math.round((Date.UTC(+n[0],+n[1]-1,+n[2])-dt)/864e5);
-   const h=+m[4], hm=`${h%12||12}:${m[5]} ${h<12?'AM':'PM'}`;
-   when=` · ${hm} ${days===0?'today':days===1?'yesterday':new Date(dt).toLocaleDateString('en-GB',{day:'numeric',month:'short',timeZone:'UTC'})}`}
- const exact=!!(d&&Number(d.generatedAtMs));
- el.innerHTML=`<span class="tb-live"><span class="tb-l1"><span class="tb-dot"></span>Live${when}</span>${when&&exact?'<small class="tb-tz">Muscat time</small>':''}</span>`;
+ if(ms){when=' · '+localWhen(ms,false)+' '+(()=>{const a=new Date(ms),n=new Date(),k=x=>new Date(x.getFullYear(),x.getMonth(),x.getDate()).getTime(),df=Math.round((k(n)-k(a))/864e5);return df===0?'today':df===1?'yesterday':a.toLocaleDateString('en-GB',{day:'numeric',month:'short'})})()}
+ else{const m=String((d&&d.generatedAt)||'').match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/);if(m){const h=+m[4];when=` · ${h%12||12}:${m[5]} ${h<12?'AM':'PM'}`}}
+ el.innerHTML=`<span class="tb-live"><span class="tb-l1"><span class="tb-dot"></span>Live${when}</span>${when&&ms&&tzName()?`<small class="tb-tz">${esc(tzName())}</small>`:''}</span>`;
 }
 const PAGE_NAMES={overview:'Daily Performance',days:'Day by Day Performance',channel:'Monthly Progress',lab:'Media Plan Lab',plans:'Plan Performance History',ranks:'Top & Bottom 5',months:'Reports Studio'};
 // Page name in DM Serif Display, the last word on a gold highlighter.
@@ -6549,6 +6566,63 @@ function renderDayChannels(d){
 }
 const PLAN_CHANNEL_NAMES=['Search Brand','Search Non-Brand','Performance Max','Demand Gen','Video'];
 const PLAN_MIX_LABELS=['Search Brand','Non-Brand','PMax','Demand Gen','Video'];
+
+/* ---------- Notifications list (menu → Notifications) ---------- */
+// What SEKNA sent the team and this person, newest first; times in this device's own time zone.
+let NF={list:null,busy:false,err:''};
+const NF_ICON={new_day:'📊',month_closed:'🗓️',announcement:'📣',app_update:'⬇️',tasks:'✅',updated:'📊'};
+function nfSeen(){return +storeGet('sekna_nf_seen')||0}
+function nfBadge(){
+ const b=document.getElementById('nfBadge');if(!b)return;
+ const n=(NF.list||[]).filter(x=>x.at>nfSeen()).length;
+ b.hidden=!n;b.textContent=n>9?'9+':String(n);
+}
+function nfLoad(){
+ if(NF.busy||!getAccessToken())return;NF.busy=true;
+ serverCall('myNotifications',getAccessToken()).then(r=>{NF.busy=false;NF.err='';NF.list=Array.isArray(r)?r:[];nfBadge();nfRender()})
+  .catch(err=>{NF.busy=false;NF.err=errorText(err);nfRender()});
+}
+function localWhen(ms,withDay){
+ const d=new Date(ms), now=new Date(), t=d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+ const day=x=>new Date(x.getFullYear(),x.getMonth(),x.getDate()).getTime(), diff=Math.round((day(now)-day(d))/864e5);
+ if(!withDay)return t;
+ return diff===0?t:diff===1?'Yesterday · '+t:d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' · '+t;
+}
+function nfRender(){
+ const body=document.getElementById('nfBody');if(!body||!document.getElementById('notifsOverlay').classList.contains('open'))return;
+ if(NF.list===null){body.innerHTML=NF.err?`<div class="nf-empty"><b>⚠️</b>${esc(NF.err)}</div>`:'<div class="dx-empty"><span class="lab-spin dark"></span>Loading…</div>';return}
+ if(!NF.list.length){body.innerHTML='<div class="nf-empty"><b>🔔</b>No notifications yet.</div>';return}
+ const seen=+(NF.openSeen||0), now=new Date(), day=x=>new Date(x.getFullYear(),x.getMonth(),x.getDate()).getTime();
+ let last='', html='';
+ NF.list.forEach(x=>{
+   const d=new Date(x.at), diff=Math.round((day(now)-day(d))/864e5);
+   const g=diff===0?'TODAY':diff===1?'YESTERDAY':d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'}).toUpperCase();
+   if(g!==last){html+=`<div class="nf-day">${esc(g)}</div>`;last=g}
+   const acc=x.account?`<em>${x.account==='ar'?'AR':'USA'}</em>`:'';
+   html+=`<button type="button" class="nf-it${x.at>seen?' new':''}" onclick="nfOpen('${esc(x.id)}')"><span class="nf-ic ${esc(x.type)}">${NF_ICON[x.type]||'🔔'}</span>
+    <span class="nf-tx"><b>${esc(x.title)}</b>${x.body?`<span>${esc(x.body)}</span>`:''}<small>${acc}${esc(localWhen(x.at))}</small></span></button>`;
+ });
+ body.innerHTML=html;
+}
+function openNotifs(){
+ closeSidebar();
+ const o=document.getElementById('notifsOverlay');if(!o)return;
+ NF.openSeen=nfSeen();o.classList.add('open');nfRender();nfLoad();
+ // Everything up to now counts as read once the list is open.
+ const top=Math.max(Date.now(),...((NF.list||[]).map(x=>x.at)));storeSet('sekna_nf_seen',String(top));setTimeout(nfBadge,0);
+}
+function closeNotifs(e){if(e&&e.target!==e.currentTarget)return;const o=document.getElementById('notifsOverlay');if(o)o.classList.remove('open');nfBadge()}
+// A tap goes where the notification is about; Media Plan Lab stays locked for everyone but the admin.
+function nfOpen(id){
+ const x=(NF.list||[]).find(n=>n.id===id);if(!x)return;
+ closeNotifs();
+ if(x.type==='tasks'){openTasks('mine');return}
+ if(x.type==='app_update'){openUpdates();return}
+ if(x.account&&x.account!==CURRENT_ACCOUNT)switchAccount(x.account);
+ if(x.type==='month_closed'){switchDashboardTab('lab');return}
+ if(x.type==='new_day')switchDashboardTab('overview');
+}
+
 /* ---------- Media Plan Lab (admins only) ---------- */
 let LAB_STATE=null, LAB_BUSY=false, LAB_MSG='';
 function renderLab(){
@@ -6556,7 +6630,17 @@ function renderLab(){
  if(!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)){
    body.innerHTML='<div class="lab-locked"><div class="lock-ic anim"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="sh" d="M8 11V8a4 4 0 0 1 8 0v3"/><rect x="5" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1.4" fill="currentColor"/></svg></div><b>Admin only</b><small>Media Plan Lab is for the SEKNA admin only.</small></div>';return;
  }
- drawLabSave();
+ // The month-end jobs only show once the month is complete (Close the month also in the first
+ // ten days of the next month, after the new plan has replaced the old one).
+ const days=(DASH_DATA&&DASH_DATA.dayPlan)||[], live=days.filter(x=>x.actual).length, done=days.length>0&&live>=days.length;
+ const early=tkToday().d<=10;
+ if(!done&&!early){
+   const save=document.getElementById('labSave');if(save)save.innerHTML='';
+   const label=days[0]?monthName(days[0].date.slice(0,7),true):'This month';
+   body.innerHTML=`<div class="lab-box"><div class="lab-idle"><span class="lab-idle-ic">🗓️</span><b>${esc(label)} is still running</b><small>${live} of ${days.length} days are in. Save to Plan History and Close the month open here when the month is complete, and you get a notification.</small></div></div>`;
+   return;
+ }
+ if(done)drawLabSave();else{const save=document.getElementById('labSave');if(save)save.innerHTML=''}
  if(!LAB_STATE||LAB_STATE.account!==CURRENT_ACCOUNT){drawLabIdle();return}
  drawLab();
 }
@@ -8064,6 +8148,7 @@ function fetchProfile(){
    applyAppState(p.app,p.isAdmin);
    if(p.isAdmin)setTimeout(()=>adminFetch().catch(()=>{}),4000);
    // Position, the "new tasks" notice and today's backups come from the Team Tasks server.
+   setTimeout(nfLoad,2500);
    serverCall('teamStatus',token).then(t=>{
      if(!t||!ACCESS_PROFILE)return;
      const add={};['member','taskNotice','backupToday'].forEach(k=>{if(k in t)add[k]=t[k]});
@@ -9927,7 +10012,7 @@ function tkNoticeUI(){
 }
 
 /* ---------- v72: loading bar, Updates screen, profile photos, presence ---------- */
-const DASHBOARD_RELEASE_CLIENT={version:'v163',date:'2026-11-05'};
+const DASHBOARD_RELEASE_CLIENT={version:'v164',date:'2026-11-05'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 // A thin bar at the top replaces the old grey-out while data loads.

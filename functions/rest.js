@@ -141,6 +141,11 @@ const R = {
       button: { url: WEB_PAGE_URL, label: 'Open SEKNA' } }] }).catch(e => console.error('Idea email: ' + e.message));
     return { ok: true, id };
   },
+  /** The notifications list (menu → Notifications). */
+  async myNotifications([token]) {
+    const a = await assertAccess(token);
+    return notify.inboxFor(a.email);
+  },
   async myIdeas([token]) {
     const a = await assertAccess(token);
     return (((await fsGet(DOC.ideas)) || {}).items || []).filter(i => norm(i.email) === norm(a.email)).map(ideaOut).reverse();
@@ -327,6 +332,15 @@ async function pushChecks(latestByAccount) {
       snap.sent = sent;
     } else snap.sent = maintenance ? 'maintenance' : 'first-run';
     save.days = Object.assign({}, state.days || {}, save.days || {}, { [key]: snap });
+    // The last day of the month is in: the month is complete (once per month and account).
+    const dim = snap.date ? new Date(Date.UTC(+snap.date.slice(0, 4), +snap.date.slice(5, 7), 0)).getUTCDate() : 0;
+    const mk = snap.date.slice(0, 7), closed = Object.assign({}, state.closed || {}, save.closed || {});
+    if (prev && !maintenance && dim && snap.dayNumber === dim && closed[key] !== mk) {
+      const name = new Date(Date.UTC(+mk.slice(0, 4), +mk.slice(5, 7) - 1, 1)).toLocaleDateString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+      await notify.send({ topics: [{ title: name + ' is complete · ' + (key === 'ar' ? 'AR' : 'USA'),
+        body: 'All ' + dim + ' days are in. Plan History and Close the month are ready in Media Plan Lab.', account: key, eventType: 'month_closed' }] });
+      closed[key] = mk; save.closed = closed; out[key + 'Closed'] = mk;
+    }
   }
   if (Object.keys(save).length) await fsUpdate(DOC.push, s => Object.assign(s || {}, save, save.days ? { days: Object.assign({}, (s && s.days) || {}, save.days) } : {}));
   return out;

@@ -4,7 +4,7 @@
 // Whatever cannot go out directly yet (no password, no permission) goes through Apps Script.
 const crypto = require('crypto');
 const { defineSecret } = require('firebase-functions/params');
-const { request, PROJECT_ID } = require('./google');
+const { request, PROJECT_ID, fsUpdate, fsGet } = require('./google');
 
 // The deploy workflow writes mail-on.txt only when the password exists, so the server can be deployed
 // without it (declaring a secret makes the deploy look for it in Google Secret Manager). A file and not an
@@ -104,12 +104,43 @@ async function identityToken() {
   return r.text();
 }
 
+/* ---------- the notifications list in the app (what was sent, newest first) ---------- */
+// Team notifications go to one list, a person's own ones (tasks, backup) to theirs.
+const INBOX_TEAM = 'inbox/team';
+const inboxOf = email => 'inbox/' + userTopic(email);
+const INBOX_KEEP = 60, INBOX_DAYS = 60;
+async function inboxAdd(path, entries) {
+  if (!entries.length) return;
+  const cutoff = Date.now() - INBOX_DAYS * 864e5;
+  await fsUpdate(path, doc => {
+    const list = ((doc && doc.items) || []).filter(x => x.at > cutoff);
+    return { items: entries.concat(list).slice(0, INBOX_KEEP) };
+  });
+}
+function inboxEntry(x, type, account) {
+  return { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7), at: Date.now(), title: String(x.title || 'SEKNA').slice(0, 90),
+    body: String(x.body || '').slice(0, 240), type: String(type || 'updated'), account: account || '' };
+}
+async function inboxRecord(payload) {
+  const team = (payload.topics || []).map(t => inboxEntry(t, t.eventType, t.account || (t.snapshot && t.snapshot.accountKey) || ''));
+  const mine = {};
+  (payload.pushes || []).forEach(p => { const e = norm(p.email); if (e) (mine[e] = mine[e] || []).push(inboxEntry(p, p.eventType || 'tasks', '')); });
+  try { await inboxAdd(INBOX_TEAM, team); } catch (e) { console.warn('Inbox: ' + e.message); }
+  for (const e of Object.keys(mine)) { try { await inboxAdd(inboxOf(e), mine[e]); } catch (err) { console.warn('Inbox: ' + err.message); } }
+}
+/** The team's notifications and this person's own, newest first. */
+async function inboxFor(email) {
+  const [team, mine] = await Promise.all([fsGet(INBOX_TEAM), fsGet(inboxOf(email))]);
+  return ((team && team.items) || []).concat((mine && mine.items) || []).sort((a, b) => b.at - a.at).slice(0, INBOX_KEEP);
+}
+
 /**
  * Sends { emails, pushes, topics, appState }. Each part goes out directly when it can,
  * the rest through Apps Script (relaySend). Returns what was sent each way.
  */
 async function send(payload) {
   payload = payload || {};
+  await inboxRecord(payload);
   const left = { emails: [], pushes: [], topics: [] };
   const out = { emails: 0, pushes: 0, topics: 0, relayed: 0 };
   if (mailReady()) {
@@ -155,4 +186,4 @@ async function capability() {
 }
 
 module.exports = { GMAIL_PASSWORD, MAIL_ON_DEPLOY, send, sendMail, mailReady, render, emailHtml, button, esc, userTopic, subscribeTopics,
-  appsScript, identityToken, fcm, topicMessage, MEDIA_TOPIC };
+  appsScript, identityToken, fcm, topicMessage, MEDIA_TOPIC, inboxFor };
