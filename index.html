@@ -8337,7 +8337,7 @@ function updateProfileUI(){
  const name=p.name||storeGet(ACCESS_NAME_KEY)||'SEKNA';
  text('profileName',name);
  text('profileEmail',p.email||storeGet(ACCESS_EMAIL_KEY)||'Signed in');
- const av=document.getElementById('profileAvatar');if(av){av.innerHTML=myAv||avatarHtml(p.photo,name);av.classList.toggle('has-emb',!!myAv)}
+ const av=document.getElementById('profileAvatar');if(av){av.innerHTML=myAv||letterEmblem(name);av.classList.add('has-emb')}
  renderProfileCard();
  const lock=document.getElementById('adminNavLock');
  if(lock)lock.hidden=!!p.isAdmin;
@@ -8781,7 +8781,7 @@ function renderAdmin(d){
    ['Active today',users.filter(p=>now-p.last<86400000).length,'']
  ];
  const person=p=>`<div class="ad-person">
-   <span class="sk-person-avatar${memberOf(p.email).avatar?' has-emb':''}">${emblemHtml(memberOf(p.email).avatar)||avatarHtml(photos[p.email],p.name)}</span>
+   <span class="sk-person-avatar has-emb">${personAv(memberOf(p.email).avatar,p.name)}</span>
    <span class="ad-pt"><b>${esc(p.name)}</b><small>${esc(p.email)}</small>${roleBadge(memberOf(p.email).role)}<span class="sk-seen">${seenHtml(p.last,now)}</span></span>
    <span class="ad-pr">${statusChip(p.status)}<span class="ad-acts">${personActions(p)}<button class="sk-mini-btn ghost" type="button" onclick="adminEditMember('${esc(p.email)}')">${ADMIN_EDIT===p.email?'Done':'Position'}</button></span></span>
  </div>${ADMIN_EDIT===p.email?memberEditor(p):''}`;
@@ -8841,7 +8841,7 @@ function memberEditor(p){
  return `<div class="ad-mem"><div class="ad-mem-h">Position for ${esc(p.name)}<small>Only shows on their menu. They are not notified.</small></div>
    <div class="ad-roles">${['',...ROLES].map(r=>`<button type="button" class="${r===cur?'on':''}" onclick="adminSetRole('${esc(p.email)}','${r}',this)">${r?roleBadge(r):'<span class="rb rb0">No title</span>'}</button>`).join('')}</div>
    <div class="ad-mem-h ad-mem-h2">Avatar</div>
-   <div class="ad-avs"><button type="button" class="none${!curAv?' on':''}" onclick="adminSetAvatar('${esc(p.email)}',0,this)" title="No avatar">${esc((String(p.name||'S').charAt(0)||'S').toUpperCase())}</button>${AVATARS.map((a,i)=>`<button type="button" class="${curAv===i+AVATAR_BASE?'on':''}" onclick="adminSetAvatar('${esc(p.email)}',${i+AVATAR_BASE},this)" title="${AVATAR_NAMES[i]}">${a}</button>`).join('')}</div></div>`;
+   <div class="ad-avs"><button type="button" class="none${!curAv?' on':''}" onclick="adminSetAvatar('${esc(p.email)}',0,this)" title="No avatar: the first letter">${letterEmblem(p.name)}</button>${AVATARS.map((a,i)=>`<button type="button" class="${curAv===i+AVATAR_BASE?'on':''}" onclick="adminSetAvatar('${esc(p.email)}',${i+AVATAR_BASE},this)" title="${AVATAR_NAMES[i]}">${a}</button>`).join('')}</div></div>`;
 }
 function adminSetAvatar(email,n,btn){return adminSetRole(email,n,btn,'avatar')}
 async function adminSetRole(email,role,btn,field){
@@ -9633,7 +9633,7 @@ function tkQuickNav(){['ttQuickBtn','ttBuildBtn'].forEach(id=>{const b=document.
 function tkMe(){return ((TK.data&&TK.data.me&&TK.data.me.email)||(ACCESS_PROFILE&&ACCESS_PROFILE.email)||'').toLowerCase()}
 function tkPeople(){return ((TK.data&&TK.data.people)||[]).slice().sort((a,b)=>roleTier(b.role)-roleTier(a.role)||String(a.name).localeCompare(String(b.name)))}
 function tkPerson(email){return tkPeople().find(p=>p.email===email)||{email,name:String(email||'').split('@')[0],role:'',avatar:0}}
-function tkAv(p){return `<span class="tk-av">${emblemHtml(p.avatar)||esc((String(p.name||'S').charAt(0)||'S').toUpperCase())}</span>`}
+function tkAv(p){return `<span class="tk-av has-emb">${personAv(p.avatar,p.name)}</span>`}
 const TK_VIEWS={team:['Team Board','The whole team, week by week'],mine:['My Tasks','What you need to do'],build:['Task Builder','Plan the month for the team'],quick:['Quick Requests','Small asks with a deadline'],leave:['Team Leave','Days off and backups']};
 
 function tkSetTitle(t){const el=document.getElementById('tkTitle');if(!el)return;const w=String(t).split(' '),l=w.pop();el.innerHTML=(w.length?esc(w.join(' '))+' ':'')+`<span>${esc(l)}</span>`}
@@ -10180,7 +10180,7 @@ function tkNoticeUI(){
 }
 
  
-const DASHBOARD_RELEASE_CLIENT={version:'v168',date:'2026-11-05'};
+const DASHBOARD_RELEASE_CLIENT={version:'v169',date:'2026-11-05'};
 let SERVER_RELEASE=null, APP_UPDATE_STATE=null;
 
 
@@ -10296,6 +10296,13 @@ const AVATAR_BASE=11;
 const AVATARS=["<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M30 78 H70 M40 78 L42 50 H58 L60 78 M38 50 H62 M44 50 V38 H56 V50 M42 38 H58 M47 38 V30 H53 V38 M46 30 L50 25 L54 30 M48 78 V72 a2 2 0 0 1 4 0 V78 M50 56 v3 M50 63 v3 M44 32 L22 25 M44 34 L24 34 M44 36 L27 41 M56 32 L78 25 M56 34 L76 34 M56 36 L73 41\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M24 74 H76 M38 74 V48 H62 V74 M38 48 v-4 h4 v4 h4 v-4 h4 v4 h4 v-4 h4 v4 h4 v-4 M28 74 V56 H36 V74 M64 74 V56 H72 V74 M28 56 l4 -5 l4 5 M64 56 l4 -5 l4 5 M47.5 44 V32 H52.5 V44 M46.5 32 L50 26 L53.5 32 M46 74 v-8 a4 4 0 0 1 8 0 v8 M22 82 q4 -3 8 0 t8 0 t8 0 t8 0 t8 0 t8 0 t8 0\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M26 24 H74 M42 24 L50 30 L58 24 M33 30 h34 a4 4 0 0 1 4 4 v32 h-42 v-32 a4 4 0 0 1 4 -4 z M34 38 h32 v12 h-32 z M50 38 v12 M37 60 h4 M59 60 h4 M28 74 H72 M36 66 v8 M64 66 v8\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M24 60 H76 L68 72 H32 Z M34 60 V46 H66 V60 M42 46 V36 H56 V46 M46 36 v-6 M40 53 a2 2 0 1 0 4 0 a2 2 0 1 0 -4 0M50 53 a2 2 0 1 0 4 0 a2 2 0 1 0 -4 0M60 53 a2 2 0 1 0 4 0 a2 2 0 1 0 -4 0\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M45 30 a5 5 0 1 0 10 0 a5 5 0 1 0 -10 0 M50 35 V72 M40 44 H60 M28 58 q4 16 22 16 q18 0 22 -16 M24 62 l4 -4 l4 4 M68 62 l4 -4 l4 4\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M34 52 a16 16 0 1 0 32 0 a16 16 0 1 0 -32 0M45 52 a5 5 0 1 0 10 0 a5 5 0 1 0 -10 0 M50 30 v44 M28 52 h44 M35 37 l30 30 M65 37 l-30 30\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M50 24 L56 42 L76 42 L60 54 L66 74 L50 62 L34 74 L40 54 L24 42 L44 42 Z\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M26 46 H74 M28 46 q0 14 10 14 q10 0 10 -14 M52 46 q0 14 10 14 q10 0 10 -14 M48 48 h4\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M26 40 H40 l4 -6 h12 l4 6 H74 V70 H26 Z M40 54 a10 10 0 1 0 20 0 a10 10 0 1 0 -20 0M46 54 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M66 46 h3\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M38 46 a12 12 0 1 0 24 0 a12 12 0 1 0 -24 0 M50 26 v-4 M32 46 h-4 M68 46 h4 M37 33 l-3 -3 M63 33 l3 -3 M22 62 h56 M28 70 q5 -4 10 0 t10 0 t10 0 t10 0 t10 0\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M22 40 q7 -6 14 0 t14 0 t14 0 t14 0 t14 0 M22 54 q7 -6 14 0 t14 0 t14 0 t14 0 t14 0 M22 68 q7 -6 14 0 t14 0 t14 0 t14 0 t14 0\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M27 66 L23 34 L38 48 L50 26 L62 48 L77 34 L73 66 Z M28 74 H72 M46 56 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0M34 58 a2 2 0 1 0 4 0 a2 2 0 1 0 -4 0M62 58 a2 2 0 1 0 4 0 a2 2 0 1 0 -4 0\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M50 22 L55 47 L78 52 L55 57 L50 82 L45 57 L22 52 L45 47 Z M46 52 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M38 26 H62 V40 a12 12 0 0 1 -24 0 Z M38 30 h-8 q0 12 10 14 M62 30 h8 q0 12 -10 14 M50 52 V62 M40 72 h20 l-2 -10 h-16 z\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"];
 const AVATAR_NAMES=["Pharos", "Qaitbay", "Tram", "Ship", "Anchor", "Wheel", "Starfish", "Sunglasses", "Camera", "Sea & sun", "Waves", "Crown", "Compass rose", "Trophy"];
 function emblemHtml(n){const a=AVATARS[(+n||0)-AVATAR_BASE];return a?`<span class="sk-emb">${a}</span>`:''}
+
+
+function letterEmblem(name){
+ const l=esc((String(name||'S').trim().charAt(0)||'S').toUpperCase());
+ return `<span class="sk-emb"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#58a9de"/><path d="M10 80 A50 50 0 0 0 90 80 Z" fill="#ffd200"/><text x="50" y="62" text-anchor="middle" font-size="46" font-weight="800" font-family="Inter,Arial,sans-serif" fill="#fff">${l}</text></svg></span>`;
+}
+function personAv(avatar,name){return emblemHtml(avatar)||letterEmblem(name)}
 function avatarHtml(photo,name){
  return photo?`<img class="sk-avatar-img" src="${esc(photo)}" alt="" referrerpolicy="no-referrer" onerror="this.replaceWith(document.createTextNode('${esc((String(name||'S').charAt(0)||'S').toUpperCase())}'))">`:esc((String(name||'S').charAt(0)||'S').toUpperCase());
 }
