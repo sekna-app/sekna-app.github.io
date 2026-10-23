@@ -3506,6 +3506,25 @@ window.addEventListener('load',function(){
     .phx-m i{display:block;height:6px;border-radius:4px;background:#eef0f5;margin-top:6px;overflow:hidden}.phx-m u{display:block;height:100%;border-radius:4px;background:#3d6bff}
     .phx-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:12.5px;color:#6b7385;font-weight:700}.phx-foot b{color:#1d2433}
     .phx-more{color:#203c8e;font-weight:900}
+    /* v170: Plan History as a statement */
+    .phs{background:#fff;border-radius:18px;padding:16px;box-shadow:0 10px 24px rgba(20,30,60,.08);border-top:5px solid #203c8e;cursor:pointer;min-width:0}
+    .phs-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+    .phs-hd b{font-size:15px;font-weight:900;letter-spacing:.02em;color:#203c8e}.phs-hd b i{font-style:normal;color:#c89434}
+    .phs-hd div{text-align:right;font-size:10px;font-weight:800;color:#8a92a6;line-height:1.5;letter-spacing:.04em}
+    .phs h3{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:27px;margin:12px 0 0;color:#0c1a46}
+    .phs-sub{font-size:11px;color:#8a92a6;font-weight:700}
+    .phs-li{padding:10px 0;border-bottom:1px solid #eef0f5}
+    .phs-t{display:flex;justify-content:space-between;font-size:12.5px;font-weight:800}.phs-t span{color:#4b5263}.phs-t b{color:#1d2433}
+    .phs-q{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:10.5px;font-weight:800;color:#8a92a6;white-space:nowrap}
+    .phs-q i{flex:1;height:5px;border-radius:9px;background:#eef1f8;overflow:hidden}.phs-q i u{display:block;height:100%;background:#203c8e;border-radius:9px}
+    .phs-q em{font-style:normal;min-width:38px;text-align:right}.phs-q em.ok{color:#13894f}.phs-q em.wt{color:#a8701c}.phs-q em.bd{color:#d33b4f}
+    .phs-big{display:flex;justify-content:space-between;align-items:flex-end;margin-top:14px;padding:12px;border-radius:14px;background:#f4f6fb}
+    .phs-big small{display:block;font-size:10px;font-weight:900;letter-spacing:.12em;color:#8a92a6}.phs-big b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:38px;line-height:1.05;color:#203c8e}
+    .phs-ok{font-size:10px;font-weight:900;color:#13894f;background:#dff5ea;border-radius:99px;padding:4px 9px}
+    .phs-ft{display:flex;justify-content:space-between;gap:10px;margin-top:12px;font-size:10px;font-weight:700;color:#8a92a6}
+    .phs-more{margin-top:10px;font-size:12px;font-weight:900;color:#203c8e}
+    body.dark-mode .phs{background:#151a22;border-top-color:#5d86ff}body.dark-mode .phs h3,body.dark-mode .phs-t b{color:#fff}body.dark-mode .phs-t span{color:#c9d0dc}
+    body.dark-mode .phs-li{border-color:#252a32}body.dark-mode .phs-q i,body.dark-mode .phs-big{background:#1d2330}body.dark-mode .phs-big b,body.dark-mode .phs-hd b,body.dark-mode .phs-more{color:#9fb6ff}
     .phx-t{font-size:13px;margin-top:14px}.phx-t th{font-size:10.5px;padding:0 6px 8px}.phx-t td{padding:9px 6px}
     .lab-save{border:1.5px solid #e6e9f1;border-radius:18px;padding:14px;margin-bottom:12px;background:linear-gradient(160deg,#fff8ea,#fff)}
     .lab-wait{margin:0 0 10px;padding:8px 10px;border-radius:10px;background:#f2f4f9;font-size:12.5px;font-weight:800;color:#6b7385}
@@ -10885,14 +10904,23 @@ function drawPlanHistory(){
  const body=document.getElementById('phBody');if(!body||CURRENT_TAB!=='plans')return;
  if(PH.list===null){body.innerHTML='<div class="dx-empty"><span class="lab-spin dark"></span>Loading Plan History…</div>';return}
  if(!PH.list.length){body.innerHTML=`<div class="phx-empty"><span>🏛️</span><b>Nothing saved yet</b>${PH.msg?`<small>⚠️ ${esc(PH.msg)}</small>`:''}</div>`;return}
+ // v170: each saved month as a statement (header, a bar on every line, the achievement in a box).
+ const accName=String((accountMeta(DASH_DATA||{}).label)||'').toUpperCase();
+ const tone=(r,spend)=>r==null?'':spend?(Math.abs(r-1)<=.05?'ok':Math.abs(r-1)<=.15?'wt':'bd'):(r>=.95?'ok':r>=.8?'wt':'bd');
  body.innerHTML=`<div class="phx-list">${PH.list.map(s=>{
-   const {p,all}=phAcc(s), a=s.actual, open=PH.open===s.month, col=all>=.9?'good':all>=.8?'watch':'bad';
-   const bar=(l,av,pv,f)=>`<div class="phx-m"><small>${l}</small><b>${f(av)}</b><span>Plan ${f(pv)} · ${pv?mpPct(av/pv):'—'}</span><i><u style="width:${pv?Math.min(100,av/pv*100).toFixed(1):0}%"></u></i></div>`;
-   const ch=(s.channels||[]).map(c=>Object.assign({},c,{n:chName(c.channel)})).sort((x,y)=>(y.roas||0)-(x.roas||0)).map(c=>`<tr><td class="mp-n">${chIco(c.channel)}${esc(CHANNEL_SHORT[c.channel]||c.n)}</td><td>${mpK(c.planSpend)}</td><td>${mpK(c.spend)}</td><td>${c.planSpend?mpPct(c.spend/c.planSpend):'—'}</td><td>${mpK(c.value)}</td><td><b>${c.roas!=null?fmt(c.roas,2)+'x':'—'}</b></td></tr>`).join('');
-   return `<div class="phx-item ${col}${open?' open':''}" onclick="phToggle('${s.month}')">
-    <div class="phx-top"><div><b>${esc(monthName(s.month,true))}</b><small>${esc(s.hijriFrom)} – ${esc(s.hijriTo)}${s.daysLive<s.daysTotal?` · saved on day ${s.daysLive} of ${s.daysTotal}`:''}</small></div><div class="phx-acc"><b>${mpPct(all)}</b><small>achievement</small></div></div>
-    <div class="phx-ms">${bar('Conv. Value',a.value,p.value,mpK)}${bar('Spend',a.spend,p.spend,mpK)}${bar('Conv.',a.conversions,p.conversions,v=>fmt(v,0))}</div>
-    <div class="phx-foot"><span>ROAS <b>${fmt(a.roas,2)}x</b> · plan ${fmt(p.roas,2)}x</span><span class="phx-more">${open?'Hide types ▲':'By campaign type ▼'}</span></div>
+   const {p,all}=phAcc(s), a=s.actual, open=PH.open===s.month, mon=s.month.slice(0,4)+'-'+s.month.slice(5,7);
+   const line=(l,av,pv,f,spend)=>{const r=pv?av/pv:null;return `<div class="phs-li"><div class="phs-t"><span>${l}</span><b>${f(av)}</b></div><div class="phs-q">Plan ${f(pv)}<i><u style="width:${r!=null?Math.min(100,r*100).toFixed(1):0}%"></u></i><em class="${tone(r,spend)}">${r!=null?mpPct(r):'—'}</em></div></div>`};
+   const roasR=p.roas?a.roas/p.roas:null;
+   const ch=(s.channels||[]).map(c=>Object.assign({},c,{n:chName(c.channel)})).sort((x,y)=>(y.roas||0)-(x.roas||0)).map(c=>`<tr><td class="mp-n">${chIco(c.channel)}${esc(CHANNEL_SHORT[c.channel]||c.n)}</td><td>${mpK(c.planSpend)}</td><td>${mpK(c.spend)}</td><td>${c.planSpend?mpPct(c.spend/c.planSpend):'—'}</td><td>${mpK(c.value)}</td><td>${c.roas!=null?fmt(c.roas,2)+'x':'—'}</td></tr>`).join('');
+   const saved=s.savedAt?new Date(s.savedAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+   return `<div class="phs${open?' open':''}" onclick="phToggle('${s.month}')">
+    <div class="phs-hd"><b>SEKNA<i>·</i></b><div>${esc(accName)}<br>STATEMENT · ${esc(monthName(mon,true).toUpperCase())}</div></div>
+    <h3>${esc(monthName(s.month,true))}</h3><div class="phs-sub">${s.daysLive} of ${s.daysTotal} days · ${esc(s.hijriFrom)} – ${esc(s.hijriTo)}</div>
+    ${line('Conv. Value',a.value,p.value,v=>money(v))}${line('Spend',a.spend,p.spend,v=>money(v),1)}${line('Conversions',a.conversions,p.conversions,v=>fmt(v,0))}
+    <div class="phs-li"><div class="phs-t"><span>ROAS</span><b>${fmt(a.roas,2)}x</b></div><div class="phs-q">Plan ${fmt(p.roas,2)}x<i><u style="width:${roasR!=null?Math.min(100,roasR*100).toFixed(1):0}%"></u></i><em class="${roasR>=1?'ok':'bd'}">${roasR==null?'—':roasR>=1?'▲':'▼'}</em></div></div>
+    <div class="phs-big"><div><small>PLAN ACHIEVEMENT</small><b>${mpPct(all)}</b></div><span class="phs-ok">✓ SAVED</span></div>
+    <div class="phs-ft"><span>${saved?'Saved '+esc(saved):''}</span><span>Spend 40% · Value 40% · Conv. 20%</span></div>
+    <div class="phs-more">${open?'Hide campaign types ▲':'By campaign type ▼'}</div>
     ${open?`<div class="phx-tw"><table class="mp-t phx-t"><thead><tr><th class="mp-n">Type</th><th>Plan spend</th><th>Spend</th><th>Of plan</th><th>Value</th><th>ROAS</th></tr></thead><tbody>${ch}</tbody></table></div>`:''}
    </div>`}).join('')}</div>`;
 }
