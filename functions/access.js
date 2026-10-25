@@ -100,7 +100,7 @@ const LEADER_ROLES = ['Team Leader', 'Media Manager', 'Head of Media'];
 const PERM_DOC = 'team/perms';
 let permCache = null;
 async function permTable() {
-  if (permCache && Date.now() - permCache.at < 30000) return permCache;
+  if (permCache && Date.now() - permCache.at < 15000) return permCache;
   const [mem, over] = await Promise.all([fsGet('team/members'), fsGet(PERM_DOC)]);
   permCache = { at: Date.now(), mem: mem || {}, over: over || {} };
   return permCache;

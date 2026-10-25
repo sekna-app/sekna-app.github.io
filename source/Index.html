@@ -9883,6 +9883,18 @@ function lockSheet(name){
  requestAnimationFrame(()=>o.classList.add('open'));
 }
 
+
+let PERM_AT=0;
+function permsRefresh(){
+ if(!ACCESS_PROFILE||Date.now()-PERM_AT<60000)return;
+ const token=getAccessToken();if(!token&&hasServer())return;
+ PERM_AT=Date.now();
+ serverCall('accessStatus',token).then(p=>{if(!p||!p.perms||!ACCESS_PROFILE)return;
+   ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE,{perms:p.perms,isAdmin:p.isAdmin,owner:p.owner});applyMenuPerms()}).catch(()=>{});
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')permsRefresh()});
+setInterval(permsRefresh,10*60000);
+
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.sk-nav-btn.pm-lockd');if(!b)return;e.preventDefault();e.stopPropagation();closeSidebar();lockSheet(b.dataset.lockName)},true);
 function applyMenuPerms(){
  MENU_PERM.forEach(([id,k])=>{const b=document.getElementById(id);if(!b)return;
