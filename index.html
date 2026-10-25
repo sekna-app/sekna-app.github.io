@@ -3692,7 +3692,18 @@ window.addEventListener('load',function(){
     .pm-p{gap:6px}
     .pm-sw{justify-self:center;width:30px;height:18px;border-radius:99px;border:0;padding:0;background:#d9dee8;position:relative;cursor:pointer;transition:background .2s}
     .pm-sw:after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:left .2s}
-    .pm-sw.on{background:#2453d6}.pm-sw.on:after{left:14px}.pm-sw.lk{opacity:.45;cursor:default}.pm-sw.ch{box-shadow:0 0 0 2px #ffd200}
+    .pm-sw.on{background:#2453d6}.pm-sw.on:after{left:14px}
+    .pm-sw.lock{background:linear-gradient(135deg,#f3d79f,#c9933f);display:grid;place-items:center}.pm-sw.lock:after{display:none}
+    .pm-sw.lock svg{width:11px;height:11px;fill:none;stroke:#3d2a07;stroke-width:2.6;stroke-linecap:round}
+    .pm-leg{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:11.5px;font-weight:800;color:#4b5263}.pm-leg span{display:flex;align-items:center;gap:6px}.pm-leg .pm-sw{cursor:default}
+    .pm-wt{font-style:normal;font-size:8px;font-weight:900;letter-spacing:.06em;color:#8a5a12;background:#fff3dc;border-radius:99px;padding:1px 6px}
+    .pm-who .pm-wt{position:static;margin-top:-2px}
+    .sk-nav-btn.pm-lockd>span:not(.pm-nl){opacity:.5}.pm-nl{margin-left:auto;display:grid;place-items:center;width:24px;height:24px;border-radius:8px;background:rgba(226,184,116,.18);flex:none}.pm-nl[hidden]{display:none}
+    .pm-nl svg{width:12px;height:12px;fill:none;stroke:#e2b874;stroke-width:2.4;stroke-linecap:round}
+    body.share-lock .whatsapp-share-btn{opacity:.55;filter:grayscale(.6)}
+    .lk-card{text-align:center;padding:26px 18px 20px!important}.lk-card b{display:block;font-size:17px;color:#1d2433;margin-top:4px}.lk-card p{font-size:12.5px;color:#8a92a6;font-weight:600;line-height:1.5;margin:6px 0 0}
+    .lk-ic{width:58px;height:58px;border-radius:18px;margin:0 auto 10px;display:grid;place-items:center;background:linear-gradient(135deg,#fff6dc,#f3d79f)}.lk-ic svg{width:26px;height:26px;fill:none;stroke:#8a5a12;stroke-width:2.2;stroke-linecap:round}
+    body.dark-mode .lk-card b{color:#fff}.pm-sw.lk{opacity:.45;cursor:default}.pm-sw.ch{box-shadow:0 0 0 2px #ffd200}
     .pm-note{display:block;font-size:10.5px;color:#8a92a6;font-weight:700;line-height:1.45;margin:10px 2px 0}
     .pm-save{display:block;width:100%;margin-top:12px;border:0;border-radius:13px;padding:12px;font:inherit;font-size:13.5px;font-weight:900;color:#fff;background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);cursor:pointer}.pm-save:disabled{opacity:.45;cursor:default}
     body.dark-mode .pm-chips button{background:#151a22;border-color:#252a32;color:#c9d0dc}body.dark-mode .pm-chips button.on{color:#fff}
@@ -8130,7 +8141,7 @@ function openWhatsAppText(summary){
 }
 
 async function shareWhatsApp(tab,btn){
- if(!canDo('share')){showShareToast('Sharing is turned off for your account.');return;}
+ if(!canDo('share')){if(isLocked('share'))lockSheet('WhatsApp sharing');else showShareToast('Sharing is turned off for your account.');return;}
  if(!DASH_DATA){showShareToast('Dashboard data is still loading.');return;}
  setShareButtonState(btn,true);
  const summary=getShareSummary(tab);
@@ -8572,7 +8583,7 @@ function updateProfileUI(){
  const av=document.getElementById('profileAvatar');if(av){av.innerHTML=myAv||letterEmblem(name);av.classList.add('has-emb')}
  renderProfileCard();
  const lock=document.getElementById('adminNavLock');
- if(lock)lock.hidden=!!p.isAdmin;
+ if(lock)lock.hidden=true;
  const labLock=document.getElementById('labNavLock');
  if(labLock)labLock.hidden=true;
  ['mrSection'].forEach(id=>{const b=document.getElementById(id);if(b)b.hidden=!p.isAdmin});
@@ -9998,19 +10009,33 @@ function myPerms(){
 }
 
 const VIEW_KEYS=['overview','days','channel','plans','ranks','camp','months','seasons','ask','team','mine','leaveview','notifs','updates','about','share'];
-function canDo(k){const p=myPerms();return k in p?!!p[k]:VIEW_KEYS.includes(k)}
+function canDo(k){const p=myPerms();return k in p?p[k]===true:VIEW_KEYS.includes(k)}
+
+function isLocked(k){return myPerms()[k]==='lock'}
 
 const MENU_PERM=[['overviewTabBtn','overview'],['daysTabBtn','days'],['channelTabBtn','channel'],['labTabBtn','lab'],['plansTabBtn','plans'],['ranksTabBtn','ranks'],['campNavBtn','camp'],['monthsTabBtn','months'],['seasonsTabBtn','seasons'],['askNavBtn','ask'],
  ['ttTeamBtn','team'],['ttMineBtn','mine'],['ttBuildBtn','build'],['ttLeaveBtn','leaveview'],['ttQuickBtn','quick'],['nfNavBtn','notifs'],['updatesNavBtn','updates'],['aboutNavBtn','about'],['adminNavBtn','admin']];
+function lockSheet(name){
+ let o=document.getElementById('lockSheet');
+ if(!o){o=document.createElement('div');o.id='lockSheet';o.className='lyx-sheet';o.onclick=e=>{if(e.target===o||e.target.closest('.lyx-x,.ls-close'))o.classList.remove('open')};document.body.appendChild(o)}
+ o.innerHTML=`<div class="lyx-card lk-card"><button type="button" class="lyx-x" aria-label="Close">✕</button><div class="lk-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div><b>You don't have access</b><p>${esc(name||'This page')} is locked for your account.<br>Ask the SEKNA admin if you need it.</p><button type="button" class="ls-close">OK</button></div>`;
+ requestAnimationFrame(()=>o.classList.add('open'));
+}
+
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.sk-nav-btn.pm-lockd');if(!b)return;e.preventDefault();e.stopPropagation();closeSidebar();lockSheet(b.dataset.lockName)},true);
 function applyMenuPerms(){
- MENU_PERM.forEach(([id,k])=>{const b=document.getElementById(id);if(b)b.hidden=!canDo(k)});
+ MENU_PERM.forEach(([id,k])=>{const b=document.getElementById(id);if(!b)return;
+   const lk=isLocked(k);b.hidden=!canDo(k)&&!lk;b.classList.toggle('pm-lockd',lk);
+   if(lk)b.dataset.lockName=(b.querySelector('span:not(.sk-nav-icon)')||b).textContent.trim();else delete b.dataset.lockName;
+   let ic=b.querySelector('.pm-nl');if(lk&&!ic){ic=document.createElement('span');ic.className='pm-nl';ic.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';b.appendChild(ic)}if(ic)ic.hidden=!lk});
  
  document.querySelectorAll('.sk-grp').forEach(g=>{const body=document.getElementById('grp-'+g.dataset.grp);if(!body)return;const any=[...body.querySelectorAll('.sk-nav-btn')].some(b=>!b.hidden);g.hidden=!any;body.hidden=!any});
- document.body.classList.toggle('no-share',!canDo('share'));
+ document.body.classList.toggle('no-share',!canDo('share')&&!isLocked('share'));
+ document.body.classList.toggle('share-lock',isLocked('share'));
  if(!canDo(CURRENT_TAB)&&DASH_TABS.includes(CURRENT_TAB)){const first=DASH_TABS.find(t=>canDo(t));if(first&&first!==CURRENT_TAB)switchDashboardTab(first)}
 }
 function tkCan(k){return canDo(k)}
-function tkCanManage(){const p=myPerms();return !!(p.build||p.quick||p.leave)}
+function tkCanManage(){const p=myPerms();return p.build===true||p.quick===true||p.leave===true}
 
 function tkQuickNav(){applyMenuPerms()}
 function tkMe(){return ((TK.data&&TK.data.me&&TK.data.me.email)||(ACCESS_PROFILE&&ACCESS_PROFILE.email)||'').toLowerCase()}
@@ -10621,7 +10646,7 @@ function tkNoticeClose(){const o=document.getElementById('tkNotice');if(o)o.clas
 function tkNoticeUI(){
  const on=tkNoticeNew();
  document.querySelectorAll('[data-grp="tt"],#ttMineBtn').forEach(el=>el.classList.toggle('tk-has-new',on));
- const lk=document.getElementById('ttBuildLock');if(lk)lk.hidden=tkCan('build');
+ const lk=document.getElementById('ttBuildLock');if(lk)lk.hidden=true;
  const bk=tkBackupPending();
  if(bk&&!TK.shown.bk){TK.shown.bk=1;setTimeout(()=>tkBackupShow(bk),1600)}
  else if(on&&!TK.shown.notice&&!bk){TK.shown.notice=1;setTimeout(tkNoticeShow,1600)}
@@ -11279,14 +11304,17 @@ const PERM_GROUPS=[['mp','Media Plan',[['overview','DAILY'],['days','DAY BY DAY'
  ['app','App',[['notifs','NOTIFI­CATIONS'],['updates','UPDATES'],['about','ABOUT'],['admin','ADMIN']]],
  ['share','Share',[['share','WHATSAPP & IMAGES']]]];
 const PERM_WA='<svg class="pm-wa" viewBox="0 0 24 24" aria-hidden="true"><path fill="#25d366" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/><path fill="#fff" d="M8.6 7.3c.2-.4.4-.4.7-.4h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2 0 .4-.1.6l-.5.6c-.1.2-.2.3 0 .6.5.9 1.2 1.6 2 2.1.3.2.5.1.6 0l.7-.8c.2-.2.4-.2.6-.1l1.8.9c.2.1.4.2.4.4 0 .5-.2 1.2-.8 1.6-.6.4-1.5.6-2.6.2-2.1-.8-3.8-2.5-4.8-4.5-.5-1.1-.4-2.3.1-3z"/></svg>';
-function permVal(p,k){const e=PERM.edit[p.email];return e&&k in e?e[k]:!!p.perms[k]}
+
+function permState(v){return v===true||v==='lock'?v:false}
+function permVal(p,k){const e=PERM.edit[p.email];return permState(e&&k in e?e[k]:p.perms[k])}
+const PERM_NEXT=v=>v===true?'lock':v==='lock'?false:true;
 function permGroup(g){PERM.grp=g;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 
 function permWho(e){PERM.who=e;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function permFlip(email,k){
  const p=((PERM.data&&PERM.data.people)||[]).find(x=>x.email===email);if(!p||p.owner)return;
- const e=PERM.edit[email]=PERM.edit[email]||{},v=!permVal(p,k);
- if(v===!!p.perms[k])delete e[k];else e[k]=v;
+ const e=PERM.edit[email]=PERM.edit[email]||{},v=PERM_NEXT(permVal(p,k));
+ if(v===permState(p.perms[k]))delete e[k];else e[k]=v;
  if(!Object.keys(e).length)delete PERM.edit[email];
  if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
 }
@@ -11295,15 +11323,17 @@ function adminPermsHtml(){
  if(!d)return '<div class="dx-empty"><span class="lab-spin dark"></span>Loading…</div>';
  if(d.error)return `<div class="mrp-msg">⚠️ ${esc(d.error)}</div>`;
  const n=Object.keys(PERM.edit).length, grp=PERM_GROUPS.find(g=>g[0]===PERM.grp)||PERM_GROUPS[0], cols=grp[2];
- const all=(d.people||[]).slice().sort((a,b)=>((+!!b.owner)-(+!!a.owner))||roleTier(b.role)-roleTier(a.role)||String(a.name).localeCompare(String(b.name)));
+ const wait=p=>p.status==='Pending'||p.status==='Invited';
+ const all=(d.people||[]).slice().sort((a,b)=>((+!!b.owner)-(+!!a.owner))||((+wait(b))-(+wait(a)))||roleTier(b.role)-roleTier(a.role)||String(a.name).localeCompare(String(b.name)));
  if(PERM.who&&!all.some(p=>p.email===PERM.who))PERM.who='';
  const ppl=PERM.who?all.filter(p=>p.email===PERM.who):all;
- const who=`<div class="pm-who"><button type="button" class="${PERM.who?'':'on'}" onclick="permWho('')"><span class="pm-all">👥</span>Everyone</button>${all.filter(p=>!p.owner).map(p=>`<button type="button" class="${PERM.who===p.email?'on':''}" onclick="permWho('${esc(p.email)}')"><span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span><span class="pm-wn">${esc(String(p.name||p.email).split(' ')[0])}</span>${PERM.edit[p.email]?'<i></i>':''}</button>`).join('')}</div>`;
- const rows=ppl.map(p=>`<div class="pm-r${p.owner?' own':''}"><div class="pm-p"><span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span><div><b>${esc(String(p.name||p.email).split(' ')[0])}</b><small>${p.owner?'ADMIN':esc(roleLabel(p.role||'')).toUpperCase()||'NO TITLE'}</small></div></div>
-   ${cols.map(([k,l])=>`<button type="button" class="pm-sw${permVal(p,k)?' on':''}${p.owner?' lk':''}${PERM.edit[p.email]&&k in PERM.edit[p.email]?' ch':''}" ${p.owner?'disabled':`onclick="permFlip('${esc(p.email)}','${k}')"`} aria-label="${esc(l)} for ${esc(p.name)}" aria-pressed="${permVal(p,k)}"></button>`).join('')}</div>`).join('');
+ const who=`<div class="pm-who"><button type="button" class="${PERM.who?'':'on'}" onclick="permWho('')"><span class="pm-all">👥</span>Everyone</button>${all.filter(p=>!p.owner).map(p=>`<button type="button" class="${PERM.who===p.email?'on':''}" onclick="permWho('${esc(p.email)}')"><span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span><span class="pm-wn">${esc(String(p.name||p.email).split(' ')[0])}</span>${PERM.edit[p.email]?'<i></i>':''}${wait(p)?'<em class="pm-wt">WAITING</em>':''}</button>`).join('')}</div>`;
+ const rows=ppl.map(p=>`<div class="pm-r${p.owner?' own':''}"><div class="pm-p"><span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span><div><b>${esc(String(p.name||p.email).split(' ')[0])}</b><small>${p.owner?'ADMIN':wait(p)?`<em class="pm-wt">${p.status==='Invited'?'INVITED':'WAITING'}</em>`:esc(roleLabel(p.role||'')).toUpperCase()||'NO TITLE'}</small></div></div>
+   ${cols.map(([k,l])=>`<button type="button" class="pm-sw${permVal(p,k)===true?' on':permVal(p,k)==='lock'?' lock':''}${p.owner?' lk':''}${PERM.edit[p.email]&&k in PERM.edit[p.email]?' ch':''}" ${p.owner?'disabled':`onclick="permFlip('${esc(p.email)}','${k}')"`} aria-label="${esc(l)} for ${esc(p.name)}" aria-pressed="${permVal(p,k)===true}">${permVal(p,k)==='lock'?'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>':''}</button>`).join('')}</div>`).join('');
  const chips=PERM_GROUPS.map(([k,l])=>`<button type="button" class="${k===grp[0]?'on':''}" onclick="permGroup('${k}')">${k==='share'?PERM_WA:''}${l}</button>`).join('');
- const hint=grp[0]==='share'?'Off: no WhatsApp share buttons and no daily images for that person.':grp[0]==='tt'?'Set days off: can add and change leave. Team Leave: can see the page.':'A page that is off disappears from that person\'s menu.';
- return `<b class="ad-h">🔐 Permissions</b><small class="ad-sub">Pick a part of the menu, then switch each page on or off for each person.</small>
+ const hint=grp[0]==='share'?'Locked: the WhatsApp button shows with a lock. Hidden: no share buttons at all.':grp[0]==='tt'?'Set days off: can add and change leave. Team Leave: can see the page.':'Locked: in their menu with a lock, but it doesn\'t open. Hidden: not in their menu.';
+ return `<b class="ad-h">🔐 Permissions</b><small class="ad-sub">Pick a part of the menu, then tap to set each page for each person. People waiting for approval are here too, so you can set their access first.</small>
+   <div class="pm-leg"><span><i class="pm-sw on"></i>Shown</span><span><i class="pm-sw lock"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></i>Locked</span><span><i class="pm-sw"></i>Hidden</span></div>
    ${who}<div class="pm-chips">${chips}</div>
    <div class="pm-t" style="--n:${cols.length}"><div class="pm-r pm-h"><span>PERSON</span>${cols.map(([k,l])=>`<span>${l}</span>`).join('')}</div>${rows||'<div class="sk-admin-empty">No one approved yet.</div>'}</div>
    <small class="pm-note">${hint} 🔒 Your row is always on. A change works within a minute.</small>

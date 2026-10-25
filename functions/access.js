@@ -116,11 +116,12 @@ function permsOf(email, t) {
   const out = {};
   if (isAdminEmail(email)) { ALL_KEYS.forEach(k => { out[k] = true; }); return out; }
   const def = permDefaults((t.mem[email] || {}).role), o = t.over[email] || {};
-  ALL_KEYS.forEach(k => { out[k] = typeof o[k] === 'boolean' ? o[k] : def[k]; });
+  // true: shown · 'lock': in the menu with a lock, no access · false: hidden.
+  ALL_KEYS.forEach(k => { out[k] = typeof o[k] === 'boolean' || o[k] === 'lock' ? o[k] : def[k]; });
   return out;
 }
 async function permsFor(email) { return permsOf(email, await permTable()); }
-async function can(email, key) { return !!(await permsFor(email))[key]; }
+async function can(email, key) { return (await permsFor(email))[key] === true; }
 /** Lets the call through when the person has this permission; else SEKNA_ADMIN_ONLY (the page shows its lock). */
 async function assertPerm(token, key) {
   const a = await assertAccess(token);

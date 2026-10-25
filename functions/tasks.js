@@ -64,7 +64,7 @@ async function members() { return (await fsGet(DOC.members)) || {}; }
 // Who may do what comes from Admin → Permissions (access.js): build, quick and leave start from the role.
 const NO_PERM = { build: 'You don\'t have access to the Task Builder.', quick: 'You don\'t have access to Quick requests.', leave: 'You don\'t have access to days off.' };
 /** Any of the three team permissions (ticking someone else's task, season goals). */
-async function canManage(email) { const p = await permsFor(email); return !!(p.build || p.quick || p.leave); }
+async function canManage(email) { const p = await permsFor(email); return p.build === true || p.quick === true || p.leave === true; }
 async function assertManager(token, key) {
   const a = await assertAccess(token), mem = await members();
   if (key ? !(await can(a.email, key)) : !(await canManage(a.email))) throw new Error(NO_PERM[key] || 'You don\'t have access to build tasks.');

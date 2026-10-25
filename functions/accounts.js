@@ -206,7 +206,7 @@ const A = {
   async accessStatus([token]) {
     const a = await checkAccessToken(token);
     const perms = a.ok ? await permsFor(a.email) : null;
-    const out = { status: a.status, name: a.name || '', email: a.email || '', isAdmin: !!(perms && perms.admin), owner: !!(a.ok && isAdminEmail(a.email)), perms,
+    const out = { status: a.status, name: a.name || '', email: a.email || '', isAdmin: !!(perms && perms.admin === true), owner: !!(a.ok && isAdminEmail(a.email)), perms,
       photo: '', member: {}, taskNotice: null, backupToday: [], pushTopic: '', dashboard: { version: 'server' }, app: null };
     if (!a.ok) return out;
     const [ph, team, st] = await Promise.all([photos(), tasks.teamStatusFor(a).catch(() => null), appState()]);
@@ -246,10 +246,12 @@ const A = {
     await assertOwner(token);
     const [rows, mem, over] = await Promise.all([storeRows(), tasks.members(), fsGet(PERM_DOC)]);
     const seen = {}, people = [];
-    rows.filter(r => r.status === 'Approved').forEach(r => {
+    // Approved people, and those still waiting or invited, so their access can be set before approving.
+    const rank = { Approved: 0, Pending: 1, Invited: 2 };
+    rows.filter(r => r.status in rank).sort((a, b) => rank[a.status] - rank[b.status]).forEach(r => {
       const e = norm(r.email); if (seen[e]) return; seen[e] = 1;
       const role = (mem[e] || {}).role || '';
-      people.push({ email: e, name: r.name || '', role, owner: isAdminEmail(e), defaults: permDefaults(role), set: (over || {})[e] || {} });
+      people.push({ email: e, name: r.name || '', role, status: r.status, owner: isAdminEmail(e), defaults: permDefaults(role), set: (over || {})[e] || {} });
     });
     for (const p of people) p.perms = await permsFor(p.email);
     return { keys: PERM_KEYS, people };
@@ -262,7 +264,7 @@ const A = {
         const e = norm(email);
         if (!e || isAdminEmail(e)) return;
         const c = changes[email] || {}, cur = Object.assign({}, all[e] || {});
-        PERM_KEYS.forEach(k => { if (c[k] === true || c[k] === false) cur[k] = c[k]; else if (c[k] === null) delete cur[k]; });
+        PERM_KEYS.forEach(k => { if (c[k] === true || c[k] === false || c[k] === 'lock') cur[k] = c[k]; else if (c[k] === null) delete cur[k]; });
         if (Object.keys(cur).length) all[e] = cur; else delete all[e];
       });
       all._by = me.email; all._at = Date.now();
