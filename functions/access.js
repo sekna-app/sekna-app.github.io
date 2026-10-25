@@ -94,7 +94,7 @@ function isAdminEmail(email) { return ACCESS.ADMIN_EMAILS.indexOf(String(email |
 // The role gives the start (leaders get build, quick and leave); a switch set in Admin wins over the role.
 // Every other page of the side menu, and share (WhatsApp buttons and images), is on for everyone until switched off.
 const PERM_KEYS = ['lab', 'build', 'quick', 'leave', 'admin'];
-const VIEW_KEYS = ['overview', 'days', 'channel', 'plans', 'ranks', 'months', 'seasons', 'team', 'mine', 'leaveview', 'notifs', 'updates', 'about', 'share'];
+const VIEW_KEYS = ['overview', 'days', 'channel', 'plans', 'ranks', 'camp', 'months', 'seasons', 'ask', 'team', 'mine', 'leaveview', 'notifs', 'updates', 'about', 'share'];
 const ALL_KEYS = PERM_KEYS.concat(VIEW_KEYS);
 const LEADER_ROLES = ['Team Leader', 'Media Manager', 'Head of Media'];
 const PERM_DOC = 'team/perms';
