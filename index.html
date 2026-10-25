@@ -9071,6 +9071,8 @@ function personActions(p){
  const del=`<button class="sk-mini-btn ghost" type="button" onclick="adminDeletePerson('${esc(p.email)}',this)">Delete</button>`;
  const has=s=>p.devices.some(r=>r.status===s);
  let out='';
+ 
+ if((has('Pending')||has('Invited'))&&ACCESS_PROFILE&&ACCESS_PROFILE.owner)out+=`<button class="sk-mini-btn ghost" type="button" onclick="adminGoPerms('${esc(p.email)}')" title="Set what they can use" aria-label="Set what they can use">🔐</button>`;
  if(has('Pending'))out+=b('approve','Approve')+b('deny','Deny','danger');
  if(has('Approved'))out+=b('revoke','Revoke','danger');
  if(!has('Approved')&&!has('Pending')&&(has('Revoked')||has('Denied')))out+=b('restore','Restore','ghost');
@@ -11311,6 +11313,8 @@ const PERM_NEXT=v=>v===true?'lock':v==='lock'?false:true;
 function permGroup(g){PERM.grp=g;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 
 function permWho(e){PERM.who=e;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+
+function adminGoPerms(email){PERM.who=email;PERM.data=null;ADMIN_TAB='perms';adminView('tools');adminLoadExtra('perms');setTimeout(()=>{const h=document.querySelector('#adminOverlay .ad-h');if(h)h.scrollIntoView({behavior:'smooth',block:'start'})},500)}
 function permFlip(email,k){
  const p=((PERM.data&&PERM.data.people)||[]).find(x=>x.email===email);if(!p||p.owner)return;
  const e=PERM.edit[email]=PERM.edit[email]||{},v=PERM_NEXT(permVal(p,k));
@@ -11327,7 +11331,7 @@ function adminPermsHtml(){
  const all=(d.people||[]).slice().sort((a,b)=>((+!!b.owner)-(+!!a.owner))||((+wait(b))-(+wait(a)))||roleTier(b.role)-roleTier(a.role)||String(a.name).localeCompare(String(b.name)));
  if(PERM.who&&!all.some(p=>p.email===PERM.who))PERM.who='';
  const ppl=PERM.who?all.filter(p=>p.email===PERM.who):all;
- const who=`<div class="pm-who"><button type="button" class="${PERM.who?'':'on'}" onclick="permWho('')"><span class="pm-all">👥</span>Everyone</button>${all.filter(p=>!p.owner).map(p=>`<button type="button" class="${PERM.who===p.email?'on':''}" onclick="permWho('${esc(p.email)}')"><span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span><span class="pm-wn">${esc(String(p.name||p.email).split(' ')[0])}</span>${PERM.edit[p.email]?'<i></i>':''}${wait(p)?'<em class="pm-wt">WAITING</em>':''}</button>`).join('')}</div>`;
+ const who=`<div class="pm-who"><button type="button" class="${PERM.who?'':'on'}" onclick="permWho('')"><span class="pm-all">👥</span>Everyone</button>${all.filter(p=>!p.owner).map(p=>`<button type="button" class="${PERM.who===p.email?'on':''}" onclick="permWho('${esc(p.email)}')"><span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span><span class="pm-wn">${esc(String(p.name||p.email).split(' ')[0])}</span>${PERM.edit[p.email]?'<i></i>':''}${wait(p)?`<em class="pm-wt">${p.status==='Invited'?'INVITED':'WAITING'}</em>`:''}</button>`).join('')}</div>`;
  const rows=ppl.map(p=>`<div class="pm-r${p.owner?' own':''}"><div class="pm-p"><span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span><div><b>${esc(String(p.name||p.email).split(' ')[0])}</b><small>${p.owner?'ADMIN':wait(p)?`<em class="pm-wt">${p.status==='Invited'?'INVITED':'WAITING'}</em>`:esc(roleLabel(p.role||'')).toUpperCase()||'NO TITLE'}</small></div></div>
    ${cols.map(([k,l])=>`<button type="button" class="pm-sw${permVal(p,k)===true?' on':permVal(p,k)==='lock'?' lock':''}${p.owner?' lk':''}${PERM.edit[p.email]&&k in PERM.edit[p.email]?' ch':''}" ${p.owner?'disabled':`onclick="permFlip('${esc(p.email)}','${k}')"`} aria-label="${esc(l)} for ${esc(p.name)}" aria-pressed="${permVal(p,k)===true}">${permVal(p,k)==='lock'?'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>':''}</button>`).join('')}</div>`).join('');
  const chips=PERM_GROUPS.map(([k,l])=>`<button type="button" class="${k===grp[0]?'on':''}" onclick="permGroup('${k}')">${k==='share'?PERM_WA:''}${l}</button>`).join('');
