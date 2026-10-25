@@ -243,7 +243,7 @@ const R = {
   },
   /** The notifications list (menu → Notifications). */
   async myNotifications([token]) {
-    const a = await assertAccess(token);
+    const a = await assertPerm(token, 'notifs');
     return notify.inboxFor(a.email);
   },
   async myIdeas([token]) {
@@ -310,7 +310,7 @@ const R = {
     return snap;
   },
   async getPlanHistory([token, accountKey]) {
-    await assertAccess(token);
+    await assertPerm(token, 'plans');
     const key = require('./dash').normalizeAccountKey_(accountKey);
     return (((await fsGet(DOC.plans(key))) || {}).items || []).slice().sort((a, b) => String(b.month).localeCompare(String(a.month)));
   },

@@ -314,7 +314,8 @@ const T = {
    * words: { seasonKey: ['ramadan', 'رمضان', …] }, matched as plain text in task names.
    */
   async seasonsInfo([token, words]) {
-    await assertAccess(token);
+    const a0 = await assertAccess(token);
+    if (!(await can(a0.email, 'seasons'))) { const e = new Error('SEKNA_ADMIN_ONLY'); e.access = true; throw e; }
     const now = muscatToday().month, months = [now];
     for (let i = 0; i < 4; i++) months.push(nextMonth(months[months.length - 1]));
     const [goals, quick, ...ms] = await Promise.all([fsGet(DOC.seasonGoals), fsGet(DOC.quick), ...months.map(m => fsGet(DOC.month(m)))]);

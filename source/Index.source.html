@@ -2886,6 +2886,8 @@ window.addEventListener('load',function(){
 
     /* v83 — Day by Day, Month vs Month, Top & Bottom 5 */
     body.no-share-tab .top-share-btn{display:none!important}
+    html body.no-share .whatsapp-share-btn,html body.no-share .topbar .top-share-btn{display:none!important}
+    .sk-grp[hidden],.sk-grp-body[hidden],.sk-nav-btn[hidden]{display:none!important}
     .dx-switch,.rx-switch,.mx-basis{max-width:420px}
     .dx-empty{padding:18px;border-radius:14px;background:#f5f7fb;color:#6b7385;font-size:13px;text-align:center}
     .dx-ach.good{color:#13804f}.dx-ach.bad{color:#c2382f}.dx-ach.watch{color:#a8701c}
@@ -3530,16 +3532,22 @@ window.addEventListener('load',function(){
     body.dark-mode .cel-h{color:#fff}body.dark-mode .cel-comp textarea{background:#10141b;border-color:#252a32;color:#fff}
     /* v170: Admin → Permissions */
     .pm-t{background:#fff;border:1px solid #e7eaf2;border-radius:16px;overflow:hidden;margin-top:12px}
-    .pm-r{display:grid;grid-template-columns:minmax(0,1fr) repeat(5,40px);align-items:center;gap:2px;padding:9px 10px}.pm-r+.pm-r{border-top:1px solid #eef0f5}
-    .pm-h{background:#f7f8fc;font-size:8.5px;font-weight:900;letter-spacing:.04em;color:#8a92a6;text-align:center}.pm-h span:first-child{text-align:left}
+    .pm-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+    .pm-chips button{display:inline-flex;align-items:center;gap:5px;border:1.5px solid #e7eaf2;background:#fff;font:inherit;font-size:12px;font-weight:800;border-radius:99px;padding:6px 11px;color:#4b5263;cursor:pointer}
+    .pm-chips button.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);color:#fff;border-color:transparent}
+    .pm-wa{width:15px;height:15px}
+    .pm-r{display:grid;grid-template-columns:minmax(78px,1fr) repeat(var(--n,5),minmax(30px,40px));align-items:center;gap:2px;padding:9px 8px}.pm-r+.pm-r{border-top:1px solid #eef0f5}
+    .pm-h{background:#f7f8fc;font-size:7.5px;font-weight:900;letter-spacing:.02em;color:#8a92a6;text-align:center;line-height:1.2;hyphens:manual}.pm-h span:first-child{text-align:left}
     .pm-p{display:flex;align-items:center;gap:8px;min-width:0}.pm-p div{min-width:0}.pm-p b{display:block;font-size:12.5px;color:#1d2433;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .pm-p small{display:block;font-size:8px;font-weight:900;letter-spacing:.04em;color:#8a92a6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .pm-av{flex:none;width:30px;height:30px;display:block}.pm-av .sk-emb,.pm-av svg,.pm-av img{width:30px;height:30px;display:block;border-radius:50%}
-    .pm-sw{justify-self:center;width:32px;height:19px;border-radius:99px;border:0;padding:0;background:#d9dee8;position:relative;cursor:pointer;transition:background .2s}
-    .pm-sw:after{content:"";position:absolute;top:2px;left:2px;width:15px;height:15px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:left .2s}
-    .pm-sw.on{background:#2453d6}.pm-sw.on:after{left:15px}.pm-sw.lk{opacity:.45;cursor:default}.pm-sw.ch{box-shadow:0 0 0 2px #ffd200}
+    .pm-av{flex:none;width:26px;height:26px;display:block}.pm-av .sk-emb,.pm-av svg,.pm-av img{width:26px;height:26px;display:block;border-radius:50%}
+    .pm-p{gap:6px}
+    .pm-sw{justify-self:center;width:30px;height:18px;border-radius:99px;border:0;padding:0;background:#d9dee8;position:relative;cursor:pointer;transition:background .2s}
+    .pm-sw:after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:left .2s}
+    .pm-sw.on{background:#2453d6}.pm-sw.on:after{left:14px}.pm-sw.lk{opacity:.45;cursor:default}.pm-sw.ch{box-shadow:0 0 0 2px #ffd200}
     .pm-note{display:block;font-size:10.5px;color:#8a92a6;font-weight:700;line-height:1.45;margin:10px 2px 0}
     .pm-save{display:block;width:100%;margin-top:12px;border:0;border-radius:13px;padding:12px;font:inherit;font-size:13.5px;font-weight:900;color:#fff;background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);cursor:pointer}.pm-save:disabled{opacity:.45;cursor:default}
+    body.dark-mode .pm-chips button{background:#151a22;border-color:#252a32;color:#c9d0dc}body.dark-mode .pm-chips button.on{color:#fff}
     body.dark-mode .pm-t{background:#151a22;border-color:#252a32}body.dark-mode .pm-h{background:#1d2330}body.dark-mode .pm-r+.pm-r{border-color:#252a32}body.dark-mode .pm-p b{color:#fff}body.dark-mode .pm-sw{background:#2a3242}body.dark-mode .pm-sw.on{background:#2453d6}
     /* v170: Plan History as a statement */
     .phs{background:#fff;border-radius:18px;padding:16px;box-shadow:0 10px 24px rgba(20,30,60,.08);border-top:5px solid #203c8e;cursor:pointer;min-width:0}
@@ -4802,10 +4810,10 @@ window.addEventListener('load',function(){
 
   <button class="sk-grp" type="button" data-grp="tt" onclick="navGroup('tt')" aria-expanded="false"><span class="sk-gt"><b>Team Tasks</b><small class="sk-gn"></small></span><svg class="sk-gchev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
   <div class="sk-grp-body" id="grp-tt"><nav class="sk-nav" aria-label="Team Tasks">
-    <button class="sk-nav-btn" type="button" onclick="openTasks('team')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.2c2.4-.3 4.4 1.2 5 4.3"/></svg></span><span>Team Board</span></button>
+    <button class="sk-nav-btn" id="ttTeamBtn" type="button" onclick="openTasks('team')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.2c2.4-.3 4.4 1.2 5 4.3"/></svg></span><span>Team Board</span></button>
     <button class="sk-nav-btn" id="ttMineBtn" type="button" onclick="openTasks('mine')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 12.5l2.5 2.5 5-5.5"/></svg></span><span>My Tasks</span><i class="tk-ndot"></i></button>
     <button class="sk-nav-btn" id="ttBuildBtn" type="button" onclick="openTasks('build')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l10-10-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></span><span>Task Builder</span><span class="sk-nav-lock" id="ttBuildLock"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span></button>
-    <button class="sk-nav-btn" type="button" onclick="openTasks('leave')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a8 8 0 0 1 8 8H4a8 8 0 0 1 8-8z"/><path d="M12 11v9M9 20h6"/></svg></span><span>Team Leave</span></button>
+    <button class="sk-nav-btn" id="ttLeaveBtn" type="button" onclick="openTasks('leave')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a8 8 0 0 1 8 8H4a8 8 0 0 1 8-8z"/><path d="M12 11v9M9 20h6"/></svg></span><span>Team Leave</span></button>
     <button class="sk-nav-btn" id="ttQuickBtn" type="button" onclick="openTasks('quick')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/></svg></span><span>Quick Requests</span></button>
   </nav></div>
 
@@ -4813,8 +4821,8 @@ window.addEventListener('load',function(){
   <nav class="sk-nav" aria-label="App options">
     <button class="sk-nav-btn" id="nfNavBtn" type="button" onclick="openNotifs()"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.3 20a1.9 1.9 0 0 0 3.4 0"/></svg></span><span>Notifications</span><em class="nf-badge" id="nfBadge" hidden></em></button>
     <button class="sk-nav-btn" type="button" onclick="openSettings()"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span><span>Settings</span></button>
-    <button class="sk-nav-btn" type="button" onclick="openUpdates()"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/></svg></span><span>Updates</span></button>
-    <button class="sk-nav-btn" type="button" onclick="openAbout()"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span><span>About SEKNA</span></button>
+    <button class="sk-nav-btn" id="updatesNavBtn" type="button" onclick="openUpdates()"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/></svg></span><span>Updates</span></button>
+    <button class="sk-nav-btn" id="aboutNavBtn" type="button" onclick="openAbout()"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></span><span>About SEKNA</span></button>
     <button class="sk-nav-btn" id="adminNavBtn" type="button" onclick="openAdmin()"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span><span>Admin</span><span class="sk-nav-lock" id="adminNavLock" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span></button>
   </nav>
 
@@ -5582,7 +5590,7 @@ function applySectionIcons(root){
  });
 }
 function tbAccount(){openSidebar();setTimeout(()=>{try{toggleAccountMenu(true)}catch(e){}},260)}
-function openAbout(){closeSidebar();text('aboutVer','SEKNA Dashboard • '+DASHBOARD_RELEASE_CLIENT.version);syncAboutLogo();fillAboutDash();const el=document.getElementById('aboutOverlay');if(el)el.classList.add('open')}
+function openAbout(){closeSidebar();if(!canDo('about'))return;text('aboutVer','SEKNA Dashboard • '+DASHBOARD_RELEASE_CLIENT.version);syncAboutLogo();fillAboutDash();const el=document.getElementById('aboutOverlay');if(el)el.classList.add('open')}
 // The About cards show this account's latest numbers when they are loaded.
 function fillAboutDash(){
  const logo=document.getElementById('aboutSeknaLogo'),src=document.querySelector('.sk-drawer-logo')?.src;
@@ -5834,6 +5842,7 @@ function switchAccount(accountKey){
 const DASH_TABS=['overview','days','channel','lab','plans','ranks','months','seasons'];
 let SWIPE_FROM='';
 function switchDashboardTab(tab){
+ if(!canDo(tab)){const first=DASH_TABS.find(t=>canDo(t));if(!first)return;tab=first}
  const prev=DASH_TABS.indexOf(CURRENT_TAB);
  CURRENT_TAB=DASH_TABS.includes(tab)?tab:'overview';
  DASH_TABS.forEach(t=>{
@@ -6765,6 +6774,7 @@ function nfBadge(){
  b.hidden=!n;b.textContent=n>9?'9+':String(n);
 }
 function nfLoad(){
+ if(!canDo('notifs'))return;
  if(NF.busy||!getAccessToken())return;NF.busy=true;
  serverCall('myNotifications',getAccessToken()).then(r=>{NF.busy=false;NF.err='';NF.list=Array.isArray(r)?r:[];nfBadge();nfRender()})
   .catch(err=>{NF.busy=false;NF.err=errorText(err);nfRender()});
@@ -6799,7 +6809,7 @@ function nfRender(){
   +(list.length>shown.length?`<button type="button" class="nf-more" onclick="NF.all=true;nfRender()">Older notifications ›</button>`:'');
 }
 function openNotifs(){
- closeSidebar();
+ closeSidebar();if(!canDo('notifs'))return;
  const o=document.getElementById('notifsOverlay');if(!o)return;
  NF.openSeen=nfSeen();NF.filter='all';NF.all=false;o.classList.add('open');nfRender();nfLoad();
  // Everything up to now counts as read once the list is open.
@@ -7983,6 +7993,7 @@ function openWhatsAppText(summary){
 }
 
 async function shareWhatsApp(tab,btn){
+ if(!canDo('share')){showShareToast('Sharing is turned off for your account.');return;}
  if(!DASH_DATA){showShareToast('Dashboard data is still loading.');return;}
  setShareButtonState(btn,true);
  const summary=getShareSummary(tab);
@@ -8426,7 +8437,7 @@ function updateProfileUI(){
  const lock=document.getElementById('adminNavLock');
  if(lock)lock.hidden=!!p.isAdmin;
  const labLock=document.getElementById('labNavLock');
- if(labLock)labLock.hidden=canDo('lab');
+ if(labLock)labLock.hidden=true;
  ['mrSection'].forEach(id=>{const b=document.getElementById(id);if(b)b.hidden=!p.isAdmin});
  tkQuickNav();
  if(p.isAdmin&&CURRENT_TAB==='channel')renderMonthlyReport();
@@ -9852,11 +9863,23 @@ function myPerms(){
  const lead=!!(mem&&TK_MANAGER_ROLES.includes(mem.role)),a=!!p.isAdmin;
  return {lab:a,build:a||lead,quick:a||lead,leave:a||lead,admin:a};
 }
-function canDo(k){return !!myPerms()[k]}
+// Pages of the side menu and share are on unless Admin → Permissions turned them off.
+const VIEW_KEYS=['overview','days','channel','plans','ranks','months','seasons','team','mine','leaveview','notifs','updates','about','share'];
+function canDo(k){const p=myPerms();return k in p?!!p[k]:VIEW_KEYS.includes(k)}
+// Each menu button and the permission that shows it.
+const MENU_PERM=[['overviewTabBtn','overview'],['daysTabBtn','days'],['channelTabBtn','channel'],['labTabBtn','lab'],['plansTabBtn','plans'],['ranksTabBtn','ranks'],['monthsTabBtn','months'],['seasonsTabBtn','seasons'],
+ ['ttTeamBtn','team'],['ttMineBtn','mine'],['ttBuildBtn','build'],['ttLeaveBtn','leaveview'],['ttQuickBtn','quick'],['nfNavBtn','notifs'],['updatesNavBtn','updates'],['aboutNavBtn','about'],['adminNavBtn','admin']];
+function applyMenuPerms(){
+ MENU_PERM.forEach(([id,k])=>{const b=document.getElementById(id);if(b)b.hidden=!canDo(k)});
+ // A group with nothing left in it is hidden too.
+ document.querySelectorAll('.sk-grp').forEach(g=>{const body=document.getElementById('grp-'+g.dataset.grp);if(!body)return;const any=[...body.querySelectorAll('.sk-nav-btn')].some(b=>!b.hidden);g.hidden=!any;body.hidden=!any});
+ document.body.classList.toggle('no-share',!canDo('share'));
+ if(!canDo(CURRENT_TAB)&&DASH_TABS.includes(CURRENT_TAB)){const first=DASH_TABS.find(t=>canDo(t));if(first&&first!==CURRENT_TAB)switchDashboardTab(first)}
+}
 function tkCan(k){return canDo(k)}
 function tkCanManage(){const p=myPerms();return !!(p.build||p.quick||p.leave)}
 // Builder and Quick Requests: managers, team leaders and the admin only (people still see their quick requests in My Tasks).
-function tkQuickNav(){[['ttQuickBtn','quick'],['ttBuildBtn','build']].forEach(([id,k])=>{const b=document.getElementById(id);if(b)b.hidden=!tkCan(k)})}
+function tkQuickNav(){applyMenuPerms()}
 function tkMe(){return ((TK.data&&TK.data.me&&TK.data.me.email)||(ACCESS_PROFILE&&ACCESS_PROFILE.email)||'').toLowerCase()}
 function tkPeople(){return ((TK.data&&TK.data.people)||[]).slice().sort((a,b)=>roleTier(b.role)-roleTier(a.role)||String(a.name).localeCompare(String(b.name)))}
 function tkPerson(email){return tkPeople().find(p=>p.email===email)||{email,name:String(email||'').split('@')[0],role:'',avatar:0}}
@@ -9864,9 +9887,12 @@ function tkAv(p){return `<span class="tk-av has-emb">${personAv(p.avatar,p.name)
 const TK_VIEWS={team:['Team Board','The whole team, week by week'],mine:['My Tasks','What you need to do'],build:['Task Builder','Plan the month for the team'],quick:['Quick Requests','Small asks with a deadline'],leave:['Team Leave','Days off and backups']};
 
 function tkSetTitle(t){const el=document.getElementById('tkTitle');if(!el)return;const w=String(t).split(' '),l=w.pop();el.innerHTML=(w.length?esc(w.join(' '))+' ':'')+`<span>${esc(l)}</span>`}
+const TK_VIEW_PERM={team:'team',mine:'mine',build:'build',quick:'quick',leave:'leaveview'};
+function tkViewOk(v){return canDo(TK_VIEW_PERM[v]||v)}
 function openTasks(view){
  closeSidebar();
- TK.view=view||'team';
+ view=view||'team';if(!tkViewOk(view)){view=Object.keys(TK_VIEW_PERM).find(tkViewOk);if(!view)return}
+ TK.view=view;
  if(!TK.month){TK.month=tkMonthNow();TK.week=tkWeekOf(tkToday().d)}
  const o=document.getElementById('tasksOverlay');if(!o)return;
  text('tkKicker','TEAM TASKS');tkSetTitle(TK_VIEWS[TK.view][0]);
@@ -9891,10 +9917,10 @@ function tkSetWeek(w){TK.week=w;if(TK.today&&w!==tkWeekOf(tkToday().d))TK.today=
 function tkWaShow(on){const w=document.getElementById('tkWa');if(!w)return;if(on&&!w.firstChild){const ic=document.querySelector('.top-share-btn .wa-ic');w.innerHTML=ic?ic.outerHTML:WA_IC}w.hidden=!on}
 function tkRender(){
  if(TK.form)return tkForm(true);
- if((TK.view==='quick'||TK.view==='build')&&!tkCan(TK.view))TK.view='team';
+ if(!tkViewOk(TK.view))TK.view=Object.keys(TK_VIEW_PERM).find(tkViewOk)||'team';
  const b=document.getElementById('tasksBody');if(!b)return;
  tkSetTitle(TK_VIEWS[TK.view][0]);tkWaShow(TK.view==='build'&&tkCan('build'));
- const tabs=`<div class="tk-views">${Object.keys(TK_VIEWS).filter(k=>(k!=='quick'&&k!=='build')||tkCan(k)).map(k=>`<button type="button" class="${k===TK.view?'on':''}" onclick="TK.view='${k}';${k==='mine'?'tkSeenNotice();':''}tkRender()">${TK_VIEWS[k][0].replace('Quick Requests','Quick').replace('Team Leave','Leave').replace('Task Builder','Builder').replace('Team Board','Team')}${k==='build'&&!tkCanManage()?' 🔒':''}${k==='mine'&&tkNoticeNew()?'<i class="tk-dot"></i>':''}</button>`).join('')}</div>`;
+ const tabs=`<div class="tk-views">${Object.keys(TK_VIEWS).filter(tkViewOk).map(k=>`<button type="button" class="${k===TK.view?'on':''}" onclick="TK.view='${k}';${k==='mine'?'tkSeenNotice();':''}tkRender()">${TK_VIEWS[k][0].replace('Quick Requests','Quick').replace('Team Leave','Leave').replace('Task Builder','Builder').replace('Team Board','Team')}${k==='build'&&!tkCanManage()?' 🔒':''}${k==='mine'&&tkNoticeNew()?'<i class="tk-dot"></i>':''}</button>`).join('')}</div>`;
  if(TK.view==='build'&&!tkCan('build')){b.innerHTML=tabs+tkLockedHtml();return}
  const d=TK.data;
  if(!d){b.innerHTML=tabs+(TK.err&&!TK.busy?`<div class="tk-empty"><b>${TK.err==='server'?'Team Tasks is almost ready':'Could not load the tasks'}</b><small>${TK.err==='server'?'The SEKNA server needs its latest update first. Ask Ibrahim to deploy the new version.':'Check your connection and try again.'}</small><br><button type="button" class="tk-add" style="margin-top:12px" onclick="tkLoad()">↻ Try again</button></div>`:`<div class="tk-loading"><i></i><i></i><i></i></div>`);return}
@@ -10532,7 +10558,7 @@ function openAppUpdate(){
  window.open(u,'_blank','noopener');
 }
 function openUpdates(){
- closeSidebar();
+ closeSidebar();if(!canDo('updates'))return;
  renderUpdates('latest');
  const el=document.getElementById('whatsNewOverlay');if(el)el.classList.add('open');
 }
@@ -11114,9 +11140,17 @@ function adminLoadExtra(k){
 function actView(v){ADMIN_ACT_VIEW=v;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 
 /* ---------- v170: Admin → Permissions (One table; the SEKNA admin only) ---------- */
-let PERM={data:null,busy:false,edit:{},saving:false};
-const PERM_COLS=[['lab','LAB','Media Plan Lab and Plan History'],['build','BUILD','Task Builder'],['quick','QUICK','Quick requests'],['leave','LEAVE','Days off'],['admin','ADMIN','The Admin page']];
+let PERM={data:null,busy:false,edit:{},saving:false,grp:'mp'};
+// Pick a menu group: its pages are the columns, everyone the rows. The last group is sharing.
+const PERM_GROUPS=[['mp','Media Plan',[['overview','DAILY'],['days','DAY BY DAY'],['channel','MONTHLY'],['lab','LAB'],['plans','PLAN HIST.']]],
+ ['ps','Snapshots',[['ranks','TOP & BOTTOM 5']]],
+ ['ai','AI Reports',[['months','REPORTS STUDIO'],['seasons','SEASONS']]],
+ ['tt','Team Tasks',[['team','TEAM BOARD'],['mine','MY TASKS'],['build','BUILDER'],['quick','QUICK'],['leaveview','TEAM LEAVE'],['leave','SET DAYS OFF']]],
+ ['app','App',[['notifs','NOTIFI­CATIONS'],['updates','UPDATES'],['about','ABOUT'],['admin','ADMIN']]],
+ ['share','Share',[['share','WHATSAPP & IMAGES']]]];
+const PERM_WA='<svg class="pm-wa" viewBox="0 0 24 24" aria-hidden="true"><path fill="#25d366" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/><path fill="#fff" d="M8.6 7.3c.2-.4.4-.4.7-.4h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2 0 .4-.1.6l-.5.6c-.1.2-.2.3 0 .6.5.9 1.2 1.6 2 2.1.3.2.5.1.6 0l.7-.8c.2-.2.4-.2.6-.1l1.8.9c.2.1.4.2.4.4 0 .5-.2 1.2-.8 1.6-.6.4-1.5.6-2.6.2-2.1-.8-3.8-2.5-4.8-4.5-.5-1.1-.4-2.3.1-3z"/></svg>';
 function permVal(p,k){const e=PERM.edit[p.email];return e&&k in e?e[k]:!!p.perms[k]}
+function permGroup(g){PERM.grp=g;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function permFlip(email,k){
  const p=((PERM.data&&PERM.data.people)||[]).find(x=>x.email===email);if(!p||p.owner)return;
  const e=PERM.edit[email]=PERM.edit[email]||{},v=!permVal(p,k);
@@ -11128,13 +11162,16 @@ function adminPermsHtml(){
  const d=PERM.data;
  if(!d)return '<div class="dx-empty"><span class="lab-spin dark"></span>Loading…</div>';
  if(d.error)return `<div class="mrp-msg">⚠️ ${esc(d.error)}</div>`;
- const n=Object.keys(PERM.edit).length;
- const ppl=(d.people||[]).slice().sort((a,b)=>(b.owner-a.owner)||roleTier(b.role)-roleTier(a.role)||String(a.name).localeCompare(String(b.name)));
+ const n=Object.keys(PERM.edit).length, grp=PERM_GROUPS.find(g=>g[0]===PERM.grp)||PERM_GROUPS[0], cols=grp[2];
+ const ppl=(d.people||[]).slice().sort((a,b)=>((+!!b.owner)-(+!!a.owner))||roleTier(b.role)-roleTier(a.role)||String(a.name).localeCompare(String(b.name)));
  const rows=ppl.map(p=>`<div class="pm-r${p.owner?' own':''}"><div class="pm-p"><span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span><div><b>${esc(String(p.name||p.email).split(' ')[0])}</b><small>${p.owner?'ADMIN':esc(roleLabel(p.role||'')).toUpperCase()||'NO TITLE'}</small></div></div>
-   ${PERM_COLS.map(([k,l,t])=>`<button type="button" class="pm-sw${permVal(p,k)?' on':''}${p.owner?' lk':''}${PERM.edit[p.email]&&k in PERM.edit[p.email]?' ch':''}" ${p.owner?'disabled':`onclick="permFlip('${esc(p.email)}','${k}')"`} aria-label="${esc(t)} for ${esc(p.name)}" aria-pressed="${permVal(p,k)}"></button>`).join('')}</div>`).join('');
- return `<b class="ad-h">🔐 Permissions</b><small class="ad-sub">Who can use each part of SEKNA. A Team Leader, Media Manager or Head of Media starts with Build, Quick and Leave.</small>
-   <div class="pm-t"><div class="pm-r pm-h"><span>PERSON</span>${PERM_COLS.map(([k,l,t])=>`<span title="${esc(t)}">${l}</span>`).join('')}</div>${rows||'<div class="sk-admin-empty">No one approved yet.</div>'}</div>
-   <small class="pm-note">🔒 You always have everything, so your row can't be changed. Everyone keeps the Team board and their own tasks. A change works within a minute.</small>
+   ${cols.map(([k,l])=>`<button type="button" class="pm-sw${permVal(p,k)?' on':''}${p.owner?' lk':''}${PERM.edit[p.email]&&k in PERM.edit[p.email]?' ch':''}" ${p.owner?'disabled':`onclick="permFlip('${esc(p.email)}','${k}')"`} aria-label="${esc(l)} for ${esc(p.name)}" aria-pressed="${permVal(p,k)}"></button>`).join('')}</div>`).join('');
+ const chips=PERM_GROUPS.map(([k,l])=>`<button type="button" class="${k===grp[0]?'on':''}" onclick="permGroup('${k}')">${k==='share'?PERM_WA:''}${l}</button>`).join('');
+ const hint=grp[0]==='share'?'Off: no WhatsApp share buttons and no daily images for that person.':grp[0]==='tt'?'Set days off: can add and change leave. Team Leave: can see the page.':'A page that is off disappears from that person\'s menu.';
+ return `<b class="ad-h">🔐 Permissions</b><small class="ad-sub">Pick a part of the menu, then switch each page on or off for each person.</small>
+   <div class="pm-chips">${chips}</div>
+   <div class="pm-t" style="--n:${cols.length}"><div class="pm-r pm-h"><span>PERSON</span>${cols.map(([k,l])=>`<span>${l}</span>`).join('')}</div>${rows||'<div class="sk-admin-empty">No one approved yet.</div>'}</div>
+   <small class="pm-note">${hint} 🔒 Your row is always on. A change works within a minute.</small>
    <button type="button" class="pm-save" onclick="adminPermsSave(this)" ${n&&!PERM.saving?'':'disabled'}>${PERM.saving?'Saving…':n?`Save changes (${n} ${n===1?'person':'people'})`:'No changes'}</button>`;
 }
 async function adminPermsSave(btn){
