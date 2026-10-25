@@ -3677,6 +3677,13 @@ window.addEventListener('load',function(){
     .pm-chips button{display:inline-flex;align-items:center;gap:5px;border:1.5px solid #e7eaf2;background:#fff;font:inherit;font-size:12px;font-weight:800;border-radius:99px;padding:6px 11px;color:#4b5263;cursor:pointer}
     .pm-chips button.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);color:#fff;border-color:transparent}
     .pm-wa{width:15px;height:15px}
+    .pm-who{display:flex;gap:7px;overflow-x:auto;margin-top:12px;padding:2px 2px 6px;scrollbar-width:none}.pm-who::-webkit-scrollbar{display:none}
+    .pm-who button{position:relative;flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;width:64px;padding:8px 4px;border-radius:14px;border:1.5px solid #e7eaf2;background:#fff;font:inherit;font-size:10.5px;font-weight:800;color:#4b5263;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .pm-who button.on{border-color:#2453d6;box-shadow:0 0 0 3px rgba(36,83,214,.15);color:#203c8e}
+    .pm-wn{display:block;max-width:56px;overflow:hidden;text-overflow:ellipsis}
+    .pm-who button i{position:absolute;top:6px;right:8px;width:8px;height:8px;border-radius:50%;background:#ffd200}
+    .pm-all{width:26px;height:26px;border-radius:50%;background:#eef1f8;display:grid;place-items:center;font-size:13px}
+    body.dark-mode .pm-who button{background:#151a22;border-color:#252a32;color:#c9d0dc}
     .pm-r{display:grid;grid-template-columns:minmax(78px,1fr) repeat(var(--n,5),minmax(30px,40px));align-items:center;gap:2px;padding:9px 8px}.pm-r+.pm-r{border-top:1px solid #eef0f5}
     .pm-h{background:#f7f8fc;font-size:7.5px;font-weight:900;letter-spacing:.02em;color:#8a92a6;text-align:center;line-height:1.2;hyphens:manual}.pm-h span:first-child{text-align:left}
     .pm-p{display:flex;align-items:center;gap:8px;min-width:0}.pm-p div{min-width:0}.pm-p b{display:block;font-size:12.5px;color:#1d2433;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -11263,7 +11270,7 @@ function adminLoadExtra(k){
 function actView(v){ADMIN_ACT_VIEW=v;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 
  
-let PERM={data:null,busy:false,edit:{},saving:false,grp:'mp'};
+let PERM={data:null,busy:false,edit:{},saving:false,grp:'mp',who:''};
 
 const PERM_GROUPS=[['mp','Media Plan',[['overview','DAILY'],['days','DAY BY DAY'],['channel','MONTHLY'],['lab','LAB'],['plans','PLAN HIST.']]],
  ['ps','Snapshots',[['ranks','TOP & BOTTOM 5'],['camp','CAMPAIGN PERF.']]],
@@ -11274,6 +11281,8 @@ const PERM_GROUPS=[['mp','Media Plan',[['overview','DAILY'],['days','DAY BY DAY'
 const PERM_WA='<svg class="pm-wa" viewBox="0 0 24 24" aria-hidden="true"><path fill="#25d366" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/><path fill="#fff" d="M8.6 7.3c.2-.4.4-.4.7-.4h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2 0 .4-.1.6l-.5.6c-.1.2-.2.3 0 .6.5.9 1.2 1.6 2 2.1.3.2.5.1.6 0l.7-.8c.2-.2.4-.2.6-.1l1.8.9c.2.1.4.2.4.4 0 .5-.2 1.2-.8 1.6-.6.4-1.5.6-2.6.2-2.1-.8-3.8-2.5-4.8-4.5-.5-1.1-.4-2.3.1-3z"/></svg>';
 function permVal(p,k){const e=PERM.edit[p.email];return e&&k in e?e[k]:!!p.perms[k]}
 function permGroup(g){PERM.grp=g;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+
+function permWho(e){PERM.who=e;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function permFlip(email,k){
  const p=((PERM.data&&PERM.data.people)||[]).find(x=>x.email===email);if(!p||p.owner)return;
  const e=PERM.edit[email]=PERM.edit[email]||{},v=!permVal(p,k);
@@ -11286,13 +11295,16 @@ function adminPermsHtml(){
  if(!d)return '<div class="dx-empty"><span class="lab-spin dark"></span>Loading…</div>';
  if(d.error)return `<div class="mrp-msg">⚠️ ${esc(d.error)}</div>`;
  const n=Object.keys(PERM.edit).length, grp=PERM_GROUPS.find(g=>g[0]===PERM.grp)||PERM_GROUPS[0], cols=grp[2];
- const ppl=(d.people||[]).slice().sort((a,b)=>((+!!b.owner)-(+!!a.owner))||roleTier(b.role)-roleTier(a.role)||String(a.name).localeCompare(String(b.name)));
+ const all=(d.people||[]).slice().sort((a,b)=>((+!!b.owner)-(+!!a.owner))||roleTier(b.role)-roleTier(a.role)||String(a.name).localeCompare(String(b.name)));
+ if(PERM.who&&!all.some(p=>p.email===PERM.who))PERM.who='';
+ const ppl=PERM.who?all.filter(p=>p.email===PERM.who):all;
+ const who=`<div class="pm-who"><button type="button" class="${PERM.who?'':'on'}" onclick="permWho('')"><span class="pm-all">👥</span>Everyone</button>${all.filter(p=>!p.owner).map(p=>`<button type="button" class="${PERM.who===p.email?'on':''}" onclick="permWho('${esc(p.email)}')"><span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span><span class="pm-wn">${esc(String(p.name||p.email).split(' ')[0])}</span>${PERM.edit[p.email]?'<i></i>':''}</button>`).join('')}</div>`;
  const rows=ppl.map(p=>`<div class="pm-r${p.owner?' own':''}"><div class="pm-p"><span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span><div><b>${esc(String(p.name||p.email).split(' ')[0])}</b><small>${p.owner?'ADMIN':esc(roleLabel(p.role||'')).toUpperCase()||'NO TITLE'}</small></div></div>
    ${cols.map(([k,l])=>`<button type="button" class="pm-sw${permVal(p,k)?' on':''}${p.owner?' lk':''}${PERM.edit[p.email]&&k in PERM.edit[p.email]?' ch':''}" ${p.owner?'disabled':`onclick="permFlip('${esc(p.email)}','${k}')"`} aria-label="${esc(l)} for ${esc(p.name)}" aria-pressed="${permVal(p,k)}"></button>`).join('')}</div>`).join('');
  const chips=PERM_GROUPS.map(([k,l])=>`<button type="button" class="${k===grp[0]?'on':''}" onclick="permGroup('${k}')">${k==='share'?PERM_WA:''}${l}</button>`).join('');
  const hint=grp[0]==='share'?'Off: no WhatsApp share buttons and no daily images for that person.':grp[0]==='tt'?'Set days off: can add and change leave. Team Leave: can see the page.':'A page that is off disappears from that person\'s menu.';
  return `<b class="ad-h">🔐 Permissions</b><small class="ad-sub">Pick a part of the menu, then switch each page on or off for each person.</small>
-   <div class="pm-chips">${chips}</div>
+   ${who}<div class="pm-chips">${chips}</div>
    <div class="pm-t" style="--n:${cols.length}"><div class="pm-r pm-h"><span>PERSON</span>${cols.map(([k,l])=>`<span>${l}</span>`).join('')}</div>${rows||'<div class="sk-admin-empty">No one approved yet.</div>'}</div>
    <small class="pm-note">${hint} 🔒 Your row is always on. A change works within a minute.</small>
    <button type="button" class="pm-save" onclick="adminPermsSave(this)" ${n&&!PERM.saving?'':'disabled'}>${PERM.saving?'Saving…':n?`Save changes (${n} ${n===1?'person':'people'})`:'No changes'}</button>`;
