@@ -10064,13 +10064,13 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
 function blockedShow(on,preview){
  let o=document.getElementById('blkView');
  if(VIEW_AS&&!preview)return;
- if(preview){if(!o){o=document.createElement('div');o.id='blkView';o.className='blk-view';o.innerHTML=`<div class="blk-lg">SEKNA<i>·</i></div><div class="blk-err"><b>⚠️ Something went wrong</b><p>The dashboard could not be loaded. Our team has been told about it.</p><code>Error 503 · Service unavailable</code></div><button type="button" class="blk-btn" disabled>Reload</button>`;document.body.appendChild(o)}return}
+ if(preview){if(!o){o=document.createElement('div');o.id='blkView';o.className='blk-view';o.innerHTML=`<div class="blk-lg">SEKNA<i>·</i></div><div class="blk-err"><b>⚠️ Something went wrong</b><p>The dashboard could not be loaded. Please try again later.</p><code>Error 503 · Service unavailable</code></div><button type="button" class="blk-btn" disabled>Reload</button>`;document.body.appendChild(o)}return}
  if(!on){if(o){o.remove();try{if(storeGet('sekna_blk_nf')){storeRemove('sekna_blk_nf');if(window.AndroidShare&&AndroidShare.setNotificationsEnabled)AndroidShare.setNotificationsEnabled(true)}}catch(e){}location.reload()}return}
  if(o)return;
  try{if(window.AndroidShare&&AndroidShare.setNotificationsEnabled){AndroidShare.setNotificationsEnabled(false);storeSet('sekna_blk_nf','1')}}catch(e){}
  try{stopDashboardRefresh()}catch(e){}
  o=document.createElement('div');o.id='blkView';o.className='blk-view';
- o.innerHTML=`<div class="blk-lg">SEKNA<i>·</i></div><div class="blk-err"><b>⚠️ Something went wrong</b><p>The dashboard could not be loaded. Our team has been told about it.</p><code>Error 503 · Service unavailable</code></div><button type="button" class="blk-btn" onclick="blockedReload(this)">Reload</button>`;
+ o.innerHTML=`<div class="blk-lg">SEKNA<i>·</i></div><div class="blk-err"><b>⚠️ Something went wrong</b><p>The dashboard could not be loaded. Please try again later.</p><code>Error 503 · Service unavailable</code></div><button type="button" class="blk-btn" onclick="blockedReload(this)">Reload</button>`;
  document.body.appendChild(o);
 }
 function blockedReload(btn){
