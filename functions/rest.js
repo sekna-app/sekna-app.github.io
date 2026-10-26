@@ -2,7 +2,7 @@
 // the monthly report email, web notifications, and the "new day" phone notifications.
 // Until the admin moves them (adminRestMove), every call is passed to Apps Script.
 const { fsGet, fsSet, fsUpdate, fsAppend, fsList, fsSetList, batchGet, a1, sheetMeta } = require('./google');
-const { ACCESS, assertAccess, assertAdmin, assertPerm, storeRows } = require('./access');
+const { ACCESS, assertAccess, assertAdmin, assertPerm, assertOwner, storeRows } = require('./access');
 const notify = require('./notify');
 
 const SHEETS = { shares: 'SEKNA Shares', usage: 'SEKNA Usage', ideas: 'SEKNA Ideas', plans: 'SEKNA Plan History' };
@@ -347,13 +347,13 @@ const R = {
   },
 
   async adminReportRecipients([token]) {
-    await assertAdmin(token);
+    await assertOwner(token); // only the SEKNA owner sends the report
     if (!notify.mailReady()) return notify.appsScript('adminReportRecipients', [token]);
     return { people: await approvedPeople(), quota: 500 };
   },
   /** The month's results PDF (built in the app) to every approved person, or only to the admin as a test. */
   async adminSendMonthlyReport([token, pdfBase64, meta]) {
-    const me = await assertAdmin(token);
+    const me = await assertOwner(token);
     if (!notify.mailReady()) return notify.appsScript('adminSendMonthlyReport', [token, pdfBase64, meta]);
     meta = meta || {};
     const bytes = Buffer.from(String(pdfBase64 || ''), 'base64');

@@ -122,8 +122,8 @@ function permsOf(email, t) {
   const def = permDefaults((t.mem[email] || {}).role), o = t.over[email] || {};
   // Blocked (Admin → Permissions → Block): nothing at all; the app shows an error screen.
   if (o.blocked === true) { ALL_KEYS.forEach(k => { out[k] = false; }); out.blocked = true; return out; }
-  // true: shown · 'lock': in the menu with a lock, no access · false: hidden.
-  ALL_KEYS.forEach(k => { out[k] = typeof o[k] === 'boolean' || o[k] === 'lock' ? o[k] : def[k]; });
+  // true: shown · 'lock': in the menu with a lock, no access · false: hidden · 'view' (Media Plan Lab only): open it, change nothing.
+  ALL_KEYS.forEach(k => { out[k] = typeof o[k] === 'boolean' || o[k] === 'lock' || (k === 'lab' && o[k] === 'view') ? o[k] : def[k]; });
   return out;
 }
 async function permsFor(email) { return permsOf(email, await permTable()); }
@@ -135,6 +135,12 @@ async function assertPerm(token, key) {
   return a;
 }
 async function assertAdmin(token) { return assertPerm(token, 'admin'); }
+/** Media Plan Lab, reading only: people given the Lab, or given it as View only. */
+async function assertLabView(token) {
+  const a = await assertAccess(token), v = (await permsFor(a.email)).lab;
+  if (v !== true && v !== 'view') { const err = new Error('SEKNA_ADMIN_ONLY'); err.access = true; throw err; }
+  return a;
+}
 /** Only the SEKNA admin (not people given Admin): changing permissions. */
 async function assertOwner(token) {
   const a = await assertAccess(token);
@@ -143,4 +149,4 @@ async function assertOwner(token) {
 }
 
 module.exports = { ACCESS, ACC, sha256, assertAccess, assertAdmin, checkAccessToken, accessRows, storeRows, forgetRows,
-  accessMoved, markMoved, isAdminEmail, PERM_KEYS: ALL_KEYS, PERM_DOC, permDefaults, permsFor, can, assertPerm, assertOwner, forgetPerms };
+  accessMoved, markMoved, isAdminEmail, PERM_KEYS: ALL_KEYS, PERM_DOC, permDefaults, permsFor, can, assertPerm, assertLabView, assertOwner, forgetPerms };

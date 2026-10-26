@@ -2778,6 +2778,8 @@ window.addEventListener('load',function(){
     @media(prefers-reduced-motion:reduce){.sks *{animation-duration:.01s!important;animation-iteration-count:1!important}.sks-bar i{width:100%}}
 
     /* v86 — Same Hijri day in past years (timeline) */
+    .py-shut{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#8a92a6;margin-top:4px}.py-shut em{margin-left:auto;font-style:normal;color:#203c8e;font-weight:900;font-size:16px}
+
     .py-open-wrap{display:flex;justify-content:center;margin-top:12px}
     .py-open{border:0;border-radius:14px;padding:11px 18px;background:#203c8e;color:#fff;font-weight:900;font-size:13.5px;font-family:inherit;cursor:pointer;box-shadow:0 8px 20px rgba(32,60,142,.22)}
     body.dark-mode .py-open{background:#3d6bff}
@@ -3145,6 +3147,7 @@ window.addEventListener('load',function(){
     .mr3-chip{background:rgba(255,255,255,.2);border-radius:99px;padding:3px 8px;font-size:11px;font-weight:900}.mr3-chip.good::before{content:""}.mr3-chip.bad{background:rgba(0,0,0,.22)}
     .mr-list{margin-top:12px;border:1.5px solid #e6e9f1;border-radius:16px;overflow:hidden}
     .mr-li{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:11px 14px;border-top:1px solid #eef0f5}.mr-li:first-child{border-top:0}
+    .mr-li .mx-arrow{font-size:9.5px;padding:2px 6px;font-weight:800}
     .mr-li span{font-size:13px;font-weight:750;color:#4b5263}.mr-li b{font-size:14.5px;font-weight:900;color:#1d2433;direction:ltr}
     .mc-tiles{margin-top:10px}
     body.dark-mode .mr-list{background:#151a22;border-color:#2a313c}body.dark-mode .mr-li b{color:#fff}body.dark-mode .mr-li{border-color:#252a32}body.dark-mode .mr-li span{color:#a7afbf}
@@ -3348,6 +3351,12 @@ window.addEventListener('load',function(){
     .as-g{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.as-g div{background:#f6f8fc;border-radius:10px;padding:6px;text-align:center}.as-g small{display:block;font-size:9px;font-weight:800;color:#8a92a6}.as-g b{font-size:13.5px}.as-g b.up{color:#13894f}.as-g b.dn{color:#c9861a}
     .as-t{font-size:11.5px;font-weight:700}.as-tr{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:6px;padding:5px 0;align-items:center}.as-tr span:not(:first-child){text-align:right}.as-tr+.as-tr{border-top:1px solid #f1f3f8}.as-tr.hd{font-size:9.5px;font-weight:900;color:#8a92a6;letter-spacing:.04em}.as-tr.hi span{color:#13894f}
     .as-rd{width:100%;margin-top:6px}.as-wrap .fc-wk{grid-template-columns:92px 1fr 50px}
+    .fc-vo{display:flex;gap:10px;align-items:center;background:#e7f6ee;border-radius:13px;padding:10px 12px;margin-bottom:10px;font-size:18px}.fc-vo span{font-size:11.5px;font-weight:600;color:#4c5464;line-height:1.4}.fc-vo b{display:block;color:#0b5a37;font-size:12.5px}
+    .fc-set input:disabled{color:#1d2433;-webkit-text-fill-color:#1d2433;opacity:1}
+    #labPanel.lab-ro .lab-go,#labPanel.lab-ro .lab-actions,#labPanel.lab-ro #labSave button,#labPanel.lab-ro .lab-check{display:none!important}
+    .la-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid #eff1f6}.la-row:first-of-type{border-top:0}.la-row>div{flex:1;min-width:0}.la-row b{display:block;font-size:13px}.la-row small{font-size:10.5px;color:#8a92a6;font-weight:700}
+    .la-seg{display:flex;background:#f2f4f9;border-radius:10px;padding:3px;gap:2px}.la-seg button{border:0;background:transparent;font:inherit;font-size:11px;font-weight:800;padding:6px 8px;border-radius:8px;color:#8a92a6;cursor:pointer;white-space:nowrap}.la-seg button.on{background:#203c8e;color:#fff}.la-seg button.x.on{background:#c43c50}
+    .la-add{display:flex;gap:8px;margin-top:10px}.la-add select{flex:1;min-width:0;border:1.5px solid #e6e9f1;border-radius:11px;padding:9px 10px;font:inherit;font-size:12.5px;font-weight:700;background:#fff;color:#1d2433}
     .fc-foot{font-size:10.5px;color:#8a92a6;font-weight:600;margin-top:8px}
     .lab-box{border:1.5px solid #e6e9f1;border-radius:18px;padding:14px}
     .lab-head b{display:block;font-size:15px;color:#1d2433}.lab-head small{display:block;font-size:12px;color:#6b7385;margin-top:4px;line-height:1.5}.lab-head em{font-style:normal;font-weight:800;color:#203c8e}
@@ -3633,6 +3642,7 @@ window.addEventListener('load',function(){
     .pm-sw:after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:left .2s}
     .pm-sw.on{background:#2453d6}.pm-sw.on:after{left:14px}
     .pm-sw.lock{background:linear-gradient(135deg,#f3d79f,#c9933f);display:grid;place-items:center}.pm-sw.lock:after{display:none}
+    .pm-sw.view{background:#e7f6ee;display:grid;place-items:center;font-size:10px;line-height:1}.pm-sw.view:after{display:none}
     .pm-sw.lock svg{width:11px;height:11px;fill:none;stroke:#3d2a07;stroke-width:2.6;stroke-linecap:round}
     .pm-leg{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:11.5px;font-weight:800;color:#4b5263}.pm-leg span{display:flex;align-items:center;gap:6px}.pm-leg .pm-sw{cursor:default}
     .avw{position:relative;display:inline-flex;flex:none}.on-dot{position:absolute;right:-1px;bottom:-1px;width:10px;height:10px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 2px #fff;z-index:1}
@@ -4194,7 +4204,7 @@ window.addEventListener('load',function(){
     .wly-ms{display:flex;gap:6px;margin-top:10px}
     .wly-ms button{border:1px solid #dfe3ec;background:#fff;color:#4b5263;border-radius:99px;padding:5px 12px;font:inherit;font-size:11.5px;font-weight:800;cursor:pointer}
     .wly-ms button.on{background:#203c8e;border-color:#203c8e;color:#fff}
-    .wly-wk{display:inline-grid!important;place-items:center;width:26px;height:26px;border-radius:8px;background:#eef2fd;color:#203c8e!important;font-size:11px!important;font-weight:900!important;position:relative}
+    .wly-wk{display:inline-grid!important;place-items:center;width:34px;height:30px;border-radius:8px;background:#eef2fd;color:#203c8e!important;font-size:11px!important;font-weight:900!important;position:relative}
     .wly-wk::before{content:"";position:absolute;left:5px;right:5px;top:4px;height:2px;border-radius:2px;background:#203c8e;opacity:.35}
     .wly-wk::after{content:"";position:absolute;right:-2px;top:-2px;width:6px;height:6px;border-radius:50%;background:#e2b874}
     .wly-g small.wly-wk{position:absolute;bottom:-34px;left:50%;right:auto;transform:translateX(-50%)}
@@ -4245,6 +4255,7 @@ window.addEventListener('load',function(){
     .sk-sub-tg.open .sk-gchev{transform:rotate(180deg)}
     .sk-sub>div{padding-left:22px;position:relative}
     .sk-sub>div:before{content:'';position:absolute;left:21px;top:2px;bottom:8px;width:2px;border-radius:2px;background:rgba(255,255,255,.12)}
+    .sk-vo{background:linear-gradient(90deg,#d7f3e5,#a8e3c6)!important;color:#0b5a37!important}
     .sk-soon{margin-left:auto;font-size:9.5px;font-weight:900;letter-spacing:.06em;color:#0c1a46;background:linear-gradient(90deg,#f3d79f,#e2b874);border-radius:99px;padding:3px 8px}
     .soon-body{padding:40px 22px;text-align:center;display:flex;flex-direction:column;align-items:center}
     .soon-ic{width:84px;height:84px;border-radius:26px;display:grid;place-items:center;background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);box-shadow:0 14px 30px rgba(61,107,255,.35);animation:soonFloat 3s ease-in-out infinite}
@@ -4907,7 +4918,7 @@ window.addEventListener('load',function(){
     <button class="sk-nav-btn active" id="overviewTabBtn" type="button" onclick="switchDashboardTab('overview')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></span><span>Daily Performance</span></button>
     <button class="sk-nav-btn" id="daysTabBtn" type="button" onclick="switchDashboardTab('days')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M8 14h2M12 14h2M16 14h0M8 17h2M12 17h2"/></svg></span><span>Day by Day Performance</span></button>
     <button class="sk-nav-btn" id="channelTabBtn" type="button" onclick="switchDashboardTab('channel')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg></span><span>Monthly Progress</span></button>
-    <button class="sk-nav-btn" id="labTabBtn" type="button" onclick="switchDashboardTab('lab')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-9V3"/><path d="M7.5 15h9"/></svg></span><span>Media Plan Lab</span><span class="sk-nav-lock" id="labNavLock" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span></button>
+    <button class="sk-nav-btn" id="labTabBtn" type="button" onclick="switchDashboardTab('lab')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-9V3"/><path d="M7.5 15h9"/></svg></span><span>Media Plan Lab</span><span class="sk-soon sk-vo" id="labViewTag" hidden>View only</span><span class="sk-nav-lock" id="labNavLock" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span></button>
     <button class="sk-nav-btn" id="plansTabBtn" type="button" onclick="switchDashboardTab('plans')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v4H4zM4 11h16v8H4z"/><path d="M9 15h6"/></svg></span><span>Plan Performance History</span></button>
   </nav></div>
 
@@ -5421,6 +5432,7 @@ window.addEventListener('load',function(){
       <div id="labForecast"></div>
       <div id="labSave"></div>
       <div id="labBody"></div>
+      <div id="labAccess"></div>
     </section>
   </div>
 
@@ -5444,8 +5456,8 @@ window.addEventListener('load',function(){
       </div>
       <div class="mx-top"><div class="mx-ctl">
       <div class="wx-tabs mx-mode" role="tablist">
-        <button class="wx-tab" type="button" id="mxOneBtn" onclick="setMonthMode('one')">One month</button>
-        <button class="wx-tab on" type="button" id="mxCmpBtn" onclick="setMonthMode('compare')">Compare</button>
+        <button class="wx-tab on" type="button" id="mxOneBtn" onclick="setMonthMode('one')">One month</button>
+        <button class="wx-tab" type="button" id="mxCmpBtn" onclick="setMonthMode('compare')">Compare</button>
       </div>
       <div class="mx-pick" id="mxPick">
         <div class="mx-sel a"><span>Month</span><select id="mxA" onchange="renderMonthCompare()"></select><div class="mxs"><button type="button" class="mxs-arr" onclick="stepMonth('a',-1)" aria-label="Month before">‹</button><button type="button" class="mx-msel" id="mxABtn" onclick="openMonthSelect('a')"></button><button type="button" class="mxs-arr" onclick="stepMonth('a',1)" aria-label="Month after">›</button></div></div>
@@ -5961,6 +5973,8 @@ let SWIPE_FROM='';
 function switchDashboardTab(tab){
  if(!canDo(tab)){const first=DASH_TABS.find(t=>canDo(t));if(!first)return;tab=first}
  const prev=DASH_TABS.indexOf(CURRENT_TAB);
+ // Reports Studio always opens on One month.
+ if(tab==='months'&&CURRENT_TAB!=='months'&&MONTH_MODE!=='one'){MONTH_MODE='one';['mxOneBtn','mxCmpBtn'].forEach((id,i)=>{const b=document.getElementById(id);if(b)b.classList.toggle('on',i===0)})}
  CURRENT_TAB=DASH_TABS.includes(tab)?tab:'overview';
  DASH_TABS.forEach(t=>{
    const panel=document.getElementById(t+'Panel');
@@ -6455,7 +6469,7 @@ function drawWeeklyLy(anim){
   <div class="wly-ms">${[['v','Value'],['s','Spend'],['r','ROAS']].map(([k,l])=>`<button type="button" class="${WLY_M===k?'on':''}" onclick="wlyMetric('${k}')">${l}</button>`).join('')}</div>
   <div class="wly-bars${go?' anim':''}">${W.map((w,j)=>{const wn=win(w);return `<button type="button" class="wly-g" onclick="wlyOpen(${j})"><span class="wly-col${wn==='l'?' win':''}"><b>${M.f(M.g(w.l))}</b><i class="l" style="height:${(M.g(w.l)/mx*100).toFixed(1)}%;--d:${j*.12}s"></i></span><span class="wly-col${wn==='t'?' win':''}"><b class="t">${w.live?M.f(M.g(w.t)):'—'}</b><i class="t" style="height:${Math.max(1,M.g(w.t)/mx*100).toFixed(1)}%;--d:${.3+j*.12}s"></i></span><small class="wly-wl">W${j+1}</small></button>`}).join('')}</div>
   <div class="wly-lg"><span><i class="l"></i>Last year</span><span><i class="t"></i>This year so far</span>${M.hi==null?'':'<span><i class="n"></i>Winner</span>'}<span class="tip">Tap a week for details</span></div>
-  <div class="wly-list">${W.map((w,j)=>`<button type="button" onclick="wlyOpen(${j})"><span class="wly-wk">${j+1}</span><span><b>${esc(w.hf)} – ${esc(w.ht)}</b><small>${esc(dd(w.from))} – ${esc(dd(w.to))} ${w.from?w.from.slice(0,4):''}</small></span><span class="r"><b>${mpK(w.l.v)}</b><small>${w.live?`${chip(w.t.v,w.l.v)} this year`:'not yet'}</small></span></button>`).join('')}</div>`;
+  <div class="wly-list">${W.map((w,j)=>`<button type="button" onclick="wlyOpen(${j})"><span class="wly-wk">W${j+1}</span><span><b>${esc(w.hf)} – ${esc(w.ht)}</b><small>${esc(dd(w.from))} – ${esc(dd(w.to))} ${w.from?w.from.slice(0,4):''}</small></span><span class="r"><b>${mpK(w.l.v)}</b><small>${w.live?`${chip(w.t.v,w.l.v)} this year`:'not yet'}</small></span></button>`).join('')}</div>`;
 }
 function wlyOpen(i){LYX_SHEETS=WLY_SHEETS;lyxOpen(i)}
 function renderWeekly(rows){
@@ -6949,6 +6963,8 @@ function nfOpen(id){
 let LAB_STATE=null, LAB_BUSY=false, LAB_MSG='';
 function renderLab(){
  const body=document.getElementById('labBody'); if(!body)return;
+ const panel=document.getElementById('labPanel');if(panel)panel.classList.toggle('lab-ro',canDo('lab')&&!labEdit());
+ labAccessDraw();
  if(!canDo('lab')){
    body.innerHTML='<div class="lab-locked"><div class="lock-ic anim"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="sh" d="M8 11V8a4 4 0 0 1 8 0v3"/><rect x="5" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1.4" fill="currentColor"/></svg></div><b>Admin only</b><small>Media Plan Lab is for the SEKNA admin only.</small></div>';fcDraw();return;
  }
@@ -6998,10 +7014,11 @@ function fcDraw(){
  if(!c.data&&!c.busy&&!c.err){fcLoad(false);return}
  const d=c.data, isAs=FC_VIEW==='assume', isYr=FC_VIEW==='years', a=AS[CURRENT_ACCOUNT]||{};
  const busy=isAs?a.busy:c.busy;
- const months=(d&&d.months)||[];
- const dd=months.length?`<label class="fc-dd${c.moving?' busy':''}"><span>📅</span><select onchange="fcMonth(this.value)" ${c.moving?'disabled':''}>${months.map(m=>`<option value="${esc(String(m.v))}" ${String(m.v)===String(d.monthRaw)?'selected':''}>${esc(m.t)}</option>`).join('')}</select><em>▾</em></label>`:(d&&d.month?`<span class="fc-dd"><span>📅</span>${esc(d.month)}</span>`:'');
+ const months=(d&&d.months)||[], ro=!labEdit();
+ const dd=months.length&&!ro?`<label class="fc-dd${c.moving?' busy':''}"><span>📅</span><select onchange="fcMonth(this.value)" ${c.moving?'disabled':''}>${months.map(m=>`<option value="${esc(String(m.v))}" ${String(m.v)===String(d.monthRaw)?'selected':''}>${esc(m.t)}</option>`).join('')}</select><em>▾</em></label>`:(d&&d.month?`<span class="fc-dd"><span>📅</span>${esc(d.month)}</span>`:'');
  const head=`<div class="fc-hd"><div><small>MEDIA PLAN LAB</small><b>${isAs?'Assumptions':isYr?'Same month':'Forecast'}</b></div>${dd}</div>
   <div class="fc-top">${[['forecast','📊','Forecast'],['assume','📋','Assumptions'],['years','🗓️','Years']].map(([k,i,l])=>`<button type="button" class="${FC_VIEW===k?'on':''}" onclick="fcView('${k}')">${i} ${l}</button>`).join('')}</div>
+  ${ro?'<div class="fc-vo">👁 <span><b>View only</b>You can look at everything here. Ask the admin to let you make changes.</span></div>':''}
   ${c.moving?`<div class="fc-note"><span class="lab-spin dark"></span>Changing the month to ${esc(c.moving)} in the sheet…</div>`:''}`;
  const foot=`<button type="button" class="pk-ghost fc-rd" onclick="${isAs?'asLoad(true)':'fcLoad(true)'}" ${busy?'disabled':''}>${busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read '+(isAs?'Assumptions':'the month tab')+' now'}</button>${d&&d.at&&!isAs?`<div class="fc-foot" style="text-align:center">Read ${esc(new Date(d.at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}))} · ${esc(d.tab||'')}</div>`:''}`;
  if(!d){box.innerHTML=`<div class="lab-box fc">${head}<div class="fc-note">${c.err?'⚠️ '+esc(c.err):'<span class="lab-spin dark"></span>Reading the month tab…'}</div>${foot}</div>`;return}
@@ -7026,7 +7043,7 @@ function fcDraw(){
  const src=(t,x)=>`<div><small>${t}</small><b>${money(x.cost)}</b><span>${esc((String(x.label||'').match(/\(([^)]*)\)/)||['',String(x.label||'')])[1])}<br>${fcK(x.value)} revenue · ${x.cpc!=null?cs()+fmt(cx(x.cpc),2):'—'} CPC</span></div>`;
  const ed=c.edit||{}, nEd=Object.keys(ed).length;
  const inp=(k,t,v,hint,cls,blank)=>{const has=Object.prototype.hasOwnProperty.call(ed,k),val=has?ed[k]:v;
-   return `<label class="${cls||''}${has?' ch':''}"><small>${t}</small><input type="number" inputmode="decimal" step="any" value="${val==null?'':esc(val)}" ${blank?'placeholder="Recommended"':''} onchange="fcSet('${k}',this.value)"><em>${esc(hint)}</em></label>`};
+   return `<label class="${cls||''}${has?' ch':''}"><small>${t}</small><input type="number" inputmode="decimal" step="any" value="${val==null?'':esc(val)}" ${blank?'placeholder="Recommended"':''} ${ro?'disabled':`onchange="fcSet('${k}',this.value)"`}><em>${esc(hint)}</em></label>`};
  // One line per part, with its summary; the open one shows below it.
  const onPlan=(d.weeks||[]).filter(w=>w.acc!=null&&w.acc>=.85&&w.acc<=1.15&&!wkInfo(w).live).length, liveW=(d.weeks||[]).find(w=>wkInfo(w).live);
  const short=n=>n.replace(/^Search\s+/i,'').replace(/Performance Max/i,'PMax').replace(/Demand Gen/i,'DG').replace(/\s*\(.*\)/,'');
@@ -7043,17 +7060,42 @@ function fcDraw(){
   ${fold('source','🧮','Where the plan comes from',`${st.window||60} days ${money(l6.cost)} · LY ${money(ly.cost)}${e.rec?' · '+esc(e.rec.split('—')[0].trim()):''}`,
     `<div class="fc-src">${src('LAST '+(st.window||60)+' DAYS',l6)}${src('SAME HIJRI DAYS LAST YEAR',ly)}</div>
     ${e.rec?`<div class="fc-rec ${rc}"><span>${esc((e.rec.match(/^\S+/)||[''])[0])}</span><div><b>${esc(e.rec.replace(/^\S+\s*/,''))}</b><small>Model ${fcK((e.spend||{}).model)} · Last year ${fcK((e.spend||{}).ly)} · Recommended ${fcK(e.recommended)} · Used ${fcK(e.used)}${e.mine?' · '+esc(e.mine):''}</small></div></div>`:''}`)}
-  ${fold('settings','⚙️','Settings',nEd?`<span style="color:#203c8e">${nEd} change${nEd>1?'s':''} not saved yet</span>`:'Changes write to the sheet',
+  ${fold('settings','⚙️','Settings',ro?'From the sheet · view only':nEd?`<span style="color:#203c8e">${nEd} change${nEd>1?'s':''} not saved yet</span>`:'Changes write to the sheet',
     `<div class="fc-set">
      ${inp('override','Approved budget £',st.override,'Empty = recommended '+(e.recommended?'£'+fmt(e.recommended,0):''),'full ed',1)}
      ${inp('adjust','Quick change %',st.adjust||0,'10 = +10%')}${inp('window','Days looked at',st.window,'1 to 60')}
      ${inp('lyWeight','Weight on last year %',st.lyWeight!=null?Math.round(st.lyWeight*100):null,'0 = model only')}${inp('elasticity','Spend elasticity',st.elasticity,'Usually 0.70')}
      ${inp('mixWeight','Channel mix weight',st.mixWeight,'1 = last 60 days only')}${inp('tilt','Tilt toward ROAS',st.tilt,'0 to 1')}</div>
      ${c.msg?`<div class="mrp-msg">${c.msg}</div>`:''}
-     ${nEd?`<div class="fc-act"><button type="button" class="pk-ghost" onclick="fcUndo()">Undo</button><button type="button" class="lab-go" onclick="fcSave(this)" ${c.saving?'disabled':''}>${c.saving?'<span class="lab-spin"></span>Saving…':'Save to the sheet'}</button></div>`:''}
+     ${nEd&&!ro?`<div class="fc-act"><button type="button" class="pk-ghost" onclick="fcUndo()">Undo</button><button type="button" class="lab-go" onclick="fcSave(this)" ${c.saving?'disabled':''}>${c.saving?'<span class="lab-spin"></span>Saving…':'Save to the sheet'}</button></div>`:''}
      ${st.winStart?`<div class="fc-foot">Looked at ${esc(st.winStart)} – ${esc(st.winEnd)} · data up to ${esc(st.lastData)}${st.index?' · '+esc(st.index):''}</div>`:''}`)}
   </div>${c.msg&&FC_OPEN!=='settings'?`<div class="mrp-msg">${c.msg}</div>`:''}
   ${foot}</div>`;
+}
+/* ---------- Media Plan Lab → Who can use the Lab (the SEKNA owner only) ----------
+ * People given the Lab open it as View only; from here the owner can let them make changes, or take it away.
+ */
+let LA={busy:false,saving:''};
+function labAccessDraw(){
+ const box=document.getElementById('labAccess');if(!box)return;
+ if(!(ACCESS_PROFILE&&ACCESS_PROFILE.owner)||!canDo('lab')){box.innerHTML='';return}
+ if(!PERM.data&&!LA.busy){LA.busy=true;serverCall('adminPerms',getAccessToken()).then(r=>{LA.busy=false;PERM.data=r;PERM.edit=PERM.edit||{};labAccessDraw()}).catch(err=>{LA.busy=false;PERM.data={error:errorText(err)};labAccessDraw()})}
+ const d=PERM.data;
+ const head='<div class="fc-l" style="margin-top:4px">WHO CAN USE THE LAB <em>only you see this</em></div>';
+ if(!d||d.error){box.innerHTML=`<div class="lab-box fc">${head}<div class="fc-note">${d&&d.error?'⚠️ '+esc(d.error):'<span class="lab-spin dark"></span>Loading people…'}</div></div>`;return}
+ const ppl=(d.people||[]).filter(p=>!p.owner&&p.status==='Approved');
+ const has=ppl.filter(p=>p.perms&&(p.perms.lab===true||p.perms.lab==='view')), rest=ppl.filter(p=>!has.includes(p));
+ const row=p=>{const v=p.perms.lab,busy=LA.saving===p.email;return `<div class="la-row"><div><b>${esc(p.name||p.email)}</b><small>${esc(p.role||p.email)}</small></div>
+   <div class="la-seg">${[['view','👁 View'],[true,'✏️ Edit'],[false,'✕']].map(([k,l])=>`<button type="button" class="${v===k?'on':''}${k===false?' x':''}" ${busy?'disabled':''} onclick="labAccessSet('${esc(p.email)}',${k===true?'true':k===false?'false':"'view'"})">${l}</button>`).join('')}</div></div>`};
+ box.innerHTML=`<div class="lab-box fc">${head}
+  <div class="fc-card">${has.length?has.map(row).join(''):'<div class="fc-foot" style="text-align:center;margin:4px 0">Only you can open the Lab now.</div>'}</div>
+  ${rest.length?`<div class="la-add"><select id="laPick"><option value="">Give someone the Lab…</option>${rest.map(p=>`<option value="${esc(p.email)}">${esc(p.name||p.email)}</option>`).join('')}</select><button type="button" class="lab-go" style="flex:none;padding:0 16px" onclick="const v=document.getElementById('laPick').value;if(v)labAccessSet(v,'view')">Add</button></div>
+  <div class="fc-foot">New people start as View only. They see a "View only" tag on the Lab in their menu.</div>`:''}</div>`;
+}
+function labAccessSet(email,v){
+ if(LA.saving)return;LA.saving=email;labAccessDraw();
+ serverCall('adminPermsSet',getAccessToken(),{[email]:{lab:v}}).then(()=>{LA.saving='';const p=((PERM.data||{}).people||[]).find(x=>x.email===email);if(p)p.perms=Object.assign({},p.perms,{lab:v});labAccessDraw()})
+  .catch(err=>{LA.saving='';showSettingsToast(errorText(err));labAccessDraw()});
 }
 /* ---------- Years ("Bar chart"): the plan month in every year of the History tab, then this year's plan ---------- */
 function fcMonthKey(d){
@@ -7119,7 +7161,7 @@ function asHtml(){
  if(d.missing)return `<div class="fc-note">No Assumptions tab is linked for ${esc(CURRENT_ACCOUNT.toUpperCase())} yet.</div>`;
  const x2=v=>v==null?'—':fmt(v,2), pc=v=>v==null?'—':fmt(v*100,1)+'%', mo=(v,dd)=>v==null?'—':cs()+fmt(cx(v),dd||0);
  const ed=c.edit||{}, nEd=Object.keys(ed).length;
- const num=(r,key,v)=>{if(!r.row)return `<span class="as-n">${x2(v)}</span>`;const k=r.row+':'+key,has=Object.prototype.hasOwnProperty.call(ed,k);
+ const num=(r,key,v)=>{if(!r.row||!labEdit())return `<span class="as-n">${x2(v)}</span>`;const k=r.row+':'+key,has=Object.prototype.hasOwnProperty.call(ed,k);
    return `<input class="as-in${has?' ch':''}" type="number" inputmode="decimal" step="0.01" value="${has?ed[k]:(v==null?'':fmt(v,2).replace(/,/g,''))}" onchange="asSet(${r.row},'${key}',this.value)" aria-label="${esc(r.name)} ${key}">`};
  const tabs=`<div class="as-seg">${[['channels','Channels'],['weeks','Weeks'],['index','Index']].map(([k,l])=>`<button type="button" class="${AS.tab===k?'on':''}" onclick="asTab('${k}')">${l}</button>`).join('')}</div>`;
  let body='';
@@ -7148,7 +7190,7 @@ function asHtml(){
    <div class="fc-l">WEEK OF MONTH</div><div class="fc-card">${tbl(d.weekOfMonth||[],1)}</div>
    <div class="fc-l">SPECIAL DAYS IN ${esc(mon.toUpperCase())} <em>× a normal day</em></div><div class="fc-card">${(d.special||[]).length?`<div class="as-t"><div class="as-tr hd"><span></span><span>Spend</span><span>Value</span><span>Conv</span></div>${d.special.map(r=>`<div class="as-tr"><span>${esc(r.name)} <small>${esc(mon.slice(0,3))} ${r.inMonth[0]}${r.inMonth.length>1?'–'+r.inMonth[r.inMonth.length-1]:''}</small></span>${num(r,'spend',r.spend)}${num(r,'value',r.value)}${num(r,'conv',r.conv)}</div>`).join('')}</div>`:'<div class="fc-foot" style="text-align:center;margin:4px 0">No special days this month</div>'}</div>
    ${c.msg?`<div class="mrp-msg">${c.msg}</div>`:''}
-   ${nEd?`<div class="fc-act"><button type="button" class="pk-ghost" onclick="asUndo()">Undo</button><button type="button" class="lab-go" onclick="asSave()" ${c.saving?'disabled':''}>${c.saving?'<span class="lab-spin"></span>Saving…':`Save ${nEd} change${nEd>1?'s':''} to the sheet`}</button></div>`:''}`;
+   ${nEd&&labEdit()?`<div class="fc-act"><button type="button" class="pk-ghost" onclick="asUndo()">Undo</button><button type="button" class="lab-go" onclick="asSave()" ${c.saving?'disabled':''}>${c.saving?'<span class="lab-spin"></span>Saving…':`Save ${nEd} change${nEd>1?'s':''} to the sheet`}</button></div>`:''}`;
  }
  return tabs+body;
 }
@@ -7231,7 +7273,7 @@ function labStepsDraw(){
    ${st.done||st.err?`<button type="button" class="ls-close">${st.done?'Done':'Close'}</button>`:''}</div>`;
 }
 /* ---------- Monthly history ---------- */
-let MONTH_BASIS='total', MONTH_MODE='compare', MONTH_EXTRA={}, MONTH_EXTRA_LOADING={}, MONTH_EXTRA_FAIL={}, MONTH_PICK={}, MONTH_CHART='value', MONTH_TIP='';
+let MONTH_BASIS='total', MONTH_MODE='one', MONTH_EXTRA={}, MONTH_EXTRA_LOADING={}, MONTH_EXTRA_FAIL={}, MONTH_PICK={}, MONTH_CHART='value', MONTH_TIP='';
 const PERIOD_SEL={};
 // Campaign types picked in Month vs Month (per account); empty means all of them.
 const MX_TYPES={};
@@ -8099,23 +8141,14 @@ function topProjectsSummary(d){
 
 function buildChannelSummary(d){
  const x=d.latest||{}, m=d.mtd||d.month||{};
- const channels=[...(d.channels||[])].sort((a,b)=>(Number(b.roas)||0)-(Number(a.roas)||0));
- const mon=String(x.monthName||'').slice(0,3);
  const targetRoas=Number(m.targetRoas)||((Number(m.planSpend)||0)?(Number(m.planValue)||0)/(Number(m.planSpend)||1):null);
- const lines=channels.slice(0,5).map((c,i)=>{
-   const medals=['🥇','🥈','🥉','4️⃣','5️⃣'];
-   return `${medals[i]||'•'} ${chName(c.channel)} — ${fmt(c.roas,2)}x | Value ${money(c.actualValue||0)}`;
- }).join('\n');
  const a=accountMeta(d), pa=planAccuracy(d), pct1=v=>v==null||!isFinite(v)?'—':(Math.round(v*1000)/10).toFixed(1)+'%';
  return `🎯 ${a.shortLabel} Plan Achievement: ${pct1(pa.score)}
 
 💰 Spend: ${pct1(pa.pS?pa.aS/pa.pS:null)}
 💚 Value: ${pct1(pa.pV?pa.aV/pa.pV:null)}
 🎯 Conv.: ${pct1(pa.pC?pa.aC/pa.pC:null)}
-📈 ROAS: ${fmt(m.actualRoas,2)}x${targetRoas?` vs ${fmt(targetRoas,2)}x Plan`:''}
-
-🏆 Channel ROAS
-${lines||'—'}`;
+📈 ROAS: ${fmt(m.actualRoas,2)}x${targetRoas?` vs ${fmt(targetRoas,2)}x Plan`:''}`;
 }
 
 function getShareSummary(tab){
@@ -8755,9 +8788,9 @@ function updateProfileUI(){
  if(lock)lock.hidden=true;
  const labLock=document.getElementById('labNavLock');
  if(labLock)labLock.hidden=true;
- ['mrSection'].forEach(id=>{const b=document.getElementById(id);if(b)b.hidden=!p.isAdmin});
+ ['mrSection'].forEach(id=>{const b=document.getElementById(id);if(b)b.hidden=false}); // everyone sees it; only the owner sends it
  tkQuickNav();
- if(p.isAdmin&&CURRENT_TAB==='channel')renderMonthlyReport();
+ if(CURRENT_TAB==='channel')renderMonthlyReport();
 }
 
 function openWhatsNew(){
@@ -10087,7 +10120,7 @@ function renderPastYears(){
  const ys=pyYears();
  if(ys===null){body.innerHTML='<div class="dx-empty"><span class="lab-spin dark"></span>Loading past years…</div>';return}
  if(ys.length<2){body.innerHTML='<div class="dx-empty">No earlier year has data for this Hijri day yet.</div>';return}
- if(PY_PICK===null)PY_PICK=ys[1].dk;
+ if(PY_PICK===null)PY_PICK=''; // every year starts closed
  const win=ys.reduce((a,b)=>b.s.value>a.s.value?b:a);
  const yr=y=>y.dk.slice(0,4);
  const day=dk=>shortDay(dk).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
@@ -10110,8 +10143,8 @@ function renderPastYears(){
    return `<div class="py-c2${y.back?'':' today'}${isWin?' win':''}${open?' open':''}" onclick="pyPick('${y.dk}')">
      <div class="py-badge">${yr(y)}<small>${isWin?'🏆 WIN':esc(shortDay(y.dk).toLocaleDateString('en-GB',{day:'numeric',month:'short'}))}</small></div>
      <div class="py-main"><div class="py-v"><b>${money(a.value)}</b>${isWin?'<span class="py-winb">Winner</span>':chip(a.value,b&&b.value)}</div>
-       <div class="py-bar"><i style="width:${(a.value/maxV*100).toFixed(1)}%"></i></div>
-       <div class="py-st"><span>Spend <b>${money(a.spend)}</b>${dl(a.spend,b&&b.spend)}</span><span>Conv. <b>${fmt(a.conversions,0)}</b>${dl(a.conversions,b&&b.conversions)}</span><span>ROAS <b>${fmt(a.roas,2)}x</b>${dl(a.roas,b&&b.roas)}</span></div></div>
+       ${open?`<div class="py-bar"><i style="width:${(a.value/maxV*100).toFixed(1)}%"></i></div>
+       <div class="py-st"><span>Spend <b>${money(a.spend)}</b>${dl(a.spend,b&&b.spend)}</span><span>Conv. <b>${fmt(a.conversions,0)}</b>${dl(a.conversions,b&&b.conversions)}</span><span>ROAS <b>${fmt(a.roas,2)}x</b>${dl(a.roas,b&&b.roas)}</span></div>`:`<div class="py-shut">Spend ${money(a.spend)} · ROAS ${fmt(a.roas,2)}x<em>›</em></div>`}</div>
      ${open?`<div class="py-more"><div class="py-day">${esc(day(y.dk))}</div><div class="py-q">${[['Clicks',fmt(a.clicks,0)],['CTR',percent(a.ctr)],['CPA',money(a.cpa,2)],['CVR',percent(a.cvr)]].map(([l,v])=>`<span>${l} <b>${v}</b></span>`).join('')}</div>${typeBlock}</div>`:''}
    </div>`;
  }).join('');
@@ -10187,7 +10220,9 @@ function myPerms(){
 }
 // Pages of the side menu and share are on unless Admin → Permissions turned them off.
 const VIEW_KEYS=['overview','days','channel','plans','ranks','camp','months','seasons','ask','team','mine','leaveview','notifs','updates','about','share'];
-function canDo(k){const p=myPerms();return k in p?p[k]===true:VIEW_KEYS.includes(k)}
+function canDo(k){const p=myPerms();if(k==='lab')return p.lab===true||p.lab==='view';return k in p?p[k]===true:VIEW_KEYS.includes(k)}
+// Media Plan Lab: 'view' opens it, but only true can change anything.
+function labEdit(){return myPerms().lab===true}
 // Locked: in the menu with a gold lock, but it opens the lock screen instead of the page.
 function isLocked(k){return myPerms()[k]==='lock'}
 // Each menu button and the permission that shows it.
@@ -10241,6 +10276,7 @@ function applyMenuPerms(){
    let ic=b.querySelector('.pm-nl');if(lk&&!ic){ic=document.createElement('span');ic.className='pm-nl';ic.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';b.appendChild(ic)}if(ic)ic.hidden=!lk});
  // A group with nothing left in it is hidden too.
  document.querySelectorAll('.sk-grp').forEach(g=>{const body=document.getElementById('grp-'+g.dataset.grp);if(!body)return;const any=[...body.querySelectorAll('.sk-nav-btn')].some(b=>!b.hidden);g.hidden=!any;body.hidden=!any});
+ const vt=document.getElementById('labViewTag');if(vt)vt.hidden=myPerms().lab!=='view';
  document.body.classList.toggle('no-share',!canDo('share')&&!isLocked('share'));
  document.body.classList.toggle('share-lock',isLocked('share'));
  if(!canDo(CURRENT_TAB)&&DASH_TABS.includes(CURRENT_TAB)){const first=DASH_TABS.find(t=>canDo(t));if(first&&first!==CURRENT_TAB)switchDashboardTab(first)}
@@ -11283,8 +11319,10 @@ async function mrBuild(){
  finally{CUR_HOLD--}
  drawMonthlyReport();
 }
+// Everyone can build and see the report; only the SEKNA owner can email it.
+function mrOwner(){return !!(ACCESS_PROFILE&&ACCESS_PROFILE.owner)}
 async function mrSend(testOnly){
- const m=MR.m;if(!MR.pdf||!m||MR.busy)return;
+ const m=MR.m;if(!MR.pdf||!m||MR.busy||!mrOwner())return;
  if(MR.sig!==mrSig()){MR.msg='The notes changed. Press Rebuild PDF first.';drawMonthlyReport();return}
  const n=testOnly?1:(MR.people||[]).length;
  if(!testOnly&&!await askSekna({title:'Send the report?',text:`The ${m.label} report goes by email to ${n} ${n===1?'person':'people'} in the team.`,ok:'Send',tone:'info',icon:'mail'}))return;
@@ -11302,9 +11340,8 @@ async function mrSend(testOnly){
 function renderMonthlyReport(){
  const body=document.getElementById('mrBody');if(!body)return;
  const sec=document.getElementById('mrSection');
- if(!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)){if(sec)sec.hidden=true;return}
  if(sec)sec.hidden=false;
- if(MR.people===null){MR.people=[];serverCall('adminReportRecipients',getAccessToken()).then(r=>{MR.people=(r&&r.people)||[];drawMonthlyReport()}).catch(()=>{})}
+ if(MR.people===null&&mrOwner()){MR.people=[];serverCall('adminReportRecipients',getAccessToken()).then(r=>{MR.people=(r&&r.people)||[];drawMonthlyReport()}).catch(()=>{})}
  if(MR.pdf&&MR.sig!==mrSig()){MR.pdf=null;MR.pages=null}
  drawMonthlyReport();
 }
@@ -11324,9 +11361,9 @@ function drawMonthlyReport(){
   ${MR.busy?`<div class="mrp-busy"><span class="lab-spin dark"></span>${esc(MR.busy)}</div>`:''}
   ${MR.msg?`<div class="mrp-msg">${MR.msg}</div>`:''}
   ${MR.pages?`<div class="mrp-thumbs">${MR.pages.map((s,i)=>`<img src="${s}" alt="Page ${i+1}">`).join('')}</div>
-   <div class="mr-send"><button type="button" class="mr3-mail" onclick="mrSend(true)" ${!MR.pdf||MR.busy?'disabled':''}>Send a test to me</button>
+   ${mrOwner()?`<div class="mr-send"><button type="button" class="mr3-mail" onclick="mrSend(true)" ${!MR.pdf||MR.busy?'disabled':''}>Send a test to me</button>
    <button type="button" class="mr3-go" onclick="mrSend(false)" ${!MR.pdf||MR.busy||!ppl.length?'disabled':''}>Email to the team${ppl.length?` (${ppl.length})`:''}</button></div>
-   <div class="mrp-ppl">${ppl.length?`Goes to: ${ppl.map(p=>esc(p.name)).join(', ')}`:'Loading who it goes to…'}</div>`:''}`;
+   <div class="mrp-ppl">${ppl.length?`Goes to: ${ppl.map(p=>esc(p.name)).join(', ')}`:'Loading who it goes to…'}</div>`:'<div class="mrp-ppl">🔒 Only the SEKNA admin can email the report to the team.</div>'}`:''}`;
 }
 
 /* ---------- v87: Plan History ---------- */
@@ -11525,9 +11562,10 @@ const PERM_GROUPS=[['mp','Media Plan',[['overview','DAILY'],['days','DAY BY DAY'
  ['share','Share',[['share','WHATSAPP & IMAGES']]]];
 const PERM_WA='<svg class="pm-wa" viewBox="0 0 24 24" aria-hidden="true"><path fill="#25d366" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/><path fill="#fff" d="M8.6 7.3c.2-.4.4-.4.7-.4h.5c.2 0 .4 0 .6.5l.8 1.9c.1.2 0 .4-.1.6l-.5.6c-.1.2-.2.3 0 .6.5.9 1.2 1.6 2 2.1.3.2.5.1.6 0l.7-.8c.2-.2.4-.2.6-.1l1.8.9c.2.1.4.2.4.4 0 .5-.2 1.2-.8 1.6-.6.4-1.5.6-2.6.2-2.1-.8-3.8-2.5-4.8-4.5-.5-1.1-.4-2.3.1-3z"/></svg>';
 // Each switch has three states: true (shown) → 'lock' (locked) → false (hidden) → true.
-function permState(v){return v===true||v==='lock'?v:false}
-function permVal(p,k){const e=PERM.edit[p.email];return permState(e&&k in e?e[k]:p.perms[k])}
-const PERM_NEXT=v=>v===true?'lock':v==='lock'?false:true;
+// Media Plan Lab has a fourth: 'view' (opens it, changes nothing): true → 'view' → 'lock' → false.
+function permState(v,k){return v===true||v==='lock'||(k==='lab'&&v==='view')?v:false}
+function permVal(p,k){const e=PERM.edit[p.email];return permState(e&&k in e?e[k]:p.perms[k],k)}
+const PERM_NEXT=(v,k)=>v===true?(k==='lab'?'view':'lock'):v==='view'?'lock':v==='lock'?false:true;
 function permGroup(g){PERM.grp=g;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 // Show one person only (or everyone), so switches are not flipped on the wrong row.
 function permWho(e){PERM.who=e;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
@@ -11562,8 +11600,8 @@ function permBlock(email){
 function adminGoPerms(email){PERM.who=email;PERM.data=null;ADMIN_TAB='perms';adminView('tools');adminLoadExtra('perms');setTimeout(()=>{const h=document.querySelector('#adminOverlay .ad-h');if(h)h.scrollIntoView({behavior:'smooth',block:'start'})},500)}
 function permFlip(email,k){
  const p=((PERM.data&&PERM.data.people)||[]).find(x=>x.email===email);if(!p||p.owner)return;
- const e=PERM.edit[email]=PERM.edit[email]||{},v=PERM_NEXT(permVal(p,k));
- if(v===permState(p.perms[k]))delete e[k];else e[k]=v;
+ const e=PERM.edit[email]=PERM.edit[email]||{},v=PERM_NEXT(permVal(p,k),k);
+ if(v===permState(p.perms[k],k))delete e[k];else e[k]=v;
  if(!Object.keys(e).length)delete PERM.edit[email];
  if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
 }
@@ -11582,7 +11620,7 @@ function adminPermsHtml(){
    <button type="button" class="pm-va" onclick="permViewAs('${esc(one.email)}')">👁 View as ${esc(String(one.name||one.email).split(' ')[0])}<small>See SEKNA the way they do${Object.keys(PERM.edit[one.email]||{}).length?', with your unsaved changes':''}</small></button>`:'';
  const who=`<div class="pm-who"><button type="button" class="${PERM.who?'':'on'}" onclick="permWho('')"><span class="pm-all">👥</span>Everyone</button>${all.filter(p=>!p.owner).map(p=>`<button type="button" class="${PERM.who===p.email?'on':''}" onclick="permWho('${esc(p.email)}')">${onDot(`<span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span>`,adminSeen(p.email))}<span class="pm-wn">${esc(String(p.name||p.email).split(' ')[0])}</span>${PERM.edit[p.email]?'<i></i>':''}${wait(p)?`<em class="pm-wt">${p.status==='Invited'?'INVITED':'WAITING'}</em>`:''}</button>`).join('')}</div>`;
  const rows=ppl.map(p=>`<div class="pm-r${p.owner?' own':''}"><div class="pm-p">${onDot(`<span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span>`,adminSeen(p.email))}<div><b>${esc(String(p.name||p.email).split(' ')[0])}</b><small>${p.owner?'ADMIN':isBlk(p)?'<em class="pm-wt pm-bk">BLOCKED</em>':wait(p)?`<em class="pm-wt">${p.status==='Invited'?'INVITED':'WAITING'}</em>`:esc(roleLabel(p.role||'')).toUpperCase()||'NO TITLE'}</small></div></div>
-   ${cols.map(([k,l])=>`<button type="button" class="pm-sw${permVal(p,k)===true?' on':permVal(p,k)==='lock'?' lock':''}${p.owner?' lk':''}${PERM.edit[p.email]&&k in PERM.edit[p.email]?' ch':''}" ${p.owner?'disabled':`onclick="permFlip('${esc(p.email)}','${k}')"`} aria-label="${esc(l)} for ${esc(p.name)}" aria-pressed="${permVal(p,k)===true}">${permVal(p,k)==='lock'?'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>':''}</button>`).join('')}</div>`).join('');
+   ${cols.map(([k,l])=>`<button type="button" class="pm-sw${permVal(p,k)===true?' on':permVal(p,k)==='lock'?' lock':permVal(p,k)==='view'?' view':''}${p.owner?' lk':''}${PERM.edit[p.email]&&k in PERM.edit[p.email]?' ch':''}" ${p.owner?'disabled':`onclick="permFlip('${esc(p.email)}','${k}')"`} aria-label="${esc(l)} for ${esc(p.name)}" aria-pressed="${permVal(p,k)===true}">${permVal(p,k)==='lock'?'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>':permVal(p,k)==='view'?'👁':''}</button>`).join('')}</div>`).join('');
  const chips=PERM_GROUPS.map(([k,l])=>`<button type="button" class="${k===grp[0]?'on':''}" onclick="permGroup('${k}')">${k==='share'?PERM_WA:''}${l}</button>`).join('');
  const hint=grp[0]==='share'?'Locked: the WhatsApp button shows with a lock. Hidden: no share buttons at all.':grp[0]==='tt'?'Set days off: can add and change leave. Team Leave: can see the page.':'Locked: in their menu with a lock, but it doesn\'t open. Hidden: not in their menu.';
  return `<b class="ad-h">🔐 Permissions</b><small class="ad-sub">Pick a part of the menu, then tap to set each page for each person. People waiting for approval are here too, so you can set their access first.</small>

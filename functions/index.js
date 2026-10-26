@@ -5,7 +5,7 @@ const { onRequest } = require('firebase-functions/v2/https');
 const { onMessagePublished } = require('firebase-functions/v2/pubsub');
 const { onSchedule } = require('firebase-functions/v2/scheduler');
 const { buildDashboardData, getMonthCompareData, normalizeAccountKey_, buildForecast, setForecast, buildAssumptions, setAssumptions } = require('./dash');
-const { ACCESS, assertAccess, assertAdmin, assertPerm } = require('./access');
+const { ACCESS, assertAccess, assertAdmin, assertPerm, assertLabView } = require('./access');
 const { fsGet, fsSet, fsAppend, fsList, fsClearList, request, PROJECT_ID } = require('./google');
 const { archiveStatus, archiveMove, archiveProgress } = require('./archive');
 const tasks = require('./tasks');
@@ -128,13 +128,13 @@ const CALLS = {
   /** Media Plan Lab → Forecast: the month tab (read in the reading window, or now when asked). */
   async getForecast(args) {
     const key = normalizeAccountKey_(args[0]);
-    await assertPerm(args[2], 'lab');
+    await assertLabView(args[2]);
     return sheetData('forecast', key, !!args[1]);
   },
   /** Media Plan Lab → Assumptions: channel economics, weeks and the plan month's index. */
   async getAssumptions(args) {
     const key = normalizeAccountKey_(args[0]);
-    await assertPerm(args[2], 'lab');
+    await assertLabView(args[2]);
     return sheetData('assume', key, !!args[1]);
   },
   /** Media Plan Lab → Assumptions: writes changed index numbers, then reads both tabs again. */
@@ -178,11 +178,11 @@ const CALLS = {
     return { window: v, open: inReadWindow(v) };
   },
   async adminArchiveStatus(args) {
-    await assertPerm(args[0], 'lab');
+    await assertLabView(args[0]);
     return archiveStatus(args[1]);
   },
   async adminArchiveProgress(args) {
-    await assertPerm(args[0], 'lab');
+    await assertLabView(args[0]);
     return archiveProgress(args[1]);
   },
   async adminArchiveMove(args) {

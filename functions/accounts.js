@@ -265,7 +265,7 @@ const A = {
         const e = norm(email);
         if (!e || isAdminEmail(e)) return;
         const c = changes[email] || {}, cur = Object.assign({}, all[e] || {});
-        PERM_KEYS.forEach(k => { if (c[k] === true || c[k] === false || c[k] === 'lock') cur[k] = c[k]; else if (c[k] === null) delete cur[k]; });
+        PERM_KEYS.forEach(k => { if (c[k] === true || c[k] === false || c[k] === 'lock' || (k === 'lab' && c[k] === 'view')) cur[k] = c[k]; else if (c[k] === null) delete cur[k]; });
         if (c.blocked === true) cur.blocked = true; else if (c.blocked === false) delete cur.blocked;
         if (Object.keys(cur).length) all[e] = cur; else delete all[e];
       });
