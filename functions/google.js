@@ -65,6 +65,12 @@ async function valuesUpdate(ssId, range, values) {
     { method: 'PUT', data: { range, majorDimension: 'ROWS', values } });
 }
 
+/** Several ranges in one write, values exactly as given ('' empties a cell). */
+async function valuesBatchUpdate(ssId, data) {
+  return request(`https://sheets.googleapis.com/v4/spreadsheets/${ssId}/values:batchUpdate`,
+    { method: 'POST', data: { valueInputOption: 'RAW', data: data.map(d => ({ range: d.range, majorDimension: 'ROWS', values: d.values })) } });
+}
+
 /** Writes values as if typed in Sheets (so "2026-10-21 15:52:00" becomes a date). */
 async function valuesUpdateTyped(ssId, range, values) {
   return request(`https://sheets.googleapis.com/v4/spreadsheets/${ssId}/values/${encodeURIComponent(range)}?valueInputOption=USER_ENTERED`,
@@ -160,5 +166,5 @@ async function fsUpdate(path, change) {
 /** Forgets the cached tab list, so the next read sees a sheet's new size. */
 function forgetMeta(ssId) { delete metaCache[ssId]; }
 
-module.exports = { PROJECT_ID, request, sheetMeta, batchGet, a1, fsGet, fsSet, fsDelete, fsUpdate, fsAppend, fsList, fsSetList, fsClearList,
+module.exports = { PROJECT_ID, request, sheetMeta, batchGet, a1, valuesBatchUpdate, fsGet, fsSet, fsDelete, fsUpdate, fsAppend, fsList, fsSetList, fsClearList,
   valuesUpdate, valuesUpdateTyped, valuesClear, sheetsBatchUpdate, forgetMeta };

@@ -1,6 +1,6 @@
 // The dashboard data, read from the same Google Sheets with the same rules as Code.gs
 // (getDashboardData and getMonthCompareData). Keep the two in step when one changes.
-const { sheetMeta, batchGet, a1 } = require('./google');
+const { sheetMeta, batchGet, a1, valuesBatchUpdate } = require('./google');
 
 const DEFAULT_ACCOUNT_KEY = 'usa';
 const ACCOUNTS = {
@@ -14,7 +14,8 @@ const ACCOUNTS = {
       lastYear: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=1216781425',
       archive: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=1216781425',
       history: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=1713034492',
-      bestWorst: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=3300649'
+      bestWorst: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=3300649',
+      forecast: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=2071753792'
     }
   },
   ar: {
@@ -820,7 +821,70 @@ async function getMonthCompareData(accountKey) {
   return { months, channels, days, generatedAt: fmt(wallFromInstant(Date.now(), book.tz), 'yyyy-MM-dd HH:mm') };
 }
 
+/* ---------- Media Plan Lab → Forecast (the month tab: Oct-2026 and so on) ----------
+ * Only the parts the Lab shows: reference data, the forecast, the weeks, the channel split,
+ * the achievement by channel, the model settings and the engine. Cells as in the sheet.
+ */
+async function buildForecast(accountKey) {
+  const account = ACCOUNTS[normalizeAccountKey_(accountKey)];
+  if (!(account.sheets && account.sheets.forecast)) return { missing: true };
+  const book = await openBook(account);
+  const sh = await optionalSheet(book, 'forecast');
+  if (!sh) return { missing: true };
+  const R = ['B1:B2', 'A6:K8', 'A12:B19', 'A23:K28', 'A32:E37', 'A46:G51', 'A54:B65', 'E57', 'A67:G77'];
+  const v = await batchGet(book.id, R.map(r => a1(sh.title, r)), true);
+  const g = (i, h, w) => grid(v[i], h, w);
+  const n = x => (typeof x === 'number' && isFinite(x) ? x : (x === '' || x == null ? null : (isFinite(Number(x)) ? Number(x) : null)));
+  const t = x => String(x == null ? '' : x).trim();
+  const head = g(0, 2, 1), ref = g(1, 3, 11), fc = g(2, 8, 2), wk = g(3, 6, 11), ch = g(4, 6, 5), ac = g(5, 6, 7), st = g(6, 12, 2), en = g(8, 11, 7);
+  const refRow = r => ({ label: t(r[0]), clicks: n(r[1]), conv: n(r[2]), cost: n(r[3]), value: n(r[4]), cvr: n(r[5]), cpc: n(r[6]), perConv: n(r[7]), season: n(r[8]), projClicks: n(r[9]), projConv: n(r[10]) });
+  const week = r => ({ label: t(r[0]), days: n(r[1]), planClicks: n(r[2]), planConv: n(r[3]), planSpend: n(r[4]), planRev: n(r[5]), actClicks: n(r[6]), actConv: n(r[7]), actSpend: n(r[8]), actRev: n(r[9]), acc: n(r[10]) });
+  const isTotal = r => /total/i.test(t(r[0]));
+  const weeks = wk.filter(r => t(r[0]) && !isTotal(r)).map(week), wTot = wk.find(isTotal);
+  const channels = ch.filter(r => t(r[0]) && !isTotal(r)).map(r => ({ name: t(r[0]), mix: n(r[1]), budget: n(r[2]), roas: n(r[3]), rev: n(r[4]) }));
+  const achRow = r => ({ name: t(r[0]), planSpend: n(r[1]), actSpend: n(r[2]), spendAch: n(r[3]), planRev: n(r[4]), actRev: n(r[5]), revAch: n(r[6]) });
+  const ach = ac.filter(r => t(r[0]) && !isTotal(r)).map(achRow), aTot = ac.find(isTotal);
+  const S = i => st[i][1], met = i => ({ actual: n(en[i][1]), model: n(en[i][5]), ly: n(en[i][6]) });
+  return {
+    title: t(head[0][0]), month: t(head[1][0]), tab: sh.title, at: Date.now(),
+    ref: { last60: refRow(ref[0]), ly: refRow(ref[1]), final: { clicks: n(ref[2][9]), conv: n(ref[2][10]) } },
+    plan: { clicks: n(fc[0][1]), conv: n(fc[1][1]), cpc: n(fc[2][1]), aov: n(fc[3][1]), spend: n(fc[4][1]), rev: n(fc[5][1]), roas: n(fc[6][1]), cvr: n(fc[7][1]) },
+    weeks, weekTotal: wTot ? week(wTot) : null,
+    channels, ach, achTotal: aTot ? achRow(aTot) : null,
+    settings: { window: n(S(0)), elasticity: n(S(1)), lyWeight: n(S(2)), override: n(S(3)), adjust: n(((v[7] || [])[0] || [])[0]),
+      lastTab: t(S(4)), lastData: t(S(5)), winEnd: t(S(6)), winStart: t(S(7)), gaza: t(S(8)), mixWeight: n(S(9)), tilt: n(S(10)), index: t(S(11)) },
+    engine: { spend: met(0), value: met(1), conv: met(2), clicks: met(3), coverage: n(en[4][1]), recommended: n(en[5][1]), used: n(en[6][1]), scale: n(en[7][1]),
+      ratio: n(en[4][4]), rec: t(en[5][4]), mine: t(en[6][4]) }
+  };
+}
+
+// The settings the Lab can change, with their cells and the values allowed.
+const FORECAST_SET = {
+  window: { cell: 'B54', min: 1, max: 60, int: true }, elasticity: { cell: 'B55', min: 0, max: 2 },
+  lyWeight: { cell: 'B56', min: 0, max: 1 }, override: { cell: 'B57', min: 1, max: 1e8, blank: true },
+  adjust: { cell: 'E57', min: -90, max: 300 }, mixWeight: { cell: 'B63', min: 0, max: 1 }, tilt: { cell: 'B64', min: 0, max: 1 }
+};
+async function setForecast(accountKey, values) {
+  const account = ACCOUNTS[normalizeAccountKey_(accountKey)];
+  const book = account.sheets && account.sheets.forecast ? await openBook(account) : null;
+  const sh = book && await optionalSheet(book, 'forecast');
+  if (!sh) throw new Error('No forecast tab is linked for ' + account.shortLabel + '.');
+  const data = [];
+  Object.keys(values || {}).forEach(k => {
+    const f = FORECAST_SET[k]; if (!f) return;
+    const raw = values[k];
+    if (f.blank && (raw === '' || raw == null)) { data.push({ range: a1(sh.title, f.cell), values: [['']] }); return; }
+    let x = Number(raw);
+    if (!isFinite(x) || x < f.min || x > f.max) throw new Error('Check the value for ' + k + ' (' + f.min + ' to ' + f.max + ').');
+    if (f.int) x = Math.round(x);
+    data.push({ range: a1(sh.title, f.cell), values: [[x]] });
+  });
+  if (!data.length) throw new Error('Nothing to save.');
+  await valuesBatchUpdate(book.id, data);
+  return data.length;
+}
+
 function forgetArchive() { Object.keys(archiveCache).forEach(k => delete archiveCache[k]); }
 
 module.exports = { ACCOUNTS, buildDashboardData, getMonthCompareData, normalizeAccountKey_, fmt, wallFromInstant, makeAsDate, grid, toNumber_,
-  ssIdOf, openBook, optionalSheet, forgetArchive };
+  ssIdOf, openBook, optionalSheet, forgetArchive, buildForecast, setForecast };
