@@ -3696,6 +3696,17 @@ window.addEventListener('load',function(){
     .pm-sw.lock{background:linear-gradient(135deg,#f3d79f,#c9933f);display:grid;place-items:center}.pm-sw.lock:after{display:none}
     .pm-sw.lock svg{width:11px;height:11px;fill:none;stroke:#3d2a07;stroke-width:2.6;stroke-linecap:round}
     .pm-leg{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:11.5px;font-weight:800;color:#4b5263}.pm-leg span{display:flex;align-items:center;gap:6px}.pm-leg .pm-sw{cursor:default}
+    .pm-blk{display:flex;align-items:center;gap:10px;margin-top:10px;border:1.5px solid #f3c6cd;background:#fff5f6;border-radius:14px;padding:10px 12px}
+    .pm-blk div{flex:1}.pm-blk b{display:block;font-size:13px;color:#b4283c}.pm-blk small{font-size:10.5px;color:#8a92a6;font-weight:700}
+    .pm-blk button{border:0;border-radius:11px;padding:8px 12px;font:inherit;font-size:12px;font-weight:900;color:#fff;background:#d33b4f;cursor:pointer;white-space:nowrap}
+    .pm-blk.on{background:#fde6ea}.pm-blk.on button{background:#fff;color:#1d2433;border:1.5px solid #e7eaf2}
+    .pm-bk{color:#b4283c!important;background:#fde6ea!important}
+    .blk-view{position:fixed;inset:0;z-index:20000;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 24px;text-align:center}
+    .blk-lg{font-size:32px;font-weight:900;color:#203c8e;letter-spacing:.04em}.blk-lg i{font-style:normal;color:#c89434}
+    .blk-err{margin-top:26px;width:100%;max-width:380px;border:1.5px solid #f3c6cd;background:#fff5f6;border-radius:16px;padding:16px;text-align:left}
+    .blk-err b{display:block;font-size:14px;color:#b4283c}.blk-err p{font-size:12.5px;color:#5b6375;font-weight:600;margin:6px 0 0;line-height:1.5}
+    .blk-err code{display:block;margin-top:10px;font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#8a92a6;background:#f4f6fb;border-radius:8px;padding:8px}
+    .blk-btn{margin-top:20px;border:0;border-radius:14px;padding:12px 30px;font:inherit;font-size:14px;font-weight:900;background:#f2f4f9;color:#1d2433;cursor:pointer}
     .pm-wt{font-style:normal;font-size:8px;font-weight:900;letter-spacing:.06em;color:#8a5a12;background:#fff3dc;border-radius:99px;padding:1px 6px}
     .pm-who .pm-wt{position:static;margin-top:-2px}
     .sk-nav-btn.pm-lockd>span:not(.pm-nl){opacity:.5}.pm-nl{margin-left:auto;display:grid;place-items:center;width:24px;height:24px;border-radius:8px;background:rgba(226,184,116,.18);flex:none}.pm-nl[hidden]{display:none}
@@ -10031,13 +10042,32 @@ function permsRefresh(){
  const token=getAccessToken();if(!token&&hasServer())return;
  PERM_AT=Date.now();
  serverCall('accessStatus',token).then(p=>{if(!p||!p.perms||!ACCESS_PROFILE)return;
-   ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE,{perms:p.perms,isAdmin:p.isAdmin,owner:p.owner});applyMenuPerms()}).catch(()=>{});
+   const was=!!(ACCESS_PROFILE.perms&&ACCESS_PROFILE.perms.blocked);
+   ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE,{perms:p.perms,isAdmin:p.isAdmin,owner:p.owner});
+   if(was&&!p.perms.blocked){blockedShow(false);return}applyMenuPerms()}).catch(()=>{});
 }
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')permsRefresh()});
 setInterval(permsRefresh,10*60000);
 
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.sk-nav-btn.pm-lockd');if(!b)return;e.preventDefault();e.stopPropagation();closeSidebar();lockSheet(b.dataset.lockName)},true);
+
+function blockedShow(on){
+ let o=document.getElementById('blkView');
+ if(!on){if(o){o.remove();try{if(storeGet('sekna_blk_nf')){storeRemove('sekna_blk_nf');if(window.AndroidShare&&AndroidShare.setNotificationsEnabled)AndroidShare.setNotificationsEnabled(true)}}catch(e){}location.reload()}return}
+ if(o)return;
+ try{if(window.AndroidShare&&AndroidShare.setNotificationsEnabled){AndroidShare.setNotificationsEnabled(false);storeSet('sekna_blk_nf','1')}}catch(e){}
+ try{stopDashboardRefresh()}catch(e){}
+ o=document.createElement('div');o.id='blkView';o.className='blk-view';
+ o.innerHTML=`<div class="blk-lg">SEKNA<i>·</i></div><div class="blk-err"><b>⚠️ Something went wrong</b><p>The dashboard could not be loaded. Our team has been told about it.</p><code>Error 503 · Service unavailable</code></div><button type="button" class="blk-btn" onclick="blockedReload(this)">Reload</button>`;
+ document.body.appendChild(o);
+}
+function blockedReload(btn){
+ btn.disabled=true;btn.textContent='Loading…';
+ serverCall('accessStatus',getAccessToken()).then(p=>{if(p&&p.perms&&!p.perms.blocked)blockedShow(false)}).catch(()=>{})
+  .finally(()=>setTimeout(()=>{btn.disabled=false;btn.textContent='Reload'},1200));
+}
 function applyMenuPerms(){
+ if(myPerms().blocked){blockedShow(true);return}
  MENU_PERM.forEach(([id,k])=>{const b=document.getElementById(id);if(!b)return;
    const lk=isLocked(k);b.hidden=!canDo(k)&&!lk;b.classList.toggle('pm-lockd',lk);
    if(lk)b.dataset.lockName=(b.querySelector('span:not(.sk-nav-icon)')||b).textContent.trim();else delete b.dataset.lockName;
@@ -11325,6 +11355,13 @@ const PERM_NEXT=v=>v===true?'lock':v==='lock'?false:true;
 function permGroup(g){PERM.grp=g;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 
 function permWho(e){PERM.who=e;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+function permBlock(email){
+ const p=((PERM.data&&PERM.data.people)||[]).find(x=>x.email===email);if(!p||p.owner)return;
+ const cur=!!(p.perms&&p.perms.blocked), e=PERM.edit[email]=PERM.edit[email]||{}, now='blocked' in e?e.blocked:cur;
+ if(!now===cur)delete e.blocked;else e.blocked=!now;
+ if(!Object.keys(e).length)delete PERM.edit[email];
+ if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
+}
 
 function adminGoPerms(email){PERM.who=email;PERM.data=null;ADMIN_TAB='perms';adminView('tools');adminLoadExtra('perms');setTimeout(()=>{const h=document.querySelector('#adminOverlay .ad-h');if(h)h.scrollIntoView({behavior:'smooth',block:'start'})},500)}
 function permFlip(email,k){
@@ -11343,14 +11380,17 @@ function adminPermsHtml(){
  const all=(d.people||[]).slice().sort((a,b)=>((+!!b.owner)-(+!!a.owner))||((+wait(b))-(+wait(a)))||roleTier(b.role)-roleTier(a.role)||String(a.name).localeCompare(String(b.name)));
  if(PERM.who&&!all.some(p=>p.email===PERM.who))PERM.who='';
  const ppl=PERM.who?all.filter(p=>p.email===PERM.who):all;
+ const isBlk=p=>{const e=PERM.edit[p.email];return e&&'blocked' in e?e.blocked:!!(p.perms&&p.perms.blocked)};
+ const one=PERM.who&&ppl[0]&&!ppl[0].owner?ppl[0]:null;
+ const blockRow=one?`<div class="pm-blk${isBlk(one)?' on':''}"><div><b>${isBlk(one)?'🚫 Blocked':'Block this account'}</b><small>${isBlk(one)?'They only see an error message (Error 503). Nothing else works.':'Their whole app shows an error message instead of SEKNA.'}</small></div><button type="button" onclick="permBlock('${esc(one.email)}')">${isBlk(one)?'Unblock':'🚫 Block'}</button></div>`:'';
  const who=`<div class="pm-who"><button type="button" class="${PERM.who?'':'on'}" onclick="permWho('')"><span class="pm-all">👥</span>Everyone</button>${all.filter(p=>!p.owner).map(p=>`<button type="button" class="${PERM.who===p.email?'on':''}" onclick="permWho('${esc(p.email)}')"><span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span><span class="pm-wn">${esc(String(p.name||p.email).split(' ')[0])}</span>${PERM.edit[p.email]?'<i></i>':''}${wait(p)?`<em class="pm-wt">${p.status==='Invited'?'INVITED':'WAITING'}</em>`:''}</button>`).join('')}</div>`;
- const rows=ppl.map(p=>`<div class="pm-r${p.owner?' own':''}"><div class="pm-p"><span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span><div><b>${esc(String(p.name||p.email).split(' ')[0])}</b><small>${p.owner?'ADMIN':wait(p)?`<em class="pm-wt">${p.status==='Invited'?'INVITED':'WAITING'}</em>`:esc(roleLabel(p.role||'')).toUpperCase()||'NO TITLE'}</small></div></div>
+ const rows=ppl.map(p=>`<div class="pm-r${p.owner?' own':''}"><div class="pm-p"><span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span><div><b>${esc(String(p.name||p.email).split(' ')[0])}</b><small>${p.owner?'ADMIN':isBlk(p)?'<em class="pm-wt pm-bk">BLOCKED</em>':wait(p)?`<em class="pm-wt">${p.status==='Invited'?'INVITED':'WAITING'}</em>`:esc(roleLabel(p.role||'')).toUpperCase()||'NO TITLE'}</small></div></div>
    ${cols.map(([k,l])=>`<button type="button" class="pm-sw${permVal(p,k)===true?' on':permVal(p,k)==='lock'?' lock':''}${p.owner?' lk':''}${PERM.edit[p.email]&&k in PERM.edit[p.email]?' ch':''}" ${p.owner?'disabled':`onclick="permFlip('${esc(p.email)}','${k}')"`} aria-label="${esc(l)} for ${esc(p.name)}" aria-pressed="${permVal(p,k)===true}">${permVal(p,k)==='lock'?'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>':''}</button>`).join('')}</div>`).join('');
  const chips=PERM_GROUPS.map(([k,l])=>`<button type="button" class="${k===grp[0]?'on':''}" onclick="permGroup('${k}')">${k==='share'?PERM_WA:''}${l}</button>`).join('');
  const hint=grp[0]==='share'?'Locked: the WhatsApp button shows with a lock. Hidden: no share buttons at all.':grp[0]==='tt'?'Set days off: can add and change leave. Team Leave: can see the page.':'Locked: in their menu with a lock, but it doesn\'t open. Hidden: not in their menu.';
  return `<b class="ad-h">🔐 Permissions</b><small class="ad-sub">Pick a part of the menu, then tap to set each page for each person. People waiting for approval are here too, so you can set their access first.</small>
    <div class="pm-leg"><span><i class="pm-sw on"></i>Shown</span><span><i class="pm-sw lock"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></i>Locked</span><span><i class="pm-sw"></i>Hidden</span></div>
-   ${who}<div class="pm-chips">${chips}</div>
+   ${who}${blockRow}<div class="pm-chips">${chips}</div>
    <div class="pm-t" style="--n:${cols.length}"><div class="pm-r pm-h"><span>PERSON</span>${cols.map(([k,l])=>`<span>${l}</span>`).join('')}</div>${rows||'<div class="sk-admin-empty">No one approved yet.</div>'}</div>
    <small class="pm-note">${hint} 🔒 Your row is always on. A change works within a minute.</small>
    <button type="button" class="pm-save" onclick="adminPermsSave(this)" ${n&&!PERM.saving?'':'disabled'}>${PERM.saving?'Saving…':n?`Save changes (${n} ${n===1?'person':'people'})`:'No changes'}</button>`;

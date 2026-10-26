@@ -84,6 +84,10 @@ async function assertAccess(token) {
     err.access = true;
     throw err;
   }
+  // A blocked person gets the same answer as a server that is down.
+  if (!isAdminEmail(a.email) && (await permTable()).over[String(a.email || '').toLowerCase()]?.blocked === true) {
+    const err = new Error('Error 503 · Service unavailable'); err.blocked = true; throw err;
+  }
   return a;
 }
 
@@ -116,6 +120,8 @@ function permsOf(email, t) {
   const out = {};
   if (isAdminEmail(email)) { ALL_KEYS.forEach(k => { out[k] = true; }); return out; }
   const def = permDefaults((t.mem[email] || {}).role), o = t.over[email] || {};
+  // Blocked (Admin → Permissions → Block): nothing at all; the app shows an error screen.
+  if (o.blocked === true) { ALL_KEYS.forEach(k => { out[k] = false; }); out.blocked = true; return out; }
   // true: shown · 'lock': in the menu with a lock, no access · false: hidden.
   ALL_KEYS.forEach(k => { out[k] = typeof o[k] === 'boolean' || o[k] === 'lock' ? o[k] : def[k]; });
   return out;
