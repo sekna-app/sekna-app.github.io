@@ -3555,6 +3555,13 @@ window.addEventListener('load',function(){
     .pm-sw.lock{background:linear-gradient(135deg,#f3d79f,#c9933f);display:grid;place-items:center}.pm-sw.lock:after{display:none}
     .pm-sw.lock svg{width:11px;height:11px;fill:none;stroke:#3d2a07;stroke-width:2.6;stroke-linecap:round}
     .pm-leg{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:11.5px;font-weight:800;color:#4b5263}.pm-leg span{display:flex;align-items:center;gap:6px}.pm-leg .pm-sw{cursor:default}
+    .avw{position:relative;display:inline-flex;flex:none}.on-dot{position:absolute;right:-1px;bottom:-1px;width:10px;height:10px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 2px #fff;z-index:1}
+    .pm-tries{margin-top:6px;font-size:10.5px;color:#5b6375;font-weight:700;line-height:1.45}.pm-tries b{display:block;color:#b4283c;font-size:11.5px}
+    .pm-va{display:block;width:100%;margin-top:8px;border:1.5px solid #c9d6fb;background:#f4f7ff;border-radius:14px;padding:10px 12px;font:inherit;font-size:13px;font-weight:900;color:#203c8e;text-align:left;cursor:pointer}
+    .pm-va small{display:block;font-size:10.5px;font-weight:700;color:#8a92a6;margin-top:2px}
+    .va-bar{position:fixed;left:50%;transform:translateX(-50%);top:calc(10px + env(safe-area-inset-top));z-index:20010;display:flex;align-items:center;gap:12px;background:#10141b;color:#fff;border-radius:99px;padding:8px 8px 8px 16px;font-size:12.5px;font-weight:700;box-shadow:0 10px 26px rgba(0,0,0,.3);max-width:calc(100vw - 24px)}
+    .va-bar button{border:0;border-radius:99px;padding:8px 14px;font:inherit;font-size:12.5px;font-weight:900;background:#ffd200;color:#1d2433;cursor:pointer}
+    body.dark-mode .pm-va{background:#151a22;border-color:#2a3242;color:#9fb6ff}body.dark-mode .on-dot{box-shadow:0 0 0 2px #151a22}
     .pm-blk{display:flex;align-items:center;gap:10px;margin-top:10px;border:1.5px solid #f3c6cd;background:#fff5f6;border-radius:14px;padding:10px 12px}
     .pm-blk div{flex:1}.pm-blk b{display:block;font-size:13px;color:#b4283c}.pm-blk small{font-size:10.5px;color:#8a92a6;font-weight:700}
     .pm-blk button{border:0;border-radius:11px;padding:8px 12px;font:inherit;font-size:12px;font-weight:900;color:#fff;background:#d33b4f;cursor:pointer;white-space:nowrap}
@@ -8909,7 +8916,7 @@ function renderAdmin(d){
    ['Active today',users.filter(p=>now-p.last<86400000).length,'']
  ];
  const person=p=>`<div class="ad-person">
-   <span class="sk-person-avatar has-emb">${personAv(memberOf(p.email).avatar,p.name)}</span>
+   ${onDot(`<span class="sk-person-avatar has-emb">${personAv(memberOf(p.email).avatar,p.name)}</span>`,p.last)}
    <span class="ad-pt"><b>${esc(p.name)}</b><small>${esc(p.email)}</small>${roleBadge(memberOf(p.email).role)}<span class="sk-seen">${seenHtml(p.last,now)}</span></span>
    <span class="ad-pr">${statusChip(p.status)}<span class="ad-acts">${personActions(p)}<button class="sk-mini-btn ghost" type="button" onclick="adminEditMember('${esc(p.email)}')">${ADMIN_EDIT===p.email?'Done':'Position'}</button></span></span>
  </div>${ADMIN_EDIT===p.email?memberEditor(p):''}`;
@@ -9887,7 +9894,10 @@ function tkRange(month,w){const to=w===4?tkDim(month):w*7;return `${(w-1)*7+1}�
 function tkShift(month,n){const d=new Date(+month.slice(0,4),+month.slice(5,7)-1+n,1);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
 // v170: what this person can use, from Admin → Permissions (sent with the access status and the tasks).
 // Without it (an older answer): leaders get build, quick and leave; the admin gets everything.
+// View as (Admin → Permissions): the admin sees the menu with someone else's permissions.
+let VIEW_AS=null;
 function myPerms(){
+ if(VIEW_AS)return VIEW_AS.perms;
  const p=ACCESS_PROFILE||{};if(p.perms)return p.perms;
  let tp=null;try{tp=TK.data&&TK.data.me&&TK.data.me.perms}catch(e){}if(tp)return tp;
  let mem=p.member;if(!mem){try{mem=JSON.parse(storeGet('sekna_member')||'null')}catch(e){}}
@@ -9925,8 +9935,10 @@ setInterval(permsRefresh,10*60000);
 // A locked menu button opens the lock screen instead of its page.
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.sk-nav-btn.pm-lockd');if(!b)return;e.preventDefault();e.stopPropagation();closeSidebar();lockSheet(b.dataset.lockName)},true);
 // Blocked (Admin → Permissions → Block): the whole app is an error screen. Reload checks again.
-function blockedShow(on){
+function blockedShow(on,preview){
  let o=document.getElementById('blkView');
+ if(VIEW_AS&&!preview)return;
+ if(preview){if(!o){o=document.createElement('div');o.id='blkView';o.className='blk-view';o.innerHTML=`<div class="blk-lg">SEKNA<i>·</i></div><div class="blk-err"><b>⚠️ Something went wrong</b><p>The dashboard could not be loaded. Our team has been told about it.</p><code>Error 503 · Service unavailable</code></div><button type="button" class="blk-btn" disabled>Reload</button>`;document.body.appendChild(o)}return}
  if(!on){if(o){o.remove();try{if(storeGet('sekna_blk_nf')){storeRemove('sekna_blk_nf');if(window.AndroidShare&&AndroidShare.setNotificationsEnabled)AndroidShare.setNotificationsEnabled(true)}}catch(e){}location.reload()}return}
  if(o)return;
  try{if(window.AndroidShare&&AndroidShare.setNotificationsEnabled){AndroidShare.setNotificationsEnabled(false);storeSet('sekna_blk_nf','1')}}catch(e){}
@@ -9941,7 +9953,7 @@ function blockedReload(btn){
   .finally(()=>setTimeout(()=>{btn.disabled=false;btn.textContent='Reload'},1200));
 }
 function applyMenuPerms(){
- if(myPerms().blocked){blockedShow(true);return}
+ if(myPerms().blocked&&!VIEW_AS){blockedShow(true);return}
  MENU_PERM.forEach(([id,k])=>{const b=document.getElementById(id);if(!b)return;
    const lk=isLocked(k);b.hidden=!canDo(k)&&!lk;b.classList.toggle('pm-lockd',lk);
    if(lk)b.dataset.lockName=(b.querySelector('span:not(.sk-nav-icon)')||b).textContent.trim();else delete b.dataset.lockName;
@@ -9959,7 +9971,12 @@ function tkQuickNav(){applyMenuPerms()}
 function tkMe(){return ((TK.data&&TK.data.me&&TK.data.me.email)||(ACCESS_PROFILE&&ACCESS_PROFILE.email)||'').toLowerCase()}
 function tkPeople(){return ((TK.data&&TK.data.people)||[]).slice().sort((a,b)=>roleTier(b.role)-roleTier(a.role)||String(a.name).localeCompare(String(b.name)))}
 function tkPerson(email){return tkPeople().find(p=>p.email===email)||{email,name:String(email||'').split('@')[0],role:'',avatar:0}}
-function tkAv(p){return `<span class="tk-av has-emb">${personAv(p.avatar,p.name)}</span>`}
+// v170: a green dot on people using SEKNA right now (seen in the last 5 minutes).
+const ONLINE_MS=5*60000;
+function isOnline(ms){return !!ms&&Date.now()-ms<ONLINE_MS}
+function onDot(av,ms){return isOnline(ms)?`<span class="avw">${av}<i class="on-dot" title="Online now"></i></span>`:av}
+function tkAv(p){return onDot(`<span class="tk-av has-emb">${personAv(p.avatar,p.name)}</span>`,p.seen)}
+function adminSeen(email){const r=((ADMIN_LAST&&ADMIN_LAST.rows)||[]).filter(x=>String(x.email).toLowerCase()===String(email).toLowerCase());return Math.max(0,...r.map(x=>x.lastSeenMs||0))}
 const TK_VIEWS={team:['Team Board','The whole team, week by week'],mine:['My Tasks','What you need to do'],build:['Task Builder','Plan the month for the team'],quick:['Quick Requests','Small asks with a deadline'],leave:['Team Leave','Days off and backups']};
 
 function tkSetTitle(t){const el=document.getElementById('tkTitle');if(!el)return;const w=String(t).split(' '),l=w.pop();el.innerHTML=(w.length?esc(w.join(' '))+' ':'')+`<span>${esc(l)}</span>`}
@@ -11232,6 +11249,26 @@ const PERM_NEXT=v=>v===true?'lock':v==='lock'?false:true;
 function permGroup(g){PERM.grp=g;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 // Show one person only (or everyone), so switches are not flipped on the wrong row.
 function permWho(e){PERM.who=e;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+function localWhenFull(ms){const d=new Date(ms),t=new Date();const same=d.toDateString()===t.toDateString();return (same?'Today ':d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})+' ')+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}
+function permViewAs(email){
+ const p=((PERM.data&&PERM.data.people)||[]).find(x=>x.email===email);if(!p)return;
+ const e=PERM.edit[email]||{}, perms=Object.assign({},p.perms,e);
+ if('blocked' in e){if(e.blocked)perms.blocked=true;else delete perms.blocked}
+ VIEW_AS={email,name:String(p.name||email).split(' ')[0],perms};
+ const o=document.getElementById('adminOverlay');if(o)o.classList.remove('open');
+ let bar=document.getElementById('viewAsBar');
+ if(!bar){bar=document.createElement('div');bar.id='viewAsBar';bar.className='va-bar';document.body.appendChild(bar)}
+ bar.innerHTML=`<span>👁 Viewing as <b>${esc(VIEW_AS.name)}</b>${Object.keys(e).length?' · with your unsaved changes':''}</span><button type="button" onclick="viewAsExit()">Exit</button>`;
+ document.body.classList.add('view-as');
+ if(perms.blocked){blockedShow(true,true);return}
+ applyMenuPerms();openSidebar();
+}
+function viewAsExit(){
+ VIEW_AS=null;document.body.classList.remove('view-as');
+ const bar=document.getElementById('viewAsBar');if(bar)bar.remove();
+ const b=document.getElementById('blkView');if(b)b.remove();
+ applyMenuPerms();closeSidebar();openAdmin();
+}
 function permBlock(email){
  const p=((PERM.data&&PERM.data.people)||[]).find(x=>x.email===email);if(!p||p.owner)return;
  const cur=!!(p.perms&&p.perms.blocked), e=PERM.edit[email]=PERM.edit[email]||{}, now='blocked' in e?e.blocked:cur;
@@ -11259,9 +11296,10 @@ function adminPermsHtml(){
  const ppl=PERM.who?all.filter(p=>p.email===PERM.who):all;
  const isBlk=p=>{const e=PERM.edit[p.email];return e&&'blocked' in e?e.blocked:!!(p.perms&&p.perms.blocked)};
  const one=PERM.who&&ppl[0]&&!ppl[0].owner?ppl[0]:null;
- const blockRow=one?`<div class="pm-blk${isBlk(one)?' on':''}"><div><b>${isBlk(one)?'🚫 Blocked':'Block this account'}</b><small>${isBlk(one)?'They only see an error message (Error 503). Nothing else works.':'Their whole app shows an error message instead of SEKNA.'}</small></div><button type="button" onclick="permBlock('${esc(one.email)}')">${isBlk(one)?'Unblock':'🚫 Block'}</button></div>`:'';
- const who=`<div class="pm-who"><button type="button" class="${PERM.who?'':'on'}" onclick="permWho('')"><span class="pm-all">👥</span>Everyone</button>${all.filter(p=>!p.owner).map(p=>`<button type="button" class="${PERM.who===p.email?'on':''}" onclick="permWho('${esc(p.email)}')"><span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span><span class="pm-wn">${esc(String(p.name||p.email).split(' ')[0])}</span>${PERM.edit[p.email]?'<i></i>':''}${wait(p)?`<em class="pm-wt">${p.status==='Invited'?'INVITED':'WAITING'}</em>`:''}</button>`).join('')}</div>`;
- const rows=ppl.map(p=>`<div class="pm-r${p.owner?' own':''}"><div class="pm-p"><span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span><div><b>${esc(String(p.name||p.email).split(' ')[0])}</b><small>${p.owner?'ADMIN':isBlk(p)?'<em class="pm-wt pm-bk">BLOCKED</em>':wait(p)?`<em class="pm-wt">${p.status==='Invited'?'INVITED':'WAITING'}</em>`:esc(roleLabel(p.role||'')).toUpperCase()||'NO TITLE'}</small></div></div>
+ const blockRow=one?`<div class="pm-blk${isBlk(one)?' on':''}"><div><b>${isBlk(one)?'🚫 Blocked':'Block this account'}</b><small>${isBlk(one)?'They only see an error message (Error 503). Nothing else works.':'Their whole app shows an error message instead of SEKNA.'}</small>${isBlk(one)&&one.tries&&one.tries.n?`<div class="pm-tries"><b>Tried to open ${one.tries.n} time${one.tries.n>1?'s':''}</b><span>${(one.tries.list||[]).slice(0,5).map(t=>esc(localWhenFull(t))).join(' · ')}</span></div>`:isBlk(one)&&one.perms&&one.perms.blocked?'<div class="pm-tries"><span>No tries yet.</span></div>':''}</div><button type="button" onclick="permBlock('${esc(one.email)}')">${isBlk(one)?'Unblock':'🚫 Block'}</button></div>
+   <button type="button" class="pm-va" onclick="permViewAs('${esc(one.email)}')">👁 View as ${esc(String(one.name||one.email).split(' ')[0])}<small>See SEKNA the way they do${Object.keys(PERM.edit[one.email]||{}).length?', with your unsaved changes':''}</small></button>`:'';
+ const who=`<div class="pm-who"><button type="button" class="${PERM.who?'':'on'}" onclick="permWho('')"><span class="pm-all">👥</span>Everyone</button>${all.filter(p=>!p.owner).map(p=>`<button type="button" class="${PERM.who===p.email?'on':''}" onclick="permWho('${esc(p.email)}')">${onDot(`<span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span>`,adminSeen(p.email))}<span class="pm-wn">${esc(String(p.name||p.email).split(' ')[0])}</span>${PERM.edit[p.email]?'<i></i>':''}${wait(p)?`<em class="pm-wt">${p.status==='Invited'?'INVITED':'WAITING'}</em>`:''}</button>`).join('')}</div>`;
+ const rows=ppl.map(p=>`<div class="pm-r${p.owner?' own':''}"><div class="pm-p">${onDot(`<span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span>`,adminSeen(p.email))}<div><b>${esc(String(p.name||p.email).split(' ')[0])}</b><small>${p.owner?'ADMIN':isBlk(p)?'<em class="pm-wt pm-bk">BLOCKED</em>':wait(p)?`<em class="pm-wt">${p.status==='Invited'?'INVITED':'WAITING'}</em>`:esc(roleLabel(p.role||'')).toUpperCase()||'NO TITLE'}</small></div></div>
    ${cols.map(([k,l])=>`<button type="button" class="pm-sw${permVal(p,k)===true?' on':permVal(p,k)==='lock'?' lock':''}${p.owner?' lk':''}${PERM.edit[p.email]&&k in PERM.edit[p.email]?' ch':''}" ${p.owner?'disabled':`onclick="permFlip('${esc(p.email)}','${k}')"`} aria-label="${esc(l)} for ${esc(p.name)}" aria-pressed="${permVal(p,k)===true}">${permVal(p,k)==='lock'?'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>':''}</button>`).join('')}</div>`).join('');
  const chips=PERM_GROUPS.map(([k,l])=>`<button type="button" class="${k===grp[0]?'on':''}" onclick="permGroup('${k}')">${k==='share'?PERM_WA:''}${l}</button>`).join('');
  const hint=grp[0]==='share'?'Locked: the WhatsApp button shows with a lock. Hidden: no share buttons at all.':grp[0]==='tt'?'Set days off: can add and change leave. Team Leave: can see the page.':'Locked: in their menu with a lock, but it doesn\'t open. Hidden: not in their menu.';

@@ -209,6 +209,7 @@ const A = {
     const out = { status: a.status, name: a.name || '', email: a.email || '', isAdmin: !!(perms && perms.admin === true), owner: !!(a.ok && isAdminEmail(a.email)), perms,
       photo: '', member: {}, taskNotice: null, backupToday: [], pushTopic: '', dashboard: { version: 'server' }, app: null };
     if (!a.ok) return out;
+    if (perms && perms.blocked) { await noteBlockedTry(a.email); return out; }
     const [ph, team, st] = await Promise.all([photos(), tasks.teamStatusFor(a).catch(() => null), appState()]);
     out.photo = ph[a.email] || '';
     if (team) Object.assign(out, team);
@@ -244,7 +245,7 @@ const A = {
   /** Admin → Permissions: everyone approved, with their role and what they can use (the SEKNA admin only). */
   async adminPerms([token]) {
     await assertOwner(token);
-    const [rows, mem, over] = await Promise.all([storeRows(), tasks.members(), fsGet(PERM_DOC)]);
+    const [rows, mem, over, tries] = await Promise.all([storeRows(), tasks.members(), fsGet(PERM_DOC), fsGet(BLOCK_TRIES)]);
     const seen = {}, people = [];
     // Approved people, and those still waiting or invited, so their access can be set before approving.
     const rank = { Approved: 0, Pending: 1, Invited: 2 };
@@ -253,7 +254,7 @@ const A = {
       const role = (mem[e] || {}).role || '';
       people.push({ email: e, name: r.name || '', role, status: r.status, owner: isAdminEmail(e), defaults: permDefaults(role), set: (over || {})[e] || {} });
     });
-    for (const p of people) p.perms = await permsFor(p.email);
+    for (const p of people) { p.perms = await permsFor(p.email); if (tries && tries[p.email]) p.tries = tries[p.email]; }
     return { keys: PERM_KEYS, people };
   },
   async adminPermsSet([token, changes]) {
@@ -272,6 +273,9 @@ const A = {
       return all;
     });
     forgetPerms();
+    // A new block starts counting its tries from zero.
+    const fresh = Object.keys(changes || {}).map(norm).filter(e => changes[e] && changes[e].blocked === true);
+    if (fresh.length) await fsUpdate(BLOCK_TRIES, d => { d = d || {}; fresh.forEach(e => { delete d[e]; }); return d; }).catch(() => {});
     return { ok: true, at: out._at };
   },
 
@@ -347,6 +351,20 @@ const A = {
   },
   async adminClearAnnouncement([token]) { await assertAdmin(token); return setApp(s => { s.announcement = null; }); }
 };
+
+/* ---------- blocked accounts: each time they open SEKNA (Admin → Permissions shows it) ---------- */
+const BLOCK_TRIES = 'team/blocked-tries';
+function noteBlockedTry(email) {
+  const e = norm(email), now = Date.now();
+  return fsUpdate(BLOCK_TRIES, d => {
+    d = d || {};
+    const x = d[e] || { n: 0, list: [] };
+    if (x.last && now - x.last < 30000) return undefined; // one open, not every call it makes
+    x.n = (x.n || 0) + 1; x.last = now; x.list = [now].concat(x.list || []).slice(0, 20);
+    d[e] = x;
+    return d;
+  }).catch(err => console.error('Blocked try: ' + err.message));
+}
 
 /** People given Admin can't turn off or delete the SEKNA admin's own devices. */
 async function guardOwner(me, id) {
