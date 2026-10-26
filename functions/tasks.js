@@ -7,8 +7,8 @@ const { assertAccess, accessRows, isAdminEmail, permsFor, can, forgetPerms } = r
 
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzjgZ1nXxLTcFdeFCIEznOj2H0XCo9YGUeu1YF2pJdsQiOo_aM-Mn6HxKKNk8peEuM1Ig/exec';
 const TASKS_SHEET = { ID: '1PWV9exRy9dwW3H66bt7W4E1SQb63EJbgVz96yS6fQkI', NAME: 'SEKNA Tasks' };
-const MANAGER_ROLES = ['Team Leader', 'Media Manager', 'Head of Media'];
-const ROLES = ['Media Buyer', 'Senior Media Buyer', 'Team Leader', 'Media Manager', 'Head of Media'];
+const MANAGER_ROLES = ['Team Leader', 'Media Manager', 'CEO'];
+const ROLES = ['Media Buyer', 'Senior Media Buyer', 'Team Leader', 'Media Manager', 'CEO'];
 const LEAVE_TYPES = ['Weekly', 'Sick', 'Other', 'Vacation'];
 const WEB_PAGE_URL = 'https://sekna-app.web.app';
 const DOC = {
@@ -78,7 +78,7 @@ async function teamPeople(mem, me) {
     if (!email || seen[email]) return;
     seen[email] = 1;
     const m = mem[email] || {};
-    out.push({ email, name: name || m.name || email.split('@')[0], role: m.role || '', avatar: m.avatar || 0 });
+    out.push({ email, name: name || m.name || email.split('@')[0], role: m.role === 'Head of Media' ? 'CEO' : (m.role || ''), avatar: m.avatar || 0 });
   };
   const rows = await accessRows();
   rows.forEach(r => { if (r.status === 'Approved') add(r.email, r.name); });

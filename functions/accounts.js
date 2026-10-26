@@ -251,7 +251,7 @@ const A = {
     const rank = { Approved: 0, Pending: 1, Invited: 2 };
     rows.filter(r => r.status in rank).sort((a, b) => rank[a.status] - rank[b.status]).forEach(r => {
       const e = norm(r.email); if (seen[e]) return; seen[e] = 1;
-      const role = (mem[e] || {}).role || '';
+      const role = ((mem[e] || {}).role === 'Head of Media' ? 'CEO' : (mem[e] || {}).role) || '';
       people.push({ email: e, name: r.name || '', role, status: r.status, owner: isAdminEmail(e), defaults: permDefaults(role), set: (over || {})[e] || {} });
     });
     for (const p of people) { p.perms = await permsFor(p.email); if (tries && tries[p.email]) p.tries = tries[p.email]; }

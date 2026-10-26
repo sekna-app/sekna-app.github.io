@@ -100,12 +100,17 @@ function isAdminEmail(email) { return ACCESS.ADMIN_EMAILS.indexOf(String(email |
 const PERM_KEYS = ['lab', 'build', 'quick', 'leave', 'admin'];
 const VIEW_KEYS = ['overview', 'days', 'channel', 'plans', 'ranks', 'camp', 'months', 'seasons', 'ask', 'team', 'mine', 'leaveview', 'notifs', 'updates', 'about', 'share'];
 const ALL_KEYS = PERM_KEYS.concat(VIEW_KEYS);
-const LEADER_ROLES = ['Team Leader', 'Media Manager', 'Head of Media'];
+const LEADER_ROLES = ['Team Leader', 'Media Manager', 'CEO'];
 const PERM_DOC = 'team/perms';
 let permCache = null;
 async function permTable() {
   if (permCache && Date.now() - permCache.at < 15000) return permCache;
   const [mem, over] = await Promise.all([fsGet('team/members'), fsGet(PERM_DOC)]);
+  // "Head of Media" is now "CEO": old saved roles are changed once, here.
+  if (mem && Object.values(mem).some(m => m && m.role === 'Head of Media')) {
+    Object.values(mem).forEach(m => { if (m && m.role === 'Head of Media') m.role = 'CEO'; });
+    fsUpdate('team/members', d => { d = d || {}; Object.values(d).forEach(m => { if (m && m.role === 'Head of Media') m.role = 'CEO'; }); return d; }).catch(e => console.error('Role rename: ' + e.message));
+  }
   permCache = { at: Date.now(), mem: mem || {}, over: over || {} };
   return permCache;
 }
