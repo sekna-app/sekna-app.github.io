@@ -90,7 +90,8 @@ window.addEventListener('load',function(){
    // a/t: where the account and the token are in the arguments, data: counts as the data server
    // (its failures move this device to the backup and are logged).
    var FB_FNS={
-    getDashboardData:{w:20000,a:0,t:2,data:1},
+    // Refresh reads the sheet itself (outside the reading window it can take a while).
+    getDashboardData:{w:50000,a:0,t:2,data:1},
     getMonthCompareData:{w:45000,a:0,t:1,data:1},
     adminArchiveStatus:{w:60000,a:1,t:0},
     getForecast:{w:45000,a:0,t:2},forecastSet:{w:45000,a:0,t:2},getAssumptions:{w:45000,a:0,t:2},assumeSet:{w:45000,a:0,t:2},
@@ -6219,7 +6220,10 @@ function loadData(options){
      if(slowTimer)clearTimeout(slowTimer);
      if(handleAccessError(err))return;
      if(navigator.onLine===false){document.getElementById('app').classList.remove('loading');offlineShow();return}
-     if(accountAtRequest===CURRENT_ACCOUNT&&!silent)showError(err);
+     if(accountAtRequest!==CURRENT_ACCOUNT||silent)return;
+     
+     if(DASH_DATA&&DASH_DATA.account&&DASH_DATA.account.key===accountAtRequest){document.getElementById('app').classList.remove('loading');showSettingsToast('Could not refresh right now. You are seeing the last data · try again in a minute.');return}
+     showError(err);
    })
    .getDashboardData(accountAtRequest,force,getAccessToken());
  }else setTimeout(()=>{
@@ -7148,9 +7152,12 @@ function fcSave(btn){
   .catch(err=>{c.saving=false;c.msg='⚠️ '+esc(errorText(err));fcDraw()});
 }
 
-function fcMonth(v){
+async function fcMonth(v){
  const k=CURRENT_ACCOUNT,c=FC[k];if(!c||!c.data||c.moving)return;
  const pick=(c.data.months||[]).find(m=>String(m.v)===v);if(!pick)return;
+ 
+ if(!await askSekna({title:`Plan ${pick.t}?`,text:`The sheet's month (B2) changes to ${pick.t}. The whole sheet follows it, so the dashboard shows ${pick.t}'s plan for everyone until you set it back.`,ok:`Change to ${pick.t}`,tone:'info',icon:'calendar'}))return;
+ if(c.moving)return;
  c.moving=pick.t;c.msg='';c.edit={};fcDraw();
  serverCall('forecastSet',k,{month:pick.v},getAccessToken()).then(r=>{c.moving='';c.data=r;if(AS[k]){AS[k].data=null;AS[k].edit={};AS[k].hj=0}fcDraw()})
   .catch(err=>{c.moving='';c.msg='⚠️ '+esc(errorText(err));fcDraw()});

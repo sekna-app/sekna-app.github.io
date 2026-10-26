@@ -27,7 +27,8 @@ head = '''<meta name="theme-color" content="#203C8E">
    // a/t: where the account and the token are in the arguments, data: counts as the data server
    // (its failures move this device to the backup and are logged).
    var FB_FNS={
-    getDashboardData:{w:20000,a:0,t:2,data:1},
+    // Refresh reads the sheet itself (outside the reading window it can take a while).
+    getDashboardData:{w:50000,a:0,t:2,data:1},
     getMonthCompareData:{w:45000,a:0,t:1,data:1},
     adminArchiveStatus:{w:60000,a:1,t:0},
     getForecast:{w:45000,a:0,t:2},forecastSet:{w:45000,a:0,t:2},getAssumptions:{w:45000,a:0,t:2},assumeSet:{w:45000,a:0,t:2},
