@@ -11407,7 +11407,7 @@ function readWinHtml(){
    <div class="rw-l">OPTIONS</div><div class="rw-opts"><div class="rw-o"><div><b>Stop when the data is in</b><small>No more reads after the new day arrives</small></div>${sw('stopOnData',c.stopOnData!==false)}</div>
      <div class="rw-o"><div><b>Alert me if it doesn't come</b><small>A notification at ${esc(rw12(c.to))} if there's no new day</small></div>${sw('alert',c.alert!==false)}</div></div>`:''}
    <div class="rw-l">THIS MONTH</div><div class="rw-use"><span class="rw-g" style="--p:${Math.max(used,1.5).toFixed(1)}"><i>${used<1&&used>0?'<1':Math.round(used)}%</i></span><div><b>${fmt(d.reads||0,0)} sheet reads</b><small>All day would be about ${fmt(d.allDay||0,0)} · we saved ${saved>=99.95?'100':fmt(saved,1)}%</small><span class="rw-tag ${level[1]}">${level[0]}</span></div></div>
-   ${(d.days||[]).length?`<div class="rw-l">LAST DAYS</div><div class="rw-log">${d.days.slice(0,5).map(day).join('')}</div>`:''}
+   ${(d.days||[]).length?`<div class="rw-l">LAST 3 DAYS</div><div class="rw-log">${d.days.slice(0,3).map(day).join('')}</div>`:''}
    ${RW.msg?`<div class="mrp-msg">${RW.msg}</div>`:''}
    <button type="button" class="pm-save" onclick="rwSave(this)" ${ch?'':'disabled'}>${ch?'Save':'No changes'}</button></div>`;
 }

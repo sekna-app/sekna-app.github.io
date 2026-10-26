@@ -133,7 +133,7 @@ const CALLS = {
     WARM_ACCOUNTS.forEach(k => { const h = cache['dash:' + k]; if (h && h.at) last[k] = h.at; });
     const log = (await fsGet(READ_LOG).catch(() => null)) || { days: {}, month: {} };
     const lp = localParts(w.tz, now), mk = lp.day.slice(0, 7);
-    const days = Object.keys(log.days || {}).sort().reverse().slice(0, 7).map(d => ({ day: d, usa: (log.days[d].usa || {}).at || 0, ar: (log.days[d].ar || {}).at || 0, alerted: log.days[d].alerted || 0 }));
+    const days = Object.keys(log.days || {}).sort().reverse().slice(0, 3).map(d => ({ day: d, usa: (log.days[d].usa || {}).at || 0, ar: (log.days[d].ar || {}).at || 0, alerted: log.days[d].alerted || 0 }));
     // If it read all day: every 2 minutes, both accounts, for the days of this month so far.
     const allDay = 720 * WARM_ACCOUNTS.length * +lp.day.slice(8, 10);
     return { window: w, open: inReadWindow(w, now), last, today: lp.day, days, reads: (log.month || {})[mk] || 0, allDay };
@@ -336,7 +336,7 @@ exports.api = onRequest({
       } catch (e) { console.error('Read alert: ' + errorText(e)); }
     }
     if (logChanged) {
-      Object.keys(log.days).sort().slice(0, -14).forEach(k => { delete log.days[k]; });
+      Object.keys(log.days).sort().slice(0, -3).forEach(k => { delete log.days[k]; }); // only the last 3 days are kept
       Object.keys(log.month).sort().slice(0, -6).forEach(k => { delete log.month[k]; });
       await fsSet(READ_LOG, log).catch(e => console.error('Read log: ' + errorText(e)));
     }
