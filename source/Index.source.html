@@ -8170,9 +8170,15 @@ function curDraw(){
  const c=curOn(),at=c!=='GBP'&&FX.at?new Date(FX.at):null;n.hidden=!at;
  if(at)n.textContent='rate from '+at.toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
 }
-// Rates: the server gets the day's rate at 12:00 PM Muscat time; this device asks once an hour,
-// or straight away once a newer 12:00 PM has passed.
-function fxNoon(){const n=Date.now(),t=new Date(n+4*36e5),noon=Date.UTC(t.getUTCFullYear(),t.getUTCMonth(),t.getUTCDate(),8);return n>=noon?noon:noon-864e5}
+// Rates: the server gets the day's rate at the time the admin picked (12:00 PM Muscat by default);
+// this device asks once an hour, or straight away once a newer refresh time has passed.
+function fxDue(now,ft){
+ ft=ft||{time:'12:00',tz:'Asia/Muscat'};const p={};
+ try{new Intl.DateTimeFormat('en-GB',{timeZone:ft.tz,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(new Date(now)).forEach(x=>{p[x.type]=x.value})}catch(e){return 0}
+ const off=Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute,+p.second)-Math.floor(now/1000)*1000,[h,m]=String(ft.time).split(':').map(Number);
+ const at=Date.UTC(+p.year,+p.month-1,+p.day,h,m,0)-off;return now>=at?at:at-864e5;
+}
+function fxNoon(){return fxDue(Date.now(),FX&&FX.refresh)}
 function fxLoad(force){
  if(!force&&FX&&FX.got&&Date.now()-FX.got<3600e3&&!(fxNoon()>FX.at&&fxNoon()>FX.got))return Promise.resolve(FX);
  return serverCall('fxRates',getAccessToken()).then(r=>{if(r&&r.rates){FX=Object.assign({},r,{got:Date.now()});storeSet('sekna_fx',JSON.stringify(FX));curDraw()}return FX});
@@ -8957,7 +8963,7 @@ function renderAdmin(d){
  const annState=ann?(ann.showFrom&&ann.showFrom>isoDay(0)?'Scheduled':'Showing now'):'None yet';
  const act=(k,ic,bg,t,sub)=>`<button type="button" class="a2-act${ADMIN_TAB===k?' on':''}" onclick="adminTab('${k}')"><span style="background:${bg}">${ic}</span><b>${t}</b><small>${sub}</small></button>`;
  const inviteView=`<div class="a2-sheet"><b class="ad-h">➕ Invite someone</b><small class="ad-sub">They get an email with a link to sign in to SEKNA.</small><form class="ad-invite" style="margin-top:12px" onsubmit="adminInviteSubmit(event)"><input id="adminInviteEmail" type="email" inputmode="email" autocapitalize="off" placeholder="name@company.com" onfocus="setTimeout(()=>this.scrollIntoView({block:'center'}),300)"><button id="adminInviteBtn" type="submit">Send invite</button></form></div>`;
- const sheet=ADMIN_TAB==='invite'?inviteView:ADMIN_TAB==='message'?`<div class="a2-sheet">${adminMessageHtml()}</div>`:ADMIN_TAB==='app'?`<div class="a2-sheet">${adminMaintHtml()}</div>`:ADMIN_TAB==='activity'?`<div class="a2-sheet">${adminActivityHtml()}</div>`:ADMIN_TAB==='ideas'?`<div class="a2-sheet">${adminIdeasHtml()}</div>`:ADMIN_TAB==='server'?`<div class="a2-sheet">${adminServerHtml()}</div>`:ADMIN_TAB==='perms'?`<div class="a2-sheet">${adminPermsHtml()}</div>`:'';
+ const sheet=ADMIN_TAB==='invite'?inviteView:ADMIN_TAB==='message'?`<div class="a2-sheet">${adminMessageHtml()}</div>`:ADMIN_TAB==='app'?`<div class="a2-sheet">${adminMaintHtml()}</div>`:ADMIN_TAB==='activity'?`<div class="a2-sheet">${adminActivityHtml()}</div>`:ADMIN_TAB==='ideas'?`<div class="a2-sheet">${adminIdeasHtml()}</div>`:ADMIN_TAB==='server'?`<div class="a2-sheet">${adminServerHtml()}</div>`:ADMIN_TAB==='perms'?`<div class="a2-sheet">${adminPermsHtml()}</div>`:ADMIN_TAB==='reading'?`<div class="a2-sheet">${readWinHtml()}</div>`:ADMIN_TAB==='fx'?`<div class="a2-sheet">${fxTimeHtml()}</div>`:'';
  const tabs=`<div class="a3-tabs">${[['overview','Overview'],['people','People'+(waiting.length?` · ${waiting.length}`:'')],['tools','Tools'],['server','Server']].map(([k,l])=>`<button type="button" class="${ADMIN_VIEW===k?'on':''}" onclick="adminView('${k}')">${l}</button>`).join('')}</div>`;
  const peopleView=`${waiting.length?`<div class="ad-lbl">Waiting for approval</div><div class="ad-card ad-pend">${waiting.map(person).join('')}</div>`:''}
    <div class="ad-lbl">People · ${team.length}</div><div class="ad-card">${team.map(person).join('')||'<div class="sk-admin-empty">No one has requested access yet.</div>'}</div>`;
@@ -8981,7 +8987,7 @@ function renderAdmin(d){
  }
  else if(ADMIN_VIEW==='people')body=peopleView;
  else if(ADMIN_VIEW==='server')body=`<div class="a2-sheet">${adminServerHtml()}</div>`;
- else body=`<div class="a2-acts">${act('app',m.on?'🔴':'🟢',m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message','📣','#e9eefc','Team message',annState)}${act('invite','➕','#fff3dc','Invite','Add someone')}${act('activity','📊','#e3f6ec','Activity','This month')}${act('ideas','💡','#fff3dc','Ideas',Array.isArray(ADMIN_IDEAS)?(ADMIN_IDEAS.filter(i=>i.status==='New').length+' new'):'From the team')}${ACCESS_PROFILE&&ACCESS_PROFILE.owner?act('perms','🔐','#e9eefc','Permissions','Who can use what'):''}</div>${ADMIN_TAB==='server'?'':sheet}`;
+ else body=`<div class="a2-acts">${act('app',m.on?'🔴':'🟢',m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message','📣','#e9eefc','Team message',annState)}${act('invite','➕','#fff3dc','Invite','Add someone')}${act('activity','📊','#e3f6ec','Activity','This month')}${act('ideas','💡','#fff3dc','Ideas',Array.isArray(ADMIN_IDEAS)?(ADMIN_IDEAS.filter(i=>i.status==='New').length+' new'):'From the team')}${act('reading','📄','#e3f6ec','Reading the sheets',RW.data&&RW.data.window?(RW.data.window.on?rw12(RW.data.window.from)+' – '+rw12(RW.data.window.to):'All day'):'When to read')}${act('fx','💱','#e9eefc','Exchange rate',FXT.data&&FXT.data.refresh?'Daily '+rw12(FXT.data.refresh.time):'Refresh time')}${ACCESS_PROFILE&&ACCESS_PROFILE.owner?act('perms','🔐','#e9eefc','Permissions','Who can use what'):''}</div>${ADMIN_TAB==='server'?'':sheet}`;
  adminBody(tabs+`<div class="a3-body">${body}</div>`);
  const hd=document.querySelector('#adminOverlay .sk-modal-head'),tb=document.querySelector('.a3-tabs');if(hd&&tb)tb.style.top=hd.offsetHeight+'px';
 }
@@ -11255,6 +11261,8 @@ let ADMIN_ACTIVITY=null, ADMIN_IDEAS=null, ADMIN_ACT_VIEW='shares';
 const SHARE_NAMES={daily:'Daily Performance',channel:'Channel Delivery',plan:'Media Plan',results:'Results',report:'Report',compare:'Month vs Month'};
 function adminLoadExtra(k){
  if(k==='server')srvLoad();
+ if(k==='reading')rwLoad();
+ if(k==='fx')fxtLoad();
  if(k==='perms'&&!PERM.data&&!PERM.busy){PERM.busy=true;serverCall('adminPerms',getAccessToken()).then(r=>{PERM.busy=false;PERM.data=r;PERM.edit={};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{PERM.busy=false;PERM.data={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
  if(k==='activity'&&!ADMIN_ACTIVITY)serverCall('adminActivity',getAccessToken()).then(r=>{ADMIN_ACTIVITY=r;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{ADMIN_ACTIVITY={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)});
  if(k==='ideas'&&!ADMIN_IDEAS)serverCall('adminIdeas',getAccessToken()).then(r=>{ADMIN_IDEAS=r||[];if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{ADMIN_IDEAS={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)});
@@ -11361,7 +11369,7 @@ function serverNow(){
  return fb.wanted()?{icon:'🟢',bg:'#e3f6ec',short:'Firebase',cls:'',title:'Firebase',text:'Firebase answers the next data refresh.'}
    :{icon:'⚪',bg:'#f2f4f9',short:'Apps Script',cls:'idle',title:'Apps Script',text:'Firebase is not switched on for everyone yet. You can try it on this device below.'};
 }
-/* ---------- v170: Admin → Server → Reading the sheets ----------
+/* ---------- v170: Admin → Tools → Reading the sheets ----------
  * The server reads the USA and AR sheets only in this window each day (fewer reads);
  * the rest of the day everyone sees the last read. Refresh in the app always reads now.
  */
@@ -11410,6 +11418,31 @@ function readWinHtml(){
    ${(d.days||[]).length?`<div class="rw-l">LAST 3 DAYS</div><div class="rw-log">${d.days.slice(0,3).map(day).join('')}</div>`:''}
    ${RW.msg?`<div class="mrp-msg">${RW.msg}</div>`:''}
    <button type="button" class="pm-save" onclick="rwSave(this)" ${ch?'':'disabled'}>${ch?'Save':'No changes'}</button></div>`;
+}
+/* ---------- v170: Admin → Tools → Exchange rate: the time the day's rate is fetched ---------- */
+let FXT={data:null,busy:false,edit:null,msg:''};
+function fxtLoad(){if(FXT.busy)return;FXT.busy=true;serverCall('adminFxTime',getAccessToken()).then(r=>{FXT.busy=false;FXT.data=r;FXT.edit=null;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{FXT.busy=false;FXT.data={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
+function fxtCur(){return FXT.edit||((FXT.data&&FXT.data.refresh)||{time:'12:00',tz:'Asia/Muscat'})}
+function fxtSet(k,v){FXT.edit=Object.assign({},fxtCur(),{[k]:v});FXT.msg='';if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+async function fxtSave(btn){
+ const c=fxtCur();btn.disabled=true;btn.textContent='Saving…';
+ try{FXT.data=await serverCall('adminFxTimeSet',getAccessToken(),c);FXT.edit=null;FXT.msg='✅ Saved';if(FX)FX.refresh=FXT.data.refresh;fxLoad(true).catch(()=>{})}
+ catch(err){FXT.msg='⚠️ '+esc(errorText(err))}
+ if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
+}
+function fxTimeHtml(){
+ if(!FXT.data&&!FXT.busy)fxtLoad();
+ const d=FXT.data||{}, c=fxtCur(), ch=!!FXT.edit;
+ if(d.error)return `<div class="rw"><b class="ad-h">💱 Exchange rate</b><div class="mrp-msg">⚠️ ${esc(d.error)}</div></div>`;
+ const zone=(RW_TZ.find(x=>x[0]===c.tz)||RW_TZ[0])[1], usd=d.rates&&d.rates.USD;
+ const when=ms=>ms?new Date(ms).toLocaleString('en-US',{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'—';
+ return `<div class="rw"><b class="ad-h">💱 Exchange rate</b>
+   <div class="rw-st ok"><span>💷</span><div><b>${usd?`£1 = $${fmt(usd,4)}`:'No rate yet'}</b><small>${d.at?'Updated '+esc(when(d.at)):'Loading…'}${d.next&&!ch?' · next '+esc(when(d.next)):''}</small></div></div>
+   <div class="rw-l">UPDATE EVERY DAY AT</div><div class="rw-tm" style="grid-template-columns:1fr"><label><small>TIME</small><input type="time" value="${esc(c.time)}" onchange="fxtSet('time',this.value)"></label></div>
+   <div class="rw-l">WHOSE TIME</div><div class="rw-tzs">${RW_TZ.map(([k,l])=>`<button type="button" class="${k===c.tz?'on':''}" onclick="fxtSet('tz','${k}')"><i>${RW_FLAG[k]||'🌍'}</i><b>${l}</b><small>${esc(rwNow(k))}</small></button>`).join('')}</div>
+   <small class="ad-sub" style="display:block;margin:10px 0 4px">The server fetches the new rate once a day at ${esc(rw12(c.time))} ${esc(zone)} time. Everyone sees the same rate.</small>
+   ${FXT.msg?`<div class="mrp-msg">${FXT.msg}</div>`:''}
+   <button type="button" class="pm-save" onclick="fxtSave(this)" ${ch?'':'disabled'}>${ch?'Save':'No changes'}</button></div>`;
 }
 function srvLoad(){
  RW.data=null;
@@ -11536,7 +11569,7 @@ function adminServerHtml(){
  if(ev&&ev.error)log=`<small>${esc(ev.error)}</small>`;
  else if(ev)log=ev.length?`<div class="srv-log">${ev.slice(0,12).map(e=>`<div><span>${/Backup/.test(e.server)?'🟠':'🟢'}</span><span>${esc(/Backup/.test(e.server)?'Moved to the backup':'Back on Firebase')}${e.reason?` — ${esc(e.reason)}`:''}<small>${esc(srvAgo(e.at))} · ${esc(e.name||e.email)}</small></span></div>`).join('')}</div>`
    :'<small>No switches yet. Each time a device moves to the backup or back, it shows here, and you get an email.</small>';
- return `${readWinHtml()}<b class="ad-h">🖥️ Server</b><small class="ad-sub">The data comes from Firebase. If Firebase stops, SEKNA moves to Apps Script by itself.</small>
+ return `<b class="ad-h">🖥️ Server</b><small class="ad-sub">The data comes from Firebase. If Firebase stops, SEKNA moves to Apps Script by itself.</small>
   <div class="srv-now ${n.cls}"><i>${n.icon}</i><span><b>${esc(n.title)}</b><small>${esc(n.text)}</small></span></div>
   ${n.cls==='backup'?'<button type="button" class="srv-btn" onclick="srvRetry()">Try Firebase again</button>':''}
   <div class="srv-box"><b>This month's cost</b><small>Limit $3 · at the limit Firebase stops and SEKNA keeps working on Apps Script.</small>${cost}</div>

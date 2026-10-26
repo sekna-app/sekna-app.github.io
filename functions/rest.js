@@ -13,7 +13,7 @@ const REPORT_MAX_BYTES = 15 * 1024 * 1024;
 const DOC = {
   mode: 'rest/mode', shareMonths: 'rest/share-months', usageDays: 'rest/usage-days', ideas: 'rest/ideas',
   shares: m => 'rest/shares-' + m, usage: d => 'rest/usage-' + d, plans: k => 'rest/plan-' + k,
-  push: 'rest/push', serverMail: 'rest/server-mail', fx: 'rest/fx', celebrate: 'rest/celebrations'
+  push: 'rest/push', serverMail: 'rest/server-mail', fx: 'rest/fx', fxTime: 'rest/fx-time', celebrate: 'rest/celebrations'
 };
 
 const norm = e => String(e || '').trim().toLowerCase();
@@ -100,15 +100,31 @@ async function celebrationEdit(id, change) {
 }
 
 /* ---------- exchange rates (currency switch) ---------- */
-// Free, no key. One fetch a day, after 12:00 PM Muscat time, kept in Firestore for the whole team.
-let fxMemo = 0, fxTry = 0;
-function fxLastNoon(now) {
-  const p = parts(now), noon = Date.UTC(+p.year, +p.month - 1, +p.day, 8, 0, 0); // 12:00 in Muscat = 08:00 UTC
-  return now >= noon ? noon : noon - 864e5;
+// Free, no key. One fetch a day, after the time the admin picked (12:00 PM Muscat by default), kept in Firestore for the whole team.
+let fxMemo = 0, fxTry = 0, fxTimeMemo = null, fxTimeAt = 0;
+const FX_TIME_DEFAULT = { time: '12:00', tz: 'Asia/Muscat' };
+const FX_ZONES = ['Asia/Muscat', 'Africa/Cairo', 'Europe/London', 'Asia/Dubai', 'Asia/Riyadh'];
+async function fxTime() {
+  if (fxTimeMemo && Date.now() - fxTimeAt < 6e4) return fxTimeMemo;
+  const d = (await fsGet(DOC.fxTime).catch(() => null)) || {};
+  fxTimeMemo = { time: /^\d{2}:\d{2}$/.test(d.time) ? d.time : FX_TIME_DEFAULT.time, tz: FX_ZONES.includes(d.tz) ? d.tz : FX_TIME_DEFAULT.tz };
+  fxTimeAt = Date.now();
+  return fxTimeMemo;
+}
+/** The last moment the day's refresh time passed, in the chosen time zone. */
+function fxLastNoon(now, ft) {
+  ft = ft || FX_TIME_DEFAULT;
+  const p = {};
+  new Intl.DateTimeFormat('en-GB', { timeZone: ft.tz, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' })
+    .formatToParts(new Date(now)).forEach(x => { p[x.type] = x.value; });
+  const off = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second) - Math.floor(now / 1000) * 1000;
+  const [h, m] = ft.time.split(':').map(Number);
+  const at = Date.UTC(+p.year, +p.month - 1, +p.day, h, m, 0) - off;
+  return now >= at ? at : at - 864e5;
 }
 async function fxFresh() {
   const have = await fsGet(DOC.fx);
-  if (have && have.rates && have.at >= fxLastNoon(Date.now())) return have;
+  if (have && have.rates && have.at >= fxLastNoon(Date.now(), await fxTime())) return have;
   try {
     const r = await fetch('https://open.er-api.com/v6/latest/GBP', { signal: AbortSignal.timeout(8000) });
     const j = await r.json(), pick = {};
@@ -125,7 +141,7 @@ async function fxFresh() {
 }
 /** From the 2-minute warm-up: the day's rates right after 12:00 PM, so nobody waits for them. */
 async function fxRefreshIfDue() {
-  const noon = fxLastNoon(Date.now());
+  const noon = fxLastNoon(Date.now(), await fxTime());
   if (fxMemo === noon || Date.now() - fxTry < 30 * 6e4) return null; // a failed try waits 30 minutes
   fxTry = Date.now();
   const r = await fxFresh();
@@ -195,10 +211,25 @@ const R = {
       button: { url: WEB_PAGE_URL, label: 'Open SEKNA' } }] }).catch(e => console.error('Idea email: ' + e.message));
     return { ok: true, id };
   },
-  /** Exchange rates for the currency switch, from 1 pound (refreshed every day at 12:00 PM Muscat time). */
+  /** Exchange rates for the currency switch, from 1 pound (refreshed once a day at the time the admin picked). */
   async fxRates([token]) {
     await assertAccess(token);
-    return fxFresh();
+    return Object.assign({}, await fxFresh(), { refresh: await fxTime() });
+  },
+  async adminFxTime([token]) {
+    await assertAdmin(token);
+    const ft = await fxTime(), have = (await fsGet(DOC.fx)) || {};
+    return { refresh: ft, at: have.at || 0, rates: have.rates || null, next: fxLastNoon(Date.now(), ft) + 864e5 };
+  },
+  async adminFxTimeSet([token, c]) {
+    await assertAdmin(token);
+    c = c || {};
+    const time = String(c.time || ''), tz = String(c.tz || '');
+    if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(time)) throw new Error('Pick a time.');
+    if (!FX_ZONES.includes(tz)) throw new Error('Pick a time zone.');
+    await fsSet(DOC.fxTime, { time, tz, at: Date.now() });
+    fxTimeMemo = { time, tz }; fxTimeAt = Date.now(); fxMemo = 0; fxTry = 0;
+    return R.adminFxTime([token]);
   },
   async adminCelebrate([token, c]) {
     const me = await assertPerm(token, 'lab');
