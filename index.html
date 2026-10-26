@@ -3462,14 +3462,27 @@ window.addEventListener('load',function(){
     .fc-set label{display:block;background:#f6f8fc;border-radius:12px;padding:8px 10px;border:1.5px solid transparent}.fc-set label.full{grid-column:1/-1}.fc-set label.ed{background:#fff6e6;border-color:#f2d39b}.fc-set label.ch{border-color:#203c8e;background:#eef3ff}
     .fc-set input{display:block;width:100%;border:0;background:transparent;font:inherit;font-size:15px;font-weight:800;color:#1d2433;padding:2px 0;outline:none}.fc-set em{display:block;font-style:normal;font-size:9.5px;font-weight:700;color:#8a92a6}
     .fc-act{display:flex;gap:8px;margin-top:10px}.fc-act .lab-go{flex:1}
+    .fc-hd small{display:block;font-size:10px;font-weight:900;letter-spacing:.14em;color:#203c8e}.fc-hd b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:23px}
+    .fc-dd{position:relative;display:flex;align-items:center;gap:6px;font-size:12px;font-weight:800;background:#eef3ff;color:#203c8e;border-radius:12px;padding:8px 11px;border:1.5px solid #cdd8f5;flex:none}.fc-dd select{appearance:none;-webkit-appearance:none;border:0;background:transparent;font:inherit;color:inherit;padding-right:2px;outline:none;cursor:pointer}.fc-dd em{font-style:normal;pointer-events:none}.fc-dd.busy{opacity:.6}
+    .fc-top{display:flex;gap:8px;margin-bottom:10px}.fc-top button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#fff;border:1.5px solid #e6e9f1;border-radius:14px;padding:10px 8px;font:inherit;font-size:12.5px;font-weight:800;color:#1d2433;cursor:pointer}.fc-top button.on{background:#203c8e;border-color:#203c8e;color:#fff}
+    .fc-note{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#4c5464;background:#f6f8fc;border-radius:12px;padding:10px 12px;margin-bottom:10px}
+    .fc-folds{margin-top:10px}.fc-acc{display:flex;align-items:center;gap:10px;width:100%;background:#fff;border:1px solid #edf0f6;border-radius:16px;padding:11px 12px;margin-bottom:7px;text-align:left;font:inherit;cursor:pointer}
+    .fc-acc i{font-style:normal;width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:#eef3ff;font-size:16px;flex:none}.fc-acc span{flex:1;min-width:0}.fc-acc b{display:block;font-size:13.5px;color:#1d2433}.fc-acc small{display:block;font-size:11px;font-weight:700;color:#8a92a6;line-height:1.35}.fc-acc em{font-style:normal;color:#203c8e;font-weight:900;font-size:16px}
+    .fc-acc.open{border-radius:16px 16px 0 0;margin-bottom:0;border-bottom-color:transparent}.fc-accb{background:#fff;border:1px solid #edf0f6;border-top:0;border-radius:0 0 16px 16px;padding:2px 12px 12px;margin-bottom:7px}
+    .fc-rd{width:100%;margin-top:6px}
+    .as-seg{display:flex;background:#f2f4f9;border-radius:13px;padding:4px;gap:3px;margin-bottom:4px}.as-seg button{flex:1;border:0;background:transparent;font:inherit;font-size:12px;font-weight:800;padding:8px 0;border-radius:10px;color:#8a92a6;cursor:pointer}.as-seg button.on{background:#203c8e;color:#fff}
+    .as-chip{display:flex;gap:6px;flex-wrap:wrap}.as-chip button{font:inherit;font-size:11.5px;font-weight:800;border-radius:99px;padding:7px 12px;background:#fff;border:1.5px solid #e6e9f1;color:#1d2433;cursor:pointer}.as-chip button.on{background:#203c8e;color:#fff;border-color:#203c8e}
+    .as-3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.as-3 label{background:#f6f8fc;border-radius:12px;padding:7px 9px}.as-3 small{display:block;font-size:9.5px;font-weight:800;color:#8a92a6}.as-3 .as-in{width:100%;text-align:left;font-size:15px;border:0;background:transparent;padding:2px 0}.as-3 .as-in.ch{color:#203c8e}
+    .as-kv{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:#8a92a6;padding:7px 0 0}.as-kv+.as-kv{border-top:1px solid #f1f3f8;margin-top:6px}.as-kv b{color:#1d2433}.as-kv b.up{color:#13894f}.as-kv b.dn{color:#c9861a}
+    .as-in{width:100%;min-width:0;border:1.5px solid #e6e9f1;border-radius:9px;background:#fff;font:inherit;font-size:12.5px;font-weight:800;text-align:center;padding:5px 2px;color:#1d2433;outline:none}.as-in.ch{border-color:#203c8e;background:#eef3ff;color:#203c8e}
+    .as-tr small{font-size:9.5px;color:#8a92a6;font-weight:700}.as-n{text-align:center}
     .as-wrap{margin-top:6px}.as-eco{padding:8px 0}.as-eco+.as-eco{border-top:1px solid #edf0f6}.as-eco>div:first-child{display:flex;align-items:center;font-size:12.5px}.as-eco>div:first-child em{margin-left:auto;font-style:normal;font-weight:900;color:#203c8e}
     .as-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}.as-chips span{font-size:10.5px;font-weight:700;color:#8a92a6;background:#f6f8fc;border-radius:8px;padding:3px 7px}.as-chips b{color:#1d2433}
     .as-bl{font-size:11px;font-weight:700;color:#8a92a6;border-top:1px solid #edf0f6;padding-top:8px;margin-top:2px}.as-bl b{color:#1d2433}
     .as-ix{display:flex;gap:10px;align-items:center;background:#eef3ff;border-radius:14px;padding:10px 12px;margin-bottom:8px}.as-ix span{font-size:20px}.as-ix b{display:block;font-size:13px;color:#203c8e}.as-ix small{font-size:10.5px;font-weight:600;color:#4c5464}.as-ix.new{background:#e7f6ee}.as-ix.new b{color:#13894f}
     .as-hj{background:#fff;border:1px solid #edf0f6;border-radius:16px;padding:11px 13px;margin-bottom:8px}.as-hj.ram{border-color:#9fd8bb;background:#f3fbf7}.as-hjh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}.as-hjh b{font-size:14px}.as-hjh span{font-size:10.5px;font-weight:700;color:#8a92a6}
     .as-g{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.as-g div{background:#f6f8fc;border-radius:10px;padding:6px;text-align:center}.as-g small{display:block;font-size:9px;font-weight:800;color:#8a92a6}.as-g b{font-size:13.5px}.as-g b.up{color:#13894f}.as-g b.dn{color:#c9861a}
-    .as-t{font-size:11.5px;font-weight:700}.as-tr{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:4px;padding:5px 0;align-items:center}.as-tr span:not(:first-child){text-align:right}.as-tr+.as-tr{border-top:1px solid #f1f3f8}.as-tr.hd{font-size:9.5px;font-weight:900;color:#8a92a6;letter-spacing:.04em}.as-tr.hi span{color:#13894f}
-    .as-t .as-tr:has(span:nth-child(5)){grid-template-columns:1.2fr 1fr 1fr 1fr 1fr}
+    .as-t{font-size:11.5px;font-weight:700}.as-tr{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:6px;padding:5px 0;align-items:center}.as-tr span:not(:first-child){text-align:right}.as-tr+.as-tr{border-top:1px solid #f1f3f8}.as-tr.hd{font-size:9.5px;font-weight:900;color:#8a92a6;letter-spacing:.04em}.as-tr.hi span{color:#13894f}
     .as-rd{width:100%;margin-top:6px}.as-wrap .fc-wk{grid-template-columns:92px 1fr 50px}
     .fc-foot{font-size:10.5px;color:#8a92a6;font-weight:600;margin-top:8px}
     .lab-box{border:1.5px solid #e6e9f1;border-radius:18px;padding:14px}
@@ -7073,7 +7086,7 @@ function renderLab(){
  drawLab();
 }
  
-let FC={};
+let FC={}, FC_VIEW='forecast', FC_OPEN='';
 function fcLoad(force){
  const k=CURRENT_ACCOUNT,c=FC[k]=FC[k]||{};if(c.busy)return;c.busy=true;c.err='';fcDraw();
  serverCall('getForecast',k,!!force,getAccessToken()).then(r=>{c.busy=false;c.data=r;c.got=Date.now();fcDraw()})
@@ -7086,9 +7099,19 @@ function fcSave(btn){
  const k=CURRENT_ACCOUNT,c=FC[k];if(!c||c.saving)return;
  const out=Object.assign({},c.edit);if(out.lyWeight!==undefined&&out.lyWeight!=='')out.lyWeight=out.lyWeight/100;
  c.saving=true;c.msg='';fcDraw();
- serverCall('forecastSet',k,out,getAccessToken()).then(r=>{c.saving=false;c.data=r;c.edit={};c.msg='✅ Saved to the sheet. The plan above is updated.';fcDraw()})
+ serverCall('forecastSet',k,out,getAccessToken()).then(r=>{c.saving=false;c.data=r;c.edit={};c.msg='✅ Saved to the sheet. The plan above is updated.';if(AS[k])AS[k].data=null;fcDraw()})
   .catch(err=>{c.saving=false;c.msg='⚠️ '+esc(errorText(err));fcDraw()});
 }
+
+function fcMonth(v){
+ const k=CURRENT_ACCOUNT,c=FC[k];if(!c||!c.data||c.moving)return;
+ const pick=(c.data.months||[]).find(m=>String(m.v)===v);if(!pick)return;
+ c.moving=pick.t;c.msg='';c.edit={};fcDraw();
+ serverCall('forecastSet',k,{month:pick.v},getAccessToken()).then(r=>{c.moving='';c.data=r;if(AS[k]){AS[k].data=null;AS[k].edit={};AS[k].hj=0}fcDraw()})
+  .catch(err=>{c.moving='';c.msg='⚠️ '+esc(errorText(err));fcDraw()});
+}
+function fcView(v){FC_VIEW=v;fcDraw()}
+function fcFold(k){FC_OPEN=FC_OPEN===k?'':k;fcDraw()}
 const fcPct=v=>v==null?'—':Math.round(v*100)+'%';
 const fcK=v=>v==null?'—':cs()+fmt(cx(v)/1000,0)+'k';
 function fcDraw(){
@@ -7096,85 +7119,121 @@ function fcDraw(){
  if(!canDo('lab')){box.innerHTML='';return}
  const c=FC[CURRENT_ACCOUNT]||{};
  if(!c.data&&!c.busy&&!c.err){fcLoad(false);return}
- const d=c.data;
- const head=(sub)=>`<div class="fc-hd"><div><b>Forecast</b><small>${sub}</small></div><button type="button" class="pk-ghost" onclick="fcLoad(true)" ${c.busy?'disabled':''}>${c.busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read now'}</button></div>`;
- if(!d){box.innerHTML=`<div class="lab-box fc">${head(c.err?'⚠️ '+esc(c.err):'Reading the month tab…')}</div>`;return}
- if(d.missing){box.innerHTML=`<div class="lab-box fc">${head('No forecast tab is linked for '+esc(CURRENT_ACCOUNT.toUpperCase())+' yet.')}</div>`;return}
- const p=d.plan||{},wt=d.weekTotal||{},at=d.achTotal||{},e=d.engine||{},st=d.settings||{},l6=(d.ref||{}).last60||{},ly=(d.ref||{}).ly||{};
+ const d=c.data, isAs=FC_VIEW==='assume', a=AS[CURRENT_ACCOUNT]||{};
+ const busy=isAs?a.busy:c.busy;
+ const months=(d&&d.months)||[];
+ const dd=months.length?`<label class="fc-dd${c.moving?' busy':''}"><span>📅</span><select onchange="fcMonth(this.value)" ${c.moving?'disabled':''}>${months.map(m=>`<option value="${esc(String(m.v))}" ${String(m.v)===String(d.monthRaw)?'selected':''}>${esc(m.t)}</option>`).join('')}</select><em>▾</em></label>`:(d&&d.month?`<span class="fc-dd"><span>📅</span>${esc(d.month)}</span>`:'');
+ const head=`<div class="fc-hd"><div><small>MEDIA PLAN LAB</small><b>${isAs?'Assumptions':'Forecast'}</b></div>${dd}</div>
+  <div class="fc-top"><button type="button" class="${isAs?'':'on'}" onclick="fcView('forecast')">📊 Forecast</button><button type="button" class="${isAs?'on':''}" onclick="fcView('assume')">📋 Assumptions</button></div>
+  ${c.moving?`<div class="fc-note"><span class="lab-spin dark"></span>Changing the month to ${esc(c.moving)} in the sheet…</div>`:''}`;
+ const foot=`<button type="button" class="pk-ghost fc-rd" onclick="${isAs?'asLoad(true)':'fcLoad(true)'}" ${busy?'disabled':''}>${busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read '+(isAs?'Assumptions':'the month tab')+' now'}</button>${d&&d.at&&!isAs?`<div class="fc-foot" style="text-align:center">Read ${esc(new Date(d.at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}))} · ${esc(d.tab||'')}</div>`:''}`;
+ if(!d){box.innerHTML=`<div class="lab-box fc">${head}<div class="fc-note">${c.err?'⚠️ '+esc(c.err):'<span class="lab-spin dark"></span>Reading the month tab…'}</div>${foot}</div>`;return}
+ if(d.missing){box.innerHTML=`<div class="lab-box fc">${head}<div class="fc-note">No forecast tab is linked for ${esc(CURRENT_ACCOUNT.toUpperCase())} yet.</div></div>`;return}
+ if(isAs){box.innerHTML=`<div class="lab-box fc">${head}${asHtml()}${foot}</div>`;return}
+ const p=d.plan||{},wt=d.weekTotal||{},e=d.engine||{},st=d.settings||{},l6=(d.ref||{}).last60||{},ly=(d.ref||{}).ly||{};
  const mon=d.month||'This month';
  const lastDay=Date.parse(st.lastData)?new Date(Date.parse(st.lastData)).getDate():null;
- const withData=d.weeks.filter(w=>w.actSpend>0),lastW=withData[withData.length-1];
- const wk=w=>{const m=String(w.label).match(/(\d+)\s*[:\-–]\s*(\d+)\s*$/),end=m?+m[2]:null,live=w===lastW&&lastDay&&end&&lastDay<end&&(w.acc||0)<.85;
-   const a=w.acc,cl=live?'n':a==null?'n':a>1.15||a<.7?'a':'',pc=live?'navy':a==null?'mut':a>1.15||a<.7?'a':'g';
-   const nm=String(w.label).replace(/\s*[\d]+\s*[:\-–]\s*\d+\s*$/,'').replace(/^(First|Second|Third|Fourth|Fifth)\s+/i,'').replace(/[\s\-–]+$/,'')||w.label;
+ const withData=(d.weeks||[]).filter(w=>w.actSpend>0),lastW=withData[withData.length-1];
+ const wkInfo=w=>{const m=String(w.label).match(/(\d+)\s*[:\-–]\s*(\d+)\s*$/),end=m?+m[2]:null;
+   return {m,live:w===lastW&&lastDay&&end&&lastDay<end&&(w.acc||0)<.85,nm:String(w.label).replace(/\s*[\d]+\s*[:\-–]\s*\d+\s*$/,'').replace(/^(First|Second|Third|Fourth|Fifth)\s+/i,'').replace(/[\s\-–]+$/,'')||w.label}};
+ const wk=w=>{const {m,live,nm}=wkInfo(w),a=w.acc,cl=live?'n':a==null?'n':a>1.15||a<.7?'a':'',pc=live?'navy':a==null?'mut':a>1.15||a<.7?'a':'g';
    return `<div class="fc-wk"><div>${esc(nm)}<small>${m?(+m[1])+'–'+(+m[2]):''}</small></div><div><div class="fc-bar"><i class="${cl}" style="width:${Math.min(100,(a||0)*100).toFixed(1)}%"></i></div><div class="fc-wkt"><span>${w.actSpend?money(w.actSpend):'—'}</span><span>of ${money(w.planSpend)}</span></div></div><div class="fc-pc ${pc}">${fcPct(a)}${live?'<small>so far</small>':''}</div></div>`};
  const CHC={'search brand':'#c89434','search non-brand':'#2453d6','performance max':'#13894f','demand gen':'#6b3fa0'};
- const ach=n=>(d.ach||[]).find(a=>a.name.toLowerCase().split(' (')[0]===n.toLowerCase().split(' (')[0])||{};
- const chs=(d.channels||[]).slice().sort((a,b)=>(b.budget||0)-(a.budget||0)).map(x=>{const a=ach(x.name),sa=a.spendAch,ra=a.revAch,over=sa>1.15;
+ const ach=n=>(d.ach||[]).find(x=>x.name.toLowerCase().split(' (')[0]===n.toLowerCase().split(' (')[0])||{};
+ const chList=(d.channels||[]).slice().sort((x,y)=>(y.budget||0)-(x.budget||0));
+ const chs=chList.map(x=>{const r=ach(x.name),sa=r.spendAch,ra=r.revAch,over=sa>1.15;
    return `<div class="fc-ch"><span><i class="fc-dot" style="background:${CHC[x.name.toLowerCase()]||'#d33b4f'}"></i>${esc(x.name)}</span><span>${money(x.budget)} · ${fcPct(x.mix)}</span><div class="fc-bar"><i class="${over?'r':sa!=null&&sa<.7?'a':''}" style="width:${Math.min(100,(sa||0)*100).toFixed(1)}%"></i></div>
    <small><span class="${over?'r':''}">Spent ${fcPct(sa)}${over?' ⚠':''}</span><span class="${ra!=null&&ra<.7?'r':''}">Revenue ${fcPct(ra)}${ra>=1?' ✓':''}</span></small></div>`}).join('');
  const rc=/^❌/.test(e.rec)?'bad':/^⚠/.test(e.rec)?'warm':'';
  const src=(t,x)=>`<div><small>${t}</small><b>${money(x.cost)}</b><span>${esc((String(x.label||'').match(/\(([^)]*)\)/)||['',String(x.label||'')])[1])}<br>${fcK(x.value)} revenue · ${x.cpc!=null?cs()+fmt(cx(x.cpc),2):'—'} CPC</span></div>`;
- const ed=c.edit||{};
+ const ed=c.edit||{}, nEd=Object.keys(ed).length;
  const inp=(k,t,v,hint,cls,blank)=>{const has=Object.prototype.hasOwnProperty.call(ed,k),val=has?ed[k]:v;
    return `<label class="${cls||''}${has?' ch':''}"><small>${t}</small><input type="number" inputmode="decimal" step="any" value="${val==null?'':esc(val)}" ${blank?'placeholder="Recommended"':''} onchange="fcSet('${k}',this.value)"><em>${esc(hint)}</em></label>`};
- box.innerHTML=`<div class="lab-box fc">${head(esc(mon)+' · '+esc(d.tab||'')+(d.at?' · read '+esc(new Date(d.at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})):''))}
-  <div class="fc-hero"><small>${esc(String(mon).toUpperCase())} PLAN</small><div class="fc-big">${money(p.spend)}</div><div class="fc-hs">budget → ${money(p.rev)} expected revenue</div>
-   <div class="fc-r3"><div><b>${p.roas!=null?fmt(p.roas,2)+'x':'—'}</b><span>ROAS</span></div><div><b>${fmt(p.conv,0)}</b><span>Conversions</span></div><div><b>${fmt(p.clicks,0)}</b><span>Clicks</span></div></div></div>
-  <div class="fc-kv"><div><b>${p.cpc!=null?cs()+fmt(cx(p.cpc),2):'—'}</b><span>CPC</span></div><div><b>${money(p.aov)}</b><span>Avg gift</span></div><div><b>${p.cvr!=null?fmt(p.cvr*100,1)+'%':'—'}</b><span>CVR</span></div><div><b>${fcPct(wt.acc)}</b><span>Spent so far</span></div></div>
-  <div class="fc-l">WEEKS · PLAN vs ACTUAL <em>Spend</em></div><div class="fc-card">${(d.weeks||[]).map(wk).join('')||'<div class="dx-empty">No weeks yet.</div>'}</div>
-  <div class="fc-l">CHANNELS <em>Budget · spent · revenue</em></div><div class="fc-card">${chs||'<div class="dx-empty">No channels yet.</div>'}</div>
-  <div class="fc-l">WHERE THE PLAN COMES FROM</div><div class="fc-card"><div class="fc-src">${src('LAST '+(st.window||60)+' DAYS',l6)}${src('SAME HIJRI DAYS LAST YEAR',ly)}</div>
-   ${e.rec?`<div class="fc-rec ${rc}"><span>${esc((e.rec.match(/^\S+/)||[''])[0])}</span><div><b>${esc(e.rec.replace(/^\S+\s*/,''))}</b><small>Model ${fcK((e.spend||{}).model)} · Last year ${fcK((e.spend||{}).ly)} · Recommended ${fcK(e.recommended)} · Used ${fcK(e.used)}${e.mine?' · '+esc(e.mine):''}</small></div></div>`:''}</div>
-  <div class="fc-l">SETTINGS <em>${Object.keys(c.edit||{}).length?'Not saved yet':'Saved in the sheet'}</em></div><div class="fc-card"><div class="fc-set">
-   ${inp('override','Approved budget £',st.override,'Empty = recommended '+(e.recommended?'£'+fmt(e.recommended,0):''),'full ed',1)}
-   ${inp('adjust','Quick change %',st.adjust||0,'10 = +10%')}${inp('window','Days looked at',st.window,'1 to 60')}
-   ${inp('lyWeight','Weight on last year %',st.lyWeight!=null?Math.round(st.lyWeight*100):null,'0 = model only')}${inp('elasticity','Spend elasticity',st.elasticity,'Usually 0.70')}
-   ${inp('mixWeight','Channel mix weight',st.mixWeight,'1 = last 60 days only')}${inp('tilt','Tilt toward ROAS',st.tilt,'0 to 1')}</div>
-   ${c.msg?`<div class="mrp-msg">${c.msg}</div>`:''}
-   ${Object.keys(c.edit||{}).length?`<div class="fc-act"><button type="button" class="pk-ghost" onclick="fcUndo()">Undo</button><button type="button" class="lab-go" onclick="fcSave(this)" ${c.saving?'disabled':''}>${c.saving?'<span class="lab-spin"></span>Saving…':'Save to the sheet'}</button></div>`:''}
-   ${st.winStart?`<div class="fc-foot">Looked at ${esc(st.winStart)} – ${esc(st.winEnd)} · data up to ${esc(st.lastData)}${st.index?' · '+esc(st.index):''}</div>`:''}</div>
-  <button type="button" class="rw-fxb${AS.open?' on':''}" onclick="asToggle()"><i>📋</i><span><b>Assumptions</b><small>Channel economics, weeks and this month's index</small></span><em>${AS.open?'▴':'▾'}</em></button>
-  ${AS.open?asHtml():''}
- </div>`;
+ 
+ const onPlan=(d.weeks||[]).filter(w=>w.acc!=null&&w.acc>=.85&&w.acc<=1.15&&!wkInfo(w).live).length, liveW=(d.weeks||[]).find(w=>wkInfo(w).live);
+ const short=n=>n.replace(/^Search\s+/i,'').replace(/Performance Max/i,'PMax').replace(/Demand Gen/i,'DG').replace(/\s*\(.*\)/,'');
+ const ahead=chList.filter(x=>ach(x.name).revAch>=1&&!(ach(x.name).spendAch>1.15)).map(x=>short(x.name)),behind=chList.filter(x=>ach(x.name).revAch!=null&&ach(x.name).revAch<.7).map(x=>short(x.name)),over=chList.filter(x=>ach(x.name).spendAch>1.15).map(x=>short(x.name));
+ const chSum=[ahead.length?ahead.join(' & ')+' ahead':'',behind.length?behind.join(' & ')+' behind':'',over.length?over.join(' & ')+' overspent':''].filter(Boolean).join(' · ')||'Budget, spent and revenue';
+ const fold=(k,ic,t,sum,body)=>`<button type="button" class="fc-acc${FC_OPEN===k?' open':''}" onclick="fcFold('${k}')"><i>${ic}</i><span><b>${t}</b><small>${sum}</small></span><em>${FC_OPEN===k?'⌄':'›'}</em></button>${FC_OPEN===k?`<div class="fc-accb">${body}</div>`:''}`;
+ box.innerHTML=`<div class="lab-box fc">${head}
+  <div class="fc-hero"><small>${esc(String(mon).toUpperCase())} PLAN</small><div class="fc-big">${money(p.spend)}</div><div class="fc-hs">budget → ${money(p.rev)} revenue</div>
+   <div class="fc-r3"><div><b>${p.roas!=null?fmt(p.roas,2)+'x':'—'}</b><span>ROAS</span></div><div><b>${fmt(p.conv,0)}</b><span>Conv</span></div><div><b>${fmt(p.clicks,0)}</b><span>Clicks</span></div></div></div>
+  <div class="fc-kv"><div><b>${p.cpc!=null?cs()+fmt(cx(p.cpc),2):'—'}</b><span>CPC</span></div><div><b>${money(p.aov)}</b><span>Avg gift</span></div><div><b>${p.cvr!=null?fmt(p.cvr*100,1)+'%':'—'}</b><span>CVR</span></div><div><b>${fcPct(wt.acc)}</b><span>Spent</span></div></div>
+  <div class="fc-folds">
+  ${fold('weeks','📆','Weeks',`${onPlan} on plan${liveW?' · '+esc(wkInfo(liveW).nm.toLowerCase())+' at '+fcPct(liveW.acc)+' so far':''}`,(d.weeks||[]).map(wk).join('')||'<div class="dx-empty">No weeks yet.</div>')}
+  ${fold('channels','📺','Channels',esc(chSum),chs||'<div class="dx-empty">No channels yet.</div>')}
+  ${fold('source','🧮','Where the plan comes from',`${st.window||60} days ${money(l6.cost)} · LY ${money(ly.cost)}${e.rec?' · '+esc(e.rec.split('—')[0].trim()):''}`,
+    `<div class="fc-src">${src('LAST '+(st.window||60)+' DAYS',l6)}${src('SAME HIJRI DAYS LAST YEAR',ly)}</div>
+    ${e.rec?`<div class="fc-rec ${rc}"><span>${esc((e.rec.match(/^\S+/)||[''])[0])}</span><div><b>${esc(e.rec.replace(/^\S+\s*/,''))}</b><small>Model ${fcK((e.spend||{}).model)} · Last year ${fcK((e.spend||{}).ly)} · Recommended ${fcK(e.recommended)} · Used ${fcK(e.used)}${e.mine?' · '+esc(e.mine):''}</small></div></div>`:''}`)}
+  ${fold('settings','⚙️','Settings',nEd?`<span style="color:#203c8e">${nEd} change${nEd>1?'s':''} not saved yet</span>`:'Changes write to the sheet',
+    `<div class="fc-set">
+     ${inp('override','Approved budget £',st.override,'Empty = recommended '+(e.recommended?'£'+fmt(e.recommended,0):''),'full ed',1)}
+     ${inp('adjust','Quick change %',st.adjust||0,'10 = +10%')}${inp('window','Days looked at',st.window,'1 to 60')}
+     ${inp('lyWeight','Weight on last year %',st.lyWeight!=null?Math.round(st.lyWeight*100):null,'0 = model only')}${inp('elasticity','Spend elasticity',st.elasticity,'Usually 0.70')}
+     ${inp('mixWeight','Channel mix weight',st.mixWeight,'1 = last 60 days only')}${inp('tilt','Tilt toward ROAS',st.tilt,'0 to 1')}</div>
+     ${c.msg?`<div class="mrp-msg">${c.msg}</div>`:''}
+     ${nEd?`<div class="fc-act"><button type="button" class="pk-ghost" onclick="fcUndo()">Undo</button><button type="button" class="lab-go" onclick="fcSave(this)" ${c.saving?'disabled':''}>${c.saving?'<span class="lab-spin"></span>Saving…':'Save to the sheet'}</button></div>`:''}
+     ${st.winStart?`<div class="fc-foot">Looked at ${esc(st.winStart)} – ${esc(st.winEnd)} · data up to ${esc(st.lastData)}${st.index?' · '+esc(st.index):''}</div>`:''}`)}
+  </div>${c.msg&&FC_OPEN!=='settings'?`<div class="mrp-msg">${c.msg}</div>`:''}
+  ${foot}</div>`;
 }
  
-let AS={open:false};
-function asToggle(){AS.open=!AS.open;const c=AS[CURRENT_ACCOUNT];if(AS.open&&!(c&&(c.data||c.busy)))asLoad(false);else fcDraw()}
+let AS={tab:'index'};
 function asLoad(force){
  const k=CURRENT_ACCOUNT,c=AS[k]=AS[k]||{};if(c.busy)return;c.busy=true;c.err='';fcDraw();
  serverCall('getAssumptions',k,!!force,getAccessToken()).then(r=>{c.busy=false;c.data=r;fcDraw()}).catch(err=>{c.busy=false;c.err=errorText(err);fcDraw()});
 }
+function asTab(t){AS.tab=t;fcDraw()}
+function asHj(i){const c=AS[CURRENT_ACCOUNT];if(c){c.hj=i;fcDraw()}}
+function asSet(row,key,v){const c=AS[CURRENT_ACCOUNT];if(!c)return;c.edit=c.edit||{};const k=row+':'+key;if(v==='')delete c.edit[k];else c.edit[k]=Number(v);c.msg='';fcDraw()}
+function asUndo(){const c=AS[CURRENT_ACCOUNT];if(c){c.edit={};c.msg='';fcDraw()}}
+function asSave(){
+ const k=CURRENT_ACCOUNT,c=AS[k];if(!c||c.saving)return;
+ const edits=Object.keys(c.edit||{}).map(x=>{const [row,key]=x.split(':');return {row:+row,key,value:c.edit[x]}});if(!edits.length)return;
+ c.saving=true;c.msg='';fcDraw();
+ serverCall('assumeSet',k,edits,getAccessToken()).then(r=>{c.saving=false;c.data=r;c.edit={};c.msg='✅ Saved to the sheet. The plan is worked out again.';if(FC[k])FC[k].data=null;fcDraw()})
+  .catch(err=>{c.saving=false;c.msg='⚠️ '+esc(errorText(err));fcDraw()});
+}
 const HIJRI_NAMES=['Muharram','Safar','Rabi I','Rabi II','Jumada I','Jumada II','Rajab','Shaban','Ramadan','Shawwal','Dhu Qadah','Dhu Hijjah'];
 function asHtml(){
- const c=AS[CURRENT_ACCOUNT]||{},d=c.data;
- if(!d)return `<div class="as-wrap"><div class="fc-foot">${c.err?'⚠️ '+esc(c.err):'Reading the Assumptions tab…'}</div></div>`;
- if(d.missing)return `<div class="as-wrap"><div class="fc-foot">No Assumptions tab is linked for ${esc(CURRENT_ACCOUNT.toUpperCase())} yet.</div></div>`;
+ const c=AS[CURRENT_ACCOUNT]=AS[CURRENT_ACCOUNT]||{},d=c.data;
+ if(!d&&!c.busy&&!c.err){setTimeout(()=>asLoad(false),0)}
+ if(!d)return `<div class="fc-note">${c.err?'⚠️ '+esc(c.err):'<span class="lab-spin dark"></span>Reading the Assumptions tab…'}</div>`;
+ if(d.missing)return `<div class="fc-note">No Assumptions tab is linked for ${esc(CURRENT_ACCOUNT.toUpperCase())} yet.</div>`;
  const x2=v=>v==null?'—':fmt(v,2), pc=v=>v==null?'—':fmt(v*100,1)+'%', mo=(v,dd)=>v==null?'—':cs()+fmt(cx(v),dd||0);
- const CHC={'search brand':'#c89434','search non-brand':'#2453d6','performance max':'#13894f','demand gen':'#6b3fa0'};
- const eco=(d.economics||[]).map(r=>`<div class="as-eco"><div><i class="fc-dot" style="background:${CHC[r.name.toLowerCase()]||'#d33b4f'}"></i><b>${esc(r.name)}</b><em>${pc(r.mix)}</em></div>
-   <div class="as-chips"><span>CPC <b>${mo(r.cpc,2)}</b></span><span>CVR <b>${pc(r.cvr)}</b></span><span>AOV <b>${mo(r.aov)}</b></span><span>ROAS <b>${r.roas!=null?fmt(r.roas,1)+'x':'—'}</b></span><span>CPA <b>${mo(r.cpa)}</b></span></div></div>`).join('');
- const bl=d.blended;
- const mx=Math.max(.01,...(d.weeks||[]).map(w=>w.weight||0));
- const wks=(d.weeks||[]).map(w=>{const m=String(w.label).match(/(\d+)\s*[:\-–]\s*(\d+)\s*$/),nm=String(w.label).replace(/\s*\d+\s*[:\-–]\s*\d+\s*$/,'').replace(/^(First|Second|Third|Fourth|Fifth)\s+/i,'').replace(/[\s\-–]+$/,'');
-   return `<div class="fc-wk"><div>${esc(nm)}<small>${m?(+m[1])+'–'+(+m[2]):''} · ${w.days||'—'} days</small></div><div class="fc-bar"><i class="n" style="width:${((w.weight||0)/mx*100).toFixed(1)}%"></i></div><div class="fc-pc navy">${pc(w.weight)}</div></div>`}).join('');
- const mon=String(d.month||'').split(' ')[0].slice(0,3);
- const hj=(d.hijri||[]).map(h=>`<div class="as-hj${h.num===9?' ram':''}"><div class="as-hjh"><b>${esc(h.name||HIJRI_NAMES[h.num-1]||'')}</b><span>${h.days} days · ${mon} ${h.from}–${h.to}</span></div>
-   <div class="as-g"><div><small>Spend</small><b>${x2(h.spend)}</b></div><div><small>Value</small><b>${x2(h.value)}</b></div><div><small>Conv</small><b>${x2(h.conv)}</b></div><div><small>ROAS idx</small><b class="${h.roasIdx>=1?'up':'dn'}">${x2(h.roasIdx)}</b></div></div>
-   <div class="fc-foot" style="margin-top:6px">Whole month with its special days: value ${x2(h.effValue)} · spend ${x2(h.effSpend)}</div></div>`).join('');
- const tbl=(rows,extra)=>`<div class="as-t"><div class="as-tr hd"><span></span><span>Spend</span><span>Value</span><span>Conv</span>${extra?'<span>Days</span>':''}</div>${rows.map(r=>`<div class="as-tr${r.spend>=1.2?' hi':''}"><span>${esc(r.name)}</span><span>${x2(r.spend)}</span><span>${x2(r.value)}</span><span>${x2(r.conv)}</span>${extra?`<span>${esc(r.days||'')}</span>`:''}</div>`).join('')}</div>`;
- const isNew=d.index==='NEW';
- return `<div class="as-wrap">
-  <div class="fc-l">CHANNEL ECONOMICS <em>last ${(((FC[CURRENT_ACCOUNT]||{}).data||{}).settings||{}).window||60} days</em></div><div class="fc-card">${eco}${bl?`<div class="as-bl">Blended · ROAS <b>${bl.roas!=null?fmt(bl.roas,1)+'x':'—'}</b> · CPA <b>${mo(bl.cpa)}</b></div>`:''}</div>
-  <div class="fc-l">WEEKLY DISTRIBUTION <em>Share of the budget</em></div><div class="fc-card">${wks}</div>
-  <div class="fc-l">INDEX · ${esc(String(d.month||'').toUpperCase())}</div>
-  <div class="as-ix ${isNew?'new':''}"><span>${isNew?'🌙':'📘'}</span><div><b>${isNew?'NEW index':'OLD index'}</b><small>${isNew?'This month has '+d.ramadanDays+' days of Ramadan, so the NEW index (3 Ramadans) is used':'No Ramadan this month, so the OLD index (2025–26) is used'}</small></div></div>
-  ${hj}
-  <div class="fc-l">WEEKDAY <em>1 = an average day</em></div><div class="fc-card">${tbl(d.weekday||[])}</div>
-  <div class="fc-l">WEEK OF MONTH</div><div class="fc-card">${tbl(d.weekOfMonth||[],1)}</div>
-  <div class="fc-l">SPECIAL DAYS IN ${esc(String(d.month||'').split(' ')[0].toUpperCase())} <em>× a normal day</em></div><div class="fc-card">${(d.special||[]).length?tbl(d.special):'<div class="fc-foot" style="text-align:center;margin:4px 0">No special days this month</div>'}</div>
-  <button type="button" class="pk-ghost as-rd" onclick="asLoad(true)" ${c.busy?'disabled':''}>${c.busy?'Reading…':'↻ Read Assumptions now'}</button>
- </div>`;
+ const ed=c.edit||{}, nEd=Object.keys(ed).length;
+ const num=(r,key,v)=>{if(!r.row)return `<span class="as-n">${x2(v)}</span>`;const k=r.row+':'+key,has=Object.prototype.hasOwnProperty.call(ed,k);
+   return `<input class="as-in${has?' ch':''}" type="number" inputmode="decimal" step="0.01" value="${has?ed[k]:(v==null?'':fmt(v,2).replace(/,/g,''))}" onchange="asSet(${r.row},'${key}',this.value)" aria-label="${esc(r.name)} ${key}">`};
+ const tabs=`<div class="as-seg">${[['channels','Channels'],['weeks','Weeks'],['index','Index']].map(([k,l])=>`<button type="button" class="${AS.tab===k?'on':''}" onclick="asTab('${k}')">${l}</button>`).join('')}</div>`;
+ let body='';
+ if(AS.tab==='channels'){
+   const CHC={'search brand':'#c89434','search non-brand':'#2453d6','performance max':'#13894f','demand gen':'#6b3fa0'};
+   const bl=d.blended;
+   body=`<div class="fc-l">CHANNEL ECONOMICS <em>last ${(((FC[CURRENT_ACCOUNT]||{}).data||{}).settings||{}).window||60} days</em></div><div class="fc-card">${(d.economics||[]).map(r=>`<div class="as-eco"><div><i class="fc-dot" style="background:${CHC[r.name.toLowerCase()]||'#d33b4f'}"></i><b>${esc(r.name)}</b><em>${pc(r.mix)}</em></div>
+     <div class="as-chips"><span>CPC <b>${mo(r.cpc,2)}</b></span><span>CVR <b>${pc(r.cvr)}</b></span><span>AOV <b>${mo(r.aov)}</b></span><span>ROAS <b>${r.roas!=null?fmt(r.roas,1)+'x':'—'}</b></span><span>CPA <b>${mo(r.cpa)}</b></span></div></div>`).join('')}
+     ${bl?`<div class="as-bl">Blended · ROAS <b>${bl.roas!=null?fmt(bl.roas,1)+'x':'—'}</b> · CPA <b>${mo(bl.cpa)}</b></div>`:''}</div>
+     <div class="fc-foot">Worked out by the sheet from the last days, so it can't be changed here.</div>`;
+ }else if(AS.tab==='weeks'){
+   const mx=Math.max(.01,...(d.weeks||[]).map(w=>w.weight||0));
+   body=`<div class="fc-l">WEEKLY DISTRIBUTION <em>Share of the budget</em></div><div class="fc-card">${(d.weeks||[]).map(w=>{const m=String(w.label).match(/(\d+)\s*[:\-–]\s*(\d+)\s*$/),nm=String(w.label).replace(/\s*\d+\s*[:\-–]\s*\d+\s*$/,'').replace(/^(First|Second|Third|Fourth|Fifth)\s+/i,'').replace(/[\s\-–]+$/,'');
+     return `<div class="fc-wk"><div>${esc(nm)}<small>${m?(+m[1])+'–'+(+m[2]):''} · ${w.days||'—'} days</small></div><div class="fc-bar"><i class="n" style="width:${((w.weight||0)/mx*100).toFixed(1)}%"></i></div><div class="fc-pc navy">${pc(w.weight)}</div></div>`}).join('')}</div>
+     <div class="fc-foot">The sum of the daily plan, so it can't be changed here.</div>`;
+ }else{
+   const isNew=d.index==='NEW', hjs=d.hijri||[], i=Math.min(c.hj||0,Math.max(0,hjs.length-1)), h=hjs[i]||{};
+   const mon=String(d.month||'').split(' ')[0];
+   const tbl=(rows,days)=>`<div class="as-t"><div class="as-tr hd"><span></span><span>Spend</span><span>Value</span><span>Conv</span></div>${rows.map(r=>`<div class="as-tr${r.spend>=1.2?' hi':''}"><span>${esc(r.name)}${days&&r.days?` <small>${esc(r.days)}</small>`:''}</span>${num(r,'spend',r.spend)}${num(r,'value',r.value)}${num(r,'conv',r.conv)}</div>`).join('')}</div>`;
+   body=`<div class="as-ix ${isNew?'new':''}"><span>${isNew?'🌙':'📘'}</span><div><b>${isNew?'NEW index':'OLD index'}${d.indexLabel?' '+esc(d.indexLabel.replace(/^.*?(NEW|OLD)\s*index\s*/i,'')):''}</b><small>${isNew?mon+' has '+d.ramadanDays+' days of Ramadan, so the NEW index (3 Ramadans) is used':'No Ramadan in '+esc(mon)+', so the OLD index is used'}</small></div></div>
+   <div class="fc-l">HIJRI MONTH</div><div class="as-chip">${hjs.map((x,j)=>`<button type="button" class="${j===i?'on':''}" onclick="asHj(${j})">${esc(x.name||HIJRI_NAMES[x.num-1]||'')} · ${x.days} days</button>`).join('')}</div>
+   ${h.num?`<div class="fc-card" style="margin-top:8px"><div class="as-hjh"><b>${esc(h.name||HIJRI_NAMES[h.num-1]||'')}</b><span>${esc(mon.slice(0,3))} ${h.from}–${h.to}</span></div>
+     <div class="as-3">${['spend','value','conv'].map(k=>`<label><small>${k==='conv'?'Conv':k[0].toUpperCase()+k.slice(1)}</small>${num(h,k,h[k])}</label>`).join('')}</div>
+     <div class="as-kv"><span>Whole month value · spend</span><b>${x2(h.effValue)} · ${x2(h.effSpend)}</b></div><div class="as-kv"><span>ROAS idx</span><b class="${h.roasIdx>=1?'up':'dn'}">${x2(h.roasIdx)}</b></div></div>`:''}
+   <div class="fc-l">WEEKDAY <em>Spend · Value · Conv</em></div><div class="fc-card">${tbl(d.weekday||[])}</div>
+   <div class="fc-l">WEEK OF MONTH</div><div class="fc-card">${tbl(d.weekOfMonth||[],1)}</div>
+   <div class="fc-l">SPECIAL DAYS IN ${esc(mon.toUpperCase())} <em>× a normal day</em></div><div class="fc-card">${(d.special||[]).length?`<div class="as-t"><div class="as-tr hd"><span></span><span>Spend</span><span>Value</span><span>Conv</span></div>${d.special.map(r=>`<div class="as-tr"><span>${esc(r.name)} <small>${esc(mon.slice(0,3))} ${r.inMonth[0]}${r.inMonth.length>1?'–'+r.inMonth[r.inMonth.length-1]:''}</small></span>${num(r,'spend',r.spend)}${num(r,'value',r.value)}${num(r,'conv',r.conv)}</div>`).join('')}</div>`:'<div class="fc-foot" style="text-align:center;margin:4px 0">No special days this month</div>'}</div>
+   ${c.msg?`<div class="mrp-msg">${c.msg}</div>`:''}
+   ${nEd?`<div class="fc-act"><button type="button" class="pk-ghost" onclick="asUndo()">Undo</button><button type="button" class="lab-go" onclick="asSave()" ${c.saving?'disabled':''}>${c.saving?'<span class="lab-spin"></span>Saving…':`Save ${nEd} change${nEd>1?'s':''} to the sheet`}</button></div>`:''}`;
+ }
+ return tabs+body;
 }
 const LAB_INTRO='<div class="lab-head"><div><b>Months in the sheet</b><small>A month that is complete can move to the history. That keeps the reports complete and makes room for the new month\'s plan.</small></div></div>';
 
