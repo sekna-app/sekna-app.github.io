@@ -10423,6 +10423,8 @@ function applyMenuPerms(){
    if(lk)b.dataset.lockName=(b.querySelector('span:not(.sk-nav-icon)')||b).textContent.trim();else delete b.dataset.lockName;
    let ic=b.querySelector('.pm-nl');if(lk&&!ic){ic=document.createElement('span');ic.className='pm-nl';ic.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';b.appendChild(ic)}if(ic)ic.hidden=!lk});
  
+ ['ttMineBtn','ttBuildBtn','ttQuickBtn'].forEach(id=>{const b=document.getElementById(id);if(b)b.hidden=true});
+ 
  document.querySelectorAll('.sk-grp').forEach(g=>{const body=document.getElementById('grp-'+g.dataset.grp);if(!body)return;const any=[...body.querySelectorAll('.sk-nav-btn')].some(b=>!b.hidden);g.hidden=!any;body.hidden=!any});
  const vt=document.getElementById('labViewTag');if(vt)vt.hidden=myPerms().lab!=='view';
  document.body.classList.toggle('no-share',!canDo('share')&&!isLocked('share'));
