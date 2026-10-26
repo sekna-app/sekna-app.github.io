@@ -3532,13 +3532,33 @@ window.addEventListener('load',function(){
     body.dark-mode .cel-h{color:#fff}body.dark-mode .cel-comp textarea{background:#10141b;border-color:#252a32;color:#fff}
     /* v170: Admin → Server → Reading the sheets */
     .rw{background:#fff;border:1px solid #e7eaf2;border-radius:18px;padding:14px;margin-bottom:14px}
-    .rw-mode{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}.rw-mode button{flex:1;min-width:140px;border:1.5px solid #e7eaf2;background:#fff;border-radius:12px;padding:9px 8px;font:inherit;font-size:12px;font-weight:800;color:#4b5263;cursor:pointer}
+    .rw-st{display:flex;gap:12px;align-items:center;border-radius:16px;padding:12px;margin-top:10px;color:#fff;background:linear-gradient(150deg,#26469f,#14245e)}
+    .rw-st>span{width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:19px;flex:none}
+    .rw-st b{display:block;font-size:14px}.rw-st small{font-size:11px;color:rgba(255,255,255,.8);font-weight:700}
+    .rw-st.ok{background:radial-gradient(circle at 90% 0%,#3fbf86,transparent 55%),linear-gradient(150deg,#13894f,#0a4a30)}.rw-st.bad{background:linear-gradient(150deg,#d33b4f,#8f1f2f)}
+    .rw-st.wait{background:linear-gradient(150deg,#c9933f,#8a5a12)}
+    .rw-mode{display:flex;gap:6px;margin-top:10px}.rw-mode button{flex:1;border:1.5px solid #e7eaf2;background:#fff;border-radius:12px;padding:9px 6px;font:inherit;font-size:12px;font-weight:800;color:#4b5263;cursor:pointer}
     .rw-mode button.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);color:#fff;border-color:transparent}
-    .rw-t{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}.rw-t label{display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:900;letter-spacing:.08em;color:#8a92a6;text-transform:uppercase}
-    .rw-t input,.rw-t select{width:100%;box-sizing:border-box;border:1.5px solid #e7eaf2;border-radius:11px;padding:8px;font:inherit;font-size:13px;font-weight:800;color:#1d2433;background:#fff;min-width:0}
-    .rw-sum{margin-top:10px;font-size:12px;font-weight:700;color:#4b5263}.rw-sum i{font-style:normal;font-weight:900;color:#a8701c}.rw-sum i.ok{color:#13894f}
-    .rw-last{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;font-size:11px;font-weight:700;color:#8a92a6}.rw-last b{color:#1d2433}
-    body.dark-mode .rw{background:#151a22;border-color:#252a32}body.dark-mode .rw-mode button,body.dark-mode .rw-t input,body.dark-mode .rw-t select{background:#10141b;border-color:#252a32;color:#fff}body.dark-mode .rw-last b{color:#fff}
+    .rw-l{font-size:10px;font-weight:900;letter-spacing:.12em;color:#8a92a6;margin:14px 2px 7px}
+    .rw-tm{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}.rw-tm em{font-style:normal;color:#8a92a6;font-weight:900}
+    .rw-tm label{display:block;border:1.5px solid #e7eaf2;border-radius:12px;padding:6px 8px;text-align:center;background:#fff}.rw-tm small{display:block;font-size:9px;font-weight:900;color:#8a92a6;letter-spacing:.08em}
+    .rw-tm input{width:100%;border:0;background:none;font:inherit;font-size:16px;font-weight:900;color:#1d2433;text-align:center;padding:2px 0}
+    .rw-tzs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px}.rw-tzs::-webkit-scrollbar{display:none}
+    .rw-tzs button{flex:none;display:flex;flex-direction:column;align-items:center;gap:2px;width:64px;padding:8px 4px;border-radius:14px;border:1.5px solid #e7eaf2;background:#fff;font:inherit;cursor:pointer}
+    .rw-tzs i{font-style:normal;font-size:20px}.rw-tzs b{font-size:11px;color:#1d2433}.rw-tzs small{font-size:9.5px;color:#8a92a6;font-weight:700}
+    .rw-tzs button.on{border-color:#2453d6;box-shadow:0 0 0 3px rgba(36,83,214,.15)}.rw-tzs button.on b{color:#203c8e}
+    .rw-opts{border:1px solid #eef0f5;border-radius:14px;padding:0 12px}.rw-o{display:flex;align-items:center;gap:10px;padding:10px 0}.rw-o+.rw-o{border-top:1px solid #f0f2f7}
+    .rw-o div{flex:1}.rw-o b{display:block;font-size:13px;color:#1d2433}.rw-o small{font-size:11px;color:#8a92a6;font-weight:700}
+    .rw-sw{flex:none;width:36px;height:21px;border-radius:99px;border:0;padding:0;background:#d9dee8;position:relative;cursor:pointer}.rw-sw:after{content:"";position:absolute;top:2.5px;left:2.5px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.2);transition:left .2s}
+    .rw-sw.on{background:#2453d6}.rw-sw.on:after{left:17.5px}
+    .rw-use{display:flex;align-items:center;gap:12px;border:1px solid #eef0f5;border-radius:14px;padding:10px 12px}
+    .rw-g{flex:none;width:58px;height:58px;border-radius:50%;background:conic-gradient(#22c55e calc(var(--p)*1%),#eef1f8 0);display:grid;place-items:center}.rw-g i{width:44px;height:44px;border-radius:50%;background:#fff;display:grid;place-items:center;font-style:normal;font-size:11.5px;font-weight:900;color:#13894f}
+    .rw-use b{display:block;font-size:13px;color:#1d2433}.rw-use small{display:block;font-size:11px;color:#8a92a6;font-weight:700;margin-top:2px}
+    .rw-tag{display:inline-block;margin-top:5px;font-size:10px;font-weight:900;border-radius:99px;padding:2px 8px;background:#dff5ea;color:#13894f}.rw-tag.mid{background:#fff3dc;color:#a8701c}.rw-tag.hi{background:#fde6ea;color:#d33b4f}
+    .rw-log{border:1px solid #eef0f5;border-radius:14px;padding:0 12px}.rw-lr{display:grid;grid-template-columns:62px 1fr 1fr;gap:6px;padding:8px 0;font-size:11px;font-weight:700;color:#8a92a6}.rw-lr+.rw-lr{border-top:1px solid #f0f2f7}
+    .rw-lr span:first-child{color:#1d2433;font-weight:800}.rw-lr b.ok{color:#13894f}.rw-lr b.no{color:#d33b4f}
+    body.dark-mode .rw{background:#151a22;border-color:#252a32}body.dark-mode .rw-mode button,body.dark-mode .rw-tm label,body.dark-mode .rw-tzs button{background:#10141b;border-color:#252a32}
+    body.dark-mode .rw-tm input,body.dark-mode .rw-tzs b,body.dark-mode .rw-o b,body.dark-mode .rw-use b,body.dark-mode .rw-lr span:first-child{color:#fff}body.dark-mode .rw-opts,body.dark-mode .rw-use,body.dark-mode .rw-log{border-color:#252a32}body.dark-mode .rw-g i{background:#151a22}
     /* v170: Admin → Permissions */
     .pm-t{background:#fff;border:1px solid #e7eaf2;border-radius:16px;overflow:hidden;margin-top:12px}
     .pm-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
@@ -6811,7 +6831,7 @@ const PLAN_MIX_LABELS=['Search Brand','Non-Brand','PMax','Demand Gen','Video'];
 /* ---------- Notifications list (menu → Notifications) ---------- */
 // What SEKNA sent the team and this person, newest first; times in this device's own time zone.
 let NF={list:null,busy:false,err:''};
-const NF_ICON={new_day:'📊',month_closed:'🗓️',announcement:'📣',app_update:'⬇️',tasks:'✅',updated:'📊',celebrate:'🏆'};
+const NF_ICON={new_day:'📊',month_closed:'🗓️',announcement:'📣',app_update:'⬇️',tasks:'✅',updated:'📊',celebrate:'🏆',read_alert:'⚠️'};
 function nfSeen(){return +storeGet('sekna_nf_seen')||0}
 function nfBadge(){
  const b=document.getElementById('nfBadge');if(!b)return;
@@ -6832,7 +6852,7 @@ function localWhen(ms,withDay){
 }
 // Filters + compact: chips on top, one short row per notification, like a mail inbox.
 const NF_FILTERS=[['all','All'],['data','Data'],['tasks','Tasks'],['team','Team'],['app','App']];
-const NF_GROUP={new_day:'data',month_closed:'data',updated:'data',tasks:'tasks',announcement:'team',app_update:'app',celebrate:'team'};
+const NF_GROUP={new_day:'data',month_closed:'data',updated:'data',tasks:'tasks',announcement:'team',app_update:'app',celebrate:'team',read_alert:'data'};
 const NF_TINT={new_day:'',updated:'',month_closed:'g',tasks:'t',announcement:'y',app_update:'p',celebrate:'y'};
 function nfShort(ms){
  const d=new Date(ms),now=new Date(),k=x=>new Date(x.getFullYear(),x.getMonth(),x.getDate()).getTime(),df=Math.round((k(now)-k(d))/864e5);
@@ -11346,9 +11366,9 @@ function serverNow(){
  * the rest of the day everyone sees the last read. Refresh in the app always reads now.
  */
 let RW={data:null,busy:false,edit:null,msg:''};
-const RW_TZ=[['Africa/Cairo','Cairo'],['Asia/Muscat','Muscat'],['Europe/London','London'],['Asia/Dubai','Dubai'],['Asia/Riyadh','Riyadh']];
+const RW_TZ=[['Asia/Muscat','Muscat'],['Africa/Cairo','Cairo'],['Europe/London','London'],['Asia/Dubai','Dubai'],['Asia/Riyadh','Riyadh']];
 function rwLoad(){if(RW.busy)return;RW.busy=true;serverCall('adminReadWindow',getAccessToken()).then(r=>{RW.busy=false;RW.data=r;RW.edit=null;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{RW.busy=false;RW.data={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
-function rwCur(){return RW.edit||((RW.data&&RW.data.window)||{on:true,from:'12:50',to:'13:10',tz:'Asia/Muscat'})}
+function rwCur(){return RW.edit||((RW.data&&RW.data.window)||{on:true,from:'12:50',to:'13:10',tz:'Asia/Muscat',stopOnData:true,alert:true})}
 function rwSet(k,v){RW.edit=Object.assign({},rwCur(),{[k]:v});RW.msg='';if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function rw12(hm){const m=String(hm||'').match(/^(\d{1,2}):(\d{2})$/);if(!m)return hm||'';const h=+m[1];return `${h%12||12}:${m[2]} ${h<12?'AM':'PM'}`}
 async function rwSave(btn){
@@ -11357,16 +11377,37 @@ async function rwSave(btn){
  catch(err){RW.msg='⚠️ '+esc(errorText(err))}
  if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
 }
+// Status first: today's state, when, whose time, two switches, this month's reads, the last days.
+const RW_FLAG={'Asia/Muscat':'🇴🇲','Africa/Cairo':'🇪🇬','Europe/London':'🇬🇧','Asia/Dubai':'🇦🇪','Asia/Riyadh':'🇸🇦'};
+function rwNow(tz){try{return new Date().toLocaleTimeString('en-US',{timeZone:tz,hour:'numeric',minute:'2-digit'})}catch(e){return ''}}
+function rwAt(ms){return ms?new Date(ms).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):''}
+function rwStatus(d,c){
+ if(!c.on)return {cls:'all',ic:'🔄',t:'Reading all day',s:'Every 2 minutes, both sheets'};
+ const t=(d.days||[]).find(x=>x.day===d.today)||{}, u=t.usa, a=t.ar;
+ if(u&&a)return {cls:'ok',ic:'✅',t:"Today's data is in",s:`USA ${rwAt(u)} · AR ${rwAt(a)}${c.stopOnData!==false?' · stopped reading':''}`};
+ if(d.open)return {cls:'run',ic:'⏳',t:'Reading now',s:`${u?'USA in at '+rwAt(u):'Waiting for USA'} · ${a?'AR in at '+rwAt(a):'waiting for AR'}`};
+ if(t.alerted||(u||a))return {cls:'bad',ic:'⚠️',t:'Data didn\'t come today',s:`${u?'USA ✓':'USA ✗'} · ${a?'AR ✓':'AR ✗'} · press Refresh in the app to try again`};
+ return {cls:'wait',ic:'🕐',t:'Waiting for today\'s data',s:`Reads from ${rw12(c.from)} ${(RW_TZ.find(x=>x[0]===c.tz)||RW_TZ[0])[1]} time`};
+}
 function readWinHtml(){
  if(!RW.data&&!RW.busy)rwLoad();
- const d=RW.data||{}, c=rwCur(), tz=(RW_TZ.find(x=>x[0]===c.tz)||RW_TZ[0])[1], ch=!!RW.edit;
+ const d=RW.data||{}, c=rwCur(), ch=!!RW.edit;
  if(d.error)return `<div class="rw"><b class="ad-h">📄 Reading the sheets</b><div class="mrp-msg">⚠️ ${esc(d.error)}</div></div>`;
- const last=d.last||{}, lt=k=>last[k]?localWhenFull(last[k]):'—';
- return `<div class="rw"><b class="ad-h">📄 Reading the sheets</b><small class="ad-sub">When the server reads the USA and AR sheets. The rest of the day everyone sees the last read. Refresh in the app always reads the sheet straight away.</small>
-   <div class="rw-mode"><button type="button" class="${c.on?'on':''}" onclick="rwSet('on',true)">⏰ Only at set times</button><button type="button" class="${c.on?'':'on'}" onclick="rwSet('on',false)">🔄 All day (every 2 min)</button></div>
-   ${c.on?`<div class="rw-t"><label>From<input type="time" value="${esc(c.from)}" onchange="rwSet('from',this.value)"></label><label>To<input type="time" value="${esc(c.to)}" onchange="rwSet('to',this.value)"></label><label>Time<select onchange="rwSet('tz',this.value)">${RW_TZ.map(([k,l])=>`<option value="${k}"${k===c.tz?' selected':''}>${l}</option>`).join('')}</select></label></div>
-   <div class="rw-sum">Reads every day from <b>${esc(rw12(c.from))}</b> to <b>${esc(rw12(c.to))}</b> ${esc(tz)} time${d.window&&!ch?(d.open?' · <i class="ok">reading now</i>':' · <i>waiting</i>'):''}</div>`:'<div class="rw-sum">Reads the sheets every 2 minutes, all day.</div>'}
-   <div class="rw-last"><span>Last read · USA <b>${esc(lt('usa'))}</b></span><span>AR <b>${esc(lt('ar'))}</b></span></div>
+ const st=rwStatus(d,c), sw=(k,on)=>`<button type="button" class="rw-sw${on?' on':''}" onclick="rwSet('${k}',${!on})" aria-pressed="${on}"></button>`;
+ const used=d.allDay?Math.max(0,Math.min(100,(d.reads||0)/d.allDay*100)):0, saved=100-used;
+ const level=used<5?['LOW USE','ok']:used<30?['MEDIUM USE','mid']:['HIGH USE','hi'];
+ const day=x=>{const dt=new Date(x.day+'T12:00:00Z'),lbl=x.day===d.today?'Today':dt.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',timeZone:'UTC'});
+   const v=ms=>ms?`<b class="ok">✓ ${esc(rwAt(ms))}</b>`:`<b class="no">✗ no data</b>`;
+   return `<div class="rw-lr"><span>${esc(lbl)}</span><span>USA ${v(x.usa)}</span><span>AR ${v(x.ar)}</span></div>`};
+ return `<div class="rw"><b class="ad-h">📄 Reading the sheets</b>
+   <div class="rw-st ${st.cls}"><span>${st.ic}</span><div><b>${esc(st.t)}</b><small>${esc(st.s)}</small></div></div>
+   <div class="rw-mode"><button type="button" class="${c.on?'on':''}" onclick="rwSet('on',true)">⏰ Only at set times</button><button type="button" class="${c.on?'':'on'}" onclick="rwSet('on',false)">🔄 All day</button></div>
+   ${c.on?`<div class="rw-l">WHEN</div><div class="rw-tm"><label><small>FROM</small><input type="time" value="${esc(c.from)}" onchange="rwSet('from',this.value)"></label><em>→</em><label><small>TO</small><input type="time" value="${esc(c.to)}" onchange="rwSet('to',this.value)"></label></div>
+   <div class="rw-l">WHOSE TIME</div><div class="rw-tzs">${RW_TZ.map(([k,l])=>`<button type="button" class="${k===c.tz?'on':''}" onclick="rwSet('tz','${k}')"><i>${RW_FLAG[k]||'🌍'}</i><b>${l}</b><small>${esc(rwNow(k))}</small></button>`).join('')}</div>
+   <div class="rw-l">OPTIONS</div><div class="rw-opts"><div class="rw-o"><div><b>Stop when the data is in</b><small>No more reads after the new day arrives</small></div>${sw('stopOnData',c.stopOnData!==false)}</div>
+     <div class="rw-o"><div><b>Alert me if it doesn't come</b><small>A notification at ${esc(rw12(c.to))} if there's no new day</small></div>${sw('alert',c.alert!==false)}</div></div>`:''}
+   <div class="rw-l">THIS MONTH</div><div class="rw-use"><span class="rw-g" style="--p:${Math.max(used,1.5).toFixed(1)}"><i>${used<1&&used>0?'<1':Math.round(used)}%</i></span><div><b>${fmt(d.reads||0,0)} sheet reads</b><small>All day would be about ${fmt(d.allDay||0,0)} · we saved ${saved>=99.95?'100':fmt(saved,1)}%</small><span class="rw-tag ${level[1]}">${level[0]}</span></div></div>
+   ${(d.days||[]).length?`<div class="rw-l">LAST DAYS</div><div class="rw-log">${d.days.slice(0,5).map(day).join('')}</div>`:''}
    ${RW.msg?`<div class="mrp-msg">${RW.msg}</div>`:''}
    <button type="button" class="pm-save" onclick="rwSave(this)" ${ch?'':'disabled'}>${ch?'Save':'No changes'}</button></div>`;
 }

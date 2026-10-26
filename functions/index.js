@@ -5,7 +5,7 @@ const { onRequest } = require('firebase-functions/v2/https');
 const { onMessagePublished } = require('firebase-functions/v2/pubsub');
 const { onSchedule } = require('firebase-functions/v2/scheduler');
 const { buildDashboardData, getMonthCompareData, normalizeAccountKey_ } = require('./dash');
-const { assertAccess, assertAdmin, assertPerm } = require('./access');
+const { ACCESS, assertAccess, assertAdmin, assertPerm } = require('./access');
 const { fsGet, fsSet, fsAppend, fsList, fsClearList, request, PROJECT_ID } = require('./google');
 const { archiveStatus, archiveMove, archiveProgress } = require('./archive');
 const tasks = require('./tasks');
@@ -51,7 +51,9 @@ function cached(key, ttl, fresh, build) {
  * restarted server still has it. Refresh in the app always reads the sheet on the spot.
  */
 const READ_DOC = 'server/read-window';
-const READ_DEFAULT = { on: true, from: '12:50', to: '13:10', tz: 'Asia/Muscat' };
+const READ_DEFAULT = { on: true, from: '12:50', to: '13:10', tz: 'Asia/Muscat', stopOnData: true, alert: true };
+const READ_LOG = 'server/read-log';
+let sheetReads = 0; // dashboard builds since the last warm-up (added to this month's count)
 let readCache = null;
 async function readWindow() {
   if (readCache && Date.now() - readCache.at < 60000) return readCache.v;
@@ -61,6 +63,11 @@ async function readWindow() {
   return readCache.v;
 }
 const toMin = hm => { const m = String(hm || '').match(/^(\d{1,2}):(\d{2})$/); return m ? (+m[1] % 24) * 60 + (+m[2] % 60) : null; };
+function localParts(tz, ms) {
+  const p = {};
+  new Intl.DateTimeFormat('en-GB', { timeZone: tz || 'Asia/Muscat', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(ms)).forEach(x => { p[x.type] = x.value; });
+  return { day: `${p.year}-${p.month}-${p.day}`, min: +p.hour * 60 + +p.minute };
+}
 function inReadWindow(w, now) {
   if (!w || !w.on) return true;
   const f = toMin(w.from), t = toMin(w.to);
@@ -79,9 +86,17 @@ async function saveSnap(kind, key, value) {
   } catch (e) { console.error('Snapshot ' + kind + ' ' + key + ': ' + errorText(e)); }
 }
 /** The dashboard ('dash') or month history ('months') of one account, read from the sheet only when allowed. */
+/** The last read, without touching the sheet (memory, then Firestore). */
+async function keptData(kind, key) {
+  const ck = kind + ':' + key, hit = cache[ck];
+  if (hit && hit.value) return { v: hit.value, at: hit.at };
+  const snap = await fsGet(snapDoc(kind, key)).catch(() => null);
+  if (snap && snap.v) { cache[ck] = { at: snap.at || Date.now(), value: snap.v }; return { v: snap.v, at: snap.at }; }
+  return null;
+}
 async function sheetData(kind, key, force) {
   const ttl = kind === 'dash' ? DASH_CACHE_MS : MONTHS_CACHE_MS;
-  const build = () => (kind === 'dash' ? buildDashboardData(key) : getMonthCompareData(key)).then(v => { saveSnap(kind, key, v); return v; });
+  const build = () => (kind === 'dash' ? buildDashboardData(key) : getMonthCompareData(key)).then(v => { if (kind === 'dash') sheetReads++; saveSnap(kind, key, v); return v; });
   const ck = kind + ':' + key;
   if (force || inReadWindow(await readWindow())) return cached(ck, ttl, !!force, build);
   const hit = cache[ck];
@@ -114,16 +129,22 @@ const CALLS = {
   /** Admin → Server → Reading the sheets: when the server reads them, and when it last did. */
   async adminReadWindow(args) {
     await assertAdmin(args[0]);
-    const w = await readWindow(), last = {};
+    const w = await readWindow(), last = {}, now = Date.now();
     WARM_ACCOUNTS.forEach(k => { const h = cache['dash:' + k]; if (h && h.at) last[k] = h.at; });
-    return { window: w, open: inReadWindow(w), last };
+    const log = (await fsGet(READ_LOG).catch(() => null)) || { days: {}, month: {} };
+    const lp = localParts(w.tz, now), mk = lp.day.slice(0, 7);
+    const days = Object.keys(log.days || {}).sort().reverse().slice(0, 7).map(d => ({ day: d, usa: (log.days[d].usa || {}).at || 0, ar: (log.days[d].ar || {}).at || 0, alerted: log.days[d].alerted || 0 }));
+    // If it read all day: every 2 minutes, both accounts, for the days of this month so far.
+    const allDay = 720 * WARM_ACCOUNTS.length * +lp.day.slice(8, 10);
+    return { window: w, open: inReadWindow(w, now), last, today: lp.day, days, reads: (log.month || {})[mk] || 0, allDay };
   },
   async adminReadWindowSet(args) {
     const me = await assertAdmin(args[0]);
     const c = args[1] || {};
     const tz = ['Africa/Cairo', 'Asia/Muscat', 'Europe/London', 'Asia/Dubai', 'Asia/Riyadh'].indexOf(c.tz) >= 0 ? c.tz : 'Africa/Cairo';
     if (c.on && (toMin(c.from) == null || toMin(c.to) == null)) throw new Error('Pick a start and an end time.');
-    const v = { on: !!c.on, from: String(c.from || READ_DEFAULT.from), to: String(c.to || READ_DEFAULT.to), tz, by: me.email, at: Date.now() };
+    const v = { on: !!c.on, from: String(c.from || READ_DEFAULT.from), to: String(c.to || READ_DEFAULT.to), tz,
+      stopOnData: c.stopOnData !== false, alert: c.alert !== false, by: me.email, at: Date.now() };
     await fsSet(READ_DOC, v);
     readCache = { at: Date.now(), v };
     return { window: v, open: inReadWindow(v) };
@@ -272,16 +293,52 @@ exports.api = onRequest({
     if (Date.now() - lastWarm < 60 * 1000) { res.json({ ok: true, skipped: true }); return; }
     lastWarm = Date.now();
     const done = [], latest = {};
-    const open = inReadWindow(await readWindow());
+    const w = await readWindow(), now = Date.now(), open = inReadWindow(w, now);
+    const lp = localParts(w.tz, now), today = lp.day, yesterday = localParts(w.tz, now - 864e5).day;
+    const log = (await fsGet(READ_LOG).catch(() => null)) || { days: {}, month: {} };
+    const dayLog = log.days[today] = log.days[today] || {};
+    let logChanged = false;
     for (const key of WARM_ACCOUNTS) {
-      // Outside the reading window: the last read (no sheet), so the push checks still see the latest day.
-      try { const d = open ? await sheetData('dash', key, true) : await sheetData('dash', key, false); if (open) done.push(key); latest[key] = d && d.latest; delete stats.warmErrors[key]; }
+      // In the window: read, unless today's data is already in (stop when the data is in).
+      // Outside it: the last read (no sheet), so the push checks still see the latest day.
+      try {
+        const got = dayLog[key] && dayLog[key].at;
+        const read = open && !(w.on && w.stopOnData !== false && got);
+        const d = read ? await sheetData('dash', key, true) : ((await keptData('dash', key)) || {}).v || await sheetData('dash', key, false);
+        if (read) done.push(key);
+        latest[key] = d && d.latest; delete stats.warmErrors[key];
+        const date = d && d.latest && d.latest.date;
+        if (date) {
+          dayLog.base = dayLog.base || {};
+          if (!dayLog.base[key]) { dayLog.base[key] = date; logChanged = true; }
+          // Today's data is in: the sheet has yesterday (or a newer day than this morning).
+          if (!got && (date >= yesterday || date !== dayLog.base[key])) { dayLog[key] = { at: (cache['dash:' + key] || {}).at || now, date }; logChanged = true; }
+        }
+      }
       catch (e) {
         // Shown on Admin → Server; USA failing also counts as a server error.
         stats.warmErrors[key] = { error: errorText(e), at: Date.now() };
         if (key === 'usa') { stats.errors++; stats.lastError = errorText(e); stats.lastErrorAt = Date.now(); }
       }
-      if (open) try { await sheetData('months', key, false); } catch (e) {}
+      if (open && done.indexOf(key) >= 0) try { await sheetData('months', key, false); } catch (e) {}
+    }
+    // This month's reads, and the alert when the window is over and a sheet has no new day.
+    if (sheetReads) { const mk = today.slice(0, 7); log.month[mk] = (log.month[mk] || 0) + sheetReads; sheetReads = 0; logChanged = true; }
+    const t = toMin(w.to), f = toMin(w.from);
+    const over = w.on && t != null && f != null && f <= t && lp.min > t;
+    const missing = WARM_ACCOUNTS.filter(k => !(dayLog[k] && dayLog[k].at));
+    if (over && w.alert !== false && missing.length && !dayLog.alerted) {
+      dayLog.alerted = now; logChanged = true;
+      const names = missing.map(k => (k === 'ar' ? 'AR' : 'USA')).join(' and ');
+      try {
+        await notify.send({ pushes: ACCESS.ADMIN_EMAILS.map(email => ({ email, title: 'No new data today · ' + names,
+          body: 'The ' + names + ' sheet had no new day by ' + w.to + '. The sheet script may not have run.', eventType: 'read_alert' })) });
+      } catch (e) { console.error('Read alert: ' + errorText(e)); }
+    }
+    if (logChanged) {
+      Object.keys(log.days).sort().slice(0, -14).forEach(k => { delete log.days[k]; });
+      Object.keys(log.month).sort().slice(0, -6).forEach(k => { delete log.month[k]; });
+      await fsSet(READ_LOG, log).catch(e => console.error('Read log: ' + errorText(e)));
     }
     // New day / team message / app version notifications (after the rest moved here).
     let pushed = null;
