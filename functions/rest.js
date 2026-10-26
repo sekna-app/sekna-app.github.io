@@ -13,7 +13,7 @@ const REPORT_MAX_BYTES = 15 * 1024 * 1024;
 const DOC = {
   mode: 'rest/mode', shareMonths: 'rest/share-months', usageDays: 'rest/usage-days', ideas: 'rest/ideas',
   shares: m => 'rest/shares-' + m, usage: d => 'rest/usage-' + d, plans: k => 'rest/plan-' + k,
-  push: 'rest/push', serverMail: 'rest/server-mail', fx: 'rest/fx', fxTime: 'rest/fx-time', celebrate: 'rest/celebrations'
+  push: 'rest/push', serverMail: 'rest/server-mail', fx: 'rest/fx', fxTime: 'rest/fx-time', reacts: (acc, m) => 'rest/reacts-' + acc + '-' + m, celebrate: 'rest/celebrations'
 };
 
 const norm = e => String(e || '').trim().toLowerCase();
@@ -149,6 +149,17 @@ async function fxRefreshIfDue() {
   return r;
 }
 
+const DAY_FACES = ['🔥', '💪', '😐', '😓'];
+function dayReactOut(doc, me) {
+  const days = {};
+  Object.keys(doc).filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k)).forEach(k => {
+    const counts = {}; let n = 0;
+    Object.values(doc[k] || {}).forEach(f => { if (DAY_FACES.indexOf(f) >= 0) { counts[f] = (counts[f] || 0) + 1; n++; } });
+    if (n) days[k] = { counts, n, mine: (doc[k] || {})[me] || null };
+  });
+  return { faces: DAY_FACES, days };
+}
+
 const R = {
   async logShare([token, kind, accountKey]) {
     const a = await assertAccess(token), t = Date.now(), m = monthOf(t);
@@ -271,6 +282,25 @@ const R = {
       x.react[r] = (x.react[r] || []).filter(v => v !== e).concat(had ? [] : [e]);
     });
     return celebrationOut(c, e);
+  },
+  /** Day by Day → Results: how the team felt about each day (one face per person per day; counts only, never names). */
+  async dayReactions([token, account, month]) {
+    const a = await assertAccess(token), e = norm(a.email);
+    const acc = account === 'ar' ? 'ar' : 'usa', m = /^\d{4}-\d{2}$/.test(String(month || '')) ? String(month) : monthOf(Date.now());
+    return dayReactOut((await fsGet(DOC.reacts(acc, m))) || {}, e);
+  },
+  async dayReact([token, account, day, face]) {
+    const a = await assertAccess(token), e = norm(a.email);
+    const acc = account === 'ar' ? 'ar' : 'usa', d = String(day || '');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) throw new Error('Pick a day.');
+    if (face != null && DAY_FACES.indexOf(face) < 0) throw new Error('Unknown reaction.');
+    const out = await fsUpdate(DOC.reacts(acc, d.slice(0, 7)), doc => {
+      doc = doc || {}; const day0 = Object.assign({}, doc[d] || {});
+      if (!face || day0[e] === face) delete day0[e]; else day0[e] = face; // the same face again takes it back
+      if (Object.keys(day0).length) doc[d] = day0; else delete doc[d];
+      return doc;
+    });
+    return dayReactOut(out || {}, e);
   },
   /** The notifications list (menu → Notifications). */
   async myNotifications([token]) {
