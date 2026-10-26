@@ -7029,7 +7029,7 @@ function asHtml(){
   ${hj}
   <div class="fc-l">WEEKDAY <em>1 = an average day</em></div><div class="fc-card">${tbl(d.weekday||[])}</div>
   <div class="fc-l">WEEK OF MONTH</div><div class="fc-card">${tbl(d.weekOfMonth||[],1)}</div>
-  <div class="fc-l">SPECIAL DAYS <em>× a normal day</em></div><div class="fc-card">${tbl(d.special||[])}</div>
+  <div class="fc-l">SPECIAL DAYS IN ${esc(String(d.month||'').split(' ')[0].toUpperCase())} <em>× a normal day</em></div><div class="fc-card">${(d.special||[]).length?tbl(d.special):'<div class="fc-foot" style="text-align:center;margin:4px 0">No special days this month</div>'}</div>
   <button type="button" class="pk-ghost as-rd" onclick="asLoad(true)" ${c.busy?'disabled':''}>${c.busy?'Reading…':'↻ Read Assumptions now'}</button>
  </div>`;
 }

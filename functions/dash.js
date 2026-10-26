@@ -29,7 +29,9 @@ const ACCOUNTS = {
       lastYear: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=554156069',
       archive: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=554156069',
       history: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=1926854839',
-      bestWorst: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=1295411279'
+      bestWorst: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=1295411279',
+      forecast: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=1687637233',
+      assumptions: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=2047766565'
     }
   }
 };
@@ -832,8 +834,14 @@ async function buildForecast(accountKey) {
   const book = await openBook(account);
   const sh = await optionalSheet(book, 'forecast');
   if (!sh) return { missing: true };
+  const as = await optionalSheet(book, 'assumptions');
   const R = ['B1:B2', 'A6:K8', 'A12:B19', 'A23:K28', 'A32:E37', 'A46:G51', 'A54:B65', 'E57', 'A67:G77'];
-  const v = await batchGet(book.id, R.map(r => a1(sh.title, r)), true);
+  const v = await batchGet(book.id, R.map(r => a1(sh.title, r)).concat(as ? [a1(as.title, 'U9:U40')] : []), true);
+  // The B2 dropdown: the months listed in Assumptions, as written (raw) and as shown.
+  const raw = await batchGet(book.id, [a1(sh.title, 'B2')].concat(as ? [a1(as.title, 'U9:U40')] : []));
+  const shown = as ? (v[9] || []).map(r => String((r || [])[0] == null ? '' : r[0]).trim()) : [];
+  const months = as ? (raw[1] || []).map((r, i) => ({ v: (r || [])[0], t: shown[i] || String((r || [])[0] || '') })).filter(x => x.v !== '' && x.v != null) : [];
+  const monthRaw = ((raw[0] || [])[0] || [])[0];
   const g = (i, h, w) => grid(v[i], h, w);
   const n = x => (typeof x === 'number' && isFinite(x) ? x : (x === '' || x == null ? null : (isFinite(Number(x)) ? Number(x) : null)));
   const t = x => String(x == null ? '' : x).trim();
@@ -847,7 +855,7 @@ async function buildForecast(accountKey) {
   const ach = ac.filter(r => t(r[0]) && !isTotal(r)).map(achRow), aTot = ac.find(isTotal);
   const S = i => st[i][1], met = i => ({ actual: n(en[i][1]), model: n(en[i][5]), ly: n(en[i][6]) });
   return {
-    title: t(head[0][0]), month: t(head[1][0]), tab: sh.title, at: Date.now(),
+    title: t(head[0][0]), month: t(head[1][0]), monthRaw: monthRaw == null ? '' : monthRaw, months, tab: sh.title, at: Date.now(),
     ref: { last60: refRow(ref[0]), ly: refRow(ref[1]), final: { clicks: n(ref[2][9]), conv: n(ref[2][10]) } },
     plan: { clicks: n(fc[0][1]), conv: n(fc[1][1]), cpc: n(fc[2][1]), aov: n(fc[3][1]), spend: n(fc[4][1]), rev: n(fc[5][1]), roas: n(fc[6][1]), cvr: n(fc[7][1]) },
     weeks, weekTotal: wTot ? week(wTot) : null,
@@ -871,6 +879,14 @@ async function setForecast(accountKey, values) {
   const sh = book && await optionalSheet(book, 'forecast');
   if (!sh) throw new Error('No forecast tab is linked for ' + account.shortLabel + '.');
   const data = [];
+  if (values && values.month !== undefined) {
+    // Only a month from the dropdown list (Assumptions U9 down), written as it is stored there.
+    const as = await optionalSheet(book, 'assumptions');
+    const list = as ? ((await batchGet(book.id, [a1(as.title, 'U9:U40')]))[0] || []).map(r => (r || [])[0]).filter(x => x !== '' && x != null) : [];
+    const pick = list.find(x => String(x) === String(values.month));
+    if (pick === undefined) throw new Error('Pick a month from the list.');
+    data.push({ range: a1(sh.title, 'B2'), values: [[pick]] });
+  }
   Object.keys(values || {}).forEach(k => {
     const f = FORECAST_SET[k]; if (!f) return;
     const raw = values[k];
@@ -897,37 +913,49 @@ async function buildAssumptions(accountKey) {
   const book = await openBook(account);
   const sh = await optionalSheet(book, 'assumptions'), fc = await optionalSheet(book, 'forecast');
   if (!sh) return { missing: true };
-  const ranges = [a1(sh.title, 'A10:G15'), a1(sh.title, 'A19:C23'), a1(sh.title, 'A90:G180')];
+  const ranges = [a1(sh.title, 'A10:G15'), a1(sh.title, 'A19:C23'), a1(sh.title, 'A40:G230')];
   if (fc) ranges.push(a1(fc.title, 'B60'), a1(fc.title, 'B65'));
   const v = await batchGet(book.id, ranges);
   const n = x => (typeof x === 'number' && isFinite(x) ? x : null), t = x => String(x == null ? '' : x).trim();
   const isTotal = r => /total|blended/i.test(t(r[0]));
-  const eco = grid(v[0], 6, 7), wk = grid(v[1], 5, 3), ix = grid(v[2], 91, 7);
+  const eco = grid(v[0], 6, 7), wk = grid(v[1], 5, 3), all = grid(v[2], 191, 7);
+  // The stored indexes start at their STORED — OLD title (the rows above are the active, formula-only copy).
+  const old0 = Math.max(0, all.findIndex(r => /STORED.*OLD/i.test(t(r[0])))), ix = all.slice(old0), base = 40 + old0;
   const ecoRow = r => ({ name: t(r[0]), mix: n(r[1]), cpc: n(r[2]), cvr: n(r[3]), aov: n(r[4]), roas: n(r[5]), cpa: n(r[6]) });
   // The two stored indexes: split at the NEW title, then each block read by its headers.
   const at = ix.findIndex(r => /NEW index/i.test(t(r[0])));
-  const block = rows => {
+  const block = (rows, first) => {
     const out = { months: [], weekday: [], weeks: [], special: [] };
     let cur = null;
-    rows.forEach(r => {
+    rows.forEach((r, i) => {
+      const row = first + i;
       const a = t(r[0]);
       if (/^hijri month/i.test(a)) { cur = 'months'; return; }
       if (/^weekday/i.test(a)) { cur = 'weekday'; return; }
       if (/^week of month/i.test(a)) { cur = 'weeks'; return; }
       if (/^special day/i.test(a)) { cur = 'special'; return; }
       if (!a || n(r[1]) == null) { if (!a) cur = cur; return; }
-      if (cur === 'months') out.months.push({ name: a, spend: n(r[1]), value: n(r[2]), conv: n(r[3]), effValue: n(r[4]), effSpend: n(r[5]), roasIdx: n(r[6]) });
-      else if (cur) out[cur].push({ name: a, spend: n(r[1]), value: n(r[2]), conv: n(r[3]), days: t(r[4]) || undefined });
+      if (cur === 'months') out.months.push({ row, name: a, spend: n(r[1]), value: n(r[2]), conv: n(r[3]), effValue: n(r[4]), effSpend: n(r[5]), roasIdx: n(r[6]) });
+      else if (cur) out[cur].push({ row, name: a, spend: n(r[1]), value: n(r[2]), conv: n(r[3]), days: t(r[4]) || undefined });
     });
     return out;
   };
-  const OLD = block(at > 0 ? ix.slice(0, at) : ix), NEW = at > 0 ? block(ix.slice(at)) : null;
+  const OLD = block(at > 0 ? ix.slice(0, at) : ix, base), NEW = at > 0 ? block(ix.slice(at), base + at) : null;
   // The plan month: the day after the level window ends (Oct-2026 B60).
   const end = fc ? n(((v[3] || [])[0] || [])[0]) : null;
   const startMs = end != null ? Math.round((end + 1 - 25569) * 864e5) : Date.now();
   const s0 = new Date(startMs), y = s0.getUTCFullYear(), m = s0.getUTCMonth(), dim = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
   const hm = {};
-  for (let d = 1; d <= dim; d++) { const h = hijriOf(Date.UTC(y, m, d, 12)); const k = h.y + '-' + h.m; (hm[k] = hm[k] || { num: h.m, year: h.y, days: 0, from: d, to: d }).days++; hm[k].to = d; }
+  // Special days of the month, the same way the plan marks them.
+  const SPECIAL = [[/last\s*10/i, h => h.m === 9 && h.d >= 21], [/fitr/i, h => h.m === 10 && h.d <= 3], [/hijjah\s*1/i, h => h.m === 12 && h.d <= 8],
+    [/arafah/i, h => h.m === 12 && h.d === 9], [/adha/i, h => h.m === 12 && h.d >= 10 && h.d <= 13], [/year/i, (h, g) => g.getUTCMonth() === 11 && g.getUTCDate() >= 26],
+    [/war/i, (h, g) => g.getTime() < Date.UTC(2025, 9, 10)]];
+  const spDays = SPECIAL.map(() => []);
+  for (let d = 1; d <= dim; d++) {
+    const g = new Date(Date.UTC(y, m, d, 12)), h = hijriOf(g.getTime()), k = h.y + '-' + h.m;
+    (hm[k] = hm[k] || { num: h.m, year: h.y, days: 0, from: d, to: d }).days++; hm[k].to = d;
+    SPECIAL.forEach((x, i) => { if (x[1](h, g)) spDays[i].push(d); });
+  }
   const inMonth = Object.values(hm), ramadanDays = inMonth.filter(x => x.num === 9).reduce((a, x) => a + x.days, 0);
   const b65 = fc ? t(((v[4] || [])[0] || [])[0]) : '';
   const useNew = NEW && (/NEW/i.test(b65) || (!/OLD/i.test(b65) && ramadanDays >= 15));
@@ -937,11 +965,35 @@ async function buildAssumptions(accountKey) {
     economics: eco.filter(r => t(r[0]) && !isTotal(r)).map(ecoRow), blended: (eco.find(isTotal) && ecoRow(eco.find(isTotal))) || null,
     weeks: wk.filter(r => t(r[0]) && !isTotal(r)).map(r => ({ label: t(r[0]), days: n(r[1]), weight: n(r[2]) })),
     hijri: inMonth.map(x => Object.assign({ num: x.num, year: x.year, days: x.days, from: x.from, to: x.to }, idx.months[x.num - 1] || {})),
-    weekday: idx.weekday, weekOfMonth: idx.weeks, special: idx.special
+    weekday: idx.weekday, weekOfMonth: idx.weeks,
+    special: idx.special.map(sp => { const i = SPECIAL.findIndex(x => x[0].test(sp.name)); return Object.assign({}, sp, { inMonth: i >= 0 ? spDays[i] : null }); })
+      .filter(sp => sp.inMonth && sp.inMonth.length)
   };
+}
+
+/** Writes changed stored-index numbers (Spend / Value / Conv, columns B to D) to the Assumptions tab. */
+async function setAssumptions(accountKey, edits) {
+  const account = ACCOUNTS[normalizeAccountKey_(accountKey)];
+  const book = account.sheets && account.sheets.assumptions ? await openBook(account) : null;
+  const sh = book && await optionalSheet(book, 'assumptions');
+  if (!sh) throw new Error('No Assumptions tab is linked for ' + account.shortLabel + '.');
+  const COL = { spend: 'B', value: 'C', conv: 'D' };
+  // Only rows of the stored indexes (below the STORED — OLD title) that hold a number.
+  const col = ((await batchGet(book.id, [a1(sh.title, 'A40:B230')]))[0] || []);
+  const old0 = col.findIndex(r => /STORED.*OLD/i.test(String((r || [])[0] || '')));
+  if (old0 < 0) throw new Error('The stored index was not found in the Assumptions tab.');
+  const data = (Array.isArray(edits) ? edits : []).map(e => {
+    const row = Math.round(Number(e && e.row)), c = COL[e && e.key], x = Number(e && e.value), r = col[row - 40] || [];
+    if (!(row > 40 + old0 && row <= 230) || !c || typeof r[1] !== 'number') throw new Error('That cell cannot be changed here.');
+    if (!isFinite(x) || x < 0 || x > 100) throw new Error('Use a number from 0 to 100.');
+    return { range: a1(sh.title, c + row), values: [[x]] };
+  });
+  if (!data.length) throw new Error('Nothing to save.');
+  await valuesBatchUpdate(book.id, data);
+  return data.length;
 }
 
 function forgetArchive() { Object.keys(archiveCache).forEach(k => delete archiveCache[k]); }
 
 module.exports = { ACCOUNTS, buildDashboardData, getMonthCompareData, normalizeAccountKey_, fmt, wallFromInstant, makeAsDate, grid, toNumber_,
-  ssIdOf, openBook, optionalSheet, forgetArchive, buildForecast, setForecast, buildAssumptions };
+  ssIdOf, openBook, optionalSheet, forgetArchive, buildForecast, setForecast, buildAssumptions, setAssumptions };

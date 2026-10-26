@@ -4,7 +4,7 @@
 const { onRequest } = require('firebase-functions/v2/https');
 const { onMessagePublished } = require('firebase-functions/v2/pubsub');
 const { onSchedule } = require('firebase-functions/v2/scheduler');
-const { buildDashboardData, getMonthCompareData, normalizeAccountKey_, buildForecast, setForecast, buildAssumptions } = require('./dash');
+const { buildDashboardData, getMonthCompareData, normalizeAccountKey_, buildForecast, setForecast, buildAssumptions, setAssumptions } = require('./dash');
 const { ACCESS, assertAccess, assertAdmin, assertPerm } = require('./access');
 const { fsGet, fsSet, fsAppend, fsList, fsClearList, request, PROJECT_ID } = require('./google');
 const { archiveStatus, archiveMove, archiveProgress } = require('./archive');
@@ -136,6 +136,14 @@ const CALLS = {
     const key = normalizeAccountKey_(args[0]);
     await assertPerm(args[2], 'lab');
     return sheetData('assume', key, !!args[1]);
+  },
+  /** Media Plan Lab → Assumptions: writes changed index numbers, then reads both tabs again. */
+  async assumeSet(args) {
+    const key = normalizeAccountKey_(args[0]);
+    await assertPerm(args[2], 'lab');
+    await setAssumptions(key, args[1]);
+    sheetData('forecast', key, true).catch(() => {});
+    return sheetData('assume', key, true);
   },
   /** Media Plan Lab → Forecast: writes the model settings to the tab, then reads it again. */
   async forecastSet(args) {
