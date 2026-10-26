@@ -3476,6 +3476,13 @@ window.addEventListener('load',function(){
     .as-kv{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:#8a92a6;padding:7px 0 0}.as-kv+.as-kv{border-top:1px solid #f1f3f8;margin-top:6px}.as-kv b{color:#1d2433}.as-kv b.up{color:#13894f}.as-kv b.dn{color:#c9861a}
     .as-in{width:100%;min-width:0;border:1.5px solid #e6e9f1;border-radius:9px;background:#fff;font:inherit;font-size:12.5px;font-weight:800;text-align:center;padding:5px 2px;color:#1d2433;outline:none}.as-in.ch{border-color:#203c8e;background:#eef3ff;color:#203c8e}
     .as-tr small{font-size:9.5px;color:#8a92a6;font-weight:700}.as-n{text-align:center}
+    .fc-top button{white-space:nowrap}.yr-ch{display:flex;align-items:flex-end;gap:10px;height:150px;padding:0 4px;border-bottom:1.5px solid #e6e9f1}
+    .yr-g{flex:1;display:flex;align-items:flex-end;justify-content:center;gap:5px;height:100%}.yr-g i{width:24px;max-width:40%;border-radius:7px 7px 0 0;display:block;position:relative}.yr-g i.s{background:#9fb3ea}.yr-g i.v{background:#203c8e}
+    .yr-g i.p{background:repeating-linear-gradient(45deg,#13894f 0 5px,#3fb57c 5px 10px)}.yr-g i.ps{background:repeating-linear-gradient(45deg,#9fd8bb 0 5px,#c6ead7 5px 10px)}
+    .yr-g i b{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:9.5px;font-weight:800;white-space:nowrap;color:#1d2433}
+    .yr-x{display:flex;gap:10px;padding:6px 4px 0}.yr-x div{flex:1;text-align:center;font-size:12px;font-weight:800}.yr-x div.pl{color:#13894f}.yr-x small{display:block;font-size:9.5px;color:#8a92a6;font-weight:700}
+    .yr-lg{display:flex;gap:12px;font-size:10.5px;font-weight:700;color:#8a92a6;margin-top:10px}.yr-lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+    .yr-t .as-tr{grid-template-columns:1.1fr .9fr .9fr .9fr 1.3fr}.yr-t .as-tr span:last-child{font-size:10.5px}.yr-t .as-tr.pl span{color:#13894f}
     .as-wrap{margin-top:6px}.as-eco{padding:8px 0}.as-eco+.as-eco{border-top:1px solid #edf0f6}.as-eco>div:first-child{display:flex;align-items:center;font-size:12.5px}.as-eco>div:first-child em{margin-left:auto;font-style:normal;font-weight:900;color:#203c8e}
     .as-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}.as-chips span{font-size:10.5px;font-weight:700;color:#8a92a6;background:#f6f8fc;border-radius:8px;padding:3px 7px}.as-chips b{color:#1d2433}
     .as-bl{font-size:11px;font-weight:700;color:#8a92a6;border-top:1px solid #edf0f6;padding-top:8px;margin-top:2px}.as-bl b{color:#1d2433}
@@ -7119,17 +7126,18 @@ function fcDraw(){
  if(!canDo('lab')){box.innerHTML='';return}
  const c=FC[CURRENT_ACCOUNT]||{};
  if(!c.data&&!c.busy&&!c.err){fcLoad(false);return}
- const d=c.data, isAs=FC_VIEW==='assume', a=AS[CURRENT_ACCOUNT]||{};
+ const d=c.data, isAs=FC_VIEW==='assume', isYr=FC_VIEW==='years', a=AS[CURRENT_ACCOUNT]||{};
  const busy=isAs?a.busy:c.busy;
  const months=(d&&d.months)||[];
  const dd=months.length?`<label class="fc-dd${c.moving?' busy':''}"><span>📅</span><select onchange="fcMonth(this.value)" ${c.moving?'disabled':''}>${months.map(m=>`<option value="${esc(String(m.v))}" ${String(m.v)===String(d.monthRaw)?'selected':''}>${esc(m.t)}</option>`).join('')}</select><em>▾</em></label>`:(d&&d.month?`<span class="fc-dd"><span>📅</span>${esc(d.month)}</span>`:'');
- const head=`<div class="fc-hd"><div><small>MEDIA PLAN LAB</small><b>${isAs?'Assumptions':'Forecast'}</b></div>${dd}</div>
-  <div class="fc-top"><button type="button" class="${isAs?'':'on'}" onclick="fcView('forecast')">📊 Forecast</button><button type="button" class="${isAs?'on':''}" onclick="fcView('assume')">📋 Assumptions</button></div>
+ const head=`<div class="fc-hd"><div><small>MEDIA PLAN LAB</small><b>${isAs?'Assumptions':isYr?'Same month':'Forecast'}</b></div>${dd}</div>
+  <div class="fc-top">${[['forecast','📊','Forecast'],['assume','📋','Assumptions'],['years','🗓️','Years']].map(([k,i,l])=>`<button type="button" class="${FC_VIEW===k?'on':''}" onclick="fcView('${k}')">${i} ${l}</button>`).join('')}</div>
   ${c.moving?`<div class="fc-note"><span class="lab-spin dark"></span>Changing the month to ${esc(c.moving)} in the sheet…</div>`:''}`;
  const foot=`<button type="button" class="pk-ghost fc-rd" onclick="${isAs?'asLoad(true)':'fcLoad(true)'}" ${busy?'disabled':''}>${busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read '+(isAs?'Assumptions':'the month tab')+' now'}</button>${d&&d.at&&!isAs?`<div class="fc-foot" style="text-align:center">Read ${esc(new Date(d.at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}))} · ${esc(d.tab||'')}</div>`:''}`;
  if(!d){box.innerHTML=`<div class="lab-box fc">${head}<div class="fc-note">${c.err?'⚠️ '+esc(c.err):'<span class="lab-spin dark"></span>Reading the month tab…'}</div>${foot}</div>`;return}
  if(d.missing){box.innerHTML=`<div class="lab-box fc">${head}<div class="fc-note">No forecast tab is linked for ${esc(CURRENT_ACCOUNT.toUpperCase())} yet.</div></div>`;return}
  if(isAs){box.innerHTML=`<div class="lab-box fc">${head}${asHtml()}${foot}</div>`;return}
+ if(isYr){box.innerHTML=`<div class="lab-box fc">${head}${yrHtml(d)}${foot}</div>`;return}
  const p=d.plan||{},wt=d.weekTotal||{},e=d.engine||{},st=d.settings||{},l6=(d.ref||{}).last60||{},ly=(d.ref||{}).ly||{};
  const mon=d.month||'This month';
  const lastDay=Date.parse(st.lastData)?new Date(Date.parse(st.lastData)).getDate():null;
@@ -7176,6 +7184,40 @@ function fcDraw(){
      ${st.winStart?`<div class="fc-foot">Looked at ${esc(st.winStart)} – ${esc(st.winEnd)} · data up to ${esc(st.lastData)}${st.index?' · '+esc(st.index):''}</div>`:''}`)}
   </div>${c.msg&&FC_OPEN!=='settings'?`<div class="mrp-msg">${c.msg}</div>`:''}
   ${foot}</div>`;
+}
+ 
+function fcMonthKey(d){
+ const v=d&&d.monthRaw;let dt=null;
+ if(typeof v==='number'&&v>20000)dt=new Date(Math.round((v-25569)*864e5));
+ else if(d&&d.month&&!isNaN(Date.parse('1 '+d.month)))dt=new Date(Date.parse('1 '+d.month)+12*36e5);
+ return dt?dt.getUTCFullYear()+'-'+String(dt.getUTCMonth()+1).padStart(2,'0'):'';
+}
+function fcHijriOf(key){
+ try{const [y,m]=key.split('-').map(Number),f=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{timeZone:'UTC',month:'numeric'}),last=new Date(Date.UTC(y,m,0)).getUTCDate(),out=[];
+   for(const day of [1,last]){const n=+f.formatToParts(new Date(Date.UTC(y,m-1,day,12))).find(x=>x.type==='month').value;const nm=HIJRI_NAMES[n-1];if(nm&&!out.includes(nm))out.push(nm)}
+   return out.join(' · ')}catch(e){return ''}
+}
+function yrHtml(d){
+ const key=fcMonthKey(d), mm=key.slice(5), p=d.plan||{}, wt=d.weekTotal||{};
+ if(!key)return '<div class="fc-note">The plan month could not be read from the sheet.</div>';
+ const hist=((DASH_DATA||{}).history||[]).filter(h=>h.month&&h.month.slice(5)===mm&&h.month<key).sort((a,b)=>a.month<b.month?-1:1).slice(-4);
+ const name=String(monthName(key,true)).split(' ')[0];
+ const rows=hist.map(h=>({y:h.month.slice(0,4),tag:'actual',spend:h.cost,rev:h.value,roas:h.roas||(h.cost?h.value/h.cost:null),conv:h.conversions,hj:String(h.hijri||'').trim()}))
+   .concat([{y:key.slice(0,4),tag:'plan',plan:1,spend:p.spend,rev:p.rev,roas:p.roas,conv:p.conv,hj:fcHijriOf(key)}]);
+ const mx=Math.max(1,...rows.map(r=>Math.max(r.spend||0,r.rev||0)));
+ const h=v=>Math.max(2,(v||0)/mx*100).toFixed(1)+'%';
+ const bars=rows.map(r=>`<div class="yr-g"><i class="${r.plan?'ps':'s'}" style="height:${h(r.spend)}"><b>${fcK(r.spend)}</b></i><i class="${r.plan?'p':'v'}" style="height:${h(r.rev)}"><b>${fcK(r.rev)}</b></i></div>`).join('');
+ const xl=rows.map(r=>`<div class="${r.plan?'pl':''}">${r.y}<small>${r.tag}</small></div>`).join('');
+ const cpa=r=>r.conv?money(r.spend/r.conv):'—';
+ const tbl=`<div class="as-t yr-t"><div class="as-tr hd"><span></span><span>ROAS</span><span>Conv</span><span>CPA</span><span>Hijri</span></div>${rows.map(r=>`<div class="as-tr${r.plan?' pl':''}"><span>${r.y}${r.plan?' plan':''}</span><span>${r.roas!=null?fmt(r.roas,2)+'x':'—'}</span><span>${fmt(r.conv,0)}</span><span>${cpa(r)}</span><span>${esc(r.hj||'—')}</span></div>`).join('')}</div>`;
+ const ly=hist[hist.length-1], pct=(a,b)=>a&&b?Math.round((a/b-1)*100):null, sg=v=>v==null?'—':(v>0?'+':v<0?'−':'')+Math.abs(v)+'%';
+ const ds=ly?pct(p.spend,ly.cost):null, dr=ly?pct(p.rev,ly.value):null, soFar=wt.actSpend?`${esc(key.slice(0,4))} so far ${money(wt.actSpend)} spent${wt.actRev?' · '+money(wt.actRev)+' revenue · '+fmt(wt.actRev/wt.actSpend,2)+'x':''}`:'';
+ return `<div class="fc-card yr-c"><div class="fc-l" style="margin:2px 0 22px">${esc(name.toUpperCase())} · SPEND & REVENUE</div>
+   ${hist.length?'':'<div class="fc-foot" style="margin:-12px 0 12px">No '+esc(name)+' in the History tab yet.</div>'}
+   <div class="yr-ch">${bars}</div><div class="yr-x">${xl}</div>
+   <div class="yr-lg"><span><i style="background:#9fb3ea"></i>Spend</span><span><i style="background:#203c8e"></i>Revenue</span><span><i style="background:#13894f"></i>Plan</span></div></div>
+  <div class="fc-card" style="margin-top:8px">${tbl}</div>
+  ${ly?`<div class="fc-rec ${dr!=null&&dr<0?'warm':''}"><span>📈</span><div><b>Plan vs ${esc(name.slice(0,3))} ${ly.month.slice(0,4)}: ${sg(ds)} spend, ${sg(dr)} revenue</b><small>ROAS ${fmt(p.roas,2)}x vs ${fmt(ly.roas||(ly.cost?ly.value/ly.cost:0),2)}x${soFar?' · '+soFar:''}</small></div></div>`:soFar?`<div class="fc-foot">${soFar}</div>`:''}`;
 }
  
 let AS={tab:'index'};
