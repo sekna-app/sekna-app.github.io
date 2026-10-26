@@ -10101,7 +10101,7 @@ function tkPerson(email){return tkPeople().find(p=>p.email===email)||{email,name
 const ONLINE_MS=5*60000;
 function isOnline(ms){return !!ms&&Date.now()-ms<ONLINE_MS}
 function onDot(av,ms){return isOnline(ms)?`<span class="avw">${av}<i class="on-dot" title="Online now"></i></span>`:av}
-function tkAv(p){return onDot(`<span class="tk-av has-emb">${personAv(p.avatar,p.name)}</span>`,p.seen)}
+function tkAv(p){return `<span class="tk-av has-emb">${personAv(p.avatar,p.name)}</span>`}
 function adminSeen(email){const r=((ADMIN_LAST&&ADMIN_LAST.rows)||[]).filter(x=>String(x.email).toLowerCase()===String(email).toLowerCase());return Math.max(0,...r.map(x=>x.lastSeenMs||0))}
 const TK_VIEWS={team:['Team Board','The whole team, week by week'],mine:['My Tasks','What you need to do'],build:['Task Builder','Plan the month for the team'],quick:['Quick Requests','Small asks with a deadline'],leave:['Team Leave','Days off and backups']};
 

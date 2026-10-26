@@ -3,7 +3,7 @@
 // so nothing changes for anyone before the move. Emails and pushes go out through notify.js.
 const crypto = require('crypto');
 const { fsGet, fsSet, fsDelete, fsUpdate, batchGet, a1 } = require('./google');
-const { assertAccess, accessRows, isAdminEmail, permsFor, can, forgetPerms, ACC } = require('./access');
+const { assertAccess, accessRows, isAdminEmail, permsFor, can, forgetPerms } = require('./access');
 
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzjgZ1nXxLTcFdeFCIEznOj2H0XCo9YGUeu1YF2pJdsQiOo_aM-Mn6HxKKNk8peEuM1Ig/exec';
 const TASKS_SHEET = { ID: '1PWV9exRy9dwW3H66bt7W4E1SQb63EJbgVz96yS6fQkI', NAME: 'SEKNA Tasks' };
@@ -78,12 +78,9 @@ async function teamPeople(mem, me) {
     if (!email || seen[email]) return;
     seen[email] = 1;
     const m = mem[email] || {};
-    out.push({ email, name: name || m.name || email.split('@')[0], role: m.role || '', avatar: m.avatar || 0, seen: last[norm(email)] || 0 });
+    out.push({ email, name: name || m.name || email.split('@')[0], role: m.role || '', avatar: m.avatar || 0 });
   };
-  // Last time each person used SEKNA (any of their devices), for the green "online" dot.
-  const [rows, sn] = await Promise.all([accessRows(), fsGet(ACC.seen).catch(() => null)]);
-  const last = {};
-  rows.forEach(r => { const e = norm(r.email), t = Math.max(r.lastSeen || 0, (sn || {})[r.tokenHash] || 0); if (t > (last[e] || 0)) last[e] = t; });
+  const rows = await accessRows();
   rows.forEach(r => { if (r.status === 'Approved') add(r.email, r.name); });
   // Only people with an approved device (someone the admin deleted or revoked drops off the
   // team even if a position is still saved for them), and the person asking.
