@@ -3364,9 +3364,6 @@ window.addEventListener('load',function(){
     .fc-vo{display:flex;gap:10px;align-items:center;background:#e7f6ee;border-radius:13px;padding:10px 12px;margin-bottom:10px;font-size:18px}.fc-vo span{font-size:11.5px;font-weight:600;color:#4c5464;line-height:1.4}.fc-vo b{display:block;color:#0b5a37;font-size:12.5px}
     .fc-set input:disabled{color:#1d2433;-webkit-text-fill-color:#1d2433;opacity:1}
     #labPanel.lab-ro .lab-go,#labPanel.lab-ro .lab-actions,#labPanel.lab-ro #labSave button,#labPanel.lab-ro .lab-check{display:none!important}
-    .la-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid #eff1f6}.la-row:first-of-type{border-top:0}.la-row>div{flex:1;min-width:0}.la-row b{display:block;font-size:13px}.la-row small{font-size:10.5px;color:#8a92a6;font-weight:700}
-    .la-seg{display:flex;background:#f2f4f9;border-radius:10px;padding:3px;gap:2px}.la-seg button{border:0;background:transparent;font:inherit;font-size:11px;font-weight:800;padding:6px 8px;border-radius:8px;color:#8a92a6;cursor:pointer;white-space:nowrap}.la-seg button.on{background:#203c8e;color:#fff}.la-seg button.x.on{background:#c43c50}
-    .la-add{display:flex;gap:8px;margin-top:10px}.la-add select{flex:1;min-width:0;border:1.5px solid #e6e9f1;border-radius:11px;padding:9px 10px;font:inherit;font-size:12.5px;font-weight:700;background:#fff;color:#1d2433}
     .pg-row{flex-wrap:wrap}.lmp{position:relative;margin:2px 0 6px;flex:0 0 100%;order:3}.lmp-st{display:inline-flex;align-items:center;background:#fff;border:1.5px solid #cdd8f5;border-radius:14px;overflow:hidden;box-shadow:0 4px 14px rgba(20,30,60,.06)}
     .lmp-st button{border:0;background:transparent;font:inherit;color:#203c8e;font-weight:900;cursor:pointer}.lmp-st>button:not(.lmp-m){width:38px;font-size:18px;padding:7px 0}.lmp-st>button:disabled{color:#c5ccd9;cursor:default}
     .lmp-m{display:flex;align-items:center;gap:6px;font-size:13.5px!important;padding:9px 12px!important;border-left:1px solid #e6e9f1!important;border-right:1px solid #e6e9f1!important}
@@ -5455,7 +5452,6 @@ window.addEventListener('load',function(){
       <div id="labForecast"></div>
       <div id="labSave"></div>
       <div id="labBody"></div>
-      <div id="labAccess"></div>
     </section>
   </div>
 
@@ -6981,7 +6977,6 @@ let LAB_STATE=null, LAB_BUSY=false, LAB_MSG='';
 function renderLab(){
  const body=document.getElementById('labBody'); if(!body)return;
  const panel=document.getElementById('labPanel');if(panel)panel.classList.toggle('lab-ro',canDo('lab')&&!labEdit());
- labAccessDraw();
  if(!canDo('lab')){
    body.innerHTML='<div class="lab-locked"><div class="lock-ic anim"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="sh" d="M8 11V8a4 4 0 0 1 8 0v3"/><rect x="5" y="11" width="14" height="10" rx="2"/><circle cx="12" cy="16" r="1.4" fill="currentColor"/></svg></div><b>Admin only</b><small>Media Plan Lab is for the SEKNA admin only.</small></div>';fcDraw();return;
  }
@@ -7086,29 +7081,6 @@ function fcDraw(){
      ${st.winStart?`<div class="fc-foot">Looked at ${esc(st.winStart)} – ${esc(st.winEnd)} · data up to ${esc(st.lastData)}${st.index?' · '+esc(st.index):''}</div>`:''}`)}
   </div>${c.msg&&FC_OPEN!=='settings'?`<div class="mrp-msg">${c.msg}</div>`:''}
   ${foot}</div>`;
-}
- 
-let LA={busy:false,saving:''};
-function labAccessDraw(){
- const box=document.getElementById('labAccess');if(!box)return;
- if(!(ACCESS_PROFILE&&ACCESS_PROFILE.owner)||!canDo('lab')){box.innerHTML='';return}
- if(!PERM.data&&!LA.busy){LA.busy=true;serverCall('adminPerms',getAccessToken()).then(r=>{LA.busy=false;PERM.data=r;PERM.edit=PERM.edit||{};labAccessDraw()}).catch(err=>{LA.busy=false;PERM.data={error:errorText(err)};labAccessDraw()})}
- const d=PERM.data;
- const head='<div class="fc-l" style="margin-top:4px">WHO CAN USE THE LAB <em>only you see this</em></div>';
- if(!d||d.error){box.innerHTML=`<div class="lab-box fc">${head}<div class="fc-note">${d&&d.error?'⚠️ '+esc(d.error):'<span class="lab-spin dark"></span>Loading people…'}</div></div>`;return}
- const ppl=(d.people||[]).filter(p=>!p.owner&&p.status==='Approved');
- const has=ppl.filter(p=>p.perms&&(p.perms.lab===true||p.perms.lab==='view')), rest=ppl.filter(p=>!has.includes(p));
- const row=p=>{const v=p.perms.lab,busy=LA.saving===p.email;return `<div class="la-row"><div><b>${esc(p.name||p.email)}</b><small>${esc(p.role||p.email)}</small></div>
-   <div class="la-seg">${[['view','👁 View'],[true,'✏️ Edit'],[false,'✕']].map(([k,l])=>`<button type="button" class="${v===k?'on':''}${k===false?' x':''}" ${busy?'disabled':''} onclick="labAccessSet('${esc(p.email)}',${k===true?'true':k===false?'false':"'view'"})">${l}</button>`).join('')}</div></div>`};
- box.innerHTML=`<div class="lab-box fc">${head}
-  <div class="fc-card">${has.length?has.map(row).join(''):'<div class="fc-foot" style="text-align:center;margin:4px 0">Only you can open the Lab now.</div>'}</div>
-  ${rest.length?`<div class="la-add"><select id="laPick"><option value="">Give someone the Lab…</option>${rest.map(p=>`<option value="${esc(p.email)}">${esc(p.name||p.email)}</option>`).join('')}</select><button type="button" class="lab-go" style="flex:none;padding:0 16px" onclick="const v=document.getElementById('laPick').value;if(v)labAccessSet(v,'view')">Add</button></div>
-  <div class="fc-foot">New people start as View only. They see a "View only" tag on the Lab in their menu.</div>`:''}</div>`;
-}
-function labAccessSet(email,v){
- if(LA.saving)return;LA.saving=email;labAccessDraw();
- serverCall('adminPermsSet',getAccessToken(),{[email]:{lab:v}}).then(()=>{LA.saving='';const p=((PERM.data||{}).people||[]).find(x=>x.email===email);if(p)p.perms=Object.assign({},p.perms,{lab:v});labAccessDraw()})
-  .catch(err=>{LA.saving='';showSettingsToast(errorText(err));labAccessDraw()});
 }
  
 let LMP_OPEN=false;
