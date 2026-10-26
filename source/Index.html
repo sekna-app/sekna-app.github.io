@@ -7056,6 +7056,8 @@ function asHtml(){
  const c=AS[CURRENT_ACCOUNT]=AS[CURRENT_ACCOUNT]||{},d=c.data;
  if(!d&&!c.busy&&!c.err){setTimeout(()=>asLoad(false),0)}
  if(!d)return `<div class="fc-note">${c.err?'⚠️ '+esc(c.err):'<span class="lab-spin dark"></span>Reading the Assumptions tab…'}</div>`;
+ 
+ if(d&&!d.missing&&(d.special||[]).some(x=>!Array.isArray(x.inMonth))){d.special=[];if(!c.fresh){c.fresh=1;setTimeout(()=>asLoad(true),0)}}
  if(d.missing)return `<div class="fc-note">No Assumptions tab is linked for ${esc(CURRENT_ACCOUNT.toUpperCase())} yet.</div>`;
  const x2=v=>v==null?'—':fmt(v,2), pc=v=>v==null?'—':fmt(v*100,1)+'%', mo=(v,dd)=>v==null?'—':cs()+fmt(cx(v),dd||0);
  const ed=c.edit||{}, nEd=Object.keys(ed).length;
