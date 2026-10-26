@@ -2544,6 +2544,16 @@ window.addEventListener('load',function(){
     .wx-thin{height:6px;border-radius:99px;background:#e2e6ef;margin-top:8px;overflow:hidden}
     .wx-thin span{display:block;height:100%;border-radius:99px;background:#3d6bff;transition:width .7s ease}.wx-thin span.full{background:#22c47c}
 
+    /* v170 Channel Delivery · Channel cards */
+    .cc-list{display:flex;flex-direction:column;gap:9px;margin-top:6px}
+    .ccd{background:#fff;border:1.5px solid #e9ecf3;border-radius:18px;padding:12px 13px}.ccd.win{border:2px solid #e2b874;box-shadow:0 8px 22px rgba(226,184,116,.22)}
+    .cc-h{display:flex;align-items:center;gap:9px}.cc-h b{font-size:14px;color:#1d2433;min-width:0}.cc-h .channel-icon{flex:none}
+    .cc-roas{margin-left:auto;font-style:normal;font-size:12.5px;font-weight:900;border-radius:99px;padding:4px 10px;background:#eef3ff;color:#203c8e;white-space:nowrap}
+    .cc-roas.win{background:linear-gradient(90deg,#f3d79f,#e2b874);color:#3d2a07}.cc-roas.low{background:#fde8eb;color:#c43c50}
+    .cc-sp{margin-top:9px;font-size:11.5px;font-weight:700;color:#8a92a6}.cc-sp b{font-size:15px;color:#1d2433;font-weight:900}.cc-sp .over{color:#c43c50}
+    .cc-bar{height:6px;border-radius:99px;background:#edf0f6;margin-top:6px;overflow:hidden}.cc-bar span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#203c8e,#3d6bff)}.ccd.win .cc-bar span{background:linear-gradient(90deg,#c89434,#e2b874)}.cc-bar span.over{background:#d33b4f!important}
+    .cc-q{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:9px}.cc-q div{background:#f6f8fc;border-radius:11px;padding:7px 4px;text-align:center}.cc-q b{display:block;font-size:13px;color:#1d2433;font-weight:900}.cc-q span{font-size:9.5px;font-weight:800;color:#8a92a6}
+    body.dark-mode .ccd{background:#151a22;border-color:#2a313c}body.dark-mode .cc-h b,body.dark-mode .cc-sp b,body.dark-mode .cc-q b{color:#fff}body.dark-mode .cc-q div{background:#1d2330}body.dark-mode .cc-bar{background:#2a313c}
     .cx-table{width:100%;border-collapse:collapse;font-size:13px;color:#1d2433;margin-top:4px}
     .cx-table th{font-size:10.5px;text-transform:uppercase;letter-spacing:.05em;color:#9aa1b2;text-align:left;padding:6px;font-weight:800}
     .cx-table td{padding:10px 6px;border-top:1px solid #e8ebf2;vertical-align:middle;text-align:left;direction:ltr}
@@ -4374,8 +4384,12 @@ window.addEventListener('load',function(){
     .wly-col.win i{box-shadow:0 0 0 2px #9dffc8,0 0 12px rgba(125,255,179,.7),0 0 24px rgba(125,255,179,.35)!important}
     .wly-col.win i.l{background:#dcfbe9!important}.wly-col.win i.t{background:linear-gradient(#8ff0bf,#3fd18d)!important}
     .wly-col.win b{color:#21a565!important;text-shadow:0 0 8px rgba(125,255,179,.55)!important}
-    .ox-tile.st-g,.ox-tile.st-a,.ox-tile.st-r{border:2px solid var(--stc)!important;border-top-width:5px!important}
-    .ox-tile.st-g{--stc:#2fbf7a}.ox-tile.st-a{--stc:#e2a23b}.ox-tile.st-r{--stc:#e0566a}
+    .ox-tile.st-g,.ox-tile.st-a,.ox-tile.st-r,.sx-ftile.st-g,.sx-ftile.st-a,.sx-ftile.st-r{border:0!important;border-top:4px solid var(--stc)!important}
+    .st-g{--stc:#13894f}.st-a{--stc:#c9861a}.st-r{--stc:#d33b4f}
+    .sx-ftile .mg-rows{display:flex;flex-direction:column;gap:5px;margin:8px 0 2px}.mg-rows div{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;font-weight:700;color:#8a92a6}.mg-rows b{color:#1d2433;font-weight:900}.mg-rows b.up{color:#13894f}.mg-rows b.down{color:#c43c50}
+    body.dark-mode .mg-rows b{color:#fff}
+    .sx-ftile .sx-thin{position:relative}.sx-thin .mg-tk{position:absolute;top:-4px;bottom:-4px;width:2.5px;margin-left:-1px;background:#1d2433;border-radius:2px}
+    body.dark-mode .sx-thin .mg-tk{background:#fff}
     /* v170: only this year's weeks are marked when they beat last year: blue bar, glowing green frame outside */
     .wly-col.win i.t{background:linear-gradient(#3d6bff,#203c8e)!important;box-shadow:0 0 0 2.5px #fff,0 0 0 5px #39e29a,0 0 16px 3px rgba(57,226,154,.65)!important}
     body.dark-mode .wly-col.win i.t{box-shadow:0 0 0 2.5px #151a22,0 0 0 5px #39e29a,0 0 16px 3px rgba(57,226,154,.55)!important}
@@ -5546,10 +5560,7 @@ window.addEventListener('load',function(){
 
     <section class="card section channel-section">
     <div class="section-head"><div><div class="section-title section-title-with-icon"><span class="title-crown">👑</span><span>Channel Delivery</span></div><div class="section-sub">Month to date · ranked by ROAS</div></div></div>
-    <table class="cx-table">
-      <thead><tr><th>Channel</th><th>Spend</th><th class="cx-wide">Clicks</th><th class="cx-wide">Conv.</th><th class="cx-wide">Value</th><th>ROAS</th></tr></thead>
-      <tbody id="channelRows"></tbody>
-    </table>
+    <div class="cc-list" id="channelRows"></div>
   </section>
   <section class="card section mrp-card" id="mrSection" hidden>
     <button type="button" class="mr-toggle" id="mrToggle" onclick="MR.open=!MR.open;drawMonthlyReport()" aria-expanded="false"><span class="section-heading-icon month">📄</span><span><b>Monthly Report</b><small>The month as a PDF for the team</small></span><i>▾</i></button>
@@ -6690,24 +6701,19 @@ function renderWeekDetail(w,isLive,monthName){
    </div>`;
 }
 
+
 function renderChannels(rows){
  const host=document.getElementById('channelRows');
  if(!host)return;
  const sorted=[...(rows||[])].sort((a,b)=>(Number(b.roas)||0)-(Number(a.roas)||0));
  host.innerHTML=sorted.map((r,i)=>{
-  const roas=Number(r.roas)||0;
-  const win=i===0;
-  const ach=Number(r.spendAchievement)||0;
-  const pill=win?'win':roas<1?'low':'';
-  return `<tr class="cx-row${win?' win':''}">
-   <td><div class="cx-name"><span class="channel-icon ${channelIconClass(r.channel)}">${channelIconSvg(r.channel)}</span><div><b>${esc(chName(r.channel))}</b>${win?'<span class="cx-crown">Winner</span>':''}</div></div></td>
-   <td><b class="cx-money">${money(r.actualSpend)}</b><div class="cx-bar"><span class="${ach>1?'over':''}" style="width:${Math.min(ach*100,100)}%"></span></div><span class="cx-sub">${percent(ach)} of plan</span></td>
-   <td class="cx-wide">${fmt(r.clicks,0)}</td>
-   <td class="cx-wide">${fmt(r.conversions,0)}</td>
-   <td class="cx-wide">${money(r.actualValue)}</td>
-   <td><span class="cx-roas ${pill}">${fmt(roas,2)}x</span></td>
-  </tr>
-  <tr class="cx-more${win?' win':''}"><td colspan="3"><span>Clicks <b>${fmt(r.clicks,0)}</b></span><span>Conv. <b>${fmt(r.conversions,0)}</b></span><span>Value <b>${money(r.actualValue)}</b></span></td></tr>`;
+  const roas=Number(r.roas)||0, win=i===0, ach=Number(r.spendAchievement)||0;
+  return `<div class="ccd${win?' win':''}">
+   <div class="cc-h"><span class="channel-icon ${channelIconClass(r.channel)}">${channelIconSvg(r.channel)}</span><b>${esc(chName(r.channel))}</b><em class="cc-roas${win?' win':roas<1?' low':''}">${win?'👑 ':''}${fmt(roas,2)}x</em></div>
+   <div class="cc-sp"><b>${money(r.actualSpend)}</b> spent · <span class="${ach>1.15?'over':''}">${percent(ach)} of plan</span></div>
+   <div class="cc-bar"><span class="${ach>1?'over':''}" style="width:${Math.min(ach*100,100)}%"></span></div>
+   <div class="cc-q"><div><b>${fmt(r.clicks,0)}</b><span>Clicks</span></div><div><b>${fmt(r.conversions,0)}</b><span>Conv.</span></div><div><b>${money(r.actualValue)}</b><span>Value</span></div></div>
+  </div>`;
  }).join('');
 }
 
@@ -8167,11 +8173,11 @@ function renderMonthForecast(x,m,d){
  }
 
  text('mValue',money(value));
- const vNote=document.getElementById('mValueNote');
- if(vNote)vNote.innerHTML=projValue!=null
-   ?`Projected <b>${money(projValue)}</b>${planValue?` · ${pct(projValue/planValue)} of ${money(planValue)}`:''}`
-   :(planValue?`${pct(value/planValue)} of ${money(planValue)}`:'—');
+ 
+ const vNote=document.getElementById('mValueNote'), vEnd=projValue!=null&&planValue?projValue/planValue:null;
+ if(vNote)vNote.innerHTML=`<span class="mg-rows">${projValue!=null?`<div><span>Projected</span><b>${money(projValue)}</b></div>`:''}${planValue?`<div><span>Target</span><b>${money(planValue)}</b></div>`:''}${vEnd!=null?`<div><span>Month end</span><b class="${vEnd>=.95?'up':vEnd<.8?'down':''}">${pct(vEnd)}</b></div>`:planValue?`<div><span>So far</span><b>${pct(value/planValue)}</b></div>`:''}</span>`;
  setProgress('mValueBar',planValue?value/planValue:0);
+ mgTick('mValueBar',vEnd);mgFrame('mValue',vEnd==null?(planValue?value/planValue:null):vEnd,.95,.8);
 
  const roas=m.actualRoas!=null&&isFinite(m.actualRoas)?Number(m.actualRoas):(spend?value/spend:null);
  const planRoas=planSpend?planValue/planSpend:null;
@@ -8180,11 +8186,16 @@ function renderMonthForecast(x,m,d){
  if(rNote){
    if(roas!=null&&planRoas){
      const diff=roas/planRoas-1;
-     rNote.innerHTML=`Target ${fmt(planRoas,2)}x · <b class="${diff>=0?'up':'down'}">${diff>=0?'▲':'▼'} ${Math.abs(Math.round(diff*100))}% ${diff>=0?'above':'below'}</b>`;
+     const c=diff>=0?'up':'down',gap=roas-planRoas;
+     rNote.innerHTML=`<span class="mg-rows"><div><span>Target</span><b>${fmt(planRoas,2)}x</b></div><div><span>Gap</span><b class="${c}">${gap>=0?'+':'−'}${fmt(Math.abs(gap),2)}x</b></div><div><span>vs target</span><b class="${c}">${diff>=0?'▲':'▼'} ${Math.abs(Math.round(diff*100))}%</b></div></span>`;
    }else rNote.textContent=planRoas?`Target ${fmt(planRoas,2)}x`:'Actual return';
  }
  setProgress('mRoasBar',(roas!=null&&planRoas)?roas/planRoas:0);
+ mgTick('mRoasBar',planRoas?1:null);mgFrame('mRoas',roas!=null&&planRoas?roas/planRoas:null,1,.85);
 }
+
+function mgTick(barId,at){const b=document.getElementById(barId),w=b&&b.parentElement;if(!w)return;let t=w.querySelector('.mg-tk');if(at==null){if(t)t.remove();return}if(!t){t=document.createElement('i');t.className='mg-tk';w.appendChild(t)}t.style.left=Math.min(100,Math.max(0,at*100))+'%'}
+function mgFrame(id,r,good,ok){const t=document.getElementById(id)&&document.getElementById(id).closest('.sx-ftile');if(!t)return;t.classList.remove('st-g','st-a','st-r');if(r!=null&&isFinite(r))t.classList.add(r>=good?'st-g':r>=ok?'st-a':'st-r')}
 
 
 function renderMiniYoy(valueId,stateId,currentId,m){
