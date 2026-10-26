@@ -907,34 +907,53 @@ async function setForecast(accountKey, values) {
  */
 const HIJRI_PARTS = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { timeZone: 'UTC', year: 'numeric', month: 'numeric', day: 'numeric' });
 function hijriOf(ms) { const p = {}; HIJRI_PARTS.formatToParts(new Date(ms)).forEach(x => { p[x.type] = x.value; }); return { m: +p.month, d: +p.day, y: parseInt(p.year, 10) }; }
+/**
+ * Where the stored indexes start, in rows read from A40 down: by their STORED — OLD / NEW titles, or else by their
+ * "Hijri Month" headers (the sheet has three copies: the active one made of formulas, then OLD, then NEW).
+ */
+function locateIndex(colA) {
+  const txt = i => String(((colA[i] || [])[0]) == null ? '' : colA[i][0]).trim();
+  let oldAt = -1, newAt = -1;
+  const heads = [];
+  for (let i = 0; i < colA.length; i++) {
+    const a = txt(i);
+    if (oldAt < 0 && /STORED.*OLD/i.test(a)) oldAt = i;
+    if (newAt < 0 && /STORED.*NEW|NEW\s*index/i.test(a) && !/ACTIVE/i.test(a)) newAt = i;
+    if (/^hijri month/i.test(a)) heads.push(i);
+  }
+  if (oldAt >= 0 && newAt > oldAt) return { oldAt, newAt };
+  if (heads.length >= 3) return { oldAt: heads[heads.length - 2], newAt: heads[heads.length - 1] };
+  if (heads.length === 2) return { oldAt: heads[0], newAt: heads[1] };
+  return { oldAt: heads.length ? heads[0] : 0, newAt: -1 };
+}
 async function buildAssumptions(accountKey) {
   const account = ACCOUNTS[normalizeAccountKey_(accountKey)];
   if (!(account.sheets && account.sheets.assumptions)) return { missing: true };
   const book = await openBook(account);
   const sh = await optionalSheet(book, 'assumptions'), fc = await optionalSheet(book, 'forecast');
   if (!sh) return { missing: true };
-  const ranges = [a1(sh.title, 'A10:G15'), a1(sh.title, 'A19:C23'), a1(sh.title, 'A40:G230')];
+  const ranges = [a1(sh.title, 'A10:G15'), a1(sh.title, 'A19:C23'), a1(sh.title, 'A40:G270')];
   if (fc) ranges.push(a1(fc.title, 'B60'), a1(fc.title, 'B65'));
   const v = await batchGet(book.id, ranges);
   const n = x => (typeof x === 'number' && isFinite(x) ? x : null), t = x => String(x == null ? '' : x).trim();
   const isTotal = r => /total|blended/i.test(t(r[0]));
-  const eco = grid(v[0], 6, 7), wk = grid(v[1], 5, 3), all = grid(v[2], 191, 7);
+  const eco = grid(v[0], 6, 7), wk = grid(v[1], 5, 3), all = grid(v[2], 231, 7);
   // The stored indexes start at their STORED — OLD title (the rows above are the active, formula-only copy).
-  const old0 = Math.max(0, all.findIndex(r => /STORED.*OLD/i.test(t(r[0])))), ix = all.slice(old0), base = 40 + old0;
+  const loc = locateIndex(all), ix = all.slice(loc.oldAt), base = 40 + loc.oldAt;
   const ecoRow = r => ({ name: t(r[0]), mix: n(r[1]), cpc: n(r[2]), cvr: n(r[3]), aov: n(r[4]), roas: n(r[5]), cpa: n(r[6]) });
   // The two stored indexes: split at the NEW title, then each block read by its headers.
-  const at = ix.findIndex(r => /NEW index/i.test(t(r[0])));
+  const at = loc.newAt > loc.oldAt ? loc.newAt - loc.oldAt : -1;
   const block = (rows, first) => {
     const out = { months: [], weekday: [], weeks: [], special: [] };
     let cur = null;
     rows.forEach((r, i) => {
       const row = first + i;
       const a = t(r[0]);
-      if (/^hijri month/i.test(a)) { cur = 'months'; return; }
-      if (/^weekday/i.test(a)) { cur = 'weekday'; return; }
-      if (/^week of month/i.test(a)) { cur = 'weeks'; return; }
-      if (/^special day/i.test(a)) { cur = 'special'; return; }
-      if (!a || n(r[1]) == null) { if (!a) cur = cur; return; }
+      const head = /^hijri month/i.test(a) ? 'months' : /^weekday/i.test(a) ? 'weekday' : /^week of month/i.test(a) ? 'weeks' : /^special day/i.test(a) ? 'special' : null;
+      if (head) { cur = head; out[head] = []; return; }
+      if (!a) { cur = null; return; }
+      if (n(r[1]) == null) return;
+      if (cur && out[cur].some(x => x.name === a)) return; // never the same row name twice
       if (cur === 'months') out.months.push({ row, name: a, spend: n(r[1]), value: n(r[2]), conv: n(r[3]), effValue: n(r[4]), effSpend: n(r[5]), roasIdx: n(r[6]) });
       else if (cur) out[cur].push({ row, name: a, spend: n(r[1]), value: n(r[2]), conv: n(r[3]), days: t(r[4]) || undefined });
     });
@@ -961,7 +980,7 @@ async function buildAssumptions(accountKey) {
   const useNew = NEW && (/NEW/i.test(b65) || (!/OLD/i.test(b65) && ramadanDays >= 15));
   const idx = useNew ? NEW : OLD;
   return {
-    at: Date.now(), tab: sh.title, month: MONTHS[m] + ' ' + y, index: useNew ? 'NEW' : 'OLD', indexLabel: b65, ramadanDays,
+    v: 2, at: Date.now(), tab: sh.title, month: MONTHS[m] + ' ' + y, index: useNew ? 'NEW' : 'OLD', indexLabel: b65, ramadanDays,
     economics: eco.filter(r => t(r[0]) && !isTotal(r)).map(ecoRow), blended: (eco.find(isTotal) && ecoRow(eco.find(isTotal))) || null,
     weeks: wk.filter(r => t(r[0]) && !isTotal(r)).map(r => ({ label: t(r[0]), days: n(r[1]), weight: n(r[2]) })),
     hijri: inMonth.map(x => Object.assign({ num: x.num, year: x.year, days: x.days, from: x.from, to: x.to }, idx.months[x.num - 1] || {})),
@@ -979,12 +998,12 @@ async function setAssumptions(accountKey, edits) {
   if (!sh) throw new Error('No Assumptions tab is linked for ' + account.shortLabel + '.');
   const COL = { spend: 'B', value: 'C', conv: 'D' };
   // Only rows of the stored indexes (below the STORED — OLD title) that hold a number.
-  const col = ((await batchGet(book.id, [a1(sh.title, 'A40:B230')]))[0] || []);
-  const old0 = col.findIndex(r => /STORED.*OLD/i.test(String((r || [])[0] || '')));
-  if (old0 < 0) throw new Error('The stored index was not found in the Assumptions tab.');
+  const col = ((await batchGet(book.id, [a1(sh.title, 'A40:B270')]))[0] || []);
+  const old0 = locateIndex(col).oldAt;
+  if (!(old0 > 0)) throw new Error('The stored index was not found in the Assumptions tab.');
   const data = (Array.isArray(edits) ? edits : []).map(e => {
     const row = Math.round(Number(e && e.row)), c = COL[e && e.key], x = Number(e && e.value), r = col[row - 40] || [];
-    if (!(row > 40 + old0 && row <= 230) || !c || typeof r[1] !== 'number') throw new Error('That cell cannot be changed here.');
+    if (!(row > 40 + old0 && row <= 270) || !c || typeof r[1] !== 'number') throw new Error('That cell cannot be changed here.');
     if (!isFinite(x) || x < 0 || x > 100) throw new Error('Use a number from 0 to 100.');
     return { range: a1(sh.title, c + row), values: [[x]] };
   });
