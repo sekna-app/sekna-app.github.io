@@ -30,7 +30,7 @@ head = '''<meta name="theme-color" content="#203C8E">
     getDashboardData:{w:20000,a:0,t:2,data:1},
     getMonthCompareData:{w:45000,a:0,t:1,data:1},
     adminArchiveStatus:{w:60000,a:1,t:0},
-    getForecast:{w:45000,a:0,t:2},forecastSet:{w:45000,a:0,t:2},
+    getForecast:{w:45000,a:0,t:2},forecastSet:{w:45000,a:0,t:2},getAssumptions:{w:45000,a:0,t:2},
     // Longer than the server's own limit (120 s), so Apps Script never runs a move at the same time.
     adminArchiveMove:{w:130000,a:1,t:0},
     adminArchiveProgress:{w:15000,a:1,t:0},

@@ -4,7 +4,7 @@
 const { onRequest } = require('firebase-functions/v2/https');
 const { onMessagePublished } = require('firebase-functions/v2/pubsub');
 const { onSchedule } = require('firebase-functions/v2/scheduler');
-const { buildDashboardData, getMonthCompareData, normalizeAccountKey_, buildForecast, setForecast } = require('./dash');
+const { buildDashboardData, getMonthCompareData, normalizeAccountKey_, buildForecast, setForecast, buildAssumptions } = require('./dash');
 const { ACCESS, assertAccess, assertAdmin, assertPerm } = require('./access');
 const { fsGet, fsSet, fsAppend, fsList, fsClearList, request, PROJECT_ID } = require('./google');
 const { archiveStatus, archiveMove, archiveProgress } = require('./archive');
@@ -96,7 +96,7 @@ async function keptData(kind, key) {
 }
 async function sheetData(kind, key, force) {
   const ttl = kind === 'dash' ? DASH_CACHE_MS : MONTHS_CACHE_MS;
-  const build = () => (kind === 'dash' ? buildDashboardData(key) : kind === 'forecast' ? buildForecast(key) : getMonthCompareData(key)).then(v => { if (kind === 'dash') sheetReads++; saveSnap(kind, key, v); return v; });
+  const build = () => (kind === 'dash' ? buildDashboardData(key) : kind === 'forecast' ? buildForecast(key) : kind === 'assume' ? buildAssumptions(key) : getMonthCompareData(key)).then(v => { if (kind === 'dash') sheetReads++; saveSnap(kind, key, v); return v; });
   const ck = kind + ':' + key;
   if (force || inReadWindow(await readWindow())) return cached(ck, ttl, !!force, build);
   const hit = cache[ck];
@@ -131,11 +131,18 @@ const CALLS = {
     await assertPerm(args[2], 'lab');
     return sheetData('forecast', key, !!args[1]);
   },
+  /** Media Plan Lab → Assumptions: channel economics, weeks and the plan month's index. */
+  async getAssumptions(args) {
+    const key = normalizeAccountKey_(args[0]);
+    await assertPerm(args[2], 'lab');
+    return sheetData('assume', key, !!args[1]);
+  },
   /** Media Plan Lab → Forecast: writes the model settings to the tab, then reads it again. */
   async forecastSet(args) {
     const key = normalizeAccountKey_(args[0]);
     await assertPerm(args[2], 'lab');
     await setForecast(key, args[1]);
+    sheetData('assume', key, true).catch(() => {}); // the channel mix follows the settings
     return sheetData('forecast', key, true);
   },
   // Media Plan Lab → Close the month (Admin → Permissions → Lab).

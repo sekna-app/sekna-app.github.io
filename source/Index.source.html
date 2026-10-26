@@ -3319,6 +3319,15 @@ window.addEventListener('load',function(){
     .fc-set label{display:block;background:#f6f8fc;border-radius:12px;padding:8px 10px;border:1.5px solid transparent}.fc-set label.full{grid-column:1/-1}.fc-set label.ed{background:#fff6e6;border-color:#f2d39b}.fc-set label.ch{border-color:#203c8e;background:#eef3ff}
     .fc-set input{display:block;width:100%;border:0;background:transparent;font:inherit;font-size:15px;font-weight:800;color:#1d2433;padding:2px 0;outline:none}.fc-set em{display:block;font-style:normal;font-size:9.5px;font-weight:700;color:#8a92a6}
     .fc-act{display:flex;gap:8px;margin-top:10px}.fc-act .lab-go{flex:1}
+    .as-wrap{margin-top:6px}.as-eco{padding:8px 0}.as-eco+.as-eco{border-top:1px solid #edf0f6}.as-eco>div:first-child{display:flex;align-items:center;font-size:12.5px}.as-eco>div:first-child em{margin-left:auto;font-style:normal;font-weight:900;color:#203c8e}
+    .as-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}.as-chips span{font-size:10.5px;font-weight:700;color:#8a92a6;background:#f6f8fc;border-radius:8px;padding:3px 7px}.as-chips b{color:#1d2433}
+    .as-bl{font-size:11px;font-weight:700;color:#8a92a6;border-top:1px solid #edf0f6;padding-top:8px;margin-top:2px}.as-bl b{color:#1d2433}
+    .as-ix{display:flex;gap:10px;align-items:center;background:#eef3ff;border-radius:14px;padding:10px 12px;margin-bottom:8px}.as-ix span{font-size:20px}.as-ix b{display:block;font-size:13px;color:#203c8e}.as-ix small{font-size:10.5px;font-weight:600;color:#4c5464}.as-ix.new{background:#e7f6ee}.as-ix.new b{color:#13894f}
+    .as-hj{background:#fff;border:1px solid #edf0f6;border-radius:16px;padding:11px 13px;margin-bottom:8px}.as-hj.ram{border-color:#9fd8bb;background:#f3fbf7}.as-hjh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}.as-hjh b{font-size:14px}.as-hjh span{font-size:10.5px;font-weight:700;color:#8a92a6}
+    .as-g{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.as-g div{background:#f6f8fc;border-radius:10px;padding:6px;text-align:center}.as-g small{display:block;font-size:9px;font-weight:800;color:#8a92a6}.as-g b{font-size:13.5px}.as-g b.up{color:#13894f}.as-g b.dn{color:#c9861a}
+    .as-t{font-size:11.5px;font-weight:700}.as-tr{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:4px;padding:5px 0;align-items:center}.as-tr span:not(:first-child){text-align:right}.as-tr+.as-tr{border-top:1px solid #f1f3f8}.as-tr.hd{font-size:9.5px;font-weight:900;color:#8a92a6;letter-spacing:.04em}.as-tr.hi span{color:#13894f}
+    .as-t .as-tr:has(span:nth-child(5)){grid-template-columns:1.2fr 1fr 1fr 1fr 1fr}
+    .as-rd{width:100%;margin-top:6px}.as-wrap .fc-wk{grid-template-columns:92px 1fr 50px}
     .fc-foot{font-size:10.5px;color:#8a92a6;font-weight:600;margin-top:8px}
     .lab-box{border:1.5px solid #e6e9f1;border-radius:18px;padding:14px}
     .lab-head b{display:block;font-size:15px;color:#1d2433}.lab-head small{display:block;font-size:12px;color:#6b7385;margin-top:4px;line-height:1.5}.lab-head em{font-style:normal;font-weight:800;color:#203c8e}
@@ -6994,6 +7003,48 @@ function fcDraw(){
    ${c.msg?`<div class="mrp-msg">${c.msg}</div>`:''}
    ${Object.keys(c.edit||{}).length?`<div class="fc-act"><button type="button" class="pk-ghost" onclick="fcUndo()">Undo</button><button type="button" class="lab-go" onclick="fcSave(this)" ${c.saving?'disabled':''}>${c.saving?'<span class="lab-spin"></span>Saving…':'Save to the sheet'}</button></div>`:''}
    ${st.winStart?`<div class="fc-foot">Looked at ${esc(st.winStart)} – ${esc(st.winEnd)} · data up to ${esc(st.lastData)}${st.index?' · '+esc(st.index):''}</div>`:''}</div>
+  <button type="button" class="rw-fxb${AS.open?' on':''}" onclick="asToggle()"><i>📋</i><span><b>Assumptions</b><small>Channel economics, weeks and this month's index</small></span><em>${AS.open?'▴':'▾'}</em></button>
+  ${AS.open?asHtml():''}
+ </div>`;
+}
+/* ---------- v170: Media Plan Lab → Forecast → Assumptions (a button under the settings) ----------
+ * Only the plan month's Hijri months from the index in use (OLD, or NEW when the month has Ramadan).
+ */
+let AS={open:false};
+function asToggle(){AS.open=!AS.open;const c=AS[CURRENT_ACCOUNT];if(AS.open&&!(c&&(c.data||c.busy)))asLoad(false);else fcDraw()}
+function asLoad(force){
+ const k=CURRENT_ACCOUNT,c=AS[k]=AS[k]||{};if(c.busy)return;c.busy=true;c.err='';fcDraw();
+ serverCall('getAssumptions',k,!!force,getAccessToken()).then(r=>{c.busy=false;c.data=r;fcDraw()}).catch(err=>{c.busy=false;c.err=errorText(err);fcDraw()});
+}
+const HIJRI_NAMES=['Muharram','Safar','Rabi I','Rabi II','Jumada I','Jumada II','Rajab','Shaban','Ramadan','Shawwal','Dhu Qadah','Dhu Hijjah'];
+function asHtml(){
+ const c=AS[CURRENT_ACCOUNT]||{},d=c.data;
+ if(!d)return `<div class="as-wrap"><div class="fc-foot">${c.err?'⚠️ '+esc(c.err):'Reading the Assumptions tab…'}</div></div>`;
+ if(d.missing)return `<div class="as-wrap"><div class="fc-foot">No Assumptions tab is linked for ${esc(CURRENT_ACCOUNT.toUpperCase())} yet.</div></div>`;
+ const x2=v=>v==null?'—':fmt(v,2), pc=v=>v==null?'—':fmt(v*100,1)+'%', mo=(v,dd)=>v==null?'—':cs()+fmt(cx(v),dd||0);
+ const CHC={'search brand':'#c89434','search non-brand':'#2453d6','performance max':'#13894f','demand gen':'#6b3fa0'};
+ const eco=(d.economics||[]).map(r=>`<div class="as-eco"><div><i class="fc-dot" style="background:${CHC[r.name.toLowerCase()]||'#d33b4f'}"></i><b>${esc(r.name)}</b><em>${pc(r.mix)}</em></div>
+   <div class="as-chips"><span>CPC <b>${mo(r.cpc,2)}</b></span><span>CVR <b>${pc(r.cvr)}</b></span><span>AOV <b>${mo(r.aov)}</b></span><span>ROAS <b>${r.roas!=null?fmt(r.roas,1)+'x':'—'}</b></span><span>CPA <b>${mo(r.cpa)}</b></span></div></div>`).join('');
+ const bl=d.blended;
+ const mx=Math.max(.01,...(d.weeks||[]).map(w=>w.weight||0));
+ const wks=(d.weeks||[]).map(w=>{const m=String(w.label).match(/(\d+)\s*[:\-–]\s*(\d+)\s*$/),nm=String(w.label).replace(/\s*\d+\s*[:\-–]\s*\d+\s*$/,'').replace(/^(First|Second|Third|Fourth|Fifth)\s+/i,'').replace(/[\s\-–]+$/,'');
+   return `<div class="fc-wk"><div>${esc(nm)}<small>${m?(+m[1])+'–'+(+m[2]):''} · ${w.days||'—'} days</small></div><div class="fc-bar"><i class="n" style="width:${((w.weight||0)/mx*100).toFixed(1)}%"></i></div><div class="fc-pc navy">${pc(w.weight)}</div></div>`}).join('');
+ const mon=String(d.month||'').split(' ')[0].slice(0,3);
+ const hj=(d.hijri||[]).map(h=>`<div class="as-hj${h.num===9?' ram':''}"><div class="as-hjh"><b>${esc(h.name||HIJRI_NAMES[h.num-1]||'')}</b><span>${h.days} days · ${mon} ${h.from}–${h.to}</span></div>
+   <div class="as-g"><div><small>Spend</small><b>${x2(h.spend)}</b></div><div><small>Value</small><b>${x2(h.value)}</b></div><div><small>Conv</small><b>${x2(h.conv)}</b></div><div><small>ROAS idx</small><b class="${h.roasIdx>=1?'up':'dn'}">${x2(h.roasIdx)}</b></div></div>
+   <div class="fc-foot" style="margin-top:6px">Whole month with its special days: value ${x2(h.effValue)} · spend ${x2(h.effSpend)}</div></div>`).join('');
+ const tbl=(rows,extra)=>`<div class="as-t"><div class="as-tr hd"><span></span><span>Spend</span><span>Value</span><span>Conv</span>${extra?'<span>Days</span>':''}</div>${rows.map(r=>`<div class="as-tr${r.spend>=1.2?' hi':''}"><span>${esc(r.name)}</span><span>${x2(r.spend)}</span><span>${x2(r.value)}</span><span>${x2(r.conv)}</span>${extra?`<span>${esc(r.days||'')}</span>`:''}</div>`).join('')}</div>`;
+ const isNew=d.index==='NEW';
+ return `<div class="as-wrap">
+  <div class="fc-l">CHANNEL ECONOMICS <em>last ${(((FC[CURRENT_ACCOUNT]||{}).data||{}).settings||{}).window||60} days</em></div><div class="fc-card">${eco}${bl?`<div class="as-bl">Blended · ROAS <b>${bl.roas!=null?fmt(bl.roas,1)+'x':'—'}</b> · CPA <b>${mo(bl.cpa)}</b></div>`:''}</div>
+  <div class="fc-l">WEEKLY DISTRIBUTION <em>Share of the budget</em></div><div class="fc-card">${wks}</div>
+  <div class="fc-l">INDEX · ${esc(String(d.month||'').toUpperCase())}</div>
+  <div class="as-ix ${isNew?'new':''}"><span>${isNew?'🌙':'📘'}</span><div><b>${isNew?'NEW index':'OLD index'}</b><small>${isNew?'This month has '+d.ramadanDays+' days of Ramadan, so the NEW index (3 Ramadans) is used':'No Ramadan this month, so the OLD index (2025–26) is used'}</small></div></div>
+  ${hj}
+  <div class="fc-l">WEEKDAY <em>1 = an average day</em></div><div class="fc-card">${tbl(d.weekday||[])}</div>
+  <div class="fc-l">WEEK OF MONTH</div><div class="fc-card">${tbl(d.weekOfMonth||[],1)}</div>
+  <div class="fc-l">SPECIAL DAYS <em>× a normal day</em></div><div class="fc-card">${tbl(d.special||[])}</div>
+  <button type="button" class="pk-ghost as-rd" onclick="asLoad(true)" ${c.busy?'disabled':''}>${c.busy?'Reading…':'↻ Read Assumptions now'}</button>
  </div>`;
 }
 const LAB_INTRO='<div class="lab-head"><div><b>Months in the sheet</b><small>A month that is complete can move to the history. That keeps the reports complete and makes room for the new month\'s plan.</small></div></div>';

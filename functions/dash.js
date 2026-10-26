@@ -15,7 +15,8 @@ const ACCOUNTS = {
       archive: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=1216781425',
       history: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=1713034492',
       bestWorst: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=3300649',
-      forecast: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=2071753792'
+      forecast: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=2071753792',
+      assumptions: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=2030520828'
     }
   },
   ar: {
@@ -884,7 +885,63 @@ async function setForecast(accountKey, values) {
   return data.length;
 }
 
+/* ---------- Media Plan Lab → Assumptions: channel economics, weeks, and the index of the plan month only ----------
+ * The stored index in use (OLD, or NEW when the month has Ramadan in it, as Oct-2026 B65 says), and only the
+ * Hijri months that fall in the plan month (Umm al-Qura, like the sheet's calendar).
+ */
+const HIJRI_PARTS = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { timeZone: 'UTC', year: 'numeric', month: 'numeric', day: 'numeric' });
+function hijriOf(ms) { const p = {}; HIJRI_PARTS.formatToParts(new Date(ms)).forEach(x => { p[x.type] = x.value; }); return { m: +p.month, d: +p.day, y: parseInt(p.year, 10) }; }
+async function buildAssumptions(accountKey) {
+  const account = ACCOUNTS[normalizeAccountKey_(accountKey)];
+  if (!(account.sheets && account.sheets.assumptions)) return { missing: true };
+  const book = await openBook(account);
+  const sh = await optionalSheet(book, 'assumptions'), fc = await optionalSheet(book, 'forecast');
+  if (!sh) return { missing: true };
+  const ranges = [a1(sh.title, 'A10:G15'), a1(sh.title, 'A19:C23'), a1(sh.title, 'A90:G180')];
+  if (fc) ranges.push(a1(fc.title, 'B60'), a1(fc.title, 'B65'));
+  const v = await batchGet(book.id, ranges);
+  const n = x => (typeof x === 'number' && isFinite(x) ? x : null), t = x => String(x == null ? '' : x).trim();
+  const isTotal = r => /total|blended/i.test(t(r[0]));
+  const eco = grid(v[0], 6, 7), wk = grid(v[1], 5, 3), ix = grid(v[2], 91, 7);
+  const ecoRow = r => ({ name: t(r[0]), mix: n(r[1]), cpc: n(r[2]), cvr: n(r[3]), aov: n(r[4]), roas: n(r[5]), cpa: n(r[6]) });
+  // The two stored indexes: split at the NEW title, then each block read by its headers.
+  const at = ix.findIndex(r => /NEW index/i.test(t(r[0])));
+  const block = rows => {
+    const out = { months: [], weekday: [], weeks: [], special: [] };
+    let cur = null;
+    rows.forEach(r => {
+      const a = t(r[0]);
+      if (/^hijri month/i.test(a)) { cur = 'months'; return; }
+      if (/^weekday/i.test(a)) { cur = 'weekday'; return; }
+      if (/^week of month/i.test(a)) { cur = 'weeks'; return; }
+      if (/^special day/i.test(a)) { cur = 'special'; return; }
+      if (!a || n(r[1]) == null) { if (!a) cur = cur; return; }
+      if (cur === 'months') out.months.push({ name: a, spend: n(r[1]), value: n(r[2]), conv: n(r[3]), effValue: n(r[4]), effSpend: n(r[5]), roasIdx: n(r[6]) });
+      else if (cur) out[cur].push({ name: a, spend: n(r[1]), value: n(r[2]), conv: n(r[3]), days: t(r[4]) || undefined });
+    });
+    return out;
+  };
+  const OLD = block(at > 0 ? ix.slice(0, at) : ix), NEW = at > 0 ? block(ix.slice(at)) : null;
+  // The plan month: the day after the level window ends (Oct-2026 B60).
+  const end = fc ? n(((v[3] || [])[0] || [])[0]) : null;
+  const startMs = end != null ? Math.round((end + 1 - 25569) * 864e5) : Date.now();
+  const s0 = new Date(startMs), y = s0.getUTCFullYear(), m = s0.getUTCMonth(), dim = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+  const hm = {};
+  for (let d = 1; d <= dim; d++) { const h = hijriOf(Date.UTC(y, m, d, 12)); const k = h.y + '-' + h.m; (hm[k] = hm[k] || { num: h.m, year: h.y, days: 0, from: d, to: d }).days++; hm[k].to = d; }
+  const inMonth = Object.values(hm), ramadanDays = inMonth.filter(x => x.num === 9).reduce((a, x) => a + x.days, 0);
+  const b65 = fc ? t(((v[4] || [])[0] || [])[0]) : '';
+  const useNew = NEW && (/NEW/i.test(b65) || (!/OLD/i.test(b65) && ramadanDays >= 15));
+  const idx = useNew ? NEW : OLD;
+  return {
+    at: Date.now(), tab: sh.title, month: MONTHS[m] + ' ' + y, index: useNew ? 'NEW' : 'OLD', indexLabel: b65, ramadanDays,
+    economics: eco.filter(r => t(r[0]) && !isTotal(r)).map(ecoRow), blended: (eco.find(isTotal) && ecoRow(eco.find(isTotal))) || null,
+    weeks: wk.filter(r => t(r[0]) && !isTotal(r)).map(r => ({ label: t(r[0]), days: n(r[1]), weight: n(r[2]) })),
+    hijri: inMonth.map(x => Object.assign({ num: x.num, year: x.year, days: x.days, from: x.from, to: x.to }, idx.months[x.num - 1] || {})),
+    weekday: idx.weekday, weekOfMonth: idx.weeks, special: idx.special
+  };
+}
+
 function forgetArchive() { Object.keys(archiveCache).forEach(k => delete archiveCache[k]); }
 
 module.exports = { ACCOUNTS, buildDashboardData, getMonthCompareData, normalizeAccountKey_, fmt, wallFromInstant, makeAsDate, grid, toNumber_,
-  ssIdOf, openBook, optionalSheet, forgetArchive, buildForecast, setForecast };
+  ssIdOf, openBook, optionalSheet, forgetArchive, buildForecast, setForecast, buildAssumptions };
