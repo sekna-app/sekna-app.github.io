@@ -150,12 +150,19 @@ async function fxRefreshIfDue() {
 }
 
 const DAY_FACES = ['🔥', '💪', '😐', '😓'];
+// Each day keeps { email: { f: face, n: name } } (an older entry is just the face).
 function dayReactOut(doc, me) {
   const days = {};
   Object.keys(doc).filter(k => /^\d{4}-\d{2}-\d{2}$/.test(k)).forEach(k => {
-    const counts = {}; let n = 0;
-    Object.values(doc[k] || {}).forEach(f => { if (DAY_FACES.indexOf(f) >= 0) { counts[f] = (counts[f] || 0) + 1; n++; } });
-    if (n) days[k] = { counts, n, mine: (doc[k] || {})[me] || null };
+    const counts = {}, who = {}; let n = 0, mine = null;
+    Object.keys(doc[k] || {}).forEach(e => {
+      const v = doc[k][e], f = typeof v === 'string' ? v : v && v.f;
+      if (DAY_FACES.indexOf(f) < 0) return;
+      counts[f] = (counts[f] || 0) + 1; n++;
+      (who[f] = who[f] || []).push((v && v.n) || nameFromEmail(e));
+      if (e === me) mine = f;
+    });
+    if (n) days[k] = { counts, n, mine, who };
   });
   return { faces: DAY_FACES, days };
 }
@@ -283,7 +290,7 @@ const R = {
     });
     return celebrationOut(c, e);
   },
-  /** Day by Day → Results: how the team felt about each day (one face per person per day; counts only, never names). */
+  /** Day by Day → Results: how the team felt about each day (one face per person per day; tap the badge to see who). */
   async dayReactions([token, account, month]) {
     const a = await assertAccess(token), e = norm(a.email);
     const acc = account === 'ar' ? 'ar' : 'usa', m = /^\d{4}-\d{2}$/.test(String(month || '')) ? String(month) : monthOf(Date.now());
@@ -296,7 +303,8 @@ const R = {
     if (face != null && DAY_FACES.indexOf(face) < 0) throw new Error('Unknown reaction.');
     const out = await fsUpdate(DOC.reacts(acc, d.slice(0, 7)), doc => {
       doc = doc || {}; const day0 = Object.assign({}, doc[d] || {});
-      if (!face || day0[e] === face) delete day0[e]; else day0[e] = face; // the same face again takes it back
+      const had = day0[e] && (typeof day0[e] === 'string' ? day0[e] : day0[e].f);
+      if (!face || had === face) delete day0[e]; else day0[e] = { f: face, n: a.name || nameFromEmail(e) }; // the same face again takes it back
       if (Object.keys(day0).length) doc[d] = day0; else delete doc[d];
       return doc;
     });

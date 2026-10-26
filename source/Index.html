@@ -2798,6 +2798,12 @@ window.addEventListener('load',function(){
     .rx-pop button.hv,.rx-pop button:hover{transform:scale(1.35) translateY(-4px)}.rx-pop button.on{background:#eef3ff}
     @keyframes rxIn{from{opacity:0;transform:translateY(8px) scale(.8)}to{opacity:1;transform:none}}
     body.dark-mode .rx-cn,body.dark-mode .rx-pop{background:#1d2330;border-color:#2a313c}body.dark-mode .rx-cn b{color:#dfe4ee}
+    .rx-cn{cursor:pointer;font-family:inherit}
+    .rx-wc small{display:block;font-size:10px;font-weight:900;letter-spacing:.12em;color:#8a92a6}.rx-wc>b{display:block;font-size:17px;font-weight:900;margin:3px 0 10px;color:#1d2433}
+    .rx-wr{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid #eff1f6}.rx-wf{display:flex;align-items:center;gap:4px;font-size:22px;min-width:52px}.rx-wf b{font-size:12px;color:#4c5464}
+    .rx-wr>div{display:flex;flex-wrap:wrap;gap:6px}.rx-wr i{font-style:normal;font-size:12px;font-weight:800;background:#f4f6fb;border-radius:99px;padding:5px 10px;color:#1d2433}
+    .rx-wc p{font-size:11px;font-weight:600;color:#8a92a6;margin-top:10px}
+    body.dark-mode .rx-wc>b{color:#fff}body.dark-mode .rx-wr i{background:#1d2330;color:#fff}body.dark-mode .rx-wr{border-color:#252a32}
     /* v86 — Same Hijri day in past years (timeline) */
     .py-shut{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:#8a92a6;margin-top:4px}.py-shut em{margin-left:auto;font-style:normal;color:#203c8e;font-weight:900;font-size:16px}
 
@@ -6861,7 +6867,17 @@ function rxLoad(month){
 }
 function rxBadge(date){const d=RX.data&&RX.data.days&&RX.data.days[date];if(!d||!d.n)return '';
  const top=Object.keys(d.counts).sort((a,b)=>d.counts[b]-d.counts[a])[0];
- return `<span class="rx-cn${d.mine?' me':''}" title="${d.n} reaction${d.n>1?'s':''}">${top}<b>${d.n}</b></span>`}
+ return `<button type="button" class="rx-cn${d.mine?' me':''}" data-who="${date}" aria-label="${d.n} reaction${d.n>1?'s':''} · see who">${top}<b>${d.n}</b></button>`}
+
+function rxWho(date){
+ const d=RX.data&&RX.data.days&&RX.data.days[date];if(!d)return;
+ let o=document.getElementById('rxSheet');
+ if(!o){o=document.createElement('div');o.id='rxSheet';o.className='lyx-sheet';o.onclick=e=>{if(e.target===o||e.target.closest('.lyx-x'))o.classList.remove('open')};document.body.appendChild(o)}
+ const day=new Date(date+'T12:00:00Z').toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',timeZone:'UTC'});
+ const rows=RX_FACES.filter(f=>d.counts[f]).map(f=>`<div class="rx-wr"><span class="rx-wf">${f}<b>${d.counts[f]}</b></span><div>${((d.who||{})[f]||[]).map(n=>`<i>${esc(n)}</i>`).join('')}</div></div>`).join('');
+ o.innerHTML=`<div class="lyx-card rx-wc"><button type="button" class="lyx-x" aria-label="Close">✕</button><small>REACTIONS · ${d.n}</small><b>${esc(day)}</b>${rows}<p>Press and hold the day to add or change yours.</p></div>`;
+ requestAnimationFrame(()=>o.classList.add('open'));
+}
 function rxPaint(){document.querySelectorAll('#dxBody .dc-card[data-rx]').forEach(c=>{const o=c.querySelector('.rx-cn');if(o)o.remove();const h=rxBadge(c.dataset.date);if(h)c.insertAdjacentHTML('afterbegin',h)})}
 const RX_FACES=['🔥','💪','😐','😓'];
 function rxArm(body){
@@ -6881,7 +6897,7 @@ function rxArm(body){
    pop=document.createElement('div');pop.className='rx-pop';pop.innerHTML=RX_FACES.map(f=>`<button type="button" class="${f===mine?'on':''}" data-f="${f}">${f}</button>`).join('');
    c.appendChild(pop);if(navigator.vibrate)try{navigator.vibrate(18)}catch(e){}};
  body.addEventListener('pointerdown',e=>{if(pop&&!e.target.closest('.rx-pop')){close();return}
-   const c=e.target.closest('.dc-card[data-rx]');if(!c||e.target.closest('.rx-pop'))return;fired=false;x0=e.clientX;y0=e.clientY;clearTimeout(t);t=setTimeout(()=>open(c),450)});
+   const c=e.target.closest('.dc-card[data-rx]');if(!c||e.target.closest('.rx-pop,.rx-cn'))return;fired=false;x0=e.clientX;y0=e.clientY;clearTimeout(t);t=setTimeout(()=>open(c),450)});
  body.addEventListener('pointermove',e=>{if(t&&(Math.abs(e.clientX-x0)>8||Math.abs(e.clientY-y0)>8)){clearTimeout(t);t=null}
    if(pop){const b=document.elementFromPoint(e.clientX,e.clientY),f=b&&b.closest&&b.closest('.rx-pop button');pop.querySelectorAll('button').forEach(x=>x.classList.toggle('hv',x===f))}});
  body.addEventListener('pointerup',e=>{clearTimeout(t);t=null;if(!pop)return;const b=document.elementFromPoint(e.clientX,e.clientY),f=b&&b.closest&&b.closest('.rx-pop button');if(f)pick(f.dataset.f)});
@@ -6889,7 +6905,8 @@ function rxArm(body){
  body.addEventListener('contextmenu',e=>{if(e.target.closest('.dc-card[data-rx]'))e.preventDefault()});
  
  body.addEventListener('click',e=>{if(fired&&e.target.closest('.dc-card[data-rx]')){e.stopPropagation();e.preventDefault();fired=false}
-   const f=e.target.closest('.rx-pop button');if(f){e.stopPropagation();pick(f.dataset.f)}},true);
+   const f=e.target.closest('.rx-pop button');if(f){e.stopPropagation();pick(f.dataset.f);return}
+   const w=e.target.closest('.rx-cn[data-who]');if(w){e.stopPropagation();e.preventDefault();rxWho(w.dataset.who)}},true);
 }
 function renderDays(d){
  const body=document.getElementById('dxBody');
