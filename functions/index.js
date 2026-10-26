@@ -45,6 +45,53 @@ function cached(key, ttl, fresh, build) {
   return pending;
 }
 
+/* ---------- When the sheets are read (Admin → Server → Reading the sheets) ----------
+ * Inside the reading window the data is read from the sheets as before (every 2 minutes).
+ * Outside it nothing reads the sheets: everyone gets the last read, kept in Firestore so a
+ * restarted server still has it. Refresh in the app always reads the sheet on the spot.
+ */
+const READ_DOC = 'server/read-window';
+const READ_DEFAULT = { on: true, from: '12:50', to: '13:10', tz: 'Africa/Cairo' };
+let readCache = null;
+async function readWindow() {
+  if (readCache && Date.now() - readCache.at < 60000) return readCache.v;
+  let v = null;
+  try { v = await fsGet(READ_DOC); } catch (e) { console.error('Read window: ' + errorText(e)); }
+  readCache = { at: Date.now(), v: Object.assign({}, READ_DEFAULT, v || {}) };
+  return readCache.v;
+}
+const toMin = hm => { const m = String(hm || '').match(/^(\d{1,2}):(\d{2})$/); return m ? (+m[1] % 24) * 60 + (+m[2] % 60) : null; };
+function inReadWindow(w, now) {
+  if (!w || !w.on) return true;
+  const f = toMin(w.from), t = toMin(w.to);
+  if (f == null || t == null) return true;
+  const p = {};
+  new Intl.DateTimeFormat('en-GB', { timeZone: w.tz || 'Africa/Cairo', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(now || Date.now())).forEach(x => { p[x.type] = x.value; });
+  const m = +p.hour * 60 + +p.minute;
+  return f <= t ? m >= f && m <= t : m >= f || m <= t; // a window can go past midnight
+}
+const snapDoc = (kind, key) => 'server/snap-' + kind + '-' + key;
+async function saveSnap(kind, key, value) {
+  try {
+    const json = JSON.stringify(value);
+    if (json.length > 900000) { console.warn('Snapshot too big to keep: ' + kind + ' ' + key + ' ' + json.length); return; }
+    await fsSet(snapDoc(kind, key), { at: Date.now(), v: value });
+  } catch (e) { console.error('Snapshot ' + kind + ' ' + key + ': ' + errorText(e)); }
+}
+/** The dashboard ('dash') or month history ('months') of one account, read from the sheet only when allowed. */
+async function sheetData(kind, key, force) {
+  const ttl = kind === 'dash' ? DASH_CACHE_MS : MONTHS_CACHE_MS;
+  const build = () => (kind === 'dash' ? buildDashboardData(key) : getMonthCompareData(key)).then(v => { saveSnap(kind, key, v); return v; });
+  const ck = kind + ':' + key;
+  if (force || inReadWindow(await readWindow())) return cached(ck, ttl, !!force, build);
+  const hit = cache[ck];
+  if (hit && hit.value) return hit.value;
+  if (hit && hit.pending) return hit.pending;
+  const snap = await fsGet(snapDoc(kind, key)).catch(() => null);
+  if (snap && snap.v) { cache[ck] = { at: snap.at || Date.now(), value: snap.v }; return snap.v; }
+  return cached(ck, ttl, true, build); // nothing kept yet: read once
+}
+
 /** The access check and the data are fetched together; nothing is returned unless access is approved. */
 async function withAccess(token, dataPromise) {
   const [access, data] = await Promise.allSettled([assertAccess(token), dataPromise]);
@@ -57,13 +104,30 @@ async function withAccess(token, dataPromise) {
 const CALLS = {
   async getDashboardData(args) {
     const key = normalizeAccountKey_(args[0]);
-    return withAccess(args[2], cached('dash:' + key, DASH_CACHE_MS, !!args[1], () => buildDashboardData(key)));
+    return withAccess(args[2], sheetData('dash', key, !!args[1]));
   },
   async getMonthCompareData(args) {
     const key = normalizeAccountKey_(args[0]);
-    return withAccess(args[1], cached('months:' + key, MONTHS_CACHE_MS, false, () => getMonthCompareData(key)));
+    return withAccess(args[1], sheetData('months', key, false));
   },
   // Media Plan Lab → Close the month (Admin → Permissions → Lab).
+  /** Admin → Server → Reading the sheets: when the server reads them, and when it last did. */
+  async adminReadWindow(args) {
+    await assertAdmin(args[0]);
+    const w = await readWindow(), last = {};
+    WARM_ACCOUNTS.forEach(k => { const h = cache['dash:' + k]; if (h && h.at) last[k] = h.at; });
+    return { window: w, open: inReadWindow(w), last };
+  },
+  async adminReadWindowSet(args) {
+    const me = await assertAdmin(args[0]);
+    const c = args[1] || {};
+    const tz = ['Africa/Cairo', 'Asia/Muscat', 'Europe/London', 'Asia/Dubai', 'Asia/Riyadh'].indexOf(c.tz) >= 0 ? c.tz : 'Africa/Cairo';
+    if (c.on && (toMin(c.from) == null || toMin(c.to) == null)) throw new Error('Pick a start and an end time.');
+    const v = { on: !!c.on, from: String(c.from || READ_DEFAULT.from), to: String(c.to || READ_DEFAULT.to), tz, by: me.email, at: Date.now() };
+    await fsSet(READ_DOC, v);
+    readCache = { at: Date.now(), v };
+    return { window: v, open: inReadWindow(v) };
+  },
   async adminArchiveStatus(args) {
     await assertPerm(args[0], 'lab');
     return archiveStatus(args[1]);
@@ -208,14 +272,16 @@ exports.api = onRequest({
     if (Date.now() - lastWarm < 60 * 1000) { res.json({ ok: true, skipped: true }); return; }
     lastWarm = Date.now();
     const done = [], latest = {};
+    const open = inReadWindow(await readWindow());
     for (const key of WARM_ACCOUNTS) {
-      try { const d = await cached('dash:' + key, DASH_CACHE_MS, true, () => buildDashboardData(key)); done.push(key); latest[key] = d && d.latest; delete stats.warmErrors[key]; }
+      // Outside the reading window: the last read (no sheet), so the push checks still see the latest day.
+      try { const d = open ? await sheetData('dash', key, true) : await sheetData('dash', key, false); if (open) done.push(key); latest[key] = d && d.latest; delete stats.warmErrors[key]; }
       catch (e) {
         // Shown on Admin → Server; USA failing also counts as a server error.
         stats.warmErrors[key] = { error: errorText(e), at: Date.now() };
         if (key === 'usa') { stats.errors++; stats.lastError = errorText(e); stats.lastErrorAt = Date.now(); }
       }
-      try { await cached('months:' + key, MONTHS_CACHE_MS, false, () => getMonthCompareData(key)); } catch (e) {}
+      if (open) try { await sheetData('months', key, false); } catch (e) {}
     }
     // New day / team message / app version notifications (after the rest moved here).
     let pushed = null;

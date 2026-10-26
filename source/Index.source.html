@@ -3530,6 +3530,15 @@ window.addEventListener('load',function(){
     .cel-view{position:fixed;inset:0;z-index:10040;background:rgba(8,12,24,.72);display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;pointer-events:none;transition:opacity .25s}
     .cel-view.open{opacity:1;pointer-events:auto}.cel-view .cel-card{width:100%;max-width:400px;transform:scale(.92);transition:transform .35s cubic-bezier(.2,.8,.2,1)}.cel-view.open .cel-card{transform:none}
     body.dark-mode .cel-h{color:#fff}body.dark-mode .cel-comp textarea{background:#10141b;border-color:#252a32;color:#fff}
+    /* v170: Admin → Server → Reading the sheets */
+    .rw{background:#fff;border:1px solid #e7eaf2;border-radius:18px;padding:14px;margin-bottom:14px}
+    .rw-mode{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}.rw-mode button{flex:1;min-width:140px;border:1.5px solid #e7eaf2;background:#fff;border-radius:12px;padding:9px 8px;font:inherit;font-size:12px;font-weight:800;color:#4b5263;cursor:pointer}
+    .rw-mode button.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);color:#fff;border-color:transparent}
+    .rw-t{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}.rw-t label{display:flex;flex-direction:column;gap:4px;font-size:10px;font-weight:900;letter-spacing:.08em;color:#8a92a6;text-transform:uppercase}
+    .rw-t input,.rw-t select{width:100%;box-sizing:border-box;border:1.5px solid #e7eaf2;border-radius:11px;padding:8px;font:inherit;font-size:13px;font-weight:800;color:#1d2433;background:#fff;min-width:0}
+    .rw-sum{margin-top:10px;font-size:12px;font-weight:700;color:#4b5263}.rw-sum i{font-style:normal;font-weight:900;color:#a8701c}.rw-sum i.ok{color:#13894f}
+    .rw-last{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;font-size:11px;font-weight:700;color:#8a92a6}.rw-last b{color:#1d2433}
+    body.dark-mode .rw{background:#151a22;border-color:#252a32}body.dark-mode .rw-mode button,body.dark-mode .rw-t input,body.dark-mode .rw-t select{background:#10141b;border-color:#252a32;color:#fff}body.dark-mode .rw-last b{color:#fff}
     /* v170: Admin → Permissions */
     .pm-t{background:#fff;border:1px solid #e7eaf2;border-radius:16px;overflow:hidden;margin-top:12px}
     .pm-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
@@ -11332,7 +11341,37 @@ function serverNow(){
  return fb.wanted()?{icon:'🟢',bg:'#e3f6ec',short:'Firebase',cls:'',title:'Firebase',text:'Firebase answers the next data refresh.'}
    :{icon:'⚪',bg:'#f2f4f9',short:'Apps Script',cls:'idle',title:'Apps Script',text:'Firebase is not switched on for everyone yet. You can try it on this device below.'};
 }
+/* ---------- v170: Admin → Server → Reading the sheets ----------
+ * The server reads the USA and AR sheets only in this window each day (fewer reads);
+ * the rest of the day everyone sees the last read. Refresh in the app always reads now.
+ */
+let RW={data:null,busy:false,edit:null,msg:''};
+const RW_TZ=[['Africa/Cairo','Cairo'],['Asia/Muscat','Muscat'],['Europe/London','London'],['Asia/Dubai','Dubai'],['Asia/Riyadh','Riyadh']];
+function rwLoad(){if(RW.busy)return;RW.busy=true;serverCall('adminReadWindow',getAccessToken()).then(r=>{RW.busy=false;RW.data=r;RW.edit=null;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{RW.busy=false;RW.data={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
+function rwCur(){return RW.edit||((RW.data&&RW.data.window)||{on:true,from:'12:50',to:'13:10',tz:'Africa/Cairo'})}
+function rwSet(k,v){RW.edit=Object.assign({},rwCur(),{[k]:v});RW.msg='';if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+function rw12(hm){const m=String(hm||'').match(/^(\d{1,2}):(\d{2})$/);if(!m)return hm||'';const h=+m[1];return `${h%12||12}:${m[2]} ${h<12?'AM':'PM'}`}
+async function rwSave(btn){
+ const c=rwCur();btn.disabled=true;btn.textContent='Saving…';
+ try{const r=await serverCall('adminReadWindowSet',getAccessToken(),c);RW.data=Object.assign({},RW.data,r);RW.edit=null;RW.msg='✅ Saved';}
+ catch(err){RW.msg='⚠️ '+esc(errorText(err))}
+ if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
+}
+function readWinHtml(){
+ if(!RW.data&&!RW.busy)rwLoad();
+ const d=RW.data||{}, c=rwCur(), tz=(RW_TZ.find(x=>x[0]===c.tz)||RW_TZ[0])[1], ch=!!RW.edit;
+ if(d.error)return `<div class="rw"><b class="ad-h">📄 Reading the sheets</b><div class="mrp-msg">⚠️ ${esc(d.error)}</div></div>`;
+ const last=d.last||{}, lt=k=>last[k]?localWhenFull(last[k]):'—';
+ return `<div class="rw"><b class="ad-h">📄 Reading the sheets</b><small class="ad-sub">When the server reads the USA and AR sheets. The rest of the day everyone sees the last read. Refresh in the app always reads the sheet straight away.</small>
+   <div class="rw-mode"><button type="button" class="${c.on?'on':''}" onclick="rwSet('on',true)">⏰ Only at set times</button><button type="button" class="${c.on?'':'on'}" onclick="rwSet('on',false)">🔄 All day (every 2 min)</button></div>
+   ${c.on?`<div class="rw-t"><label>From<input type="time" value="${esc(c.from)}" onchange="rwSet('from',this.value)"></label><label>To<input type="time" value="${esc(c.to)}" onchange="rwSet('to',this.value)"></label><label>Time<select onchange="rwSet('tz',this.value)">${RW_TZ.map(([k,l])=>`<option value="${k}"${k===c.tz?' selected':''}>${l}</option>`).join('')}</select></label></div>
+   <div class="rw-sum">Reads every day from <b>${esc(rw12(c.from))}</b> to <b>${esc(rw12(c.to))}</b> ${esc(tz)} time${d.window&&!ch?(d.open?' · <i class="ok">reading now</i>':' · <i>waiting</i>'):''}</div>`:'<div class="rw-sum">Reads the sheets every 2 minutes, all day.</div>'}
+   <div class="rw-last"><span>Last read · USA <b>${esc(lt('usa'))}</b></span><span>AR <b>${esc(lt('ar'))}</b></span></div>
+   ${RW.msg?`<div class="mrp-msg">${RW.msg}</div>`:''}
+   <button type="button" class="pm-save" onclick="rwSave(this)" ${ch?'':'disabled'}>${ch?'Save':'No changes'}</button></div>`;
+}
 function srvLoad(){
+ RW.data=null;
  const fb=window.SEKNA_FB, rerender=()=>{if(ADMIN_LAST)renderAdmin(ADMIN_LAST)};
  // The log lives on the server; the sheet holds only switches logged while the server was down.
  const token=getAccessToken();
@@ -11456,7 +11495,7 @@ function adminServerHtml(){
  if(ev&&ev.error)log=`<small>${esc(ev.error)}</small>`;
  else if(ev)log=ev.length?`<div class="srv-log">${ev.slice(0,12).map(e=>`<div><span>${/Backup/.test(e.server)?'🟠':'🟢'}</span><span>${esc(/Backup/.test(e.server)?'Moved to the backup':'Back on Firebase')}${e.reason?` — ${esc(e.reason)}`:''}<small>${esc(srvAgo(e.at))} · ${esc(e.name||e.email)}</small></span></div>`).join('')}</div>`
    :'<small>No switches yet. Each time a device moves to the backup or back, it shows here, and you get an email.</small>';
- return `<b class="ad-h">🖥️ Server</b><small class="ad-sub">The data comes from Firebase. If Firebase stops, SEKNA moves to Apps Script by itself.</small>
+ return `${readWinHtml()}<b class="ad-h">🖥️ Server</b><small class="ad-sub">The data comes from Firebase. If Firebase stops, SEKNA moves to Apps Script by itself.</small>
   <div class="srv-now ${n.cls}"><i>${n.icon}</i><span><b>${esc(n.title)}</b><small>${esc(n.text)}</small></span></div>
   ${n.cls==='backup'?'<button type="button" class="srv-btn" onclick="srvRetry()">Try Firebase again</button>':''}
   <div class="srv-box"><b>This month's cost</b><small>Limit $3 · at the limit Firebase stops and SEKNA keeps working on Apps Script.</small>${cost}</div>
