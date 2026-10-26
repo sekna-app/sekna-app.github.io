@@ -51,7 +51,7 @@ function cached(key, ttl, fresh, build) {
  * restarted server still has it. Refresh in the app always reads the sheet on the spot.
  */
 const READ_DOC = 'server/read-window';
-const READ_DEFAULT = { on: true, from: '12:50', to: '13:10', tz: 'Africa/Cairo' };
+const READ_DEFAULT = { on: true, from: '00:50', to: '01:10', tz: 'Asia/Muscat' };
 let readCache = null;
 async function readWindow() {
   if (readCache && Date.now() - readCache.at < 60000) return readCache.v;

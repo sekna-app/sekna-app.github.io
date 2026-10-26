@@ -11348,7 +11348,7 @@ function serverNow(){
 let RW={data:null,busy:false,edit:null,msg:''};
 const RW_TZ=[['Africa/Cairo','Cairo'],['Asia/Muscat','Muscat'],['Europe/London','London'],['Asia/Dubai','Dubai'],['Asia/Riyadh','Riyadh']];
 function rwLoad(){if(RW.busy)return;RW.busy=true;serverCall('adminReadWindow',getAccessToken()).then(r=>{RW.busy=false;RW.data=r;RW.edit=null;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{RW.busy=false;RW.data={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
-function rwCur(){return RW.edit||((RW.data&&RW.data.window)||{on:true,from:'12:50',to:'13:10',tz:'Africa/Cairo'})}
+function rwCur(){return RW.edit||((RW.data&&RW.data.window)||{on:true,from:'00:50',to:'01:10',tz:'Asia/Muscat'})}
 function rwSet(k,v){RW.edit=Object.assign({},rwCur(),{[k]:v});RW.msg='';if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function rw12(hm){const m=String(hm||'').match(/^(\d{1,2}):(\d{2})$/);if(!m)return hm||'';const h=+m[1];return `${h%12||12}:${m[2]} ${h<12?'AM':'PM'}`}
 async function rwSave(btn){
