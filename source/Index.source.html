@@ -10162,6 +10162,7 @@ function ssLoadInfo(force){
  SS.infoAt=Date.now();
  serverCall('seasonsInfo',getAccessToken(),words).then(r=>{SS.info=r||{goals:{},prep:{}};if(CURRENT_TAB==='seasons')renderSeasons()}).catch(()=>{SS.info=SS.info||{goals:{},prep:{},fail:1}});
 }
+function ssRetry(){Object.keys(SS.ex).forEach(a=>{if(SS.ex[a]&&SS.ex[a].fail)delete SS.ex[a]});ssLoadExtras();renderSeasons()}
 function ssFilter(f){SS.f=f;SS.more=false;renderSeasons()}
 function ssToggle(id){SS.open=SS.open===id?'':id;SS.edit='';renderSeasons()}
 function ssGoalEdit(id,e){if(e)e.stopPropagation();SS.edit=SS.edit===id?'':id;SS.open=SS.open||id;renderSeasons();const i=document.getElementById('ssGoalIn');if(i)i.focus()}
@@ -10178,7 +10179,9 @@ function ssDetail(s,all){
  const tabs=`<div class="ss-af" onclick="event.stopPropagation()">${Object.keys(SS_ACC).map(k=>`<button type="button" class="${k===ak?'on':''}" onclick="ssAccSet('${s.id}','${k}',event)">${SS_ACC[k].l}</button>`).join('')}</div>`;
  let txt;
  if(!prev)txt='No last year date to compare with.';
- else if(SS.exBusy&&!SS.ex.usa)txt='<span class="ss-ld">Loading last year…</span>';
+ // Wait for every account this card needs (AR is often still loading when USA is in).
+ else if(accs.some(a=>!SS.ex[a]))txt='<span class="ss-ld">Loading last year…</span>';
+ else if(accs.some(a=>SS.ex[a].fail))txt=`Last year's numbers for ${esc(who)} could not load. <a href="#" onclick="event.stopPropagation();ssRetry();return false">Try again</a>`;
  else{
    const r=ssSum(accs,prev.from,prev.to), when=s.len===1?'on this day':s.len<=6?'on these days':'in '+esc(prev.name);
    if(!r||!r.spend&&!r.value)txt=`No data for last year's dates (${esc(ssD(prev.from))}${prev.to!==prev.from?' – '+esc(ssD(prev.to,{year:'numeric'})):', '+prev.from.slice(0,4)}).`;
