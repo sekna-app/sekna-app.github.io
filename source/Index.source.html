@@ -2402,6 +2402,12 @@ window.addEventListener('load',function(){
     .wx-thin span{display:block;height:100%;border-radius:99px;background:#3d6bff;transition:width .7s ease}.wx-thin span.full{background:#22c47c}
 
     /* v170 Channel Delivery · Channel cards */
+    .cc-race .cc-bar span{transform-origin:left center;transform:scaleX(0)}.cc-race .cc-roas{transform:rotateX(90deg)}.cc-race .cc-crown{display:inline-block;transform:scale(0)}
+    .cc-race.cc-go .cc-bar span{animation:ccRace 1.4s cubic-bezier(.5,0,.2,1) both;animation-delay:calc(var(--i,0)*.06s)}
+    .cc-race.cc-go .cc-roas{animation:ccFlip .5s ease both;animation-delay:calc(1.2s + var(--i,0)*.1s)}
+    .cc-race.cc-go .cc-crown{animation:ccPop .5s cubic-bezier(.3,1.6,.5,1) 1.7s both}
+    @keyframes ccRace{0%{transform:scaleX(0)}70%{transform:scaleX(1.05)}100%{transform:scaleX(1)}}@keyframes ccFlip{from{transform:rotateX(90deg)}to{transform:none}}@keyframes ccPop{from{transform:scale(0)}to{transform:scale(1)}}
+
     .cc-list{display:flex;flex-direction:column;gap:9px;margin-top:6px}
     .ccd{background:#fff;border:1.5px solid #e9ecf3;border-radius:18px;padding:12px 13px}.ccd.win{border:2px solid #e2b874;box-shadow:0 8px 22px rgba(226,184,116,.22)}
     .cc-h{display:flex;align-items:center;gap:9px}.cc-h b{font-size:14px;color:#1d2433;min-width:0}.cc-h .channel-icon{flex:none}
@@ -6637,12 +6643,17 @@ function renderChannels(rows){
  host.innerHTML=sorted.map((r,i)=>{
   const roas=Number(r.roas)||0, win=i===0, ach=Number(r.spendAchievement)||0;
   return `<div class="ccd${win?' win':''}">
-   <div class="cc-h"><span class="channel-icon ${channelIconClass(r.channel)}">${channelIconSvg(r.channel)}</span><b>${esc(chName(r.channel))}</b><em class="cc-roas${win?' win':roas<1?' low':''}">${win?'👑 ':''}${fmt(roas,2)}x</em></div>
+   <div class="cc-h"><span class="channel-icon ${channelIconClass(r.channel)}">${channelIconSvg(r.channel)}</span><b>${esc(chName(r.channel))}</b><em class="cc-roas${win?' win':roas<1?' low':''}" style="--i:${i}">${win?'<span class="cc-crown">👑</span> ':''}${fmt(roas,2)}x</em></div>
    <div class="cc-sp"><b>${money(r.actualSpend)}</b> spent · <span class="${ach>1.15?'over':''}">${percent(ach)} of plan</span></div>
-   <div class="cc-bar"><span class="${ach>1?'over':''}" style="width:${Math.min(ach*100,100)}%"></span></div>
+   <div class="cc-bar"><span class="${ach>1?'over':''}" style="--w:${Math.min(ach*100,100).toFixed(1)}%;--i:${i};width:${Math.min(ach*100,100)}%"></span></div>
    <div class="cc-q"><div><b>${fmt(r.clicks,0)}</b><span>Clicks</span></div><div><b>${fmt(r.conversions,0)}</b><span>Conv.</span></div><div><b>${money(r.actualValue)}</b><span>Value</span></div></div>
   </div>`;
  }).join('');
+ // "The race": when the page is drawn fresh, the spend bars race in, then the ROAS pills flip and the crown pops.
+ if(!RENDER_QUIET&&motionOn()){host.classList.remove('cc-go');host.classList.add('cc-race');
+   const run=()=>{host.classList.remove('cc-go');void host.offsetWidth;host.classList.add('cc-go')};
+   if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){io.disconnect();run()}},{threshold:.15});io.observe(host)}else run()}
+ else host.classList.remove('cc-race','cc-go');
 }
 
 function renderYoy(x,y){
