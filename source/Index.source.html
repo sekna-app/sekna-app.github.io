@@ -6189,6 +6189,7 @@ function render(d,opts){
  const animate=!(opts&&opts.animate===false);
  RENDER_QUIET=!animate;
  DASH_DATA=d; saveAccountCache(d); document.getElementById('app').classList.remove('loading');
+ labNewDay(d);
  applyAccountBrand(d);
  const x=d.latest,y=d.yoy,m=d.month;
  const roas=x.spend?x.value/x.spend:null;
@@ -7208,6 +7209,14 @@ function renderLab(){
  * The month (B2), the model settings and the stored index are written back to the sheet from here.
  */
 let FC={}, FC_VIEW='forecast', FC_OPEN='';
+// A new day of data: the Lab's Forecast and Assumptions are read again (the server reads them with the new day).
+let LAB_DAY={};
+function labNewDay(d){
+ const k=(d&&d.account&&d.account.key)||CURRENT_ACCOUNT,day=d&&d.latest&&d.latest.date;if(!k||!day)return;
+ const was=LAB_DAY[k];LAB_DAY[k]=day;if(!was||was===day)return;
+ [FC[k],AS[k]].forEach(c=>{if(c&&!c.busy){c.data=null;c.err=''}});
+ if(CURRENT_TAB==='lab'&&k===CURRENT_ACCOUNT)setTimeout(()=>{try{fcDraw()}catch(e){}},0);
+}
 function fcLoad(force){
  const k=CURRENT_ACCOUNT,c=FC[k]=FC[k]||{};if(c.busy)return;c.busy=true;c.err='';fcDraw();
  serverCall('getForecast',k,!!force,getAccessToken()).then(r=>{c.busy=false;c.data=r;c.got=Date.now();fcDraw()})

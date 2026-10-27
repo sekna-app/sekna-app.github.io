@@ -340,7 +340,11 @@ exports.api = onRequest({
           dayLog.base = dayLog.base || {};
           if (!dayLog.base[key]) { dayLog.base[key] = date; logChanged = true; }
           // Today's data is in: the sheet has yesterday (or a newer day than this morning).
-          if (!got && (date >= yesterday || date !== dayLog.base[key])) { dayLog[key] = { at: (cache['dash:' + key] || {}).at || now, date }; logChanged = true; }
+          if (!got && (date >= yesterday || date !== dayLog.base[key])) {
+            dayLog[key] = { at: (cache['dash:' + key] || {}).at || now, date }; logChanged = true;
+            // The Media Plan Lab (Forecast and Assumptions tabs) is read again with the new day.
+            for (const kind of ['forecast', 'assume']) { try { await sheetData(kind, key, true); } catch (e) { console.error('Lab read ' + kind + ' ' + key + ': ' + errorText(e)); } }
+          }
         }
       }
       catch (e) {
