@@ -4305,6 +4305,7 @@ window.addEventListener('load',function(){
     .wly-col.win .wly-sp{filter:drop-shadow(0 0 3px #39ff88)}
     .wly-col.lose b{color:#c43c50!important;text-shadow:0 0 8px rgba(255,107,129,.5)}
     .wly-lg i.r{background:#ff6b81!important;box-shadow:0 0 6px rgba(255,107,129,.8)}
+    .wly-list em.nw{font-style:normal;color:#203c8e;font-weight:800}
     @keyframes wlyAur{0%,100%{opacity:.6;transform:scale(.9)}50%{opacity:1;transform:scale(1.15)}}
     @keyframes wlyTw{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1.3)}}
     @media (prefers-reduced-motion:reduce){.wly-col i.t:before,.wly-sp{animation:none!important}}
@@ -6543,7 +6544,8 @@ function drawWeeklyLy(anim){
  const M={v:{l:'Value',g:o=>o.v,f:mpK,hi:true},s:{l:'Spend',g:o=>o.s,f:mpK,hi:null},r:{l:'ROAS',g:o=>o.s?o.v/o.s:0,f:v=>fmt(v,2)+'x',hi:true}}[WLY_M];
  const mx=Math.max(1e-9,...W.map(w=>Math.max(M.g(w.t),M.g(w.l))));
  
- const win=w=>!w.live||M.hi==null?'':M.g(w.t)>=M.g(w.l)?'t':'l';
+ 
+ const win=w=>!w.live||w.live<w.n||M.hi==null?'':M.g(w.t)>=M.g(w.l)?'t':'l';
  const dd=k=>k?shortDay(k).toLocaleDateString('en-GB',{day:'numeric',month:'short'}):'';
  const chip=(a,b)=>!b||!a?'':`<em class="${a>=b?'up':'dn'}">${a>=b?'▲':'▼'} ${Math.round(Math.abs(a/b-1)*100)}%</em>`;
  WLY_SHEETS=W.map(w=>{const rows=[['Value',w.t.v,w.l.v,v=>money(v),1],['Spend',w.t.s,w.l.s,v=>money(v),0],['ROAS',w.t.s?w.t.v/w.t.s:null,w.l.s?w.l.v/w.l.s:null,v=>v==null?'—':fmt(v,2)+'x',1],['Conversions',w.t.c,w.l.c,v=>fmt(v,0),1],['Clicks',w.t.cl,w.l.cl,v=>fmt(v,0),1]];
@@ -6554,7 +6556,7 @@ function drawWeeklyLy(anim){
   <div class="wly-ms">${[['v','Value'],['s','Spend'],['r','ROAS']].map(([k,l])=>`<button type="button" class="${WLY_M===k?'on':''}" onclick="wlyMetric('${k}')">${l}</button>`).join('')}</div>
   <div class="wly-bars${go?' anim':''}">${W.map((w,j)=>{const wn=win(w);return `<button type="button" class="wly-g" onclick="wlyOpen(${j})"><span class="wly-col"><b>${M.f(M.g(w.l))}</b><i class="l" style="height:${(M.g(w.l)/mx*100).toFixed(1)}%;--d:${j*.12}s"></i></span><span class="wly-col${wn==='t'?' win':w.live&&wn==='l'?' lose':''}"><b class="t">${w.live?M.f(M.g(w.t)):'—'}</b><i class="t" style="height:${Math.max(1,M.g(w.t)/mx*100).toFixed(1)}%;--d:${.3+j*.12}s">${w.live&&wn==='t'?'<u class="wly-sp" style="left:8%;top:-12px"></u><u class="wly-sp" style="right:2px;top:8px;animation-delay:.5s"></u><u class="wly-sp" style="left:42%;top:34%;animation-delay:1s"></u>':''}</i></span><small class="wly-wl">W${j+1}</small></button>`}).join('')}</div>
   <div class="wly-lg"><span><i class="l"></i>Last year</span><span><i class="t"></i>This year so far</span>${M.hi==null||!W.some(w=>w.live&&win(w)==='t')?'':'<span><i class="n"></i>Beat last year</span>'}${M.hi==null||!W.some(w=>w.live&&win(w)==='l')?'':'<span><i class="r"></i>Below last year</span>'}<span class="tip">Tap a week for details</span></div>
-  <div class="wly-list">${W.map((w,j)=>`<button type="button" onclick="wlyOpen(${j})"><span class="wly-wk">W${j+1}</span><span><b>${esc(w.hf)} – ${esc(w.ht)}</b><small>${esc(dd(w.from))} – ${esc(dd(w.to))} ${w.from?w.from.slice(0,4):''}</small></span><span class="r"><b>${mpK(w.l.v)}</b><small>${w.live?`${chip(w.t.v,w.l.v)} this year`:'not yet'}</small></span></button>`).join('')}</div>`;
+  <div class="wly-list">${W.map((w,j)=>`<button type="button" onclick="wlyOpen(${j})"><span class="wly-wk">W${j+1}</span><span><b>${esc(w.hf)} – ${esc(w.ht)}</b><small>${esc(dd(w.from))} – ${esc(dd(w.to))} ${w.from?w.from.slice(0,4):''}</small></span><span class="r"><b>${mpK(w.l.v)}</b><small>${!w.live?'not yet':w.live<w.n?`<em class="nw">in progress · ${w.live} of ${w.n} days</em>`:`${chip(w.t.v,w.l.v)} this year`}</small></span></button>`).join('')}</div>`;
 }
 function wlyOpen(i){LYX_SHEETS=WLY_SHEETS;lyxOpen(i)}
 function renderWeekly(rows){
