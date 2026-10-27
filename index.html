@@ -170,6 +170,21 @@ window.addEventListener('load',function(){
     save('sekna_srv_on_backup',mode==='backup'?'1':null);
     try{window.dispatchEvent(new Event('sekna-server'))}catch(e){}
    }
+   // v170: the backup is kept only while the server really is down. One quick check before moving,
+   // a short hold (1 minute, not 5), and a check every 30 seconds that brings the device straight back.
+   function alive(){
+    var ctl=window.AbortController?new AbortController():null,t=setTimeout(function(){if(ctl)ctl.abort()},5000);
+    return fetch(FB+'/ping',{cache:'no-store',signal:ctl?ctl.signal:undefined}).then(function(r){clearTimeout(t);return r.ok},function(){clearTimeout(t);return false});
+   }
+   var backTimer=null;
+   function goBackup(reason,token){
+    SRV.hold=Date.now()+60000;setMode('backup',reason,token);
+    if(backTimer)return;
+    backTimer=setInterval(function(){
+     if(SRV.mode!=='backup'){clearInterval(backTimer);backTimer=null;return}
+     alive().then(function(up){if(up){SRV.hold=0;clearInterval(backTimer);backTimer=null;setMode('firebase','',token)}});
+    },30000);
+   }
    function call(name,args){
     var f=FB_FNS[name];
     // Team Tasks: the server first; the old sheet only if the server cannot be reached before the move.
@@ -190,8 +205,13 @@ window.addEventListener('load',function(){
       // A move the server refused on purpose is shown as it is, never repeated on Apps Script.
       if(name==='adminArchiveMove'&&/Another move is running|did not save every row/.test(e.message))throw e;
       // An access answer is not a server failure: Apps Script decides it.
-      if(f.data&&!e.access){SRV.hold=Date.now()+5*60000;setMode('backup',e.message,token)}
-      return asCall(name,args);
+      if(!f.data||e.access)return asCall(name,args);
+      // A blip is not an outage: check the server once; if it answers, ask it again instead of moving to the backup.
+      return alive().then(function(up){
+       if(up)return fbPost('/call',{fn:name,args:args},f.w).then(function(r){setMode('firebase','',token);return r},function(e2){
+         if(e2.access)throw e2;goBackup(e2.message,token);return asCall(name,args)});
+       goBackup(e.message,token);return asCall(name,args);
+      });
      });
     }
     // An account that stays on Apps Script (AR, also loaded in the background) does not change this device's status.
