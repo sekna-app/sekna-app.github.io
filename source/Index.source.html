@@ -6628,7 +6628,9 @@ function wxSlideIn(){
 }
 function pickWeek(i){
  WEEK_PICK=i;
- renderWeekly((DASH_DATA&&DASH_DATA.weekly)||[]);
+ const det=document.getElementById('weeklyDetail');if(det)det.classList.remove('wx-flip');
+ const q=RENDER_QUIET;RENDER_QUIET=true;
+ try{renderWeekly((DASH_DATA&&DASH_DATA.weekly)||[])}finally{RENDER_QUIET=q}
 }
 function renderWeekDetail(w,isLive,monthName){
  const host=document.getElementById('weeklyDetail');
