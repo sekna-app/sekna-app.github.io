@@ -2555,7 +2555,7 @@ window.addEventListener('load',function(){
     .wx-tabs{display:flex;gap:6px;margin:14px 0 10px;background:#f5f7fb;padding:4px;border-radius:14px}
     .wx-tab{appearance:none;border:0;background:none;font:inherit;flex:1;text-align:center;font-size:12.5px;font-weight:800;padding:8px 4px;border-radius:10px;color:#6b7385;cursor:pointer;transition:background .2s ease,color .2s ease}
     .wx-tab.on{background:#fff;color:#203c8e;box-shadow:0 2px 8px rgba(32,60,142,.15)}
-    .wx-d-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}.wx-d-head b{font-size:15px;color:#1d2433}.wx-d-head>span:not(.wx-status){font-size:12px;color:#6b7385}
+    .wx-d-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}.wx-d-head .wx-wk{display:inline-grid;place-items:center;width:38px;height:32px;border-radius:9px;background:#eef2fd;color:#203c8e!important;font-size:13px!important;font-weight:900;flex:none}.wx-d-head .wx-wk+span{font-size:14px!important;font-weight:800;color:#1d2433!important}body.dark-mode .wx-d-head .wx-wk{background:#26324f;color:#c9d6ff!important}body.dark-mode .wx-d-head .wx-wk+span{color:#fff!important}.wx-d-head b{font-size:15px;color:#1d2433}.wx-d-head>span:not(.wx-status){font-size:12px;color:#6b7385}
     .wx-status{margin-left:auto;font-size:11px;font-weight:850;padding:4px 10px;border-radius:99px;white-space:nowrap}
     .wx-status.is-live{background:#e9efff;color:#2c4fb8}.wx-status.is-done{background:#e7f8ef;color:#13804f}.wx-status.is-wait{background:#eef0f5;color:#8a92a6}
     .wx-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
@@ -6806,7 +6806,8 @@ function renderWeekDetail(w,isLive,monthName){
      <div class="wx-thin"><span class="${r!=null&&r>=1?'full':''}" style="width:${r==null?0:Math.min(r,1)*100}%"></span></div></div>`;
  };
  const roasF=v=>fmt(v,2)+'x';
- host.innerHTML=`<div class="wx-d-head"><b>${esc(w.week||'')}</b>${range?`<span>${esc(range)}</span>`:''}${status}</div>
+ const wkN=(String(w.week||'').match(/\d+/)||[''])[0];
+ host.innerHTML=`<div class="wx-d-head">${wkN?`<span class="wx-wk">W${wkN}</span>`:`<b>${esc(w.week||'')}</b>`}${range?`<span>${esc(range)}</span>`:''}${status}</div>
    <div class="wx-grid">
      ${metric('Spend',Number(w.actualSpend)||0,planSpend,v=>money(v),isLive)}
      ${metric('Revenue',Number(w.actualValue)||0,planValue,v=>money(v),isLive)}
