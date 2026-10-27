@@ -4458,8 +4458,20 @@ window.addEventListener('load',function(){
     body.dark-mode .mg-rows b{color:#fff}
     .sx-ftile .sx-thin{position:relative}.sx-thin .mg-tk{position:absolute;top:-4px;bottom:-4px;width:2.5px;margin-left:-1px;background:#1d2433;border-radius:2px}
     body.dark-mode .sx-thin .mg-tk{background:#fff}
-    /* v170: only this year's weeks are marked when they beat last year: glowing green bar, green frame outside */
-    .wly-col.win i.t{background:linear-gradient(#8ff0bf,#3fd18d)!important;box-shadow:0 0 0 2.5px #fff,0 0 0 5px #39e29a,0 0 18px 5px rgba(57,226,154,.7),0 0 34px rgba(57,226,154,.4)!important}
+    /* v170: only this year's weeks are marked */
+    /* v170 "Aurora": this year's weeks glow green when they beat last year and red when they don't */
+    .wly-col.win i.t,.wly-col.lose i.t{position:relative;overflow:visible}
+    .wly-col.win i.t{background:linear-gradient(180deg,#a8ffd8,#39e29a 45%,#13995f)!important;box-shadow:0 -6px 30px 6px rgba(57,226,154,.55),0 0 0 2px rgba(57,226,154,.9)!important}
+    .wly-col.lose i.t{background:linear-gradient(180deg,#ffc2cb,#ff6b81 45%,#c43c50)!important;box-shadow:0 -6px 30px 6px rgba(255,107,129,.5),0 0 0 2px rgba(255,107,129,.9)!important}
+    .wly-col.win i.t:before,.wly-col.lose i.t:before{content:"";position:absolute;left:-14px;right:-14px;top:-18px;height:60px;border-radius:50%;animation:wlyAur 3s ease-in-out infinite;z-index:-1;pointer-events:none}
+    .wly-col.win i.t:before{background:radial-gradient(ellipse,rgba(57,226,154,.55),transparent 70%)}.wly-col.lose i.t:before{background:radial-gradient(ellipse,rgba(255,107,129,.5),transparent 70%)}
+    .wly-sp{position:absolute;width:6px;height:6px;background:#fff;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);animation:wlyTw 1.6s ease-in-out infinite;pointer-events:none}
+    .wly-col.win .wly-sp{filter:drop-shadow(0 0 3px #39ff88)}.wly-col.lose .wly-sp{filter:drop-shadow(0 0 3px #ff6b81)}
+    .wly-col.lose b{color:#c43c50!important;text-shadow:0 0 8px rgba(255,107,129,.5)}
+    .wly-lg i.r{background:#ff6b81!important;box-shadow:0 0 6px rgba(255,107,129,.8)}
+    @keyframes wlyAur{0%,100%{opacity:.6;transform:scale(.9)}50%{opacity:1;transform:scale(1.15)}}
+    @keyframes wlyTw{0%,100%{opacity:0;transform:scale(.4)}50%{opacity:1;transform:scale(1.3)}}
+    @media (prefers-reduced-motion:reduce){.wly-col i.t:before,.wly-sp{animation:none!important}}
     body.dark-mode .wly-col.win i.t{box-shadow:0 0 0 2.5px #151a22,0 0 0 5px #39e29a,0 0 16px 3px rgba(57,226,154,.55)!important}
     .wly-lg i.n{background:#9dffc8!important;box-shadow:0 0 8px #7dffb3!important}
 
@@ -6704,8 +6716,8 @@ function drawWeeklyLy(anim){
  const go=anim&&motionOn();
  box.innerHTML=`<div class="wly-cap">Same Hijri weeks last year · ${esc(dd(W[0]&&W[0].from))} – ${esc(dd(W.length&&W[W.length-1].to))}</div>
   <div class="wly-ms">${[['v','Value'],['s','Spend'],['r','ROAS']].map(([k,l])=>`<button type="button" class="${WLY_M===k?'on':''}" onclick="wlyMetric('${k}')">${l}</button>`).join('')}</div>
-  <div class="wly-bars${go?' anim':''}">${W.map((w,j)=>{const wn=win(w);return `<button type="button" class="wly-g" onclick="wlyOpen(${j})"><span class="wly-col"><b>${M.f(M.g(w.l))}</b><i class="l" style="height:${(M.g(w.l)/mx*100).toFixed(1)}%;--d:${j*.12}s"></i></span><span class="wly-col${wn==='t'?' win':''}"><b class="t">${w.live?M.f(M.g(w.t)):'—'}</b><i class="t" style="height:${Math.max(1,M.g(w.t)/mx*100).toFixed(1)}%;--d:${.3+j*.12}s"></i></span><small class="wly-wl">W${j+1}</small></button>`}).join('')}</div>
-  <div class="wly-lg"><span><i class="l"></i>Last year</span><span><i class="t"></i>This year so far</span>${M.hi==null||!W.some(w=>w.live&&win(w)==='t')?'':'<span><i class="n"></i>Winner</span>'}<span class="tip">Tap a week for details</span></div>
+  <div class="wly-bars${go?' anim':''}">${W.map((w,j)=>{const wn=win(w);return `<button type="button" class="wly-g" onclick="wlyOpen(${j})"><span class="wly-col"><b>${M.f(M.g(w.l))}</b><i class="l" style="height:${(M.g(w.l)/mx*100).toFixed(1)}%;--d:${j*.12}s"></i></span><span class="wly-col${wn==='t'?' win':w.live&&wn==='l'?' lose':''}"><b class="t">${w.live?M.f(M.g(w.t)):'—'}</b><i class="t" style="height:${Math.max(1,M.g(w.t)/mx*100).toFixed(1)}%;--d:${.3+j*.12}s">${w.live&&(wn==='t'||wn==='l')?'<u class="wly-sp" style="left:8%;top:-12px"></u><u class="wly-sp" style="right:2px;top:8px;animation-delay:.5s"></u><u class="wly-sp" style="left:42%;top:34%;animation-delay:1s"></u>':''}</i></span><small class="wly-wl">W${j+1}</small></button>`}).join('')}</div>
+  <div class="wly-lg"><span><i class="l"></i>Last year</span><span><i class="t"></i>This year so far</span>${M.hi==null||!W.some(w=>w.live&&win(w)==='t')?'':'<span><i class="n"></i>Beat last year</span>'}${M.hi==null||!W.some(w=>w.live&&win(w)==='l')?'':'<span><i class="r"></i>Below last year</span>'}<span class="tip">Tap a week for details</span></div>
   <div class="wly-list">${W.map((w,j)=>`<button type="button" onclick="wlyOpen(${j})"><span class="wly-wk">W${j+1}</span><span><b>${esc(w.hf)} – ${esc(w.ht)}</b><small>${esc(dd(w.from))} – ${esc(dd(w.to))} ${w.from?w.from.slice(0,4):''}</small></span><span class="r"><b>${mpK(w.l.v)}</b><small>${w.live?`${chip(w.t.v,w.l.v)} this year`:'not yet'}</small></span></button>`).join('')}</div>`;
 }
 function wlyOpen(i){LYX_SHEETS=WLY_SHEETS;lyxOpen(i)}
