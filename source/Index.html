@@ -4288,6 +4288,21 @@ window.addEventListener('load',function(){
     @keyframes lockShake{0%,100%{transform:none}25%{transform:rotate(-7deg)}60%{transform:rotate(5deg)}}
     body.dark-mode .lab-locked .lock-ic{background:#2b2214}
     /* v116 · weekly last year */
+    /* v170 "Night card": the month tab's "<month> vs last year" tables, two cards you swipe (Weekly Performance → Last year). */
+    .vly-btn{display:flex;align-items:center;gap:9px;width:100%;margin-top:10px;border:1.5px dashed #c8d2ea;background:#f6f8ff;border-radius:13px;padding:9px 11px;font:inherit;text-align:left;cursor:pointer;color:#203c8e}
+    .vly-btn>span:first-child{font-size:15px}.vly-btn b{display:block;font-size:12.5px;font-weight:850}.vly-btn small{display:block;font-size:10.5px;color:#8a92a6;font-weight:700}
+    .vly-btn i{font-style:normal;margin-left:auto;transition:transform .25s}.vly-btn.on i{transform:rotate(180deg)}
+    .vly-tabs{display:flex;gap:16px;margin:12px 2px 0}.vly-tabs button{border:0;background:none;padding:0 0 6px;font:inherit;font-size:11.5px;font-weight:800;color:#8a92a6;cursor:pointer;border-bottom:2px solid transparent;transition:color .3s,border-color .3s}.vly-tabs button.on{color:#1d2433;border-color:#c89434}
+    .vly-car{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;margin-top:10px;padding-bottom:12px;scrollbar-width:none}.vly-car::-webkit-scrollbar{display:none}
+    .vly-c{flex:0 0 100%;scroll-snap-align:start;border-radius:18px;overflow:hidden;color:#fff;background:radial-gradient(circle at 100% 0%,#7c4bb0 0,#3a1c5c 55%,#24113b 100%);box-shadow:0 10px 14px -8px rgba(58,28,92,.45)}
+    .vly-c.b{background:radial-gradient(circle at 100% 0%,#3d6bff 0,#1a2f72 55%,#0f1d4a 100%);box-shadow:0 10px 14px -8px rgba(15,29,74,.45)}
+    .vly-h{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:12px 13px 6px}.vly-h b{display:block;font-size:14px}.vly-h small{display:block;font-size:10.5px;font-weight:700;color:rgba(255,255,255,.65);margin-top:2px}.vly-h em{font-style:normal;font-size:19px}
+    .vly-t{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+    .vly-t th{font-size:9px;letter-spacing:.09em;color:rgba(255,255,255,.55);font-weight:900;padding:6px 13px;text-align:right}.vly-t th:first-child{text-align:left}
+    .vly-t td{padding:8px 13px;text-align:right;font-weight:800;border-top:1px solid rgba(255,255,255,.08)}.vly-t td:first-child{text-align:left;color:rgba(255,255,255,.82);font-weight:700}.vly-t td.m{color:rgba(255,255,255,.5)}
+    .vly-t td.g{color:#7ef0b8}.vly-t td.r{color:#ff9fae}.vly-t tr:last-child td{padding-bottom:13px}
+    .vly-note{font-size:10.5px;color:#8a92a6;font-weight:600;line-height:1.45}.vly-wait{font-size:12px;color:#8a92a6;font-weight:700;padding:14px 4px}
+    body.dark-mode .vly-btn{background:#1a2033;border-color:#34405e;color:#c9d6ff}body.dark-mode .vly-tabs button.on{color:#fff}
     .wly-ms{display:flex;gap:6px;margin-top:10px}
     .wly-ms button{border:1px solid #dfe3ec;background:#fff;color:#4b5263;border-radius:99px;padding:5px 12px;font:inherit;font-size:11.5px;font-weight:800;cursor:pointer}
     .wly-ms button.on{background:#203c8e;border-color:#203c8e;color:#fff}
@@ -6577,11 +6592,47 @@ function drawWeeklyLy(anim){
  const go=anim&&motionOn();
  box.innerHTML=`<div class="wly-cap">Same Hijri weeks last year · ${esc(dd(W[0]&&W[0].from))} – ${esc(dd(W.length&&W[W.length-1].to))}</div>
   <div class="wly-ms">${[['v','Value'],['s','Spend'],['r','ROAS']].map(([k,l])=>`<button type="button" class="${WLY_M===k?'on':''}" onclick="wlyMetric('${k}')">${l}</button>`).join('')}</div>
+  ${vlyHtml()}
   <div class="wly-bars${go?' anim':''}">${W.map((w,j)=>{const wn=win(w);return `<button type="button" class="wly-g" onclick="wlyOpen(${j})"><span class="wly-col"><b>${M.f(M.g(w.l))}</b><i class="l" style="height:${(M.g(w.l)/mx*100).toFixed(1)}%;--d:${j*.12}s"></i></span><span class="wly-col${wn==='t'?' win':w.live&&wn==='l'?' lose':''}"><b class="t">${w.live?M.f(M.g(w.t)):'—'}</b><i class="t" style="height:${Math.max(1,M.g(w.t)/mx*100).toFixed(1)}%;--d:${.3+j*.12}s">${w.live&&wn==='t'?'<u class="wly-sp" style="left:8%;top:-12px"></u><u class="wly-sp" style="right:2px;top:8px;animation-delay:.5s"></u><u class="wly-sp" style="left:42%;top:34%;animation-delay:1s"></u>':''}</i></span><small class="wly-wl">W${j+1}</small></button>`}).join('')}</div>
   <div class="wly-lg"><span><i class="l"></i>Last year</span><span><i class="t"></i>This year so far</span>${M.hi==null||!W.some(w=>w.live&&win(w)==='t')?'':'<span><i class="n"></i>Beat last year</span>'}${M.hi==null||!W.some(w=>w.live&&win(w)==='l')?'':'<span><i class="r"></i>Below last year</span>'}<span class="tip">Tap a week for details</span></div>
   <div class="wly-list">${W.map((w,j)=>`<button type="button" onclick="wlyOpen(${j})"><span class="wly-wk">W${j+1}</span><span><b>${esc(w.hf)} – ${esc(w.ht)}</b><small>${esc(dd(w.from))} – ${esc(dd(w.to))} ${w.from?w.from.slice(0,4):''}</small></span><span class="r"><b>${mpK(w.l.v)}</b><small>${!w.live?'not yet':w.live<w.n?`<em class="nw">in progress · ${w.live} of ${w.n} days</em>`:`${chip(w.t.v,w.l.v)} this year`}</small></span></button>`).join('')}</div>`;
 }
 function wlyOpen(i){LYX_SHEETS=WLY_SHEETS;lyxOpen(i)}
+
+
+let VLY={}, VLY_OPEN=false, VLY_K=0;
+const VLY_M=['Spend','Clicks','Conv.','Value','ROAS','CPA'];
+function vlyToggle(){VLY_OPEN=!VLY_OPEN;VLY_K=0;const c=VLY[CURRENT_ACCOUNT];if(VLY_OPEN&&(!c||c.err))vlyLoad();drawWeeklyLy(false)}
+function vlyLoad(){
+ const k=CURRENT_ACCOUNT,c=VLY[k]=VLY[k]||{};if(c.busy)return;c.busy=true;c.err='';
+ serverCall('getMonthVsLy',k,false,getAccessToken()).then(r=>{c.busy=false;c.data=r||{missing:true};if(k===CURRENT_ACCOUNT&&WK_LY)drawWeeklyLy(false)})
+  .catch(err=>{c.busy=false;c.err=errorText(err);if(k===CURRENT_ACCOUNT&&WK_LY)drawWeeklyLy(false)});
+}
+function vlyHtml(){
+ const c=VLY[CURRENT_ACCOUNT]||{},d=c.data;
+ const head=String(d&&d.title||'').replace(/\s+/g,' ').trim(),nice=head?head.toLowerCase().replace(/\b[a-z]/g,x=>x.toUpperCase()).replace(/\bVs\b/,'vs'):'This month vs last year';
+ const btn=`<button type="button" class="vly-btn${VLY_OPEN?' on':''}" onclick="vlyToggle()" aria-expanded="${VLY_OPEN}"><span>📊</span><span><b>${esc(nice)}</b><small>Forecast and actual against last year</small></span><i>▾</i></button>`;
+ if(!VLY_OPEN)return btn;
+ if(!d)return btn+`<div class="vly-wait">${c.err?'⚠️ '+esc(c.err)+' · <a href="#" onclick="vlyLoad();drawWeeklyLy(false);return false">Try again</a>':'<span class="lab-spin dark"></span> Reading the month tab…'}</div>`;
+ if(d.missing||!(d.forecast&&d.forecast.ty)&&!(d.actual&&d.actual.ty))return btn+`<div class="vly-wait">The month tab of ${esc(CURRENT_ACCOUNT.toUpperCase())} has no “vs last year” table yet.</div>`;
+ const f=(v,i)=>v==null?'—':i===4?fmt(v,2)+'x':i===0||i===3||i===5?money(v):fmt(v,0);
+ const card=(S,cls,title,icon)=>{if(!S||!S.ty)return '';const vs=(S.vs&&S.vs.v)||[];
+   return `<div class="vly-c ${cls}"><div class="vly-h"><div><b>${title}</b><small>${esc(S.ty.label)}${S.ly?' · '+esc(S.ly.label):''}</small></div><em>${icon}</em></div>
+   <table class="vly-t"><tr><th></th><th>THIS YEAR</th><th>LAST YEAR</th><th>CHANGE</th></tr>${VLY_M.map((m,i)=>{
+     const t=S.ty.v[i],l=S.ly?S.ly.v[i]:null,x=vs[i]!=null?vs[i]:(t!=null&&l?t/l-1:null),p=x==null?null:Math.round(x*100),good=p==null?null:(i===5?p<=0:p>=0);
+     return `<tr><td>${m}</td><td>${f(t,i)}</td><td class="m">${f(l,i)}</td><td class="${good==null?'':good?'g':'r'}">${p==null?'—':(p>0?'▲ ':p<0?'▼ ':'')+Math.abs(p)+'%'}</td></tr>`}).join('')}</table></div>`};
+ const cards=[card(d.forecast,'','Forecast vs last year','📈'),card(d.actual,'b','Actual vs last year','✅')].filter(Boolean);
+ const names=[d.forecast&&d.forecast.ty?'Forecast vs last year':null,d.actual&&d.actual.ty?'Actual · same days':null].filter(Boolean);
+ setTimeout(vlyArm,0);
+ return btn+`${cards.length>1?`<div class="vly-tabs">${names.map((n,j)=>`<button type="button" class="${j===VLY_K?'on':''}" onclick="vlyGo(${j})">${n}</button>`).join('')}</div>`:''}
+  <div class="vly-car" id="vlyCar">${cards.join('')}</div><div class="vly-note">${esc(d.note||'Green = better than last year. CPA: lower is better.')}</div>`;
+}
+function vlyGo(k){const c=document.getElementById('vlyCar');if(c)c.scrollTo({left:k*c.clientWidth,behavior:motionOn()?'smooth':'auto'})}
+function vlyArm(){
+ const c=document.getElementById('vlyCar');if(!c||c.dataset.on)return;c.dataset.on=1;
+ if(VLY_K)c.scrollLeft=VLY_K*c.clientWidth;
+ c.addEventListener('scroll',()=>{const k=Math.round(c.scrollLeft/Math.max(1,c.clientWidth));if(k===VLY_K)return;VLY_K=k;document.querySelectorAll('.vly-tabs button').forEach((b,j)=>b.classList.toggle('on',j===k))},{passive:true});
+}
 function renderWeekly(rows){
  const strip=document.getElementById('weeklyStrip');
  const tabs=document.getElementById('weeklyTabs');
@@ -7199,7 +7250,8 @@ let LAB_DAY={};
 function labNewDay(d){
  const k=(d&&d.account&&d.account.key)||CURRENT_ACCOUNT,day=d&&d.latest&&d.latest.date;if(!k||!day)return;
  const was=LAB_DAY[k];LAB_DAY[k]=day;if(!was||was===day)return;
- [FC[k],AS[k]].forEach(c=>{if(c&&!c.busy){c.data=null;c.err=''}});
+ [FC[k],AS[k],VLY[k]].forEach(c=>{if(c&&!c.busy){c.data=null;c.err=''}});
+ if(VLY_OPEN&&WK_LY&&k===CURRENT_ACCOUNT)vlyLoad();
  if(CURRENT_TAB==='lab'&&k===CURRENT_ACCOUNT)setTimeout(()=>{try{fcDraw()}catch(e){}},0);
 }
 function fcLoad(force){

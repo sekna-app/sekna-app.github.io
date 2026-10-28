@@ -867,6 +867,40 @@ async function buildForecast(accountKey) {
   };
 }
 
+/** Weekly Performance → Last year: the "<month> vs <month last year>" block of the month tab (found by its labels). */
+async function buildVsLy(accountKey) {
+  const account = ACCOUNTS[normalizeAccountKey_(accountKey)];
+  if (!(account.sheets && account.sheets.forecast)) return { missing: true };
+  const book = await openBook(account);
+  const sh = await optionalSheet(book, 'forecast');
+  if (!sh) return { missing: true };
+  const rows = (await batchGet(book.id, [a1(sh.title, 'A1:AD80')]))[0] || [];
+  const n = x => (typeof x === 'number' && isFinite(x) ? x : null), t = x => String(x == null ? '' : x).trim();
+  // The title cell ("OCTOBER 2026 vs OCTOBER 2025"); the row labels sit in its column, the six numbers after them
+  // are Spend, Clicks, Conv, Value, ROAS, CPA.
+  let at = -1, col = -1;
+  rows.some((r, i) => (r || []).some((x, j) => {
+    if (typeof x === 'string' && /\b\d{4}\b.*\bvs\b.*\b\d{4}\b/i.test(x) && !(r || []).slice(j + 1, j + 7).some(y => typeof y === 'number')) { at = i; col = j; return true; }
+    return false;
+  }));
+  if (at < 0) return { missing: true };
+  const lines = rows.map(r => {
+    const vals = (r || []).slice(col + 1, col + 7).map(n);
+    return { label: t((r || [])[col]), vals, nums: vals.filter(x => x != null).length };
+  });
+  const title = lines[at];
+  const data = lines.slice(at + 1, at + 14).filter(l => l.label && l.nums >= 4);
+  const find = re => data.find(l => re.test(l.label));
+  const pick = l => l ? { label: l.label, v: l.vals } : null;
+  const fTy = data.find(l => /^forecast/i.test(l.label) && !/\bvs\b/i.test(l.label)), fVs = find(/^forecast.*\bvs\b/i);
+  const aVs = find(/^actual.*\bvs\b/i), aLy = find(/same\s*days/i);
+  const aTy = data.find(l => /^actual/i.test(l.label) && !/\bvs\b/i.test(l.label) && !/full\s*month/i.test(l.label) && l !== aLy);
+  const fLy = find(/full\s*month/i);
+  const note = lines.slice(at + 1, at + 16).find(l => l.label && l.nums === 0 && /green|same days/i.test(l.label));
+  return { v: 1, at: Date.now(), tab: sh.title, title: title.label,
+    forecast: { ty: pick(fTy), ly: pick(fLy), vs: pick(fVs) }, actual: { ty: pick(aTy), ly: pick(aLy), vs: pick(aVs) }, note: note ? note.label : '' };
+}
+
 // The settings the Lab can change, with their cells and the values allowed.
 const FORECAST_SET = {
   window: { cell: 'B54', min: 1, max: 60, int: true }, elasticity: { cell: 'B55', min: 0, max: 2 },
@@ -1015,4 +1049,4 @@ async function setAssumptions(accountKey, edits) {
 function forgetArchive() { Object.keys(archiveCache).forEach(k => delete archiveCache[k]); }
 
 module.exports = { ACCOUNTS, buildDashboardData, getMonthCompareData, normalizeAccountKey_, fmt, wallFromInstant, makeAsDate, grid, toNumber_,
-  ssIdOf, openBook, optionalSheet, forgetArchive, buildForecast, setForecast, buildAssumptions, setAssumptions };
+  ssIdOf, openBook, optionalSheet, forgetArchive, buildForecast, setForecast, buildAssumptions, setAssumptions, buildVsLy };

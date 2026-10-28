@@ -4,7 +4,7 @@
 const { onRequest } = require('firebase-functions/v2/https');
 const { onMessagePublished } = require('firebase-functions/v2/pubsub');
 const { onSchedule } = require('firebase-functions/v2/scheduler');
-const { buildDashboardData, getMonthCompareData, normalizeAccountKey_, buildForecast, setForecast, buildAssumptions, setAssumptions } = require('./dash');
+const { buildDashboardData, getMonthCompareData, normalizeAccountKey_, buildForecast, setForecast, buildAssumptions, setAssumptions, buildVsLy } = require('./dash');
 const { ACCESS, assertAccess, assertAdmin, assertPerm, assertLabView } = require('./access');
 const { fsGet, fsSet, fsAppend, fsList, fsClearList, request, PROJECT_ID } = require('./google');
 const { archiveStatus, archiveMove, archiveProgress } = require('./archive');
@@ -96,7 +96,7 @@ async function keptData(kind, key) {
 }
 async function sheetData(kind, key, force) {
   const ttl = kind === 'dash' ? DASH_CACHE_MS : MONTHS_CACHE_MS;
-  const build = () => (kind === 'dash' ? buildDashboardData(key) : kind === 'forecast' ? buildForecast(key) : kind === 'assume' ? buildAssumptions(key) : getMonthCompareData(key)).then(v => { if (kind === 'dash') sheetReads++; saveSnap(kind, key, v); return v; });
+  const build = () => (kind === 'dash' ? buildDashboardData(key) : kind === 'forecast' ? buildForecast(key) : kind === 'assume' ? buildAssumptions(key) : kind === 'vsly' ? buildVsLy(key) : getMonthCompareData(key)).then(v => { if (kind === 'dash') sheetReads++; saveSnap(kind, key, v); return v; });
   const ck = kind + ':' + key;
   if (force || inReadWindow(await readWindow())) return cached(ck, ttl, !!force, build);
   const hit = cache[ck];
@@ -130,6 +130,11 @@ const CALLS = {
     const key = normalizeAccountKey_(args[0]);
     await assertLabView(args[2]);
     return sheetData('forecast', key, !!args[1]);
+  },
+  /** Weekly Performance → Last year: the month vs last year tables of the month tab. */
+  async getMonthVsLy(args) {
+    const key = normalizeAccountKey_(args[0]);
+    return withAccess(args[2], sheetData('vsly', key, !!args[1]));
   },
   /** Media Plan Lab → Assumptions: channel economics, weeks and the plan month's index. */
   async getAssumptions(args) {
@@ -342,8 +347,8 @@ exports.api = onRequest({
           // Today's data is in: the sheet has yesterday (or a newer day than this morning).
           if (!got && (date >= yesterday || date !== dayLog.base[key])) {
             dayLog[key] = { at: (cache['dash:' + key] || {}).at || now, date }; logChanged = true;
-            // The Media Plan Lab (Forecast and Assumptions tabs) is read again with the new day.
-            for (const kind of ['forecast', 'assume']) { try { await sheetData(kind, key, true); } catch (e) { console.error('Lab read ' + kind + ' ' + key + ': ' + errorText(e)); } }
+            // The Media Plan Lab (Forecast and Assumptions tabs) and the month vs last year tables are read again with the new day.
+            for (const kind of ['forecast', 'assume', 'vsly']) { try { await sheetData(kind, key, true); } catch (e) { console.error('Lab read ' + kind + ' ' + key + ': ' + errorText(e)); } }
           }
         }
       }
