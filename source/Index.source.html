@@ -4289,9 +4289,11 @@ window.addEventListener('load',function(){
     body.dark-mode .lab-locked .lock-ic{background:#2b2214}
     /* v116 · weekly last year */
     /* v170 "Night card": the month tab's "<month> vs last year" tables, two cards you swipe (Weekly Performance → Last year). */
-    .vly-btn{display:flex;align-items:center;gap:9px;width:100%;margin-top:10px;border:1.5px dashed #c8d2ea;background:#f6f8ff;border-radius:13px;padding:9px 11px;font:inherit;text-align:left;cursor:pointer;color:#203c8e}
-    .vly-btn>span:first-child{font-size:15px}.vly-btn b{display:block;font-size:12.5px;font-weight:850}.vly-btn small{display:block;font-size:10.5px;color:#8a92a6;font-weight:700}
-    .vly-btn i{font-style:normal;margin-left:auto;transition:transform .25s}.vly-btn.on i{transform:rotate(180deg)}
+    .vly-btn{position:relative;display:flex;align-items:center;justify-content:center;gap:12px;width:100%;margin-top:10px;border:1.5px solid #ecd9b0;background:#fbf7ee;border-radius:14px;padding:9px 34px;font:inherit;cursor:pointer;transition:transform .15s}
+    .vly-btn:active{transform:scale(.98)}
+    .vly-y{font-family:'DM Serif Display',Georgia,serif;font-size:21px;line-height:1;color:#1d2433;text-align:center}.vly-y small{display:block;font-family:inherit;font-family:Inter,system-ui,sans-serif;font-size:9px;font-weight:800;color:#a8853f;letter-spacing:.08em;margin-top:2px}.vly-y.l{color:#a0a7b8}
+    .vly-vs{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#c89434,#e2b874);color:#fff;font-size:10px;font-weight:900;box-shadow:0 3px 8px rgba(200,148,52,.4);flex:none}
+    .vly-btn i{position:absolute;right:14px;top:50%;margin-top:-8px;font-style:normal;color:#a8853f;transition:transform .25s}.vly-btn.on i{transform:rotate(180deg)}
     .vly-tabs{display:flex;gap:16px;margin:12px 2px 0}.vly-tabs button{border:0;background:none;padding:0 0 6px;font:inherit;font-size:11.5px;font-weight:800;color:#8a92a6;cursor:pointer;border-bottom:2px solid transparent;transition:color .3s,border-color .3s}.vly-tabs button.on{color:#1d2433;border-color:#c89434}
     .vly-car{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;margin-top:10px;padding-bottom:12px;scrollbar-width:none}.vly-car::-webkit-scrollbar{display:none}
     .vly-c{flex:0 0 100%;scroll-snap-align:start;border-radius:18px;overflow:hidden;color:#fff;background:radial-gradient(circle at 100% 0%,#7c4bb0 0,#3a1c5c 55%,#24113b 100%);box-shadow:0 10px 14px -8px rgba(58,28,92,.45)}
@@ -4302,7 +4304,7 @@ window.addEventListener('load',function(){
     .vly-t td{padding:8px 13px;text-align:right;font-weight:800;border-top:1px solid rgba(255,255,255,.08)}.vly-t td:first-child{text-align:left;color:rgba(255,255,255,.82);font-weight:700}.vly-t td.m{color:rgba(255,255,255,.5)}
     .vly-t td.g{color:#7ef0b8}.vly-t td.r{color:#ff9fae}.vly-t tr:last-child td{padding-bottom:13px}
     .vly-note{font-size:10.5px;color:#8a92a6;font-weight:600;line-height:1.45}.vly-wait{font-size:12px;color:#8a92a6;font-weight:700;padding:14px 4px}
-    body.dark-mode .vly-btn{background:#1a2033;border-color:#34405e;color:#c9d6ff}body.dark-mode .vly-tabs button.on{color:#fff}
+    body.dark-mode .vly-btn{background:#241f16;border-color:#5a4826}body.dark-mode .vly-y{color:#fff}body.dark-mode .vly-y.l{color:#8a92a6}body.dark-mode .vly-tabs button.on{color:#fff}
     .wly-ms{display:flex;gap:6px;margin-top:10px}
     .wly-ms button{border:1px solid #dfe3ec;background:#fff;color:#4b5263;border-radius:99px;padding:5px 12px;font:inherit;font-size:11.5px;font-weight:800;cursor:pointer}
     .wly-ms button.on{background:#203c8e;border-color:#203c8e;color:#fff}
@@ -6618,8 +6620,10 @@ function vlyLoad(){
 }
 function vlyHtml(){
  const c=VLY[CURRENT_ACCOUNT]||{},d=c.data;
- const head=String(d&&d.title||'').replace(/\s+/g,' ').trim(),nice=head?head.toLowerCase().replace(/\b[a-z]/g,x=>x.toUpperCase()).replace(/\bVs\b/,'vs'):'This month vs last year';
- const btn=`<button type="button" class="vly-btn${VLY_OPEN?' on':''}" onclick="vlyToggle()" aria-expanded="${VLY_OPEN}"><span>📊</span><span><b>${esc(nice)}</b><small>Forecast and actual against last year</small></span><i>▾</i></button>`;
+ // "OCTOBER 2026 vs OCTOBER 2025" from the sheet; before it is read, the dashboard's month and year.
+ const tm=String(d&&d.title||'').match(/([A-Za-z]+)\s+(\d{4})\s+vs\.?\s+([A-Za-z]+)\s+(\d{4})/i),x=(DASH_DATA&&DASH_DATA.latest)||{},y0=Number(String(x.date||'').slice(0,4))||new Date().getFullYear();
+ const yr=tm?[[tm[2],tm[1]],[tm[4],tm[3]]]:[[y0,x.monthName||''],[y0-1,x.monthName||'']];
+ const btn=`<button type="button" class="vly-btn${VLY_OPEN?' on':''}" onclick="vlyToggle()" aria-expanded="${VLY_OPEN}" aria-label="${esc(yr[0][1]+' '+yr[0][0]+' vs '+yr[1][1]+' '+yr[1][0])}"><span class="vly-y">${esc(yr[0][0])}<small>${esc(String(yr[0][1]).toUpperCase())}</small></span><span class="vly-vs">VS</span><span class="vly-y l">${esc(yr[1][0])}<small>${esc(String(yr[1][1]).toUpperCase())}</small></span><i>▾</i></button>`;
  if(!VLY_OPEN)return btn;
  if(!d)return btn+`<div class="vly-wait">${c.err?'⚠️ '+esc(c.err)+' · <a href="#" onclick="vlyLoad();drawWeeklyLy(false);return false">Try again</a>':'<span class="lab-spin dark"></span> Reading the month tab…'}</div>`;
  if(d.missing||!(d.forecast&&d.forecast.ty)&&!(d.actual&&d.actual.ty))return btn+`<div class="vly-wait">The month tab of ${esc(CURRENT_ACCOUNT.toUpperCase())} has no “vs last year” table yet.</div>`;
