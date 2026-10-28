@@ -9093,6 +9093,7 @@ function updateProfileUI(){
  ['mrSection'].forEach(id=>{const b=document.getElementById(id);if(b)b.hidden=!p.owner}); // the HEMERA owner only
  tkQuickNav();
  if(CURRENT_TAB==='channel')renderMonthlyReport();
+ if(p.email&&DASHBOARD_STARTED)maybeStartTour();
 }
 
 function openWhatsNew(){
@@ -9149,7 +9150,15 @@ const TOUR_TXT=[
  ['3 · YOU ARE READY','Day by day.','Share results to WhatsApp in a tap, and get a notification when a new day arrives.']];
 const TOUR_ROWS=['Search Brand','Performance Max','Non-Brand','Demand Gen','Video'];
 let TOUR_I=0;
-function maybeStartTour(){if(!storeGet(TOUR_KEY))tourStart()}
+// The welcome tour shows once for each account (not once per device), so a new account on a shared phone sees it too.
+const TOUR_SEEN_KEY='hemera_tour_seen';let TOUR_CHECKED=false;
+function tourEmail(){return String((ACCESS_PROFILE&&ACCESS_PROFILE.email)||storeGet(ACCESS_EMAIL_KEY)||'').trim().toLowerCase()}
+function tourSeen(){try{const a=JSON.parse(storeGet(TOUR_SEEN_KEY)||'[]');return Array.isArray(a)?a:[]}catch(e){return []}}
+function maybeStartTour(){
+ let va=null;try{va=VIEW_AS}catch(e){}
+ if(TOUR_CHECKED||va)return;const e=tourEmail();if(!e)return;TOUR_CHECKED=true;
+ if(tourSeen().indexOf(e)<0)setTimeout(()=>{const t=document.getElementById('tour');if(t&&t.hidden)tourStart()},1200);
+}
 function tourStart(){
  const t=document.getElementById('tour');if(!t)return;
  const logo=document.getElementById('tourLogo');if(logo&&!logo.src)logo.src=SEKNA_WHITE_LOGO;
@@ -9168,8 +9177,8 @@ function tourShow(i,quiet){
  const lt=i===0?H*.2:i===3?H*.22:Math.max(64,H*.09);
  const lh=lw*149/667, lx=(W-lw)/2;
  const logo=document.getElementById('tourLogo');logo.style.width=lw+'px';logo.style.left=lx+'px';logo.style.top=lt+'px';
- // Where the gold bar sits inside the "E" (pixels 165-223 × 64-87 of the 667×149 logo).
- const onLogo=[lx+lw*165/667,lt+lh*64/149,lw*58/667,lh*23/149];
+ // Where the gold bar sits inside the "E" (pixels 134-216 × 54-74 of the 667×149 HEMERA logo, level with the H's bar).
+ const onLogo=[lx+lw*134/667,lt+lh*54/149,lw*82/667,lh*21/149];
  const bar=document.getElementById('tourBar'),pieces=[...bar.children];
  const bw=Math.min(280,W-64),bh=Math.min(180,H*.25),bx=(W-bw)/2,by=lt+lh+Math.max(28,H*.06);
  let box,parts,rows=false;
@@ -9177,8 +9186,9 @@ function tourShow(i,quiet){
  else if(i===2){box=[bx,by,bw,bh];rows=true;parts=[1,.76,.68,.48,.36].map(w=>[0,bw*w,24])}
  else{box=onLogo;parts=pieces.map(()=>[0,onLogo[2],onLogo[3]])}
  bar.style.left=box[0]+'px';bar.style.top=box[1]+'px';bar.style.width=box[2]+'px';bar.style.height=box[3]+'px';
+ const onL=box===onLogo;bar.style.transform=onL?'skewX(-8deg)':'';
  pieces.forEach((p,k)=>{const q=parts[k];p.style.left=q[0]+'px';p.style.width=q[1]+'px';p.style.height=q[2]+'px';
-   p.style.bottom=rows?(bh-24-k*(bh-24)/4)+'px':'0';p.style.opacity=(i===0||i===3)&&k>0?0:1;p.textContent=rows?TOUR_ROWS[k]:''});
+   p.style.bottom=rows?(bh-24-k*(bh-24)/4)+'px':'0';p.style.opacity=(i===0||i===3)&&k>0?0:1;p.style.borderRadius=onL?'99px':'';p.textContent=rows?TOUR_ROWS[k]:''});
  const ring=document.getElementById('tourRing'),rs=Math.min(W-56,290);
  ring.style.width=ring.style.height=rs+'px';ring.style.left=(W-rs)/2+'px';ring.style.top=(lt+lh/2-rs/2)+'px';
  const txt=document.getElementById('tourTxt'),put=()=>{const [k,h,p]=TOUR_TXT[i];txt.children[0].textContent=k;txt.children[1].textContent=h;txt.children[2].textContent=p;txt.classList.remove('out')};
@@ -9190,6 +9200,7 @@ function tourNext(){if(TOUR_I<3)tourShow(TOUR_I+1);else tourEnd()}
 function tourBack(){if(TOUR_I>0)tourShow(TOUR_I-1)}
 function tourEnd(){
  storeSet(TOUR_KEY,'1');
+ const e=tourEmail();if(e){const a=tourSeen();if(a.indexOf(e)<0){a.push(e);storeSet(TOUR_SEEN_KEY,JSON.stringify(a.slice(-20)))}}
  const t=document.getElementById('tour');if(!t)return;
  t.classList.remove('show');window.removeEventListener('resize',tourRelayout);
  setTimeout(()=>{t.hidden=true},460);
