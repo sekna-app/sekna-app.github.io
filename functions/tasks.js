@@ -1,4 +1,4 @@
-// Team Tasks, days off and team members on the SEKNA server (Firestore), ported from Code.gs.
+// Team Tasks, days off and team members on the HEMERA server (Firestore), ported from Code.gs.
 // Until the admin moves the data over (adminTasksMove), every call is passed to Apps Script,
 // so nothing changes for anyone before the move. Emails and pushes go out through notify.js.
 const crypto = require('crypto');
@@ -414,7 +414,7 @@ const T = {
           (snaps ? '<ul style="margin:8px 0 0;padding-left:18px;font-size:13px;color:#4c5464">' + snaps + '</ul>' : '') +
           (d.msg ? '<div style="margin-top:8px;font-size:13px;color:#4c5464;background:#f8f9fc;border-radius:8px;padding:8px 10px">' + esc(d.msg) + '</div>' : '') + '</div>';
       }).join('');
-      return { to: email, replyTo: a.email, subject: '📋 Your SEKNA tasks — Week ' + week + ' (' + range + ')', title: 'Week ' + week + ' tasks · ' + esc(range),
+      return { to: email, replyTo: a.email, subject: '📋 Your HEMERA tasks — Week ' + week + ' (' + range + ')', title: 'Week ' + week + ' tasks · ' + esc(range),
         html: '<p style="margin:0 0 14px;font-size:14px;color:#4c5464">Hi ' + esc(String(p.name).split(' ')[0]) + ', here are your tasks for this week.</p>' + list,
         button: { url: WEB_PAGE_URL + '/?tasks=mine', label: 'Open My Tasks' } };
     });
@@ -428,7 +428,7 @@ const T = {
       meta.sent = sent;
       return meta;
     });
-    await relay({ emails: mails, pushes: emails.map(e => ({ email: e, title: 'SEKNA · Week ' + week + ' tasks', body: 'Your tasks for ' + range + ' are ready.' })) });
+    await relay({ emails: mails, pushes: emails.map(e => ({ email: e, title: 'HEMERA · Week ' + week + ' tasks', body: 'Your tasks for ' + range + ' are ready.' })) });
     return { sent: emails.length, at: sentAt };
   },
 
@@ -490,12 +490,12 @@ async function teamStatusFor(a) {
 
 /* ---------- the move (admin, once) ---------- */
 
-/** Copies the SEKNA Tasks sheet and the Apps Script settings into Firestore, then switches Team Tasks over. */
+/** Copies the HEMERA Tasks sheet and the Apps Script settings into Firestore, then switches Team Tasks over. */
 async function adminTasksMove([token]) {
   const a = await assertAccess(token);
   if (!isAdminEmail(a.email)) { const e = new Error('SEKNA_ADMIN_ONLY'); e.access = true; throw e; }
   // Once moved, the sheet is out of date: copying it again would lose the changes made since.
-  if (await moved()) throw new Error('Team Tasks already moved to the SEKNA server.');
+  if (await moved()) throw new Error('Team Tasks already moved to the HEMERA server.');
   const props = await appsScript('tasksExportProps', [token, false]);
   const [rows] = await batchGet(TASKS_SHEET.ID, [a1(TASKS_SHEET.NAME, 'A2:L')], true);
   const parse = (v, d) => { try { return v ? JSON.parse(v) : d; } catch (e) { return d; } };
@@ -547,8 +547,8 @@ async function morningPush() {
     (await backupTodayFor(email, { leave: lv, meta: mt, monthItems, approved })).forEach(b => {
       const snaps = (b.snaps || []).slice().sort((x, y) => toMin(x.t) - toMin(y.t));
       const first = String(b.name).split(' ')[0];
-      pushes.push({ email, title: 'SEKNA · You are the backup today',
-        body: first + ' is off today — you are covering. ' + (snaps.length ? snaps.length + ' snapshot' + (snaps.length > 1 ? 's' : '') + ', first ' + snaps[0].n + ' at ' + snaps[0].t + '.' : 'Open SEKNA for the details.') });
+      pushes.push({ email, title: 'HEMERA · You are the backup today',
+        body: first + ' is off today — you are covering. ' + (snaps.length ? snaps.length + ' snapshot' + (snaps.length > 1 ? 's' : '') + ', first ' + snaps[0].n + ' at ' + snaps[0].t + '.' : 'Open HEMERA for the details.') });
     });
   }
   return relay({ pushes });

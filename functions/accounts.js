@@ -1,6 +1,6 @@
-// Sign-in, approvals, devices, invites, maintenance and team messages on the SEKNA server,
+// Sign-in, approvals, devices, invites, maintenance and team messages on the HEMERA server,
 // ported from Code.gs. Until the admin moves them (adminAccessMove), every call is passed to
-// Apps Script. After the move the "SEKNA Access" sheet is kept as a copy (rewritten after every
+// Apps Script. After the move the "HEMERA Access" sheet is kept as a copy (rewritten after every
 // change), because the Apps Script parts that are not moved yet still check tokens there.
 const crypto = require('crypto');
 const { fsGet, fsSet, fsUpdate, batchGet, a1, valuesUpdate, valuesUpdateTyped, valuesClear, sheetMeta } = require('./google');
@@ -56,7 +56,7 @@ function serialToMs(v, tz) {
 
 async function secret() {
   const s = await fsGet(DOC.secret);
-  if (!s || !s.value) throw new Error('Sign-in has not moved to the SEKNA server yet.');
+  if (!s || !s.value) throw new Error('Sign-in has not moved to the HEMERA server yet.');
   return s.value;
 }
 async function sign(text) {
@@ -85,7 +85,7 @@ async function saveRows(change) {
   await mirror(out && out.items).catch(err => console.error('Access sheet copy failed: ' + err.message));
   return out ? out.items : [];
 }
-/** Rewrites the "SEKNA Access" sheet from Firestore, so Apps Script still knows every device. */
+/** Rewrites the "HEMERA Access" sheet from Firestore, so Apps Script still knows every device. */
 async function mirror(list) {
   list = list || await storeRows(true);
   const seen = (await fsGet(ACC.seen)) || {};
@@ -125,7 +125,7 @@ async function setApp(change) {
 }
 async function pushAnnouncement(s) {
   const a = s.announcement, body = String(a.message).replace(/\{name\}/gi, 'team');
-  await tasks.relay({ topics: [{ title: a.title || 'SEKNA', body: body.length > 180 ? body.slice(0, 177) + '…' : body, account: 'usa', eventType: 'announcement' }] });
+  await tasks.relay({ topics: [{ title: a.title || 'HEMERA', body: body.length > 180 ? body.slice(0, 177) + '…' : body, account: 'usa', eventType: 'announcement' }] });
 }
 
 /* ---------- photos (read from the Profiles sheet Apps Script filled) ---------- */
@@ -158,8 +158,8 @@ const A = {
       return { hash: sha256(email + ':' + code), attempts: 0, exp: Date.now() + CFG.CODE_TTL_MS, cdUntil: Date.now() + CFG.CODE_COOLDOWN_MS, rl };
     });
     const name = nameFromEmail(email);
-    await relayEmail({ to: email, replyTo: CFG.SENDER_EMAIL, subject: 'Your SEKNA verification code: ' + code, title: 'Hi ' + esc(name) + ',',
-      html: P('Use this code to verify your email and request access to the SEKNA dashboard:') +
+    await relayEmail({ to: email, replyTo: CFG.SENDER_EMAIL, subject: 'Your HEMERA verification code: ' + code, title: 'Hi ' + esc(name) + ',',
+      html: P('Use this code to verify your email and request access to the HEMERA dashboard:') +
         '<div style="margin:0 0 16px;padding:16px;border-radius:12px;background:#eef2fd;text-align:center;font-size:30px;font-weight:800;letter-spacing:8px;color:#203C8E">' + code + '</div>' +
         '<p style="margin:0;font-size:12px;line-height:1.6;color:#8a92a0">The code expires in 10 minutes. If you did not request it, you can ignore this email.</p>' });
     return { ok: true, name };
@@ -242,7 +242,7 @@ const A = {
     return { me: me.email, now: Date.now(), rows, photos: ph, members: mem };
   },
 
-  /** Admin → Permissions: everyone approved, with their role and what they can use (the SEKNA admin only). */
+  /** Admin → Permissions: everyone approved, with their role and what they can use (the HEMERA admin only). */
   async adminPerms([token]) {
     await assertOwner(token);
     const [rows, mem, over, tries] = await Promise.all([storeRows(), tasks.members(), fsGet(PERM_DOC), fsGet(BLOCK_TRIES)]);
@@ -302,9 +302,9 @@ const A = {
       return list;
     });
     if (already) return { ok: true, already: true, name };
-    await relayEmail({ to: email, replyTo: CFG.SENDER_EMAIL, subject: name + ', you have access to the SEKNA dashboard', title: 'Hi ' + esc(name) + ',',
-      html: P('You have been given access to the SEKNA dashboard. Open the SEKNA app, or the link below, and confirm your email with the code we send you.'),
-      button: { url: CFG.WEB_PAGE_URL, label: 'Open SEKNA' } });
+    await relayEmail({ to: email, replyTo: CFG.SENDER_EMAIL, subject: name + ', you have access to the HEMERA dashboard', title: 'Hi ' + esc(name) + ',',
+      html: P('You have been given access to the HEMERA dashboard. Open the HEMERA app, or the link below, and confirm your email with the code we send you.'),
+      button: { url: CFG.WEB_PAGE_URL, label: 'Open HEMERA' } });
     return { ok: true, already: false, name };
   },
 
@@ -352,7 +352,7 @@ const A = {
   async adminClearAnnouncement([token]) { await assertAdmin(token); return setApp(s => { s.announcement = null; }); }
 };
 
-/* ---------- blocked accounts: each time they open SEKNA (Admin → Permissions shows it) ---------- */
+/* ---------- blocked accounts: each time they open HEMERA (Admin → Permissions shows it) ---------- */
 const BLOCK_TRIES = 'team/blocked-tries';
 function noteBlockedTry(email) {
   const e = norm(email), now = Date.now();
@@ -366,11 +366,11 @@ function noteBlockedTry(email) {
   }).catch(err => console.error('Blocked try: ' + err.message));
 }
 
-/** People given Admin can't turn off or delete the SEKNA admin's own devices. */
+/** People given Admin can't turn off or delete the HEMERA admin's own devices. */
 async function guardOwner(me, id) {
   if (isAdminEmail(me.email)) return;
   const r = (await storeRows()).find(x => x.id === String(id || ''));
-  if (r && isAdminEmail(r.email)) throw new Error('Only the SEKNA admin can change this.');
+  if (r && isAdminEmail(r.email)) throw new Error('Only the HEMERA admin can change this.');
 }
 
 async function decide(id, status) {
@@ -382,10 +382,10 @@ async function decide(id, status) {
     return list;
   });
   if (status === 'Approved' && before !== 'Approved' && row.tokenHash) {
-    await relayEmail({ to: row.email, replyTo: CFG.SENDER_EMAIL, subject: "You're verified, " + row.name + ' — SEKNA dashboard access is active',
+    await relayEmail({ to: row.email, replyTo: CFG.SENDER_EMAIL, subject: "You're verified, " + row.name + ' — HEMERA dashboard access is active',
       title: "You're verified, " + esc(row.name) + '!',
-      html: P('Your identity has been confirmed and your access to the SEKNA dashboard is now active.') + P('Open the SEKNA app — or SEKNA on the web — to continue.'),
-      button: { url: CFG.WEB_PAGE_URL, label: 'Open SEKNA' } }).catch(err => console.error('Approval email: ' + err.message));
+      html: P('Your identity has been confirmed and your access to the HEMERA dashboard is now active.') + P('Open the HEMERA app — or HEMERA on the web — to continue.'),
+      button: { url: CFG.WEB_PAGE_URL, label: 'Open HEMERA' } }).catch(err => console.error('Approval email: ' + err.message));
   }
   return { status, name: row.name, email: row.email };
 }
@@ -402,8 +402,8 @@ async function adminRequestEmail(r, autoApproved) {
     : [{ url: await reviewUrl(r.id, 'approve'), label: 'Approve', primary: true }, { url: await reviewUrl(r.id, 'deny'), label: 'Deny' }];
   await relayEmail({ to: CFG.ADMIN_EMAIL, replyTo: r.email, subject: (autoApproved ? 'New device: ' : 'Access request: ') + r.name + ' (' + r.email + ')',
     title: autoApproved ? 'New device signed in' : 'New access request',
-    html: P(esc(r.name) + (autoApproved ? ' is already approved and confirmed their email on a new device, so it was approved automatically.' : ' confirmed their email and is asking for access to the SEKNA dashboard.')) + details(r),
-    buttons, footer: 'Manage everyone from SEKNA → Admin → People.' });
+    html: P(esc(r.name) + (autoApproved ? ' is already approved and confirmed their email on a new device, so it was approved automatically.' : ' confirmed their email and is asking for access to the HEMERA dashboard.')) + details(r),
+    buttons, footer: 'Manage everyone from HEMERA → Admin → People.' });
 }
 
 /* ---------- the review page (opened from the admin email) ---------- */
@@ -422,7 +422,7 @@ async function reviewPage(q) {
       'fetch(' + JSON.stringify(API_URL + '/call') + ',{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({fn:"accessDecide",args:' + JSON.stringify([id, decision, sig]).replace(/</g, '\\u003c') + '})})' +
       '.then(function(r){return r.json()}).then(function(j){if(!j.ok)throw new Error(j.error||"Could not save");b.textContent="Done ✓";m.textContent=j.result.name+" is now "+j.result.status+".";})' +
       '.catch(function(e){b.disabled=false;b.textContent="Try again";m.textContent=e.message;});}</script>';
-  return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SEKNA • Access request</title><style>' +
+  return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>HEMERA • Access request</title><style>' +
     'body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;' +
     'background:linear-gradient(160deg,#2a4eb3,#203c8e 45%,#0f1f52);font-family:Inter,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:#1d2433}' +
     '.card{width:min(420px,100%);background:#fff;border-radius:22px;padding:26px 24px;box-shadow:0 30px 80px rgba(6,14,40,.45)}' +
@@ -431,14 +431,14 @@ async function reviewPage(q) {
     'h1{margin:6px 0 14px;font-size:22px;letter-spacing:-.02em}.muted{font-size:13px;color:#636b7a}' +
     'button{width:100%;margin-top:8px;padding:14px;border:0;border-radius:13px;font-size:14px;font-weight:800;color:#fff;cursor:pointer}' +
     'button.primary{background:linear-gradient(180deg,#2b4db0,#203c8e)}button.danger{background:#c0392b}button:disabled{opacity:.75;cursor:default}' +
-    '</style></head><body><div class="card"><div class="brand">SEKNA</div>' + body + '</div></body></html>';
+    '</style></head><body><div class="card"><div class="brand">HEMERA</div>' + body + '</div></body></html>';
 }
 
 /* ---------- the move (admin, once) ---------- */
 
 async function adminAccessMove([token]) {
   const a = await assertAdmin(token);
-  if (await accessMoved()) throw new Error('Sign-in already moved to the SEKNA server.');
+  if (await accessMoved()) throw new Error('Sign-in already moved to the HEMERA server.');
   const props = await tasks.appsScript('accessExportProps', [token, false]);
   if (!props || !props.secret) throw new Error('Apps Script did not give the sign-in settings.');
   const tz = (await sheetMeta(ACCESS.SPREADSHEET_ID)).timeZone;

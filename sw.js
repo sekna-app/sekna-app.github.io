@@ -1,4 +1,4 @@
-// SEKNA web app service worker: offline shell + notifications.
+// HEMERA web app service worker: offline shell + notifications.
 // The page is always fetched fresh when online, so updates appear right away; the
 // cached copy is only used without a network. Dashboard data is never cached here.
 const CACHE = 'sekna-shell-v5';
@@ -13,7 +13,7 @@ if (self.SEKNA_FIREBASE && self.SEKNA_FIREBASE.apiKey) {
   firebase.messaging().onBackgroundMessage(payload => showSeknaNotification((payload && payload.data) || {}));
 }
 
-// Android already shows the SEKNA app icon next to every notification, so the
+// Android already shows the HEMERA app icon next to every notification, so the
 // large icon is only added on computers (otherwise the logo appears twice).
 const IS_ANDROID = /Android/i.test(self.navigator.userAgent || '');
 
@@ -21,7 +21,7 @@ function showSeknaNotification(d) {
   const tag = d.eventType === 'new_day' ? 'data-' + (d.accountKey || 'usa') : (d.eventType || 'sekna');
   const options = { body: d.body || '', badge: 'icons/badge-96.png', tag: tag, data: { url: './' } };
   if (!IS_ANDROID) options.icon = 'icons/icon-192.png';
-  return self.registration.showNotification(d.title || 'SEKNA', options);
+  return self.registration.showNotification(d.title || 'HEMERA', options);
 }
 
 self.addEventListener('notificationclick', event => {

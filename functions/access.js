@@ -93,7 +93,7 @@ async function assertAccess(token) {
 
 function isAdminEmail(email) { return ACCESS.ADMIN_EMAILS.indexOf(String(email || '').toLowerCase()) >= 0; }
 
-/* ---------- permissions (Admin → Permissions, set by the SEKNA admin only) ---------- */
+/* ---------- permissions (Admin → Permissions, set by the HEMERA admin only) ---------- */
 // lab: Media Plan Lab · build: Task Builder · quick: Quick requests · leave: set days off · admin: the Admin page.
 // The role gives the start (leaders get build, quick and leave); a switch set in Admin wins over the role.
 // Every other page of the side menu, and share (WhatsApp buttons and images), is on for everyone until switched off.
@@ -146,7 +146,7 @@ async function assertLabView(token) {
   if (v !== true && v !== 'view') { const err = new Error('SEKNA_ADMIN_ONLY'); err.access = true; throw err; }
   return a;
 }
-/** Only the SEKNA admin (not people given Admin): changing permissions. */
+/** Only the HEMERA admin (not people given Admin): changing permissions. */
 async function assertOwner(token) {
   const a = await assertAccess(token);
   if (!isAdminEmail(a.email)) { const err = new Error('SEKNA_ADMIN_ONLY'); err.access = true; throw err; }

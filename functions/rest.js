@@ -1,4 +1,4 @@
-// The rest of Code.gs on the SEKNA server: usage and share counts, the ideas box, plan history,
+// The rest of Code.gs on the HEMERA server: usage and share counts, the ideas box, plan history,
 // the monthly report email, web notifications, and the "new day" phone notifications.
 // Until the admin moves them (adminRestMove), every call is passed to Apps Script.
 const { fsGet, fsSet, fsUpdate, fsAppend, fsList, fsSetList, batchGet, a1, sheetMeta } = require('./google');
@@ -226,7 +226,7 @@ const R = {
     notify.send({ emails: [{ to: 'seknaapp@gmail.com', replyTo: a.email, subject: '💡 New idea from ' + (a.name || a.email), title: 'New idea from ' + esc(a.name || a.email),
       html: (title ? '<p style="margin:0 0 8px;font-size:15px;font-weight:700">' + esc(title) + '</p>' : '') +
         '<p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#4c5464;white-space:pre-wrap">' + esc(text) + '</p>',
-      button: { url: WEB_PAGE_URL, label: 'Open SEKNA' } }] }).catch(e => console.error('Idea email: ' + e.message));
+      button: { url: WEB_PAGE_URL, label: 'Open HEMERA' } }] }).catch(e => console.error('Idea email: ' + e.message));
     return { ok: true, id };
   },
   /** Exchange rates for the currency switch, from 1 pound (refreshed once a day at the time the admin picked). */
@@ -346,10 +346,10 @@ const R = {
     });
     if (changed && idea.email) {
       const label = { New: 'received', Reviewing: 'being reviewed', Planned: 'planned', Done: 'done ✅', Declined: 'not planned for now' }[status];
-      notify.send({ emails: [{ to: idea.email, replyTo: 'seknaapp@gmail.com', subject: 'Your SEKNA idea is ' + label, title: 'Hi ' + esc(idea.name || nameFromEmail(idea.email)) + ',',
+      notify.send({ emails: [{ to: idea.email, replyTo: 'seknaapp@gmail.com', subject: 'Your HEMERA idea is ' + label, title: 'Hi ' + esc(idea.name || nameFromEmail(idea.email)) + ',',
         html: '<p style="margin:0 0 10px;font-size:14px;line-height:1.6;color:#4c5464">Your idea' + (idea.title ? ' “' + esc(idea.title) + '”' : '') + ' is now <b>' + esc(label) + '</b>.</p>' +
           (reply ? '<p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#1d2433;white-space:pre-wrap">' + esc(reply) + '</p>' : ''),
-        button: { url: WEB_PAGE_URL, label: 'Open SEKNA' } }] }).catch(e => console.error('Idea reply email: ' + e.message));
+        button: { url: WEB_PAGE_URL, label: 'Open HEMERA' } }] }).catch(e => console.error('Idea reply email: ' + e.message));
     }
     return { ok: true };
   },
@@ -385,7 +385,7 @@ const R = {
   },
 
   async adminReportRecipients([token]) {
-    await assertOwner(token); // only the SEKNA owner sends the report
+    await assertOwner(token); // only the HEMERA owner sends the report
     if (!notify.mailReady()) return notify.appsScript('adminReportRecipients', [token]);
     return { people: await approvedPeople(), quota: 500 };
   },
@@ -398,7 +398,7 @@ const R = {
     if (!bytes.length) throw new Error('The report is empty.');
     if (bytes.length > REPORT_MAX_BYTES) throw new Error('The report is too large to email.');
     const title = String(meta.title || 'Media Plan results').slice(0, 120);
-    const fileName = (String(meta.fileName || '').replace(/[^\w.\- ]/g, '').slice(0, 80) || 'SEKNA-Report').replace(/\.pdf$/i, '') + '.pdf';
+    const fileName = (String(meta.fileName || '').replace(/[^\w.\- ]/g, '').slice(0, 80) || 'HEMERA-Report').replace(/\.pdf$/i, '') + '.pdf';
     const people = meta.testOnly ? [{ email: me.email, name: me.name || nameFromEmail(me.email) }] : await approvedPeople();
     if (!people.length) throw new Error('There is no one to send the report to yet.');
     const lines = (Array.isArray(meta.lines) ? meta.lines : []).slice(0, 4).map(l => '<li style="margin:0 0 6px">' + esc(String(l).slice(0, 220)) + '</li>').join('');
@@ -409,7 +409,7 @@ const R = {
     for (const p of people) {
       try {
         await notify.sendMail({ to: p.email, replyTo: 'seknaapp@gmail.com', subject: (meta.testOnly ? '[Test] ' : '') + title, title: 'Hi ' + esc(p.name) + ',', html: body,
-          button: { url: WEB_PAGE_URL, label: 'Open SEKNA' }, attachments: [{ filename: fileName, content: bytes, contentType: 'application/pdf' }] });
+          button: { url: WEB_PAGE_URL, label: 'Open HEMERA' }, attachments: [{ filename: fileName, content: bytes, contentType: 'application/pdf' }] });
         sent++;
       } catch (err) { console.error('Report to ' + p.email + ' failed: ' + err.message); failed.push(p.email); }
     }
@@ -435,11 +435,11 @@ async function serverSwitchEmail(who, reason) {
   let go = false;
   await fsUpdate(DOC.serverMail, o => { o = o || {}; if (Date.now() - (o.at || 0) <= 3 * 3600 * 1000) return undefined; go = true; return { at: Date.now() }; });
   if (!go) return;
-  await notify.send({ emails: [{ to: 'seknaapp@gmail.com', subject: '🟠 SEKNA moved to the backup server', title: 'SEKNA is running on the backup server',
-    html: P('The Firebase server did not answer, so SEKNA switched to Apps Script by itself. The team can keep working.') +
+  await notify.send({ emails: [{ to: 'seknaapp@gmail.com', subject: '🟠 HEMERA moved to the backup server', title: 'HEMERA is running on the backup server',
+    html: P('The Firebase server did not answer, so HEMERA switched to Apps Script by itself. The team can keep working.') +
       '<p style="margin:0 0 16px;font-size:13px;line-height:1.6;color:#4c5464"><b>Reason:</b> ' + esc(reason || 'Unknown') + '<br><b>Seen by:</b> ' + esc(who.name || who.email) + '</p>' +
-      P('Open Admin → Server in SEKNA for details. If the monthly limit was reached, billing has to be turned back on in Google Cloud.'),
-    button: { url: WEB_PAGE_URL, label: 'Open SEKNA' } }] });
+      P('Open Admin → Server in HEMERA for details. If the monthly limit was reached, billing has to be turned back on in Google Cloud.'),
+    button: { url: WEB_PAGE_URL, label: 'Open HEMERA' } }] });
 }
 
 /* ---------- new day, due team message, new app version (runs with keepWarm, every 2 minutes) ---------- */
@@ -462,22 +462,22 @@ async function pushChecks(latestByAccount) {
   const today = dayOf(Date.now());
   if (a && a.push && !a.pushed && a.message && (!a.showFrom || a.showFrom <= today)) {
     const body = String(a.message).replace(/\{name\}/gi, 'team');
-    await notify.send({ topics: [{ title: a.title || 'SEKNA', body: body.length > 180 ? body.slice(0, 177) + '…' : body, account: 'usa', eventType: 'announcement' }] });
+    await notify.send({ topics: [{ title: a.title || 'HEMERA', body: body.length > 180 ? body.slice(0, 177) + '…' : body, account: 'usa', eventType: 'announcement' }] });
     await fsUpdate('acc/app', s => { if (s && s.announcement && s.announcement.id === a.id) s.announcement.pushed = true; return s || undefined; });
     out.announcement = true;
   }
   const state = (await fsGet(DOC.push)) || {};
   const save = {};
-  // New version of the SEKNA app on GitHub (every 30 minutes).
+  // New version of the HEMERA app on GitHub (every 30 minutes).
   if (Date.now() - (state.releaseCheckAt || 0) > 30 * 60 * 1000) {
     save.releaseCheckAt = Date.now();
     try {
-      const r = await fetch('https://api.github.com/repos/ibrahimamin6700-ui/human-appeal-media-plan/releases/latest', { headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'SEKNA-server' } });
+      const r = await fetch('https://api.github.com/repos/ibrahimamin6700-ui/human-appeal-media-plan/releases/latest', { headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'HEMERA-server' } });
       if (r.ok) {
         const rel = await r.json(), tag = String(rel.tag_name || '');
         if (tag && !rel.draft && !rel.prerelease && tag !== state.releaseTag) {
           if (state.releaseTag && !maintenance) {
-            await notify.send({ topics: [{ title: 'SEKNA ' + tag.replace(/^v/i, '') + ' is available', body: 'A new version of the SEKNA app is ready. Open SEKNA to install it.', account: 'usa', eventType: 'app_update' }] });
+            await notify.send({ topics: [{ title: 'HEMERA ' + tag.replace(/^v/i, '') + ' is available', body: 'A new version of the HEMERA app is ready. Open HEMERA to install it.', account: 'usa', eventType: 'app_update' }] });
             out.release = tag;
           }
           save.releaseTag = tag;
@@ -519,7 +519,7 @@ async function pushChecks(latestByAccount) {
 function serialMs(v, tz) { return require('./accounts').serialToMs(v, tz); }
 async function adminRestMove([token]) {
   const me = await assertAdmin(token);
-  if (await moved()) throw new Error('Already moved to the SEKNA server.');
+  if (await moved()) throw new Error('Already moved to the HEMERA server.');
   const props = await notify.appsScript('restExportProps', [token, false]);
   const tz = (await sheetMeta(ACCESS.SPREADSHEET_ID)).timeZone;
   const meta = await sheetMeta(ACCESS.SPREADSHEET_ID), has = n => meta.sheets.some(s => s.title === n);

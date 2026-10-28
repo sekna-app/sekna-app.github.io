@@ -1,4 +1,4 @@
-// SEKNA server on Firebase. It answers the two heavy dashboard requests
+// HEMERA server on Firebase. It answers the two heavy dashboard requests
 // (getDashboardData, getMonthCompareData) straight from the Google Sheets. Everything
 // else, and these two whenever this server fails, still goes to Apps Script.
 const { onRequest } = require('firebase-functions/v2/https');
@@ -468,7 +468,7 @@ exports.api = onRequest({
 });
 
 /* ---------- Monthly limit ----------
- * The "SEKNA cap" budget ($3) posts the month's cost to the sekna-budget topic a few
+ * The "HEMERA cap" budget ($3) posts the month's cost to the sekna-budget topic a few
  * times a day. The cost is kept for Admin → Server; at the limit, billing is switched
  * off for this project, Firebase stops, and the app carries on with Apps Script.
  */
@@ -496,7 +496,7 @@ exports.monthlyLimit = onMessagePublished({
 });
 
 /* ---------- Keep warm ----------
- * Every 2 minutes: wakes the server and rebuilds the USA data, so opening SEKNA does not
+ * Every 2 minutes: wakes the server and rebuilds the USA data, so opening HEMERA does not
  * wait for a cold start or for the sheets. About 22,000 calls a month, inside the free tier.
  */
 exports.keepWarm = onSchedule({

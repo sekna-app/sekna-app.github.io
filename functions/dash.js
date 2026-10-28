@@ -136,7 +136,7 @@ async function openBook(account) {
   const id = ssIdOf(account.spreadsheetUrl);
   let meta;
   try { meta = await sheetMeta(id); }
-  catch (e) { throw new Error('Could not open ' + account.label + ' spreadsheet (' + String((e && e.message) || e).slice(0, 120) + '). Check that it is shared with the SEKNA server.'); }
+  catch (e) { throw new Error('Could not open ' + account.label + ' spreadsheet (' + String((e && e.message) || e).slice(0, 120) + '). Check that it is shared with the HEMERA server.'); }
   const book = { id, account, tz: meta.timeZone, meta, resolved: {} };
   book.asDate = makeAsDate(book.tz);
   return book;

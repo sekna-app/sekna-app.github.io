@@ -1,8 +1,8 @@
-"""Builds the SEKNA web page (sekna-app.github.io) from the same dashboard file Apps Script serves."""
+"""Builds the HEMERA web page (sekna-app.github.io) from the same dashboard file Apps Script serves."""
 import sys, re
 src, out = sys.argv[1], sys.argv[2]
 API = 'https://script.google.com/macros/s/AKfycbzjgZ1nXxLTcFdeFCIEznOj2H0XCo9YGUeu1YF2pJdsQiOo_aM-Mn6HxKKNk8peEuM1Ig/exec'
-# The SEKNA server on Firebase answers the dashboard data; Apps Script stays as the backup.
+# The HEMERA server on Firebase answers the dashboard data; Apps Script stays as the backup.
 # While FB_PRIMARY is off, only an admin who turns it on for their own device uses Firebase.
 FB = 'https://europe-west2-human-appeal-media-plan.cloudfunctions.net/api'
 FB_PRIMARY = 'true'
@@ -11,13 +11,13 @@ FB_ACCOUNTS = '{usa:1,ar:1}'
 h = open(src).read()
 
 head = '''<meta name="theme-color" content="#203C8E">
-  <meta name="description" content="SEKNA — media planning, campaign monitoring and reporting in one place.">
+  <meta name="description" content="HEMERA — media planning, campaign monitoring and reporting in one place.">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" href="icons/favicon-64.png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="SEKNA">
+  <meta name="apple-mobile-web-app-title" content="HEMERA">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <script src="firebase-config.js"></script>
   <script>
@@ -72,8 +72,8 @@ head = '''<meta name="theme-color" content="#203C8E">
    }
    function asCall(name,args){
     return fetch(API,{method:'POST',body:JSON.stringify({action:'call',fn:name,args:args}),redirect:'follow'})
-     .then(function(r){if(!r.ok)throw new Error('The SEKNA server did not answer ('+r.status+'). Please try again.');return r.json()})
-     .then(function(j){if(!j||!j.ok)throw new Error((j&&j.error)||'The SEKNA server did not answer. Please try again.');return j.result});
+     .then(function(r){if(!r.ok)throw new Error('The HEMERA server did not answer ('+r.status+'). Please try again.');return r.json()})
+     .then(function(j){if(!j||!j.ok)throw new Error((j&&j.error)||'The HEMERA server did not answer. Please try again.');return j.result});
    }
    function fbPost(path,body,wait){
     var ctl=window.AbortController?new AbortController():null, t0=Date.now();
@@ -168,15 +168,15 @@ head = '''<meta name="theme-color" content="#203C8E">
      return function(){var a=Array.prototype.slice.call(arguments);call(key,a).then(function(r){ok&&ok(r)},function(e){fail&&fail(e)})};
     }});
    }
-   // Inside the SEKNA Android app the native bridge handles notifications, so web push stays off.
+   // Inside the HEMERA Android app the native bridge handles notifications, so web push stays off.
    window.SEKNA_WEB=!window.AndroidShare;
    window.google={script:{run:runner()}};
   })();
   </script>
 ''' % ('"' + API.replace('/', '\\/') + '"', '"' + FB.replace('/', '\\/') + '"', FB_PRIMARY, FB_ACCOUNTS)
 
-i = h.index('<title>SEKNA</title>')
-h = h[:i] + '<title>SEKNA</title>\n  ' + head + h[i + len('<title>SEKNA</title>'):]
+i = h.index('<title>HEMERA</title>')
+h = h[:i] + '<title>HEMERA</title>\n  ' + head + h[i + len('<title>HEMERA</title>'):]
 
 sw = '''<script>
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})})}
