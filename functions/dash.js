@@ -16,7 +16,9 @@ const ACCOUNTS = {
       history: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=1713034492',
       bestWorst: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=3300649',
       forecast: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=2071753792',
-      assumptions: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=2030520828'
+      assumptions: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=2030520828',
+      // Search Terms page: the AI Max Snapshot (its own spreadsheet).
+      aiMax: 'https://docs.google.com/spreadsheets/d/1Bc6HIIW_58xSSanA5RWDyb4z2pROjZ2WabM5bUgWPTs/edit#gid=1940072429'
     }
   },
   ar: {
@@ -31,7 +33,8 @@ const ACCOUNTS = {
       history: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=1926854839',
       bestWorst: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=1295411279',
       forecast: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=1687637233',
-      assumptions: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=2047766565'
+      assumptions: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=2047766565',
+      aiMax: 'https://docs.google.com/spreadsheets/d/1B2pCSNuV8EIYjGx8zAxrpqJcxgCfVmMO07JiW1V3rkQ/edit#gid=1223522764'
     }
   }
 };
@@ -901,6 +904,50 @@ async function buildVsLy(accountKey) {
     forecast: { ty: pick(fTy), ly: pick(fLy), vs: pick(fVs) }, actual: { ty: pick(aTy), ly: pick(aLy), vs: pick(aVs) }, note: note ? note.label : '' };
 }
 
+/** Search Terms page: the AI Max Snapshot tab (search terms with spend, their result and the total). */
+async function buildSearchTerms(accountKey) {
+  const account = ACCOUNTS[normalizeAccountKey_(accountKey)];
+  const ref = account.sheets && account.sheets.aiMax;
+  const id = ssIdOf(ref);
+  if (!id) return { missing: true };
+  let meta;
+  try { meta = await sheetMeta(id); }
+  catch (e) { throw new Error('Could not open the AI Max sheet of ' + account.shortLabel + ' (' + String((e && e.message) || e).slice(0, 120) + '). Check that it is shared with the HEMERA server.'); }
+  const gid = parseGidFromRef_(ref);
+  const sh = (gid !== null && meta.sheets.find(x => x.sheetId === gid)) || meta.sheets[0];
+  if (!sh) return { missing: true };
+  const rows = (await batchGet(id, [a1(sh.title, 'A1:P400')]))[0] || [];
+  const t = x => String(x == null ? '' : x).trim();
+  const n = x => (typeof x === 'number' && isFinite(x) ? x : (t(x) && isFinite(Number(t(x).replace(/[£$,%\s]/g, ''))) ? Number(t(x).replace(/[£$,%\s]/g, '')) : null));
+  const title = t(((rows[0] || []).find(c => t(c)) || ''));
+  const run = (title.match(/report run:\s*([0-9]{4}-[0-9]{2}-[0-9]{2}[ T]?[0-9:]*)/i) || [])[1] || '';
+  const upd = (title.match(/data updated:\s*([^|✗✘]*)/i) || [])[1] || '';
+  // The header row ("Search term", "Clicks", "Cost"…) of the first block; its columns are found by their names.
+  const hi = rows.findIndex(r => (r || []).some(c => /^search\s*term$/i.test(t(c))));
+  if (hi < 0) return { missing: true, tab: sh.title, title };
+  const H = rows[hi].map(c => t(c).toLowerCase());
+  const col = re => H.findIndex(h => re.test(h));
+  const C = { term: col(/^search\s*term$/), match: col(/match/), clicks: col(/^clicks?$/), impr: col(/^impr/), cost: col(/^cost|^spend/), conv: col(/^conv(ersions?|\.)?$/),
+    rate: col(/conv\.?\s*rate|cvr/), value: col(/conv\.?\s*value|^value/), roas: col(/^roas/), cls: col(/class|result|status/) };
+  const section = t((rows.slice(0, hi).reverse().find(r => (r || []).some(c => /keywords|search terms/i.test(t(c)))) || []).find(c => t(c)) || '');
+  const kind = s => /wast/i.test(s) ? 'x' : /review|watch/i.test(s) ? 'n' : /fair|ok|average/i.test(s) ? 'f' : /good|great|strong|top|win|best|keep/i.test(s) ? 'g' : 'n';
+  const terms = [];
+  let total = null;
+  for (let i = hi + 1; i < rows.length; i++) {
+    const r = rows[i] || [], name = t(r[C.term]);
+    if (/^total$/i.test(name) || (!name && r.some(c => /^total$/i.test(t(c))))) {
+      total = { clicks: n(r[C.clicks]), impr: n(r[C.impr]), cost: n(r[C.cost]), conv: n(r[C.conv]), value: n(r[C.value]), roas: n(r[C.roas]) };
+      break;
+    }
+    if (!name) continue;
+    if (r.some(c => /^search\s*term$/i.test(t(c)))) break; // a second block starts
+    const label = t(r[C.cls]).replace(/^[^A-Za-z]+/, '');
+    terms.push({ term: name, match: t(r[C.match]), clicks: n(r[C.clicks]) || 0, impr: n(r[C.impr]) || 0, cost: n(r[C.cost]) || 0, conv: n(r[C.conv]) || 0,
+      value: n(r[C.value]) || 0, roas: n(r[C.roas]), label: label || '', k: kind(label) });
+  }
+  return { v: 1, at: Date.now(), tab: sh.title, title, section, run, updated: t(upd), terms, total };
+}
+
 // The settings the Lab can change, with their cells and the values allowed.
 const FORECAST_SET = {
   window: { cell: 'B54', min: 1, max: 60, int: true }, elasticity: { cell: 'B55', min: 0, max: 2 },
@@ -1049,4 +1096,4 @@ async function setAssumptions(accountKey, edits) {
 function forgetArchive() { Object.keys(archiveCache).forEach(k => delete archiveCache[k]); }
 
 module.exports = { ACCOUNTS, buildDashboardData, getMonthCompareData, normalizeAccountKey_, fmt, wallFromInstant, makeAsDate, grid, toNumber_,
-  ssIdOf, openBook, optionalSheet, forgetArchive, buildForecast, setForecast, buildAssumptions, setAssumptions, buildVsLy };
+  ssIdOf, openBook, optionalSheet, forgetArchive, buildForecast, setForecast, buildAssumptions, setAssumptions, buildVsLy, buildSearchTerms };

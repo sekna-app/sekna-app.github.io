@@ -3617,6 +3617,45 @@ window.addEventListener('load',function(){
     }
     /* Admin: the tab bar runs the full width in blue, like the header above it */
     body #adminOverlay .a3-tabs{box-shadow:0 0 0 100vmax #203c8e!important;clip-path:inset(0 -100vmax)}
+    /* v170 Search Terms page */
+    .sk-new{background:#e2b874!important;color:#0f1d4a!important}
+    .st-rd{margin-left:auto;align-self:center}
+    .st-k{font-size:9.5px;font-weight:900;letter-spacing:.09em;color:#8a92a6}
+    .st-top{display:grid;gap:12px;margin-top:4px}
+    .st-card{background:#fff;border:1px solid #edf0f6;border-radius:18px;padding:11px}
+    .st-wrap{display:flex;gap:12px;align-items:center;margin-top:8px}.st-ring{flex:none}
+    .st-tiles{flex:1;display:grid;gap:6px;min-width:0}.st-tiles div{display:grid;grid-template-columns:1fr auto;align-items:center;background:var(--b);border-radius:11px;padding:6px 9px}
+    .st-tiles b{font-size:13.5px;font-weight:900;direction:ltr}.st-tiles em{font-style:normal;font-size:15px;font-weight:900;color:var(--c);grid-row:1/3;grid-column:2}.st-tiles small{font-size:9.5px;font-weight:800;color:#4b5568}
+    .st-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}.st-nums span{background:#f4f6fb;border-radius:10px;padding:6px 2px;text-align:center}.st-nums b{display:block;font-size:13px;font-weight:900}.st-nums small{font-size:8.5px;font-weight:900;color:#8a92a6;letter-spacing:.05em}
+    .st-hl{background:#fff;border:1px solid #edf0f6;border-top:4px solid var(--c);border-radius:18px;padding:12px;display:flex;flex-direction:column;gap:3px;min-width:0}
+    .st-hn{font-size:16px;font-weight:900;margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.st-hv{font-size:22px;font-weight:900;color:var(--c);direction:ltr;text-align:left}.st-hl small{font-size:11px;color:#6b7385;font-weight:700}
+    .st-act{margin-top:8px;align-self:flex-start;font-size:11px;font-weight:900;color:var(--c);background:var(--b);border-radius:9px;padding:5px 9px}
+    .st-bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;margin:14px 0 8px}
+    .st-chips{display:flex;gap:6px;flex-wrap:wrap}.st-chips button{display:inline-flex;align-items:center;gap:6px;border:1.5px solid #e7eaf2;background:#fff;border-radius:99px;padding:5px 11px;font:inherit;font-size:11.5px;font-weight:800;color:#4b5568;cursor:pointer}
+    .st-chips button i{width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 18%,transparent)}.st-chips button b{font-size:10.5px;opacity:.7}
+    .st-chips button.on{border-color:var(--c);background:var(--b,#1d2433);color:var(--c)}.st-chips button.on[style*="#1d2433"]{background:#1d2433;color:#fff}.st-chips button.on[style*="#1d2433"] i{background:#fff}
+    .st-sort{display:flex;gap:4px;align-items:center;font-size:11px;font-weight:800;color:#8a92a6}.st-sort button{border:0;background:none;border-radius:8px;padding:5px 9px;font:inherit;font-size:11px;font-weight:800;color:#6b7385;cursor:pointer}.st-sort button.on{background:#eef2fd;color:#203c8e}
+    .st-t{display:none;width:100%;border-collapse:collapse;font-size:12.5px;table-layout:fixed;font-variant-numeric:tabular-nums}
+        .st-t th{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:#8a92a6;font-weight:900;text-align:right;padding:8px 8px;border-bottom:1.5px solid #1d2433}.st-t th:first-child,.st-t td:first-child{text-align:left;padding-left:4px}
+    .st-t td{padding:8px;text-align:right;font-weight:700;border-bottom:1px solid #eef1f7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.st-t td:first-child{font-weight:800;color:#1d2433}.st-t th:nth-last-child(-n+2),.st-t td:nth-last-child(-n+2){text-align:left}
+    .st-pill{display:inline-block;font-size:10.5px;font-weight:900;border-radius:99px;padding:2px 9px;background:var(--b);color:var(--c)}
+    .st-a{font-size:11px;font-weight:900;color:var(--c);white-space:nowrap}
+    .st-list{display:grid}.st-r{display:grid;grid-template-columns:1fr auto;gap:2px 8px;padding:9px 0;border-bottom:1px solid #eef1f7}.st-r b{font-size:13px;font-weight:850;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.st-r em{font-style:normal;font-size:13px;font-weight:900;text-align:right;direction:ltr}
+    .st-br{grid-column:1/-1;height:5px;border-radius:99px;background:#eef1f7;overflow:hidden}.st-br span{display:block;height:100%;border-radius:99px}.st-r small{font-size:10.5px;color:#8a92a6;font-weight:700}.st-r .st-a{text-align:right;font-size:10.5px}
+    .st-more{display:block;margin:10px auto 0;border:0;background:none;font:inherit;font-size:12px;font-weight:800;color:#203c8e;cursor:pointer}
+    .st-note{font-size:10.5px;color:#8a92a6;font-weight:600;margin-top:10px}
+    @media (min-width:1100px){.st-top{grid-template-columns:1.35fr 1fr 1fr;align-items:start}.st-t{display:table}.st-list{display:none}}
+    body.dark-mode .st-card,body.dark-mode .st-hl{background:#151a22;border-color:#252a32}body.dark-mode .st-nums span{background:#1a1f27}body.dark-mode .st-tiles div{background:#1a1f27}
+    body.dark-mode .st-hn,body.dark-mode .st-t td:first-child,body.dark-mode .st-tiles b,body.dark-mode .st-nums b{color:#fff}body.dark-mode .st-chips button{background:#151a22;border-color:#252a32;color:#c9d0dc}body.dark-mode .st-t td{border-color:#252a32}body.dark-mode .st-t th{border-color:#c9d0dc}
+    body.dark-mode .st-ring text:first-of-type{fill:#fff}
+    /* its WhatsApp image (1080 wide): dashboard in the frame, then the full table with the action */
+    .sts-dash{display:grid;grid-template-columns:auto 1fr;gap:12px 22px;align-items:center;margin-top:26px;padding:20px 22px;border-radius:26px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14)}
+    .sts-tiles{display:grid;gap:8px}.sts-tl{display:grid;grid-template-columns:1fr auto;align-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-left:5px solid var(--c);border-radius:16px;padding:9px 14px}
+    .sts-tl small{font-size:13px;font-weight:900;letter-spacing:.07em;color:#c9d6ff}.sts-tl b{font-size:26px;font-weight:900}.sts-tl em{font-style:normal;font-size:24px;font-weight:900;color:var(--c);grid-row:1/3;grid-column:2}
+    .sts-nums{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.sts-nums div{background:rgba(255,255,255,.07);border-radius:14px;padding:8px;text-align:center}.sts-nums b{display:block;font-size:24px;font-weight:900}.sts-nums small{font-size:12px;font-weight:900;color:#9fb0dd;letter-spacing:.08em}
+    .sts-t{width:100%;border-collapse:collapse;margin-top:18px;font-size:17px;border-radius:22px;overflow:hidden;background:rgba(255,255,255,.06)}
+    .sts-t th{font-size:12.5px;letter-spacing:.08em;color:#9fb0dd;padding:12px 10px;text-align:right;border-bottom:1px solid rgba(255,255,255,.2)}.sts-t th:first-child,.sts-t td:first-child{text-align:left;padding-left:18px}.sts-t th:last-child,.sts-t td:last-child{text-align:left}
+    .sts-t td{padding:9px 10px;text-align:right;font-weight:700;border-bottom:1px solid rgba(255,255,255,.07)}.sts-t tr.T td{font-weight:900;color:#e2b874;border:0}
     /* v87 — PDF pages 3 and 4 (navy) */
 
     .dz-h{margin:0 0 20px}.dz-h small{display:block;font-size:19px;font-weight:900;letter-spacing:.16em;color:#e2b874}
@@ -5115,6 +5154,7 @@ window.addEventListener('load',function(){
   <button class="sk-grp" type="button" data-grp="ps" onclick="navGroup('ps')" aria-expanded="false"><span class="sk-gt"><b>Performance Snapshots</b><small class="sk-gn"></small></span><svg class="sk-gchev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
   <div class="sk-grp-body" id="grp-ps"><nav class="sk-nav" aria-label="Performance Snapshots">
     <button class="sk-nav-btn" id="ranksTabBtn" type="button" onclick="switchDashboardTab('ranks')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 6h3a3 3 0 0 1-3 4M7 6H4a3 3 0 0 0 3 4"/></svg></span><span>Top &amp; Bottom 5</span></button>
+    <button class="sk-nav-btn" id="termsTabBtn" type="button" onclick="switchDashboardTab('terms')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5M8 10.5h5"/></svg></span><span>Search Terms</span><span class="sk-soon sk-new">New</span></button>
     <button class="sk-nav-btn" id="campNavBtn" type="button" onclick="openSoon('camp')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h3l6 4V6L7 10z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a7.5 7.5 0 0 1 0 11"/></svg></span><span>Campaign Performance</span><span class="sk-soon">Soon</span></button>
   </nav></div>
 
@@ -5676,6 +5716,8 @@ window.addEventListener('load',function(){
     </section>
   </div>
 
+  <div class="tab-panel" id="termsPanel"><div id="stBody"></div></div>
+
   <div class="share-toast" id="shareToast" role="status" aria-live="polite"></div>
   <footer id="dashboardFooter">HEMERA · Media Plan USA</footer>
 
@@ -5871,7 +5913,7 @@ function tbLive(d){
  else{const m=String((d&&d.generatedAt)||'').match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/);if(m){const h=+m[4];when=` · ${h%12||12}:${m[5]} ${h<12?'AM':'PM'}`}}
  el.innerHTML=`<span class="tb-live"><span class="tb-l1"><span class="tb-dot"></span>Live${when}</span>${when&&ms&&tzName()?`<small class="tb-tz">${esc(tzName())}</small>`:''}</span>`;
 }
-const PAGE_NAMES={overview:'Daily Performance',days:'Day by Day Performance',channel:'Monthly Progress',lab:'Media Plan Lab',plans:'Plan Performance History',ranks:'Top & Bottom 5',months:'Reports Studio',seasons:'Seasons Calendar'};
+const PAGE_NAMES={overview:'Daily Performance',days:'Day by Day Performance',channel:'Monthly Progress',lab:'Media Plan Lab',plans:'Plan Performance History',ranks:'Top & Bottom 5',terms:'Search Terms',months:'Reports Studio',seasons:'Seasons Calendar'};
 // Page name in DM Serif Display, the last word on a gold highlighter.
 function setPageTitle(){
  const el=document.getElementById('pgTitle');if(!el)return;
@@ -6154,7 +6196,7 @@ function switchAccount(accountKey){
  }
 }
 
-const DASH_TABS=['overview','days','channel','lab','plans','ranks','months','seasons'];
+const DASH_TABS=['overview','days','channel','lab','plans','ranks','terms','months','seasons'];
 let SWIPE_FROM='';
 function switchDashboardTab(tab){
  if(!canDo(tab)){const first=DASH_TABS.find(t=>canDo(t));if(!first)return;tab=first}
@@ -6170,7 +6212,7 @@ function switchDashboardTab(tab){
    if(btn)btn.classList.toggle('active',t===CURRENT_TAB);
  });
  // WhatsApp sharing covers the Daily Performance and Channel Delivery pages.
- document.body.classList.toggle('no-share-tab',!['overview','channel','days','months'].includes(CURRENT_TAB));
+ document.body.classList.toggle('no-share-tab',!['overview','channel','days','months','terms'].includes(CURRENT_TAB));
  // The page title and date only belong to Daily Performance.
  document.body.classList.toggle('no-hero',CURRENT_TAB!=='overview');
  setPageTitle();
@@ -6907,6 +6949,7 @@ function renderExtraTab(d){
  if(CURRENT_TAB==='days')renderDays(d);
  else if(CURRENT_TAB==='months')renderMonths(d);
  else if(CURRENT_TAB==='ranks')renderRanks(d);
+ else if(CURRENT_TAB==='terms')renderTerms();
  else if(CURRENT_TAB==='lab')renderLab();
  else if(CURRENT_TAB==='channel')renderMonthlyReport();
  else if(CURRENT_TAB==='plans')renderPlanHistory();
@@ -7334,7 +7377,7 @@ let LAB_DAY={};
 function labNewDay(d){
  const k=(d&&d.account&&d.account.key)||CURRENT_ACCOUNT,day=d&&d.latest&&d.latest.date;if(!k||!day)return;
  const was=LAB_DAY[k];LAB_DAY[k]=day;if(!was||was===day)return;
- [FC[k],AS[k],VLY[k]].forEach(c=>{if(c&&!c.busy){c.data=null;c.err=''}});
+ [FC[k],AS[k],VLY[k],typeof ST==='object'?ST[k]:null].forEach(c=>{if(c&&!c.busy){c.data=null;c.err=''}});
  if(VLY_OPEN&&WK_LY&&k===CURRENT_ACCOUNT)vlyLoad();
  if(CURRENT_TAB==='lab'&&k===CURRENT_ACCOUNT)setTimeout(()=>{try{fcDraw()}catch(e){}},0);
 }
@@ -8263,6 +8306,79 @@ function renderRanks(d){
  }).join('');
  requestAnimationFrame(()=>markRankChip(RANK_CAT));
  revealOnScroll(body,'.rx-row,.rx-sum,.rx-ok');
+}
+/* ---------- v170: Performance Snapshots → Search Terms (AI Max Snapshot of the account) ----------
+ * "Dayra + boxes" card (spend by result), the biggest waste and the top converter, then the terms with
+ * colour filters and an action per term. Read on the server with the day's data.
+ */
+let ST={}, ST_F='all', ST_SORT='cost', ST_ALL=false;
+const ST_K={x:{l:'Wasted',c:'#e0566a',b:'#fff1f3',a:'Add as negative',ic:'🚫'},n:{l:'Needs review',c:'#f08a4b',b:'#fff6ef',a:'Watch',ic:'👀'},f:{l:'Fair',c:'#d9a800',b:'#fffbea',a:'Keep',ic:'✅'},g:{l:'Good',c:'#13894f',b:'#e9f8f0',a:'Scale up',ic:'🚀'}};
+function stLoad(force){
+ const k=CURRENT_ACCOUNT,c=ST[k]=ST[k]||{};if(c.busy)return;c.busy=true;c.err='';
+ serverCall('getSearchTerms',k,!!force,getAccessToken()).then(r=>{c.busy=false;c.data=r||{missing:true};if(CURRENT_TAB==='terms'&&k===CURRENT_ACCOUNT)renderTerms()})
+  .catch(err=>{c.busy=false;c.err=errorText(err);if(CURRENT_TAB==='terms'&&k===CURRENT_ACCOUNT)renderTerms()});
+}
+function stFilter(f){ST_F=f;ST_ALL=false;renderTerms()}
+function stSort(k){ST_SORT=k;renderTerms()}
+function stSum(d){
+ const T=d.terms||[],by={x:0,n:0,f:0,g:0},cnt={x:0,n:0,f:0,g:0};T.forEach(t=>{by[t.k]+=t.cost;cnt[t.k]++});
+ const tot=d.total||{},cost=tot.cost!=null?tot.cost:T.reduce((a,t)=>a+t.cost,0);
+ const sum=f=>T.reduce((a,t)=>a+(t[f]||0),0);
+ return {T,by,cnt,cost:cost||0,clicks:tot.clicks!=null?tot.clicks:sum('clicks'),impr:tot.impr!=null?tot.impr:sum('impr'),conv:tot.conv!=null?tot.conv:sum('conv'),value:tot.value!=null?tot.value:sum('value')};
+}
+function stRing(sm,size,th,center,dark){
+ const r=(size-th)/2,C=2*Math.PI*r,keys=['x','n','f','g'].filter(k=>sm.by[k]>0);let o=0;
+ const segs=keys.map(k=>{const full=sm.cost?sm.by[k]/sm.cost*C:0,l=Math.max(0,full-(keys.length>1?4:0));const t=`<circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${ST_K[k].c}" stroke-width="${th}" stroke-dasharray="${l.toFixed(1)} ${C.toFixed(1)}" stroke-dashoffset="${(-o).toFixed(1)}" transform="rotate(-90 ${size/2} ${size/2})"/>`;o+=full;return t}).join('');
+ return `<svg class="st-ring" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${dark?'rgba(255,255,255,.12)':'#eef1f7'}" stroke-width="${th}"/>${segs}${center}</svg>`;
+}
+function stPct(sm,k){return sm.cost?Math.round(sm.by[k]/sm.cost*100):0}
+function stCard(sm,dark){
+ const keys=['x','n','f','g'].filter(k=>sm.cnt[k]);
+ const ring=stRing(sm,116,15,`<text x="58" y="56" text-anchor="middle" font-size="15" font-weight="900" fill="${dark?'#fff':'#1d2433'}">${esc(money(sm.cost,2))}</text><text x="58" y="71" text-anchor="middle" font-size="8.5" font-weight="800" fill="${dark?'#9fb0dd':'#8a92a6'}">${sm.T.length} TERMS</text>`,dark);
+ return `<div class="st-card${dark?' dk':''}"><div class="st-k">✦ AI MAX · SPEND BY RESULT</div><div class="st-wrap">${ring}<div class="st-tiles">${keys.map(k=>`<div style="--b:${dark?'rgba(255,255,255,.08)':ST_K[k].b};--c:${ST_K[k].c}"><b>${money(sm.by[k],2)}</b><em>${stPct(sm,k)}%</em><small>${ST_K[k].l} · ${sm.cnt[k]}</small></div>`).join('')}</div></div>
+  <div class="st-nums">${[[fmt(sm.clicks,0),'CLICKS'],[fmt(sm.impr,0),'IMPR.'],[fmt(sm.conv,0),'CONV.'],[sm.cost?fmt(sm.value/sm.cost,2)+'x':'—','ROAS']].map(([v,l])=>`<span><b>${v}</b><small>${l}</small></span>`).join('')}</div></div>`;
+}
+function stRoas(t){return t.roas!=null?t.roas:(t.cost?t.value/t.cost:0)}
+function renderTerms(){
+ const body=document.getElementById('stBody');if(!body)return;
+ const c=ST[CURRENT_ACCOUNT]||{},d=c.data;
+ if(!d&&!c.busy&&!c.err)stLoad(false);
+ const shell=inner=>`<section class="card section st-sec"><div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month">🔎</span><span>Search Terms</span></div><div class="section-sub">${d&&d.run?'AI Max · report run '+esc(d.run):'AI Max Snapshot'}</div></div>${d&&!d.missing?`<button type="button" class="pk-ghost st-rd" onclick="stLoad(true)" ${c.busy?'disabled':''}>${c.busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read'}</button>`:''}</div>${inner}</section>`;
+ if(!d){body.innerHTML=shell(`<div class="vly-wait">${c.err?'⚠️ '+esc(c.err)+' · <a href="#" onclick="stLoad(true);renderTerms();return false">Try again</a>':'<span class="lab-spin dark"></span> Reading the AI Max sheet…'}</div>`);return}
+ if(d.missing||!(d.terms||[]).length){body.innerHTML=shell(`<div class="dx-empty">${d.missing?`The AI Max sheet of ${esc(CURRENT_ACCOUNT.toUpperCase())} is not linked or has no search terms yet.`:'No search terms with spend in this snapshot.'}</div>`);return}
+ const sm=stSum(d),T=sm.T;
+ const waste=T.filter(t=>t.k==='x').sort((a,b)=>b.cost-a.cost)[0]||T.filter(t=>!t.conv).sort((a,b)=>b.cost-a.cost)[0];
+ const convs=T.filter(t=>t.conv>0).sort((a,b)=>b.value-a.value),best=convs[0];
+ const hl=(cls,k,lab,t,big,sub,act)=>`<div class="st-hl" style="--c:${ST_K[k].c};--b:${ST_K[k].b}"><div class="st-k">${lab}</div><b class="st-hn">${esc(t.term)}</b><div class="st-hv">${big}</div><small>${sub}</small><span class="st-act">${ST_K[k].ic} ${act}</span></div>`;
+ const hls=(waste?hl('x','x','BIGGEST WASTE',waste,esc(money(waste.cost,2)),`${fmt(waste.clicks,0)} click · ${fmt(waste.impr,0)} impr. · 0 conv.`,ST_K.x.a):'')
+  +(best?hl('g',best.k==='g'?'g':'f',convs.length===1?'ONLY CONVERTER':'TOP CONVERTER',best,`${esc(money(best.cost,2))} · ${fmt(stRoas(best),2)}x`,`${fmt(best.clicks,0)} clicks · ${fmt(best.conv,0)} conv. · ${esc(money(best.value,2))} value`,ST_K[best.k==='g'?'g':'f'].a):'');
+ const keys=['x','n','f','g'].filter(k=>sm.cnt[k]);
+ if(ST_F!=='all'&&!sm.cnt[ST_F])ST_F='all';
+ const chips=`<div class="st-chips"><button type="button" class="${ST_F==='all'?'on':''}" style="--c:#1d2433" onclick="stFilter('all')"><i></i>All <b>${T.length}</b></button>${keys.map(k=>`<button type="button" class="${ST_F===k?'on':''}" style="--c:${ST_K[k].c};--b:${ST_K[k].b}" onclick="stFilter('${k}')"><i></i>${ST_K[k].l} <b>${sm.cnt[k]}</b></button>`).join('')}</div>`;
+ const sorts=`<div class="st-sort"><span>Sort</span>${[['cost','Cost'],['clicks','Clicks'],['impr','Impr.']].map(([k,l])=>`<button type="button" class="${ST_SORT===k?'on':''}" onclick="stSort('${k}')">${l}${ST_SORT===k?' ↓':''}</button>`).join('')}</div>`;
+ let list=T.filter(t=>ST_F==='all'||t.k===ST_F).slice().sort((a,b)=>(b[ST_SORT]||0)-(a[ST_SORT]||0)||b.cost-a.cost);
+ const all=list.length,cut=ST_ALL?all:Math.min(all,12);list=list.slice(0,cut);
+ const pill=k=>`<span class="st-pill" style="--c:${ST_K[k].c};--b:${ST_K[k].b}">${ST_K[k].l}</span>`;
+ const act=k=>`<span class="st-a" style="--c:${ST_K[k].c}">${ST_K[k].ic} ${ST_K[k].a}</span>`;
+ const mx=Math.max(...T.map(t=>t.cost),.01);
+ const table=`<table class="st-t"><colgroup><col style="width:23%"><col style="width:7%"><col style="width:7%"><col style="width:10%"><col style="width:7%"><col style="width:10%"><col style="width:8%"><col style="width:11%"><col style="width:17%"></colgroup><tr><th>Search term</th><th>Clicks</th><th>Impr.</th><th>Cost</th><th>Conv.</th><th>Value</th><th>ROAS</th><th>Result</th><th>Action</th></tr>
+  ${list.map(t=>`<tr><td><bdi>${esc(t.term)}</bdi></td><td>${fmt(t.clicks,0)}</td><td>${fmt(t.impr,0)}</td><td><b>${esc(money(t.cost,2))}</b></td><td>${fmt(t.conv,0)}</td><td>${esc(money(t.value,2))}</td><td>${fmt(stRoas(t),2)}x</td><td>${pill(t.k)}</td><td>${act(t.k)}</td></tr>`).join('')}</table>`;
+ const rows=`<div class="st-list">${list.map(t=>`<div class="st-r"><b><bdi>${esc(t.term)}</bdi></b><em style="color:${ST_K[t.k].c}">${esc(money(t.cost,2))}</em><div class="st-br"><span style="width:${(t.cost/mx*100).toFixed(1)}%;background:${ST_K[t.k].c}"></span></div><small>${fmt(t.clicks,0)} click · ${fmt(t.impr,0)} impr. · ${fmt(t.conv,0)} conv.</small>${act(t.k)}</div>`).join('')}</div>`;
+ const more=all>cut?`<button type="button" class="st-more" onclick="ST_ALL=true;renderTerms()">Show all ${all} ▾</button>`:'';
+ body.innerHTML=shell(`<div class="st-top">${stCard(sm)}${hls}</div><div class="st-bar">${chips}${sorts}</div>${table}${rows}${more}<div class="st-note">From the AI Max Snapshot tab · result and action follow its classification.</div>`);
+}
+function termsShareHtml(){
+ const c=ST[CURRENT_ACCOUNT]||{},d=c.data;if(!d||d.missing)return rsHead('Search Terms · AI Max')+'<div class="rs-t"><b>No AI Max data yet</b></div>'+SHARE_FOOT;
+ const sm=stSum(d),T=sm.T.slice().sort((a,b)=>b.cost-a.cost),keys=['x','n','f','g'].filter(k=>sm.cnt[k]);
+ const ring=stRing(sm,190,26,`<text x="95" y="92" text-anchor="middle" font-size="28" font-weight="900" fill="#fff">${esc(money(sm.cost,2))}</text><text x="95" y="116" text-anchor="middle" font-size="14" font-weight="800" fill="#9fb0dd">${T.length} TERMS</text>`,true);
+ const tiles=keys.map(k=>`<div class="sts-tl" style="--c:${ST_K[k].c}"><small>${ST_K[k].l.toUpperCase()} · ${sm.cnt[k]}</small><b>${esc(money(sm.by[k],2))}</b><em>${stPct(sm,k)}%</em></div>`).join('');
+ const nums=[[fmt(sm.clicks,0),'CLICKS'],[fmt(sm.impr,0),'IMPR.'],[fmt(sm.conv,0),'CONV.'],[sm.cost?fmt(sm.value/sm.cost,2)+'x':'—','ROAS']].map(([v,l])=>`<div><b>${v}</b><small>${l}</small></div>`).join('');
+ return `${rsHead('Search Terms · AI Max'+(d.run?' · '+d.run:''))}
+ <div class="sts-dash"><div class="sts-rg">${ring}</div><div class="sts-tiles">${tiles}</div><div class="sts-nums">${nums}</div></div>
+ <table class="sts-t"><tr><th>SEARCH TERM</th><th>CLK</th><th>IMPR</th><th>COST</th><th>CONV</th><th>ACTION</th></tr>
+ ${T.map(t=>`<tr><td><bdi>${esc(t.term)}</bdi></td><td>${fmt(t.clicks,0)}</td><td>${fmt(t.impr,0)}</td><td>${esc(money(t.cost,2))}</td><td>${fmt(t.conv,0)}</td><td style="color:${ST_K[t.k].c}">${ST_K[t.k].ic} ${ST_K[t.k].a}</td></tr>`).join('')}
+ <tr class="T"><td>TOTAL · ${T.length}</td><td>${fmt(sm.clicks,0)}</td><td>${fmt(sm.impr,0)}</td><td>${esc(money(sm.cost,2))}</td><td>${fmt(sm.conv,0)}</td><td>${sm.cost?fmt(sm.value/sm.cost,2)+'x ROAS':''}</td></tr></table>
+ ${SHARE_FOOT}`;
 }
 function rxSplit(r){
  const split=(r.split||[]).filter(s=>s.spend>0);
@@ -10554,6 +10670,7 @@ function captureDailyReport(){mvSettle();return captureReport(shareReportHtml(),
 // Which image a tab shares: Day by Day and Month vs Month follow the view that is open.
 function shareKind(tab){
  if(tab==='channel')return 'channel';
+ if(tab==='terms')return 'terms';
  if(tab==='days')return DAY_VIEW==='plan'?'plan':DAY_VIEW==='ly'?'ly':'results';
  if(tab==='months')return MONTH_MODE==='one'?'report':'compare';
  return 'daily';
@@ -10565,7 +10682,8 @@ const SHARE_KINDS={
  results:{html:()=>resultsShareHtml(),cls:'rp-narrow',name:'Results'},
  report:{html:()=>oneMonthShareHtml(),cls:'rp-narrow',name:'Report'},
  compare:{html:()=>compareShareHtml(),cls:'rp-narrow',name:'Month-vs-Month'},
- ly:{html:()=>lyShareHtml(),cls:'rp-narrow',name:'Vs-Last-Year'}
+ ly:{html:()=>lyShareHtml(),cls:'rp-narrow',name:'Vs-Last-Year'},
+ terms:{html:()=>termsShareHtml(),cls:'rp-narrow',name:'Search-Terms'}
 };
 function captureChannelReport(){mvSettle();return captureReport(channelReportHtml(),'rp-narrow')}
 async function captureReport(html,extraClass){
@@ -10615,13 +10733,14 @@ function myPerms(){
 }
 // Pages of the side menu and share are on unless Admin → Permissions turned them off.
 const VIEW_KEYS=['overview','days','channel','plans','ranks','camp','months','seasons','ask','team','mine','leaveview','notifs','updates','about','share'];
-function canDo(k){const p=myPerms();if(k==='lab')return p.lab===true||p.lab==='view';return k in p?p[k]===true:VIEW_KEYS.includes(k)}
+function canDo(k){const p=myPerms();if(k==='terms')k='ranks'; // Search Terms follows Top & Bottom 5
+ if(k==='lab')return p.lab===true||p.lab==='view';return k in p?p[k]===true:VIEW_KEYS.includes(k)}
 // Media Plan Lab: 'view' opens it, but only true can change anything.
 function labEdit(){return myPerms().lab===true}
 // Locked: in the menu with a gold lock, but it opens the lock screen instead of the page.
 function isLocked(k){return myPerms()[k]==='lock'}
 // Each menu button and the permission that shows it.
-const MENU_PERM=[['overviewTabBtn','overview'],['daysTabBtn','days'],['channelTabBtn','channel'],['labTabBtn','lab'],['plansTabBtn','plans'],['ranksTabBtn','ranks'],['campNavBtn','camp'],['monthsTabBtn','months'],['seasonsTabBtn','seasons'],['askNavBtn','ask'],
+const MENU_PERM=[['overviewTabBtn','overview'],['daysTabBtn','days'],['channelTabBtn','channel'],['labTabBtn','lab'],['plansTabBtn','plans'],['ranksTabBtn','ranks'],['termsTabBtn','terms'],['campNavBtn','camp'],['monthsTabBtn','months'],['seasonsTabBtn','seasons'],['askNavBtn','ask'],
  ['ttTeamBtn','team'],['ttMineBtn','mine'],['ttBuildBtn','build'],['ttLeaveBtn','leaveview'],['ttQuickBtn','quick'],['nfNavBtn','notifs'],['updatesNavBtn','updates'],['aboutNavBtn','about'],['adminNavBtn','admin']];
 function lockSheet(name){
  let o=document.getElementById('lockSheet');
