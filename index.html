@@ -3717,6 +3717,70 @@ window.addEventListener('load',function(){
     @media (min-width:1500px){
       #app .dc-list{grid-template-columns:repeat(3,minmax(0,1fr))}
     }
+    /* v170 desktop comfort (≥1100px): the phone design read at arm's length.
+     * One content column of 1240px scaled ×1.1 (≈1364px on screen), so text is ~10% bigger everywhere,
+     * plus floors for the smallest labels: body text ≥ 13px on screen, small labels ≥ 11px, nothing under 10.5px.
+     * Spacing on an 8px rhythm: 24px between cards, 24px inside them. */
+    @media (min-width:1100px){
+      html:not(.desktop-site-mode) #app.wrap{zoom:1.1;max-width:1240px;padding:24px 28px 40px}
+      html:not(.desktop-site-mode) body .topbar,html:not(.desktop-site-mode) body.dark-mode .topbar{padding-left:max(18px,calc((100% - 1364px)/2 + 30px))!important;padding-right:max(18px,calc((100% - 1364px)/2 + 30px))!important}
+      #app .card.section,#app section.card{padding:22px 24px}
+      #app .section-sub{font-size:11.5px!important;line-height:1.45}
+      #app .section-title{font-size:16px}
+      #app footer{font-size:10px}
+      #app .month-performance-badge{font-size:10px}
+      #app .mc-bar small,#app .mx-arrow,#app .mr-li .mx-arrow,#app .dc-hij em,#app .ss-dt0 small{font-size:10px!important}
+      #app small{line-height:1.4}
+      #app .cc-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+      #app .cc-list>.ccd{margin:0}
+      #overviewPanel.active,#channelPanel.active{gap:22px}
+      /* Seasons: the big season on the left (stays in view), the list on the right. */
+      #app .ss{max-width:none;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);column-gap:24px;align-items:start}
+      #app .ss>*{grid-column:2}
+      #app .ss>.ss-hero{grid-column:1;grid-row:1/span 60;position:sticky;top:96px;margin:0}
+      #app .ss>.ss-fs{margin-top:0}
+    }
+    @media (min-width:1500px){
+      #app .cc-list{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+    @media (min-width:1100px){
+      /* Daily Performance */
+      #overviewPanel.active{grid-template-columns:minmax(0,2fr) minmax(0,1fr)!important;grid-auto-flow:row dense}
+      #overviewPanel>*{grid-column:1!important}
+      #overviewPanel>.quick-metrics-strip{grid-column:2!important;grid-row:1;display:grid!important;grid-template-columns:1fr 1fr;gap:10px}
+      #overviewPanel>#projectPerformanceSection{grid-column:2!important;grid-row:2;align-self:stretch}
+      #overviewPanel>#dayChannelsSection,#overviewPanel>section.grid.bottom{grid-column:1/-1!important}
+      /* Monthly Progress */
+      #channelPanel.active{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:20px;align-items:start}
+      #channelPanel>section{margin:0!important;grid-column:1}
+      #channelPanel>.channel-section{grid-column:2;grid-row:1/span 3;position:sticky;top:90px}
+      #app .cc-list{grid-template-columns:1fr!important}
+      /* Top & Bottom */
+      #rxBody{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start}
+      #rxBody .rx-list{grid-template-columns:1fr!important}
+      /* Reports Studio */
+      .mx-card{display:flex;flex-direction:column}
+      .mx-card>#mxBody{order:1}
+      .mx-card>.mx-top{order:2;margin-top:22px;padding-top:20px;border-top:1px solid #e7eaf2}
+      /* Media Plan Lab */
+      .lab-card .fc-folds{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+      .lab-card .fc-folds>*{margin:0!important}
+      /* Team Tasks */
+      #tasksOverlay .tk-body{max-width:none}
+      #tasksOverlay .tk-body{width:min(1240px,calc(100% - 64px));margin:0 auto;display:grid;gap:14px;align-items:start}
+      #tasksOverlay .tk-body{grid-template-columns:repeat(2,minmax(0,1fr))}
+      #tasksOverlay .tk-body>:not(.tk-person){grid-column:1/-1}
+      #tasksOverlay .tk-person{margin:0!important}
+      /* Day by Day: the numbers in the big month card bigger and centred in their tiles */
+      #app .mt-grid{gap:12px}
+      #app .mt-t{text-align:center;padding:14px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+      #app .mt-t small{font-size:10.5px}
+      #app .mt-t b{font-size:24px;margin:6px 0 8px}
+      #app .ph2-list div{align-items:center!important;text-align:center}
+      #app .ph2-list b{font-size:26px!important}
+    }
+    /* Admin: the tab bar runs the full width in blue, like the header above it */
+    body #adminOverlay .a3-tabs{box-shadow:0 0 0 100vmax #203c8e!important;clip-path:inset(0 -100vmax)}
     /* v87 — PDF pages 3 and 4 (navy) */
 
     .dz-h{margin:0 0 20px}.dz-h small{display:block;font-size:19px;font-weight:900;letter-spacing:.16em;color:#e2b874}
@@ -6839,8 +6903,9 @@ function wxSlideIn(){
    const bs=[...tabs.querySelectorAll('.wx-tab')],on=bs.find(b=>b.classList.contains('on'));if(!on||!bs.length)return;
    const r0=tabs.getBoundingClientRect(),a=bs[0].getBoundingClientRect(),b=on.getBoundingClientRect();
    const pill=document.createElement('span');pill.className='wx-pill';tabs.appendChild(pill);tabs.classList.add('wx-sliding');
-   pill.style.cssText=`left:${a.left-r0.left}px;top:${a.top-r0.top}px;width:${a.width}px;height:${a.height}px`;
-   requestAnimationFrame(()=>requestAnimationFrame(()=>{pill.style.left=(b.left-r0.left)+'px';pill.style.width=b.width+'px'}));
+   const z=r0.width/(tabs.offsetWidth||r0.width)||1; 
+   pill.style.cssText=`left:${(a.left-r0.left)/z}px;top:${(a.top-r0.top)/z}px;width:${a.width/z}px;height:${a.height/z}px`;
+   requestAnimationFrame(()=>requestAnimationFrame(()=>{pill.style.left=(b.left-r0.left)/z+'px';pill.style.width=b.width/z+'px'}));
    setTimeout(()=>{tabs.classList.remove('wx-sliding');pill.remove()},1150);
       if(det){det.classList.remove('wx-flip');void det.offsetWidth;det.classList.add('wx-flip')}
    if(strip&&strip.classList.contains('wx-pour')){strip.classList.add('go');setTimeout(()=>strip.classList.remove('wx-pour','go'),strip.children.length*320+900)}
