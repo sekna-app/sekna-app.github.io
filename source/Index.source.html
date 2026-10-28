@@ -3644,7 +3644,7 @@ window.addEventListener('load',function(){
     .st-br{grid-column:1/-1;height:5px;border-radius:99px;background:#eef1f7;overflow:hidden}.st-br span{display:block;height:100%;border-radius:99px}.st-r small{font-size:10.5px;color:#8a92a6;font-weight:700}.st-r .st-a{text-align:right;font-size:10.5px}
     .st-more{display:block;margin:10px auto 0;border:0;background:none;font:inherit;font-size:12px;font-weight:800;color:#203c8e;cursor:pointer}
     .st-note{font-size:10.5px;color:#8a92a6;font-weight:600;margin-top:10px}
-    @media (min-width:1100px){.st-top{grid-template-columns:1.35fr 1fr 1fr;align-items:start}.st-t{display:table}.st-list{display:none}}
+    @media (min-width:1100px){.st-top{grid-template-columns:1fr}.st-card{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:4px 22px;align-items:center}.st-card>.st-k{grid-column:1/-1}.st-wrap{margin:0}.st-tiles{grid-template-columns:repeat(3,minmax(0,1fr))}.st-tiles div{padding:12px 14px}.st-tiles b{font-size:17px}.st-tiles em{font-size:19px}.st-nums{margin:0;grid-template-columns:1fr 1fr}.st-nums span{padding:10px 4px}.st-nums b{font-size:16px}.st-t{display:table}.st-list{display:none}}
     body.dark-mode .st-card,body.dark-mode .st-hl{background:#151a22;border-color:#252a32}body.dark-mode .st-nums span{background:#1a1f27}body.dark-mode .st-tiles div{background:#1a1f27}
     body.dark-mode .st-hn,body.dark-mode .st-t td:first-child,body.dark-mode .st-tiles b,body.dark-mode .st-nums b{color:#fff}body.dark-mode .st-chips button{background:#151a22;border-color:#252a32;color:#c9d0dc}body.dark-mode .st-t td{border-color:#252a32}body.dark-mode .st-t th{border-color:#c9d0dc}
     body.dark-mode .st-ring text:first-of-type{fill:#fff}
@@ -5929,9 +5929,11 @@ const SEC_IC={trend:'<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>',week:'<
  flask:'<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-9V3"/><path d="M7.5 15h9"/>',archive:'<rect x="4" y="4" width="16" height="5" rx="1.5"/><path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9M10 13h4"/>',
  swap:'<path d="M7 4v16M7 4L4 7M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/>',trophy:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 6h3a3 3 0 0 1-3 4M7 6H4a3 3 0 0 0 3 4"/>',
  star:'<path d="M12 3l2.6 5.5 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.3l6-.8z"/>',doc:'<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/>',target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/>',
+ search:'<circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5M8 10.5h5"/>',
  dot:'<circle cx="12" cy="12" r="5"/>'};
 function secIconKey(t){
  t=String(t||'').toLowerCase();
+ if(/search terms/.test(t))return 'search';
  if(/hijri|last year/.test(t))return 'hist';if(/campaign type/.test(t))return 'layers';if(/glance/.test(t))return 'cal';
  if(/weekly/.test(t))return 'week';if(/day by day/.test(t))return 'grid';if(/channel/.test(t))return 'crown';if(/lab/.test(t))return 'flask';
  if(/plan (performance )?history/.test(t))return 'archive';if(/month vs|report|monthly history/.test(t))return /monthly report/.test(t)?'doc':'swap';
@@ -8341,17 +8343,13 @@ function stCard(sm,dark){
 function stRoas(t){return t.roas!=null?t.roas:(t.cost?t.value/t.cost:0)}
 function renderTerms(){
  const body=document.getElementById('stBody');if(!body)return;
+ setTimeout(()=>applySectionIcons(body),0);
  const c=ST[CURRENT_ACCOUNT]||{},d=c.data;
  if(!d&&!c.busy&&!c.err)stLoad(false);
- const shell=inner=>`<section class="card section st-sec"><div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month">🔎</span><span>Search Terms</span></div><div class="section-sub">${d&&d.run?'AI Max · report run '+esc(d.run):'AI Max Snapshot'}</div></div>${d&&!d.missing?`<button type="button" class="pk-ghost st-rd" onclick="stLoad(true)" ${c.busy?'disabled':''}>${c.busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read'}</button>`:''}</div>${inner}</section>`;
+ const shell=inner=>`<section class="card section st-sec"><div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month"></span><span>Search Terms</span></div><div class="section-sub">${d&&d.run?'AI Max · report run '+esc(d.run):'AI Max Snapshot'}</div></div>${d&&!d.missing?`<button type="button" class="pk-ghost st-rd" onclick="stLoad(true)" ${c.busy?'disabled':''}>${c.busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read'}</button>`:''}</div>${inner}</section>`;
  if(!d){body.innerHTML=shell(`<div class="vly-wait">${c.err?'⚠️ '+esc(c.err)+' · <a href="#" onclick="stLoad(true);renderTerms();return false">Try again</a>':'<span class="lab-spin dark"></span> Reading the AI Max sheet…'}</div>`);return}
  if(d.missing||!(d.terms||[]).length){body.innerHTML=shell(`<div class="dx-empty">${d.missing?`The AI Max sheet of ${esc(CURRENT_ACCOUNT.toUpperCase())} is not linked or has no search terms yet.`:'No search terms with spend in this snapshot.'}</div>`);return}
  const sm=stSum(d),T=sm.T;
- const waste=T.filter(t=>t.k==='x').sort((a,b)=>b.cost-a.cost)[0]||T.filter(t=>!t.conv).sort((a,b)=>b.cost-a.cost)[0];
- const convs=T.filter(t=>t.conv>0).sort((a,b)=>b.value-a.value),best=convs[0];
- const hl=(cls,k,lab,t,big,sub,act)=>`<div class="st-hl" style="--c:${ST_K[k].c};--b:${ST_K[k].b}"><div class="st-k">${lab}</div><b class="st-hn">${esc(t.term)}</b><div class="st-hv">${big}</div><small>${sub}</small><span class="st-act">${ST_K[k].ic} ${act}</span></div>`;
- const hls=(waste?hl('x','x','BIGGEST WASTE',waste,esc(money(waste.cost,2)),`${fmt(waste.clicks,0)} click · ${fmt(waste.impr,0)} impr. · 0 conv.`,ST_K.x.a):'')
-  +(best?hl('g',best.k==='g'?'g':'f',convs.length===1?'ONLY CONVERTER':'TOP CONVERTER',best,`${esc(money(best.cost,2))} · ${fmt(stRoas(best),2)}x`,`${fmt(best.clicks,0)} clicks · ${fmt(best.conv,0)} conv. · ${esc(money(best.value,2))} value`,ST_K[best.k==='g'?'g':'f'].a):'');
  const keys=['x','n','f','g'].filter(k=>sm.cnt[k]);
  if(ST_F!=='all'&&!sm.cnt[ST_F])ST_F='all';
  const chips=`<div class="st-chips"><button type="button" class="${ST_F==='all'?'on':''}" style="--c:#1d2433" onclick="stFilter('all')"><i></i>All <b>${T.length}</b></button>${keys.map(k=>`<button type="button" class="${ST_F===k?'on':''}" style="--c:${ST_K[k].c};--b:${ST_K[k].b}" onclick="stFilter('${k}')"><i></i>${ST_K[k].l} <b>${sm.cnt[k]}</b></button>`).join('')}</div>`;
@@ -8365,7 +8363,7 @@ function renderTerms(){
   ${list.map(t=>`<tr><td><bdi>${esc(t.term)}</bdi></td><td>${fmt(t.clicks,0)}</td><td>${fmt(t.impr,0)}</td><td><b>${esc(money(t.cost,2))}</b></td><td>${fmt(t.conv,0)}</td><td>${esc(money(t.value,2))}</td><td>${fmt(stRoas(t),2)}x</td><td>${pill(t.k)}</td><td>${act(t.k)}</td></tr>`).join('')}</table>`;
  const rows=`<div class="st-list">${list.map(t=>`<div class="st-r"><b><bdi>${esc(t.term)}</bdi></b><em style="color:${ST_K[t.k].c}">${esc(money(t.cost,2))}</em><div class="st-br"><span style="width:${(t.cost/mx*100).toFixed(1)}%;background:${ST_K[t.k].c}"></span></div><small>${fmt(t.clicks,0)} click · ${fmt(t.impr,0)} impr. · ${fmt(t.conv,0)} conv.</small>${act(t.k)}</div>`).join('')}</div>`;
  const more=all>cut?`<button type="button" class="st-more" onclick="ST_ALL=true;renderTerms()">Show all ${all} ▾</button>`:'';
- body.innerHTML=shell(`<div class="st-top">${stCard(sm)}${hls}</div><div class="st-bar">${chips}${sorts}</div>${table}${rows}${more}<div class="st-note">From the AI Max Snapshot tab · result and action follow its classification.</div>`);
+ body.innerHTML=shell(`<div class="st-top">${stCard(sm)}</div><div class="st-bar">${chips}${sorts}</div>${table}${rows}${more}<div class="st-note">From the AI Max Snapshot tab · result and action follow its classification.</div>`);
 }
 function termsShareHtml(){
  const c=ST[CURRENT_ACCOUNT]||{},d=c.data;if(!d||d.missing)return rsHead('Search Terms · AI Max')+'<div class="rs-t"><b>No AI Max data yet</b></div>'+SHARE_FOOT;
