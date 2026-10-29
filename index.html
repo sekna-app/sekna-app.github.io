@@ -3872,6 +3872,18 @@ window.addEventListener('load',function(){
     .stp-anim.in{opacity:1;transform:none}.stp-anim.in .stp-ic{transform:none}.stp-anim.in tr{opacity:1;transform:none}
     @media (prefers-reduced-motion:reduce){.stp-anim,.stp-anim tr,.stp-anim .stp-ic{opacity:1!important;transform:none!important;transition:none!important}}
     body.dark-mode .stp-sw{background:#151a22}body.dark-mode .stp-sw button.on{background:#232a35;color:#fff}body.dark-mode .stp-sec{background:#151a22;border-color:#252a32}body.dark-mode .stp-t td{border-color:#252a32}body.dark-mode .stp-t td:first-child{color:#fff}
+    /* ST Performance WhatsApp image: a 1080×1080 square in two columns */
+    .rp-report.rp-sq{width:1080px;height:1080px;padding:44px;display:flex;flex-direction:column;overflow:hidden}.rp-sq .rp-foot{margin-top:auto;padding-top:14px}
+    .rp-sq .rp-client{width:62px;height:62px;border-radius:18px}.rp-sq .rp-head b{font-size:28px}
+    .sq-two{display:grid;grid-template-columns:400px 1fr;gap:16px;margin-top:20px;flex:1;min-height:0}.sq-two.one{grid-template-columns:1fr}.sq-two>div{display:flex;flex-direction:column;min-height:0}
+    .sq-gl{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:22px;overflow:hidden}
+    .sq-mt{padding:18px 20px;flex:1;display:flex;flex-direction:column}.sq-k{font-size:13px;font-weight:900;letter-spacing:.09em;color:#c9d6ff}.sq-tot{font-size:32px;font-weight:900;margin:4px 0 10px}
+    .sq-bar{display:flex;height:12px;border-radius:99px;overflow:hidden;gap:2px;background:rgba(255,255,255,.1)}.sq-bar i{display:block}
+    .sq-mrs{margin-top:10px}.sq-mr{display:grid;grid-template-columns:12px 1fr auto;gap:10px;align-items:center;padding:11px 0;border-top:1px solid rgba(255,255,255,.1)}.sq-mr:first-child{border-top:0}.sq-mr i{width:12px;height:12px;border-radius:4px}.sq-mr b{font-size:17px;display:block}.sq-mr small{font-size:12.5px;color:#c9d6ff;font-weight:700}.sq-mr span{font-size:18px;font-weight:900}
+    .sq-roas{margin-top:auto;padding-top:12px;font-size:15px;font-weight:800;color:#c9d6ff}
+    .sq-lst{display:grid!important;grid-auto-rows:1fr;gap:12px}.sq-sc{display:flex;flex-direction:column}
+    .sq-h{display:flex;align-items:center;gap:10px;padding:9px 16px;background:var(--c)}.sq-h b{font-size:18px}.sq-h em{margin-left:auto;font-style:normal;font-size:13px;font-weight:900;background:rgba(255,255,255,.22);border-radius:99px;padding:3px 10px}
+    .sq-r{flex:1;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:3px 16px;border-top:1px solid rgba(255,255,255,.08);font-size:17px;font-weight:700;line-height:1.2;min-height:0}.sq-r bdi.ar-t{line-height:1.25}.sq-r>span{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.sq-r em{font-style:normal;font-weight:900}.sq-r small{display:block;font-size:12.5px;margin-top:1px;color:#9fb0dd;font-weight:700}.sq-none{color:#c9d6ff;justify-content:center}
     .rp-report .stp-share{display:grid;gap:18px;margin-top:24px}.rp-report .stp-sec{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:24px;box-shadow:none}
     .rp-report .stp-h{padding:14px 20px;gap:14px}.rp-report .stp-h b{font-size:22px}.rp-report .stp-h small{font-size:15px}.rp-report .stp-h em{font-size:16px;padding:5px 14px}.rp-report .stp-ic{width:44px;height:44px;border-radius:14px}.rp-report .stp-ic svg{width:24px;height:24px}
     .rp-report .stp-t{font-size:18px}.rp-report .stp-t th{font-size:12.5px;color:#9fb0dd;padding:10px 18px 6px}.rp-report .stp-t td{padding:9px 18px;color:#fff;border-color:rgba(255,255,255,.07)}.rp-report .stp-t td:first-child{color:#fff}.rp-report .stp-t td small{font-size:12px;color:#9fb0dd}
@@ -8685,9 +8697,27 @@ function stpAnimate(body,d){
  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
  secs.forEach(x=>io.observe(x));
 }
+
+
 function termsPerfShareHtml(){
- const d=(STP[CURRENT_ACCOUNT]||{}).data;if(!d||d.missing)return rsHead('Search Terms Performance')+'<div class="rs-t"><b>No report yet</b></div>'+SHARE_FOOT;
- return `${rsHead('Search Terms Performance'+(d.run?' · '+d.run:''))}<div class="stp-share">${stpMatchCard(d,true)}${d.sections.filter(x=>x.id!=='6').map(x=>stpSecHtml(x,true)).join('')}</div>${SHARE_FOOT}`;
+ const d=(STP[CURRENT_ACCOUNT]||{}).data;if(!d||d.missing)return rsHead('ST Performance')+'<div class="rs-t"><b>No report yet</b></div>'+SHARE_FOOT;
+ const K=v=>Math.abs(v)>=1000?money(v/1000,2)+'K':money(v,2),by=id=>(d.sections||[]).find(x=>x.id===id);
+ const col=(sec,re)=>sec.head.findIndex(h=>re.test(String(h||'').toLowerCase()));
+ let left='';const m6=by('6');
+ if(m6&&m6.rows.length){
+  const jc=col(m6,/^cost/),jv=col(m6,/value/);
+  const R=m6.rows.map((r,i)=>({n:String(r[0]||'').replace(/ match close variant$/i,' close variant'),c:Number(r[jc])||0,v:Number(r[jv])||0,col:stpMcol(r[0],i)}));
+  const T=R.reduce((a,r)=>a+r.c,0),V=R.reduce((a,r)=>a+r.v,0);
+  left=`<div class="sq-gl sq-mt"><div class="sq-k">MATCH TYPE · SPEND SPLIT</div><b class="sq-tot">${esc(money(T,2))}</b><div class="sq-bar">${R.filter(r=>r.c>0).map(r=>`<i style="flex:${r.c};background:${r.col}"></i>`).join('')}</div>
+   <div class="sq-mrs">${R.map(r=>`<div class="sq-mr"><i style="background:${r.col}"></i><div><b>${esc(r.n)}</b><small>${T?Math.round(r.c/T*100):0}% of spend</small></div><span>${esc(money(r.c,2))}</span></div>`).join('')}</div>
+   <div class="sq-roas">${esc(K(V))} value · ${T?fmt(V/T,2):'0.00'}x ROAS</div></div>`;
+ }
+ const sec=id=>{const x=by(id);if(!x)return '';const S=STP_S[id];
+  const jc=col(x,/^cost/),jv=col(x,/conv\.? ?value/),jk=col(x,/^clicks?$/),ji=col(x,/^impr/);
+  const sub=r=>id==='3'?(ji>=0?fmt(r[ji],0)+' impr.':''):id==='2'?(jk>=0?fmt(r[jk],0)+' clicks':''):(jv>=0?K(Number(r[jv])||0)+' value':'');
+  const rows=x.rows.slice(0,3).map(r=>`<div class="sq-r"><span><bdi${stAr(r[0])}>${esc(r[0])}</bdi><small>${esc(sub(r))}</small></span><em>${jc>=0?esc(money(Number(r[jc])||0,2)):ji>=0?fmt(r[ji],0):''}</em></div>`).join('')||'<div class="sq-r sq-none">👌 Nothing today</div>';
+  return `<div class="sq-gl sq-sc"><div class="sq-h" style="--c:${S[2]}"><b>${esc(id)} · ${esc(S[0])}${id==='1a'?' · keyword':id==='1b'?' · new':''}</b><em>${x.rows.length?'Top '+x.rows.length:'—'}</em></div>${rows}</div>`};
+ return `${rsHead('ST Performance'+(d.run?' · '+d.run.slice(0,10):''))}<div class="sq-two${left?'':' one'}">${left?`<div>${left}</div>`:''}<div class="sq-lst">${['1a','1b','2','3'].map(sec).join('')}</div></div>${SHARE_FOOT}`;
 }
 function termsPerfShareText(){
  const d=(STP[CURRENT_ACCOUNT]||{}).data;if(!d||d.missing)return '';
@@ -11022,7 +11052,7 @@ const SHARE_KINDS={
  compare:{html:()=>compareShareHtml(),cls:'rp-narrow',name:'Month-vs-Month'},
  ly:{html:()=>lyShareHtml(),cls:'rp-narrow',name:'Vs-Last-Year'},
  terms:{html:()=>termsShareHtml(),cls:'rp-narrow',name:'Search-Terms'},
- termsperf:{html:()=>termsPerfShareHtml(),cls:'rp-narrow',name:'Search-Terms-Performance'}
+ termsperf:{html:()=>termsPerfShareHtml(),cls:'rp-narrow rp-sq',name:'Search-Terms-Performance'}
 };
 function captureChannelReport(){mvSettle();return captureReport(channelReportHtml(),'rp-narrow')}
 async function captureReport(html,extraClass){
