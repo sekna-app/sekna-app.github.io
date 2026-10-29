@@ -3808,10 +3808,18 @@ window.addEventListener('load',function(){
     .st-br{grid-column:1/-1;height:5px;border-radius:99px;background:#eef1f7;overflow:hidden}.st-br span{display:block;height:100%;border-radius:99px}.st-r small{font-size:10.5px;color:#8a92a6;font-weight:700}.st-r .st-a{text-align:right;font-size:10.5px}
     .st-more{display:block;margin:10px auto 0;border:0;background:none;font:inherit;font-size:12px;font-weight:800;color:#203c8e;cursor:pointer}
     .st-note{font-size:10.5px;color:#8a92a6;font-weight:600;margin-top:10px}
-    @media (min-width:1100px){.st-top{grid-template-columns:1fr}.st-card{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:4px 22px;align-items:center}.st-card>.st-k{grid-column:1/-1}.st-wrap{margin:0}.st-tiles{grid-template-columns:repeat(3,minmax(0,1fr))}.st-tiles div{padding:12px 14px}.st-tiles b{font-size:17px}.st-tiles em{font-size:19px}.st-nums{margin:0;grid-template-columns:1fr 1fr}.st-nums span{padding:10px 4px}.st-nums b{font-size:16px}.st-t{display:table}.st-list{display:none}}
+    @media (min-width:1100px){.st-top{grid-template-columns:1fr}.st-wrap{margin-top:8px}.st-tiles{grid-template-columns:repeat(3,minmax(0,1fr))}.st-tiles div{padding:12px 14px}.st-tiles b{font-size:17px}.st-tiles em{font-size:19px}.st-t{display:table}.st-list{display:none}}
     body.dark-mode .st-card,body.dark-mode .st-hl{background:#151a22;border-color:#252a32}body.dark-mode .st-nums span{background:#1a1f27}body.dark-mode .st-tiles div{background:#1a1f27}
     body.dark-mode .st-hn,body.dark-mode .st-t td:first-child,body.dark-mode .st-tiles b,body.dark-mode .st-nums b{color:#fff}body.dark-mode .st-chips button{background:#151a22;border-color:#252a32;color:#c9d0dc}body.dark-mode .st-t td{border-color:#252a32}body.dark-mode .st-t th{border-color:#c9d0dc}
     body.dark-mode .st-ring text:first-of-type{fill:#fff}
+    .st-qm{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;margin:0!important}
+    .st-qm .quick-metric{min-height:84px!important;padding:12px 12px 11px 13px!important;gap:6px}.st-qm .quick-copy{min-width:0;flex:1}.st-qm .quick-name{white-space:nowrap}.st-qm .quick-value{display:block;font-size:21px!important;line-height:1.15;margin-top:3px;white-space:nowrap}
+    .st-qm .kx-c{display:block;font-size:10.5px;font-weight:700;color:#8a92a6;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .st-qm .quick-icon{width:32px!important;height:32px!important;flex:0 0 32px!important}.st-qm .quick-icon svg{width:16px;height:16px}
+    @media (min-width:1100px){#app .st-qm .quick-metric{padding:14px 16px!important}#app .st-qm .quick-value{font-size:24px!important}#app .st-qm .kx-c{font-size:11.5px}#app .st-qm .quick-icon{width:38px!important;height:38px!important;flex-basis:38px!important}}
+    .st-qm-c .quick-metric{padding-bottom:28px!important}
+    @media (min-width:1100px){#app .st-qm{grid-template-columns:repeat(4,1fr)!important}}
+    .rp-report .st-qm{grid-template-columns:repeat(4,1fr)!important;gap:12px!important;margin-top:14px!important}.rp-report .st-qm .quick-metric{background:#fff;color:#1d2433}.rp-report .st-qm .kx-c{font-size:12px}
     /* its WhatsApp image (1080 wide): dashboard in the frame, then the full table with the action */
     .sts-dash{display:grid;grid-template-columns:auto 1fr;gap:12px 22px;align-items:center;margin-top:26px;padding:20px 22px;border-radius:26px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14)}
     .sts-tiles{display:grid;gap:8px}.sts-tl{display:grid;grid-template-columns:1fr auto;align-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-left:5px solid var(--c);border-radius:16px;padding:9px 14px}
@@ -8479,7 +8487,19 @@ function stCard(sm,dark){
  const keys=['x','n','f','g'].filter(k=>sm.cnt[k]);
  const ring=stRing(sm,116,15,`<text x="58" y="56" text-anchor="middle" font-size="15" font-weight="900" fill="${dark?'#fff':'#1d2433'}">${esc(money(sm.cost,2))}</text><text x="58" y="71" text-anchor="middle" font-size="8.5" font-weight="800" fill="${dark?'#9fb0dd':'#8a92a6'}">${sm.T.length} TERMS</text>`,dark);
  return `<div class="st-card${dark?' dk':''}"><div class="st-k">✦ AI MAX · SPEND BY RESULT</div><div class="st-wrap">${ring}<div class="st-tiles">${keys.map(k=>`<div style="--b:${dark?'rgba(255,255,255,.08)':ST_K[k].b};--c:${ST_K[k].c}"><b>${money(sm.by[k],2)}</b><em>${stPct(sm,k)}%</em><small>${ST_K[k].l} · ${sm.cnt[k]}</small></div>`).join('')}</div></div>
-  <div class="st-nums">${[[fmt(sm.clicks,0),'CLICKS'],[fmt(sm.impr,0),'IMPR.'],[fmt(sm.conv,0),'CONV.'],[sm.cost?fmt(sm.value/sm.cost,2)+'x':'—','ROAS']].map(([v,l])=>`<span><b>${v}</b><small>${l}</small></span>`).join('')}</div></div>`;
+  </div>`;
+}
+
+const ST_V='b';
+const ST_QI={clicks:'<path d="M7 4l9 8-4 1-1 4-4-13z"/><path d="M15 15l4 4"/>',conv:'<circle cx="12" cy="12" r="8"/><path d="M8.5 12.3l2.4 2.4 4.8-5"/>',
+ value:'<circle cx="12" cy="12" r="8"/><path d="M14.6 9.2c-.5-.8-1.5-1.2-2.6-1.2-1.5 0-2.6.8-2.6 1.9 0 2.5 5.4 1.3 5.4 4 0 1.1-1.2 2-2.8 2-1.2 0-2.2-.5-2.7-1.3M12 6.5V8M12 16v1.5"/>',roas:'<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>'};
+function stQuick(sm){
+ const ctr=sm.impr?sm.clicks/sm.impr:0,cvr=sm.clicks?sm.conv/sm.clicks:0,roas=sm.cost?sm.value/sm.cost:0;
+ const Q=[['clicks','clicks','Clicks',fmt(sm.clicks,0),`${fmt(sm.impr,0)} impr. · CTR ${fmt(ctr*100,1)}%`,sm.clicks?`CPC ${money(sm.cost/sm.clicks,2)}`:'',''],
+  ['cvr','conv','Conversions',fmt(sm.conv,0),`CVR ${fmt(cvr*100,1)}%`,sm.conv?`CPA ${money(sm.cost/sm.conv,2)}`:'No conv.',sm.conv?'':'dn'],
+  ['cpa','value','Value',money(sm.value,2),sm.conv?`${money(sm.value/sm.conv,2)} per conv.`:'—','',''],
+  ['ctr','roas','ROAS',sm.cost?fmt(roas,2)+'x':'—',`on ${money(sm.cost,2)} spend`,roas<1?'▼ below 1x':'▲ above 1x',roas<1?'dn':'up']];
+ return `<div class="quick-metrics-strip st-qm st-qm-${ST_V}">${Q.map(([c,ic,l,v,sub,chip,cc])=>`<div class="quick-metric ${c}"><div class="quick-icon" aria-hidden="true"><svg viewBox="0 0 24 24">${ST_QI[ic]}</svg></div><div class="quick-copy"><span class="quick-name">${l}</span><span class="quick-value">${v}</span>${ST_V!=='a'?`<span class="kx-c">${sub}</span>`:''}</div>${ST_V==='c'&&chip?`<span class="kx-r ${cc}">${chip}</span>`:''}</div>`).join('')}</div>`;
 }
 function stRoas(t){return t.roas!=null?t.roas:(t.cost?t.value/t.cost:0)}
 function renderTerms(){
@@ -8502,21 +8522,27 @@ function renderTerms(){
  const mx=Math.max(...T.map(t=>t.cost),.01);
  const table=`<table class="st-t"><colgroup><col style="width:23%"><col style="width:7%"><col style="width:7%"><col style="width:10%"><col style="width:7%"><col style="width:10%"><col style="width:8%"><col style="width:11%"><col style="width:17%"></colgroup><tr><th>Search term</th><th>Clicks</th><th>Impr.</th><th>Cost</th><th>Conv.</th><th>Value</th><th>ROAS</th><th>Result</th><th>Action</th></tr>
   ${list.map(t=>`<tr><td><bdi>${esc(t.term)}</bdi></td><td>${fmt(t.clicks,0)}</td><td>${fmt(t.impr,0)}</td><td><b>${esc(money(t.cost,2))}</b></td><td>${fmt(t.conv,0)}</td><td>${esc(money(t.value,2))}</td><td>${fmt(stRoas(t),2)}x</td><td>${pill(t.k)}</td><td>${act(t.k)}</td></tr>`).join('')}</table>`;
- const rows=`<div class="st-list">${list.map(t=>`<div class="st-r"><b><bdi>${esc(t.term)}</bdi></b><em style="color:${ST_K[t.k].c}">${esc(money(t.cost,2))}</em><div class="st-br"><span style="width:${(t.cost/mx*100).toFixed(1)}%;background:${ST_K[t.k].c}"></span></div><small>${fmt(t.clicks,0)} click · ${fmt(t.impr,0)} impr. · ${fmt(t.conv,0)} conv.</small>${act(t.k)}</div>`).join('')}</div>`;
+ const rows=`<div class="st-list">${list.map(t=>`<div class="st-r"><b><bdi>${esc(t.term)}</bdi></b><em style="color:${ST_K[t.k].c}">${esc(money(t.cost,2))}</em><div class="st-br"><span style="width:${(t.cost/mx*100).toFixed(1)}%;background:${ST_K[t.k].c}"></span></div><small>${fmt(t.clicks,0)} click · ${fmt(t.impr,0)} impr. · ${fmt(t.conv,0)} conv. · ${esc(money(t.value,2))} value</small>${act(t.k)}</div>`).join('')}</div>`;
  const more=all>cut?`<button type="button" class="st-more" onclick="ST_ALL=true;renderTerms()">Show all ${all} ▾</button>`:'';
- body.innerHTML=shell(`<div class="st-top">${stCard(sm)}</div><div class="st-bar">${chips}${sorts}</div>${table}${rows}${more}<div class="st-note">From the AI Max Snapshot tab · result and action follow its classification.</div>`);
+ body.innerHTML=shell(`<div class="st-top">${stCard(sm)}${stQuick(sm)}</div><div class="st-bar">${chips}${sorts}</div>${table}${rows}${more}<div class="st-note">From the AI Max Snapshot tab · result and action follow its classification.</div>`);
+}
+function termsShareText(){
+ const c=ST[CURRENT_ACCOUNT]||{},d=c.data;if(!d||d.missing)return '';
+ const sm=stSum(d),a=accountMeta(DASH_DATA||{}),P=k=>`${money(sm.by[k],2)} (${stPct(sm,k)}%)`;
+ return [`📌 AI Max ${a.shortLabel||CURRENT_ACCOUNT.toUpperCase()} — S.T. ⚙️`,'',`💰 Spend: ${money(sm.cost,2)} · ${sm.T.length} Terms`,
+  ...[['x','🔴 Wasted'],['n','🟠 Review'],['f','🟡 Fair'],['g','🟢 Good']].filter(([k])=>sm.cnt[k]).map(([k,l])=>`${l}: ${P(k)}`),'',
+  `🖱️ Clicks: ${fmt(sm.clicks,0)} · 👁️ Impr.: ${fmt(sm.impr,0)}`,`🎯 Conv.: ${fmt(sm.conv,0)} · 💎 Value: ${money(sm.value,2)}`,`📉 ROAS: ${sm.cost?fmt(sm.value/sm.cost,2):'0.00'}x`].join('\n');
 }
 function termsShareHtml(){
  const c=ST[CURRENT_ACCOUNT]||{},d=c.data;if(!d||d.missing)return rsHead('Search Terms · AI Max')+'<div class="rs-t"><b>No AI Max data yet</b></div>'+SHARE_FOOT;
  const sm=stSum(d),T=sm.T.slice().sort((a,b)=>b.cost-a.cost),keys=['x','n','f','g'].filter(k=>sm.cnt[k]);
  const ring=stRing(sm,190,26,`<text x="95" y="92" text-anchor="middle" font-size="28" font-weight="900" fill="#fff">${esc(money(sm.cost,2))}</text><text x="95" y="116" text-anchor="middle" font-size="14" font-weight="800" fill="#9fb0dd">${T.length} TERMS</text>`,true);
  const tiles=keys.map(k=>`<div class="sts-tl" style="--c:${ST_K[k].c}"><small>${ST_K[k].l.toUpperCase()} · ${sm.cnt[k]}</small><b>${esc(money(sm.by[k],2))}</b><em>${stPct(sm,k)}%</em></div>`).join('');
- const nums=[[fmt(sm.clicks,0),'CLICKS'],[fmt(sm.impr,0),'IMPR.'],[fmt(sm.conv,0),'CONV.'],[sm.cost?fmt(sm.value/sm.cost,2)+'x':'—','ROAS']].map(([v,l])=>`<div><b>${v}</b><small>${l}</small></div>`).join('');
  return `${rsHead('Search Terms · AI Max'+(d.run?' · '+d.run:''))}
- <div class="sts-dash"><div class="sts-rg">${ring}</div><div class="sts-tiles">${tiles}</div><div class="sts-nums">${nums}</div></div>
- <table class="sts-t"><tr><th>SEARCH TERM</th><th>CLK</th><th>IMPR</th><th>COST</th><th>CONV</th><th>ACTION</th></tr>
- ${T.map(t=>`<tr><td><bdi>${esc(t.term)}</bdi></td><td>${fmt(t.clicks,0)}</td><td>${fmt(t.impr,0)}</td><td>${esc(money(t.cost,2))}</td><td>${fmt(t.conv,0)}</td><td style="color:${ST_K[t.k].c}">${ST_K[t.k].ic} ${ST_K[t.k].a}</td></tr>`).join('')}
- <tr class="T"><td>TOTAL · ${T.length}</td><td>${fmt(sm.clicks,0)}</td><td>${fmt(sm.impr,0)}</td><td>${esc(money(sm.cost,2))}</td><td>${fmt(sm.conv,0)}</td><td>${sm.cost?fmt(sm.value/sm.cost,2)+'x ROAS':''}</td></tr></table>
+ <div class="sts-dash"><div class="sts-rg">${ring}</div><div class="sts-tiles">${tiles}</div></div>${stQuick(sm)}
+ <table class="sts-t"><tr><th>SEARCH TERM</th><th>CLK</th><th>IMPR</th><th>COST</th><th>CONV</th><th>VALUE</th><th>ACTION</th></tr>
+ ${T.map(t=>`<tr><td><bdi>${esc(t.term)}</bdi></td><td>${fmt(t.clicks,0)}</td><td>${fmt(t.impr,0)}</td><td>${esc(money(t.cost,2))}</td><td>${fmt(t.conv,0)}</td><td>${esc(money(t.value,2))}</td><td style="color:${ST_K[t.k].c}">${ST_K[t.k].ic} ${ST_K[t.k].a}</td></tr>`).join('')}
+ <tr class="T"><td>TOTAL · ${T.length}</td><td>${fmt(sm.clicks,0)}</td><td>${fmt(sm.impr,0)}</td><td>${esc(money(sm.cost,2))}</td><td>${fmt(sm.conv,0)}</td><td>${esc(money(sm.value,2))}</td><td>${sm.cost?fmt(sm.value/sm.cost,2)+'x ROAS':''}</td></tr></table>
  ${SHARE_FOOT}`;
 }
 function rxSplit(r){
@@ -8781,6 +8807,7 @@ function getShareSummary(tab){
  if(k==='report')return oneMonthShareText(DASH_DATA);
  if(k==='compare')return compareShareText(DASH_DATA);
  if(k==='ly')return lyShareText(DASH_DATA);
+ if(k==='terms')return termsShareText();
  return buildSummary(DASH_DATA);
 }
 
