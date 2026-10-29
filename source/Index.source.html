@@ -3509,6 +3509,14 @@ window.addEventListener('load',function(){
     .mp-hl{margin-top:34px;display:grid;gap:12px}.mp-hl div{font-size:21px;line-height:1.4;font-weight:600;color:#e3e9fb}
     .mp-foot{position:absolute;left:72px;right:72px;bottom:40px;display:flex;justify-content:space-between;font-size:17px;font-weight:700;opacity:.7}
     .mp-white .mp-foot{color:#6b7385}
+    /* PDF page 5: vs last year */
+    .lz-sb{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center;margin-top:28px}.lz-sb>div{border-radius:22px;padding:16px;text-align:center;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2)}.lz-sb>div.win{border-color:#e2b874;background:rgba(226,184,116,.15)}
+    .lz-sb b{display:block;font-size:36px;font-weight:900}.lz-sb small{font-size:15px;font-weight:700;opacity:.8}.lz-sb span{display:block;font-size:24px;font-weight:900;margin-top:4px}
+    .lz-sb>div.mid{background:none;border:0}.lz-sb .mid b{color:#e2b874;font-size:38px}.lz-sb .mid small{font-size:13px;font-weight:900;letter-spacing:.14em}
+    .lz-r{display:grid;grid-template-columns:170px 1fr 100px;gap:20px;align-items:center;padding:16px 0;border-bottom:2px solid #eef0f5}.lz-r small{display:block;font-size:13px;font-weight:900;letter-spacing:.1em;color:#6b7385}.lz-r>div>b{font-size:26px;font-weight:900}
+    .lz-b>div{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:800;color:#6b7385}.lz-b>div+div{margin-top:8px}.lz-b i{display:block;height:15px;border-radius:8px;background:#203c8e}.lz-b i.ly{background:#9aa9d6}
+    .lz-ch{justify-self:end;border-radius:999px;padding:5px 13px;font-size:16px;font-weight:900;background:#eef0f5;color:#4a5266}.lz-ch.up{background:#e3f6ea;color:#11743a}.lz-ch.dn{background:#fde5e7;color:#b3303c}
+    .lz-strip{display:grid;grid-template-columns:repeat(16,1fr);gap:6px}.lz-strip i{font-style:normal;aspect-ratio:1.15;border-radius:9px;display:grid;place-items:center;font-size:14px;font-weight:900;color:#fff}.lz-strip i.g{background:#22c47c}.lz-strip i.r{background:#e0606c}.lz-strip i.f,.lz-strip i.x{background:#eef0f5;color:#9aa1b2}
     /* PDF page 4: week by week */
     .wz-cards{display:grid;gap:14px}.wz-c{background:#f6f7fb;border-radius:20px;padding:16px 16px 14px;border-top:7px solid #203c8e}
     .wz-c small{display:block;font-size:13px;font-weight:900;letter-spacing:.1em;color:#6b7385}.wz-c b{display:block;font-size:32px;font-weight:900;margin-top:4px}.wz-c em{display:block;font-style:normal;font-size:14px;font-weight:800;margin-top:2px}
@@ -12533,6 +12541,39 @@ function mpResultsPage(m){
    <div class="rz-two"><div class="bst"><small>BEST DAY</small><b>${esc(day(best))}</b><span>${best?`Value ${pct(va(best))} of plan · ${fmt(best.actual.roas,2)}x ROAS`:''}</span></div><div class="wst"><small>TOUGHEST DAY</small><b>${esc(day(worst))}</b><span>${worst?`Value ${pct(va(worst))} of plan · ${fmt(worst.actual.roas,2)}x ROAS`:''}</span></div></div></div>
   ${mpFoot('2')}</div>`;
 }
+// PDF page 5: this year against the same Hijri days last year. Scoreboard, each number side by side,
+// every day against the same day last year and a few words on where the gap comes from.
+function mpLyPage(m){
+ const ex=MONTH_EXTRA[CURRENT_ACCOUNT]||{days:{}}, ly=m.ly, a=m.a, y=+m.month.slice(0,4);
+ const gap=a.value-ly.value, ahead=gap>=0, chg=(x,b)=>b?x/b-1:null;
+ const dayRows=m.days.map(x=>{if(!x.actual)return {n:x.dayNumber,c:'f'};const k=hijriDayInYear(x.date,1),pr=k&&dayParts(k,ex);return {n:x.dayNumber,c:pr?(x.actual.value>=(pr.value||0)?'g':'r'):'x'}});
+ const beat=dayRows.filter(d=>d.c==='g').length, under=dayRows.filter(d=>d.c==='r').length, toCome=dayRows.filter(d=>d.c==='f').length;
+ const rows=[['VALUE',a.value,ly.value,mpK,1],['SPEND',a.spend,ly.spend,mpK,null],['ROAS',a.roas,ly.roas,v=>fmt(v,2)+'x',1],['CONVERSIONS',a.conversions,ly.conversions,v=>fmt(v,0),1]];
+ const row=([l,t,b,f,hi])=>{const mx=Math.max(t||0,b||0)||1,c=chg(t,b);const cl=c==null?'':hi==null?'n':c>=0?'up':'dn';
+   return `<div class="lz-r"><div><small>${l}</small><b>${t!=null?f(t):'—'}</b></div><div class="lz-b"><div><i style="width:${((t||0)/mx*100).toFixed(1)}%"></i>${t!=null?f(t):'—'}</div><div><i class="ly" style="width:${((b||0)/mx*100).toFixed(1)}%"></i>${b?f(b):'—'}</div></div>
+   <span class="lz-ch ${cl}">${c==null?'—':(c>=0?'▲ ':'▼ ')+Math.abs(c*100).toFixed(0)+'%'}</span></div>`};
+ const words=[];
+ const sd=a.spend-ly.spend;
+ if(ly.spend&&a.roas!=null&&ly.roas!=null)words.push(`This year spent <b>${mpK(Math.abs(sd))} ${sd<=0?'less':'more'}</b> and got a <b>${a.roas>=ly.roas?'higher':'lower'} ROAS</b> (${fmt(a.roas,2)}x vs ${fmt(ly.roas,2)}x).`);
+ if(!ahead&&sd<0&&a.roas>=ly.roas)words.push(`So the ${mpK(-gap)} value gap comes from <b>budget, not efficiency</b>.`);
+ else if(!ahead&&a.roas<ly.roas)words.push(`Value is behind and so is ROAS, so the ${mpK(-gap)} gap is <b>efficiency as well as budget</b>.`);
+ else if(ahead)words.push(`This year is <b>${mpK(gap)} ahead</b> on value.`);
+ if(beat+under)words.push(`<b>${beat} of ${beat+under} days</b> beat the same day last year.`);
+ return `<div class="mp-pg mp-cv2 tz lz">
+  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="">`:'<b>HEMERA</b>'}<span>${esc(m.meta.dashboardTitle)}</span></div>
+   <div class="cv2-kick" style="margin-top:40px">VS THE SAME HIJRI DAYS LAST YEAR</div><h1 class="rz-h">${esc(m.label)} vs last year</h1>
+   <div class="cv2-sub">${esc(m.hijri)} against the same Hijri days last year (${esc(lyLab(m))}) · ${m.live.length} of ${m.days.length} days so far</div>
+   <div class="lz-sb"><div class="${ahead?'win':''}"><b>${ahead?'👑 ':''}${y}</b><small>this year</small><span>${mpK(a.value)}</span></div>
+    <div class="mid"><b>${mpK(Math.abs(gap))}</b><small>${ahead?'AHEAD':'BEHIND'}</small></div>
+    <div class="${ahead?'':'win'}"><b>${ahead?'':'👑 '}${y-1}</b><small>last year</small><span>${mpK(ly.value)}</span></div></div></div>
+  <div class="rz-bd"><div class="tz-st"><b>SIDE BY SIDE</b><span>this year · last year · change</span></div>${rows.map(row).join('')}
+   <div class="rz-lg"><span><i style="background:#203c8e"></i>${y} · this year</span><span><i style="background:#9aa9d6"></i>${y-1} · same Hijri days</span></div>
+   <div class="tz-st" style="margin-top:28px"><b>DAY BY DAY</b><span>${beat} beat · ${under} under${toCome?` · ${toCome} to come`:''}</span></div>
+   <div class="lz-strip">${dayRows.map(d=>`<i class="${d.c}">${d.n}</i>`).join('')}</div>
+   <div class="rz-lg"><span><i class="g"></i>beat last year</span><span><i class="r"></i>under last year</span><span><i style="background:#eef0f5"></i>to come</span></div>
+   ${words.length?`<div class="tz-say"><small>IN A FEW WORDS</small>${words.map(w=>`<p>• ${w}</p>`).join('')}</div>`:''}</div>
+  ${mpFoot('5')}</div>`;
+}
 // PDF page 3: campaign types month to date, half blue and half white.
 function mpTypesPage(m){
  const nmS=n=>CHANNEL_SHORT[n]||n, ch=m.chans.filter(c=>c.spend>0||c.planSpend>0);
@@ -12660,8 +12701,8 @@ async function mrBuild(){
      ['Adding the Results page…',()=>mpCapture(mpResultsPage(m))],
      ['Adding campaign types…',()=>mpCapture(mpTypesPage(m))],
      ['Adding the weeks…',()=>mpCapture(mpWeeksPage(m))],
-     ...(lyShareHtml()?[['Adding the days vs last year…',()=>captureReport(lyShareHtml(),'rp-narrow')]]:[]),
-     ['Adding last year and notes…',()=>mpCapture(mpComparePage(m,MR.notes,lyShareHtml()?6:5))],
+     ...(m.ly.have?[['Adding this year against last year…',()=>mpCapture(mpLyPage(m))]]:[]),
+     ['Adding last year and notes…',()=>mpCapture(mpComparePage(m,MR.notes,m.ly.have?6:5))],
      ['Adding the thank-you page…',()=>mpCapture(mpThanks(m))]];
    const canvases=[];
    for(let i=0;i<steps.length;i++){MR.busy=`${steps[i][0]} (${i+1}/${steps.length})`;drawMonthlyReport();canvases.push(await steps[i][1]())}
