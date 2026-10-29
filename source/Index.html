@@ -3634,7 +3634,7 @@ window.addEventListener('load',function(){
     .st-chips{display:flex;gap:6px;flex-wrap:wrap}.st-chips button{display:inline-flex;align-items:center;gap:6px;border:1.5px solid #e7eaf2;background:#fff;border-radius:99px;padding:5px 11px;font:inherit;font-size:11.5px;font-weight:800;color:#4b5568;cursor:pointer}
     .st-chips button i{width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 18%,transparent)}.st-chips button b{font-size:10.5px;opacity:.7}
     .st-chips button.on{border-color:var(--c);background:var(--b,#1d2433);color:var(--c)}.st-chips button.on[style*="#1d2433"]{background:#1d2433;color:#fff}.st-chips button.on[style*="#1d2433"] i{background:#fff}
-    .st-sort{display:flex;gap:4px;align-items:center;font-size:11px;font-weight:800;color:#8a92a6}.st-sort button{border:0;background:none;border-radius:8px;padding:5px 9px;font:inherit;font-size:11px;font-weight:800;color:#6b7385;cursor:pointer}.st-sort button.on{background:#eef2fd;color:#203c8e}
+    .st-sort{display:flex;gap:4px;align-items:center;flex-wrap:wrap;font-size:11px;font-weight:800;color:#8a92a6}.st-sort button{border:0;background:none;border-radius:8px;padding:5px 9px;font:inherit;font-size:11px;font-weight:800;color:#6b7385;cursor:pointer}.st-sort button.on{background:#eef2fd;color:#203c8e}
     .st-t{display:none;width:100%;border-collapse:collapse;font-size:12.5px;table-layout:fixed;font-variant-numeric:tabular-nums}
         .st-t th{font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:#8a92a6;font-weight:900;text-align:right;padding:8px 8px;border-bottom:1.5px solid #1d2433}.st-t th:first-child,.st-t td:first-child{text-align:left;padding-left:4px}
     .st-t td{padding:8px;text-align:right;font-weight:700;border-bottom:1px solid #eef1f7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.st-t td:first-child{font-weight:800;color:#1d2433}.st-t th:nth-last-child(-n+2),.st-t td:nth-last-child(-n+2){text-align:left}
@@ -8306,8 +8306,9 @@ function stLoad(force){
  serverCall('getSearchTerms',k,!!force,getAccessToken()).then(r=>{c.busy=false;c.data=r||{missing:true};if(CURRENT_TAB==='terms'&&k===CURRENT_ACCOUNT)renderTerms()})
   .catch(err=>{c.busy=false;c.err=errorText(err);if(CURRENT_TAB==='terms'&&k===CURRENT_ACCOUNT)renderTerms()});
 }
-function stFilter(f){ST_F=f;ST_ALL=false;renderTerms()}
-function stSort(k){ST_SORT=k;renderTerms()}
+
+function stFilter(f){ST_F=f;ST_ALL=false;renderTerms(true)}
+function stSort(k){ST_SORT=k;renderTerms(true)}
 function stSum(d){
  const T=d.terms||[],by={x:0,n:0,f:0,g:0},cnt={x:0,n:0,f:0,g:0};T.forEach(t=>{by[t.k]+=t.cost;cnt[t.k]++});
  const tot=d.total||{},cost=tot.cost!=null?tot.cost:T.reduce((a,t)=>a+t.cost,0);
@@ -8339,9 +8340,8 @@ function stQuick(sm){
  return `<div class="quick-metrics-strip st-qm st-qm-${ST_V}">${Q.map(([c,ic,l,v,sub,chip,cc])=>`<div class="quick-metric ${c}"><div class="quick-icon" aria-hidden="true"><svg viewBox="0 0 24 24">${ST_QI[ic]}</svg></div><div class="quick-copy"><span class="quick-name">${l}</span><span class="quick-value">${v}</span>${ST_V!=='a'?`<span class="kx-c">${sub}</span>`:''}</div>${ST_V==='c'&&chip?`<span class="kx-r ${cc}">${chip}</span>`:''}</div>`).join('')}</div>`;
 }
 function stRoas(t){return t.roas!=null?t.roas:(t.cost?t.value/t.cost:0)}
-function renderTerms(){
+function renderTerms(part){
  const body=document.getElementById('stBody');if(!body)return;
- setTimeout(()=>applySectionIcons(body),0);
  const c=ST[CURRENT_ACCOUNT]||{},d=c.data;
  if(!d&&!c.busy&&!c.err)stLoad(false);
  const shell=inner=>`<section class="card section st-sec"><div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month"></span><span>Search Terms</span></div><div class="section-sub">${d&&d.run?'AI Max · report run '+esc(d.run):'AI Max Snapshot'}</div></div>${d&&!d.missing?`<button type="button" class="pk-ghost st-rd" onclick="stLoad(true)" ${c.busy?'disabled':''}>${c.busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read'}</button>`:''}</div>${inner}</section>`;
@@ -8351,7 +8351,7 @@ function renderTerms(){
  const keys=['x','n','f','g'].filter(k=>sm.cnt[k]);
  if(ST_F!=='all'&&!sm.cnt[ST_F])ST_F='all';
  const chips=`<div class="st-chips"><button type="button" class="${ST_F==='all'?'on':''}" style="--c:#1d2433" onclick="stFilter('all')"><i></i>All <b>${T.length}</b></button>${keys.map(k=>`<button type="button" class="${ST_F===k?'on':''}" style="--c:${ST_K[k].c};--b:${ST_K[k].b}" onclick="stFilter('${k}')"><i></i>${ST_K[k].l} <b>${sm.cnt[k]}</b></button>`).join('')}</div>`;
- const sorts=`<div class="st-sort"><span>Sort</span>${[['cost','Cost'],['clicks','Clicks'],['impr','Impr.']].map(([k,l])=>`<button type="button" class="${ST_SORT===k?'on':''}" onclick="stSort('${k}')">${l}${ST_SORT===k?' ↓':''}</button>`).join('')}</div>`;
+ const sorts=`<div class="st-sort"><span>Sort</span>${[['cost','Cost'],['clicks','Clicks'],['impr','Impr.'],['conv','Conv.'],['value','Value']].map(([k,l])=>`<button type="button" class="${ST_SORT===k?'on':''}" onclick="stSort('${k}')">${l}${ST_SORT===k?' ↓':''}</button>`).join('')}</div>`;
  let list=T.filter(t=>ST_F==='all'||t.k===ST_F).slice().sort((a,b)=>(b[ST_SORT]||0)-(a[ST_SORT]||0)||b.cost-a.cost);
  const all=list.length,cut=ST_ALL?all:Math.min(all,12);list=list.slice(0,cut);
  const pill=k=>`<span class="st-pill" style="--c:${ST_K[k].c};--b:${ST_K[k].b}">${ST_K[k].l}</span>`;
@@ -8360,8 +8360,12 @@ function renderTerms(){
  const table=`<table class="st-t"><colgroup><col style="width:23%"><col style="width:7%"><col style="width:7%"><col style="width:10%"><col style="width:7%"><col style="width:10%"><col style="width:8%"><col style="width:11%"><col style="width:17%"></colgroup><tr><th>Search term</th><th>Clicks</th><th>Impr.</th><th>Cost</th><th>Conv.</th><th>Value</th><th>ROAS</th><th>Result</th><th>Action</th></tr>
   ${list.map(t=>`<tr><td><bdi>${esc(t.term)}</bdi></td><td>${fmt(t.clicks,0)}</td><td>${fmt(t.impr,0)}</td><td><b>${esc(money(t.cost,2))}</b></td><td>${fmt(t.conv,0)}</td><td${t.value>0?' class="st-gv"':''}>${esc(money(t.value,2))}</td><td>${fmt(stRoas(t),2)}x</td><td>${pill(t.k)}</td><td>${act(t.k)}</td></tr>`).join('')}</table>`;
  const rows=`<div class="st-list">${list.map(t=>`<div class="st-r"><b><bdi>${esc(t.term)}</bdi></b><em style="color:${ST_K[t.k].c}">${esc(money(t.cost,2))}</em><div class="st-br"><span style="width:${(t.cost/mx*100).toFixed(1)}%;background:${ST_K[t.k].c}"></span></div><small>${fmt(t.clicks,0)} click · ${fmt(t.impr,0)} impr. · ${fmt(t.conv,0)} conv. · <span${t.value>0?' class="st-gv"':''}>${esc(money(t.value,2))} value</span></small>${act(t.k)}</div>`).join('')}</div>`;
- const more=all>cut?`<button type="button" class="st-more" onclick="ST_ALL=true;renderTerms()">Show all ${all} ▾</button>`:'';
- body.innerHTML=shell(`<div class="st-top">${stCard(sm)}${stQuick(sm)}</div><div class="st-bar">${chips}${sorts}</div>${table}${rows}${more}<div class="st-note">From the AI Max Snapshot tab · result and action follow its classification.</div>`);
+ const more=all>cut?`<button type="button" class="st-more" onclick="ST_ALL=true;renderTerms(true)">Show all ${all} ▾</button>`:'';
+  const listHtml=`<div class="st-bar">${chips}${sorts}</div>${table}${rows}${more}`;
+ const part0=document.getElementById('stPart');
+ if(part&&part0){part0.style.minHeight=part0.offsetHeight+'px';part0.innerHTML=listHtml;return} 
+ body.innerHTML=shell(`<div class="st-top">${stCard(sm)}${stQuick(sm)}</div><div id="stPart">${listHtml}</div><div class="st-note">From the AI Max Snapshot tab · result and action follow its classification.</div>`);
+ applySectionIcons(body);
 }
 function termsShareText(){
  const c=ST[CURRENT_ACCOUNT]||{},d=c.data;if(!d||d.missing)return '';
