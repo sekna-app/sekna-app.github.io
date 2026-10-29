@@ -18,7 +18,9 @@ const ACCOUNTS = {
       forecast: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=2071753792',
       assumptions: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=2030520828',
       // Search Terms page: the AI Max Snapshot (its own spreadsheet).
-      aiMax: 'https://docs.google.com/spreadsheets/d/1Bc6HIIW_58xSSanA5RWDyb4z2pROjZ2WabM5bUgWPTs/edit#gid=1940072429'
+      aiMax: 'https://docs.google.com/spreadsheets/d/1Bc6HIIW_58xSSanA5RWDyb4z2pROjZ2WabM5bUgWPTs/edit#gid=1940072429',
+      // Search Terms → Search Terms Performance: the daily search terms report (same spreadsheet).
+      stDaily: 'https://docs.google.com/spreadsheets/d/1Bc6HIIW_58xSSanA5RWDyb4z2pROjZ2WabM5bUgWPTs/edit#gid=1729813500'
     }
   },
   ar: {
@@ -34,7 +36,8 @@ const ACCOUNTS = {
       bestWorst: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=1295411279',
       forecast: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=1687637233',
       assumptions: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=2047766565',
-      aiMax: 'https://docs.google.com/spreadsheets/d/1B2pCSNuV8EIYjGx8zAxrpqJcxgCfVmMO07JiW1V3rkQ/edit#gid=1223522764'
+      aiMax: 'https://docs.google.com/spreadsheets/d/1B2pCSNuV8EIYjGx8zAxrpqJcxgCfVmMO07JiW1V3rkQ/edit#gid=1223522764',
+      stDaily: 'https://docs.google.com/spreadsheets/d/1B2pCSNuV8EIYjGx8zAxrpqJcxgCfVmMO07JiW1V3rkQ/edit#gid=1089700748'
     }
   }
 };
@@ -948,6 +951,44 @@ async function buildSearchTerms(accountKey) {
   return { v: 1, at: Date.now(), tab: sh.title, title, section, run, updated: t(upd), terms, total };
 }
 
+/** Search Terms Performance: the daily search terms report — its numbered blocks ("1a. KEYWORDS WITH CONVERSIONS…"), each a header row and its rows. */
+async function buildSearchTermsDaily(accountKey) {
+  const account = ACCOUNTS[normalizeAccountKey_(accountKey)];
+  const ref = account.sheets && account.sheets.stDaily;
+  const id = ssIdOf(ref);
+  if (!id) return { missing: true };
+  let meta;
+  try { meta = await sheetMeta(id); }
+  catch (e) { throw new Error('Could not open the search terms report of ' + account.shortLabel + ' (' + String((e && e.message) || e).slice(0, 120) + '). Check that it is shared with the HEMERA server.'); }
+  const gid = parseGidFromRef_(ref);
+  const sh = gid !== null ? meta.sheets.find(x => x.sheetId === gid) : null;
+  if (!sh) return { missing: true };
+  const rows = (await batchGet(id, [a1(sh.title, 'A1:P300')]))[0] || [];
+  const t = x => String(x == null ? '' : x).trim();
+  const num = x => (typeof x === 'number' && isFinite(x) ? x : (t(x) && isFinite(Number(t(x).replace(/[£$,%\s]/g, ''))) ? Number(t(x).replace(/[£$,%\s]/g, '')) : null));
+  const first = r => t((r || []).find(c => t(c)) || '');
+  const title = first(rows[0]);
+  const run = (title.match(/report run:\s*([0-9]{4}-[0-9]{2}-[0-9]{2}[ T]?[0-9:]*)/i) || [])[1] || '';
+  const updated = (title.match(/data updated:\s*([0-9]{4}-[0-9]{2}-[0-9]{2}[ T]?[0-9:]*)/i) || [])[1] || '';
+  const sections = [];
+  for (let i = 1; i < rows.length; i++) {
+    const head = first(rows[i]), m = head.match(/^(\d+[a-z]?)\.\s*(.+)$/i);
+    if (!m) continue;
+    const H = (rows[i + 1] || []).map(t);
+    const cols = H.map((h, j) => h ? j : -1).filter(j => j >= 0);
+    if (!cols.length) continue;
+    const out = [];
+    for (let k = i + 2; k < rows.length; k++) {
+      const r = rows[k] || [];
+      if (/^(\d+[a-z]?)\.\s/i.test(first(r))) break;
+      if (!t(r[cols[0]])) { if (out.length || !r.some(c => t(c))) break; continue; }
+      out.push(cols.map((j, n) => n === 0 || /match/i.test(H[j]) ? t(r[j]) : num(r[j])));
+    }
+    sections.push({ id: m[1].toLowerCase(), title: m[2].trim(), head: cols.map(j => H[j]), rows: out });
+  }
+  return { v: 1, at: Date.now(), tab: sh.title, title, run, updated, sections };
+}
+
 // The settings the Lab can change, with their cells and the values allowed.
 const FORECAST_SET = {
   window: { cell: 'B54', min: 1, max: 60, int: true }, elasticity: { cell: 'B55', min: 0, max: 2 },
@@ -1096,4 +1137,4 @@ async function setAssumptions(accountKey, edits) {
 function forgetArchive() { Object.keys(archiveCache).forEach(k => delete archiveCache[k]); }
 
 module.exports = { ACCOUNTS, buildDashboardData, getMonthCompareData, normalizeAccountKey_, fmt, wallFromInstant, makeAsDate, grid, toNumber_,
-  ssIdOf, openBook, optionalSheet, forgetArchive, buildForecast, setForecast, buildAssumptions, setAssumptions, buildVsLy, buildSearchTerms };
+  ssIdOf, openBook, optionalSheet, forgetArchive, buildForecast, setForecast, buildAssumptions, setAssumptions, buildVsLy, buildSearchTerms, buildSearchTermsDaily };

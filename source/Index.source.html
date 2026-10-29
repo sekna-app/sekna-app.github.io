@@ -3657,6 +3657,26 @@ window.addEventListener('load',function(){
     .st-qm-c .quick-metric{padding-bottom:28px!important}
     @media (min-width:1100px){#app .st-qm{grid-template-columns:repeat(4,1fr)!important}}
     .rp-report .st-qm{grid-template-columns:repeat(4,1fr)!important;gap:12px!important;margin-top:14px!important}.rp-report .st-qm .quick-metric{background:#fff;color:#1d2433}.rp-report .st-qm .kx-c{font-size:12px}
+    /* Search Terms Performance (the daily report) */
+    .stp-sw{display:flex;background:#e9edf5;border-radius:14px;padding:4px;margin:0 0 14px}.stp-sw button{flex:1;border:0;background:none;border-radius:11px;padding:8px 6px;font:inherit;font-size:12px;font-weight:900;color:#6b7385;cursor:pointer;line-height:1.25}
+    .stp-sw button.on{background:#fff;color:#203c8e;box-shadow:0 2px 8px rgba(0,0,0,.07)}.stp-sw small{display:block;font-size:10px;font-weight:700;color:#8a92a6;margin-top:1px}
+    .stp-list{display:grid;gap:12px}
+    .stp-sec{background:#fff;border:1px solid #edf0f6;border-radius:18px;overflow:hidden;box-shadow:0 4px 14px rgba(20,30,60,.05)}
+    .stp-h{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--c);color:#fff}.stp-h b{display:block;font-size:12.5px;font-weight:900}.stp-h small{display:block;font-size:10px;font-weight:700;opacity:.85}
+    .stp-h em{margin-left:auto;font-style:normal;font-size:10.5px;font-weight:900;background:rgba(255,255,255,.2);border-radius:99px;padding:3px 9px}
+    .stp-ic{width:30px;height:30px;border-radius:10px;background:rgba(255,255,255,.2);display:grid;place-items:center;flex:none}.stp-ic svg{width:17px;height:17px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .stp-t{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}.stp-t th{font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:#8a92a6;font-weight:900;text-align:right;padding:8px 10px 5px}.stp-t th:first-child,.stp-t td:first-child{text-align:left}
+    .stp-t td{padding:8px 10px;text-align:right;font-weight:700;border-top:1px solid #eef1f7;white-space:nowrap}.stp-t td:first-child{font-weight:800;color:#1d2433;white-space:normal}.stp-t td small{display:block;font-size:9.5px;font-weight:800;color:#8a92a6}
+    .stp-none{padding:14px;text-align:center;font-size:12px;font-weight:700;color:#8a92a6}
+    @media (max-width:640px){body:not(.is-sharing) #app .stp-t .o{display:none}.stp-t{font-size:11.5px}.stp-t th,.stp-t td{padding-left:7px;padding-right:7px}.stp-t td:first-child{min-width:42%}}
+    .stp-anim{opacity:0;transform:scale(.97);transition:opacity .4s ease,transform .45s ease}.stp-anim .stp-ic{transform:scale(0) rotate(-40deg);transition:transform .5s .1s cubic-bezier(.3,1.6,.5,1)}
+    .stp-anim tr{opacity:0;transform:translateX(-18px);transition:opacity .35s ease,transform .4s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i,0)*.08s)}
+    .stp-anim.in{opacity:1;transform:none}.stp-anim.in .stp-ic{transform:none}.stp-anim.in tr{opacity:1;transform:none}
+    @media (prefers-reduced-motion:reduce){.stp-anim,.stp-anim tr,.stp-anim .stp-ic{opacity:1!important;transform:none!important;transition:none!important}}
+    body.dark-mode .stp-sw{background:#151a22}body.dark-mode .stp-sw button.on{background:#232a35;color:#fff}body.dark-mode .stp-sec{background:#151a22;border-color:#252a32}body.dark-mode .stp-t td{border-color:#252a32}body.dark-mode .stp-t td:first-child{color:#fff}
+    .rp-report .stp-share{display:grid;gap:18px;margin-top:24px}.rp-report .stp-sec{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:24px;box-shadow:none}
+    .rp-report .stp-h{padding:14px 20px;gap:14px}.rp-report .stp-h b{font-size:22px}.rp-report .stp-h small{font-size:15px}.rp-report .stp-h em{font-size:16px;padding:5px 14px}.rp-report .stp-ic{width:44px;height:44px;border-radius:14px}.rp-report .stp-ic svg{width:24px;height:24px}
+    .rp-report .stp-t{font-size:18px}.rp-report .stp-t th{font-size:12.5px;color:#9fb0dd;padding:10px 18px 6px}.rp-report .stp-t td{padding:9px 18px;color:#fff;border-color:rgba(255,255,255,.07)}.rp-report .stp-t td:first-child{color:#fff}.rp-report .stp-t td small{font-size:12px;color:#9fb0dd}
     /* its WhatsApp image (1080 wide): dashboard in the frame, then the full table with the action */
     .sts-dash{display:grid;grid-template-columns:auto 1fr;gap:12px 22px;align-items:center;margin-top:26px;padding:20px 22px;border-radius:26px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14)}
     .sts-tiles{display:grid;gap:8px}.sts-tl{display:grid;grid-template-columns:1fr auto;align-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-left:5px solid var(--c);border-radius:16px;padding:9px 14px}
@@ -7388,7 +7408,7 @@ let LAB_DAY={};
 function labNewDay(d){
  const k=(d&&d.account&&d.account.key)||CURRENT_ACCOUNT,day=d&&d.latest&&d.latest.date;if(!k||!day)return;
  const was=LAB_DAY[k];LAB_DAY[k]=day;if(!was||was===day)return;
- [FC[k],AS[k],VLY[k],typeof ST==='object'?ST[k]:null].forEach(c=>{if(c&&!c.busy){c.data=null;c.err=''}});
+ [FC[k],AS[k],VLY[k],typeof ST==='object'?ST[k]:null,typeof STP==='object'?STP[k]:null].forEach(c=>{if(c&&!c.busy){c.data=null;c.err=''}});
  if(VLY_OPEN&&WK_LY&&k===CURRENT_ACCOUNT)vlyLoad();
  if(CURRENT_TAB==='lab'&&k===CURRENT_ACCOUNT)setTimeout(()=>{try{fcDraw()}catch(e){}},0);
 }
@@ -8365,9 +8385,10 @@ function stQuick(sm){
 function stRoas(t){return t.roas!=null?t.roas:(t.cost?t.value/t.cost:0)}
 function renderTerms(part){
  const body=document.getElementById('stBody');if(!body)return;
+ if(ST_MODE==='perf')return renderPerf();
  const c=ST[CURRENT_ACCOUNT]||{},d=c.data;
  if(!d&&!c.busy&&!c.err)stLoad(false);
- const shell=inner=>`<section class="card section st-sec"><div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month"></span><span>Search Terms</span></div><div class="section-sub">${d&&d.run?'AI Max · report run '+esc(d.run):'AI Max Snapshot'}</div></div>${d&&!d.missing?`<button type="button" class="pk-ghost st-rd" onclick="stLoad(true)" ${c.busy?'disabled':''}>${c.busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read'}</button>`:''}</div>${inner}</section>`;
+ const shell=inner=>`<section class="card section st-sec">${stModeSw()}<div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month"></span><span>Search Terms</span></div><div class="section-sub">${d&&d.run?'AI Max · report run '+esc(d.run):'AI Max Snapshot'}</div></div>${d&&!d.missing?`<button type="button" class="pk-ghost st-rd" onclick="stLoad(true)" ${c.busy?'disabled':''}>${c.busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read'}</button>`:''}</div>${inner}</section>`;
  if(!d){body.innerHTML=shell(`<div class="vly-wait">${c.err?'⚠️ '+esc(c.err)+' · <a href="#" onclick="stLoad(true);renderTerms();return false">Try again</a>':'<span class="lab-spin dark"></span> Reading the AI Max sheet…'}</div>`);return}
  if(d.missing||!(d.terms||[]).length){body.innerHTML=shell(`<div class="dx-empty">${d.missing?`The AI Max sheet of ${esc(CURRENT_ACCOUNT.toUpperCase())} is not linked or has no search terms yet.`:'No search terms with spend in this snapshot.'}</div>`);return}
  const sm=stSum(d),T=sm.T;
@@ -8389,6 +8410,80 @@ function renderTerms(part){
  if(part&&part0){part0.style.minHeight=part0.offsetHeight+'px';part0.innerHTML=listHtml;return} // keeps its height, so the page does not jump
  body.innerHTML=shell(`<div class="st-top">${stCard(sm)}${stQuick(sm)}</div><div id="stPart">${listHtml}</div><div class="st-note">From the AI Max Snapshot tab · result and action follow its classification.</div>`);
  applySectionIcons(body);
+}
+/* Search Terms → Search Terms Performance: the daily search terms report, block by block like the sheet. */
+let ST_MODE='ai', STP={}, STP_SEEN={};
+function stMode(m){ST_MODE=m;renderTerms()}
+function stModeSw(){
+ const a=(ST[CURRENT_ACCOUNT]||{}).data,p=(STP[CURRENT_ACCOUNT]||{}).data;
+ return `<div class="stp-sw" role="tablist"><button type="button" class="${ST_MODE==='ai'?'on':''}" onclick="stMode('ai')">✦ AI Max<small>${a&&a.terms?a.terms.length+' terms':'AI Max Snapshot'}</small></button><button type="button" class="${ST_MODE==='perf'?'on':''}" onclick="stMode('perf')">📊 Search Terms Performance<small>${p&&p.run?'run '+esc(p.run):'Daily report'}</small></button></div>`;
+}
+const STP_S={'1a':['Converting','already a keyword','#2c6bd6','a'],'1b':['Converting','not a keyword yet','#13894f','b'],'2':['High clicks','no conversions','#e8791f','c'],'3':['High impressions','no clicks','#7b8396','d'],'4':['Highest CPC','keywords','#e25d5d','e'],'5':['Top spend','keywords','#8e3fae','f'],'6':['Match type','summary','#5a9e3c','h']};
+const STP_IC={a:'<path d="M12 3l2.4 1.6 2.9-.2 1 2.7 2.3 1.8-.9 2.7.9 2.7-2.3 1.8-1 2.7-2.9-.2L12 21l-2.4-1.6-2.9.2-1-2.7-2.3-1.8.9-2.7-.9-2.7 2.3-1.8 1-2.7 2.9.2z"/><path d="M8.7 12.2l2.2 2.2 4.4-4.6"/>',
+ b:'<circle cx="8" cy="12" r="4"/><path d="M12 12h5M15 12v2.5"/><path d="M19 4v5M16.5 6.5h5"/>',c:'<path d="M5 3l9 8-4 1-1 4z"/><path d="M15 15l6 6M21 15l-6 6"/>',
+ d:'<path d="M3 12s3.5-6 9-6c1.6 0 3 .5 4.2 1.2M21 12s-1.2 2.1-3.4 3.8M12 18c-5.5 0-9-6-9-6"/><path d="M4 4l16 16"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
+ e:'<circle cx="12" cy="12" r="8"/><path d="M14.6 9.2c-.5-.8-1.5-1.2-2.6-1.2-1.5 0-2.6.8-2.6 1.9 0 2.5 5.4 1.3 5.4 4 0 1.1-1.2 2-2.8 2-1.2 0-2.2-.5-2.7-1.3M12 6.5V8M12 16v1.5"/>',
+ f:'<path d="M4 8h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 8V6a2 2 0 0 1 2-2h10"/><circle cx="16" cy="14" r="1.4"/>',h:'<path d="M12 4l8 4-8 4-8-4z"/><path d="M4 12l8 4 8-4M4 16l8 4 8-4"/>',x:'<circle cx="12" cy="12" r="5"/>'};
+function stpLoad(force){
+ const k=CURRENT_ACCOUNT,c=STP[k]=STP[k]||{};if(c.busy)return;c.busy=true;c.err='';
+ serverCall('getSearchTermsDaily',k,!!force,getAccessToken()).then(r=>{c.busy=false;c.data=r||{missing:true};if(CURRENT_TAB==='terms'&&ST_MODE==='perf'&&k===CURRENT_ACCOUNT)renderPerf()})
+  .catch(err=>{c.busy=false;c.err=errorText(err);if(CURRENT_TAB==='terms'&&ST_MODE==='perf'&&k===CURRENT_ACCOUNT)renderPerf()});
+}
+// One block's columns: the term (with its match type under it), then the numbers; money, % and counts by their header.
+function stpCols(sec){
+ const H=sec.head.map(h=>String(h||'')),low=H.map(h=>h.toLowerCase()),mi=low.findIndex((h,j)=>j>0&&/match/.test(h));
+ return H.map((h,j)=>{if(j===0||j===mi)return null;const l=low[j],vals=sec.rows.map(r=>r[j]).filter(v=>typeof v==='number');
+  const kind=/cost|value|cpc|spend/.test(l)?'m':/%|rate|ctr/.test(l)?'p':'n',frac=kind==='p'&&!/%/.test(h)&&vals.every(v=>v<=1);
+  const opt=(/rate|ctr|cpc/.test(l)&&!(sec.id==='4'&&/cpc/.test(l)))||(sec.id==='6'&&/impr|ctr|value/.test(l))||(sec.id==='5'&&/^conv(ersions)?$/.test(l))||(sec.id==='2'&&/value/.test(l));
+  return {j,h:h.replace(/\s*%$/,'').replace(/^Conversions$/i,'Conv.').replace(/^Impressions$/i,'Impr.'),kind,frac,opt};}).filter(Boolean).concat([]).map(c=>Object.assign(c,{mi}));
+}
+function stpVal(c,v){if(v==null||v==='')return '—';if(c.kind==='m')return esc(money(v,2));if(c.kind==='p')return fmt(c.frac?v*100:v,2)+'%';return fmt(v,0)}
+function stpSecHtml(sec,share){
+ const S=STP_S[sec.id]||[sec.title,'','#203c8e','x'],cols=stpCols(sec),mi=cols.length?cols[0].mi:-1;
+ const head=`<div class="stp-h" style="--c:${S[2]}"><span class="stp-ic"><svg viewBox="0 0 24 24" aria-hidden="true">${STP_IC[S[3]]}</svg></span><div><b>${esc(sec.id)} · ${esc(S[0])}</b>${S[1]?`<small>${esc(S[1])}</small>`:''}</div><em>${sec.rows.length?'Top '+sec.rows.length:'—'}</em></div>`;
+ if(!sec.rows.length)return share?'':`<div class="stp-sec" style="--c:${S[2]}">${head}<div class="stp-none">👌 Nothing in this report today</div></div>`;
+ const tb=`<table class="stp-t"><tr><th>${sec.id==='6'?'Match type':'Search term'}</th>${cols.map(c=>`<th class="${c.opt?'o':''}">${esc(c.h)}</th>`).join('')}</tr>${sec.rows.map(r=>`<tr><td><bdi>${esc(r[0])}</bdi>${mi>0&&r[mi]?`<small>${esc(r[mi])}</small>`:''}</td>${cols.map(c=>`<td class="${c.opt?'o':''}">${stpVal(c,r[c.j])}</td>`).join('')}</tr>`).join('')}</table>`;
+ return `<div class="stp-sec" style="--c:${S[2]}">${head}${tb}</div>`;
+}
+function renderPerf(){
+ const body=document.getElementById('stBody');if(!body)return;
+ const c=STP[CURRENT_ACCOUNT]||{},d=c.data;
+ if(!d&&!c.busy&&!c.err)stpLoad(false);
+ const top=`<section class="card section st-sec">${stModeSw()}<div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month"></span><span>Search Terms Performance</span></div><div class="section-sub">${d&&d.run?'Daily report · run '+esc(d.run)+(d.updated?' · data '+esc(d.updated.slice(0,16)):''):'Search Terms Daily Report'}</div></div>${d&&!d.missing?`<button type="button" class="pk-ghost st-rd" onclick="stpLoad(true)" ${c.busy?'disabled':''}>${c.busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read'}</button>`:''}</div>`;
+ let inner;
+ if(!d)inner=`<div class="vly-wait">${c.err?'⚠️ '+esc(c.err)+' · <a href="#" onclick="stpLoad(true);renderPerf();return false">Try again</a>':'<span class="lab-spin dark"></span> Reading the search terms report…'}</div>`;
+ else if(d.missing||!(d.sections||[]).length)inner=`<div class="dx-empty">The search terms report of ${esc(CURRENT_ACCOUNT.toUpperCase())} is not linked or is empty.</div>`;
+ else inner=`<div class="stp-list">${d.sections.map(x=>stpSecHtml(x)).join('')}</div>`;
+ body.innerHTML=top+inner+'</section>';
+ applySectionIcons(body);
+ stpAnimate(body,d);
+}
+// "Rows one after another": each block appears as it scrolls in, its icon pops and its rows come in one by one.
+function stpAnimate(body,d){
+ const secs=[...body.querySelectorAll('.stp-sec')];if(!secs.length)return;
+ const key=CURRENT_ACCOUNT+':'+(d&&d.at);
+ if(!motionOn()||STP_SEEN[key]||!('IntersectionObserver' in window)){secs.forEach(x=>x.classList.add('in'));return}
+ STP_SEEN[key]=1;secs.forEach(x=>{x.classList.add('stp-anim');[...x.querySelectorAll('tr')].forEach((r,i)=>r.style.setProperty('--i',i))});
+ const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+ secs.forEach(x=>io.observe(x));
+}
+function termsPerfShareHtml(){
+ const d=(STP[CURRENT_ACCOUNT]||{}).data;if(!d||d.missing)return rsHead('Search Terms Performance')+'<div class="rs-t"><b>No report yet</b></div>'+SHARE_FOOT;
+ return `${rsHead('Search Terms Performance'+(d.run?' · '+d.run:''))}<div class="stp-share">${d.sections.map(x=>stpSecHtml(x,true)).join('')}</div>${SHARE_FOOT}`;
+}
+function termsPerfShareText(){
+ const d=(STP[CURRENT_ACCOUNT]||{}).data;if(!d||d.missing)return '';
+ const a=accountMeta(DASH_DATA||{}),by=id=>(d.sections||[]).find(x=>x.id===id),col=(sec,re)=>sec?sec.head.findIndex(h=>re.test(String(h).toLowerCase())):-1;
+ const sum=(sec,re)=>{const j=col(sec,re);return j<0?0:sec.rows.reduce((t,r)=>t+(Number(r[j])||0),0)};
+ const conv=[by('1a'),by('1b')].filter(Boolean),nConv=conv.reduce((t,x)=>t+x.rows.length,0),val=conv.reduce((t,x)=>t+sum(x,/conv\.? ?value/),0);
+ const s2=by('2'),s3=by('3'),s5=by('5');
+ const L=[`📌 Search Terms ${a.shortLabel||CURRENT_ACCOUNT.toUpperCase()} — Performance 📊`,''];
+ if(conv.length)L.push(`✅ Converting: ${nConv} · Value: ${money(val,2)}`);
+ if(by('1b')&&by('1b').rows.length)L.push(`➕ Not a keyword yet: ${by('1b').rows.length}`);
+ if(s2&&s2.rows.length)L.push(`🚫 High clicks, no conv.: ${s2.rows.length} · Cost: ${money(sum(s2,/^cost/),2)}`);
+ if(s3&&s3.rows.length)L.push(`👀 High impr., no clicks: ${s3.rows.length}`);
+ if(s5&&s5.rows.length){const j=col(s5,/^cost/);L.push('',`💰 Top spend: ${s5.rows[0][0]} · ${money(Number(s5.rows[0][j])||0,2)}`)}
+ return L.join('\n');
 }
 function termsShareText(){
  const c=ST[CURRENT_ACCOUNT]||{},d=c.data;if(!d||d.missing)return '';
@@ -8673,6 +8768,7 @@ function getShareSummary(tab){
  if(k==='compare')return compareShareText(DASH_DATA);
  if(k==='ly')return lyShareText(DASH_DATA);
  if(k==='terms')return termsShareText();
+ if(k==='termsperf')return termsPerfShareText();
  return buildSummary(DASH_DATA);
 }
 
@@ -10700,7 +10796,7 @@ function captureDailyReport(){mvSettle();return captureReport(shareReportHtml(),
 // Which image a tab shares: Day by Day and Month vs Month follow the view that is open.
 function shareKind(tab){
  if(tab==='channel')return 'channel';
- if(tab==='terms')return 'terms';
+ if(tab==='terms')return ST_MODE==='perf'?'termsperf':'terms';
  if(tab==='days')return DAY_VIEW==='plan'?'plan':DAY_VIEW==='ly'?'ly':'results';
  if(tab==='months')return MONTH_MODE==='one'?'report':'compare';
  return 'daily';
@@ -10713,7 +10809,8 @@ const SHARE_KINDS={
  report:{html:()=>oneMonthShareHtml(),cls:'rp-narrow',name:'Report'},
  compare:{html:()=>compareShareHtml(),cls:'rp-narrow',name:'Month-vs-Month'},
  ly:{html:()=>lyShareHtml(),cls:'rp-narrow',name:'Vs-Last-Year'},
- terms:{html:()=>termsShareHtml(),cls:'rp-narrow',name:'Search-Terms'}
+ terms:{html:()=>termsShareHtml(),cls:'rp-narrow',name:'Search-Terms'},
+ termsperf:{html:()=>termsPerfShareHtml(),cls:'rp-narrow',name:'Search-Terms-Performance'}
 };
 function captureChannelReport(){mvSettle();return captureReport(channelReportHtml(),'rp-narrow')}
 async function captureReport(html,extraClass){
