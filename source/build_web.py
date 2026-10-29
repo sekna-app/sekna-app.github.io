@@ -35,7 +35,7 @@ head = '''<meta name="theme-color" content="#203C8E">
     // Longer than the server's own limit (120 s), so Apps Script never runs a move at the same time.
     adminArchiveMove:{w:130000,a:1,t:0},
     adminArchiveProgress:{w:15000,a:1,t:0},
-    adminReadWindow:{w:20000,t:0},adminReadWindowSet:{w:20000,t:0},appPrefs:{w:20000,t:0},appPrefsSet:{w:20000,t:0},
+    adminReadWindow:{w:20000,t:0},adminReadWindowSet:{w:20000,t:0},appPrefs:{w:20000,t:0},appPrefsSet:{w:20000,t:0},appTestPush:{w:30000,t:0},
     // Team Tasks: the server answers (it passes calls to Apps Script until the admin moves them).
     // tk: once this device has seen them on the server, never fall back to the old sheet.
     tasksLoad:{w:25000,t:0,tk:1},taskSave:{w:45000,t:0,tk:1},taskPhoto:{w:25000,t:0,tk:1},seasonsInfo:{w:20000,t:0,tk:1},seasonGoalSet:{w:20000,t:0,tk:1},taskDelete:{w:25000,t:0,tk:1},taskDone:{w:25000,t:0,tk:1},
