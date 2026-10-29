@@ -1,7 +1,7 @@
 // The rest of Code.gs on the HEMERA server: usage and share counts, the ideas box, plan history,
 // the monthly report email, web notifications, and the "new day" phone notifications.
 // Until the admin moves them (adminRestMove), every call is passed to Apps Script.
-const { fsGet, fsSet, fsUpdate, fsAppend, fsList, fsSetList, batchGet, a1, sheetMeta } = require('./google');
+const { fsGet, fsSet, fsDelete, fsUpdate, fsAppend, fsList, fsSetList, batchGet, a1, sheetMeta } = require('./google');
 const { ACCESS, assertAccess, assertAdmin, assertPerm, assertOwner, storeRows } = require('./access');
 const notify = require('./notify');
 
@@ -10,6 +10,27 @@ const IDEA_STATUSES = ['New', 'Reviewing', 'Planned', 'Done', 'Declined'];
 const TZ = 'Asia/Muscat';
 const WEB_PAGE_URL = 'https://sekna-app.web.app';
 const REPORT_MAX_BYTES = 15 * 1024 * 1024;
+const API_URL = 'https://europe-west2-human-appeal-media-plan.cloudfunctions.net/api';
+// The emailed PDF is also kept on the server for a while, so the email's Download button can fetch it.
+const REPORT_CHUNK = 600 * 1024, REPORT_KEEP = 8;
+async function reportStore(bytes, fileName) {
+  const id = require('crypto').randomBytes(18).toString('base64url'), n = Math.ceil(bytes.length / REPORT_CHUNK);
+  for (let i = 0; i < n; i++) await fsSet('reports/' + id + '_' + i, { b: bytes.subarray(i * REPORT_CHUNK, (i + 1) * REPORT_CHUNK).toString('base64') });
+  await fsSet('reports/' + id, { n, fileName, size: bytes.length, at: Date.now() });
+  let old = [];
+  await fsUpdate('server/report-files', o => { const ids = ((o && o.ids) || []).concat(id); old = ids.slice(0, Math.max(0, ids.length - REPORT_KEEP)); return { ids: ids.slice(-REPORT_KEEP) }; });
+  for (const o of old) { const m = await fsGet('reports/' + o).catch(() => null); for (let i = 0; i < ((m && m.n) || 0); i++) await fsDelete('reports/' + o + '_' + i).catch(() => {}); await fsDelete('reports/' + o).catch(() => {}); }
+  return id;
+}
+/** GET /report/<id>: the stored PDF as a download (the id is a long random key only the email holds). */
+async function reportFile(id) {
+  if (!/^[A-Za-z0-9_-]{24}$/.test(String(id || ''))) return null;
+  const m = await fsGet('reports/' + id);
+  if (!m || !m.n) return null;
+  const parts = [];
+  for (let i = 0; i < m.n; i++) { const c = await fsGet('reports/' + id + '_' + i); if (!c) return null; parts.push(Buffer.from(c.b, 'base64')); }
+  return { bytes: Buffer.concat(parts), fileName: m.fileName || 'HEMERA-Report.pdf' };
+}
 const DOC = {
   mode: 'rest/mode', shareMonths: 'rest/share-months', usageDays: 'rest/usage-days', ideas: 'rest/ideas',
   shares: m => 'rest/shares-' + m, usage: d => 'rest/usage-' + d, plans: k => 'rest/plan-' + k,
@@ -405,8 +426,21 @@ const R = {
     const cover = /^[A-Za-z0-9+/=]+$/.test(String(meta.cover || '')) ? Buffer.from(meta.cover, 'base64') : null;
     const hasCover = !!(cover && cover.length > 1000 && cover.length < 900 * 1024 && cover[0] === 0xff && cover[1] === 0xd8);
     const lines = hasCover ? '' : (Array.isArray(meta.lines) ? meta.lines : []).slice(0, 4).map(l => '<li style="margin:0 0 6px">' + esc(String(l).slice(0, 220)) + '</li>').join('');
+    let link = WEB_PAGE_URL;
+    try { link = API_URL + '/report/' + (await reportStore(bytes, fileName)); } catch (e) { console.error('Report store: ' + e.message); }
+    const pages = Math.max(1, Math.min(30, Number(meta.pages) || 1)), mb = (bytes.length / 1048576).toFixed(1);
+    // The cover sits on a grey desk like a page in a PDF viewer, with the file's name under it; all of it opens the PDF.
+    const pdfCard = '<a href="' + esc(link) + '" style="display:block;text-decoration:none;margin:0 0 18px">' +
+      '<div style="background:#e4e8f0;border:1px solid #d5dbe6;border-radius:14px;overflow:hidden"><div style="padding:16px 16px 0">' +
+      '<img src="cid:hemera-cover" width="400" alt="' + esc(title) + '" style="display:block;width:100%;max-width:400px;height:auto;margin:0 auto;border:1px solid #c9d0dd;border-radius:3px;background:#ffffff">' +
+      '<div style="height:6px;margin:0 6px;background:#d3d9e4;border-radius:0 0 3px 3px"></div></div>' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;background:#ffffff;border-top:1px solid #d5dbe6"><tr>' +
+      '<td width="44" style="padding:12px 0 12px 14px"><div style="width:32px;height:32px;border-radius:7px;background:#e5322d;color:#ffffff;font:800 10px Arial,sans-serif;line-height:32px;text-align:center">PDF</div></td>' +
+      '<td style="padding:12px 8px;font-family:Arial,sans-serif"><div style="font-size:13px;font-weight:700;color:#1d2433;word-break:break-word">' + esc(fileName) + '</div>' +
+      '<div style="font-size:11.5px;color:#8a92a0;margin-top:2px">' + pages + (pages === 1 ? ' page' : ' pages') + ' · ' + mb + ' MB</div></td>' +
+      '<td width="40" style="padding:12px 14px 12px 0;text-align:right;font:700 20px Arial,sans-serif;color:#203C8E">&#8681;</td></tr></table></div></a>';
     const body = P(esc(String(meta.intro || 'The media plan results for the month are attached as a PDF.').slice(0, 300))) +
-      (hasCover ? '<img src="cid:hemera-cover" width="432" alt="' + esc(title) + '" style="display:block;width:100%;max-width:432px;height:auto;border:0;border-radius:12px;margin:0 0 18px">' : '') +
+      (hasCover ? pdfCard : '') +
       (lines ? '<ul style="margin:0 0 16px;padding-left:18px;font-size:14px;line-height:1.5;color:#1d2433">' + lines + '</ul>' : '');
     const files = [{ filename: fileName, content: bytes, contentType: 'application/pdf' }];
     if (hasCover) files.push({ filename: 'cover.jpg', content: cover, contentType: 'image/jpeg', cid: 'hemera-cover' });
@@ -415,7 +449,7 @@ const R = {
     for (const p of people) {
       try {
         await notify.sendMail({ to: p.email, replyTo: 'seknaapp@gmail.com', subject: (meta.testOnly ? '[Test] ' : '') + title, title: 'Hi ' + esc(p.name) + ',', html: body,
-          button: { url: WEB_PAGE_URL, label: 'Open HEMERA' }, attachments: files });
+          button: { url: link, label: link === WEB_PAGE_URL ? 'Open HEMERA' : 'Download PDF' }, attachments: files });
         sent++;
       } catch (err) { console.error('Report to ' + p.email + ' failed: ' + err.message); failed.push(p.email); }
     }
@@ -609,4 +643,4 @@ async function call(fn, args) {
 }
 const FNS = Object.keys(R).concat(['adminRestMove', 'adminRestMoveStatus']);
 
-module.exports = { call, FNS, pushChecks, pushState, serverSwitchEmail, moved, fxRefreshIfDue };
+module.exports = { reportFile, call, FNS, pushChecks, pushState, serverSwitchEmail, moved, fxRefreshIfDue };

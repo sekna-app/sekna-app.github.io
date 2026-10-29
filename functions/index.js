@@ -352,6 +352,16 @@ exports.api = onRequest({
   if (req.method === 'OPTIONS') { res.status(204).send(''); return; }
 
   const route = String(req.path || '/').replace(/\/+$/, '') || '/';
+  if (route.startsWith('/report/') && req.method === 'GET') {
+    try {
+      const f = await rest.reportFile(route.slice(8));
+      if (!f) { res.status(404).type('text/plain').send('This report link has expired. Open HEMERA to get the latest report.'); return; }
+      res.set('Content-Type', 'application/pdf');
+      res.set('Content-Disposition', 'attachment; filename="' + f.fileName.replace(/"/g, '') + '"');
+      res.send(f.bytes);
+    } catch (e) { console.error('Report file: ' + e.message); res.status(500).type('text/plain').send('The report could not load. Try again.'); }
+    return;
+  }
   if (route === '/ping') { res.json({ ok: true, version: VERSION, mail: notify.mailReady() ? 'gmail' : 'apps-script' }); return; }
   if (route === '/warm') {
     // Called by keepWarm. At most once a minute; it only refreshes the shared data.
