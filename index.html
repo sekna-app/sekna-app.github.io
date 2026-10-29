@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Changa:wght@500;600;700&display=swap" rel="stylesheet">
   <script>
 
 window.SEKNA_ERRORS=[];
@@ -3858,6 +3858,7 @@ window.addEventListener('load',function(){
     .stp-t{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}.stp-t th{font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:#8a92a6;font-weight:900;text-align:right;padding:8px 10px 5px}.stp-t th:first-child,.stp-t td:first-child{text-align:left}
     .stp-t td{padding:8px 10px;text-align:right;font-weight:700;border-top:1px solid #eef1f7;white-space:nowrap}.stp-t td:first-child{font-weight:800;color:#1d2433;white-space:normal}.stp-t td small{display:block;font-size:9.5px;font-weight:800;color:#8a92a6}
     .stp-t td small.stp-mtp{display:flex;align-items:center;gap:5px;margin-top:2px}.stp-mtp i{width:7px;height:7px;border-radius:50%;flex:none}.rp-report .stp-mtp i{width:11px;height:11px}
+    .ar-t{font-family:Changa,Inter,system-ui,sans-serif;font-weight:600;letter-spacing:0}
     .stp-none{padding:14px;text-align:center;font-size:12px;font-weight:700;color:#8a92a6}
     @media (max-width:640px){body:not(.is-sharing) #app .stp-t .o{display:none}.stp-t{font-size:11.5px}.stp-t th,.stp-t td{padding-left:7px;padding-right:7px}.stp-t td:first-child{min-width:42%}}
     .stp-anim{opacity:0;transform:scale(.97);transition:opacity .4s ease,transform .45s ease}.stp-anim .stp-ic{transform:scale(0) rotate(-40deg);transition:transform .5s .1s cubic-bezier(.3,1.6,.5,1)}
@@ -8511,6 +8512,8 @@ function renderRanks(d){
  revealOnScroll(body,'.rx-row,.rx-sum,.rx-ok');
 }
  
+
+function stAr(t){return /[\u0600-\u06FF]/.test(String(t||''))?' class="ar-t"':''}
 let ST={}, ST_F='all', ST_SORT='cost', ST_ALL=false;
 const ST_K={x:{l:'Wasted',c:'#e0566a',b:'#fff1f3',a:'Add as negative',ic:'🚫'},n:{l:'Needs review',c:'#f08a4b',b:'#fff6ef',a:'Watch',ic:'👀'},f:{l:'Fair',c:'#d9a800',b:'#fffbea',a:'Keep',ic:'✅'},g:{l:'Good',c:'#13894f',b:'#e9f8f0',a:'Scale up',ic:'🚀'}};
 function stLoad(force){
@@ -8571,8 +8574,8 @@ function renderTerms(part){
  const act=k=>`<span class="st-a" style="--c:${ST_K[k].c}">${ST_K[k].ic} ${ST_K[k].a}</span>`;
  const mx=Math.max(...T.map(t=>t.cost),.01);
  const table=`<table class="st-t"><colgroup><col style="width:23%"><col style="width:7%"><col style="width:7%"><col style="width:10%"><col style="width:7%"><col style="width:10%"><col style="width:8%"><col style="width:11%"><col style="width:17%"></colgroup><tr><th>Search term</th><th>Clicks</th><th>Impr.</th><th>Cost</th><th>Conv.</th><th>Value</th><th>ROAS</th><th>Result</th><th>Action</th></tr>
-  ${list.map(t=>`<tr><td><bdi>${esc(t.term)}</bdi></td><td>${fmt(t.clicks,0)}</td><td>${fmt(t.impr,0)}</td><td><b>${esc(money(t.cost,2))}</b></td><td>${fmt(t.conv,0)}</td><td${t.value>0?' class="st-gv"':''}>${esc(money(t.value,2))}</td><td>${fmt(stRoas(t),2)}x</td><td>${pill(t.k)}</td><td>${act(t.k)}</td></tr>`).join('')}</table>`;
- const rows=`<div class="st-list st-cl">${list.map(t=>`<div class="st-r2" style="--c:${ST_K[t.k].c};--b:${ST_K[t.k].b}"><div class="st-r2t"><b><bdi>${esc(t.term)}</bdi></b><em>${esc(money(t.cost,2))}</em></div><div class="st-r2m"><span>${fmt(t.clicks,0)} click</span><span>${fmt(t.impr,0)} impr.</span><span>${fmt(t.conv,0)} conv.</span>${t.value>0?`<span class="v">${esc(money(t.value,2))} value</span>`:''}<span class="a">${ST_K[t.k].ic} ${ST_K[t.k].a}</span></div></div>`).join('')}</div>`;
+  ${list.map(t=>`<tr><td><bdi${stAr(t.term)}>${esc(t.term)}</bdi></td><td>${fmt(t.clicks,0)}</td><td>${fmt(t.impr,0)}</td><td><b>${esc(money(t.cost,2))}</b></td><td>${fmt(t.conv,0)}</td><td${t.value>0?' class="st-gv"':''}>${esc(money(t.value,2))}</td><td>${fmt(stRoas(t),2)}x</td><td>${pill(t.k)}</td><td>${act(t.k)}</td></tr>`).join('')}</table>`;
+ const rows=`<div class="st-list st-cl">${list.map(t=>`<div class="st-r2" style="--c:${ST_K[t.k].c};--b:${ST_K[t.k].b}"><div class="st-r2t"><b><bdi${stAr(t.term)}>${esc(t.term)}</bdi></b><em>${esc(money(t.cost,2))}</em></div><div class="st-r2m"><span>${fmt(t.clicks,0)} click</span><span>${fmt(t.impr,0)} impr.</span><span>${fmt(t.conv,0)} conv.</span>${t.value>0?`<span class="v">${esc(money(t.value,2))} value</span>`:''}<span class="a">${ST_K[t.k].ic} ${ST_K[t.k].a}</span></div></div>`).join('')}</div>`;
  const more=all>cut?`<button type="button" class="st-more" onclick="ST_ALL=true;renderTerms(true)">Show all ${all} ▾</button>`:'';
   const listHtml=`<div class="st-bar">${chips}${sorts}</div>${table}${rows}${more}`;
  const part0=document.getElementById('stPart');
@@ -8614,7 +8617,7 @@ function stpSecHtml(sec,share){
  const S=STP_S[sec.id]||[sec.title,'','#203c8e','x'],cols=stpCols(sec),mi=cols.length?cols[0].mi:-1;
  const head=`<div class="stp-h" style="--c:${S[2]}"><span class="stp-ic"><svg viewBox="0 0 24 24" aria-hidden="true">${STP_IC[S[3]]}</svg></span><div><b>${esc(sec.id)} · ${esc(S[0])}</b>${S[1]?`<small>${esc(S[1])}</small>`:''}</div><em>${sec.rows.length?'Top '+sec.rows.length:'—'}</em></div>`;
  if(!sec.rows.length)return share?'':`<div class="stp-sec" style="--c:${S[2]}">${head}<div class="stp-none">👌 Nothing in this report today</div></div>`;
- const tb=`<table class="stp-t"><tr><th>${sec.id==='6'?'Match type':'Search term'}</th>${cols.map(c=>`<th class="${c.opt?'o':''}">${esc(c.h)}</th>`).join('')}</tr>${sec.rows.map(r=>`<tr><td><bdi>${esc(r[0])}</bdi>${mi>0&&r[mi]?`<small class="stp-mtp"><i style="background:${stpMcol(r[mi])}"></i>${esc(r[mi])}</small>`:''}</td>${cols.map(c=>`<td class="${c.opt?'o':''}">${stpVal(c,r[c.j])}</td>`).join('')}</tr>`).join('')}</table>`;
+ const tb=`<table class="stp-t"><tr><th>${sec.id==='6'?'Match type':'Search term'}</th>${cols.map(c=>`<th class="${c.opt?'o':''}">${esc(c.h)}</th>`).join('')}</tr>${sec.rows.map(r=>`<tr><td><bdi${stAr(r[0])}>${esc(r[0])}</bdi>${mi>0&&r[mi]?`<small class="stp-mtp"><i style="background:${stpMcol(r[mi])}"></i>${esc(r[mi])}</small>`:''}</td>${cols.map(c=>`<td class="${c.opt?'o':''}">${stpVal(c,r[c.j])}</td>`).join('')}</tr>`).join('')}</table>`;
  return `<div class="stp-sec" style="--c:${S[2]}">${head}${tb}</div>`;
 }
 
@@ -8663,14 +8666,14 @@ function termsPerfShareText(){
  const d=(STP[CURRENT_ACCOUNT]||{}).data;if(!d||d.missing)return '';
  const a=accountMeta(DASH_DATA||{}),by=id=>(d.sections||[]).find(x=>x.id===id),col=(sec,re)=>sec?sec.head.findIndex(h=>re.test(String(h).toLowerCase())):-1;
  const sum=(sec,re)=>{const j=col(sec,re);return j<0?0:sec.rows.reduce((t,r)=>t+(Number(r[j])||0),0)};
+ const K=v=>Math.abs(v)>=1000?money(v/1000,2)+'K':money(v,2);
  const conv=[by('1a'),by('1b')].filter(Boolean),nConv=conv.reduce((t,x)=>t+x.rows.length,0),val=conv.reduce((t,x)=>t+sum(x,/conv\.? ?value/),0);
- const s2=by('2'),s3=by('3'),s5=by('5');
- const L=[`📌 Search Terms ${a.shortLabel||CURRENT_ACCOUNT.toUpperCase()} — Performance 📊`,''];
- if(conv.length)L.push(`✅ Converting: ${nConv} · Value: ${money(val,2)}`);
- if(by('1b')&&by('1b').rows.length)L.push(`➕ Not a keyword yet: ${by('1b').rows.length}`);
- if(s2&&s2.rows.length)L.push(`🚫 High clicks, no conv.: ${s2.rows.length} · Cost: ${money(sum(s2,/^cost/),2)}`);
- if(s3&&s3.rows.length)L.push(`👀 High impr., no clicks: ${s3.rows.length}`);
- if(s5&&s5.rows.length){const j=col(s5,/^cost/);L.push('',`💰 Top spend: ${s5.rows[0][0]} · ${money(Number(s5.rows[0][j])||0,2)}`)}
+ const s1b=by('1b'),s2=by('2'),s3=by('3');
+ const L=[`📌 ST ${a.shortLabel||CURRENT_ACCOUNT.toUpperCase()} — Performance 📊`,''];
+ if(conv.length)L.push(`✅ Converting: ${nConv} · ${K(val)} Value`);
+ if(s1b&&s1b.rows.length)L.push(`➕ New Terms: ${s1b.rows.length}`);
+ if(s2&&s2.rows.length)L.push(`🚫 No Conv.: ${s2.rows.length} · ${K(sum(s2,/^cost/))} Spend`);
+ if(s3&&s3.rows.length)L.push(`👀 High Impr.: ${s3.rows.length}`);
  return L.join('\n');
 }
 function termsShareText(){
@@ -8688,7 +8691,7 @@ function termsShareHtml(){
  return `${rsHead('Search Terms · AI Max'+(d.run?' · '+d.run:''))}
  <div class="sts-dash"><div class="sts-rg">${ring}</div><div class="sts-tiles">${tiles}</div></div>${stQuick(sm)}
  <table class="sts-t"><tr><th>SEARCH TERM</th><th>CLK</th><th>IMPR</th><th>COST</th><th>CONV</th><th>VALUE</th><th>ACTION</th></tr>
- ${T.map(t=>`<tr><td><bdi>${esc(t.term)}</bdi></td><td>${fmt(t.clicks,0)}</td><td>${fmt(t.impr,0)}</td><td>${esc(money(t.cost,2))}</td><td>${fmt(t.conv,0)}</td><td${t.value>0?' style="color:#39e29a"':''}>${esc(money(t.value,2))}</td><td style="color:${ST_K[t.k].c}">${ST_K[t.k].ic} ${ST_K[t.k].a}</td></tr>`).join('')}
+ ${T.map(t=>`<tr><td><bdi${stAr(t.term)}>${esc(t.term)}</bdi></td><td>${fmt(t.clicks,0)}</td><td>${fmt(t.impr,0)}</td><td>${esc(money(t.cost,2))}</td><td>${fmt(t.conv,0)}</td><td${t.value>0?' style="color:#39e29a"':''}>${esc(money(t.value,2))}</td><td style="color:${ST_K[t.k].c}">${ST_K[t.k].ic} ${ST_K[t.k].a}</td></tr>`).join('')}
  <tr class="T"><td>TOTAL · ${T.length}</td><td>${fmt(sm.clicks,0)}</td><td>${fmt(sm.impr,0)}</td><td>${esc(money(sm.cost,2))}</td><td>${fmt(sm.conv,0)}</td><td>${esc(money(sm.value,2))}</td><td>${sm.cost?fmt(sm.value/sm.cost,2)+'x ROAS':''}</td></tr></table>
  ${SHARE_FOOT}`;
 }
