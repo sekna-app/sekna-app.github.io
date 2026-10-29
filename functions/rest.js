@@ -408,7 +408,10 @@ const R = {
   async adminReportRecipients([token]) {
     await assertOwner(token); // only the HEMERA owner sends the report
     if (!notify.mailReady()) return notify.appsScript('adminReportRecipients', [token]);
-    return { people: await approvedPeople(), quota: 500 };
+    // Each person's position and emblem too, for the thank-you page of the report.
+    const mem = await require('./tasks').members().catch(() => ({}));
+    const people = (await approvedPeople()).map(p => { const m = mem[p.email] || {}; return Object.assign(p, { role: m.role === 'Head of Media' ? 'CEO' : (m.role || ''), avatar: m.avatar || 0 }); });
+    return { people, quota: 500 };
   },
   /** The month's results PDF (built in the app) to every approved person, or only to the admin as a test. */
   async adminSendMonthlyReport([token, pdfBase64, meta]) {
