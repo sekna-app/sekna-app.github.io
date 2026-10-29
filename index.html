@@ -3841,6 +3841,15 @@ window.addEventListener('load',function(){
     /* Search Terms Performance (the daily report) */
     .stp-sw{display:flex;background:#e9edf5;border-radius:14px;padding:4px;margin:0 0 14px}.stp-sw button{flex:1;border:0;background:none;border-radius:11px;padding:8px 6px;font:inherit;font-size:12px;font-weight:900;color:#6b7385;cursor:pointer;line-height:1.25}
     .stp-sw button.on{background:#fff;color:#203c8e;box-shadow:0 2px 8px rgba(0,0,0,.07)}.stp-sw small{display:block;font-size:10px;font-weight:700;color:#8a92a6;margin-top:1px}
+    .stp-mt{border-radius:18px;padding:12px 13px;margin:0 0 12px;color:#fff;background:radial-gradient(120% 140% at 0% 0%,#2c4fb8,#203c8e 50%,#132457);box-shadow:0 12px 26px rgba(32,60,142,.22)}
+    .stp-mk{display:flex;align-items:center;gap:6px;font-size:9.5px;font-weight:900;letter-spacing:.09em;color:#c9d6ff}.stp-mk svg{width:13px;height:13px;fill:none;stroke:#c9d6ff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .stp-mh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:4px 0 8px}.stp-mh b{font-size:20px;font-weight:900}.stp-mh small{font-size:10.5px;color:#c9d6ff;font-weight:700}
+    .stp-mb{display:flex;height:9px;border-radius:99px;overflow:hidden;gap:2px;margin-bottom:6px}.stp-mb i{display:block}
+    .stp-mr{display:grid;grid-template-columns:9px 1fr auto auto;gap:8px;align-items:center;padding:5px 0;border-top:1px solid rgba(255,255,255,.1)}.stp-mr i{width:9px;height:9px;border-radius:3px}
+    .stp-mr b{display:block;font-size:12px;font-weight:850}.stp-mr small{display:block;font-size:9.5px;color:#c9d6ff;font-weight:700}.stp-mr .c{font-size:12.5px;font-weight:900;text-align:right}.stp-mr .v{font-size:10.5px;font-weight:800;color:#c9d6ff;text-align:right;min-width:62px}
+    @media (min-width:1100px){#app .stp-mt{padding:16px 20px}#app .stp-mh b{font-size:24px}#app .stp-mr{grid-template-columns:10px 1fr 160px 140px;padding:7px 0}#app .stp-mr b{font-size:13px}#app .stp-mr .c{font-size:14px}#app .stp-mr .v{font-size:12px}}
+    .rp-report .stp-mt{margin:24px 0 0;padding:22px 26px;border-radius:26px;box-shadow:none;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}.rp-report .stp-mk{font-size:15px}.rp-report .stp-mk svg{width:20px;height:20px}.rp-report .stp-mh b{font-size:34px}.rp-report .stp-mh small{font-size:17px}.rp-report .stp-mb{height:14px}
+    .rp-report .stp-mr{grid-template-columns:14px 1fr 200px 170px;padding:10px 0}.rp-report .stp-mr i{width:14px;height:14px}.rp-report .stp-mr b{font-size:20px}.rp-report .stp-mr small{font-size:14px}.rp-report .stp-mr .c{font-size:21px}.rp-report .stp-mr .v{font-size:17px}
     .stp-list{display:grid;gap:12px}
     .stp-sec{background:#fff;border:1px solid #edf0f6;border-radius:18px;overflow:hidden;box-shadow:0 4px 14px rgba(20,30,60,.05)}
     .stp-h{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--c);color:#fff}.stp-h b{display:block;font-size:12.5px;font-weight:900}.stp-h small{display:block;font-size:10px;font-weight:700;opacity:.85}
@@ -8607,6 +8616,19 @@ function stpSecHtml(sec,share){
  const tb=`<table class="stp-t"><tr><th>${sec.id==='6'?'Match type':'Search term'}</th>${cols.map(c=>`<th class="${c.opt?'o':''}">${esc(c.h)}</th>`).join('')}</tr>${sec.rows.map(r=>`<tr><td><bdi>${esc(r[0])}</bdi>${mi>0&&r[mi]?`<small>${esc(r[mi])}</small>`:''}</td>${cols.map(c=>`<td class="${c.opt?'o':''}">${stpVal(c,r[c.j])}</td>`).join('')}</tr>`).join('')}</table>`;
  return `<div class="stp-sec" style="--c:${S[2]}">${head}${tb}</div>`;
 }
+
+const STP_MT=['#6b8dff','#22c47c','#e2b874','#f08a4b','#c084fc','#9aa3b8'];
+function stpMatchCard(d,share){
+ const sec=(d.sections||[]).find(x=>x.id==='6');if(!sec||!sec.rows.length)return '';
+ const low=sec.head.map(h=>String(h||'').toLowerCase()),J=re=>low.findIndex(h=>re.test(h));
+ const jc=J(/^cost/),jk=J(/^clicks?$/),jv=J(/value/),jn=J(/^conv(ersions)?\.?$/);
+ const R=sec.rows.map((r,i)=>({n:r[0],c:Number(r[jc])||0,k:Number(r[jk])||0,v:Number(r[jv])||0,cv:Number(r[jn])||0,col:STP_MT[i%STP_MT.length]}));
+ const T=R.reduce((a,r)=>a+r.c,0),V=R.reduce((a,r)=>a+r.v,0);
+ return `<div class="stp-mt${share?' sh':''}"><div class="stp-mk"><svg viewBox="0 0 24 24" aria-hidden="true">${STP_IC.h}</svg>MATCH TYPE · SPEND SPLIT</div>
+ <div class="stp-mh"><b>${esc(money(T,2))}</b><small>${esc(money(V,2))} value · ${T?fmt(V/T,2):'0.00'}x ROAS</small></div>
+ <div class="stp-mb">${R.filter(r=>r.c>0).map(r=>`<i style="flex:${r.c};background:${r.col}"></i>`).join('')}</div>
+ ${R.map(r=>`<div class="stp-mr"><i style="background:${r.col}"></i><div><b>${esc(r.n)}</b><small>${fmt(r.k,0)} clicks · ${fmt(r.cv,0)} conv.</small></div><span class="c">${esc(money(r.c,2))}</span><span class="v">${esc(money(r.v,2))}</span></div>`).join('')}</div>`;
+}
 function renderPerf(){
  const body=document.getElementById('stBody');if(!body)return;
  const c=STP[CURRENT_ACCOUNT]||{},d=c.data;
@@ -8615,7 +8637,7 @@ function renderPerf(){
  let inner;
  if(!d)inner=`<div class="vly-wait">${c.err?'⚠️ '+esc(c.err)+' · <a href="#" onclick="stpLoad(true);renderPerf();return false">Try again</a>':'<span class="lab-spin dark"></span> Reading the search terms report…'}</div>`;
  else if(d.missing||!(d.sections||[]).length)inner=`<div class="dx-empty">The search terms report of ${esc(CURRENT_ACCOUNT.toUpperCase())} is not linked or is empty.</div>`;
- else inner=`<div class="stp-list">${d.sections.map(x=>stpSecHtml(x)).join('')}</div>`;
+ else inner=`${stpMatchCard(d)}<div class="stp-list">${d.sections.filter(x=>x.id!=='6'||!x.rows.length).map(x=>stpSecHtml(x)).join('')}</div>`;
  body.innerHTML=top+inner+'</section>';
  applySectionIcons(body);
  stpAnimate(body,d);
@@ -8631,7 +8653,7 @@ function stpAnimate(body,d){
 }
 function termsPerfShareHtml(){
  const d=(STP[CURRENT_ACCOUNT]||{}).data;if(!d||d.missing)return rsHead('Search Terms Performance')+'<div class="rs-t"><b>No report yet</b></div>'+SHARE_FOOT;
- return `${rsHead('Search Terms Performance'+(d.run?' · '+d.run:''))}<div class="stp-share">${d.sections.map(x=>stpSecHtml(x,true)).join('')}</div>${SHARE_FOOT}`;
+ return `${rsHead('Search Terms Performance'+(d.run?' · '+d.run:''))}<div class="stp-share">${stpMatchCard(d,true)}${d.sections.filter(x=>x.id!=='6').map(x=>stpSecHtml(x,true)).join('')}</div>${SHARE_FOOT}`;
 }
 function termsPerfShareText(){
  const d=(STP[CURRENT_ACCOUNT]||{}).data;if(!d||d.missing)return '';
