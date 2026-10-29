@@ -5458,6 +5458,8 @@ window.addEventListener('load',function(){
       <div class="sa-opts" id="spendAlertOpts"></div>
       <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l6 6 4-4 8 8"/><path d="M21 11v5h-5"/></svg></span><span class="sk-row-text"><b>ROAS drop alert</b><small>A note when the day's ROAS falls this much below its 7-day average. <a href="#" class="sa-demo" onclick="roasDropCheck(DASH_DATA,true);return false">Show me</a></small></span></div>
       <div class="sa-opts" id="roasAlertOpts"></div>
+      <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span><span class="sk-row-text"><b>Season reminders</b><small>A push to the team 14 and 3 days before Ramadan, the Eids, Dhul Hijjah, Giving Tuesday and the other seasons.</small></span></div>
+      <div class="sa-opts" id="seasonAlertOpts"></div>
     </div>
 
     <div class="st-ver" id="stVer"></div>
@@ -6608,7 +6610,9 @@ function spendAlertCheck(d,force){
 // Days that spent under 30% of their plan are skipped. The server sends the push, without numbers.
 function roasAlertPct(){const v=APP_PREFS&&APP_PREFS.roas;return v==null?40:+v||0}
 function setRoasAlert(v){if(!mrOwner())return;prefsSave({roas:v})}
-function drawRoasAlertOpts(){const b=document.getElementById('roasAlertOpts');if(!b)return;const cur=roasAlertPct();const lk=!mrOwner();b.innerHTML=[0,30,40,50].map(v=>`<button type="button" class="${cur===v?'on':''}"${lk?' disabled':''} onclick="setRoasAlert(${v})">${v?v+'%':'Off'}</button>`).join('')}
+function seasonAlertOn(){return !(APP_PREFS&&APP_PREFS.season===false)}
+function drawSeasonAlertOpts(){const b=document.getElementById('seasonAlertOpts');if(!b)return;const on=seasonAlertOn(),lk=!mrOwner();b.innerHTML=[[false,'Off'],[true,'On']].map(([v,l])=>`<button type="button" class="${on===v?'on':''}"${lk?' disabled':''} onclick="if(mrOwner())prefsSave({season:${v}})">${l}</button>`).join('')}
+function drawRoasAlertOpts(){drawSeasonAlertOpts();const b=document.getElementById('roasAlertOpts');if(!b)return;const cur=roasAlertPct();const lk=!mrOwner();b.innerHTML=[0,30,40,50].map(v=>`<button type="button" class="${cur===v?'on':''}"${lk?' disabled':''} onclick="setRoasAlert(${v})">${v?v+'%':'Off'}</button>`).join('')}
 function roasDropOf(d){
  const x=d&&d.latest;if(!x||!(x.spend>0)||!x.date)return null;
  if(x.targetSpend>0&&x.spend<.3*x.targetSpend)return null;
@@ -7650,7 +7654,7 @@ const PLAN_MIX_LABELS=['Search Brand','Non-Brand','PMax','Demand Gen','Video'];
 /* ---------- Notifications list (menu → Notifications) ---------- */
 // What HEMERA sent the team and this person, newest first; times in this device's own time zone.
 let NF={list:null,busy:false,err:''};
-const NF_ICON={streak:'🔥',spend_alert:'⚠️',roas_drop:'📉',new_day:'📊',month_closed:'🗓️',announcement:'📣',app_update:'⬇️',tasks:'✅',updated:'📊',celebrate:'🏆',read_alert:'⚠️'};
+const NF_ICON={season:'🗓️',streak:'🔥',spend_alert:'⚠️',roas_drop:'📉',new_day:'📊',month_closed:'🗓️',announcement:'📣',app_update:'⬇️',tasks:'✅',updated:'📊',celebrate:'🏆',read_alert:'⚠️'};
 function nfSeen(){return +storeGet('sekna_nf_seen')||0}
 function nfBadge(){
  const b=document.getElementById('nfBadge');if(!b)return;
@@ -7676,8 +7680,8 @@ function localWhen(ms,withDay){
 }
 // Filters + compact: chips on top, one short row per notification, like a mail inbox.
 const NF_FILTERS=[['all','All'],['data','Data'],['tasks','Tasks'],['team','Team'],['app','App']];
-const NF_GROUP={streak:'data',spend_alert:'data',roas_drop:'data',new_day:'data',month_closed:'data',updated:'data',tasks:'tasks',announcement:'team',app_update:'app',celebrate:'team',read_alert:'data'};
-const NF_TINT={streak:'y',spend_alert:'',roas_drop:'',new_day:'',updated:'',month_closed:'g',tasks:'t',announcement:'y',app_update:'p',celebrate:'y'};
+const NF_GROUP={season:'data',streak:'data',spend_alert:'data',roas_drop:'data',new_day:'data',month_closed:'data',updated:'data',tasks:'tasks',announcement:'team',app_update:'app',celebrate:'team',read_alert:'data'};
+const NF_TINT={season:'y',streak:'y',spend_alert:'',roas_drop:'',new_day:'',updated:'',month_closed:'g',tasks:'t',announcement:'y',app_update:'p',celebrate:'y'};
 function nfShort(ms){
  const d=new Date(ms),now=new Date(),k=x=>new Date(x.getFullYear(),x.getMonth(),x.getDate()).getTime(),df=Math.round((k(now)-k(d))/864e5);
  return df===0?localWhen(ms):df===1?'Yesterday':d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
@@ -7709,6 +7713,7 @@ function closeNotifs(e){if(e&&e.target!==e.currentTarget)return;const o=document
 function nfOpen(id){
  const x=(NF.list||[]).find(n=>n.id===id);if(!x)return;
  closeNotifs();
+ if(x.type==='season'){switchDashboardTab('seasons');return}
  if(x.type==='streak'||x.type==='spend_alert'||x.type==='roas_drop'){if(x.account&&x.account!==CURRENT_ACCOUNT)switchAccount(x.account);switchDashboardTab('overview');if(x.type==='roas_drop')setTimeout(()=>{try{if(!document.getElementById('roasDrop'))roasDropCheck(DASH_DATA,true)}catch(e){}},1600);return}
  if(x.type==='tasks'){openTasks('mine');return}
  if(x.type==='app_update'){openUpdates();return}

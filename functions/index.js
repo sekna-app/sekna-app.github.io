@@ -51,7 +51,7 @@ function cached(key, ttl, fresh, build) {
  * restarted server still has it. Refresh in the app always reads the sheet on the spot.
  */
 const PREFS_DOC = 'server/app-prefs';
-const PREFS_DEFAULT = { cur: { usa: 'USD', ar: 'GBP' }, alert: 120, roas: 40 };
+const PREFS_DEFAULT = { cur: { usa: 'USD', ar: 'GBP' }, alert: 120, roas: 40, season: true };
 const READ_DOC = 'server/read-window';
 const READ_DEFAULT = { on: true, from: '12:50', to: '13:10', tz: 'Asia/Muscat', stopOnData: true, alert: true };
 const READ_LOG = 'server/read-log';
@@ -187,6 +187,7 @@ const CALLS = {
     const c = args[1] || {}, cur = v => (v === 'USD' || v === 'GBP' ? v : null), now = Object.assign({}, PREFS_DEFAULT, (await fsGet(PREFS_DOC).catch(() => null)) || {});
     if (c.cur) now.cur = { usa: cur(c.cur.usa) || now.cur.usa, ar: cur(c.cur.ar) || now.cur.ar };
     if (c.alert != null) { const a = Number(c.alert); if (![0, 110, 120, 130, 150].includes(a)) throw new Error('Pick an alert level.'); now.alert = a; }
+    if (c.season != null) now.season = c.season !== false;
     if (c.roas != null) { const r = Number(c.roas); if (![0, 30, 40, 50].includes(r)) throw new Error('Pick a ROAS drop level.'); now.roas = r; }
     now.by = me.email; now.at = Date.now();
     await fsSet(PREFS_DOC, now);
