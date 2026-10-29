@@ -3711,6 +3711,14 @@ window.addEventListener('load',function(){
     /* ST Action: three mode buttons, the wasted card, the quick cards and one card per term */
     .stp-sw2{grid-template-columns:repeat(3,1fr)}.stp-sw2 .ac .ic svg{fill:#7c3aed;stroke:none}.stp-sw2 .ac.on .ic svg{fill:#fff}
     @media (max-width:640px){.stp-sw2{gap:6px}.stp-sw2 button{flex-direction:column;align-items:flex-start;gap:5px;padding:8px}.stp-sw2 .ic{width:28px;height:28px;border-radius:9px}.stp-sw2 .ic svg{width:15px;height:15px}.stp-sw2 b{font-size:10.5px;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;max-width:100%}.stp-sw2 small{font-size:9px}.stp-sw2 button>span:last-child{min-width:0;max-width:100%}}
+    .sta-bl{background:radial-gradient(120% 140% at 0% 0%,#2c4fb8,#203c8e 50%,#132457);color:#fff;border-radius:18px;padding:13px 14px;margin-bottom:10px;box-shadow:0 14px 30px rgba(32,60,142,.2)}
+    .sta-bt{display:grid;grid-template-columns:1.3fr 1fr;gap:12px}.sta-k{font-size:10px;font-weight:900;letter-spacing:.08em;color:#c9d6ff}.sta-k2{font-size:9.5px;font-weight:800;color:#c9d6ff}.sta-big{display:block;font-size:32px;font-weight:900;color:#ff9aa8;line-height:1.1;margin:3px 0}
+    .sta-br{border-left:1px solid rgba(255,255,255,.15);padding-left:12px;display:grid;gap:8px;align-content:center}.sta-br small{display:block;font-size:9.5px;font-weight:900;color:#c9d6ff;letter-spacing:.06em}.sta-br b{font-size:18px}
+    .sta-bch{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}.sta-bch span{font-size:10.5px;font-weight:900;border-radius:99px;padding:2px 8px;white-space:nowrap}.sta-bch .bx{background:#ffdde2;color:#c23b4f}.sta-bch .bv{background:#fff1c2;color:#a87a00}
+    .sta-pc{margin-top:11px;display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.sta-pc>div{background:rgba(255,255,255,.08);border-radius:12px;padding:7px 9px}.sta-pc small{font-size:10px;font-weight:900;color:#c9d6ff}.sta-pc small .r{color:#ff8a9a}.sta-pc small .g{color:#4be39a}
+    .sta-bar{display:flex;height:6px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.12);margin:6px 0 5px}.sta-bar i{display:block}
+    .sta-pl{display:grid;gap:1px;font-size:10.5px;font-weight:700;color:#c9d6ff}.sta-pl b{font-size:12.5px;color:#fff}
+    .sta-lgc{display:flex;gap:12px;font-size:9.5px;font-weight:800;color:#c9d6ff;margin-top:8px}.sta-lgc i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px}
     .sta-hero{background:radial-gradient(120% 140% at 0% 0%,#2c4fb8,#203c8e 50%,#132457);color:#fff;border-radius:18px;padding:12px 14px;margin-bottom:10px;box-shadow:0 14px 30px rgba(32,60,142,.2)}.sta-k{font-size:10px;font-weight:900;letter-spacing:.08em;color:#c9d6ff}
     .sta-ws{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}.sta-ws div{background:rgba(255,255,255,.1);border-radius:12px;padding:7px 10px}.sta-ws small{font-size:10px;font-weight:900;color:#c9d6ff}.sta-ws b{display:block;font-size:20px;color:#ff9aa8}.sta-nt{font-size:10px;color:#c9d6ff;font-weight:700;margin-top:8px}
     .sta-qm{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}.sta-qm>div{background:#fff;border:1px solid #eef0f6;border-left:4px solid var(--c);border-radius:14px;padding:8px 11px}.sta-qm small{display:block;font-size:9.5px;font-weight:900;color:#8a92a6;letter-spacing:.04em}.sta-qm b{font-size:19px;color:#1d2433}.sta-qm b.y{color:#d19a00}.sta-sp2{display:flex;gap:12px}
@@ -8620,7 +8628,17 @@ function staAct(a){const ex=staIsEx(a),rv=staIsRv(a);return a?`<span class="sta-
 function staLevel(l){return /account/i.test(l||'')?'<span class="sta-ch la">✓ Account</span>':l?`<span class="sta-ch lc">${esc(l)}</span>`:'<span class="sta-ch ln">Level not set</span>'}
 function staSum(d){
  const R=d.rows||[],ex=R.filter(r=>staIsEx(r.action)).length,rv=R.filter(r=>staIsRv(r.action)).length;
- return {R,ex,rv,spend:R.reduce((a,r)=>a+(r.spend||0),0),waste:staWaste(R)};
+ 
+ const per=[0,1,2].map(i=>R.reduce((a,r)=>{const x=r.p[i];if(x&&x.cost!=null){a.cost+=x.cost;a.conv+=x.conv||0;a.value+=x.cost*(x.roas||0)}return a},{cost:0,conv:0,value:0}));
+ return {R,ex,rv,spend:R.reduce((a,r)=>a+(r.spend||0),0),waste:staWaste(R),per};
+}
+
+function staBlue(sm){
+ const W=sm.waste;
+ return `<div class="sta-bl"><div class="sta-bt"><div><div class="sta-k">WASTED · TOTAL</div><b class="sta-big">${esc(money(W[2],0))}</b><div class="sta-k2">spend with no return · 180 days</div></div>
+ <div class="sta-br"><div><small>SPEND TODAY</small><b>${esc(money(sm.spend,2))}</b></div><div><small>${sm.R.length} TERM${sm.R.length===1?'':'S'}</small><div class="sta-bch"><span class="bx">🚫 ${sm.ex} Exclude</span>${sm.rv?`<span class="bv">👀 ${sm.rv} Review</span>`:''}</div></div></div></div>
+ <div class="sta-pc">${sm.per.map((p,i)=>{const back=Math.max(0,p.cost-W[i]),ro=p.cost?p.value/p.cost:0;return `<div><small>${STA_W[i]} · <span class="${ro<1?'r':'g'}">${fmt(ro,2)}x</span></small><div class="sta-bar"><i style="flex:${W[i]};background:#ff7a8c"></i><i style="flex:${back};background:#4be39a"></i></div><div class="sta-pl"><span><b>${esc(money(p.cost,0))}</b> cost</span><span><b>${fmt(p.conv,0)}</b> conv.</span><span><b>${esc(money(p.value,0))}</b> value</span></div></div>`}).join('')}</div>
+ <div class="sta-lgc"><span><i style="background:#ff7a8c"></i>Wasted</span><span><i style="background:#4be39a"></i>Paid back</span></div></div>`;
 }
 function staCard(r){
  const cc=staCamp(r.campaign);
@@ -8639,10 +8657,8 @@ function renderAct(){
  else if(d.missing)inner=`<div class="dx-empty">The Daily Action Log of ${esc(acc)} is not linked or has no header row yet.</div>`;
  else{
   const sm=staSum(d);
-  const hero=`<div class="sta-hero"><div class="sta-k">WASTED · SPEND WITH NO RETURN</div><div class="sta-ws">${sm.waste.map((v,i)=>`<div><small>${STA_W[i]}</small><b>${esc(money(v,0))}</b></div>`).join('')}</div><div class="sta-nt">No conv. = all of the spend · ROAS under 1x = the part not returned</div></div>`;
-  const qm=`<div class="sta-qm"><div style="--c:#203c8e"><small>TERMS</small><b>${sm.R.length}</b></div><div style="--c:#e0566a">${sm.rv?`<div class="sta-sp2"><span><small>EXCLUDE</small><b>${sm.ex}</b></span><span><small>REVIEW</small><b class="y">${sm.rv}</b></span></div>`:`<small>EXCLUDE</small><b>${sm.ex}</b>`}</div><div style="--c:#13a06a"><small>SPEND TODAY</small><b>${esc(money(sm.spend,2))}</b></div></div>`;
   const lg=`<div class="sta-lg"><span>ACCOUNT · 30/90/180d</span><span><i class="R"></i>Losing</span><span><i class="Y"></i>Running</span><span><i class="G"></i>Winning</span></div>`;
-  inner=hero+qm+(sm.R.length?lg+`<div class="sta-list">${sm.R.map(staCard).join('')}</div>`:'<div class="dx-empty">👌 No flagged terms in today\'s log.</div>');
+  inner=staBlue(sm)+(sm.R.length?lg+`<div class="sta-list">${sm.R.map(staCard).join('')}</div>`:'<div class="dx-empty">👌 No flagged terms in today\'s log.</div>');
  }
  body.innerHTML=top+inner+'</section>';
  applySectionIcons(body);
