@@ -1,6 +1,6 @@
 // The dashboard data, read from the same Google Sheets with the same rules as Code.gs
 // (getDashboardData and getMonthCompareData). Keep the two in step when one changes.
-const { sheetMeta, batchGet, a1, valuesBatchUpdate } = require('./google');
+const { sheetMeta, batchGet, a1, valuesBatchUpdate, cellLooks } = require('./google');
 
 const DEFAULT_ACCOUNT_KEY = 'usa';
 const ACCOUNTS = {
@@ -20,7 +20,9 @@ const ACCOUNTS = {
       // Search Terms page: the AI Max Snapshot (its own spreadsheet).
       aiMax: 'https://docs.google.com/spreadsheets/d/1Bc6HIIW_58xSSanA5RWDyb4z2pROjZ2WabM5bUgWPTs/edit#gid=1940072429',
       // Search Terms → Search Terms Performance: the daily search terms report (same spreadsheet).
-      stDaily: 'https://docs.google.com/spreadsheets/d/1Bc6HIIW_58xSSanA5RWDyb4z2pROjZ2WabM5bUgWPTs/edit#gid=1729813500'
+      stDaily: 'https://docs.google.com/spreadsheets/d/1Bc6HIIW_58xSSanA5RWDyb4z2pROjZ2WabM5bUgWPTs/edit#gid=1729813500',
+      // Search Terms → ST Action: the Daily Action Log (its own spreadsheet).
+      actionLog: 'https://docs.google.com/spreadsheets/d/1WXRtUqICFJ5_tH9Wy__TaKxUvkmqYg7MLZ3ZsNAWUQc/edit#gid=1955830048'
     }
   },
   ar: {
@@ -37,7 +39,8 @@ const ACCOUNTS = {
       forecast: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=1687637233',
       assumptions: 'https://docs.google.com/spreadsheets/d/1HC4oy1km_W7un_C9N2q-YVamiGTRzhiVTHlbFhIiT_c/edit#gid=2047766565',
       aiMax: 'https://docs.google.com/spreadsheets/d/1B2pCSNuV8EIYjGx8zAxrpqJcxgCfVmMO07JiW1V3rkQ/edit#gid=1223522764',
-      stDaily: 'https://docs.google.com/spreadsheets/d/1B2pCSNuV8EIYjGx8zAxrpqJcxgCfVmMO07JiW1V3rkQ/edit#gid=1089700748'
+      stDaily: 'https://docs.google.com/spreadsheets/d/1B2pCSNuV8EIYjGx8zAxrpqJcxgCfVmMO07JiW1V3rkQ/edit#gid=1089700748',
+      actionLog: 'https://docs.google.com/spreadsheets/d/19PssnV7u9td6eUOhdieK1NSH7YK-8IHYVudtl_7AKyU/edit#gid=1955830048'
     }
   }
 };
@@ -989,6 +992,62 @@ async function buildSearchTermsDaily(accountKey) {
   return { v: 1, at: Date.now(), tab: sh.title, title, run, updated, sections };
 }
 
+/** ST Action: the Daily Action Log — one row per flagged term, with the campaign's 30 / 90 / 180 days and the account total colours. */
+async function buildActionLog(accountKey) {
+  const account = ACCOUNTS[normalizeAccountKey_(accountKey)];
+  const ref = account.sheets && account.sheets.actionLog;
+  const id = ssIdOf(ref);
+  if (!id) return { missing: true };
+  let meta;
+  try { meta = await sheetMeta(id); }
+  catch (e) { throw new Error('Could not open the Daily Action Log of ' + account.shortLabel + ' (' + String((e && e.message) || e).slice(0, 120) + '). Check that it is shared with the HEMERA server.'); }
+  const gid = parseGidFromRef_(ref);
+  const sh = (gid !== null && meta.sheets.find(x => x.sheetId === gid)) || meta.sheets[0];
+  if (!sh) return { missing: true };
+  // Text as shown and fill colours: the account total is only colours, and "£5 - 0 C - 0.0 x" is text.
+  const G = await cellLooks(id, a1(sh.title, 'A1:Z300'));
+  const t = x => String(x == null ? '' : x).trim();
+  const num = x => { const m = t(x).replace(/,/g, '').match(/-?[\d.]+\s*[kK]?/); if (!m) return null; const v = parseFloat(m[0]); return /k/i.test(m[0]) ? v * 1000 : v; };
+  const hue = bg => {
+    if (!bg) return '';
+    const r = bg.red || 0, g = bg.green || 0, b = bg.blue || 0;
+    if (r > .9 && g > .9 && b > .9) return '';
+    if (g > r + .08 && g > b) return 'G';
+    if (r > .7 && g < .55) return 'R';
+    if (r > .7 && g >= .55 && b < .7) return 'Y';
+    return '';
+  };
+  const hi = G.findIndex(r => r.some(c => /^search\s*term$/i.test(t(c.v))) && r.some(c => /^campaign$/i.test(t(c.v))));
+  if (hi < 0) return { missing: true, tab: sh.title };
+  const H = G[hi].map(c => t(c.v).toLowerCase());
+  const col = re => H.findIndex(h => re.test(h));
+  const C = { campaign: col(/^campaign$/), term: col(/^search\s*term$/), cat: col(/^categor/), match: col(/^match/), spend: col(/^spend/), action: col(/^action$/),
+    reason: col(/^reason/), level: col(/^level/), list: col(/^list/), notes: col(/^notes?/), neg: col(/^neg/), kw: col(/^keyword/),
+    d30: col(/^30\s*d/), d90: col(/^90\s*d/), d180: col(/^180\s*d/), verdict: col(/^verdict/), acct: col(/^account\s*total/) };
+  // The account total header covers its three colour cells (30 / 90 / 180 days).
+  const acctCols = C.acct < 0 ? [] : [C.acct, C.acct + 1, C.acct + 2].filter(j => j === C.acct || !H[j]);
+  const top = G.slice(0, hi).map(r => r.map(c => t(c.v)));
+  const flat = top.flat();
+  const di = flat.findIndex(x => /^date:?$/i.test(x));
+  const date = (flat.find(x => /^\d{4}-\d{2}-\d{2}/.test(x)) || (di >= 0 ? flat[di + 1] : '') || '').slice(0, 10);
+  const fi = flat.findIndex(x => /flagged\s*spend/i.test(x));
+  const flagged = fi >= 0 ? num(flat.slice(fi + 1).find(x => /\d/.test(x)) || '') : null;
+  const camp = c => {
+    const s = t(c && c.v), m = s.match(/([\d.,]+\s*[kK]?)\D+?([\d.,]+)\s*C\D+?([\d.,]+)\s*x/i);
+    return m ? { cost: num(m[1]), conv: num(m[2]), roas: num(m[3]), c: hue(c.bg) } : { cost: null, conv: null, roas: null, c: hue(c && c.bg) };
+  };
+  const rows = [];
+  for (let i = hi + 1; i < G.length; i++) {
+    const r = G[i] || [], v = j => j >= 0 ? t((r[j] || {}).v) : '';
+    if (!v(C.term) && !v(C.campaign)) { if (rows.length) break; continue; }
+    if (!v(C.term)) continue;
+    rows.push({ campaign: v(C.campaign), term: v(C.term), cat: v(C.cat), match: v(C.match).replace(/\s*[–-]\s*$/, ''), spend: num(v(C.spend)) || 0,
+      action: v(C.action), reason: v(C.reason), level: v(C.level), list: v(C.list), notes: v(C.notes), neg: v(C.neg), kw: v(C.kw),
+      p: [C.d30, C.d90, C.d180].map(j => camp(j >= 0 ? r[j] : null)), verdict: v(C.verdict), acct: acctCols.map(j => hue((r[j] || {}).bg)).join('') });
+  }
+  return { v: 1, at: Date.now(), tab: sh.title, date, flagged, rows };
+}
+
 // The settings the Lab can change, with their cells and the values allowed.
 const FORECAST_SET = {
   window: { cell: 'B54', min: 1, max: 60, int: true }, elasticity: { cell: 'B55', min: 0, max: 2 },
@@ -1137,4 +1196,4 @@ async function setAssumptions(accountKey, edits) {
 function forgetArchive() { Object.keys(archiveCache).forEach(k => delete archiveCache[k]); }
 
 module.exports = { ACCOUNTS, buildDashboardData, getMonthCompareData, normalizeAccountKey_, fmt, wallFromInstant, makeAsDate, grid, toNumber_,
-  ssIdOf, openBook, optionalSheet, forgetArchive, buildForecast, setForecast, buildAssumptions, setAssumptions, buildVsLy, buildSearchTerms, buildSearchTermsDaily };
+  ssIdOf, openBook, optionalSheet, forgetArchive, buildForecast, setForecast, buildAssumptions, setAssumptions, buildVsLy, buildSearchTerms, buildSearchTermsDaily, buildActionLog };

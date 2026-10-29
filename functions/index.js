@@ -4,7 +4,7 @@
 const { onRequest } = require('firebase-functions/v2/https');
 const { onMessagePublished } = require('firebase-functions/v2/pubsub');
 const { onSchedule } = require('firebase-functions/v2/scheduler');
-const { buildDashboardData, getMonthCompareData, normalizeAccountKey_, buildForecast, setForecast, buildAssumptions, setAssumptions, buildVsLy, buildSearchTerms, buildSearchTermsDaily } = require('./dash');
+const { buildDashboardData, getMonthCompareData, normalizeAccountKey_, buildForecast, setForecast, buildAssumptions, setAssumptions, buildVsLy, buildSearchTerms, buildSearchTermsDaily, buildActionLog } = require('./dash');
 const { ACCESS, assertAccess, assertAdmin, assertPerm, assertLabView } = require('./access');
 const { fsGet, fsSet, fsAppend, fsList, fsClearList, request, PROJECT_ID } = require('./google');
 const { archiveStatus, archiveMove, archiveProgress } = require('./archive');
@@ -96,7 +96,7 @@ async function keptData(kind, key) {
 }
 async function sheetData(kind, key, force) {
   const ttl = kind === 'dash' ? DASH_CACHE_MS : MONTHS_CACHE_MS;
-  const build = () => (kind === 'dash' ? buildDashboardData(key) : kind === 'forecast' ? buildForecast(key) : kind === 'assume' ? buildAssumptions(key) : kind === 'vsly' ? buildVsLy(key) : kind === 'terms' ? buildSearchTerms(key) : kind === 'stdaily' ? buildSearchTermsDaily(key) : getMonthCompareData(key)).then(v => { if (kind === 'dash') sheetReads++; saveSnap(kind, key, v); return v; });
+  const build = () => (kind === 'dash' ? buildDashboardData(key) : kind === 'forecast' ? buildForecast(key) : kind === 'assume' ? buildAssumptions(key) : kind === 'vsly' ? buildVsLy(key) : kind === 'terms' ? buildSearchTerms(key) : kind === 'stdaily' ? buildSearchTermsDaily(key) : kind === 'actlog' ? buildActionLog(key) : getMonthCompareData(key)).then(v => { if (kind === 'dash') sheetReads++; saveSnap(kind, key, v); return v; });
   const ck = kind + ':' + key;
   if (force || inReadWindow(await readWindow())) return cached(ck, ttl, !!force, build);
   const hit = cache[ck];
@@ -140,6 +140,11 @@ const CALLS = {
   async getSearchTermsDaily(args) {
     const key = normalizeAccountKey_(args[0]);
     return withAccess(args[2], sheetData('stdaily', key, !!args[1]));
+  },
+  /** Search Terms → ST Action: the Daily Action Log. */
+  async getActionLog(args) {
+    const key = normalizeAccountKey_(args[0]);
+    return withAccess(args[2], sheetData('actlog', key, !!args[1]));
   },
   /** Weekly Performance → Last year: the month vs last year tables of the month tab. */
   async getMonthVsLy(args) {
@@ -358,7 +363,7 @@ exports.api = onRequest({
           if (!got && (date >= yesterday || date !== dayLog.base[key])) {
             dayLog[key] = { at: (cache['dash:' + key] || {}).at || now, date }; logChanged = true;
             // The Media Plan Lab (Forecast and Assumptions tabs) and the month vs last year tables are read again with the new day.
-            for (const kind of ['forecast', 'assume', 'vsly', 'terms', 'stdaily']) { try { await sheetData(kind, key, true); } catch (e) { console.error('Lab read ' + kind + ' ' + key + ': ' + errorText(e)); } }
+            for (const kind of ['forecast', 'assume', 'vsly', 'terms', 'stdaily', 'actlog']) { try { await sheetData(kind, key, true); } catch (e) { console.error('Lab read ' + kind + ' ' + key + ': ' + errorText(e)); } }
           }
         }
       }

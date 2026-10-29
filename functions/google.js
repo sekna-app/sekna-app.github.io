@@ -59,6 +59,14 @@ async function batchGet(ssId, ranges, formattedDates) {
   return (data.valueRanges || []).map(v => v.values || []);
 }
 
+/** The shown text and the fill colour (conditional formatting included) of every cell of a range. */
+async function cellLooks(ssId, range) {
+  const fields = 'sheets.data.rowData.values(formattedValue,effectiveFormat.backgroundColor)';
+  const data = await request(`https://sheets.googleapis.com/v4/spreadsheets/${ssId}?ranges=${encodeURIComponent(range)}&fields=${encodeURIComponent(fields)}`);
+  const rows = (((data.sheets || [])[0] || {}).data || [])[0];
+  return ((rows && rows.rowData) || []).map(r => (r.values || []).map(c => ({ v: c.formattedValue || '', bg: (c.effectiveFormat && c.effectiveFormat.backgroundColor) || null })));
+}
+
 /** Writes values exactly as given (numbers stay numbers, text stays text). */
 async function valuesUpdate(ssId, range, values) {
   return request(`https://sheets.googleapis.com/v4/spreadsheets/${ssId}/values/${encodeURIComponent(range)}?valueInputOption=RAW`,
@@ -166,5 +174,5 @@ async function fsUpdate(path, change) {
 /** Forgets the cached tab list, so the next read sees a sheet's new size. */
 function forgetMeta(ssId) { delete metaCache[ssId]; }
 
-module.exports = { PROJECT_ID, request, sheetMeta, batchGet, a1, valuesBatchUpdate, fsGet, fsSet, fsDelete, fsUpdate, fsAppend, fsList, fsSetList, fsClearList,
+module.exports = { cellLooks, PROJECT_ID, request, sheetMeta, batchGet, a1, valuesBatchUpdate, fsGet, fsSet, fsDelete, fsUpdate, fsAppend, fsList, fsSetList, fsClearList,
   valuesUpdate, valuesUpdateTyped, valuesClear, sheetsBatchUpdate, forgetMeta };
