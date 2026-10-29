@@ -401,15 +401,21 @@ const R = {
     const fileName = (String(meta.fileName || '').replace(/[^\w.\- ]/g, '').slice(0, 80) || 'HEMERA-Report').replace(/\.pdf$/i, '') + '.pdf';
     const people = meta.testOnly ? [{ email: me.email, name: me.name || nameFromEmail(me.email) }] : await approvedPeople();
     if (!people.length) throw new Error('There is no one to send the report to yet.');
-    const lines = (Array.isArray(meta.lines) ? meta.lines : []).slice(0, 4).map(l => '<li style="margin:0 0 6px">' + esc(String(l).slice(0, 220)) + '</li>').join('');
+    // The PDF's cover shows in the email itself; the highlights are only a fallback when it is missing.
+    const cover = /^[A-Za-z0-9+/=]+$/.test(String(meta.cover || '')) ? Buffer.from(meta.cover, 'base64') : null;
+    const hasCover = !!(cover && cover.length > 1000 && cover.length < 900 * 1024 && cover[0] === 0xff && cover[1] === 0xd8);
+    const lines = hasCover ? '' : (Array.isArray(meta.lines) ? meta.lines : []).slice(0, 4).map(l => '<li style="margin:0 0 6px">' + esc(String(l).slice(0, 220)) + '</li>').join('');
     const body = P(esc(String(meta.intro || 'The media plan results for the month are attached as a PDF.').slice(0, 300))) +
+      (hasCover ? '<img src="cid:hemera-cover" width="432" alt="' + esc(title) + '" style="display:block;width:100%;max-width:432px;height:auto;border:0;border-radius:12px;margin:0 0 18px">' : '') +
       (lines ? '<ul style="margin:0 0 16px;padding-left:18px;font-size:14px;line-height:1.5;color:#1d2433">' + lines + '</ul>' : '');
+    const files = [{ filename: fileName, content: bytes, contentType: 'application/pdf' }];
+    if (hasCover) files.push({ filename: 'cover.jpg', content: cover, contentType: 'image/jpeg', cid: 'hemera-cover' });
     let sent = 0;
     const failed = [];
     for (const p of people) {
       try {
         await notify.sendMail({ to: p.email, replyTo: 'seknaapp@gmail.com', subject: (meta.testOnly ? '[Test] ' : '') + title, title: 'Hi ' + esc(p.name) + ',', html: body,
-          button: { url: WEB_PAGE_URL, label: 'Open HEMERA' }, attachments: [{ filename: fileName, content: bytes, contentType: 'application/pdf' }] });
+          button: { url: WEB_PAGE_URL, label: 'Open HEMERA' }, attachments: files });
         sent++;
       } catch (err) { console.error('Report to ' + p.email + ' failed: ' + err.message); failed.push(p.email); }
     }

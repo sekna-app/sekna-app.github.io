@@ -24,8 +24,8 @@ const userTopic = email => 'sekna-u-' + crypto.createHash('sha256').update(norm(
 function emailHtml(title, bodyHtml) {
   return '<div style="background:#f4f6fb;padding:28px 12px;font-family:Arial,Helvetica,sans-serif;color:#1d2433">' +
     '<div style="max-width:480px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6eaf4">' +
-    '<div style="background:#203C8E;padding:20px 24px;color:#ffffff;font-size:22px;font-weight:800;letter-spacing:1px">HEMERA' +
-    '<div style="height:3px;width:38px;background:#C28D3E;margin-top:8px;border-radius:2px"></div></div>' +
+    '<div style="background:#203C8E;padding:18px 24px;color:#ffffff;font-size:22px;font-weight:800;letter-spacing:1px">' +
+    '<img src="https://sekna-app.web.app/icons/mail-logo.png" width="167" height="43" alt="HEMERA" style="display:block;border:0;width:167px;height:43px;color:#ffffff;font-size:22px;font-weight:800"></div>' +
     '<div style="padding:24px"><h2 style="margin:0 0 12px;font-size:19px;color:#1d2433">' + title + '</h2>' + bodyHtml + '</div>' +
     '<div style="padding:14px 24px;background:#f8f9fc;color:#8a92a0;font-size:11px">HEMERA • Day by day.</div></div></div>';
 }

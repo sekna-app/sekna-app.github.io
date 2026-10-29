@@ -9225,7 +9225,7 @@ function buildChannelSummary(d){
  const x=d.latest||{}, m=d.mtd||d.month||{};
  const targetRoas=Number(m.targetRoas)||((Number(m.planSpend)||0)?(Number(m.planValue)||0)/(Number(m.planSpend)||1):null);
  const a=accountMeta(d), pa=planAccuracy(d), pct1=v=>v==null||!isFinite(v)?'—':(Math.round(v*1000)/10).toFixed(1)+'%';
- return `🎯 ${a.shortLabel} Plan Achievement: ${pct1(pa.score)}
+ return `🎯 ${a.shortLabel} Plan Score: ${pct1(pa.score)}
 
 💰 Spend: ${pct1(pa.pS?pa.aS/pa.pS:null)}
 💚 Value: ${pct1(pa.pV?pa.aV/pa.pV:null)}
@@ -10986,7 +10986,7 @@ function compareShareHtml(){
  return `${rsHead(`Month vs Month · ${monthName(aKey)} vs ${monthName(bKey)}${mxTypeTag()}`)}
   <div class="rs-two"><div class="a"><small>Month</small><b>${esc(an)}</b><span>${esc(ha.hijri)}${ha.partial?` · ${A.days} days so far`:' · full month'}</span></div><div class="b"><small>Compared with</small><b>${esc(bn)}</b><span>${esc(hb.hijri)}${hb.partial?` · ${B.days} days so far`:' · full month'}</span></div></div>
   <div class="rs-score"><b>${Math.max(wa,wb)}/${wa+wb}</b><div><strong>${esc(lead)}</strong><span>${partial&&!c.avg?`${esc(monthName(partial.key,true))} is still running (${partial.days} days) — totals favour the full month`:c.avg?'Per day averages':'Full-month totals'}</span></div></div>
-  ${rsT('Head to head')}<div class="rp-box rs-m3"><div class="r h"><span>METRIC</span><span>${esc(capMon(aKey).toUpperCase())}</span><span class="b">${esc(capMon(bKey).toUpperCase())}</span><span>CHANGE</span></div>
+  ${rsT('Head to head')}<div class="rp-box rs-m3"><div class="r h"><span>METRIC</span><span>${esc(capMonL(aKey).toUpperCase())}</span><span class="b">${esc(capMonL(bKey).toUpperCase())}</span><span>CHANGE</span></div>
   ${rows.map(r=>{const good=r.m.better==='none'?'':(r.m.better==='high'?r.delta>=0:r.delta<=0)?'good':'bad';return `<div class="r"><span class="l">${esc(r.m.l)}</span><b class="${r.w==='a'?'w':r.w==='b'?'lo':''}">${r.w==='a'?'👑 ':''}${r.m.f(r.a,c.avg)}</b><b class="${r.w==='b'?'w':r.w==='a'?'lo':''}">${r.w==='b'?'👑 ':''}${r.m.f(r.b,c.avg)}</b><em class="${good}">${rsChip(r.delta)}</em></div>`}).join('')}</div>
   ${chans}${SHARE_FOOT}`;
 }
@@ -10995,14 +10995,16 @@ function compareShareHtml(){
 
 const capK=(v,cur)=>{if(v==null||!isFinite(v))return '—';if(cur)v=cx(v);const a=Math.abs(v),p=cur?cs():'';return a>=1e6?p+(v/1e6).toFixed(2)+'M':a>=1e3?p+(v/1e3).toFixed(1)+'K':p+Math.round(v)};
 const M3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const capMon=k=>{const p=String(k||'').split('-');return p[1]?M3[+p[1]-1]+' '+p[0]:String(k||'')};
+
+const capMonL=k=>{const p=String(k||'').split('-');return p[1]?M3[+p[1]-1]+' '+p[0]:String(k||'')};
+const capMon=k=>{const p=String(k||'').split('-');return p[1]?M3[+p[1]-1]+' '+p[0].slice(-2):String(k||'')};
 const rsShortLabel=m=>({conversions:'Conv.',value:'Conv. Value'})[m.k]||m.l;
 const rsEm=(good)=>good==null?'⚪':good?'🟢':'🔴';
 function planShareText(d){
  const days=d.dayPlan||[]; if(!days.length)return '';
  const T=dayTotals(days).p, a=accountMeta(d);
  return [`📌 ${a.shortLabel} Media Plan - ${capMon(days[0].date.slice(0,7))} ⚙️`,'',
-  `💰 Spend: ${capK(T.spend,1)}`,`💚 Value: ${capK(T.value,1)}`,`🎯 Conv.: ${capK(T.conversions)}`].join('\n');
+  `💰 Spend: ${capK(T.spend,1)}`,`💚 Value: ${capK(T.value,1)}`,`🎯 Conv.: ${capK(T.conversions)}`,`📈 ROAS: ${T.spend?fmt(T.value/T.spend,2)+'x':'—'}`].join('\n');
 }
 function resultsShareText(d){
  const days=d.dayPlan||[], live=days.filter(x=>x.actual); if(!live.length)return '';
@@ -11023,7 +11025,7 @@ function resultsShareText(d){
 function oneMonthShareText(d){
  const c=rsMonthCtx(), sel=periodSel(), L=periodLabel(sel,c.hist), S=periodStats(sel,c.hist,c.ex,c.d); if(!S.days)return '';
  const U=periodBaseline(sel,c.hist,c.ex,c.d,S.days), rows=reportRows(S,U,c.avg), a=accountMeta(d);
- const short=t=>String(t).replace(/\b(January|February|March|April|May|June|July|August|September|October|November|December|Sept)\b/g,m=>m.slice(0,3));
+ const short=t=>String(t).replace(/\b(January|February|March|April|May|June|July|August|September|October|November|December|Sept)\b/g,m=>m.slice(0,3)).replace(/\b20(\d\d)\b/g,'$1');
  const val=(k,v)=>k==='roas'?fmt(v,2)+'x':c.avg?null:capK(v,k==='spend'||k==='value');
  const line=(k,l)=>{const r=rows.find(x=>x.m.k===k);if(!r)return null;return `${r.cls==='good'?'🟢':r.cls==='bad'?'🔴':'🟡'} ${l}: ${val(k,r.v)||r.m.f(r.v,c.avg)}`};
  return [`📌 ${a.shortLabel} Report — ${short(L.title)} ⚙️`,'',line('spend','Spend'),line('conversions','Conv.'),line('value','Value'),line('roas','ROAS')].filter(x=>x!==null).join('\n');
@@ -11043,7 +11045,7 @@ function compareShareText(d){
  const f=(l,cur)=>l?(c.avg?`${l.m.f(l.x,1)} vs ${l.m.f(l.y,1)}`:`${capK(l.x,cur)} vs ${capK(l.y,cur)}`):null;
  const r=get('roas');
  return [`📌 ${ac.shortLabel} MoM — ${title} ⚙️`,'',
-  `🏆 Winner: ${monthName(win,true)}`,
+  `🏆 Winner: ${capMon(win)}`,
   v?`💚 Value: ${f(v,1)}`:null, get('conversions')?`🎯 Conv.: ${f(get('conversions'),0)}`:null,
   r?`📈 ROAS: ${fmt(r.x,2)}x vs ${fmt(r.y,2)}x`:null, get('spend')?`💰 Spend: ${f(get('spend'),1)}`:null].filter(x=>x!==null).join('\n');
 }
@@ -12470,6 +12472,8 @@ async function mrBuild(){
    });
    MR.pdf=doc.output('datauristring').split(',')[1];
    MR.pages=canvases.map(c=>{const t=document.createElement('canvas');t.width=240;t.height=Math.round(240*c.height/c.width);t.getContext('2d').drawImage(c,0,0,t.width,t.height);return t.toDataURL('image/jpeg',.8)});
+   
+   {const c=canvases[0],t=document.createElement('canvas');t.width=Math.min(864,c.width);t.height=Math.round(t.width*c.height/c.width);t.getContext('2d').drawImage(c,0,0,t.width,t.height);MR.cover=t.toDataURL('image/jpeg',.82).split(',')[1]}
    MR.m=m;MR.sig=mrSig();MR.busy='';
  }catch(err){MR.busy='';MR.msg='⚠️ '+esc(errorText(err))}
  finally{CUR_HOLD--}
@@ -12488,7 +12492,7 @@ async function mrSend(testOnly){
    title:`HEMERA · ${m.meta.dashboardTitle} · ${m.label} results`,
    fileName:`HEMERA-${m.meta.shortLabel}-${m.label.replace(/\s+/g,'-')}-Results`,
    intro:`Here are the ${m.label} media plan results for ${m.meta.dashboardTitle}. ${mpWords(m)}`,
-   lines:mpHighlights(m).slice(0,3)};
+   lines:mpHighlights(m).slice(0,3),cover:MR.cover||''};
  serverCall('adminSendMonthlyReport',getAccessToken(),MR.pdf,meta).then(r=>{
    MR.busy='';MR.msg=r.testOnly?'✅ Test sent to your email.':`✅ Sent to ${r.sent} ${r.sent===1?'person':'people'}.${r.failed&&r.failed.length?' Not sent to: '+esc(r.failed.join(', ')):''}`;drawMonthlyReport();
  }).catch(err=>{MR.busy='';MR.msg='⚠️ '+esc(errorText(err));drawMonthlyReport()});
