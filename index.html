@@ -3673,6 +3673,27 @@ window.addEventListener('load',function(){
     .mp-hl{margin-top:34px;display:grid;gap:12px}.mp-hl div{font-size:21px;line-height:1.4;font-weight:600;color:#e3e9fb}
     .mp-foot{position:absolute;left:72px;right:72px;bottom:40px;display:flex;justify-content:space-between;font-size:17px;font-weight:700;opacity:.7}
     .mp-white .mp-foot{color:#6b7385}
+    /* PDF cover, half blue and half white */
+    .mp-cv2{background:#fff;color:#1d2433;padding:0}.mp-cv2 .mp-foot{color:#6b7385}
+    .cv2-top{background:linear-gradient(135deg,#2a4bb0,#16307a);color:#fff;padding:62px 72px 54px}
+    .cv2-row{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-top:70px}
+    .cv2-kick{font-size:20px;font-weight:900;letter-spacing:.18em;color:#e2b874}
+    .mp-cv2 h1{margin:10px 0 8px;font-family:HArab,"DM Serif Display",Georgia,serif;font-weight:400;font-size:92px;line-height:1;letter-spacing:0}
+    .cv2-sub{font-size:21px;font-weight:700;color:#c9d3f5}
+    .cv2-big{text-align:right;flex:none}.cv2-big b{display:block;font-size:116px;font-weight:900;color:#e2b874;line-height:.9;letter-spacing:-.03em}.cv2-big small{display:block;margin-top:10px;font-size:17px;font-weight:900;letter-spacing:.14em;color:#e3e9fb}
+    .cv2-bd{padding:46px 72px 0}
+    .cv2-w{font-size:34px;font-weight:900;letter-spacing:-.01em}.cv2-ws{font-size:17px;font-weight:600;color:#6b7385;margin:6px 0 22px;line-height:1.5}
+    .cv2-r{display:grid;grid-template-columns:200px 1fr 150px;gap:26px;align-items:center;padding:20px 0;border-bottom:2px solid #eef0f5}
+    .cv2-r small{display:block;font-size:15px;font-weight:900;letter-spacing:.12em;color:#6b7385}.cv2-r b{display:block;font-size:34px;font-weight:900;margin-top:4px}
+    .cv2-tr{position:relative;height:22px;border-radius:12px;background:#eef0f5}.cv2-tr i{position:absolute;left:0;top:0;bottom:0;border-radius:12px;background:linear-gradient(90deg,#3d6bff,#203c8e)}
+    .cv2-tr em{position:absolute;left:83.33%;top:-7px;bottom:-7px;width:5px;border-radius:3px;background:#1d2433}
+    .cv2-pc{text-align:right;font-size:32px;font-weight:900}.cv2-pc span{display:block;font-size:15px;font-weight:700;color:#6b7385;margin-top:2px}
+    .cv2-two{display:grid;grid-template-columns:1fr 1.3fr;gap:22px;margin-top:34px}
+    .cv2-fl{background:linear-gradient(135deg,#fff4e0,#ffe3b3);border-radius:28px;padding:28px 22px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
+    .cv2-fl .e{font-size:50px;line-height:1}.cv2-fl b{display:block;font-size:76px;font-weight:900;color:#c2410c;line-height:1;margin-top:8px}.cv2-fl span{display:block;font-size:18px;font-weight:900;letter-spacing:.08em;color:#8a4a12;margin-top:6px}
+    .cv2-fl .d7{display:flex;gap:6px;justify-content:center;margin-top:14px}.cv2-fl .d7 i{width:22px;height:22px;border-radius:6px;background:#f59e0b}.cv2-fl small{display:block;font-size:16px;font-weight:700;color:#a0642a;margin-top:12px}
+    .cv2-tk{display:flex;flex-direction:column;gap:12px}.cv2-tk div{display:flex;gap:16px;align-items:center;background:#f6f7fb;border-radius:20px;padding:16px 20px;font-size:19px;font-weight:700;line-height:1.35}
+    .cv2-tk em{font-style:normal;width:46px;height:46px;border-radius:14px;background:#203c8e;color:#fff;display:grid;place-items:center;font-size:22px;flex:none}
     .mp-h2 small{display:block;font-size:19px;font-weight:900;letter-spacing:.14em;color:#3d6bff}
     .mp-h2 b{display:block;margin-top:8px;font-size:38px;line-height:1.15;font-weight:900;letter-spacing:-.02em}
     .mp-t{width:100%;border-collapse:collapse;margin-top:26px;font-size:21px}
@@ -12520,7 +12541,10 @@ function mpData(){
  ly.roas=ly.spend?ly.value/ly.spend:null;
  const best=live.reduce((m,x)=>!m||x.actual.value>m.actual.value?x:m,null);
  const roasDays=live.filter(x=>x.actual.roas!=null&&x.plan.roas&&x.actual.roas>=x.plan.roas).length;
- return {d,days,live,p,a,pt,acc,month,meta,weeks,typeRows,chans,ly,best,roasDays,
+ 
+ let streak={n:0,from:'',to:''},run=0,start='';
+ [...live].sort((x,y)=>x.date<y.date?-1:1).forEach(x=>{if(x.plan.value>0&&x.actual.value>=x.plan.value){if(!run)start=x.date;run++;if(run>streak.n)streak={n:run,from:start,to:x.date}}else run=0});
+ return {d,days,live,p,a,pt,acc,month,meta,weeks,typeRows,chans,ly,best,roasDays,streak,
    label:monthName(month,true),hijri:`${days[0].hijri||''} – ${days[days.length-1].hijri||''}`,complete:live.length>=days.length};
 }
 function mpWords(m){
@@ -12550,17 +12574,26 @@ function mpRing(v,size,col){
  return `<img src="${c.toDataURL('image/png')}" width="${size}" height="${size}" alt="">`;
 }
 function mpCover(m){
- const k=(l,v,plan,r)=>`<div class="mp-k"><small>${l}</small><b>${v}</b><span>Plan ${plan}</span><i style="color:${r==null?'#8a92a6':r>=.95?'#13804f':r>=.85?'#a8701c':'#c2382f'}">${mpPct(r)} of plan</i></div>`;
- const accCol=m.acc.all>=.9?'#39e29a':m.acc.all>=.8?'#e2b874':'#ff8f8f';
- return `<div class="mp-pg mp-navy">
-  <div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="">`:'<b>HEMERA</b>'}<span>${esc(m.meta.dashboardTitle)}</span></div>
-  <div class="mp-kick">MEDIA PLAN RESULTS</div>
-  <h1>${esc(m.label)}</h1>
-  <div class="mp-sub">${esc(m.hijri)} · ${m.live.length} of ${m.days.length} days</div>
-  <div class="mp-acc"><div class="mp-ring">${mpRing(m.acc.all,260,accCol)}<div><b>${mpPct(m.acc.all)}</b><span>Plan achievement</span></div></div>
-   <div class="mp-words"><b>${esc(mpWords(m))}</b><span>Plan achievement scores the month against its full plan: spend 40%, value 40%, conversions 20%.</span></div></div>
-  <div class="mp-ks">${k('Spend',mpK(m.a.spend),mpK(m.pt.spend),m.pt.spend?m.a.spend/m.pt.spend:null)}${k('Conv.',fmt(m.a.conversions,0),fmt(m.pt.conversions,0),m.pt.conversions?m.a.conversions/m.pt.conversions:null)}${k('Conv. Value',mpK(m.a.value),mpK(m.pt.value),m.pt.value?m.a.value/m.pt.value:null)}${k('ROAS',fmt(m.a.roas,2)+'x',fmt(m.pt.roas,2)+'x',m.pt.roas&&m.a.roas!=null?m.a.roas/m.pt.roas:null)}</div>
-  <div class="mp-hl">${mpHighlights(m).slice(0,4).map(t=>`<div>✦ ${esc(t)}</div>`).join('')}</div>
+ 
+ 
+ const col=r=>r==null?'#8a92a6':r>=.95?'#13804f':r>=.85?'#a8701c':'#c2382f';
+ const bar=(l,v,plan,r)=>`<div class="cv2-r"><div><small>${l}</small><b>${v}</b></div><div class="cv2-tr"><i style="width:${(Math.min(r||0,1.2)/1.2*100).toFixed(1)}%"></i><em></em></div><div class="cv2-pc" style="color:${col(r)}">${mpPct(r)}<span>Plan ${plan}</span></div></div>`;
+ const dd=k=>shortDay(k).toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+ const st=m.streak||{n:0};
+ const card=st.n>=3?`<div class="cv2-fl"><div class="e">🔥</div><b>${st.n}</b><span>DAYS IN A ROW</span><div class="d7">${'<i></i>'.repeat(Math.min(st.n,10))}</div><small>Value above plan · ${esc(st.from.slice(0,7)===st.to.slice(0,7)?shortDay(st.from).getDate()+'–'+dd(st.to):dd(st.from)+' – '+dd(st.to))}</small></div>`
+   :`<div class="cv2-fl"><div class="e">🎯</div><b>${m.roasDays}</b><span>DAYS ON ROAS TARGET</span><small>out of ${m.live.length} days so far</small></div>`;
+ const top=m.chans.filter(c=>c.spend>0)[0], v=m.pt.value?m.a.value/m.pt.value:null;
+ const notes=[m.best?['★',`Best day: ${shortDay(m.best.date).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}, ${mpK(m.best.actual.value)} at ${fmt(m.best.actual.roas,2)}x ROAS.`]:null,
+   top?['↑',`${CHANNEL_SHORT[top.name]||top.name} led on ROAS at ${fmt(top.roas,2)}x.`]:null,
+   v!=null?['✓',`Conversion value reached ${mpPct(v)} of the plan.`]:null,
+   ['♥','Thank you to the Google Ads team.']].filter(Boolean);
+ return `<div class="mp-pg mp-cv2">
+  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="">`:'<b>HEMERA</b>'}<span>${esc(m.meta.dashboardTitle)}</span></div>
+   <div class="cv2-row"><div><div class="cv2-kick">MEDIA PLAN RESULTS</div><h1>${esc(m.label)}</h1><div class="cv2-sub">${esc(m.hijri)} · ${m.live.length} of ${m.days.length} days</div></div>
+   <div class="cv2-big"><b>${mpPct(m.acc.all)}</b><small>PLAN ACCURACY</small></div></div></div>
+  <div class="cv2-bd"><div class="cv2-w">${esc(mpWords(m))}</div><div class="cv2-ws">Each bar is the month so far against its full plan (the black line). Plan accuracy weighs spend 40%, value 40%, conversions 20%.</div>
+   <div class="cv2-bars">${bar('SPEND',mpK(m.a.spend),mpK(m.pt.spend),m.pt.spend?m.a.spend/m.pt.spend:null)}${bar('CONV.',fmt(m.a.conversions,0),fmt(m.pt.conversions,0),m.pt.conversions?m.a.conversions/m.pt.conversions:null)}${bar('CONV. VALUE',mpK(m.a.value),mpK(m.pt.value),v)}${bar('ROAS',fmt(m.a.roas,2)+'x',fmt(m.pt.roas,2)+'x',m.pt.roas&&m.a.roas!=null?m.a.roas/m.pt.roas:null)}</div>
+   <div class="cv2-two">${card}<div class="cv2-tk">${notes.map(n=>`<div><em>${n[0]}</em><span>${esc(n[1])}</span></div>`).join('')}</div></div></div>
   ${mpFoot('1')}
  </div>`;
 }
