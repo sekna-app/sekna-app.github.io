@@ -22,14 +22,30 @@ async function reportStore(bytes, fileName) {
   for (const o of old) { const m = await fsGet('reports/' + o).catch(() => null); for (let i = 0; i < ((m && m.n) || 0); i++) await fsDelete('reports/' + o + '_' + i).catch(() => {}); await fsDelete('reports/' + o).catch(() => {}); }
   return id;
 }
-/** GET /report/<id>: the stored PDF as a download (the id is a long random key only the email holds). */
-async function reportFile(id) {
+/** GET /report/<id> (the email's copy) or /lib/<id> (the library's): the stored PDF as a download. The id is a long random key. */
+async function reportFile(id, col) {
+  col = col === 'reportlib' ? 'reportlib' : 'reports';
   if (!/^[A-Za-z0-9_-]{24}$/.test(String(id || ''))) return null;
-  const m = await fsGet('reports/' + id);
+  const m = await fsGet(col + '/' + id);
   if (!m || !m.n) return null;
   const parts = [];
-  for (let i = 0; i < m.n; i++) { const c = await fsGet('reports/' + id + '_' + i); if (!c) return null; parts.push(Buffer.from(c.b, 'base64')); }
+  for (let i = 0; i < m.n; i++) { const c = await fsGet(col + '/' + id + '_' + i); if (!c) return null; parts.push(Buffer.from(c.b, 'base64')); }
   return { bytes: Buffer.concat(parts), fileName: m.fileName || 'HEMERA-Report.pdf' };
+}
+// The report library: every month's PDF sent to the team, kept for good (one per account and month;
+// sending a month again replaces its copy). Listed in Plan History.
+const LIB_DOC = 'server/report-lib';
+async function libStore(acc, month, bytes, fileName, pages) {
+  const key = require('crypto').randomBytes(18).toString('base64url'), n = Math.ceil(bytes.length / REPORT_CHUNK);
+  for (let i = 0; i < n; i++) await fsSet('reportlib/' + key + '_' + i, { b: bytes.subarray(i * REPORT_CHUNK, (i + 1) * REPORT_CHUNK).toString('base64') });
+  await fsSet('reportlib/' + key, { n, fileName, size: bytes.length, at: Date.now() });
+  let old = null;
+  await fsUpdate(LIB_DOC, o => {
+    const items = ((o && o.items) || []).filter(x => { if (x.acc === acc && x.month === month) { old = x; return false; } return true; });
+    items.push({ acc, month, key, fileName, size: bytes.length, pages, sentAt: Date.now() });
+    return { items };
+  });
+  if (old) { const m = await fsGet('reportlib/' + old.key).catch(() => null); for (let i = 0; i < ((m && m.n) || 0); i++) await fsDelete('reportlib/' + old.key + '_' + i).catch(() => {}); await fsDelete('reportlib/' + old.key).catch(() => {}); }
 }
 const DOC = {
   mode: 'rest/mode', shareMonths: 'rest/share-months', usageDays: 'rest/usage-days', ideas: 'rest/ideas',
@@ -413,6 +429,13 @@ const R = {
     const people = (await approvedPeople()).map(p => { const m = mem[p.email] || {}; return Object.assign(p, { role: m.role === 'Head of Media' ? 'CEO' : (m.role || ''), avatar: m.avatar || 0 }); });
     return { people, quota: 500 };
   },
+  /** The report library of one account: every month's PDF sent to the team, newest first, with its download link. */
+  async reportLib([token, account]) {
+    await assertAccess(token);
+    const acc = account === 'ar' ? 'ar' : 'usa';
+    return (((await fsGet(LIB_DOC)) || {}).items || []).filter(x => x.acc === acc).sort((a, b) => String(b.month).localeCompare(String(a.month)))
+      .map(x => ({ month: x.month, fileName: x.fileName, size: x.size, pages: x.pages, sentAt: x.sentAt, url: API_URL + '/lib/' + x.key }));
+  },
   /** The month's results PDF (built in the app) to every approved person, or only to the admin as a test. */
   async adminSendMonthlyReport([token, pdfBase64, meta]) {
     const me = await assertOwner(token);
@@ -437,6 +460,10 @@ const R = {
       '<td width="40" style="padding:12px 14px 12px 0;text-align:right;font:700 20px Arial,sans-serif;color:#203C8E">&#8681;</td></tr></table></a>';
     const body = P(esc(String(meta.intro || 'The media plan results for the month are attached as a PDF.').slice(0, 300))) + pdfCard;
     const files = [{ filename: fileName, content: bytes, contentType: 'application/pdf' }];
+    // A send to the team goes into the report library too (tests do not).
+    if (!meta.testOnly && /^\d{4}-\d{2}$/.test(String(meta.month || '')) && (meta.account === 'usa' || meta.account === 'ar')) {
+      try { await libStore(meta.account, meta.month, bytes, fileName, pages); } catch (e) { console.error('Report library: ' + e.message); }
+    }
     // Each test carries its time, so Gmail shows it as a new email instead of hiding it in the last test's thread.
     const tp = parts(Date.now()), testTag = '[Test ' + tp.hour + ':' + tp.minute + '] ';
     let sent = 0;

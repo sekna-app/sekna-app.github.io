@@ -353,9 +353,9 @@ exports.api = onRequest({
   if (req.method === 'OPTIONS') { res.status(204).send(''); return; }
 
   const route = String(req.path || '/').replace(/\/+$/, '') || '/';
-  if (route.startsWith('/report/') && req.method === 'GET') {
+  if ((route.startsWith('/report/') || route.startsWith('/lib/')) && req.method === 'GET') {
     try {
-      const f = await rest.reportFile(route.slice(8));
+      const lib = route.startsWith('/lib/'), f = await rest.reportFile(route.slice(lib ? 5 : 8), lib ? 'reportlib' : 'reports');
       if (!f) { res.status(404).type('text/plain').send('This report link has expired. Open HEMERA to get the latest report.'); return; }
       res.set('Content-Type', 'application/pdf');
       res.set('Content-Disposition', 'attachment; filename="' + f.fileName.replace(/"/g, '') + '"');

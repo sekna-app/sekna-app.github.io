@@ -4035,6 +4035,11 @@ window.addEventListener('load',function(){
 
     /* v87 — Plan History */
     .phx-empty{display:grid;justify-items:center;gap:6px;padding:30px 12px;text-align:center}.phx-empty span{font-size:32px}.phx-empty b{font-size:16px;color:#1d2433}.phx-empty small{color:#8b92a0;font-size:13px;max-width:420px;line-height:1.5}
+    .phr-tabs{display:flex;gap:6px;margin:0 0 12px}.phr-tabs button{border:1.5px solid #e3e7f0;background:#fff;color:#4a5266;border-radius:20px;padding:6px 14px;font:inherit;font-size:12.5px;font-weight:900;cursor:pointer}.phr-tabs button.on{background:#203c8e;border-color:#203c8e;color:#fff}.phr-tabs i{font-style:normal;display:inline-block;min-width:18px;border-radius:9px;background:#e2b874;color:#1c2a5e;font-size:10.5px;padding:0 5px;margin-left:3px}
+    .phr{display:flex;gap:10px;align-items:center;margin-top:12px;background:#fff;border:1.5px solid #dfe4ee;border-radius:13px;padding:9px 11px;text-decoration:none;color:#1d2433}.phr-ic{width:32px;height:38px;border-radius:6px;background:#e5322d;color:#fff;font-size:9px;font-weight:900;display:grid;place-items:end center;padding-bottom:5px;flex:none;position:relative}.phr-ic:before{content:"";position:absolute;right:0;top:0;border-left:9px solid #f7a3a0;border-bottom:9px solid transparent;border-top-right-radius:6px}
+    .phr-t{flex:1;min-width:0}.phr-t b{display:block;font-size:12px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.phr-t small{font-size:10.5px;font-weight:700;color:#6b7385}.phr-dl{width:30px;height:30px;border-radius:9px;background:#203c8e;color:#fff;display:grid;place-items:center;font-size:15px;flex:none}
+    .phr-list{display:grid;gap:8px}.phr.c{margin-top:0}
+    body.dark-mode .phr{background:#151a22;border-color:#252a32;color:#e6e9ef}body.dark-mode .phr-tabs button{background:#151a22;border-color:#252a32;color:#c9d0dc}body.dark-mode .phr-tabs button.on{background:#3d6bff;border-color:#3d6bff;color:#fff}
     .phx-list{display:grid;gap:12px;min-width:0}.phx-list>*{min-width:0}.phx-tw{overflow-x:auto;margin:0 -4px}
     .phx-item .mp-t td,.phx-item .mp-t .mp-n{color:#1d2433}.phx-item .phx-ms *{min-width:0}
     .phx-item{border:1.5px solid #e6e9f1;border-radius:20px;padding:16px;cursor:pointer;background:linear-gradient(160deg,#fff,#f7f9fe);transition:box-shadow .2s ease}
@@ -12841,7 +12846,7 @@ async function mrSend(testOnly){
    title:`HEMERA · ${m.meta.dashboardTitle} · ${m.label} results`,
    fileName:`HEMERA-${m.meta.shortLabel}-${m.label.replace(/\s+/g,'-')}-Results`,
    intro:`Here are the ${m.label} media plan results for ${m.meta.dashboardTitle}. ${mpWords(m)}${m.acc.all!=null?` Plan accuracy reached ${mpPct(m.acc.all)}.`:''} Thank you to the Google Ads team for the hard work this month.`,
-   lines:mpHighlights(m).slice(0,3),pages:(MR.pages||[]).length};
+   lines:mpHighlights(m).slice(0,3),pages:(MR.pages||[]).length,month:m.month,account:CURRENT_ACCOUNT};
  serverCall('adminSendMonthlyReport',getAccessToken(),MR.pdf,meta).then(r=>{
    MR.busy='';MR.msg=r.testOnly?'✅ Test sent to your email.':`✅ Sent to ${r.sent} ${r.sent===1?'person':'people'}.${r.failed&&r.failed.length?' Not sent to: '+esc(r.failed.join(', ')):''}`;drawMonthlyReport();
  }).catch(err=>{MR.busy='';MR.msg='⚠️ '+esc(errorText(err));drawMonthlyReport()});
@@ -12877,10 +12882,12 @@ function drawMonthlyReport(){
 }
 
 /* ---------- v87: Plan History ---------- */
-let PH={account:'',list:null,open:'',busy:false,msg:''};
+let PH={account:'',list:null,open:'',busy:false,msg:'',lib:null,view:'st'};
 function renderPlanHistory(){
  const body=document.getElementById('phBody');if(!body)return;
- if(PH.account!==CURRENT_ACCOUNT){PH={account:CURRENT_ACCOUNT,list:null,open:'',busy:false,msg:''}}
+ if(PH.account!==CURRENT_ACCOUNT){PH={account:CURRENT_ACCOUNT,list:null,open:'',busy:false,msg:'',lib:null,view:PH.view||'st'}}
+ // The report library: every month's PDF sent to the team.
+ if(PH.lib===null){PH.lib=[];serverCall('reportLib',getAccessToken(),CURRENT_ACCOUNT).then(r=>{PH.lib=Array.isArray(r)?r:[];drawPlanHistory()}).catch(()=>{})}
  if(PH.list===null&&!PH.busy){PH.busy=true;
    serverCall('getPlanHistory',getAccessToken(),CURRENT_ACCOUNT).then(r=>{PH.busy=false;PH.list=r||[];drawPlanHistory()}).catch(err=>{PH.busy=false;PH.list=[];PH.msg=errorText(err);drawPlanHistory()})}
  drawPlanHistory();
@@ -12895,14 +12902,23 @@ function phAcc(s){
  return {p,all:spend*.4+revenue*.4+conv*.2};
 }
 function phToggle(k){PH.open=PH.open===k?'':k;drawPlanHistory()}
+function phView(v){PH.view=v;drawPlanHistory()}
+// One saved PDF: the file, its pages and size, when it went to the team; tapping it downloads it.
+function phPdf(r,compact){
+ const mb=(r.size/1048576).toFixed(1),when=r.sentAt?new Date(r.sentAt).toLocaleDateString('en-GB',{day:'numeric',month:'short'})+', '+new Date(r.sentAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'';
+ return `<a class="phr${compact?' c':''}" href="${esc(r.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><span class="phr-ic">PDF</span><span class="phr-t">${compact?`<b>${esc(monthName(r.month,true))}</b>`:`<b>${esc(r.fileName)}</b>`}<small>${r.pages||'—'} ${r.pages===1?'page':'pages'} · ${mb} MB${when?' · sent '+esc(when):''}</small></span><span class="phr-dl">⇩</span></a>`;
+}
 function drawPlanHistory(){
  const body=document.getElementById('phBody');if(!body||CURRENT_TAB!=='plans')return;
  if(PH.list===null){body.innerHTML='<div class="dx-empty"><span class="lab-spin dark"></span>Loading Plan History…</div>';return}
- if(!PH.list.length){body.innerHTML=`<div class="phx-empty"><span>🏛️</span><b>Nothing saved yet</b>${PH.msg?`<small>⚠️ ${esc(PH.msg)}</small>`:''}</div>`;return}
+ const tabs=`<div class="phr-tabs"><button type="button" class="${PH.view!=='rp'?'on':''}" onclick="phView('st')">Statements</button><button type="button" class="${PH.view==='rp'?'on':''}" onclick="phView('rp')">Reports${PH.lib&&PH.lib.length?` <i>${PH.lib.length}</i>`:''}</button></div>`;
+ if(PH.view==='rp'){body.innerHTML=tabs+(PH.lib&&PH.lib.length?`<div class="phr-list">${PH.lib.map(r=>phPdf(r,1)).join('')}</div>`:`<div class="phx-empty"><span>📄</span><b>No reports yet</b><small>Each month's PDF is kept here once it is sent to the team.</small></div>`);return}
+ if(!PH.list.length){body.innerHTML=tabs+`<div class="phx-empty"><span>🏛️</span><b>Nothing saved yet</b>${PH.msg?`<small>⚠️ ${esc(PH.msg)}</small>`:''}</div>`;return}
  // v170: each saved month as a statement (header, a bar on every line, the achievement in a box).
  const accName=String((accountMeta(DASH_DATA||{}).label)||'').toUpperCase();
  const tone=(r,spend)=>r==null?'':spend?(Math.abs(r-1)<=.05?'ok':Math.abs(r-1)<=.15?'wt':'bd'):(r>=.95?'ok':r>=.8?'wt':'bd');
- body.innerHTML=`<div class="phx-list">${PH.list.map(s=>{
+ const libOf=k=>(PH.lib||[]).find(r=>r.month===k);
+ body.innerHTML=tabs+`<div class="phx-list">${PH.list.map(s=>{
    const {p,all}=phAcc(s), a=s.actual, open=PH.open===s.month, mon=s.month.slice(0,4)+'-'+s.month.slice(5,7);
    const line=(l,av,pv,f,spend)=>{const r=pv?av/pv:null;return `<div class="phs-li"><div class="phs-t"><span>${l}</span><b>${f(av)}</b></div><div class="phs-q">Plan ${f(pv)}<i><u style="width:${r!=null?Math.min(100,r*100).toFixed(1):0}%"></u></i><em class="${tone(r,spend)}">${r!=null?mpPct(r):'—'}</em></div></div>`};
    const roasR=p.roas?a.roas/p.roas:null;
@@ -12915,6 +12931,7 @@ function drawPlanHistory(){
     <div class="phs-li"><div class="phs-t"><span>ROAS</span><b>${fmt(a.roas,2)}x</b></div><div class="phs-q">Plan ${fmt(p.roas,2)}x<i><u style="width:${roasR!=null?Math.min(100,roasR*100).toFixed(1):0}%"></u></i><em class="${roasR>=1?'ok':'bd'}">${roasR==null?'—':roasR>=1?'▲':'▼'}</em></div></div>
     <div class="phs-big"><div><small>PLAN ACHIEVEMENT</small><b>${mpPct(all)}</b></div><span class="phs-ok">✓ SAVED</span></div>
     <div class="phs-ft"><span>${saved?'Saved '+esc(saved):''}</span><span>Spend 40% · Value 40% · Conv. 20%</span></div>
+    ${libOf(s.month)?phPdf(libOf(s.month)):''}
     ${canDo('lab')?`<button type="button" class="phs-cel" onclick="event.stopPropagation();celCompose('${s.month}')">🎉 Celebrate this month</button>`:''}
     <div class="phs-more">${open?'Hide campaign types ▲':'By campaign type ▼'}</div>
     ${open?`<div class="phx-tw"><table class="mp-t phx-t"><thead><tr><th class="mp-n">Type</th><th>Plan spend</th><th>Spend</th><th>Of plan</th><th>Value</th><th>ROAS</th></tr></thead><tbody>${ch}</tbody></table></div>`:''}
