@@ -3509,6 +3509,17 @@ window.addEventListener('load',function(){
     .mp-hl{margin-top:34px;display:grid;gap:12px}.mp-hl div{font-size:21px;line-height:1.4;font-weight:600;color:#e3e9fb}
     .mp-foot{position:absolute;left:72px;right:72px;bottom:40px;display:flex;justify-content:space-between;font-size:17px;font-weight:700;opacity:.7}
     .mp-white .mp-foot{color:#6b7385}
+    /* PDF page 2: day by day, half blue and half white */
+    .rz h1.rz-h{font-size:66px;margin:8px 0 6px}.rz-sum{margin-top:18px;font-size:24px;font-weight:800}.rz-sum b{color:#e2b874}
+    .rz-bd{padding:30px 60px 0}
+    .rz-k{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.rz-k div{background:#f6f7fb;border-radius:20px;padding:16px 18px}.rz-k small{display:block;font-size:13px;font-weight:900;letter-spacing:.1em;color:#6b7385}.rz-k b{display:block;font-size:30px;font-weight:900;margin-top:4px}.rz-k em{font-style:normal;font-size:14px;font-weight:800;color:#a07316}
+    .rz-cal{display:grid;grid-template-columns:repeat(7,1fr) 104px;gap:7px;margin-top:22px}.rz-cal .dw{text-align:center;font-size:13px;font-weight:900;letter-spacing:.1em;color:#6b7385;padding-bottom:2px}
+    .rz-c{border-radius:12px;padding:8px 10px;min-height:96px}.rz-c .n{font-size:14px;font-weight:800;opacity:.8}.rz-c b{display:block;font-size:25px;font-weight:900;margin-top:2px;letter-spacing:-.01em}.rz-c small{display:block;font-size:12px;font-weight:700;opacity:.85;margin-top:2px}
+    .rz-c.g{background:#e3f6ea;color:#11743a}.rz-c.a{background:#fdf1d8;color:#8f6310}.rz-c.r{background:#fde5e7;color:#b3303c}.rz-c.f{border:2px dashed #d5dbe6;color:#9aa1b2}.rz-c.f b{font-size:17px}.rz-c.x{visibility:hidden}
+    .rz-w{background:#203c8e;color:#fff;border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;justify-content:center}.rz-w small{font-size:11px;font-weight:900;opacity:.75}.rz-w b{font-size:24px;font-weight:900}.rz-w em{font-style:normal;font-size:14px;font-weight:800;color:#e2b874}.rz-w.e{background:#eef0f5;color:#9aa1b2}
+    .rz-lg{display:flex;flex-wrap:wrap;gap:22px;margin-top:14px;font-size:14px;font-weight:800;color:#6b7385}.rz-lg i{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:6px;vertical-align:-2px}.rz-lg i.g{background:#16a34a}.rz-lg i.a{background:#d99a1e}.rz-lg i.r{background:#dc4b57}
+    .rz-two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}.rz-two div{border-radius:22px;padding:18px 22px}.rz-two .bst{background:#e3f6ea}.rz-two .wst{background:#fde5e7}
+    .rz-two small{display:block;font-size:14px;font-weight:900;letter-spacing:.12em}.rz-two .bst small{color:#11743a}.rz-two .wst small{color:#b3303c}.rz-two b{display:block;font-size:30px;font-weight:900;margin-top:4px}.rz-two span{font-size:16px;font-weight:700;color:#3a4255}
     /* PDF cover, half blue and half white */
     .mp-cv2{background:#fff;color:#1d2433;padding:0}.mp-cv2 .mp-foot{color:#6b7385}
     .cv2-top{background:linear-gradient(135deg,#2a4bb0,#16307a);color:#fff;padding:62px 72px 54px}
@@ -12439,6 +12450,40 @@ function dHead(k,t){return `<div class="dz-h"><small>${k}</small><b>${t}</b></di
 function lyRows(m){const ly=m.ly;return [['Spend',m.a.spend,ly.spend,mpK,null],['Conversions',m.a.conversions,ly.conversions,v=>fmt(v,0),1],['Conv. value',m.a.value,ly.value,mpK,1],['ROAS',m.a.roas,ly.roas,v=>fmt(v,2)+'x',1]]}
 function chip(a,b,hi){const ch=b?a/b-1:null;if(ch==null)return '—';return `<span class="dz-chg ${hi==null?'flat':ch>=0?'up':'down'}">${ch>=0?'▲':'▼'} ${Math.abs(ch*100).toFixed(1)}%</span>`}
 function lyLab(m){const ly=m.ly;return ly.from?`${shortDay(ly.from).toLocaleDateString('en-GB',{day:'numeric',month:'short'})} – ${shortDay(ly.to).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}`:''}
+
+function mpResultsPage(m){
+ const days=m.days,live=m.live,va=x=>x.plan.value?x.actual.value/x.plan.value:null;
+ const cls=r=>r==null?'':r>=1?'g':r>=.9?'a':'r', pct=r=>r==null?'—':Math.round(r*100)+'%';
+ const hit=live.filter(x=>va(x)!=null&&va(x)>=1).length, st=m.streak||{n:0};
+ const dd=(k,o)=>shortDay(k).toLocaleDateString('en-GB',Object.assign({day:'numeric',month:'short'},o||{}));
+ const rated=live.filter(x=>va(x)!=null), best=rated.reduce((b,x)=>!b||va(x)>va(b)?x:b,null), worst=rated.reduce((b,x)=>!b||va(x)<va(b)?x:b,null);
+ const first=live[0]||days[0], last=live[live.length-1]||days[days.length-1];
+ const range=`${first.dayNumber}–${last.dayNumber} ${m.label}`;
+ const tile=(l,v,sub)=>`<div><small>${l}</small><b>${v}</b><em>${sub}</em></div>`;
+ const lead=(shortDay(days[0].date).getDay()+6)%7, cells=[...Array(lead)].map(()=>null).concat(days);
+ while(cells.length%7)cells.push(null);
+ let cal='';
+ for(let w=0;w<cells.length/7;w++){
+   const row=cells.slice(w*7,w*7+7);
+   cal+=row.map(x=>{
+     if(!x)return '<div class="rz-c x"></div>';
+     if(!x.actual)return `<div class="rz-c f"><span class="n">${x.dayNumber}</span><b>plan</b><small>${mpK(x.plan.value)} · ${fmt(x.plan.roas,2)}x</small></div>`;
+     const r=va(x);return `<div class="rz-c ${cls(r)}"><span class="n">${x.dayNumber}</span><b>${x.actual.roas!=null?fmt(x.actual.roas,2)+'x':'—'}</b><small>${pct(r)} · tgt ${fmt(x.plan.roas,2)}</small></div>`}).join('');
+   const lv=row.filter(x=>x&&x.actual), sp=dxSum(lv,x=>x.actual.spend), vl=dxSum(lv,x=>x.actual.value), pv=dxSum(lv,x=>x.plan.value);
+   cal+=lv.length?`<div class="rz-w"><small>WEEK ${w+1}</small><b>${pv?pct(vl/pv):'—'}</b><em>${sp?fmt(vl/sp,2)+'x':'—'}</em></div>`:`<div class="rz-w e"><small>WEEK ${w+1}</small><b>—</b></div>`;
+ }
+ const day=(x,o)=>x?shortDay(x.date).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}):'—';
+ return `<div class="mp-pg mp-cv2 rz">
+  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="">`:'<b>HEMERA</b>'}<span>${esc(m.meta.dashboardTitle)}</span></div>
+   <div class="cv2-kick" style="margin-top:44px">RESULTS · DAY BY DAY</div><h1 class="rz-h">${esc(range)}</h1>
+   <div class="cv2-sub">${live.length} of ${days.length} days · against the full-month plan</div>
+   <div class="rz-sum">${hit} of ${live.length} days hit their value plan${st.n>=3?` · <b>${st.n} in a row</b> from ${esc(dd(st.from))}`:''}.</div></div>
+  <div class="rz-bd"><div class="rz-k">${tile('SPEND',mpK(m.a.spend),pct(m.pt.spend?m.a.spend/m.pt.spend:null)+' of month plan')}${tile('CONVERSIONS',fmt(m.a.conversions,0),pct(m.pt.conversions?m.a.conversions/m.pt.conversions:null)+' of month plan')}${tile('VALUE',mpK(m.a.value),pct(m.pt.value?m.a.value/m.pt.value:null)+' of month plan')}${tile('ROAS',fmt(m.a.roas,2)+'x','target '+fmt(m.pt.roas,2)+'x')}</div>
+   <div class="rz-cal"><span class="dw">MON</span><span class="dw">TUE</span><span class="dw">WED</span><span class="dw">THU</span><span class="dw">FRI</span><span class="dw">SAT</span><span class="dw">SUN</span><span class="dw">WEEK</span>${cal}</div>
+   <div class="rz-lg"><span><i class="g"></i>value on plan</span><span><i class="a"></i>90–99%</span><span><i class="r"></i>under 90%</span><span>big number = ROAS · week = value % of plan · ROAS</span></div>
+   <div class="rz-two"><div class="bst"><small>BEST DAY</small><b>${esc(day(best))}</b><span>${best?`Value ${pct(va(best))} of plan · ${fmt(best.actual.roas,2)}x ROAS`:''}</span></div><div class="wst"><small>TOUGHEST DAY</small><b>${esc(day(worst))}</b><span>${worst?`Value ${pct(va(worst))} of plan · ${fmt(worst.actual.roas,2)}x ROAS`:''}</span></div></div></div>
+  ${mpFoot('2')}</div>`;
+}
 function mpWeeksPage(m){
  const cell=c=>c&&(c.spend||c.value)?`<b>${mpK(c.value)}</b><small>${c.spend?fmt(c.value/c.spend,2)+'x':'—'} · ${mpK(c.spend)}</small>`:'<small class="dz-dash">—</small>';
  const nm=n=>`<span class="dz-n"><i style="background:${KC[mpKey(n)]}"></i>${esc(CHANNEL_SHORT[n]||n)}</span>`;
@@ -12452,7 +12497,7 @@ function mpWeeksPage(m){
   <tr class="dz-tot"><td class="l">Total</td>${m.weeks.map(w=>`<td>${cell(w.tot)}${w.plan&&w.tot.value?`<em>${mpPct(w.tot.value/w.plan)} of plan</em>`:''}</td>`).join('')}</tr></tbody></table></div>
   <div class="dz-note">Each cell: conversion value, then ROAS · spend.</div>${mpFoot('3')}</div>`;
 }
-function mpComparePage(m,notes){
+function mpComparePage(m,notes,pg){
  const team=String(notes||'').split('\n').map(s=>s.trim()).filter(Boolean);
  return `<div class="mp-pg mp-navy dz">
   ${dHead('SAME HIJRI MONTH LAST YEAR','This year against the same Hijri days')}
@@ -12461,7 +12506,7 @@ function mpComparePage(m,notes){
   ${dHead('NOTES','What stood out this month')}
   <div class="dz-tl">${mpHighlights(m).map((t,i)=>`<div><span>${i+1}</span><p>${esc(t)}</p></div>`).join('')}</div>
   ${team.length?`<div class="dz-teamcard"><small>FROM THE TEAM</small>${team.map(t=>`<p>${esc(t)}</p>`).join('')}</div>`:''}
-  ${mpFoot('4')}</div>`;
+  ${mpFoot(String(pg||4))}</div>`;
 }
 function mpThanks(m){
  return `<div class="mp-pg mp-navy mp-thx">
@@ -12506,10 +12551,10 @@ async function mrBuild(){
    await ensureMonthExtras();mvSettle();
    const m=mpData();if(!m)throw new Error('The media plan has no days yet.');
    const steps=[['Building the cover…',()=>mpCapture(mpCover(m))],
-     ['Adding the Results page…',()=>captureReport(resultsShareHtml(),'rp-narrow')],
-     ...(lyShareHtml()?[['Adding the days vs last year…',()=>captureReport(lyShareHtml(),'rp-narrow')]]:[]),
+     ['Adding the Results page…',()=>mpCapture(mpResultsPage(m))],
      ['Adding campaign types by week…',()=>mpCapture(mpWeeksPage(m))],
-     ['Adding last year and notes…',()=>mpCapture(mpComparePage(m,MR.notes))],
+     ...(lyShareHtml()?[['Adding the days vs last year…',()=>captureReport(lyShareHtml(),'rp-narrow')]]:[]),
+     ['Adding last year and notes…',()=>mpCapture(mpComparePage(m,MR.notes,lyShareHtml()?5:4))],
      ['Adding the thank-you page…',()=>mpCapture(mpThanks(m))]];
    const canvases=[];
    for(let i=0;i<steps.length;i++){MR.busy=`${steps[i][0]} (${i+1}/${steps.length})`;drawMonthlyReport();canvases.push(await steps[i][1]())}
