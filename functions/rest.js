@@ -422,28 +422,18 @@ const R = {
     const fileName = (String(meta.fileName || '').replace(/[^\w.\- ]/g, '').slice(0, 80) || 'HEMERA-Report').replace(/\.pdf$/i, '') + '.pdf';
     const people = meta.testOnly ? [{ email: me.email, name: me.name || nameFromEmail(me.email) }] : await approvedPeople();
     if (!people.length) throw new Error('There is no one to send the report to yet.');
-    // The PDF's cover shows in the email itself; the highlights are only a fallback when it is missing.
-    const cover = /^[A-Za-z0-9+/=]+$/.test(String(meta.cover || '')) ? Buffer.from(meta.cover, 'base64') : null;
-    const hasCover = !!(cover && cover.length > 1000 && cover.length < 900 * 1024 && cover[0] === 0xff && cover[1] === 0xd8);
-    const lines = hasCover ? '' : (Array.isArray(meta.lines) ? meta.lines : []).slice(0, 4).map(l => '<li style="margin:0 0 6px">' + esc(String(l).slice(0, 220)) + '</li>').join('');
     let link = WEB_PAGE_URL;
     try { link = API_URL + '/report/' + (await reportStore(bytes, fileName)); } catch (e) { console.error('Report store: ' + e.message); }
     const pages = Math.max(1, Math.min(30, Number(meta.pages) || 1)), mb = (bytes.length / 1048576).toFixed(1);
-    // The cover sits on a grey desk like a page in a PDF viewer, with the file's name under it; all of it opens the PDF.
+    // The file itself as a card (name, pages, size) that opens the PDF, like an attachment in a chat.
     const pdfCard = '<a href="' + esc(link) + '" style="display:block;text-decoration:none;margin:0 0 18px">' +
-      '<div style="background:#e4e8f0;border:1px solid #d5dbe6;border-radius:14px;overflow:hidden"><div style="padding:16px 16px 0">' +
-      '<img src="cid:hemera-cover" width="400" alt="' + esc(title) + '" style="display:block;width:100%;max-width:400px;height:auto;margin:0 auto;border:1px solid #c9d0dd;border-radius:3px;background:#ffffff">' +
-      '<div style="height:6px;margin:0 6px;background:#d3d9e4;border-radius:0 0 3px 3px"></div></div>' +
-      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:12px;background:#ffffff;border-top:1px solid #d5dbe6"><tr>' +
+      '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff;border:1px solid #d5dbe6;border-radius:14px"><tr>' +
       '<td width="44" style="padding:12px 0 12px 14px"><div style="width:32px;height:32px;border-radius:7px;background:#e5322d;color:#ffffff;font:800 10px Arial,sans-serif;line-height:32px;text-align:center">PDF</div></td>' +
       '<td style="padding:12px 8px;font-family:Arial,sans-serif"><div style="font-size:13px;font-weight:700;color:#1d2433;word-break:break-word">' + esc(fileName) + '</div>' +
       '<div style="font-size:11.5px;color:#8a92a0;margin-top:2px">' + pages + (pages === 1 ? ' page' : ' pages') + ' · ' + mb + ' MB</div></td>' +
-      '<td width="40" style="padding:12px 14px 12px 0;text-align:right;font:700 20px Arial,sans-serif;color:#203C8E">&#8681;</td></tr></table></div></a>';
-    const body = P(esc(String(meta.intro || 'The media plan results for the month are attached as a PDF.').slice(0, 300))) +
-      (hasCover ? pdfCard : '') +
-      (lines ? '<ul style="margin:0 0 16px;padding-left:18px;font-size:14px;line-height:1.5;color:#1d2433">' + lines + '</ul>' : '');
+      '<td width="40" style="padding:12px 14px 12px 0;text-align:right;font:700 20px Arial,sans-serif;color:#203C8E">&#8681;</td></tr></table></a>';
+    const body = P(esc(String(meta.intro || 'The media plan results for the month are attached as a PDF.').slice(0, 300))) + pdfCard;
     const files = [{ filename: fileName, content: bytes, contentType: 'application/pdf' }];
-    if (hasCover) files.push({ filename: 'cover.jpg', content: cover, contentType: 'image/jpeg', cid: 'hemera-cover' });
     let sent = 0;
     const failed = [];
     for (const p of people) {

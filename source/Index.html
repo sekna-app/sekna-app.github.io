@@ -12488,8 +12488,6 @@ async function mrBuild(){
    });
    MR.pdf=doc.output('datauristring').split(',')[1];
    MR.pages=canvases.map(c=>{const t=document.createElement('canvas');t.width=240;t.height=Math.round(240*c.height/c.width);t.getContext('2d').drawImage(c,0,0,t.width,t.height);return t.toDataURL('image/jpeg',.8)});
-   
-   {const c=canvases[0],t=document.createElement('canvas');t.width=Math.min(864,c.width);t.height=Math.round(t.width*c.height/c.width);t.getContext('2d').drawImage(c,0,0,t.width,t.height);MR.cover=t.toDataURL('image/jpeg',.82).split(',')[1]}
    MR.m=m;MR.sig=mrSig();MR.busy='';
  }catch(err){MR.busy='';MR.msg='⚠️ '+esc(errorText(err))}
  finally{CUR_HOLD--}
@@ -12508,7 +12506,7 @@ async function mrSend(testOnly){
    title:`HEMERA · ${m.meta.dashboardTitle} · ${m.label} results`,
    fileName:`HEMERA-${m.meta.shortLabel}-${m.label.replace(/\s+/g,'-')}-Results`,
    intro:`Here are the ${m.label} media plan results for ${m.meta.dashboardTitle}. ${mpWords(m)}`,
-   lines:mpHighlights(m).slice(0,3),cover:MR.cover||'',pages:(MR.pages||[]).length};
+   lines:mpHighlights(m).slice(0,3),pages:(MR.pages||[]).length};
  serverCall('adminSendMonthlyReport',getAccessToken(),MR.pdf,meta).then(r=>{
    MR.busy='';MR.msg=r.testOnly?'✅ Test sent to your email.':`✅ Sent to ${r.sent} ${r.sent===1?'person':'people'}.${r.failed&&r.failed.length?' Not sent to: '+esc(r.failed.join(', ')):''}`;drawMonthlyReport();
  }).catch(err=>{MR.busy='';MR.msg='⚠️ '+esc(errorText(err));drawMonthlyReport()});
