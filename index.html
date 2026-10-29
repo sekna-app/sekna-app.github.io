@@ -3831,7 +3831,7 @@ window.addEventListener('load',function(){
     .st-r2m{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}.st-r2m span{background:#f4f6fb;border-radius:7px;padding:2px 7px;font-size:10.5px;font-weight:800;color:#4b5568}
     .st-r2m span.v{background:#e9f8f0;color:#13894f}.st-r2m span.a{margin-left:auto;background:var(--b);color:var(--c)}
     body.dark-mode .st-r2{background:#151a22;border-color:#252a32;border-left-color:var(--c)}body.dark-mode .st-r2t b{color:#fff}body.dark-mode .st-r2m span{background:#1a1f27;color:#c9d0dc}body.dark-mode .st-r2m span.v{background:#10271e;color:#39e29a}
-    #app .st-aiic{background:linear-gradient(135deg,#7c3aed,#3d6bff)!important;color:#fff!important}#app .st-aiic svg{fill:#fff;stroke:none}#app .st-aiic::after{display:none}
+    #app .st-aiic{background:linear-gradient(135deg,#7c3aed,#3d6bff)!important;color:#fff!important}#app .st-aiic svg{fill:#fff;stroke:none}#app .st-aiic[data-ic=search] svg{fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round}#app .st-aiic::after{display:none}
     .stp-sw2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 14px}
     .stp-sw2 button{display:flex;align-items:center;gap:9px;border:1.5px solid #e7eaf2;background:#fff;border-radius:16px;padding:9px 10px;font:inherit;text-align:left;cursor:pointer;min-width:0;transition:all .25s}
     .stp-sw2 .ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:#f1f3f8;flex:none}.stp-sw2 .ic svg{width:18px;height:18px;fill:none;stroke:#6b7385;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.stp-sw2 .ai .ic svg{fill:#7c3aed;stroke:none}
@@ -8640,7 +8640,7 @@ function renderPerf(){
  const body=document.getElementById('stBody');if(!body)return;
  const c=STP[CURRENT_ACCOUNT]||{},d=c.data;
  if(!d&&!c.busy&&!c.err)stpLoad(false);
- const top=`<section class="card section st-sec">${stModeSw()}<div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month"></span><span>ST Performance</span></div><div class="section-sub">${d&&d.run?'Daily report · run '+esc(d.run)+(d.updated?' · data '+esc(d.updated.slice(0,16)):''):'Search Terms Daily Report'}</div></div>${d&&!d.missing?`<button type="button" class="pk-ghost st-rd" onclick="stpLoad(true)" ${c.busy?'disabled':''}>${c.busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read'}</button>`:''}</div>`;
+ const top=`<section class="card section st-sec">${stModeSw()}<div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month sec-ic st-aiic" data-ic="search"><svg viewBox="0 0 24 24" aria-hidden="true">${SEC_IC.search}</svg></span><span>ST Performance</span></div><div class="section-sub">${d&&d.run?'Daily report · run '+esc(d.run)+(d.updated?' · data '+esc(d.updated.slice(0,16)):''):'Search Terms Daily Report'}</div></div>${d&&!d.missing?`<button type="button" class="pk-ghost st-rd" onclick="stpLoad(true)" ${c.busy?'disabled':''}>${c.busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read'}</button>`:''}</div>`;
  let inner;
  if(!d)inner=`<div class="vly-wait">${c.err?'⚠️ '+esc(c.err)+' · <a href="#" onclick="stpLoad(true);renderPerf();return false">Try again</a>':'<span class="lab-spin dark"></span> Reading the search terms report…'}</div>`;
  else if(d.missing||!(d.sections||[]).length)inner=`<div class="dx-empty">The search terms report of ${esc(CURRENT_ACCOUNT.toUpperCase())} is not linked or is empty.</div>`;
