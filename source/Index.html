@@ -5222,8 +5222,9 @@ window.addEventListener('load',function(){
  var g=s.querySelector('.sks-glint'),im=s.querySelector('.sks-logo img');
  if(g&&im){g.style.webkitMaskImage=g.style.maskImage='url('+im.src+')'}
  
- var inApp=!!(window.AndroidShare&&typeof window.AndroidShare.splashShown==='function');
- if(inApp){s.classList.add('sks-app');try{requestAnimationFrame(function(){window.AndroidShare.splashShown()})}catch(e){}}
+ 
+ var inApp=!!(window.AndroidShare&&typeof window.AndroidShare.dashboardReady==='function');
+ if(inApp){s.remove();return}
  var quick=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
  setTimeout(function(){s.classList.add('out');setTimeout(function(){s.remove()},460)},quick?700:2100);
 })();
