@@ -3657,6 +3657,23 @@ window.addEventListener('load',function(){
     .st-qm-c .quick-metric{padding-bottom:28px!important}
     @media (min-width:1100px){#app .st-qm{grid-template-columns:repeat(4,1fr)!important}}
     .rp-report .st-qm{grid-template-columns:repeat(4,1fr)!important;gap:12px!important;margin-top:14px!important}.rp-report .st-qm .quick-metric{background:#fff;color:#1d2433}.rp-report .st-qm .kx-c{font-size:12px}
+    /* v170 ST · AI Max: purple AI card, card + chips rows, two-card switch */
+    #app .st-card.st-ai{background:radial-gradient(circle at 100% 0,#7c4bdb,#2b1f6e 60%,#1a1450);border:0;color:#fff;box-shadow:0 14px 30px rgba(43,31,110,.3)}
+    #app .st-ai .st-k{color:#cbbdf6}#app .st-ai .st-tiles div{background:rgba(255,255,255,.09)!important;border-left:4px solid var(--c);border-radius:12px}
+    #app .st-ai .st-tiles b{color:#fff}#app .st-ai .st-tiles small{color:#cbbdf6}#app .st-ai .st-tiles div[style*="#13894f"]{--c:#4be39a!important}
+    .st-cl{display:grid;gap:7px;margin-top:4px}
+    .st-r2{background:#fff;border:1px solid #eef0f6;border-left:4px solid var(--c);border-radius:14px;padding:9px 11px}
+    .st-r2t{display:flex;justify-content:space-between;align-items:center;gap:8px}.st-r2t b{font-size:13.5px;font-weight:850;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.st-r2t em{font-style:normal;font-size:13.5px;font-weight:900;color:var(--c);direction:ltr}
+    .st-r2m{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}.st-r2m span{background:#f4f6fb;border-radius:7px;padding:2px 7px;font-size:10.5px;font-weight:800;color:#4b5568}
+    .st-r2m span.v{background:#e9f8f0;color:#13894f}.st-r2m span.a{margin-left:auto;background:var(--b);color:var(--c)}
+    body.dark-mode .st-r2{background:#151a22;border-color:#252a32;border-left-color:var(--c)}body.dark-mode .st-r2t b{color:#fff}body.dark-mode .st-r2m span{background:#1a1f27;color:#c9d0dc}body.dark-mode .st-r2m span.v{background:#10271e;color:#39e29a}
+    #app .st-aiic{background:linear-gradient(135deg,#7c3aed,#3d6bff)!important;color:#fff!important}#app .st-aiic svg{fill:#fff;stroke:none}#app .st-aiic::after{display:none}
+    .stp-sw2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 14px}
+    .stp-sw2 button{display:flex;align-items:center;gap:9px;border:1.5px solid #e7eaf2;background:#fff;border-radius:16px;padding:9px 10px;font:inherit;text-align:left;cursor:pointer;min-width:0;transition:all .25s}
+    .stp-sw2 .ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:#f1f3f8;flex:none}.stp-sw2 .ic svg{width:18px;height:18px;fill:none;stroke:#6b7385;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.stp-sw2 .ai .ic svg{fill:#7c3aed;stroke:none}
+    .stp-sw2 b{display:block;font-size:13px;font-weight:900;color:#1d2433;white-space:nowrap}.stp-sw2 small{display:block;font-size:10px;font-weight:700;color:#8a92a6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .stp-sw2 button.on{border-color:transparent;background:linear-gradient(135deg,#5b3fd6,#3d6bff);box-shadow:0 8px 18px rgba(91,63,214,.28)}.stp-sw2 .on b{color:#fff}.stp-sw2 .on small{color:#dcd3ff}.stp-sw2 .on .ic{background:rgba(255,255,255,.18)}.stp-sw2 .on .ic svg{stroke:#fff}.stp-sw2 .ai.on .ic svg{fill:#fff}
+    body.dark-mode .stp-sw2 button:not(.on){background:#151a22;border-color:#252a32}body.dark-mode .stp-sw2 button:not(.on) b{color:#fff}
     /* Search Terms Performance (the daily report) */
     .stp-sw{display:flex;background:#e9edf5;border-radius:14px;padding:4px;margin:0 0 14px}.stp-sw button{flex:1;border:0;background:none;border-radius:11px;padding:8px 6px;font:inherit;font-size:12px;font-weight:900;color:#6b7385;cursor:pointer;line-height:1.25}
     .stp-sw button.on{background:#fff;color:#203c8e;box-shadow:0 2px 8px rgba(0,0,0,.07)}.stp-sw small{display:block;font-size:10px;font-weight:700;color:#8a92a6;margin-top:1px}
@@ -5957,11 +5974,12 @@ const SEC_IC={trend:'<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>',week:'<
  flask:'<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.7 3h10.6a2 2 0 0 0 1.7-3l-5-9V3"/><path d="M7.5 15h9"/>',archive:'<rect x="4" y="4" width="16" height="5" rx="1.5"/><path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9M10 13h4"/>',
  swap:'<path d="M7 4v16M7 4L4 7M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/>',trophy:'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 6h3a3 3 0 0 1-3 4M7 6H4a3 3 0 0 0 3 4"/>',
  star:'<path d="M12 3l2.6 5.5 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.3l6-.8z"/>',doc:'<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/>',target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/>',
+ spark:'<path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/>',
  search:'<circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5M8 10.5h5"/>',
  dot:'<circle cx="12" cy="12" r="5"/>'};
 function secIconKey(t){
  t=String(t||'').toLowerCase();
- if(/search terms/.test(t))return 'search';
+ if(/ai max/.test(t))return 'spark';if(/search terms|st performance/.test(t))return 'search';
  if(/hijri|last year/.test(t))return 'hist';if(/campaign type/.test(t))return 'layers';if(/glance/.test(t))return 'cal';
  if(/weekly/.test(t))return 'week';if(/day by day/.test(t))return 'grid';if(/channel/.test(t))return 'crown';if(/lab/.test(t))return 'flask';
  if(/plan (performance )?history/.test(t))return 'archive';if(/month vs|report|monthly history/.test(t))return /monthly report/.test(t)?'doc':'swap';
@@ -8343,8 +8361,8 @@ function stRing(sm,size,th,center,dark){
 function stPct(sm,k){return sm.cost?Math.round(sm.by[k]/sm.cost*100):0}
 function stCard(sm,dark){
  const keys=['x','n','f','g'].filter(k=>sm.cnt[k]);
- const ring=stRing(sm,116,15,`<text x="58" y="56" text-anchor="middle" font-size="15" font-weight="900" fill="${dark?'#fff':'#1d2433'}">${esc(money(sm.cost,2))}</text><text x="58" y="71" text-anchor="middle" font-size="8.5" font-weight="800" fill="${dark?'#9fb0dd':'#8a92a6'}">${sm.T.length} TERMS</text>`,dark);
- return `<div class="st-card${dark?' dk':''}"><div class="st-k">✦ AI MAX · SPEND BY RESULT</div><div class="st-wrap">${ring}<div class="st-tiles">${keys.map(k=>`<div style="--b:${dark?'rgba(255,255,255,.08)':ST_K[k].b};--c:${ST_K[k].c}"><b>${money(sm.by[k],2)}</b><em>${stPct(sm,k)}%</em><small>${ST_K[k].l} · ${sm.cnt[k]}</small></div>`).join('')}</div></div>
+ const ring=stRing(sm,116,15,`<text x="58" y="56" text-anchor="middle" font-size="15" font-weight="900" fill="#fff">${esc(money(sm.cost,2))}</text><text x="58" y="71" text-anchor="middle" font-size="8.5" font-weight="800" fill="#cbbdf6">${sm.T.length} TERMS</text>`,true);
+ return `<div class="st-card st-ai${dark?' dk':''}"><div class="st-k">✦ AI MAX · SPEND BY RESULT</div><div class="st-wrap">${ring}<div class="st-tiles">${keys.map(k=>`<div style="--b:${dark?'rgba(255,255,255,.08)':ST_K[k].b};--c:${ST_K[k].c}"><b>${money(sm.by[k],2)}</b><em>${stPct(sm,k)}%</em><small>${ST_K[k].l} · ${sm.cnt[k]}</small></div>`).join('')}</div></div>
   </div>`;
 }
 
@@ -8365,7 +8383,7 @@ function renderTerms(part){
  if(ST_MODE==='perf')return renderPerf();
  const c=ST[CURRENT_ACCOUNT]||{},d=c.data;
  if(!d&&!c.busy&&!c.err)stLoad(false);
- const shell=inner=>`<section class="card section st-sec">${stModeSw()}<div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month"></span><span>Search Terms</span></div><div class="section-sub">${d&&d.run?'AI Max · report run '+esc(d.run):'AI Max Snapshot'}</div></div>${d&&!d.missing?`<button type="button" class="pk-ghost st-rd" onclick="stLoad(true)" ${c.busy?'disabled':''}>${c.busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read'}</button>`:''}</div>${inner}</section>`;
+ const shell=inner=>`<section class="card section st-sec">${stModeSw()}<div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month sec-ic st-aiic" data-ic="spark"><svg viewBox="0 0 24 24" aria-hidden="true">${SEC_IC.spark}</svg></span><span>ST · AI Max ${esc(accountMeta(DASH_DATA||{}).shortLabel||CURRENT_ACCOUNT.toUpperCase())}</span></div><div class="section-sub">${d&&d.run?'Report run '+esc(d.run):'AI Max Snapshot'}</div></div>${d&&!d.missing?`<button type="button" class="pk-ghost st-rd" onclick="stLoad(true)" ${c.busy?'disabled':''}>${c.busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read'}</button>`:''}</div>${inner}</section>`;
  if(!d){body.innerHTML=shell(`<div class="vly-wait">${c.err?'⚠️ '+esc(c.err)+' · <a href="#" onclick="stLoad(true);renderTerms();return false">Try again</a>':'<span class="lab-spin dark"></span> Reading the AI Max sheet…'}</div>`);return}
  if(d.missing||!(d.terms||[]).length){body.innerHTML=shell(`<div class="dx-empty">${d.missing?`The AI Max sheet of ${esc(CURRENT_ACCOUNT.toUpperCase())} is not linked or has no search terms yet.`:'No search terms with spend in this snapshot.'}</div>`);return}
  const sm=stSum(d),T=sm.T;
@@ -8380,7 +8398,7 @@ function renderTerms(part){
  const mx=Math.max(...T.map(t=>t.cost),.01);
  const table=`<table class="st-t"><colgroup><col style="width:23%"><col style="width:7%"><col style="width:7%"><col style="width:10%"><col style="width:7%"><col style="width:10%"><col style="width:8%"><col style="width:11%"><col style="width:17%"></colgroup><tr><th>Search term</th><th>Clicks</th><th>Impr.</th><th>Cost</th><th>Conv.</th><th>Value</th><th>ROAS</th><th>Result</th><th>Action</th></tr>
   ${list.map(t=>`<tr><td><bdi>${esc(t.term)}</bdi></td><td>${fmt(t.clicks,0)}</td><td>${fmt(t.impr,0)}</td><td><b>${esc(money(t.cost,2))}</b></td><td>${fmt(t.conv,0)}</td><td${t.value>0?' class="st-gv"':''}>${esc(money(t.value,2))}</td><td>${fmt(stRoas(t),2)}x</td><td>${pill(t.k)}</td><td>${act(t.k)}</td></tr>`).join('')}</table>`;
- const rows=`<div class="st-list">${list.map(t=>`<div class="st-r"><b><bdi>${esc(t.term)}</bdi></b><em style="color:${ST_K[t.k].c}">${esc(money(t.cost,2))}</em><div class="st-br"><span style="width:${(t.cost/mx*100).toFixed(1)}%;background:${ST_K[t.k].c}"></span></div><small>${fmt(t.clicks,0)} click · ${fmt(t.impr,0)} impr. · ${fmt(t.conv,0)} conv. · <span${t.value>0?' class="st-gv"':''}>${esc(money(t.value,2))} value</span></small>${act(t.k)}</div>`).join('')}</div>`;
+ const rows=`<div class="st-list st-cl">${list.map(t=>`<div class="st-r2" style="--c:${ST_K[t.k].c};--b:${ST_K[t.k].b}"><div class="st-r2t"><b><bdi>${esc(t.term)}</bdi></b><em>${esc(money(t.cost,2))}</em></div><div class="st-r2m"><span>${fmt(t.clicks,0)} click</span><span>${fmt(t.impr,0)} impr.</span><span>${fmt(t.conv,0)} conv.</span>${t.value>0?`<span class="v">${esc(money(t.value,2))} value</span>`:''}<span class="a">${ST_K[t.k].ic} ${ST_K[t.k].a}</span></div></div>`).join('')}</div>`;
  const more=all>cut?`<button type="button" class="st-more" onclick="ST_ALL=true;renderTerms(true)">Show all ${all} ▾</button>`:'';
   const listHtml=`<div class="st-bar">${chips}${sorts}</div>${table}${rows}${more}`;
  const part0=document.getElementById('stPart');
@@ -8393,7 +8411,9 @@ let ST_MODE='ai', STP={}, STP_SEEN={};
 function stMode(m){ST_MODE=m;renderTerms()}
 function stModeSw(){
  const a=(ST[CURRENT_ACCOUNT]||{}).data,p=(STP[CURRENT_ACCOUNT]||{}).data;
- return `<div class="stp-sw" role="tablist"><button type="button" class="${ST_MODE==='ai'?'on':''}" onclick="stMode('ai')">✦ AI Max<small>${a&&a.terms?a.terms.length+' terms':'AI Max Snapshot'}</small></button><button type="button" class="${ST_MODE==='perf'?'on':''}" onclick="stMode('perf')">📊 Search Terms Performance<small>${p&&p.run?'run '+esc(p.run):'Daily report'}</small></button></div>`;
+ const SP='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9z"/></svg>',CH='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>';
+ const dt=v=>{const x=String(v||'').slice(0,10);if(!x)return '';const d=new Date(x+'T12:00:00');return isNaN(d)?x:d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})};
+ return `<div class="stp-sw2" role="tablist"><button type="button" class="ai${ST_MODE==='ai'?' on':''}" onclick="stMode('ai')"><span class="ic">${SP}</span><span><b>AI Max</b><small>${a&&a.terms?a.terms.length+' terms'+(a.run?' · '+dt(a.run):''):'AI Max Snapshot'}</small></span></button><button type="button" class="pf${ST_MODE==='perf'?' on':''}" onclick="stMode('perf')"><span class="ic">${CH}</span><span><b>ST Performance</b><small>${p&&p.run?'Daily · '+dt(p.run):'Daily report'}</small></span></button></div>`;
 }
 const STP_S={'1a':['Converting','already a keyword','#2c6bd6','a'],'1b':['Converting','not a keyword yet','#13894f','b'],'2':['High clicks','no conversions','#e8791f','c'],'3':['High impressions','no clicks','#7b8396','d'],'4':['Highest CPC','keywords','#e25d5d','e'],'5':['Top spend','keywords','#8e3fae','f'],'6':['Match type','summary','#5a9e3c','h']};
 const STP_IC={a:'<path d="M12 3l2.4 1.6 2.9-.2 1 2.7 2.3 1.8-.9 2.7.9 2.7-2.3 1.8-1 2.7-2.9-.2L12 21l-2.4-1.6-2.9.2-1-2.7-2.3-1.8.9-2.7-.9-2.7 2.3-1.8 1-2.7 2.9.2z"/><path d="M8.7 12.2l2.2 2.2 4.4-4.6"/>',
@@ -8426,7 +8446,7 @@ function renderPerf(){
  const body=document.getElementById('stBody');if(!body)return;
  const c=STP[CURRENT_ACCOUNT]||{},d=c.data;
  if(!d&&!c.busy&&!c.err)stpLoad(false);
- const top=`<section class="card section st-sec">${stModeSw()}<div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month"></span><span>Search Terms Performance</span></div><div class="section-sub">${d&&d.run?'Daily report · run '+esc(d.run)+(d.updated?' · data '+esc(d.updated.slice(0,16)):''):'Search Terms Daily Report'}</div></div>${d&&!d.missing?`<button type="button" class="pk-ghost st-rd" onclick="stpLoad(true)" ${c.busy?'disabled':''}>${c.busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read'}</button>`:''}</div>`;
+ const top=`<section class="card section st-sec">${stModeSw()}<div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month"></span><span>ST Performance</span></div><div class="section-sub">${d&&d.run?'Daily report · run '+esc(d.run)+(d.updated?' · data '+esc(d.updated.slice(0,16)):''):'Search Terms Daily Report'}</div></div>${d&&!d.missing?`<button type="button" class="pk-ghost st-rd" onclick="stpLoad(true)" ${c.busy?'disabled':''}>${c.busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read'}</button>`:''}</div>`;
  let inner;
  if(!d)inner=`<div class="vly-wait">${c.err?'⚠️ '+esc(c.err)+' · <a href="#" onclick="stpLoad(true);renderPerf();return false">Try again</a>':'<span class="lab-spin dark"></span> Reading the search terms report…'}</div>`;
  else if(d.missing||!(d.sections||[]).length)inner=`<div class="dx-empty">The search terms report of ${esc(CURRENT_ACCOUNT.toUpperCase())} is not linked or is empty.</div>`;
