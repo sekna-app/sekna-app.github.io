@@ -12591,7 +12591,7 @@ function mpTypesPage(m){
    ${share('spend',tS)}${share('value',tV)}
    ${notes.length?`<div class="tz-say"><small>WHAT THE TYPES SAY</small>${notes.map(n=>`<p>• ${n}</p>`).join('')}</div>`:''}
    <div class="rz-lg" style="margin-top:16px"><span><i class="g"></i>ROAS at or above the month's ${fmt(all,2)}x</span><span><i class="a"></i>a bit under</span><span><i class="r"></i>well under</span></div></div>
-  ${mpFoot('3')}</div>`;
+  ${mpFoot('4')}</div>`;
 }
 
 
@@ -12631,7 +12631,7 @@ function mpWeeksPage(m){
    <tr class="tot"><td class="l">Total</td>${on.map(x=>`<td><b>${mpK(x.v)}</b><small>${x.sp?fmt(x.v/x.sp,2)+'x':'—'} · ${mpK(x.sp)}</small>${x.pv?`<em>${mpPct(x.v/x.pv)} of plan</em>`:''}</td>`).join('')}</tr></tbody></table>
    <div class="rz-lg"><span><i class="g"></i>at or above the month's ${fmt(all,2)}x</span><span><i class="a"></i>a bit under</span><span><i class="r"></i>well under</span>${later.length?`<span>${later.map(x=>`Week ${x.i+1} (${x.w.f}–${Math.min(x.w.t,m.days.length)})`).join(', ')} ${later.length>1?'have':'has'} not started</span>`:''}</div>
    ${notes.length>1?`<div class="tz-say"><small>WHAT THE WEEKS SAY</small>${notes.slice(1).map(n=>`<p>• ${n}</p>`).join('')}</div>`:''}</div>
-  ${mpFoot('4')}</div>`;
+  ${mpFoot('3')}</div>`;
 }
 
 
@@ -12742,8 +12742,8 @@ async function mrBuild(){
    const m=mpData();if(!m)throw new Error('The media plan has no days yet.');
    const steps=[['Building the cover…',()=>mpCapture(mpCover(m))],
      ['Adding the Results page…',()=>mpCapture(mpResultsPage(m))],
-     ['Adding campaign types…',()=>mpCapture(mpTypesPage(m))],
      ['Adding the weeks…',()=>mpCapture(mpWeeksPage(m))],
+     ['Adding campaign types…',()=>mpCapture(mpTypesPage(m))],
      ...(m.ly.have?[['Adding this year against last year…',()=>mpCapture(mpLyPage(m))]]:[]),
      ['Adding the notes…',()=>mpCapture(mpNotesPage(m,MR.notes,m.ly.have?6:5))],
      ['Adding the thank-you page…',()=>(document.fonts?document.fonts.load('80px "Herr Von Muellerhoff"').catch(()=>{}):Promise.resolve()).then(()=>mpCapture(mpThanks(m,m.ly.have?7:6)))]];
