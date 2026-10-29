@@ -3735,11 +3735,6 @@ window.addEventListener('load',function(){
       #app .cc-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
       #app .cc-list>.ccd{margin:0}
       #overviewPanel.active,#channelPanel.active{gap:22px}
-      /* Seasons: the big season on the left (stays in view), the list on the right. */
-      #app .ss{max-width:none;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);column-gap:24px;align-items:start}
-      #app .ss>*{grid-column:2}
-      #app .ss>.ss-hero{grid-column:1;grid-row:1/span 60;position:sticky;top:96px;margin:0}
-      #app .ss>.ss-fs{margin-top:0}
     }
     @media (min-width:1500px){
       #app .cc-list{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -3759,10 +3754,6 @@ window.addEventListener('load',function(){
       /* Top & Bottom */
       #rxBody{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start}
       #rxBody .rx-list{grid-template-columns:1fr!important}
-      /* Reports Studio */
-      .mx-card{display:flex;flex-direction:column}
-      .mx-card>#mxBody{order:1}
-      .mx-card>.mx-top{order:2;margin-top:22px;padding-top:20px;border-top:1px solid #e7eaf2}
       /* Media Plan Lab */
       .lab-card .fc-folds{display:grid;grid-template-columns:1fr 1fr;gap:10px}
       .lab-card .fc-folds>*{margin:0!important}
@@ -3826,7 +3817,7 @@ window.addEventListener('load',function(){
     #app .st-card.st-ai{background:radial-gradient(120% 140% at 0% 0%,#2c4fb8,#203c8e 50%,#132457);border:0;color:#fff;box-shadow:0 14px 30px rgba(32,60,142,.25)}
     #app .st-ai .st-k{color:#c9d6ff}#app .st-ai .st-tiles small{color:#c9d6ff!important}#app .st-ai .st-tiles div{background:rgba(255,255,255,.09)!important;border-left:4px solid var(--c);border-radius:12px}
     #app .st-ai .st-tiles b{color:#fff}#app .st-ai .st-tiles small{color:#cbbdf6}#app .st-ai .st-tiles div[style*="#13894f"]{--c:#4be39a!important}
-    .st-cl{display:grid;gap:6px;margin-top:4px}@media (max-width:640px){.st-r2{padding:7px 10px!important;border-radius:12px!important}.st-r2t b,.st-r2t em{font-size:13px!important}.st-r2m{margin-top:4px!important;gap:4px!important}.st-r2m span{font-size:10px!important;padding:1px 6px!important}}
+    .st-cl{display:grid;gap:6px;margin-top:4px}@media (min-width:1100px){.st-list.st-cl{display:none}}@media (max-width:640px){.st-r2{padding:7px 10px!important;border-radius:12px!important}.st-r2t b,.st-r2t em{font-size:13px!important}.st-r2m{margin-top:4px!important;gap:4px!important}.st-r2m span{font-size:10px!important;padding:1px 6px!important}}
     .st-r2{background:#fff;border:1px solid #eef0f6;border-left:4px solid var(--c);border-radius:14px;padding:9px 11px}
     .st-r2t{display:flex;justify-content:space-between;align-items:center;gap:8px}.st-r2t b{font-size:13.5px;font-weight:850;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.st-r2t em{font-style:normal;font-size:13.5px;font-weight:900;color:var(--c);direction:ltr}
     .st-r2m{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}.st-r2m span{background:#f4f6fb;border-radius:7px;padding:2px 7px;font-size:10.5px;font-weight:800;color:#4b5568}
@@ -4352,7 +4343,11 @@ window.addEventListener('load',function(){
     body .topbar .topbar-left{grid-area:left;display:flex;align-items:center;gap:12px}
     body .topbar .brand{grid-area:brand;min-width:0;cursor:pointer}
     body .topbar .actions{grid-area:actions;gap:8px}
-    .tb-sekna{height:25px;width:auto;display:block}
+    .tb-sekna{height:31px;width:auto;display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1;pointer-events:none}
+    /* the logo sits in the middle of the whole bar, not of its left group */
+    body .topbar>.topbar-left{position:static}body .topbar .menu-toggle{position:relative;z-index:2}
+    /* The menu's logo a bit bigger, in the middle; the close button stays on the right */
+    .sk-drawer-head{justify-content:center!important}.sk-drawer-head>.sk-icon-btn{position:absolute;right:16px;top:50%;transform:translateY(-50%);margin-top:2px}.sk-drawer-logo{height:38px!important}
     body .topbar .menu-toggle,body.dark-mode .topbar .menu-toggle{background:rgba(255,255,255,.12)!important;border:1px solid rgba(255,255,255,.14)!important;color:#fff!important;box-shadow:none!important}
     body .topbar .menu-toggle svg{stroke:#fff}
     body .topbar .logo,body.dark-mode .topbar .logo{background:#fff!important;border-color:transparent!important}
