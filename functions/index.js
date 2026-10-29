@@ -182,14 +182,6 @@ const CALLS = {
     await assertAccess(args[0]);
     return Object.assign({}, PREFS_DEFAULT, (await fsGet(PREFS_DOC).catch(() => null)) || {});
   },
-  /** Owner only: the spend alert and the day streak, sent as samples to the owner's own phone. */
-  async appTestPush(args) {
-    const me = await assertOwner(args[0]);
-    const r = await notify.send({ pushes: [
-      { email: me.email, title: '⚠️ Spend is 124% of the day\'s plan · USA', body: 'Test · Oct 28: spent 6,610 against a plan of 5,324. This is how the spend alert looks.', eventType: 'spend_alert' },
-      { email: me.email, title: '🔥 5 days in a row above plan · USA', body: 'Test · Conversion value met the day\'s plan 5 days running. Keep it going!', eventType: 'streak' }] });
-    return { ok: true, sent: r };
-  },
   async appPrefsSet(args) {
     const me = await assertOwner(args[0]);
     const c = args[1] || {}, cur = v => (v === 'USD' || v === 'GBP' ? v : null), now = Object.assign({}, PREFS_DEFAULT, (await fsGet(PREFS_DOC).catch(() => null)) || {});

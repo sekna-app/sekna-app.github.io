@@ -99,7 +99,7 @@ window.addEventListener('load',function(){
     // Longer than the server's own limit (120 s), so Apps Script never runs a move at the same time.
     adminArchiveMove:{w:130000,a:1,t:0},
     adminArchiveProgress:{w:15000,a:1,t:0},
-    adminReadWindow:{w:20000,t:0},adminReadWindowSet:{w:20000,t:0},appPrefs:{w:20000,t:0},appPrefsSet:{w:20000,t:0},appTestPush:{w:30000,t:0},
+    adminReadWindow:{w:20000,t:0},adminReadWindowSet:{w:20000,t:0},appPrefs:{w:20000,t:0},appPrefsSet:{w:20000,t:0},
     // Team Tasks: the server answers (it passes calls to Apps Script until the admin moves them).
     // tk: once this device has seen them on the server, never fall back to the old sheet.
     tasksLoad:{w:25000,t:0,tk:1},taskSave:{w:45000,t:0,tk:1},taskPhoto:{w:25000,t:0,tk:1},seasonsInfo:{w:20000,t:0,tk:1},seasonGoalSet:{w:20000,t:0,tk:1},taskDelete:{w:25000,t:0,tk:1},taskDone:{w:25000,t:0,tk:1},
@@ -3918,7 +3918,6 @@ window.addEventListener('load',function(){
     /* Settings: default currency per account, spend alert levels; the spend alert note */
     .ac-box{display:flex;gap:10px;flex:none}.ac-c{display:flex;align-items:center;gap:5px}.ac-c em{font-style:normal;font-size:10.5px;font-weight:900;color:#8a92a6}.ac-c .cur-sw button{padding:5px 8px;min-width:28px}
     @media (max-width:420px){.ac-box{flex-direction:column;gap:5px;align-items:flex-end}}
-    .sa-test{padding:0 14px 14px 58px}.sa-tb{font:inherit;font-size:12.5px;font-weight:900;border:0;background:#fff5d6;color:#a87a00;border-radius:11px;padding:8px 13px;cursor:pointer}.sa-tb:disabled{opacity:.7}
     .sa-demo{color:#2c4fb8;font-weight:900;text-decoration:none;white-space:nowrap}body.dark-mode .sa-demo{color:#9db4ff}
     .sa-opts{display:flex;gap:6px;padding:0 14px 14px 58px;flex-wrap:wrap}.sa-opts button{font:inherit;font-size:12.5px;font-weight:900;border:1.5px solid #e3e7f0;background:#fff;color:#4b5568;border-radius:11px;padding:7px 12px;cursor:pointer}.sa-opts button.on{background:#203c8e;border-color:#203c8e;color:#fff}
     body.dark-mode .sa-opts button{background:#151a22;border-color:#252a32;color:#c9d0dc}body.dark-mode .sa-opts button.on{background:#3d6bff;border-color:#3d6bff;color:#fff}
@@ -5588,7 +5587,6 @@ window.addEventListener('load',function(){
       <div class="sk-row" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M14.6 9.2c-.5-.8-1.5-1.2-2.6-1.2-1.5 0-2.6.8-2.6 1.9 0 2.5 5.4 1.3 5.4 4 0 1.1-1.2 2-2.8 2-1.2 0-2.2-.5-2.7-1.3M12 6.5V8M12 16v1.5"/></svg></span><span class="sk-row-text"><b>Default currency</b><small>Each account opens in its own currency.</small></span><span class="ac-box" id="accCurBox"></span></div>
       <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg></span><span class="sk-row-text"><b>Spend alert</b><small>A note when the day's spend passes its plan by this much. <a href="#" class="sa-demo" onclick="spendAlertCheck(DASH_DATA,true);return false">Show me</a></small></span></div>
       <div class="sa-opts" id="spendAlertOpts"></div>
-      <div class="sa-test" id="saTest"></div>
     </div>
 
     <div class="st-ver" id="stVer"></div>
@@ -6714,9 +6712,7 @@ const SPEND_ALERT_KEY='sekna_spend_alert';
 function spendAlertPct(){const v=APP_PREFS&&APP_PREFS.alert;return v==null?120:+v||0}
 function setSpendAlert(v){if(!mrOwner())return;prefsSave({alert:v})}
 
-function tpTest(b){b.disabled=true;b.textContent='Sending…';serverCall('appTestPush',getAccessToken()).then(()=>{b.textContent='✅ Sent · check your phone'}).catch(e=>{b.disabled=false;b.textContent='Send me a test';showSettingsToast(errorText(e))})}
 function tpLock(){const own=mrOwner(),c=document.getElementById('tpCard'),n=document.getElementById('tpLockNote');if(c)c.classList.toggle('locked',!own);
- const t=document.getElementById('saTest');if(t)t.innerHTML=own?'<button type="button" class="sa-tb" onclick="tpTest(this)">🔔 Send me a test</button>':'';
  if(n)n.innerHTML=own?'':'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Set by the admin'}
 function drawSpendAlertOpts(){const b=document.getElementById('spendAlertOpts');if(!b)return;const cur=spendAlertPct();const lk=!mrOwner();b.innerHTML=[0,110,120,130,150].map(v=>`<button type="button" class="${cur===v?'on':''}"${lk?' disabled':''} onclick="setSpendAlert(${v})">${v?v+'%':'Off'}</button>`).join('')}
 function spendAlertCheck(d,force){
