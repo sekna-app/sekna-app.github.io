@@ -8549,7 +8549,7 @@ function termsPerfShareHtml(){
    <div class="sq-roas">${esc(K(V))} value · ${T?fmt(V/T,2):'0.00'}x ROAS</div></div>`;
  }
  const sec=id=>{const x=by(id);if(!x)return '';const S=STP_S[id];
-  const jc=col(x,/^cost/),ji=col(x,/^impr/),cols=stpCols(x).filter(c=>c.j!==jc),mi=col(x,/match/);
+  const jc=col(x,/^cost/),ji=col(x,/^impr/),cols=stpCols(x).filter(c=>c.j!==jc&&c.kind!=='p'&&!/cpc/i.test(c.h)),mi=col(x,/match/);
   
   const lab=h=>{const l=h.toLowerCase();return /value/.test(l)?'value':/cpc/.test(l)?'CPC':/ctr/.test(l)?'CTR':/rate/.test(l)?'CVR':l};
   const sub=r=>[mi>0&&r[mi]?`<i style="background:${stpMcol(r[mi])}"></i>${esc(String(r[mi]).replace(/ match close variant$/i,' close variant'))}`:'',...cols.map(c=>{const t=(c.kind==='p'&&typeof r[c.j]==='number'?fmt(c.frac?r[c.j]*100:r[c.j],1).replace(/\.0$/,'')+'%':stpVal(c,r[c.j]))+' '+esc(Number(r[c.j])===1?lab(c.h).replace(/^clicks$/,'click'):lab(c.h));return /value/i.test(c.h)&&Number(r[c.j])>0?`<b>${t}</b>`:t})].filter(Boolean).join(' · ');
