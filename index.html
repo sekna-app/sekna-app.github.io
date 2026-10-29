@@ -3676,9 +3676,11 @@ window.addEventListener('load',function(){
     .mp-white .mp-foot{color:#6b7385}
     /* PDF last page: thank-you certificate */
     .cz h1.cz-h{font-family:HArab,"DM Serif Display",Georgia,serif;font-weight:400;font-size:80px;line-height:1;margin:8px 0 8px}
-    .cz-cert{position:relative;margin:32px 46px 0;padding:46px 52px 40px;background:#fffefb;box-shadow:inset 0 0 0 8px #203c8e,inset 0 0 0 11px #fffefb,inset 0 0 0 14px #c9a35a,inset 0 0 0 18px #fffefb,inset 0 0 0 19px #c9a35a}
-    .cz-cn{position:absolute;width:34px;height:34px;background:#203c8e}.cz-cn i{position:absolute;inset:7px;border:2px solid #e2b874}.cz-cn.tl{left:0;top:0}.cz-cn.tr{right:0;top:0}.cz-cn.bl{left:0;bottom:0}.cz-cn.br{right:0;bottom:0}
-    .cz-no{position:absolute;right:48px;top:28px;font-size:12px;font-weight:800;letter-spacing:.14em;color:#b39a6a}.cz-iss{position:absolute;left:48px;bottom:26px;font-size:12px;font-weight:800;letter-spacing:.1em;color:#b39a6a}
+    /* Plain borders only: the PDF's screenshot library cannot draw stacked inset shadows. */
+    .cz-cert{position:relative;margin:32px 46px 0;padding:38px 44px 32px;background:#fffefb;border:8px solid #203c8e}
+    .cz-fr1,.cz-fr2{position:absolute;pointer-events:none}.cz-fr1{left:3px;top:3px;right:3px;bottom:3px;border:3px solid #c9a35a}.cz-fr2{left:10px;top:10px;right:10px;bottom:10px;border:1px solid #c9a35a}
+    .cz-cn{position:absolute;width:34px;height:34px;background:#203c8e}.cz-cn i{position:absolute;left:7px;top:7px;right:7px;bottom:7px;border:2px solid #e2b874}.cz-cn.tl{left:-8px;top:-8px}.cz-cn.tr{right:-8px;top:-8px}.cz-cn.bl{left:-8px;bottom:-8px}.cz-cn.br{right:-8px;bottom:-8px}
+    .cz-no{position:absolute;right:40px;top:20px;font-size:12px;font-weight:800;letter-spacing:.14em;color:#b39a6a}.cz-iss{position:absolute;left:40px;bottom:18px;font-size:12px;font-weight:800;letter-spacing:.1em;color:#b39a6a}
     .cz-hd{text-align:center;font-size:15px;font-weight:900;letter-spacing:.42em;color:#a07316;margin:0 0 14px}.cz-hd:before,.cz-hd:after{content:"";display:inline-block;width:70px;height:1.5px;background:#d9b46b;vertical-align:middle;margin:0 16px}
     .cz-st{width:150px;height:150px;flex:none;display:block;transform:rotate(-12deg);opacity:.85}
     .cz-msg{margin:0 auto 24px;max-width:780px;text-align:center;font-size:19px;font-weight:600;line-height:1.65;color:#3a4255}
@@ -12893,7 +12895,7 @@ function mpThanks(m,pg){
  return `<div class="mp-pg mp-cv2 cz">
   <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="HEMERA">`:'<b>HEMERA</b>'}${mpTag(m)}</div>
    <div class="cv2-kick" style="margin-top:36px">A NOTE OF THANKS</div><h1 class="cz-h">Thank you</h1><div class="cv2-sub">to the Google Ads team · ${esc(m.label)}</div></div>
-  <div class="cz-cert">${['tl','tr','bl','br'].map(k=>`<span class="cz-cn ${k}"><i></i></span>`).join('')}
+  <div class="cz-cert"><span class="cz-fr1"></span><span class="cz-fr2"></span>${['tl','tr','bl','br'].map(k=>`<span class="cz-cn ${k}"><i></i></span>`).join('')}
    <div class="cz-no">No. HMR-${esc(m.month.slice(0,4))}-${esc(m.month.slice(5,7))}-${esc(String(m.meta.shortLabel||'').toUpperCase())}</div>
    <div class="cz-hd">CERTIFICATE OF APPRECIATION</div><p class="cz-msg">Every number in this report is the work of a team that plans carefully, watches closely and keeps improving. Thank you for another month of focused work. On to ${esc(next)}.</p>
    ${ppl.length?`<div class="cz-ppl" style="grid-template-columns:repeat(${cols},1fr)">${ppl.map(person).join('')}</div>`:''}
