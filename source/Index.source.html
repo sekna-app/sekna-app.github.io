@@ -3711,7 +3711,7 @@ window.addEventListener('load',function(){
     /* ST Performance WhatsApp image: a 1080×1080 square in two columns */
     .rp-report.rp-sq{width:1080px;height:1080px;padding:44px;display:flex;flex-direction:column;overflow:hidden}.rp-sq .rp-foot{margin-top:auto;padding-top:14px}
     .rp-sq .rp-client{width:62px;height:62px;border-radius:18px}.rp-sq .rp-head b{font-size:28px}
-    .sq-two{display:grid;grid-template-columns:400px 1fr;gap:16px;margin-top:20px;flex:1;min-height:0}.sq-two.one{grid-template-columns:1fr}.sq-two>div{display:flex;flex-direction:column;min-height:0}
+    .sq-two{display:grid;grid-template-columns:370px 1fr;gap:16px;margin-top:20px;flex:1;min-height:0}.sq-two.one{grid-template-columns:1fr}.sq-two>div{display:flex;flex-direction:column;min-height:0}
     .sq-gl{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:22px;overflow:hidden}
     .sq-mt{padding:18px 20px;flex:1;display:flex;flex-direction:column}.sq-k{font-size:13px;font-weight:900;letter-spacing:.09em;color:#c9d6ff}.sq-tot{font-size:32px;font-weight:900;margin:4px 0 10px}
     .sq-bar{display:flex;height:12px;border-radius:99px;overflow:hidden;gap:2px;background:rgba(255,255,255,.1)}.sq-bar i{display:block}
@@ -3719,7 +3719,7 @@ window.addEventListener('load',function(){
     .sq-roas{margin-top:auto;padding-top:12px;font-size:15px;font-weight:800;color:#c9d6ff}
     .sq-lst{display:grid!important;grid-auto-rows:1fr;gap:12px}.sq-sc{display:flex;flex-direction:column}
     .sq-h{display:flex;align-items:center;gap:10px;padding:9px 16px;background:var(--c)}.sq-h b{font-size:18px}.sq-h em{margin-left:auto;font-style:normal;font-size:13px;font-weight:900;background:rgba(255,255,255,.22);border-radius:99px;padding:3px 10px}
-    .sq-r{flex:1;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:3px 16px;border-top:1px solid rgba(255,255,255,.08);font-size:17px;font-weight:700;line-height:1.2;min-height:0}.sq-r bdi.ar-t{line-height:1.25}.sq-r>span{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.sq-r em{font-style:normal;font-weight:900}.sq-r small{display:block;font-size:12.5px;margin-top:1px;color:#9fb0dd;font-weight:700}.sq-none{color:#c9d6ff;justify-content:center}
+    .sq-r{flex:1;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:3px 16px;border-top:1px solid rgba(255,255,255,.08);font-size:17px;font-weight:700;line-height:1.2;min-height:0}.sq-r bdi.ar-t{line-height:1.25}.sq-r>span{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.sq-r em{font-style:normal;font-weight:900}.sq-r small i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px}.sq-r small b{color:#4be39a;font-weight:800}.sq-r small{display:block;white-space:normal;line-height:1.3;font-size:12.5px;margin-top:1px;color:#9fb0dd;font-weight:700}.sq-none{color:#c9d6ff;justify-content:center}
     .rp-report .stp-share{display:grid;gap:18px;margin-top:24px}.rp-report .stp-sec{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:24px;box-shadow:none}
     .rp-report .stp-h{padding:14px 20px;gap:14px}.rp-report .stp-h b{font-size:22px}.rp-report .stp-h small{font-size:15px}.rp-report .stp-h em{font-size:16px;padding:5px 14px}.rp-report .stp-ic{width:44px;height:44px;border-radius:14px}.rp-report .stp-ic svg{width:24px;height:24px}
     .rp-report .stp-t{font-size:18px}.rp-report .stp-t th{font-size:12.5px;color:#9fb0dd;padding:10px 18px 6px}.rp-report .stp-t td{padding:9px 18px;color:#fff;border-color:rgba(255,255,255,.07)}.rp-report .stp-t td:first-child{color:#fff}.rp-report .stp-t td small{font-size:12px;color:#9fb0dd}
@@ -8572,9 +8572,11 @@ function termsPerfShareHtml(){
    <div class="sq-roas">${esc(K(V))} value · ${T?fmt(V/T,2):'0.00'}x ROAS</div></div>`;
  }
  const sec=id=>{const x=by(id);if(!x)return '';const S=STP_S[id];
-  const jc=col(x,/^cost/),jv=col(x,/conv\.? ?value/),jk=col(x,/^clicks?$/),ji=col(x,/^impr/);
-  const sub=r=>id==='3'?(ji>=0?fmt(r[ji],0)+' impr.':''):id==='2'?(jk>=0?fmt(r[jk],0)+' clicks':''):(jv>=0?K(Number(r[jv])||0)+' value':'');
-  const rows=x.rows.slice(0,3).map(r=>`<div class="sq-r"><span><bdi${stAr(r[0])}>${esc(r[0])}</bdi><small>${esc(sub(r))}</small></span><em>${jc>=0?esc(money(Number(r[jc])||0,2)):ji>=0?fmt(r[ji],0):''}</em></div>`).join('')||'<div class="sq-r sq-none">👌 Nothing today</div>';
+  const jc=col(x,/^cost/),ji=col(x,/^impr/),cols=stpCols(x).filter(c=>c.j!==jc),mi=col(x,/match/);
+  // Under each term, all of its data: match type, then every number of the row (value in green when there is some).
+  const lab=h=>{const l=h.toLowerCase();return /value/.test(l)?'value':/cpc/.test(l)?'CPC':/ctr/.test(l)?'CTR':/rate/.test(l)?'CVR':l};
+  const sub=r=>[mi>0&&r[mi]?`<i style="background:${stpMcol(r[mi])}"></i>${esc(String(r[mi]).replace(/ match close variant$/i,' close variant'))}`:'',...cols.map(c=>{const t=(c.kind==='p'&&typeof r[c.j]==='number'?fmt(c.frac?r[c.j]*100:r[c.j],1).replace(/\.0$/,'')+'%':stpVal(c,r[c.j]))+' '+esc(Number(r[c.j])===1?lab(c.h).replace(/^clicks$/,'click'):lab(c.h));return /value/i.test(c.h)&&Number(r[c.j])>0?`<b>${t}</b>`:t})].filter(Boolean).join(' · ');
+  const rows=x.rows.slice(0,3).map(r=>`<div class="sq-r"><span><bdi${stAr(r[0])}>${esc(r[0])}</bdi><small>${sub(r)}</small></span><em>${jc>=0?esc(money(Number(r[jc])||0,2)):ji>=0?fmt(r[ji],0):''}</em></div>`).join('')||'<div class="sq-r sq-none">👌 Nothing today</div>';
   return `<div class="sq-gl sq-sc"><div class="sq-h" style="--c:${S[2]}"><b>${esc(id)} · ${esc(S[0])}${id==='1a'?' · keyword':id==='1b'?' · new':''}</b><em>${x.rows.length?'Top '+x.rows.length:'—'}</em></div>${rows}</div>`};
  return `${rsHead('ST Performance'+(d.run?' · '+d.run.slice(0,10):''))}<div class="sq-two${left?'':' one'}">${left?`<div>${left}</div>`:''}<div class="sq-lst">${['1a','1b','2','3'].map(sec).join('')}</div></div>${SHARE_FOOT}`;
 }
