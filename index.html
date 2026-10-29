@@ -3673,6 +3673,16 @@ window.addEventListener('load',function(){
     .mp-hl{margin-top:34px;display:grid;gap:12px}.mp-hl div{font-size:21px;line-height:1.4;font-weight:600;color:#e3e9fb}
     .mp-foot{position:absolute;left:72px;right:72px;bottom:40px;display:flex;justify-content:space-between;font-size:17px;font-weight:700;opacity:.7}
     .mp-white .mp-foot{color:#6b7385}
+    /* PDF page 4: week by week */
+    .wz-cards{display:grid;gap:14px}.wz-c{background:#f6f7fb;border-radius:20px;padding:16px 16px 14px;border-top:7px solid #203c8e}
+    .wz-c small{display:block;font-size:13px;font-weight:900;letter-spacing:.1em;color:#6b7385}.wz-c b{display:block;font-size:32px;font-weight:900;margin-top:4px}.wz-c em{display:block;font-style:normal;font-size:14px;font-weight:800;margin-top:2px}
+    .wz-mini{display:flex;height:12px;border-radius:6px;overflow:hidden;margin-top:12px;gap:2px}.wz-mini i{display:block}
+    .wz-ly{display:inline-block;margin-top:10px;border-radius:999px;padding:4px 12px;font-size:13px;font-weight:900}.wz-ly.up{background:#e3f6ea;color:#11743a}.wz-ly.dn{background:#fde5e7;color:#b3303c}
+    .wz-t{width:100%;border-collapse:separate;border-spacing:6px}.wz-t th{font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#6b7385;text-align:center}.wz-t th small{display:block;font-weight:700;letter-spacing:0;opacity:.8}.wz-t th.l,.wz-t td.l{text-align:left}
+    .wz-t td{border-radius:12px;padding:12px 8px;text-align:center;background:#f6f7fb}.wz-t td.l{background:none;font-size:18px;font-weight:800;white-space:nowrap}.wz-t td.l i{display:inline-block;width:13px;height:13px;border-radius:4px;margin-right:10px}
+    .wz-t td b{display:block;font-size:20px;font-weight:900}.wz-t td small{display:block;font-size:12.5px;font-weight:700;opacity:.8;margin-top:2px}.wz-t td.e{color:#9aa1b2;font-weight:800}
+    .wz-t td.g{background:#e3f6ea;color:#11743a}.wz-t td.a{background:#fdf1d8;color:#8f6310}.wz-t td.r{background:#fde5e7;color:#b3303c}
+    .wz-t tr.tot td{background:#203c8e;color:#fff}.wz-t tr.tot td.l{color:#fff;padding-left:14px}.wz-t tr.tot em{display:block;font-style:normal;font-size:12.5px;font-weight:900;color:#e2b874;margin-top:2px}
     /* PDF page 3: campaign types */
     .tz h1.rz-h{font-size:56px}.tz-sum{font-size:21px;line-height:1.45}
     .tz-st{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}.tz-st b{font-size:15px;font-weight:900;letter-spacing:.16em;color:#203c8e}.tz-st span{font-size:14px;font-weight:700;color:#6b7385}
@@ -12689,15 +12699,44 @@ function mpTypesPage(m){
   ${mpFoot('3')}</div>`;
 }
 
+
 function mpWeeksPage(m){
- const cell=c=>c&&(c.spend||c.value)?`<b>${mpK(c.value)}</b><small>${c.spend?fmt(c.value/c.spend,2)+'x':'—'} · ${mpK(c.spend)}</small>`:'<small class="dz-dash">—</small>';
- const nm=n=>`<span class="dz-n"><i style="background:${KC[mpKey(n)]}"></i>${esc(CHANNEL_SHORT[n]||n)}</span>`;
- return `<div class="mp-pg mp-navy dz">
-  ${dHead('WEEK BY WEEK',esc(m.label)+' · value, ROAS and spend each week')}
-  <div class="dz-glass"><table class="dz-t dz-w"><thead><tr><th class="l">Type</th>${m.weeks.map((w,i)=>`<th>Week ${i+1}<small>${w.f}–${Math.min(w.t,m.days.length)}</small></th>`).join('')}</tr></thead><tbody>
-  ${m.typeRows.map(r=>`<tr><td class="l">${nm(r.name)}</td>${r.w.map(c=>`<td>${cell(c)}</td>`).join('')}</tr>`).join('')}
-  <tr class="dz-tot"><td class="l">Total</td>${m.weeks.map(w=>`<td>${cell(w.tot)}${w.plan&&w.tot.value?`<em>${mpPct(w.tot.value/w.plan)} of plan</em>`:''}</td>`).join('')}</tr></tbody></table></div>
-  <div class="dz-note">Each cell: conversion value, then ROAS · spend.</div>${mpFoot('4')}</div>`;
+ const ex=MONTH_EXTRA[CURRENT_ACCOUNT]||{days:{}}, nmS=n=>CHANNEL_SHORT[n]||n;
+ const all=m.a.spend?m.a.value/m.a.spend:0, rc=r=>r==null?'':r>=all?'g':r>=Math.min(1.5,all*.55)?'a':'r';
+ const col=v=>v==null?'#6b7385':v>=.95?'#11743a':v>=.85?'#8f6310':'#b3303c';
+ const wk=m.weeks.map((w,i)=>{const lv=w.days.filter(x=>x.actual);let ly=0,lyN=0;
+   lv.forEach(x=>{const k=hijriDayInYear(x.date,1),pr=k&&dayParts(k,ex);if(pr){ly+=pr.value||0;lyN++}});
+   const v=dxSum(lv,x=>x.actual.value),sp=dxSum(lv,x=>x.actual.spend),pv=dxSum(lv,x=>x.plan.value);
+   return {i,w,lv,v,sp,pv,ly:lyN&&lyN===lv.length?ly:null}});
+ const on=wk.filter(x=>x.lv.length), later=wk.filter(x=>!x.lv.length);
+ const types=m.typeRows.filter(r=>r.w.some(c=>c.spend||c.value));
+ const card=x=>{const r=x.pv?x.v/x.pv:null,c=x.ly?x.v/x.ly-1:null;
+   return `<div class="wz-c" style="border-top-color:${col(r)}"><small>WEEK ${x.i+1} · ${x.w.f}–${Math.min(x.w.t,m.days.length)}</small><b>${mpK(x.v)}</b>
+    <em style="color:${col(r)}">${r==null?'—':mpPct(r)} of plan · ${x.sp?fmt(x.v/x.sp,2)+'x':'—'}</em>
+    <div class="wz-mini">${types.map(t=>`<i style="flex:${Math.max(t.w[x.i].value||0,0)};background:${KC[mpKey(t.name)]}"></i>`).join('')}</div>
+    ${c!=null?`<span class="wz-ly ${c>=0?'up':'dn'}">${c>=0?'▲':'▼'} ${Math.abs(c*100).toFixed(0)}% vs last year</span>`:''}</div>`};
+ const cell=(c,t)=>{const r=c.spend?c.value/c.spend:null;return c.spend||c.value?`<td class="${rc(r)}"><b>${mpK(c.value)}</b><small>${r!=null?fmt(r,2)+'x':'—'} · ${mpK(c.spend)}</small></td>`:'<td class="e">—</td>'};
+ 
+ const notes=[], best=on.reduce((b,x)=>!b||(x.pv&&x.v/x.pv)>(b.pv&&b.v/b.pv)?x:b,null);
+ if(best&&best.pv)notes.push(`<b>Week ${best.i+1}</b> was the strongest: ${mpK(best.v)} at ${best.sp?fmt(best.v/best.sp,2)+'x':'—'}, ${mpPct(best.v/best.pv)} of its plan.`);
+ const steady=types.map(t=>({t,min:Math.min(...on.map(x=>{const c=t.w[x.i];return c.spend?c.value/c.spend:Infinity}))})).filter(o=>isFinite(o.min)&&o.min>=all).sort((a,b)=>b.min-a.min)[0];
+ if(steady&&on.length>1)notes.push(`<b>${esc(nmS(steady.t.name))}</b> stayed above ${fmt(steady.min,2)}x every week.`);
+ const lyW=on.filter(x=>x.ly);
+ if(lyW.length)notes.push(`<b>${lyW.filter(x=>x.v>=x.ly).length} of ${lyW.length}</b> weeks beat the same Hijri week last year${m.ly.from?` (${esc(lyLab(m))})`:''}.`);
+ return `<div class="mp-pg mp-cv2 tz wz">
+  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="">`:'<b>HEMERA</b>'}<span>${esc(m.meta.dashboardTitle)}</span></div>
+   <div class="cv2-kick" style="margin-top:44px">WEEK BY WEEK</div><h1 class="rz-h">${esc(m.label)}, week by week</h1>
+   ${notes[0]?`<div class="rz-sum tz-sum">${notes[0]}</div>`:''}</div>
+  <div class="rz-bd"><div class="tz-st"><b>EACH WEEK</b><span>colour bar = where the value came from</span></div>
+   <div class="wz-cards" style="grid-template-columns:repeat(${Math.max(on.length,1)},1fr)">${on.map(card).join('')}</div>
+   <div class="rz-lg" style="margin-top:12px">${types.map(t=>`<span><i style="background:${KC[mpKey(t.name)]}"></i>${esc(nmS(t.name))}</span>`).join('')}</div>
+   <div class="tz-st" style="margin-top:30px"><b>BY CAMPAIGN TYPE</b><span>value · ROAS · spend · colour = ROAS</span></div>
+   <table class="wz-t"><thead><tr><th class="l">Type</th>${on.map(x=>`<th>Week ${x.i+1}<small>${x.w.f}–${Math.min(x.w.t,m.days.length)}</small></th>`).join('')}</tr></thead><tbody>
+   ${types.map(t=>`<tr><td class="l"><i style="background:${KC[mpKey(t.name)]}"></i>${esc(nmS(t.name))}</td>${on.map(x=>cell(t.w[x.i],t)).join('')}</tr>`).join('')}
+   <tr class="tot"><td class="l">Total</td>${on.map(x=>`<td><b>${mpK(x.v)}</b><small>${x.sp?fmt(x.v/x.sp,2)+'x':'—'} · ${mpK(x.sp)}</small>${x.pv?`<em>${mpPct(x.v/x.pv)} of plan</em>`:''}</td>`).join('')}</tr></tbody></table>
+   <div class="rz-lg"><span><i class="g"></i>at or above the month's ${fmt(all,2)}x</span><span><i class="a"></i>a bit under</span><span><i class="r"></i>well under</span>${later.length?`<span>${later.map(x=>`Week ${x.i+1} (${x.w.f}–${Math.min(x.w.t,m.days.length)})`).join(', ')} ${later.length>1?'have':'has'} not started</span>`:''}</div>
+   ${notes.length>1?`<div class="tz-say"><small>WHAT THE WEEKS SAY</small>${notes.slice(1).map(n=>`<p>• ${n}</p>`).join('')}</div>`:''}</div>
+  ${mpFoot('4')}</div>`;
 }
 function mpComparePage(m,notes,pg){
  const team=String(notes||'').split('\n').map(s=>s.trim()).filter(Boolean);
