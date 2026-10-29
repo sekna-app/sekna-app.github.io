@@ -3509,6 +3509,12 @@ window.addEventListener('load',function(){
     .mp-hl{margin-top:34px;display:grid;gap:12px}.mp-hl div{font-size:21px;line-height:1.4;font-weight:600;color:#e3e9fb}
     .mp-foot{position:absolute;left:72px;right:72px;bottom:40px;display:flex;justify-content:space-between;font-size:17px;font-weight:700;opacity:.7}
     .mp-white .mp-foot{color:#6b7385}
+    /* PDF page 6: notes */
+    .nz-k{display:grid;gap:12px}.nz-k>div{display:grid;grid-template-columns:190px 1fr;gap:20px;align-items:center;border-radius:22px;padding:16px 22px;background:#f6f7fb;border-left:9px solid #203c8e}
+    .nz-k b{font-size:48px;font-weight:900;color:#203c8e;letter-spacing:-.03em;line-height:1}.nz-k p{margin:0;font-size:18px;font-weight:700;line-height:1.45}.nz-k small{display:block;font-size:13px;font-weight:900;letter-spacing:.12em;color:#6b7385;margin-bottom:3px}
+    .nz-k>div.g{border-color:#22c47c}.nz-k>div.g b{color:#11743a}.nz-k>div.y{border-color:#e2b874}.nz-k>div.y b{color:#a07316}.nz-k>div.r{border-color:#e0606c}.nz-k>div.r b{color:#b3303c}
+    .nz-a{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px}.nz-a p{margin:0;font-size:16px;font-weight:700;line-height:1.45;padding-left:14px;border-left:4px solid #dfe4ee}
+    .nz-team{margin-top:24px;background:linear-gradient(135deg,#fff4e0,#ffe9c4);border-radius:22px;padding:18px 24px}.nz-team small{display:block;font-size:13px;font-weight:900;letter-spacing:.14em;color:#8a5a12}.nz-team p{margin:6px 0 0;font-size:18px;font-weight:700;line-height:1.5;color:#3a2a10}
     /* PDF page 5: vs last year */
     .lz-sb{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:center;margin-top:28px}.lz-sb>div{border-radius:22px;padding:16px;text-align:center;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2)}.lz-sb>div.win{border-color:#e2b874;background:rgba(226,184,116,.15)}
     .lz-sb b{display:block;font-size:36px;font-weight:900}.lz-sb small{font-size:15px;font-weight:700;opacity:.8}.lz-sb span{display:block;font-size:24px;font-weight:900;margin-top:4px}
@@ -12644,6 +12650,39 @@ function mpWeeksPage(m){
    ${notes.length>1?`<div class="tz-say"><small>WHAT THE WEEKS SAY</small>${notes.slice(1).map(n=>`<p>• ${n}</p>`).join('')}</div>`:''}</div>
   ${mpFoot('4')}</div>`;
 }
+// PDF page 6: the month's key messages, each with its big number. A good month gets more cards
+// (value on plan, days on ROAS target, the best week); the rest goes in short lines, then the team's notes.
+function mpNotesPage(m,notes,pg){
+ const team=String(notes||'').split('\n').map(s=>s.trim()).filter(Boolean), nmS=n=>CHANNEL_SHORT[n]||n;
+ const cards=[], also=[], dd=k=>shortDay(k).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+ const pr=(x,p)=>p?x/p:null, sR=pr(m.a.spend,m.pt.spend), vR=pr(m.a.value,m.pt.value), cR=pr(m.a.conversions,m.pt.conversions);
+ if(m.acc.all!=null)cards.push(['n',mpPct(m.acc.all),'PLAN ACCURACY',`The month landed ${m.acc.all>=.9?'close to':'against'} its full plan: spend ${mpPct(sR)}, value ${mpPct(vR)}, conversions ${mpPct(cR)}.`]);
+ if(vR!=null&&vR>=1)cards.push(['g',mpPct(vR),'VALUE BEAT THE PLAN',`${mpK(m.a.value)} against a plan of ${mpK(m.pt.value)}.`]);
+ const top=m.chans.filter(c=>c.spend>0&&c.roas!=null)[0];
+ if(top)cards.push(['g',fmt(top.roas,2)+'x','BEST CAMPAIGN TYPE',`${esc(nmS(top.name))} led on ROAS and brought ${mpK(top.value)} of value from ${mpK(top.spend)}.`]);
+ const st=m.streak||{n:0};
+ if(st.n>=3)cards.push(['y',String(st.n),'DAYS IN A ROW',`Value beat the day's plan from ${shortDay(st.from).getDate()} to ${dd(st.to).replace(/^\w+, /,'')}${m.best?`; the best day was ${dd(m.best.date)} at ${fmt(m.best.actual.roas,2)}x`:''}.`]);
+ else if(m.best)cards.push(['y',fmt(m.best.actual.roas,2)+'x','BEST DAY',`${dd(m.best.date)}: ${mpK(m.best.actual.value)} of value.`]);
+ if(m.live.length&&m.roasDays/m.live.length>=.6)cards.push(['g',`${m.roasDays}/${m.live.length}`,'DAYS ON ROAS TARGET','Days that met or beat their ROAS target.']);
+ else also.push(`${m.roasDays} of ${m.live.length} days met their ROAS target.`);
+ const bw=m.weeks.map((w,i)=>({i,w,v:dxSum(w.days.filter(x=>x.actual),x=>x.actual.value),p:dxSum(w.days.filter(x=>x.actual),x=>x.plan.value)})).filter(x=>x.p>0&&x.v/x.p>=1).sort((a,b)=>b.v/b.p-a.v/a.p)[0];
+ if(bw)cards.push(['g',mpPct(bw.v/bw.p),`WEEK ${bw.i+1} ON PLAN`,`Week ${bw.i+1} (${bw.w.f}–${Math.min(bw.w.t,m.days.length)}) brought ${mpK(bw.v)}, beating its plan.`]);
+ if(m.ly.have&&m.ly.value){const c=m.a.value/m.ly.value-1,sd=m.a.spend-m.ly.spend;
+   cards.push([c>=0?'g':'r',`${c>=0?'+':'−'}${Math.abs(c*100).toFixed(0)}%`,'VS LAST YEAR',`Value is ${mpK(Math.abs(m.a.value-m.ly.value))} ${c>=0?'ahead of':'behind'} the same Hijri days, on ${mpK(Math.abs(sd))} ${sd<=0?'less':'more'} spend${m.ly.roas&&m.a.roas!=null?` and a ${m.a.roas>=m.ly.roas?'higher':'lower'} ROAS`:''}.`])}
+ m.chans.filter(c=>c.planSpend>0&&c.spend/c.planSpend<.8).forEach(c=>also.push(`${nmS(c.name)} spent under 80% of plan.`));
+ m.chans.filter(c=>c.spend>0&&c.roas!=null&&c.roas<1).forEach(c=>also.push(`${nmS(c.name)} returned ${fmt(c.roas,2)}x on ${mpK(c.spend)}.`));
+ if(vR!=null&&vR<1)also.push(`Conversion value reached ${mpPct(vR)} of the plan.`);
+ const show=cards.slice(0,7);cards.slice(7).forEach(c=>also.push(c[3]));
+ return `<div class="mp-pg mp-cv2 tz nz">
+  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="">`:'<b>HEMERA</b>'}<span>${esc(m.meta.dashboardTitle)}</span></div>
+   <div class="cv2-kick" style="margin-top:44px">NOTES</div><h1 class="rz-h">What stood out in ${esc(m.label)}</h1>
+   <div class="rz-sum tz-sum">${show.length} numbers that tell the story of the month, then the rest in short.</div></div>
+  <div class="rz-bd"><div class="tz-st"><b>KEY TAKEAWAYS</b><span>the big number first</span></div>
+   <div class="nz-k">${show.map(c=>`<div class="${c[0]}"><b>${c[1]}</b><p><small>${c[2]}</small>${c[3]}</p></div>`).join('')}</div>
+   ${also.length?`<div class="tz-st" style="margin-top:24px"><b>ALSO WORTH KNOWING</b><span></span></div><div class="nz-a">${also.slice(0,6).map(t=>`<p>${esc(t)}</p>`).join('')}</div>`:''}
+   ${team.length?`<div class="nz-team"><small>FROM THE TEAM</small>${team.map(t=>`<p>${esc(t)}</p>`).join('')}</div>`:''}</div>
+  ${mpFoot(String(pg||6))}</div>`;
+}
 function mpComparePage(m,notes,pg){
  const team=String(notes||'').split('\n').map(s=>s.trim()).filter(Boolean);
  return `<div class="mp-pg mp-navy dz">
@@ -12702,7 +12741,7 @@ async function mrBuild(){
      ['Adding campaign types…',()=>mpCapture(mpTypesPage(m))],
      ['Adding the weeks…',()=>mpCapture(mpWeeksPage(m))],
      ...(m.ly.have?[['Adding this year against last year…',()=>mpCapture(mpLyPage(m))]]:[]),
-     ['Adding last year and notes…',()=>mpCapture(mpComparePage(m,MR.notes,m.ly.have?6:5))],
+     ['Adding the notes…',()=>mpCapture(mpNotesPage(m,MR.notes,m.ly.have?6:5))],
      ['Adding the thank-you page…',()=>mpCapture(mpThanks(m))]];
    const canvases=[];
    for(let i=0;i<steps.length;i++){MR.busy=`${steps[i][0]} (${i+1}/${steps.length})`;drawMonthlyReport();canvases.push(await steps[i][1]())}
