@@ -1,9 +1,9 @@
 // HEMERA web app service worker: offline shell + notifications.
 // The page is always fetched fresh when online, so updates appear right away; the
 // cached copy is only used without a network. Dashboard data is never cached here.
-const CACHE = 'sekna-shell-v6';
+const CACHE = 'sekna-shell-v7';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './firebase-config.js',
-  './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon-64.png', './icons/badge-96.png'];
+  './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon-64.png', './icons/badge-96.png', './fonts/changa-ar.woff2'];
 
 importScripts('firebase-config.js');
 if (self.SEKNA_FIREBASE && self.SEKNA_FIREBASE.apiKey) {

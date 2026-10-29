@@ -504,7 +504,7 @@ async function pushChecks(latestByAccount, daysByAccount) {
     // With the new day: the spend alert (day's spend past its plan by the owner's level) and the day streak
     // (3+ days in a row of value at or above the day's plan) go to the team's phones.
     if (prev && !maintenance) {
-      const prefs = Object.assign({ alert: 120 }, (await fsGet('server/app-prefs').catch(() => null)) || {});
+      const prefs = Object.assign({ alert: 120, roas: 40 }, (await fsGet('server/app-prefs').catch(() => null)) || {});
       const acc = key === 'ar' ? 'AR' : 'USA', sym = key === 'ar' ? '£' : '$';
       const ach = Number(x.spendAchievement), lvl = Number(prefs.alert) || 0;
       if (lvl && isFinite(ach) && ach * 100 >= lvl && Number(x.targetSpend) > 0) {
@@ -519,6 +519,19 @@ async function pushChecks(latestByAccount, daysByAccount) {
         await notify.send({ topics: [{ title: '🔥 ' + n + ' days in a row above plan · ' + acc,
           body: 'Conversion value met the day\'s plan ' + n + ' days running. Keep it going!', account: key, eventType: 'streak' }] }).catch(e => console.error('Streak: ' + e.message));
         out[key + 'Streak'] = n;
+      }
+      // ROAS drop: the new day's return fell by the owner's level (40% by default) against the average of the
+      // 7 days before it. The push has no numbers; the app shows them when it opens.
+      const rl = prefs.roas == null ? 40 : Number(prefs.roas) || 0, sp = Number(x.spend) || 0;
+      const before = ((daysByAccount || {})[key] || []).filter(r => r && r.actual && Number(r.actual.spend) > 0 && r.date < x.date).sort((p, q) => (p.date < q.date ? -1 : 1)).slice(-7);
+      if (rl && sp > 0 && before.length >= 5 && !(Number(x.targetSpend) > 0 && sp < 0.3 * Number(x.targetSpend))) {
+        const avg = before.reduce((t, r) => t + Number(r.actual.value) / Number(r.actual.spend), 0) / before.length;
+        const drop = avg > 0 ? 1 - (Number(x.value) || 0) / sp / avg : 0;
+        if (drop * 100 >= rl) {
+          await notify.send({ topics: [{ title: '📉 ROAS dropped sharply · ' + acc,
+            body: 'The latest day\'s return was much lower than usual. Open HEMERA to see why.', account: key, eventType: 'roas_drop' }] }).catch(e => console.error('ROAS drop: ' + e.message));
+          out[key + 'RoasDrop'] = Math.round(drop * 100);
+        }
       }
       void sym;
     }
