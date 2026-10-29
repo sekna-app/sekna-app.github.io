@@ -3587,9 +3587,6 @@ window.addEventListener('load',function(){
       #channelPanel>section{margin:0!important;grid-column:1}
       #channelPanel>.channel-section{grid-column:2;grid-row:1/span 3;position:sticky;top:90px}
       #app .cc-list{grid-template-columns:1fr!important}
-      /* Top & Bottom */
-      #rxBody{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;align-items:start}
-      #rxBody .rx-list{grid-template-columns:1fr!important}
       /* Media Plan Lab */
       .lab-card .fc-folds{display:grid;grid-template-columns:1fr 1fr;gap:10px}
       .lab-card .fc-folds>*{margin:0!important}
@@ -3711,6 +3708,31 @@ window.addEventListener('load',function(){
     .sta-bar{display:flex;height:6px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.12);margin:6px 0 5px}.sta-bar i{display:block}
     .sta-pl{display:grid;gap:1px;font-size:10.5px;font-weight:700;color:#c9d6ff}.sta-pl b{font-size:12.5px;color:#fff}
     .sta-lgc{display:flex;gap:12px;font-size:9.5px;font-weight:800;color:#c9d6ff;margin-top:8px}.sta-lgc i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px}
+    /* Currency note before a share (USA in $, AR in £) */
+    .cw{position:fixed;z-index:9000;background:#1d2433;color:#fff;border-radius:16px;padding:12px;box-shadow:0 14px 34px rgba(0,0,0,.28);display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;animation:cwDn .45s cubic-bezier(.2,.8,.2,1);font-family:inherit}
+    .cw:after{content:"";position:absolute;left:var(--ax,50%);top:-6px;width:12px;height:12px;margin-left:-6px;background:#1d2433;transform:rotate(45deg)}.cw.noar:after{display:none}
+    @keyframes cwDn{from{transform:translateY(-14px);opacity:0}}
+    .cw-t b{display:block;font-size:13px;font-weight:900}.cw-t span{font-size:11.5px;color:#c9d0dc;font-weight:600;line-height:1.45}
+    .cw-bs{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:6px}.cw-bs button{font:inherit;border:0;border-radius:12px;padding:9px;font-size:12.5px;font-weight:900;cursor:pointer}.cw-bs .k{background:rgba(255,255,255,.12);color:#fff}.cw-bs .g{background:#ffc34d;color:#1d2433}
+    .cw-mini{position:relative;display:inline-flex;background:rgba(255,255,255,.1);border-radius:11px;padding:3px;gap:2px}.cw-mini b{position:relative;z-index:1;width:28px;height:24px;display:grid;place-items:center;font-size:12.5px;font-weight:900}
+    .cw-mini i{position:absolute;top:3px;left:3px;width:28px;height:24px;border-radius:8px;background:linear-gradient(150deg,#2f50b5,#152a66);animation:cwSw 2.6s ease-in-out infinite}
+    .cw-mini .a{animation:cwA 2.6s infinite}.cw-mini .z{animation:cwZ 2.6s infinite}
+    @keyframes cwSw{0%,38%{left:3px}48%,100%{left:33px}}@keyframes cwA{0%,40%{color:#fff}50%,100%{color:#8a92a6}}@keyframes cwZ{0%,40%{color:#8a92a6}50%,100%{color:#fff}}
+    .cw-fg{position:absolute;right:-5px;top:9px;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.85);box-shadow:0 0 0 5px rgba(255,255,255,.25);animation:cwTap 2.6s ease-in-out infinite;pointer-events:none}
+    @keyframes cwTap{0%,15%{transform:translate(24px,30px);opacity:0}30%{transform:none;opacity:1}40%{transform:scale(.8)}50%{transform:scale(1)}80%{opacity:1}100%{opacity:0}}
+    .cur-sw.cur-hl{outline:2.5px solid #ffc34d;outline-offset:3px;border-radius:14px;animation:cwPl 1.2s infinite}@keyframes cwPl{50%{box-shadow:0 0 0 8px rgba(255,195,77,.35)}}
+    @media (prefers-reduced-motion:reduce){.cw,.cw-mini i,.cw-mini b,.cw-fg,.cur-sw.cur-hl{animation:none}.cw-mini i{left:33px}.cw-fg{display:none}}
+    /* ST Action on desktop: the table / wide rows instead of the phone cards */
+    .sta-dk{display:none}
+    @media (min-width:1100px){
+     #app .sta-list{display:none}.sta-dk{display:block}
+     .sta-tb{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border:1px solid #eef0f6;border-radius:16px;overflow:hidden}
+     .sta-tb th{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:#8a92a6;font-weight:900;text-align:right;padding:10px 9px;background:#f6f8fc;white-space:nowrap}
+     .sta-tb td{padding:10px 9px;text-align:right;font-weight:700;border-top:1px solid #eef1f7;vertical-align:middle}
+     .sta-tb th:nth-child(-n+7),.sta-tb td:nth-child(-n+7){text-align:left}.sta-tb td b{display:block;font-size:13.5px;color:#1d2433}.sta-tb td small{display:block;font-size:11px;color:#8a92a6;font-weight:700;white-space:nowrap}.sta-tb td.s{font-size:12px;color:#4b5568}
+     .sta-tb .sta-ad{justify-content:flex-end;margin:0}.sta-tb .sta-ad i{width:12px;height:12px;border-radius:4px}
+     body.dark-mode .sta-tb{background:#151a22;border-color:#252a32}body.dark-mode .sta-tb th{background:#1a1f27}body.dark-mode .sta-tb td{border-color:#252a32}body.dark-mode .sta-tb td b{color:#fff}
+    }
     .sta-hero{background:radial-gradient(120% 140% at 0% 0%,#2c4fb8,#203c8e 50%,#132457);color:#fff;border-radius:18px;padding:12px 14px;margin-bottom:10px;box-shadow:0 14px 30px rgba(32,60,142,.2)}.sta-k{font-size:10px;font-weight:900;letter-spacing:.08em;color:#c9d6ff}
     .sta-ws{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}.sta-ws div{background:rgba(255,255,255,.1);border-radius:12px;padding:7px 10px}.sta-ws small{font-size:10px;font-weight:900;color:#c9d6ff}.sta-ws b{display:block;font-size:20px;color:#ff9aa8}.sta-nt{font-size:10px;color:#c9d6ff;font-weight:700;margin-top:8px}
     .sta-qm{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}.sta-qm>div{background:#fff;border:1px solid #eef0f6;border-left:4px solid var(--c);border-radius:14px;padding:8px 11px}.sta-qm small{display:block;font-size:9.5px;font-weight:900;color:#8a92a6;letter-spacing:.04em}.sta-qm b{font-size:19px;color:#1d2433}.sta-qm b.y{color:#d19a00}.sta-sp2{display:flex;gap:12px}
@@ -4179,9 +4201,7 @@ window.addEventListener('load',function(){
     body .topbar .topbar-left{grid-area:left;display:flex;align-items:center;gap:12px}
     body .topbar .brand{grid-area:brand;min-width:0;cursor:pointer}
     body .topbar .actions{grid-area:actions;gap:8px}
-    .tb-sekna{height:31px;width:auto;display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:1;pointer-events:none}
-    /* the logo sits in the middle of the whole bar, not of its left group */
-    body .topbar>.topbar-left{position:static}body .topbar .menu-toggle{position:relative;z-index:2}
+    .tb-sekna{height:31px;width:auto;display:block}
     /* The menu's logo a bit bigger, in the middle; the close button stays on the right */
     .sk-drawer-head{justify-content:center!important}.sk-drawer-head>.sk-icon-btn{position:absolute;right:16px;top:50%;transform:translateY(-50%);margin-top:2px}.sk-drawer-logo{height:38px!important}
     body .topbar .menu-toggle,body.dark-mode .topbar .menu-toggle{background:rgba(255,255,255,.12)!important;border:1px solid rgba(255,255,255,.14)!important;color:#fff!important;box-shadow:none!important}
@@ -6238,7 +6258,7 @@ function applyAccountBrand(d){
  text('brandName',a.label);
  text('brandSub','Media Plan • Live performance');
  text('dashboardTitle',a.dashboardTitle);
- text('dashboardFooter','HEMERA · '+a.dashboardTitle);
+ setFooter();
  document.title='HEMERA';
 }
 
@@ -6322,12 +6342,18 @@ function switchAccount(accountKey){
 
 const DASH_TABS=['overview','days','channel','lab','plans','ranks','terms','months','seasons'];
 let SWIPE_FROM='';
+// The footer names the menu group of the page: Media Plan, Performance Snapshots or AI Report, then the account.
+function setFooter(){
+ const g=['ranks','terms'].includes(CURRENT_TAB)?'Performance Snapshots':['months','seasons'].includes(CURRENT_TAB)?'AI Report':'Media Plan';
+ text('dashboardFooter','HEMERA · '+g+' '+(accountMeta(DASH_DATA||{}).shortLabel||CURRENT_ACCOUNT.toUpperCase()));
+}
 function switchDashboardTab(tab){
  if(!canDo(tab)){const first=DASH_TABS.find(t=>canDo(t));if(!first)return;tab=first}
  const prev=DASH_TABS.indexOf(CURRENT_TAB);
  // Reports Studio always opens on One month.
  if(tab==='months'&&CURRENT_TAB!=='months'&&MONTH_MODE!=='one'){MONTH_MODE='one';['mxOneBtn','mxCmpBtn'].forEach((id,i)=>{const b=document.getElementById(id);if(b)b.classList.toggle('on',i===0)})}
  CURRENT_TAB=DASH_TABS.includes(tab)?tab:'overview';
+ setFooter();
  if(typeof lmpDraw==='function'){LMP_OPEN=false;lmpDraw()}
  DASH_TABS.forEach(t=>{
    const panel=document.getElementById(t+'Panel');
@@ -8685,6 +8711,15 @@ function staCard(r){
  <div class="sta-g"><small>ACTION</small><span>${staAct(r.action)}${r.reason?`<span class="sta-ch">${esc(r.reason)}</span>`:''}</span><small>LEVEL</small><span>${staLevel(r.level)}${staNeg(r)}${r.list?`<span class="sta-ch ls">${esc(r.list)}</span>`:''}</span><small>CATEGORY</small><span>${r.cat?`<span class="sta-ch ct">${esc(r.cat)}</span>`:'<span class="sta-na">—</span>'}</span></div>
  <div class="sta-p">${r.p.map((x,i)=>{const k=(r.acct||'')[i]||'';return `<div class="${k}"${k?` title="Account ${STA_W[i]}: ${STA_L[k]}"`:''}><small>${STA_W[i]} · CAMP</small><b>${x&&x.cost!=null?esc(money(x.cost,0)):'—'}</b><em>${x&&x.cost!=null?`${fmt(x.conv||0,0)} conv. · ${staRoas(x.roas)}`:'no data'}</em></div>`}).join('')}</div></div>`;
 }
+// Desktop: the log read across like the WhatsApp image (the phone keeps one card per term).
+function staDesk(sm){
+ const NA='<span class="sta-na">—</span>';
+ const pc=x=>x&&x.cost!=null?`<b>${esc(money(x.cost,0))}</b><small>${fmt(x.conv||0,0)} conv. · ${staRoas(x.roas)}</small>`:`${NA}<small>no data</small>`;
+ const dots=r=>`<span class="sta-ad">${[0,1,2].map(i=>`<i class="${(r.acct||'')[i]||''}"></i>`).join('')}</span>`;
+ const term=r=>`<b><bdi${stAr(r.term)}>${esc(r.term)}</bdi></b><small>${esc(staCamp(r.campaign))}${r.match?' · '+esc(r.match):''}</small>`;
+ const tb=`<table class="sta-tb"><tr><th>Search term</th><th>Category</th><th>Action</th><th>Reason</th><th>Level</th><th>Neg. match</th><th>List</th><th>Today</th><th>30d camp</th><th>90d camp</th><th>180d camp</th><th>Account</th></tr>${sm.R.map(r=>`<tr><td>${term(r)}</td><td>${r.cat?`<span class="sta-ch ct">${esc(r.cat)}</span>`:NA}</td><td>${staAct(r.action)}</td><td class="s">${r.reason?esc(r.reason):NA}</td><td>${staLevel(r.level).replace('Level not set','Not set')}</td><td>${staNeg(r)||NA}</td><td class="s">${r.list?esc(r.list):NA}</td><td><b>${esc(money(r.spend||0,2))}</b></td>${r.p.map(x=>`<td>${pc(x)}</td>`).join('')}<td>${dots(r)}</td></tr>`).join('')}</table>`;
+ return `<div class="sta-dk">${tb}</div>`;
+}
 function renderAct(){
  const body=document.getElementById('stBody');if(!body)return;
  const c=STA[CURRENT_ACCOUNT]||{},d=c.data;
@@ -8697,7 +8732,7 @@ function renderAct(){
  else{
   const sm=staSum(d);
   const lg=`<div class="sta-lg"><span>ACCOUNT · 30/90/180d</span><span><i class="R"></i>Losing</span><span><i class="Y"></i>Running</span><span><i class="G"></i>Winning</span></div>`;
-  inner=staBlue(sm)+(sm.R.length?lg+`<div class="sta-list">${sm.R.map(staCard).join('')}</div>`:'<div class="dx-empty">👌 No flagged terms in today\'s log.</div>');
+  inner=staBlue(sm)+(sm.R.length?lg+`<div class="sta-list">${sm.R.map(staCard).join('')}</div>`+staDesk(sm):'<div class="dx-empty">👌 No flagged terms in today\'s log.</div>');
  }
  body.innerHTML=top+inner+'</section>';
  applySectionIcons(body);
@@ -9196,9 +9231,33 @@ function openWhatsAppText(summary){
  }catch(e){window.location.href=url;}
 }
 
-async function shareWhatsApp(tab,btn){
+// Before a share: USA reports go out in dollars, AR in pounds. On the other currency a note drops under the
+// currency switch (which glows), with "Share in £" and "Change to $".
+function curWarn(tab,btn){
+ const want=CURRENT_ACCOUNT==='usa'?'USD':'GBP';if(curOn()===want)return false;
+ const has=CUR_LIST[curOn()],need=CUR_LIST[want],acc=accountMeta(DASH_DATA||{}).shortLabel||CURRENT_ACCOUNT.toUpperCase();
+ document.getElementById('curWarn')?.remove();
+ const sw=document.getElementById('curSw'),r=sw&&sw.getBoundingClientRect(),vis=r&&r.width>0&&r.bottom>0&&r.top<innerHeight;
+ const el=document.createElement('div');el.id='curWarn';el.className='cw';el.setAttribute('role','alertdialog');el.setAttribute('data-share-ui','');
+ const toLeft=want==='USD';
+ el.innerHTML=`<span class="cw-mini${toLeft?'':' rev'}"><i></i><b class="a">${has.s}</b><b class="z">${need.s}</b><span class="cw-fg"></span></span><div class="cw-t"><b>${esc(acc)} is reported in ${need.s}</b><span>Tap ${need.s} up here, or let me change it for this share.</span></div><div class="cw-bs"><button type="button" class="k">Share in ${has.s}</button><button type="button" class="g">Change to ${need.s}</button></div>`;
+ document.body.appendChild(el);
+ const w=Math.min(340,innerWidth-24);el.style.width=w+'px';
+ if(vis){el.style.top=(r.bottom+12)+'px';el.style.left=Math.max(12,Math.min(innerWidth-w-12,r.right-w))+'px';el.style.setProperty('--ax',Math.max(18,Math.min(w-24,r.left+r.width/2-parseFloat(el.style.left)))+'px');sw.classList.add('cur-hl')}
+ else{el.style.top='74px';el.style.left=((innerWidth-w)/2)+'px';el.classList.add('noar')}
+ const close=()=>{el.remove();sw&&sw.classList.remove('cur-hl');document.removeEventListener('pointerdown',out,true)};
+ const out=e=>{if(!el.contains(e.target)&&!(sw&&sw.contains(e.target)))close()};
+ setTimeout(()=>document.addEventListener('pointerdown',out,true),0);
+ el.querySelector('.k').onclick=()=>{close();shareWhatsApp(tab,btn,true)};
+ el.querySelector('.g').onclick=async()=>{close();await setCur(want);if(curOn()===want)shareWhatsApp(tab,btn,true)};
+ // tapping the right currency on the switch itself also goes on with the share
+ if(sw)sw.querySelectorAll('button').forEach(x=>{if(x.textContent===need.s)x.addEventListener('click',()=>{if(document.getElementById('curWarn')){close();setTimeout(()=>{if(curOn()===want)shareWhatsApp(tab,btn,true)},60)}},{once:true})});
+ return true;
+}
+async function shareWhatsApp(tab,btn,curOk){
  if(!canDo('share')){if(isLocked('share'))lockSheet('WhatsApp sharing');else showShareToast('Sharing is turned off for your account.');return;}
  if(!DASH_DATA){showShareToast('Dashboard data is still loading.');return;}
+ if(!curOk&&curWarn(tab,btn))return;
  setShareButtonState(btn,true);
  const summary=getShareSummary(tab);
  try{
