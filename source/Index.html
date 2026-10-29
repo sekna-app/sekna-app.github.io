@@ -12510,7 +12510,7 @@ async function mrSend(testOnly){
  const meta={testOnly:!!testOnly,
    title:`HEMERA · ${m.meta.dashboardTitle} · ${m.label} results`,
    fileName:`HEMERA-${m.meta.shortLabel}-${m.label.replace(/\s+/g,'-')}-Results`,
-   intro:`Here are the ${m.label} media plan results for ${m.meta.dashboardTitle}. ${mpWords(m)}`,
+   intro:`Here are the ${m.label} media plan results for ${m.meta.dashboardTitle}. ${mpWords(m)}${m.acc.all!=null?` Plan accuracy reached ${mpPct(m.acc.all)}.`:''} Thank you to the Google Ads team for the hard work this month.`,
    lines:mpHighlights(m).slice(0,3),pages:(MR.pages||[]).length};
  serverCall('adminSendMonthlyReport',getAccessToken(),MR.pdf,meta).then(r=>{
    MR.busy='';MR.msg=r.testOnly?'✅ Test sent to your email.':`✅ Sent to ${r.sent} ${r.sent===1?'person':'people'}.${r.failed&&r.failed.length?' Not sent to: '+esc(r.failed.join(', ')):''}`;drawMonthlyReport();
