@@ -11350,7 +11350,7 @@ const TK_MANAGER_ROLES=['Team Leader','Media Manager','CEO','Head of Media'];
 const TK_CAM='<svg class="tk-cam" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.6l1.4-2h5l1.4 2h1.6A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><circle cx="12" cy="12.5" r="3.4"/></svg>';
 const TK_SNAP_EX=['Media Plan','Search Terms'];
 const TK_SNAP_SUGGEST=['Media Plan','Search Terms','Campaigns','Ads','Keywords','Devices'];
-const TK_TITLE_SUGGEST=['HEMERA Report USA','HEMERA Report AR'];
+const TK_TITLE_SUGGEST=['SEKNA Report USA','SEKNA Report AR']; 
 let TK={view:'team',month:'',week:1,data:null,busy:false,form:null,shown:{}};
 function tkToday(){const n=muscatParts(Date.now());return {y:+n[0],m:+n[1],d:+n[2]}}
 function tkMonthNow(){const t=tkToday();return `${t.y}-${String(t.m).padStart(2,'0')}`}
@@ -11917,7 +11917,7 @@ function tkForm(keep,stay){
  const snaps=`<div class="sq-box">${exHtml}${ownHtml}<div class="sq own"><div class="sq-main"><input id="tkSnapOwn" value="${esc(f._own||'')}" placeholder="Your own snapshot…" maxlength="60" onkeydown="if(event.key==='Enter'){event.preventDefault();tkSnapOwn()}"><small>Type any name</small></div><button type="button" class="sq-b" onclick="tkSnapOwn()">＋ Add</button></div></div>`;
  const html=(`<div class="tk-form tk-fpage"><div class="tk-fh">${q?'⚡ Quick request':f.id?'Edit task':'New task'}</div>
    <label class="tk-l">${q?'What is needed':'Task name'}</label>
-   <input id="tkfTitle" class="tk-in${bad('title')?' tk-bad':''}" oninput="this.classList.remove('tk-bad')" value="${esc(f.title)}" placeholder="${q?'e.g. Performance report for Gaza':'e.g. HEMERA Report USA'}" maxlength="140">
+   <input id="tkfTitle" class="tk-in${bad('title')?' tk-bad':''}" oninput="this.classList.remove('tk-bad')" value="${esc(f.title)}" placeholder="${q?'e.g. Performance report for Gaza':'e.g. SEKNA Report USA'}" maxlength="140">
    ${q?'':`<div class="tk-sug">${TK_TITLE_SUGGEST.map(s=>chip(false,esc(s),`tkSug('${s}')`)).join('')}</div>`}
    ${q?`<div class="tq-who${bad('email')?' tk-bad':''}"><div class="tq-q">Who is it for?</div><div class="tq-ppl">${tkPeople().map(p=>`<button type="button" class="${f.email===p.email?'on':''}" onclick="tkF('email','${esc(p.email)}')">${tkAv(p)}<span>${esc(p.name.split(' ')[0])}</span>${tkPeople().filter(x=>x.name.split(' ')[0]===p.name.split(' ')[0]).length>1?`<small>${esc(p.email.split('@')[0].slice(0,12))}</small>`:''}</button>`).join('')||'<small>No approved people yet.</small>'}</div></div>`:`<label class="tk-l">For</label><div class="tk-people${bad('email')?' tk-bad':''}">${people||'<small>No approved people yet.</small>'}</div>`}
    ${q?`<label class="tk-l">Deadline <small>optional</small></label>${tkDlPicker(f)}${tkQuickWarn(f)}${tkPhField(f)}`:`

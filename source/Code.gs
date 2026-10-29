@@ -2309,7 +2309,7 @@ function accessEmailHtml_(title, bodyHtml) {
     '<div style="background:#203C8E;padding:20px 24px;color:#ffffff;font-size:22px;font-weight:800;letter-spacing:1px">SEKNA' +
     '<div style="height:3px;width:38px;background:#C28D3E;margin-top:8px;border-radius:2px"></div></div>' +
     '<div style="padding:24px"><h2 style="margin:0 0 12px;font-size:19px;color:#1d2433">' + title + '</h2>' + bodyHtml + '</div>' +
-    '<div style="padding:14px 24px;background:#f8f9fc;color:#8a92a0;font-size:11px">SEKNA • The calm in the campaign.</div></div></div>';
+    '<div style="padding:14px 24px;background:#f8f9fc;color:#8a92a0;font-size:11px">HEMERA • Named after daylight, built for clarity.</div></div></div>';
 }
 
 function emailButton_(href, label, primary) {

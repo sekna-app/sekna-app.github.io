@@ -65,6 +65,13 @@
           }
         ]
       }
+    ],
+    "redirects": [
+      {
+        "source": "/get/SEKNA.apk",
+        "destination": "/get/HEMERA.apk",
+        "type": 301
+      }
     ]
   },
   "functions": [
