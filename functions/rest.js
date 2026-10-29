@@ -434,11 +434,13 @@ const R = {
       '<td width="40" style="padding:12px 14px 12px 0;text-align:right;font:700 20px Arial,sans-serif;color:#203C8E">&#8681;</td></tr></table></a>';
     const body = P(esc(String(meta.intro || 'The media plan results for the month are attached as a PDF.').slice(0, 300))) + pdfCard;
     const files = [{ filename: fileName, content: bytes, contentType: 'application/pdf' }];
+    // Each test carries its time, so Gmail shows it as a new email instead of hiding it in the last test's thread.
+    const tp = parts(Date.now()), testTag = '[Test ' + tp.hour + ':' + tp.minute + '] ';
     let sent = 0;
     const failed = [];
     for (const p of people) {
       try {
-        await notify.sendMail({ to: p.email, replyTo: 'seknaapp@gmail.com', subject: (meta.testOnly ? '[Test] ' : '') + title, title: 'Hi ' + esc(p.name) + ',', html: body,
+        await notify.sendMail({ to: p.email, replyTo: 'seknaapp@gmail.com', subject: (meta.testOnly ? testTag : '') + title, title: 'Hi ' + esc(p.name) + ',', html: body,
           button: { url: link, label: link === WEB_PAGE_URL ? 'Open HEMERA' : 'Download PDF' }, attachments: files });
         sent++;
       } catch (err) { console.error('Report to ' + p.email + ' failed: ' + err.message); failed.push(p.email); }
