@@ -12103,7 +12103,7 @@ function renderUpdates(state){
  if(state==='app-new'){
    const u=APP_UPDATE_STATE||{};
    cls='new';badge='<span class="upx-badge gold"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></span>';
-   title=`HEMERA ${esc(u.latest||'')} is available`;sub=`You have ${esc(u.current||app||'an older version')}. The new app opens from GitHub, then tap HEMERA.apk to install.`;
+   title=`HEMERA ${esc(u.latest||'')} is available`;sub=`You have ${esc(u.current||app||'an older version')}. HEMERA.apk downloads from the HEMERA website; open it to install.`;
    cta=`<button type="button" class="upx-go" onclick="openAppUpdate()">Update to ${esc(u.latest||'the new version')}</button>`;
  }
  if(state==='error'){
@@ -12119,7 +12119,8 @@ function renderUpdates(state){
    <div class="sk-update-rows">${rows.map(r=>`<div class="sk-update-row"><span>${r[0]}</span><b>${esc(r[1])}</b></div>`).join('')}</div>`;
 }
 function openAppUpdate(){
- const u=(APP_UPDATE_STATE&&APP_UPDATE_STATE.url)||'https:\/\/github.com/ibrahimamin6700-ui/human-appeal-media-plan/releases/latest';
+ 
+ const u='https:\/\/sekna-app.web.app/get/HEMERA.apk';
  try{if(window.AndroidShare&&typeof window.AndroidShare.openAppUpdate==='function'){window.AndroidShare.openAppUpdate(u);return}}catch(e){}
  window.open(u,'_blank','noopener');
 }
