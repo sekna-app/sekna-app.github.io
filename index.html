@@ -3872,6 +3872,35 @@ window.addEventListener('load',function(){
     .stp-anim.in{opacity:1;transform:none}.stp-anim.in .stp-ic{transform:none}.stp-anim.in tr{opacity:1;transform:none}
     @media (prefers-reduced-motion:reduce){.stp-anim,.stp-anim tr,.stp-anim .stp-ic{opacity:1!important;transform:none!important;transition:none!important}}
     body.dark-mode .stp-sw{background:#151a22}body.dark-mode .stp-sw button.on{background:#232a35;color:#fff}body.dark-mode .stp-sec{background:#151a22;border-color:#252a32}body.dark-mode .stp-t td{border-color:#252a32}body.dark-mode .stp-t td:first-child{color:#fff}
+    /* ST Action: three mode buttons, the wasted card, the quick cards and one card per term */
+    .stp-sw2{grid-template-columns:repeat(3,1fr)}.stp-sw2 .ac .ic svg{fill:#7c3aed;stroke:none}.stp-sw2 .ac.on .ic svg{fill:#fff}
+    @media (max-width:640px){.stp-sw2{gap:6px}.stp-sw2 button{flex-direction:column;align-items:flex-start;gap:5px;padding:8px}.stp-sw2 .ic{width:28px;height:28px;border-radius:9px}.stp-sw2 .ic svg{width:15px;height:15px}.stp-sw2 b{font-size:10.5px;letter-spacing:-.01em;overflow:hidden;text-overflow:ellipsis;max-width:100%}.stp-sw2 small{font-size:9px}.stp-sw2 button>span:last-child{min-width:0;max-width:100%}}
+    .sta-hero{background:radial-gradient(120% 140% at 0% 0%,#2c4fb8,#203c8e 50%,#132457);color:#fff;border-radius:18px;padding:12px 14px;margin-bottom:10px;box-shadow:0 14px 30px rgba(32,60,142,.2)}.sta-k{font-size:10px;font-weight:900;letter-spacing:.08em;color:#c9d6ff}
+    .sta-ws{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}.sta-ws div{background:rgba(255,255,255,.1);border-radius:12px;padding:7px 10px}.sta-ws small{font-size:10px;font-weight:900;color:#c9d6ff}.sta-ws b{display:block;font-size:20px;color:#ff9aa8}.sta-nt{font-size:10px;color:#c9d6ff;font-weight:700;margin-top:8px}
+    .sta-qm{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}.sta-qm>div{background:#fff;border:1px solid #eef0f6;border-left:4px solid var(--c);border-radius:14px;padding:8px 11px}.sta-qm small{display:block;font-size:9.5px;font-weight:900;color:#8a92a6;letter-spacing:.04em}.sta-qm b{font-size:19px;color:#1d2433}.sta-qm b.y{color:#d19a00}.sta-sp2{display:flex;gap:12px}
+    .sta-lg{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;font-size:10px;font-weight:800;color:#6b7385;margin:0 2px 8px;white-space:nowrap}@media (max-width:640px){.sta-lg{font-size:9.5px;gap:4px 8px}}.sta-lg span:first-child{margin-right:auto;letter-spacing:.04em}.sta-lg i,.ra-lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+    .sta-lg i.R,.ra-lg i.R,.rp-act .ra-dt i.R{background:#f0596e}.sta-lg i.Y,.ra-lg i.Y,.rp-act .ra-dt i.Y{background:#f2b705}.sta-lg i.G,.ra-lg i.G,.rp-act .ra-dt i.G{background:#22c47c}
+    .sta-list{display:grid;gap:9px}@media (min-width:900px){.sta-list{grid-template-columns:repeat(auto-fill,minmax(360px,1fr))}}
+    .sta-c{background:#fff;border:1px solid #eef0f6;border-radius:16px;padding:11px 12px;box-shadow:0 2px 8px rgba(20,30,60,.04)}
+    .sta-h{display:flex;justify-content:space-between;gap:10px}.sta-h b{font-size:15px;color:#1d2433}.sta-h small{display:block;font-size:10.5px;color:#8a92a6;font-weight:700;margin-top:1px}.sta-sp{text-align:right;flex:none}.sta-sp small{display:block;font-size:9px;font-weight:900;color:#8a92a6}.sta-sp b{font-size:16px;color:#203c8e}
+    .sta-g{display:grid;grid-template-columns:auto 1fr;gap:5px 10px;margin:9px 0;align-items:center}.sta-g>small{font-size:9px;font-weight:900;color:#8a92a6;letter-spacing:.04em}.sta-g>span{display:flex;flex-wrap:wrap;gap:4px}
+    .sta-ch{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;font-weight:800;border-radius:99px;padding:2px 8px;background:#eef1f7;color:#4b5568;white-space:nowrap}.sta-ch.ex{background:#fde7ea;color:#c23b4f}.sta-ch.sta-rv{background:#fff1c2;color:#a87a00}.sta-ch.ct{background:#ffe9d6;color:#b35a12}.sta-ch.la{background:#13a06a;color:#fff}.sta-ch.lc{background:#e3e7f0;color:#1d2433}.sta-ch.ln{background:transparent;border:1px dashed #b5bccb;color:#8a92a6}.sta-ch.ls{background:#f3e8ff;color:#7c3aed}.sta-ch.kw{background:#eef2ff;color:#203c8e}
+    .sta-na{color:#b5bccb;font-weight:800}.sta-rr{color:#e0566a;font-weight:900}.sta-rg{color:#13a06a;font-weight:900}
+    .sta-p{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.sta-p>div{background:#f6f8fc;border-top:3px solid #d5dae5;border-radius:10px;padding:5px 8px}.sta-p>div.R{background:#fff1f3;border-top-color:#e0566a}.sta-p>div.Y{background:#fff8e1;border-top-color:#e0a800}.sta-p>div.G{background:#e9f8f0;border-top-color:#13a06a}
+    .sta-p small{display:block;font-size:9px;font-weight:900;color:#8a92a6}.sta-p b{font-size:14px;color:#1d2433}.sta-p em{display:block;font-style:normal;font-size:10px;font-weight:700;color:#6b7385}
+    body.dark-mode .sta-qm>div,body.dark-mode .sta-c{background:#151a22;border-color:#252a32}body.dark-mode .sta-qm b,body.dark-mode .sta-h b,body.dark-mode .sta-p b{color:#fff}body.dark-mode .sta-sp b{color:#9db4ff}
+    body.dark-mode .sta-p>div{background:#1a1f27}body.dark-mode .sta-p>div.R{background:#2a1418}body.dark-mode .sta-p>div.Y{background:#2a2410}body.dark-mode .sta-p>div.G{background:#10271e}body.dark-mode .sta-ch.lc{background:#252a32;color:#dbe1ea}
+    /* ST Action WhatsApp image: the short table */
+    .rp-report.rp-act{width:1280px;padding:40px 44px 28px}
+    .rp-act .ra-sum{display:flex;gap:10px;margin:20px 0 14px}.rp-act .ra-sum>div{flex:1;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.13);border-radius:16px;padding:10px 14px}.rp-act .ra-sum>div.ra-ws{flex:1.6}
+    .rp-act .ra-sum small{display:block;font-size:12px;font-weight:900;letter-spacing:.07em;color:#c9d6ff}.rp-act .ra-sum b{font-size:26px}.rp-act .ra-sum b.r{color:#ff8a9a}.rp-act .ra-sum b.y{color:#ffd36b}
+    .rp-act .ra-sp2{display:flex;gap:14px;align-items:center}.rp-act .ra-sp2 i{width:1px;align-self:stretch;background:rgba(255,255,255,.2)}.rp-act .ra-ws>div{display:flex;gap:16px}.rp-act .ra-ws span{display:flex;align-items:baseline;gap:5px}.rp-act .ra-ws em{font-style:normal;font-size:12px;font-weight:900;color:#c9d6ff}.rp-act .ra-ws b{font-size:24px;color:#ff8a9a}
+    .rp-act .ra-lg{display:flex;gap:16px;font-size:13px;font-weight:800;color:#dbe4ff;margin:0 0 10px}.rp-act .ra-lg span:first-child{margin-right:auto;color:#c9d6ff}
+    .rp-act .ra-t{width:100%;border-collapse:separate;border-spacing:0;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:18px;overflow:hidden;font-size:14.5px}
+    .rp-act .ra-t th{font-size:10.5px;font-weight:900;letter-spacing:.06em;color:#c9d6ff;text-align:right;padding:9px 7px;background:rgba(255,255,255,.07)}.rp-act .ra-t td{padding:9px 7px;border-top:1px solid rgba(255,255,255,.08);text-align:right;font-weight:800;color:#fff}
+    .rp-act .ra-t th:nth-child(-n+6),.rp-act .ra-t td:nth-child(-n+6){text-align:left}.rp-act .ra-t td small{display:block;font-size:12px;font-weight:700;color:#9fb0dd}.rp-act .ra-t td.s{font-size:12.5px;color:#dbe4ff}
+    .rp-act .sta-ch{font-size:12px;padding:3px 9px}.rp-act .sta-ch.la{background:#22c47c}.rp-act .sta-ch.lc{background:rgba(255,255,255,.16);color:#fff}.rp-act .sta-ch.ln{border-color:rgba(255,255,255,.35);color:#9fb0dd}.rp-act .sta-ch.ex{background:#ffdde2}.rp-act .sta-ch.ct{background:#ffe2c4}
+    .rp-act .sta-na{color:#7d8bb5}.rp-act .sta-rr{color:#ff7a8c}.rp-act .sta-rg{color:#4be39a}.rp-act .ra-dt{display:inline-flex;gap:4px}.rp-act .ra-dt i{width:17px;height:17px;border-radius:5px;background:rgba(255,255,255,.15)}
     /* ST Performance WhatsApp image: a 1080×1080 square in two columns */
     .rp-report.rp-sq{width:1080px;height:1080px;padding:44px;display:flex;flex-direction:column;overflow:hidden}.rp-sq .rp-foot{margin-top:auto;padding-top:14px}
     .rp-sq .rp-client{width:62px;height:62px;border-radius:18px}.rp-sq .rp-head b{font-size:28px}
@@ -8576,6 +8605,7 @@ function stRoas(t){return t.roas!=null?t.roas:(t.cost?t.value/t.cost:0)}
 function renderTerms(part){
  const body=document.getElementById('stBody');if(!body)return;
  if(ST_MODE==='perf')return renderPerf();
+ if(ST_MODE==='act')return renderAct();
  const c=ST[CURRENT_ACCOUNT]||{},d=c.data;
  if(!d&&!c.busy&&!c.err)stLoad(false);
  const shell=inner=>`<section class="card section st-sec">${stModeSw()}<div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month sec-ic st-aiic" data-ic="spark"><svg viewBox="0 0 24 24" aria-hidden="true">${SEC_IC.spark}</svg></span><span>ST · AI Max ${esc(accountMeta(DASH_DATA||{}).shortLabel||CURRENT_ACCOUNT.toUpperCase())}</span></div><div class="section-sub">${d&&d.run?'Report run '+esc(d.run):'AI Max Snapshot'}</div></div>${d&&!d.missing?`<button type="button" class="pk-ghost st-rd" onclick="stLoad(true)" ${c.busy?'disabled':''}>${c.busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read'}</button>`:''}</div>${inner}</section>`;
@@ -8617,10 +8647,11 @@ function stAnimate(body,key){
 let ST_MODE='ai', STP={}, STP_SEEN={};
 function stMode(m){ST_MODE=m;renderTerms()}
 function stModeSw(){
- const a=(ST[CURRENT_ACCOUNT]||{}).data,p=(STP[CURRENT_ACCOUNT]||{}).data;
+ const a=(ST[CURRENT_ACCOUNT]||{}).data,p=(STP[CURRENT_ACCOUNT]||{}).data,q=(STA[CURRENT_ACCOUNT]||{}).data;
+ const BO='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2.5L5 13.5h6l-1 8 8-11h-6z"/></svg>';
  const SP='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9z"/></svg>',CH='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V4M19 20v-6"/></svg>';
  const dt=v=>{const x=String(v||'').slice(0,10);if(!x)return '';const d=new Date(x+'T12:00:00');return isNaN(d)?x:d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})};
- return `<div class="stp-sw2" role="tablist"><button type="button" class="ai${ST_MODE==='ai'?' on':''}" onclick="stMode('ai')"><span class="ic">${SP}</span><span><b>AI Max</b><small>${a&&a.terms?a.terms.length+' terms'+(a.run?' · '+dt(a.run):''):'AI Max Snapshot'}</small></span></button><button type="button" class="pf${ST_MODE==='perf'?' on':''}" onclick="stMode('perf')"><span class="ic">${CH}</span><span><b>ST Performance</b><small>${p&&p.run?'Daily · '+dt(p.run):'Daily report'}</small></span></button></div>`;
+ return `<div class="stp-sw2" role="tablist"><button type="button" class="ai${ST_MODE==='ai'?' on':''}" onclick="stMode('ai')"><span class="ic">${SP}</span><span><b>AI Max</b><small>${a&&a.terms?a.terms.length+' terms'+(a.run?' · '+dt(a.run):''):'AI Max Snapshot'}</small></span></button><button type="button" class="pf${ST_MODE==='perf'?' on':''}" onclick="stMode('perf')"><span class="ic">${CH}</span><span><b>ST Performance</b><small>${p&&p.run?'Daily · '+dt(p.run):'Daily report'}</small></span></button><button type="button" class="ac${ST_MODE==='act'?' on':''}" onclick="stMode('act')"><span class="ic">${BO}</span><span><b>ST Action</b><small>${q&&q.date?'Daily · '+dt(q.date):'Action log'}</small></span></button></div>`;
 }
 const STP_S={'1a':['Converting','already a keyword','#2c6bd6','a'],'1b':['Converting','not a keyword yet','#13894f','b'],'2':['High clicks','no conversions','#e8791f','c'],'3':['High impressions','no clicks','#7b8396','d'],'4':['Highest CPC','keywords','#e25d5d','e'],'5':['Top spend','keywords','#8e3fae','f'],'6':['Match type','summary','#5a9e3c','h']};
 const STP_IC={a:'<path d="M12 3l2.4 1.6 2.9-.2 1 2.7 2.3 1.8-.9 2.7.9 2.7-2.3 1.8-1 2.7-2.9-.2L12 21l-2.4-1.6-2.9.2-1-2.7-2.3-1.8.9-2.7-.9-2.7 2.3-1.8 1-2.7 2.9.2z"/><path d="M8.7 12.2l2.2 2.2 4.4-4.6"/>',
@@ -8733,6 +8764,69 @@ function termsPerfShareText(){
  if(s1b&&s1b.rows.length)L.push(`➕ New Terms: ${s1b.rows.length}`);
  if(s2&&s2.rows.length)L.push(`🚫 No Conv.: ${s2.rows.length} · ${K(sum(s2,/^cost/))} Spend`);
  if(s3&&s3.rows.length)L.push(`👀 High Impr.: ${s3.rows.length}`);
+ return L.join('\n');
+}
+ 
+let STA={};
+function staLoad(force){
+ const k=CURRENT_ACCOUNT,c=STA[k]=STA[k]||{};if(c.busy)return;c.busy=true;c.err='';
+ serverCall('getActionLog',k,!!force,getAccessToken()).then(r=>{c.busy=false;c.data=r||{missing:true};if(CURRENT_TAB==='terms'&&ST_MODE==='act'&&k===CURRENT_ACCOUNT)renderAct()})
+  .catch(err=>{c.busy=false;c.err=errorText(err);if(CURRENT_TAB==='terms'&&ST_MODE==='act'&&k===CURRENT_ACCOUNT)renderAct()});
+}
+const STA_W=['30d','90d','180d'],STA_L={R:'Losing',Y:'Running',G:'Winning'};
+const staIsEx=a=>/exclu/i.test(a||''),staIsRv=a=>/review/i.test(a||'');
+
+function staWaste(rows){return [0,1,2].map(i=>rows.reduce((a,r)=>{const x=r.p[i];if(!x||x.cost==null)return a;return a+Math.max(0,x.cost-x.cost*(x.roas||0))},0))}
+function staRoas(v){return v==null?'':`<span class="${v<1?'sta-rr':'sta-rg'}">${fmt(v,1)}x</span>`}
+function staAct(a){const ex=staIsEx(a),rv=staIsRv(a);return a?`<span class="sta-ch ${ex?'ex':rv?'sta-rv':''}">${ex?'🚫':rv?'👀':''} ${esc(a)}</span>`:'<span class="sta-na">—</span>'}
+function staLevel(l){return /account/i.test(l||'')?'<span class="sta-ch la">✓ Account</span>':l?`<span class="sta-ch lc">${esc(l)}</span>`:'<span class="sta-ch ln">Level not set</span>'}
+function staSum(d){
+ const R=d.rows||[],ex=R.filter(r=>staIsEx(r.action)).length,rv=R.filter(r=>staIsRv(r.action)).length;
+ return {R,ex,rv,spend:R.reduce((a,r)=>a+(r.spend||0),0),waste:staWaste(R)};
+}
+function staCard(r){
+ const cc=(r.campaign||'').replace(/^HAUS_AlwaysOn_/i,'').replace(/_GoogleSearch_NA_Donations?$/i,'');
+ return `<div class="sta-c"><div class="sta-h"><div><b><bdi${stAr(r.term)}>${esc(r.term)}</bdi></b><small>${esc(cc)}${r.match?' · '+esc(r.match):''}${r.verdict?' · '+esc(r.verdict):''}</small></div><div class="sta-sp"><small>TODAY</small><b>${esc(money(r.spend||0,2))}</b></div></div>
+ <div class="sta-g"><small>ACTION</small><span>${staAct(r.action)}${r.reason?`<span class="sta-ch">${esc(r.reason)}</span>`:''}</span><small>LEVEL</small><span>${staLevel(r.level)}${r.list?`<span class="sta-ch ls">${esc(r.list)}</span>`:''}</span><small>CATEGORY</small><span>${r.cat?`<span class="sta-ch ct">${esc(r.cat)}</span>`:'<span class="sta-na">—</span>'}${r.kw?`<span class="sta-ch kw">Neg. ${esc(r.neg||'')} ${esc(r.kw)}</span>`:''}</span></div>
+ <div class="sta-p">${r.p.map((x,i)=>{const k=(r.acct||'')[i]||'';return `<div class="${k}"${k?` title="Account ${STA_W[i]}: ${STA_L[k]}"`:''}><small>${STA_W[i]} · CAMP</small><b>${x&&x.cost!=null?esc(money(x.cost,0)):'—'}</b><em>${x&&x.cost!=null?`${fmt(x.conv||0,0)} conv. · ${staRoas(x.roas)}`:'no data'}</em></div>`}).join('')}</div></div>`;
+}
+function renderAct(){
+ const body=document.getElementById('stBody');if(!body)return;
+ const c=STA[CURRENT_ACCOUNT]||{},d=c.data;
+ if(!d&&!c.busy&&!c.err)staLoad(false);
+ const acc=accountMeta(DASH_DATA||{}).shortLabel||CURRENT_ACCOUNT.toUpperCase();
+ const top=`<section class="card section st-sec">${stModeSw()}<div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month sec-ic st-aiic" data-ic="bolt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2.5L5 13.5h6l-1 8 8-11h-6z"/></svg></span><span>ST Action ${esc(acc)}</span></div><div class="section-sub">${d&&d.date?'Daily Action Log · '+esc(d.date):'Daily Action Log'}</div></div>${d&&!d.missing?`<button type="button" class="pk-ghost st-rd" onclick="staLoad(true)" ${c.busy?'disabled':''}>${c.busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read'}</button>`:''}</div>`;
+ let inner;
+ if(!d)inner=`<div class="vly-wait">${c.err?'⚠️ '+esc(c.err)+' · <a href="#" onclick="staLoad(true);renderAct();return false">Try again</a>':'<span class="lab-spin dark"></span> Reading the Daily Action Log…'}</div>`;
+ else if(d.missing)inner=`<div class="dx-empty">The Daily Action Log of ${esc(acc)} is not linked or has no header row yet.</div>`;
+ else{
+  const sm=staSum(d);
+  const hero=`<div class="sta-hero"><div class="sta-k">WASTED · SPEND WITH NO RETURN</div><div class="sta-ws">${sm.waste.map((v,i)=>`<div><small>${STA_W[i]}</small><b>${esc(money(v,0))}</b></div>`).join('')}</div><div class="sta-nt">No conv. = all of the spend · ROAS under 1x = the part not returned</div></div>`;
+  const qm=`<div class="sta-qm"><div style="--c:#203c8e"><small>TERMS</small><b>${sm.R.length}</b></div><div style="--c:#e0566a">${sm.rv?`<div class="sta-sp2"><span><small>EXCLUDE</small><b>${sm.ex}</b></span><span><small>REVIEW</small><b class="y">${sm.rv}</b></span></div>`:`<small>EXCLUDE</small><b>${sm.ex}</b>`}</div><div style="--c:#13a06a"><small>SPEND TODAY</small><b>${esc(money(sm.spend,2))}</b></div></div>`;
+  const lg=`<div class="sta-lg"><span>ACCOUNT TOTAL · 30 / 90 / 180d</span><span><i class="R"></i>Losing</span><span><i class="Y"></i>Running</span><span><i class="G"></i>Winning</span></div>`;
+  inner=hero+qm+(sm.R.length?lg+`<div class="sta-list">${sm.R.map(staCard).join('')}</div>`:'<div class="dx-empty">👌 No flagged terms in today\'s log.</div>');
+ }
+ body.innerHTML=top+inner+'</section>';
+ applySectionIcons(body);
+ revealOnScroll(body,'.sta-c');
+}
+
+function actShareHtml(){
+ const d=(STA[CURRENT_ACCOUNT]||{}).data;if(!d||d.missing)return rsHead('ST Action')+'<div class="rs-t"><b>No action log yet</b></div>'+SHARE_FOOT;
+ const sm=staSum(d),NA='<span class="sta-na">—</span>';
+ const cards=`<div class="ra-sum"><div><small>TERMS</small><b>${sm.R.length}</b></div><div>${sm.rv?`<div class="ra-sp2"><span><small>EXCLUDE</small><b class="r">${sm.ex}</b></span><i></i><span><small>REVIEW</small><b class="y">${sm.rv}</b></span></div>`:`<small>EXCLUDE</small><b>${sm.ex}</b>`}</div><div><small>SPEND TODAY</small><b>${esc(money(sm.spend,2))}</b></div><div class="ra-ws"><small>WASTED · NO RETURN</small><div>${sm.waste.map((v,i)=>`<span><em>${STA_W[i]}</em><b>${esc(money(v,0))}</b></span>`).join('')}</div></div></div>`;
+ const lg=`<div class="ra-lg"><span>ACCOUNT TOTAL · 30 / 90 / 180d</span><span><i class="R"></i>Losing</span><span><i class="Y"></i>Running</span><span><i class="G"></i>Winning</span></div>`;
+ const pc=x=>x&&x.cost!=null?`${esc(money(x.cost,0))}<small>${fmt(x.conv||0,0)} conv. · ${staRoas(x.roas)}</small>`:'<span class="sta-na">—</span><small>no data</small>';
+ const tb=`<table class="ra-t"><tr><th>SEARCH TERM</th><th>CATEGORY</th><th>ACTION</th><th>REASON</th><th>LEVEL</th><th>LIST</th><th>TODAY</th><th>30D CAMP</th><th>90D CAMP</th><th>180D CAMP</th><th>ACCOUNT</th></tr>${sm.R.map(r=>`<tr><td><bdi${stAr(r.term)}>${esc(r.term)}</bdi><small>${esc((r.campaign||'').replace(/^HAUS_AlwaysOn_/i,'').replace(/_GoogleSearch_NA_Donations?$/i,''))}${r.match?' · '+esc(r.match):''}</small></td><td>${r.cat?`<span class="sta-ch ct">${esc(r.cat)}</span>`:NA}</td><td>${staAct(r.action)}</td><td class="s">${r.reason?esc(r.reason):NA}</td><td>${staLevel(r.level).replace('Level not set','Not set')}</td><td class="s">${r.list?esc(r.list):NA}</td><td>${esc(money(r.spend||0,2))}</td>${r.p.map(x=>`<td>${pc(x)}</td>`).join('')}<td><span class="ra-dt">${[0,1,2].map(i=>`<i class="${(r.acct||'')[i]||''}"></i>`).join('')}</span></td></tr>`).join('')}</table>`;
+ return `${rsHead('ST Action'+(d.date?' · '+d.date:''))}${cards}${sm.R.length?lg+tb:'<div class="rs-t"><b>👌 No flagged terms today</b></div>'}${SHARE_FOOT}`;
+}
+function actShareText(){
+ const d=(STA[CURRENT_ACCOUNT]||{}).data;if(!d||d.missing)return '';
+ const a=accountMeta(DASH_DATA||{}),sm=staSum(d);
+ const L=[`📌 ST Action ${a.shortLabel||CURRENT_ACCOUNT.toUpperCase()}${d.date?' — '+d.date:''} ⚡`,''];
+ L.push(`🚫 Exclude: ${sm.ex}${sm.rv?` · 👀 Review: ${sm.rv}`:''}`);
+ L.push(`💸 Wasted: ${sm.waste.map((v,i)=>STA_W[i]+' '+money(v,0)).join(' · ')}`);
+ L.push(`💷 Spend today: ${money(sm.spend,2)}`);
  return L.join('\n');
 }
 function termsShareText(){
@@ -9018,6 +9112,7 @@ function getShareSummary(tab){
  if(k==='ly')return lyShareText(DASH_DATA);
  if(k==='terms')return termsShareText();
  if(k==='termsperf')return termsPerfShareText();
+ if(k==='termsact')return actShareText();
  return buildSummary(DASH_DATA);
 }
 
@@ -11040,7 +11135,7 @@ function captureDailyReport(){mvSettle();return captureReport(shareReportHtml(),
 
 function shareKind(tab){
  if(tab==='channel')return 'channel';
- if(tab==='terms')return ST_MODE==='perf'?'termsperf':'terms';
+ if(tab==='terms')return ST_MODE==='perf'?'termsperf':ST_MODE==='act'?'termsact':'terms';
  if(tab==='days')return DAY_VIEW==='plan'?'plan':DAY_VIEW==='ly'?'ly':'results';
  if(tab==='months')return MONTH_MODE==='one'?'report':'compare';
  return 'daily';
@@ -11054,7 +11149,8 @@ const SHARE_KINDS={
  compare:{html:()=>compareShareHtml(),cls:'rp-narrow',name:'Month-vs-Month'},
  ly:{html:()=>lyShareHtml(),cls:'rp-narrow',name:'Vs-Last-Year'},
  terms:{html:()=>termsShareHtml(),cls:'rp-narrow',name:'Search-Terms'},
- termsperf:{html:()=>termsPerfShareHtml(),cls:'rp-narrow rp-sq',name:'Search-Terms-Performance'}
+ termsperf:{html:()=>termsPerfShareHtml(),cls:'rp-narrow rp-sq',name:'Search-Terms-Performance'},
+ termsact:{html:()=>actShareHtml(),cls:'rp-act',name:'ST-Action'}
 };
 function captureChannelReport(){mvSettle();return captureReport(channelReportHtml(),'rp-narrow')}
 async function captureReport(html,extraClass){
