@@ -3645,7 +3645,7 @@ window.addEventListener('load',function(){
     .st-br{grid-column:1/-1;height:5px;border-radius:99px;background:#eef1f7;overflow:hidden}.st-br span{display:block;height:100%;border-radius:99px}.st-r small{font-size:10.5px;color:#8a92a6;font-weight:700}.st-r .st-a{text-align:right;font-size:10.5px}
     .st-more{display:block;margin:10px auto 0;border:0;background:none;font:inherit;font-size:12px;font-weight:800;color:#203c8e;cursor:pointer}
     .st-note{font-size:10.5px;color:#8a92a6;font-weight:600;margin-top:10px}
-    @media (min-width:1100px){.st-top{grid-template-columns:1fr}.st-wrap{margin-top:8px}.st-tiles{grid-template-columns:repeat(3,minmax(0,1fr))}.st-tiles div{padding:12px 14px}.st-tiles b{font-size:17px}.st-tiles em{font-size:19px}.st-t{display:table}.st-list{display:none}}
+    @media (min-width:1100px){.st-top{grid-template-columns:1fr}.st-wrap{margin-top:8px}.st-tiles{grid-template-columns:repeat(3,minmax(0,1fr))}.st-tiles div{padding:18px 18px;min-height:86px;align-content:center}.st-tiles b{font-size:22px}.st-tiles em{font-size:24px}.st-tiles small{font-size:11.5px;margin-top:3px}.st-t{display:table}.st-list{display:none}}
     body.dark-mode .st-card,body.dark-mode .st-hl{background:#151a22;border-color:#252a32}body.dark-mode .st-nums span{background:#1a1f27}body.dark-mode .st-tiles div{background:#1a1f27}
     body.dark-mode .st-hn,body.dark-mode .st-t td:first-child,body.dark-mode .st-tiles b,body.dark-mode .st-nums b{color:#fff}body.dark-mode .st-chips button{background:#151a22;border-color:#252a32;color:#c9d0dc}body.dark-mode .st-t td{border-color:#252a32}body.dark-mode .st-t th{border-color:#c9d0dc}
     body.dark-mode .st-ring text:first-of-type{fill:#fff}
@@ -3658,10 +3658,10 @@ window.addEventListener('load',function(){
     @media (min-width:1100px){#app .st-qm{grid-template-columns:repeat(4,1fr)!important}}
     .rp-report .st-qm{grid-template-columns:repeat(4,1fr)!important;gap:12px!important;margin-top:14px!important}.rp-report .st-qm .quick-metric{background:#fff;color:#1d2433}.rp-report .st-qm .kx-c{font-size:12px}
     /* v170 ST · AI Max: purple AI card, card + chips rows, two-card switch */
-    #app .st-card.st-ai{background:radial-gradient(circle at 100% 0,#7c4bdb,#2b1f6e 60%,#1a1450);border:0;color:#fff;box-shadow:0 14px 30px rgba(43,31,110,.3)}
-    #app .st-ai .st-k{color:#cbbdf6}#app .st-ai .st-tiles div{background:rgba(255,255,255,.09)!important;border-left:4px solid var(--c);border-radius:12px}
+    #app .st-card.st-ai{background:radial-gradient(120% 140% at 0% 0%,#2c4fb8,#203c8e 50%,#132457);border:0;color:#fff;box-shadow:0 14px 30px rgba(32,60,142,.25)}
+    #app .st-ai .st-k{color:#c9d6ff}#app .st-ai .st-tiles small{color:#c9d6ff!important}#app .st-ai .st-tiles div{background:rgba(255,255,255,.09)!important;border-left:4px solid var(--c);border-radius:12px}
     #app .st-ai .st-tiles b{color:#fff}#app .st-ai .st-tiles small{color:#cbbdf6}#app .st-ai .st-tiles div[style*="#13894f"]{--c:#4be39a!important}
-    .st-cl{display:grid;gap:7px;margin-top:4px}
+    .st-cl{display:grid;gap:6px;margin-top:4px}@media (max-width:640px){.st-r2{padding:7px 10px!important;border-radius:12px!important}.st-r2t b,.st-r2t em{font-size:13px!important}.st-r2m{margin-top:4px!important;gap:4px!important}.st-r2m span{font-size:10px!important;padding:1px 6px!important}}
     .st-r2{background:#fff;border:1px solid #eef0f6;border-left:4px solid var(--c);border-radius:14px;padding:9px 11px}
     .st-r2t{display:flex;justify-content:space-between;align-items:center;gap:8px}.st-r2t b{font-size:13.5px;font-weight:850;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.st-r2t em{font-style:normal;font-size:13.5px;font-weight:900;color:var(--c);direction:ltr}
     .st-r2m{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}.st-r2m span{background:#f4f6fb;border-radius:7px;padding:2px 7px;font-size:10.5px;font-weight:800;color:#4b5568}
@@ -8361,7 +8361,7 @@ function stRing(sm,size,th,center,dark){
 function stPct(sm,k){return sm.cost?Math.round(sm.by[k]/sm.cost*100):0}
 function stCard(sm,dark){
  const keys=['x','n','f','g'].filter(k=>sm.cnt[k]);
- const ring=stRing(sm,116,15,`<text x="58" y="56" text-anchor="middle" font-size="15" font-weight="900" fill="#fff">${esc(money(sm.cost,2))}</text><text x="58" y="71" text-anchor="middle" font-size="8.5" font-weight="800" fill="#cbbdf6">${sm.T.length} TERMS</text>`,true);
+ const ring=stRing(sm,116,15,`<text x="58" y="56" text-anchor="middle" font-size="15" font-weight="900" fill="#fff">${esc(money(sm.cost,2))}</text><text x="58" y="71" text-anchor="middle" font-size="8.5" font-weight="800" fill="#c9d6ff">${sm.T.length} TERMS</text>`,true);
  return `<div class="st-card st-ai${dark?' dk':''}"><div class="st-k">✦ AI MAX · SPEND BY RESULT</div><div class="st-wrap">${ring}<div class="st-tiles">${keys.map(k=>`<div style="--b:${dark?'rgba(255,255,255,.08)':ST_K[k].b};--c:${ST_K[k].c}"><b>${money(sm.by[k],2)}</b><em>${stPct(sm,k)}%</em><small>${ST_K[k].l} · ${sm.cnt[k]}</small></div>`).join('')}</div></div>
   </div>`;
 }
@@ -8373,9 +8373,9 @@ function stQuick(sm){
  const ctr=sm.impr?sm.clicks/sm.impr:0,cvr=sm.clicks?sm.conv/sm.clicks:0,roas=sm.cost?sm.value/sm.cost:0;
  const Q=[['clicks','clicks','Clicks',fmt(sm.clicks,0),`${fmt(sm.impr,0)} impr. · CTR ${fmt(ctr*100,1)}%`,sm.clicks?`CPC ${money(sm.cost/sm.clicks,2)}`:'',''],
   ['cvr','conv','Conversions',fmt(sm.conv,0),`CVR ${fmt(cvr*100,1)}%`,sm.conv?`CPA ${money(sm.cost/sm.conv,2)}`:'No conv.',sm.conv?'':'dn'],
-  ['cpa','value','Value',money(sm.value,2),sm.conv?`${money(sm.value/sm.conv,2)} per conv.`:'—','',''],
-  ['ctr','roas','ROAS',sm.cost?fmt(roas,2)+'x':'—',`on ${money(sm.cost,2)} spend`,roas<1?'▼ below 1x':'▲ above 1x',roas<1?'dn':'up']];
- return `<div class="quick-metrics-strip st-qm st-qm-${ST_V}">${Q.map(([c,ic,l,v,sub,chip,cc])=>`<div class="quick-metric ${c}"><div class="quick-icon" aria-hidden="true"><svg viewBox="0 0 24 24">${ST_QI[ic]}</svg></div><div class="quick-copy"><span class="quick-name">${l}</span><span class="quick-value">${v}</span>${ST_V!=='a'?`<span class="kx-c">${sub}</span>`:''}</div>${ST_V==='c'&&chip?`<span class="kx-r ${cc}">${chip}</span>`:''}</div>`).join('')}</div>`;
+  ['cpa','value','Value',money(sm.value,2),'','',''],
+  ['ctr','roas','ROAS',sm.cost?fmt(roas,2)+'x':'—','',roas<1?'▼ below 1x':'▲ above 1x',roas<1?'dn':'up']];
+ return `<div class="quick-metrics-strip st-qm st-qm-${ST_V}">${Q.map(([c,ic,l,v,sub,chip,cc])=>`<div class="quick-metric ${c}"><div class="quick-icon" aria-hidden="true"><svg viewBox="0 0 24 24">${ST_QI[ic]}</svg></div><div class="quick-copy"><span class="quick-name">${l}</span><span class="quick-value">${v}</span>${ST_V!=='a'&&sub?`<span class="kx-c">${sub}</span>`:''}</div>${ST_V==='c'&&chip?`<span class="kx-r ${cc}">${chip}</span>`:''}</div>`).join('')}</div>`;
 }
 function stRoas(t){return t.roas!=null?t.roas:(t.cost?t.value/t.cost:0)}
 function renderTerms(part){
@@ -8429,10 +8429,11 @@ function stpLoad(force){
 
 function stpCols(sec){
  const H=sec.head.map(h=>String(h||'')),low=H.map(h=>h.toLowerCase()),mi=low.findIndex((h,j)=>j>0&&/match/.test(h));
+ const rank=l=>/^cost|spend/.test(l)?0:/^clicks?$/.test(l)?1:/^impr/.test(l)?1.5:/^conv(ersions)?\.?$/.test(l)?2:/value/.test(l)?3:9;
  return H.map((h,j)=>{if(j===0||j===mi)return null;const l=low[j],vals=sec.rows.map(r=>r[j]).filter(v=>typeof v==='number');
   const kind=/cost|value|cpc|spend/.test(l)?'m':/%|rate|ctr/.test(l)?'p':'n',frac=kind==='p'&&!/%/.test(h)&&vals.every(v=>v<=1);
   const opt=(/rate|ctr|cpc/.test(l)&&!(sec.id==='4'&&/cpc/.test(l)))||(sec.id==='6'&&/impr|ctr|value/.test(l))||(sec.id==='5'&&/^conv(ersions)?$/.test(l))||(sec.id==='2'&&/value/.test(l));
-  return {j,h:h.replace(/\s*%$/,'').replace(/^Conversions$/i,'Conv.').replace(/^Impressions$/i,'Impr.'),kind,frac,opt};}).filter(Boolean).concat([]).map(c=>Object.assign(c,{mi}));
+  return {r:rank(l),j,h:h.replace(/\s*%$/,'').replace(/^Conversions$/i,'Conv.').replace(/^Impressions$/i,'Impr.'),kind,frac,opt};}).filter(Boolean).sort((a,b)=>a.r-b.r||a.j-b.j).map(c=>Object.assign(c,{mi}));
 }
 function stpVal(c,v){if(v==null||v==='')return '—';if(c.kind==='m')return esc(money(v,2));if(c.kind==='p')return fmt(c.frac?v*100:v,2)+'%';return fmt(v,0)}
 function stpSecHtml(sec,share){
