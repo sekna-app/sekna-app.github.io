@@ -3906,6 +3906,21 @@ window.addEventListener('load',function(){
      body.dark-mode .ta-b{background:rgba(255,255,255,.08);color:#9aa3b5}body.dark-mode .ta-b:hover{color:#fff;background:rgba(255,255,255,.16)}
      .side-drawer{transition-duration:.18s!important}
     }
+    /* Settings: default currency per account, spend alert levels; the spend alert note */
+    .ac-box{display:flex;gap:10px;flex:none}.ac-c{display:flex;align-items:center;gap:5px}.ac-c em{font-style:normal;font-size:10.5px;font-weight:900;color:#8a92a6}.ac-c .cur-sw button{padding:5px 8px;min-width:28px}
+    @media (max-width:420px){.ac-box{flex-direction:column;gap:5px;align-items:flex-end}}
+    .sa-demo{color:#2c4fb8;font-weight:900;text-decoration:none;white-space:nowrap}body.dark-mode .sa-demo{color:#9db4ff}
+    .sa-opts{display:flex;gap:6px;padding:0 14px 14px 58px;flex-wrap:wrap}.sa-opts button{font:inherit;font-size:12.5px;font-weight:900;border:1.5px solid #e3e7f0;background:#fff;color:#4b5568;border-radius:11px;padding:7px 12px;cursor:pointer}.sa-opts button.on{background:#203c8e;border-color:#203c8e;color:#fff}
+    body.dark-mode .sa-opts button{background:#151a22;border-color:#252a32;color:#c9d0dc}body.dark-mode .sa-opts button.on{background:#3d6bff;border-color:#3d6bff;color:#fff}
+    .sa{position:fixed;left:50%;top:76px;z-index:9000;width:min(380px,calc(100% - 24px));transform:translateX(-50%);display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;background:linear-gradient(150deg,#3a1420,#1d2433 70%);color:#fff;border:1px solid rgba(255,122,140,.35);border-radius:18px;padding:13px 14px;box-shadow:0 18px 40px rgba(10,14,30,.35),0 0 0 4px rgba(224,86,106,.12);cursor:pointer;animation:saIn .5s cubic-bezier(.2,.8,.2,1)}
+    .sa.out{animation:saOut .3s ease forwards}@keyframes saIn{from{opacity:0;transform:translate(-50%,-18px)}}@keyframes saOut{to{opacity:0;transform:translate(-50%,-14px)}}
+    .sa-ic{width:38px;height:38px;border-radius:12px;background:#e0566a;display:grid;place-items:center;animation:saBeat 1.4s ease-in-out 2}.sa-ic svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+    @keyframes saBeat{50%{box-shadow:0 0 0 7px rgba(224,86,106,.28)}}
+    .sa-t small{display:block;font-size:9.5px;font-weight:900;letter-spacing:.08em;color:#ffb3bf}.sa-t b{display:block;font-size:15px;margin:2px 0}.sa-t span{font-size:12px;color:#d6dbe6;font-weight:600}
+    .sa-bar{position:relative;height:7px;border-radius:99px;background:#e0566a;margin-top:9px;overflow:visible}.sa-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:#4be39a}.sa-bar em{position:absolute;top:-4px;width:2px;height:15px;background:#fff;border-radius:2px;margin-left:-1px}
+    .sa-k{display:flex;justify-content:space-between;font-size:10px;font-weight:800;color:#c9d0dc;margin-top:4px}
+    .sa-x{border:0;background:rgba(255,255,255,.12);color:#fff;width:28px;height:28px;border-radius:9px;font-size:12px;cursor:pointer}
+    @media (prefers-reduced-motion:reduce){.sa,.sa-ic{animation:none}}
     /* Currency note before a share (USA in $, AR in £) */
     .cw{position:fixed;z-index:9000;background:#1d2433;color:#fff;border-radius:16px;padding:12px;box-shadow:0 14px 34px rgba(0,0,0,.28);display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;animation:cwDn .45s cubic-bezier(.2,.8,.2,1);font-family:inherit}
     .cw:after{content:"";position:absolute;left:var(--ax,50%);top:-6px;width:12px;height:12px;margin-left:-6px;background:#1d2433;transform:rotate(45deg)}.cw.noar:after{display:none}
@@ -5546,8 +5561,15 @@ window.addEventListener('load',function(){
       <div class="sk-row sk-zoom-row" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M11 8v6M8 11h6"/></svg></span><span class="sk-row-text"><b>Layout size</b><small>Make the desktop layout bigger or smaller.</small></span><button type="button" onclick="changeDesktopZoom(-0.25)" aria-label="Smaller">−</button><b data-zoom-label>100%</b><button type="button" onclick="changeDesktopZoom(0.25)" aria-label="Larger">+</button></div>
     </div>
 
+    <div class="sk-group-title">Currency</div>
+    <div class="sk-card">
+      <div class="sk-row" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M14.6 9.2c-.5-.8-1.5-1.2-2.6-1.2-1.5 0-2.6.8-2.6 1.9 0 2.5 5.4 1.3 5.4 4 0 1.1-1.2 2-2.8 2-1.2 0-2.2-.5-2.7-1.3M12 6.5V8M12 16v1.5"/></svg></span><span class="sk-row-text"><b>Default currency</b><small>Each account opens in its own currency.</small></span><span class="ac-box" id="accCurBox"></span></div>
+    </div>
+
     <div class="sk-group-title">Notifications</div>
     <div class="sk-card">
+      <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg></span><span class="sk-row-text"><b>Spend alert</b><small>A note when the day's spend passes its plan by this much. <a href="#" class="sa-demo" onclick="spendAlertCheck(DASH_DATA,true);return false">Show me</a></small></span></div>
+      <div class="sa-opts" id="spendAlertOpts"></div>
       <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="sk-row-text"><b>Push notifications</b><small id="notificationsHelp">Media-plan update alerts in the HEMERA app.</small></span><span class="switch"><input id="notificationsToggle" type="checkbox" onchange="onNotificationsToggle(this)"><span></span></span></label>
       <div class="sk-row sk-row--stack sk-sound-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="sk-row-text"><b>Notification sound</b><small>Tap a sound to select it and hear a preview.</small></span></div>
       <div class="sk-sounds" role="radiogroup" aria-label="Notification sound">
@@ -6229,7 +6251,7 @@ function syncNativeSettings(){
  catch(e){}
 }
 function openSettings(){
- closeSidebar();syncSettingsControls();renderProfileCard();settingsUser();
+ closeSidebar();syncSettingsControls();renderProfileCard();settingsUser();drawAccCur();drawSpendAlertOpts();
  const el=document.getElementById('settingsOverlay');if(el)el.classList.add('open');
 }
 
@@ -6526,6 +6548,7 @@ function switchAccount(accountKey){
  CURRENT_ACCOUNT=key;
  localStorage.setItem('ha_media_plan_account',CURRENT_ACCOUNT);
  SUMMARY_TEXT='';
+ try{accCurApply()}catch(e){}
  if(refreshTimer){clearInterval(refreshTimer);refreshTimer=null}
  applyAccountBrand({account:{
    key:key,
@@ -6675,6 +6698,29 @@ function loadData(options){
 const SIG_SKIP={generatedAt:1,generatedAtMs:1,userEmail:1};
 function dataSig(d){try{return JSON.stringify(d,(k,v)=>SIG_SKIP[k]?undefined:v)}catch(e){return Math.random()}}
 let RENDER_QUIET=false;
+
+
+const SPEND_ALERT_KEY='sekna_spend_alert';
+function spendAlertPct(){const v=storeGet(SPEND_ALERT_KEY);return v==null||v===''?120:+v||0}
+function setSpendAlert(v){storeSet(SPEND_ALERT_KEY,String(v));drawSpendAlertOpts()}
+function drawSpendAlertOpts(){const b=document.getElementById('spendAlertOpts');if(!b)return;const cur=spendAlertPct();b.innerHTML=[0,110,120,130,150].map(v=>`<button type="button" class="${cur===v?'on':''}" onclick="setSpendAlert(${v})">${v?v+'%':'Off'}</button>`).join('')}
+function spendAlertCheck(d,force){
+ const pct=spendAlertPct(),x=d&&d.latest;if(!x||!x.targetSpend||x.spendAchievement==null)return;
+ if(!force&&(!pct||x.spendAchievement*100<pct))return;
+ const key='sekna_sa_'+CURRENT_ACCOUNT+'_'+(x.date||'');if(!force&&storeGet(key)==='1')return;if(!force)storeSet(key,'1');
+ document.getElementById('spendAlert')?.remove();
+ const acc=accountMeta(d).shortLabel||CURRENT_ACCOUNT.toUpperCase(),over=x.spend-x.targetSpend,p=Math.round(x.spendAchievement*100);
+ const el=document.createElement('div');el.id='spendAlert';el.className='sa';el.setAttribute('role','alert');el.setAttribute('data-share-ui','');
+ el.innerHTML=`<div class="sa-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg></div>
+ <div class="sa-t"><small>SPEND ALERT · ${esc(acc)} · ${esc(x.dayName?String(x.dayName).slice(0,3)+' ':'')}${esc(x.monthName?String(x.monthName).slice(0,3):'')} ${esc(x.dayNumber||'')}</small>
+ <b>Spend is ${p}% of the day's plan</b><span>${esc(money(x.spend))} spent against ${esc(money(x.targetSpend))} · ${over>=0?esc(money(over))+' over':''}</span>
+ <div class="sa-bar"><i style="width:${Math.min(100,100/Math.max(1,x.spendAchievement))}%"></i><em style="left:${Math.min(100,100/Math.max(1,x.spendAchievement))}%"></em></div><div class="sa-k"><span>Plan</span><span>${p}%</span></div></div>
+ <button type="button" class="sa-x" aria-label="Close">✕</button>`;
+ document.body.appendChild(el);
+ const close=()=>{el.classList.add('out');setTimeout(()=>el.remove(),300)};
+ el.querySelector('.sa-x').onclick=close;el.onclick=e=>{if(e.target.closest('.sa-x'))return;close();if(CURRENT_TAB!=='overview')switchDashboardTab('overview')};
+ setTimeout(close,12000);
+}
 function render(d,opts){
  const animate=!(opts&&opts.animate===false);
  RENDER_QUIET=!animate;
@@ -6691,6 +6737,7 @@ function render(d,opts){
  tbLive(d);
 
  kpi('kSpend','tSpend','dSpend','pSpend',money(x.spend),money(x.targetSpend),x.spendAchievement,true);
+ setTimeout(()=>{try{spendAlertCheck(d)}catch(e){}},900);
  kpi('kValue','tValue','dValue','pValue',money(x.value),money(x.planValue),x.valueAchievement,false);
  kpi('kConv','tConv','dConv','pConv',fmt(x.conversions,0),fmt(x.planConversions,1),x.convAchievement,false);
  kpi('kRoas','tRoas','dRoas','pRoas',roas!=null?fmt(roas,2)+'x':'—',planRoas!=null?fmt(planRoas,2)+'x':'—',roasAch,false);
@@ -9558,7 +9605,13 @@ function channelCode(s){if(String(s).includes('Brand')&&!String(s).includes('Non
 
 
 const CUR_LIST={GBP:{s:'£',name:'pounds'},USD:{s:'$',name:'dollars'}};
-let CUR=(()=>{const c=storeGet('sekna_cur');return CUR_LIST[c]?c:'GBP'})();
+
+
+let ACC_CUR=(()=>{try{const o=JSON.parse(storeGet('sekna_cur_acc')||'null');if(o&&CUR_LIST[o.usa]&&CUR_LIST[o.ar])return o}catch(e){}return {usa:'USD',ar:'GBP'}})();
+let CUR=ACC_CUR[CURRENT_ACCOUNT]||'GBP';
+function accCurApply(){const c=ACC_CUR[CURRENT_ACCOUNT]||'GBP';if(c===CUR)return;CUR=c;curDraw();if(c!=='GBP'&&!(FX&&FX.rates&&FX.rates[c]))fxLoad(true).then(()=>{if(DASH_DATA)render(DASH_DATA,{animate:false})}).catch(()=>{})}
+function setAccCur(acc,c){if(!CUR_LIST[c]||!ACC_CUR[acc])return;ACC_CUR[acc]=c;storeSet('sekna_cur_acc',JSON.stringify(ACC_CUR));drawAccCur();if(acc===CURRENT_ACCOUNT){CUR='';setCur(c)}}
+function drawAccCur(){const b=document.getElementById('accCurBox');if(!b)return;b.innerHTML=['usa','ar'].map(k=>`<span class="ac-c"><em>${k==='usa'?'USA':'AR'}</em><span class="cur-sw">${Object.keys(CUR_LIST).map(c=>`<button type="button" class="${ACC_CUR[k]===c?'on':''}" onclick="setAccCur('${k}','${c}')">${CUR_LIST[c].s}</button>`).join('')}</span></span>`).join('')}
 let FX=(()=>{try{return JSON.parse(storeGet('sekna_fx')||'null')}catch(e){return null}})();
 let CUR_HOLD=0; 
 function curOn(){return !CUR_HOLD&&CUR!=='GBP'&&FX&&FX.rates&&FX.rates[CUR]>0?CUR:'GBP'}
@@ -9588,7 +9641,7 @@ function fxLoad(force){
 async function setCur(c){
  if(!CUR_LIST[c]||c===CUR)return;
  if(c!=='GBP'&&!(FX&&FX.rates&&FX.rates[c])){try{await fxLoad(true)}catch(e){}if(!(FX&&FX.rates&&FX.rates[c]))return showSettingsToast('The exchange rate is not available right now. Try again later.')}
- CUR=c;storeSet('sekna_cur',c);curDraw();
+ CUR=c;curDraw();
  
  if(DASH_DATA)render(DASH_DATA,{animate:false});
 }
