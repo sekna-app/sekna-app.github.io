@@ -356,7 +356,7 @@ exports.api = onRequest({
     // Called by keepWarm. At most once a minute; it only refreshes the shared data.
     if (Date.now() - lastWarm < 60 * 1000) { res.json({ ok: true, skipped: true }); return; }
     lastWarm = Date.now();
-    const done = [], latest = {};
+    const done = [], latest = {}, days = {};
     const w = await readWindow(), now = Date.now(), open = inReadWindow(w, now);
     const lp = localParts(w.tz, now), today = lp.day, yesterday = localParts(w.tz, now - 864e5).day;
     const log = (await fsGet(READ_LOG).catch(() => null)) || { days: {}, month: {} };
@@ -370,7 +370,7 @@ exports.api = onRequest({
         const read = open && !(w.on && w.stopOnData !== false && got);
         const d = read ? await sheetData('dash', key, true) : ((await keptData('dash', key)) || {}).v || await sheetData('dash', key, false);
         if (read) done.push(key);
-        latest[key] = d && d.latest; delete stats.warmErrors[key];
+        latest[key] = d && d.latest; days[key] = d && d.dayPlan; delete stats.warmErrors[key];
         const date = d && d.latest && d.latest.date;
         if (date) {
           dayLog.base = dayLog.base || {};
@@ -410,7 +410,7 @@ exports.api = onRequest({
     }
     // New day / team message / app version notifications (after the rest moved here).
     let pushed = null;
-    try { pushed = await rest.pushChecks(latest); } catch (e) { pushed = { error: errorText(e) }; console.error('Push checks: ' + errorText(e)); }
+    try { pushed = await rest.pushChecks(latest, days); } catch (e) { pushed = { error: errorText(e) }; console.error('Push checks: ' + errorText(e)); }
     // The 9 AM Cairo backup push rides on this check (no schedule of its own).
     try { const m = await tasks.morningPushIfDue(); if (m) pushed = Object.assign({}, pushed, { morning: m }); } catch (e) { console.error('Morning push: ' + errorText(e)); }
     try { await rest.fxRefreshIfDue(); } catch (e) { console.error('Rates: ' + errorText(e)); }

@@ -452,7 +452,7 @@ async function pushState() {
     releaseTag: st.releaseTag || '' };
 }
 
-async function pushChecks(latestByAccount) {
+async function pushChecks(latestByAccount, daysByAccount) {
   if (!(await moved())) return { skipped: true };
   const out = {};
   const app = (await fsGet('acc/app')) || {};
@@ -501,6 +501,27 @@ async function pushChecks(latestByAccount) {
       snap.sent = sent;
     } else snap.sent = maintenance ? 'maintenance' : 'first-run';
     save.days = Object.assign({}, state.days || {}, save.days || {}, { [key]: snap });
+    // With the new day: the spend alert (day's spend past its plan by the owner's level) and the day streak
+    // (3+ days in a row of value at or above the day's plan) go to the team's phones.
+    if (prev && !maintenance) {
+      const prefs = Object.assign({ alert: 120 }, (await fsGet('server/app-prefs').catch(() => null)) || {});
+      const acc = key === 'ar' ? 'AR' : 'USA', sym = key === 'ar' ? '£' : '$';
+      const ach = Number(x.spendAchievement), lvl = Number(prefs.alert) || 0;
+      if (lvl && isFinite(ach) && ach * 100 >= lvl && Number(x.targetSpend) > 0) {
+        await notify.send({ topics: [{ title: '⚠️ Spend is ' + Math.round(ach * 100) + '% of the day\'s plan · ' + acc,
+          body: (x.monthName ? x.monthName + ' ' + x.dayNumber + ': ' : '') + 'spent ' + Math.round(Number(x.spend) || 0).toLocaleString('en-GB') + ' against a plan of ' + Math.round(Number(x.targetSpend)).toLocaleString('en-GB') + ' (sheet currency).',
+          account: key, eventType: 'spend_alert' }] }).catch(e => console.error('Spend alert: ' + e.message));
+        out[key + 'SpendAlert'] = Math.round(ach * 100);
+      }
+      const rows = ((daysByAccount || {})[key] || []).filter(r => r && r.actual && r.plan && Number(r.plan.value) > 0).sort((p, q) => (p.date < q.date ? -1 : 1));
+      let n = 0; for (let i = rows.length - 1; i >= 0; i--) { if (Number(rows[i].actual.value) >= Number(rows[i].plan.value)) n++; else break; }
+      if (n >= 3) {
+        await notify.send({ topics: [{ title: '🔥 ' + n + ' days in a row above plan · ' + acc,
+          body: 'Conversion value met the day\'s plan ' + n + ' days running. Keep it going!', account: key, eventType: 'streak' }] }).catch(e => console.error('Streak: ' + e.message));
+        out[key + 'Streak'] = n;
+      }
+      void sym;
+    }
     // The last day of the month is in: the month is complete (once per month and account).
     const dim = snap.date ? new Date(Date.UTC(+snap.date.slice(0, 4), +snap.date.slice(5, 7), 0)).getUTCDate() : 0;
     const mk = snap.date.slice(0, 7), closed = Object.assign({}, state.closed || {}, save.closed || {});

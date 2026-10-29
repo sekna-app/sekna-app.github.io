@@ -52,7 +52,8 @@ window.addEventListener('load',function(){
 <script>
     (function(){
       try{
-        var wantsDesktop=localStorage.getItem('ha_setting_desktop_view')==='1';
+        
+        var wantsDesktop=false;try{localStorage.removeItem('ha_setting_desktop_view')}catch(e){}
         var mobileLike=(navigator.maxTouchPoints||0)>0 && Math.min(screen.width||9999,screen.height||9999)<900;
         
         
@@ -5563,10 +5564,8 @@ window.addEventListener('load',function(){
     <div class="sk-group-title">Appearance</div>
     <div class="sk-card">
       <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></span><span class="sk-row-text"><b>Dark mode</b><small>Use a darker theme across the dashboard.</small></span><span class="switch"><input id="darkModeToggle" type="checkbox" onchange="saveDashboardSettings()"><span></span></span></label>
-      <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></span><span class="sk-row-text"><b>Desktop layout</b><small>Show the full computer layout on your phone.</small></span><span class="switch"><input id="desktopViewToggle" type="checkbox" onchange="saveDashboardSettings()"><span></span></span></label>
       <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></svg></span><span class="sk-row-text"><b>Swipe between pages</b><small>Swipe left or right to move to the next page.</small></span><span class="switch"><input id="swipeToggle" type="checkbox" onchange="setSwipe(this.checked)"><span></span></span></label>
       <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg></span><span class="sk-row-text"><b>Animations</b><small>Charts and numbers move in. Turn off for a calmer or faster screen.</small></span><span class="switch"><input id="motionToggle" type="checkbox" onchange="setMotion(this.checked)"><span></span></span></label>
-      <div class="sk-row sk-zoom-row" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M11 8v6M8 11h6"/></svg></span><span class="sk-row-text"><b>Layout size</b><small>Make the desktop layout bigger or smaller.</small></span><button type="button" onclick="changeDesktopZoom(-0.25)" aria-label="Smaller">−</button><b data-zoom-label>100%</b><button type="button" onclick="changeDesktopZoom(0.25)" aria-label="Larger">+</button></div>
     </div>
 
     <div class="sk-group-title">Notifications</div>
@@ -6164,7 +6163,7 @@ function getDashboardSettings(){
    welcome:readBoolSetting(DASHBOARD_SETTINGS_KEYS.welcome,true),
    notifications:readBoolSetting(DASHBOARD_SETTINGS_KEYS.notifications,true),
    sound:localStorage.getItem(DASHBOARD_SETTINGS_KEYS.sound)||'default',
-   desktop:readBoolSetting(DASHBOARD_SETTINGS_KEYS.desktop,false)
+   desktop:false
  };
 }
 const DESKTOP_LAYOUT_WIDTH=1366;
@@ -6720,7 +6719,6 @@ function spendAlertCheck(d,force){
  const pct=spendAlertPct(),x=d&&d.latest;if(!x||!x.targetSpend||x.spendAchievement==null)return;
  if(!force&&(!pct||x.spendAchievement*100<pct))return;
  const key='sekna_sa_'+CURRENT_ACCOUNT+'_'+(x.date||'');if(!force&&storeGet(key)==='1')return;if(!force)storeSet(key,'1');
- if(!force)nfLocalAdd({id:'sa-'+CURRENT_ACCOUNT+'-'+x.date,type:'spend_alert',account:CURRENT_ACCOUNT,title:'Spend is '+Math.round(x.spendAchievement*100)+"% of the day's plan",body:money(x.spend)+' spent against '+money(x.targetSpend)+' · '+(x.dayName||'')+' '+(x.dayNumber||'')});
  document.getElementById('spendAlert')?.remove();
  const acc=accountMeta(d).shortLabel||CURRENT_ACCOUNT.toUpperCase(),over=x.spend-x.targetSpend,p=Math.round(x.spendAchievement*100);
  const el=document.createElement('div');el.id='spendAlert';el.className='sa';el.setAttribute('role','alert');el.setAttribute('data-share-ui','');
@@ -6746,7 +6744,7 @@ function streakDraw(d){
  const st=streakOf(d);if(st.n<3)return;
  const key='sekna_streak_'+CURRENT_ACCOUNT+'_'+st.last+'_'+st.n;let t0=+storeGet(key)||0;
  if(!t0){t0=Date.now();storeSet(key,String(t0));
-  nfLocalAdd({id:'st-'+CURRENT_ACCOUNT+'-'+st.last,type:'streak',account:CURRENT_ACCOUNT,title:st.n+' days in a row above plan',body:'Conversion value met the day\'s plan '+st.n+' days running'})}
+}
  const left=30*60e3-(Date.now()-t0);if(left<=0)return;
  const host=document.getElementById('dateLine');if(!host)return;
  const el=document.createElement('div');el.id='streakCard';el.className='stk';
