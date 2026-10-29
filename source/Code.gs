@@ -2214,7 +2214,7 @@ function renderAccessReviewPage_(p) {
       '&decision=' + encodeURIComponent(String(p.decision || '')) + '&sig=' + encodeURIComponent(String(p.sig || ''));
     return HtmlService.createHtmlOutput('<!DOCTYPE html><html><head><meta charset="utf-8"><base target="_top"></head><body style="font-family:Arial,sans-serif;padding:30px;text-align:center">' +
       '<p>The SEKNA review page moved.</p><p><a href="' + escapeHtml_(url) + '" style="display:inline-block;padding:12px 22px;border-radius:10px;background:#203C8E;color:#fff;font-weight:700;text-decoration:none">Open the request</a></p>' +
-      '<script>try{window.top.location.href=' + JSON.stringify(url) + '}catch(e){}</script></body></html>').setTitle('SEKNA • Access request');
+      '<script>try{window.top.location.href=' + JSON.stringify(url) + '}catch(e){}</script></body></html>').setTitle('HEMERA • Access request');
   }
   const id = String(p.id || '');
   const decision = String(p.decision || '');
@@ -2247,7 +2247,7 @@ function renderAccessReviewPage_(p) {
     'button{width:100%;margin-top:8px;padding:14px;border:0;border-radius:13px;font-size:14px;font-weight:800;color:#fff;cursor:pointer}' +
     'button.primary{background:linear-gradient(180deg,#2b4db0,#203c8e)}button.danger{background:#c0392b}button:disabled{opacity:.75;cursor:default}' +
     '</style></head><body><div class="card"><div class="brand">SEKNA</div>' + body + '</div></body></html>';
-  return HtmlService.createHtmlOutput(html).setTitle('SEKNA • Access request')
+  return HtmlService.createHtmlOutput(html).setTitle('HEMERA • Access request')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
 }
 
