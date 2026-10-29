@@ -3657,6 +3657,7 @@ window.addEventListener('load',function(){
     .mp-white{background:#fff;color:#1d2433}
     .mp-top{display:flex;justify-content:space-between;align-items:center}.mp-top img{height:44px}.mp-top b{font-size:34px;letter-spacing:.06em}
     .mp-top span{font-size:20px;font-weight:800;color:#c9d3f5;border:2px solid rgba(255,255,255,.2);border-radius:999px;padding:8px 18px}
+    .mp-top span.mp-tag2{display:inline-flex;align-items:center;gap:14px}.mp-tag2 img{width:34px;height:34px;object-fit:contain}.mp-tag2 em{width:2px;height:28px;background:rgba(255,255,255,.35)}
     .mp-kick{margin-top:70px;font-size:22px;font-weight:900;letter-spacing:.16em;color:#e2b874}
     .mp-navy h1{margin:10px 0 6px;font-size:96px;line-height:1;letter-spacing:-.04em;font-weight:900}
     .mp-sub{font-size:24px;font-weight:700;color:#c9d3f5}
@@ -12549,6 +12550,20 @@ let MR={open:false,pages:null,pdf:null,busy:'',msg:'',people:null,notes:'',sig:'
 const mpAcc=(a,p)=>p>0?Math.max(0,1-Math.abs(a-p)/p):null;
 function mpPct(v){return v==null||!isFinite(v)?'—':Math.round(v*100)+'%'}
 function mpK(v){v=Number(v)||0;const c=cx(v);return c>=1e6?cs()+(c/1e6).toFixed(2)+'M':c>=1e4?cs()+(c/1e3).toFixed(1)+'k':money(v)}
+
+let MP_MARK=null,MP_MARK_SRC='';
+function mpMark(){
+ const im=document.querySelector('.logo img');
+ if(MP_MARK!==null&&im&&im.src===MP_MARK_SRC)return MP_MARK;
+ try{if(!im||!im.naturalWidth)return '';MP_MARK_SRC=im.src;
+   const c=document.createElement('canvas');c.width=im.naturalWidth;c.height=im.naturalHeight;const g=c.getContext('2d');g.drawImage(im,0,0);
+   const d=g.getImageData(0,0,c.width,c.height),px=d.data;
+   for(let i=0;i<px.length;i+=4){const dark=(px[i]+px[i+1]+px[i+2])/3<200;px[i+3]=dark?px[i+3]:0;px[i]=px[i+1]=px[i+2]=255}
+   g.putImageData(d,0,0);MP_MARK=c.toDataURL('image/png');
+ }catch(e){MP_MARK=''}
+ return MP_MARK;
+}
+function mpTag(m){const k=mpMark();return `<span class="mp-tag2">${k?`<img src="${k}" alt=""><em></em>`:''}${esc(m.meta.dashboardTitle)}</span>`}
 function mpLogo(){const i=document.querySelector('.sk-drawer-logo');return i?i.src:''}
 function ensureMonthExtras(){
  const key=CURRENT_ACCOUNT;
@@ -12645,7 +12660,7 @@ function mpCover(m){
    v!=null?['✓',`Conversion value reached ${mpPct(v)} of the plan.`]:null,
    ['♥','Thank you to the Google Ads team.']].filter(Boolean);
  return `<div class="mp-pg mp-cv2">
-  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="">`:'<b>HEMERA</b>'}<span>${esc(m.meta.dashboardTitle)}</span></div>
+  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="">`:'<b>HEMERA</b>'}${mpTag(m)}</div>
    <div class="cv2-row"><div><div class="cv2-kick">MEDIA PLAN RESULTS</div><h1>${esc(m.label)}</h1><div class="cv2-sub">${esc(m.hijri)} · ${m.live.length} of ${m.days.length} days</div></div>
    <div class="cv2-big"><b>${mpPct(m.acc.all)}</b><small>PLAN ACCURACY</small></div></div></div>
   <div class="cv2-bd"><div class="cv2-w">${esc(mpWords(m))}</div><div class="cv2-ws">Each bar is the month so far against its full plan (the black line). Plan accuracy weighs spend 40%, value 40%, conversions 20%.</div>
@@ -12684,7 +12699,7 @@ function mpResultsPage(m){
  }
  const day=(x,o)=>x?shortDay(x.date).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}):'—';
  return `<div class="mp-pg mp-cv2 rz">
-  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="">`:'<b>HEMERA</b>'}<span>${esc(m.meta.dashboardTitle)}</span></div>
+  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="">`:'<b>HEMERA</b>'}${mpTag(m)}</div>
    <div class="cv2-kick" style="margin-top:44px">RESULTS · DAY BY DAY</div><h1 class="rz-h">${esc(range)}</h1>
    <div class="cv2-sub">${live.length} of ${days.length} days · against the full-month plan</div>
    <div class="rz-sum">${hit} of ${live.length} days hit their value plan${st.n>=3?` · <b>${st.n} in a row</b> from ${esc(dd(st.from))}`:''}.</div></div>
@@ -12713,7 +12728,7 @@ function mpLyPage(m){
  else if(ahead)words.push(`This year is <b>${mpK(gap)} ahead</b> on value.`);
  if(beat+under)words.push(`<b>${beat} of ${beat+under} days</b> beat the same day last year.`);
  return `<div class="mp-pg mp-cv2 tz lz">
-  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="">`:'<b>HEMERA</b>'}<span>${esc(m.meta.dashboardTitle)}</span></div>
+  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="">`:'<b>HEMERA</b>'}${mpTag(m)}</div>
    <div class="cv2-kick" style="margin-top:40px">VS THE SAME HIJRI DAYS LAST YEAR</div><h1 class="rz-h">${esc(m.label)} vs last year</h1>
    <div class="cv2-sub">${esc(m.hijri)} against the same Hijri days last year (${esc(lyLab(m))}) · ${m.live.length} of ${m.days.length} days so far</div>
    <div class="lz-sb"><div class="${ahead?'win':''}"><b>${ahead?'👑 ':''}${y}</b><small>this year</small><span>${mpK(a.value)}</span></div>
@@ -12745,7 +12760,7 @@ function mpTypesPage(m){
    <td>${mpK(c.value)}</td><td>${fmt(c.conversions,0)}</td><td><span class="tz-p ${cls(c.roas)}">${c.roas!=null?fmt(c.roas,2)+'x':'—'}</span></td></tr>`};
  const share=(k,t)=>`<div class="tz-sh"><span>${k==='spend'?'Share of spend':'Share of value'}</span><div>${ch.map(c=>`<i style="flex:${Math.max(c[k],0)};background:${KC[mpKey(c.name)]}"></i>`).join('')}</div><em>${ch.map(c=>`${esc(nmS(c.name))} ${mpPct(c[k]/t)}`).join(' · ')}</em></div>`;
  return `<div class="mp-pg mp-cv2 tz">
-  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="">`:'<b>HEMERA</b>'}<span>${esc(m.meta.dashboardTitle)}</span></div>
+  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="">`:'<b>HEMERA</b>'}${mpTag(m)}</div>
    <div class="cv2-kick" style="margin-top:44px">CAMPAIGN TYPES</div><h1 class="rz-h">${esc(m.label)} by campaign type</h1>
    <div class="rz-sum tz-sum">${sum}.</div></div>
   <div class="rz-bd"><div class="tz-st"><b>MONTH TO DATE</b><span>spend against the plan so far (black line = plan)</span></div>
@@ -12783,7 +12798,7 @@ function mpWeeksPage(m){
  const lyW=on.filter(x=>x.ly);
  if(lyW.length)notes.push(`<b>${lyW.filter(x=>x.v>=x.ly).length} of ${lyW.length}</b> weeks beat the same Hijri week last year${m.ly.from?` (${esc(lyLab(m))})`:''}.`);
  return `<div class="mp-pg mp-cv2 tz wz">
-  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="">`:'<b>HEMERA</b>'}<span>${esc(m.meta.dashboardTitle)}</span></div>
+  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="">`:'<b>HEMERA</b>'}${mpTag(m)}</div>
    <div class="cv2-kick" style="margin-top:44px">WEEK BY WEEK</div><h1 class="rz-h">${esc(m.label)}, week by week</h1>
    ${notes[0]?`<div class="rz-sum tz-sum">${notes[0]}</div>`:''}</div>
   <div class="rz-bd"><div class="tz-st"><b>EACH WEEK</b><span>colour bar = where the value came from</span></div>
@@ -12821,7 +12836,7 @@ function mpNotesPage(m,notes,pg){
  if(vR!=null&&vR<1)also.push(`Conversion value reached ${mpPct(vR)} of the plan.`);
  const show=cards.slice(0,7);cards.slice(7).forEach(c=>also.push(c[3]));
  return `<div class="mp-pg mp-cv2 tz nz">
-  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="">`:'<b>HEMERA</b>'}<span>${esc(m.meta.dashboardTitle)}</span></div>
+  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="">`:'<b>HEMERA</b>'}${mpTag(m)}</div>
    <div class="cv2-kick" style="margin-top:44px">NOTES</div><h1 class="rz-h">What stood out in ${esc(m.label)}</h1>
    <div class="rz-sum tz-sum">${show.length} numbers that tell the story of the month, then the rest in short.</div></div>
   <div class="rz-bd"><div class="tz-st"><b>KEY TAKEAWAYS</b><span>the big number first</span></div>
@@ -12864,7 +12879,7 @@ function mpThanks(m,pg){
  const cols=ppl.length>9?4:3;
  const person=p=>{const t=roleTier(p.role);return `<div class="cz-p"><div class="cz-av ${MP_MEDAL[t]?'md':''}">${mpMedal(t)}<span class="cz-e">${personAv(p.avatar,p.name)}</span></div><b>${esc(p.name)}</b>${roleBadge(p.role)}</div>`};
  return `<div class="mp-pg mp-cv2 cz">
-  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="HEMERA">`:'<b>HEMERA</b>'}<span>${esc(m.meta.dashboardTitle)}</span></div>
+  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="HEMERA">`:'<b>HEMERA</b>'}${mpTag(m)}</div>
    <div class="cv2-kick" style="margin-top:36px">A NOTE OF THANKS</div><h1 class="cz-h">Thank you</h1><div class="cv2-sub">to the Google Ads team · ${esc(m.label)}</div></div>
   <div class="cz-cert"><p class="cz-msg">Every number in this report is the work of a team that plans carefully, watches closely and keeps improving. Thank you for another month of focused work. On to ${esc(next)}.</p>
    ${ppl.length?`<div class="cz-ppl" style="grid-template-columns:repeat(${cols},1fr)">${ppl.map(person).join('')}</div>`:''}
