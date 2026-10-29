@@ -5,7 +5,7 @@ const { onRequest } = require('firebase-functions/v2/https');
 const { onMessagePublished } = require('firebase-functions/v2/pubsub');
 const { onSchedule } = require('firebase-functions/v2/scheduler');
 const { buildDashboardData, getMonthCompareData, normalizeAccountKey_, buildForecast, setForecast, buildAssumptions, setAssumptions, buildVsLy, buildSearchTerms, buildSearchTermsDaily, buildActionLog } = require('./dash');
-const { ACCESS, assertAccess, assertAdmin, assertPerm, assertLabView } = require('./access');
+const { ACCESS, assertAccess, assertAdmin, assertPerm, assertLabView, assertOwner } = require('./access');
 const { fsGet, fsSet, fsAppend, fsList, fsClearList, request, PROJECT_ID } = require('./google');
 const { archiveStatus, archiveMove, archiveProgress } = require('./archive');
 const tasks = require('./tasks');
@@ -50,6 +50,8 @@ function cached(key, ttl, fresh, build) {
  * Outside it nothing reads the sheets: everyone gets the last read, kept in Firestore so a
  * restarted server still has it. Refresh in the app always reads the sheet on the spot.
  */
+const PREFS_DOC = 'server/app-prefs';
+const PREFS_DEFAULT = { cur: { usa: 'USD', ar: 'GBP' }, alert: 120 };
 const READ_DOC = 'server/read-window';
 const READ_DEFAULT = { on: true, from: '12:50', to: '13:10', tz: 'Asia/Muscat', stopOnData: true, alert: true };
 const READ_LOG = 'server/read-log';
@@ -175,6 +177,20 @@ const CALLS = {
   },
   // Media Plan Lab → Close the month (Admin → Permissions → Lab).
   /** Admin → Server → Reading the sheets: when the server reads them, and when it last did. */
+  /** Team-wide display settings: each account's currency and the spend alert level. Everyone reads them; only the owner changes them. */
+  async appPrefs(args) {
+    await assertAccess(args[0]);
+    return Object.assign({}, PREFS_DEFAULT, (await fsGet(PREFS_DOC).catch(() => null)) || {});
+  },
+  async appPrefsSet(args) {
+    const me = await assertOwner(args[0]);
+    const c = args[1] || {}, cur = v => (v === 'USD' || v === 'GBP' ? v : null), now = Object.assign({}, PREFS_DEFAULT, (await fsGet(PREFS_DOC).catch(() => null)) || {});
+    if (c.cur) now.cur = { usa: cur(c.cur.usa) || now.cur.usa, ar: cur(c.cur.ar) || now.cur.ar };
+    if (c.alert != null) { const a = Number(c.alert); if (![0, 110, 120, 130, 150].includes(a)) throw new Error('Pick an alert level.'); now.alert = a; }
+    now.by = me.email; now.at = Date.now();
+    await fsSet(PREFS_DOC, now);
+    return now;
+  },
   async adminReadWindow(args) {
     await assertAdmin(args[0]);
     const w = await readWindow(), last = {}, now = Date.now();

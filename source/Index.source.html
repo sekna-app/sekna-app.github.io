@@ -3742,6 +3742,14 @@ window.addEventListener('load',function(){
      body.dark-mode .ta-b{background:rgba(255,255,255,.08);color:#9aa3b5}body.dark-mode .ta-b:hover{color:#fff;background:rgba(255,255,255,.16)}
      .side-drawer{transition-duration:.18s!important}
     }
+    /* Team settings lock; day streak card */
+    .tp-lock{display:inline-flex;align-items:center;gap:4px;margin-left:6px;font-size:10px;letter-spacing:.02em;text-transform:none;color:#8a92a6;font-weight:800}.tp-lock svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+    .tp-card.locked .cur-sw button,.tp-card.locked .sa-opts button{cursor:not-allowed}.tp-card.locked .sa-opts button:not(.on){opacity:.55}.tp-card.locked .cur-sw button:not(.on){opacity:.5}
+    .stk{display:inline-flex;align-items:center;gap:6px;margin:8px 0 0;background:#fff;border:1px solid #ffe0c2;border-radius:12px;padding:5px 10px 5px 8px;box-shadow:0 2px 8px rgba(232,121,31,.12);font-size:12px;font-weight:800;color:#6b7385;animation:stkIn .45s cubic-bezier(.2,.8,.2,1) both}
+    .stk b{color:#e8791f;font-size:13px}.stk-f{display:inline-block;animation:stkF 1.4s ease-in-out infinite;transform-origin:50% 90%}.stk-d{display:inline-flex;gap:3px;margin-left:4px}.stk-d i{width:9px;height:9px;border-radius:3px;background:#13a06a;animation:stkIn .3s ease both}
+    .stk.out{animation:stkOut .3s ease forwards}@keyframes stkIn{from{opacity:0;transform:scale(.7)}}@keyframes stkOut{to{opacity:0;transform:scale(.9)}}@keyframes stkF{50%{transform:scale(1.15) rotate(-6deg)}}
+    body.dark-mode .stk{background:#151a22;border-color:#3a2a1a;color:#c9d0dc}
+    @media (prefers-reduced-motion:reduce){.stk,.stk-f,.stk-d i{animation:none}}
     /* Settings: default currency per account, spend alert levels; the spend alert note */
     .ac-box{display:flex;gap:10px;flex:none}.ac-c{display:flex;align-items:center;gap:5px}.ac-c em{font-style:normal;font-size:10.5px;font-weight:900;color:#8a92a6}.ac-c .cur-sw button{padding:5px 8px;min-width:28px}
     @media (max-width:420px){.ac-box{flex-direction:column;gap:5px;align-items:flex-end}}
@@ -5398,15 +5406,9 @@ window.addEventListener('load',function(){
       <div class="sk-row sk-zoom-row" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4M11 8v6M8 11h6"/></svg></span><span class="sk-row-text"><b>Layout size</b><small>Make the desktop layout bigger or smaller.</small></span><button type="button" onclick="changeDesktopZoom(-0.25)" aria-label="Smaller">−</button><b data-zoom-label>100%</b><button type="button" onclick="changeDesktopZoom(0.25)" aria-label="Larger">+</button></div>
     </div>
 
-    <div class="sk-group-title">Currency</div>
-    <div class="sk-card">
-      <div class="sk-row" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M14.6 9.2c-.5-.8-1.5-1.2-2.6-1.2-1.5 0-2.6.8-2.6 1.9 0 2.5 5.4 1.3 5.4 4 0 1.1-1.2 2-2.8 2-1.2 0-2.2-.5-2.7-1.3M12 6.5V8M12 16v1.5"/></svg></span><span class="sk-row-text"><b>Default currency</b><small>Each account opens in its own currency.</small></span><span class="ac-box" id="accCurBox"></span></div>
-    </div>
-
     <div class="sk-group-title">Notifications</div>
     <div class="sk-card">
-      <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg></span><span class="sk-row-text"><b>Spend alert</b><small>A note when the day's spend passes its plan by this much. <a href="#" class="sa-demo" onclick="spendAlertCheck(DASH_DATA,true);return false">Show me</a></small></span></div>
-      <div class="sa-opts" id="spendAlertOpts"></div>
+
       <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="sk-row-text"><b>Push notifications</b><small id="notificationsHelp">Media-plan update alerts in the HEMERA app.</small></span><span class="switch"><input id="notificationsToggle" type="checkbox" onchange="onNotificationsToggle(this)"><span></span></span></label>
       <div class="sk-row sk-row--stack sk-sound-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="sk-row-text"><b>Notification sound</b><small>Tap a sound to select it and hear a preview.</small></span></div>
       <div class="sk-sounds" role="radiogroup" aria-label="Notification sound">
@@ -5416,6 +5418,13 @@ window.addEventListener('load',function(){
         <button class="sk-sound" type="button" role="radio" data-sound="soft_ping" onclick="selectSound('soft_ping')"><span class="sk-sound-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span class="sk-sound-name">Soft Ping</span><svg class="sk-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
       </div>
       <input type="hidden" id="notificationSoundSetting" value="default">
+    </div>
+
+    <div class="sk-group-title">Team settings <span class="tp-lock" id="tpLockNote"></span></div>
+    <div class="sk-card tp-card" id="tpCard">
+      <div class="sk-row" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M14.6 9.2c-.5-.8-1.5-1.2-2.6-1.2-1.5 0-2.6.8-2.6 1.9 0 2.5 5.4 1.3 5.4 4 0 1.1-1.2 2-2.8 2-1.2 0-2.2-.5-2.7-1.3M12 6.5V8M12 16v1.5"/></svg></span><span class="sk-row-text"><b>Default currency</b><small>Each account opens in its own currency.</small></span><span class="ac-box" id="accCurBox"></span></div>
+      <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg></span><span class="sk-row-text"><b>Spend alert</b><small>A note when the day's spend passes its plan by this much. <a href="#" class="sa-demo" onclick="spendAlertCheck(DASH_DATA,true);return false">Show me</a></small></span></div>
+      <div class="sa-opts" id="spendAlertOpts"></div>
     </div>
 
     <div class="st-ver" id="stVer"></div>
@@ -6538,13 +6547,17 @@ let RENDER_QUIET=false;
 // Spend alert: when the day's spend passes the plan by the share picked in Settings, a note drops in once
 // per account and day, with the spend against the plan.
 const SPEND_ALERT_KEY='sekna_spend_alert';
-function spendAlertPct(){const v=storeGet(SPEND_ALERT_KEY);return v==null||v===''?120:+v||0}
-function setSpendAlert(v){storeSet(SPEND_ALERT_KEY,String(v));drawSpendAlertOpts()}
-function drawSpendAlertOpts(){const b=document.getElementById('spendAlertOpts');if(!b)return;const cur=spendAlertPct();b.innerHTML=[0,110,120,130,150].map(v=>`<button type="button" class="${cur===v?'on':''}" onclick="setSpendAlert(${v})">${v?v+'%':'Off'}</button>`).join('')}
+function spendAlertPct(){const v=APP_PREFS&&APP_PREFS.alert;return v==null?120:+v||0}
+function setSpendAlert(v){if(!mrOwner())return;prefsSave({alert:v})}
+// Everyone sees the team settings; the owner changes them, the rest see a small lock.
+function tpLock(){const own=mrOwner(),c=document.getElementById('tpCard'),n=document.getElementById('tpLockNote');if(c)c.classList.toggle('locked',!own);
+ if(n)n.innerHTML=own?'':'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Set by the admin'}
+function drawSpendAlertOpts(){const b=document.getElementById('spendAlertOpts');if(!b)return;const cur=spendAlertPct();const lk=!mrOwner();b.innerHTML=[0,110,120,130,150].map(v=>`<button type="button" class="${cur===v?'on':''}"${lk?' disabled':''} onclick="setSpendAlert(${v})">${v?v+'%':'Off'}</button>`).join('')}
 function spendAlertCheck(d,force){
  const pct=spendAlertPct(),x=d&&d.latest;if(!x||!x.targetSpend||x.spendAchievement==null)return;
  if(!force&&(!pct||x.spendAchievement*100<pct))return;
  const key='sekna_sa_'+CURRENT_ACCOUNT+'_'+(x.date||'');if(!force&&storeGet(key)==='1')return;if(!force)storeSet(key,'1');
+ if(!force)nfLocalAdd({id:'sa-'+CURRENT_ACCOUNT+'-'+x.date,type:'spend_alert',account:CURRENT_ACCOUNT,title:'Spend is '+Math.round(x.spendAchievement*100)+"% of the day's plan",body:money(x.spend)+' spent against '+money(x.targetSpend)+' · '+(x.dayName||'')+' '+(x.dayNumber||'')});
  document.getElementById('spendAlert')?.remove();
  const acc=accountMeta(d).shortLabel||CURRENT_ACCOUNT.toUpperCase(),over=x.spend-x.targetSpend,p=Math.round(x.spendAchievement*100);
  const el=document.createElement('div');el.id='spendAlert';el.className='sa';el.setAttribute('role','alert');el.setAttribute('data-share-ui','');
@@ -6556,7 +6569,27 @@ function spendAlertCheck(d,force){
  document.body.appendChild(el);
  const close=()=>{el.classList.add('out');setTimeout(()=>el.remove(),300)};
  el.querySelector('.sa-x').onclick=close;el.onclick=e=>{if(e.target.closest('.sa-x'))return;close();if(CURRENT_TAB!=='overview')switchDashboardTab('overview')};
- setTimeout(close,12000);
+ setTimeout(close,8000);
+}
+// Day streak: days in a row, up to the last closed day, whose conversion value met the day's plan.
+// From 3 days it shows as a small card under the date for half an hour, and goes to Notifications once.
+function streakOf(d){
+ const rows=((d&&d.dayPlan)||[]).filter(r=>r.actual&&r.plan&&Number(r.plan.value)>0).sort((a,b)=>a.date<b.date?-1:1);
+ let n=0;for(let i=rows.length-1;i>=0;i--){if(Number(rows[i].actual.value)>=Number(rows[i].plan.value))n++;else break}
+ return {n,last:rows.length?rows[rows.length-1].date:''};
+}
+function streakDraw(d){
+ document.getElementById('streakCard')?.remove();
+ const st=streakOf(d);if(st.n<3)return;
+ const key='sekna_streak_'+CURRENT_ACCOUNT+'_'+st.last+'_'+st.n;let t0=+storeGet(key)||0;
+ if(!t0){t0=Date.now();storeSet(key,String(t0));
+  nfLocalAdd({id:'st-'+CURRENT_ACCOUNT+'-'+st.last,type:'streak',account:CURRENT_ACCOUNT,title:st.n+' days in a row above plan',body:'Conversion value met the day\'s plan '+st.n+' days running'})}
+ const left=30*60e3-(Date.now()-t0);if(left<=0)return;
+ const host=document.getElementById('dateLine');if(!host)return;
+ const el=document.createElement('div');el.id='streakCard';el.className='stk';
+ el.innerHTML=`<span class="stk-f">🔥</span><b>${st.n} days</b><span>above plan</span><span class="stk-d">${Array.from({length:Math.min(st.n,7)},(_,i)=>`<i style="animation-delay:${.15+i*.07}s"></i>`).join('')}</span>`;
+ host.insertAdjacentElement('afterend',el);
+ clearTimeout(streakDraw.t);streakDraw.t=setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),300)},left);
 }
 function render(d,opts){
  const animate=!(opts&&opts.animate===false);
@@ -6575,6 +6608,7 @@ function render(d,opts){
 
  kpi('kSpend','tSpend','dSpend','pSpend',money(x.spend),money(x.targetSpend),x.spendAchievement,true);
  setTimeout(()=>{try{spendAlertCheck(d)}catch(e){}},900);
+ try{streakDraw(d)}catch(e){}
  kpi('kValue','tValue','dValue','pValue',money(x.value),money(x.planValue),x.valueAchievement,false);
  kpi('kConv','tConv','dConv','pConv',fmt(x.conversions,0),fmt(x.planConversions,1),x.convAchievement,false);
  kpi('kRoas','tRoas','dRoas','pRoas',roas!=null?fmt(roas,2)+'x':'—',planRoas!=null?fmt(planRoas,2)+'x':'—',roasAch,false);
@@ -7541,17 +7575,22 @@ const PLAN_MIX_LABELS=['Search Brand','Non-Brand','PMax','Demand Gen','Video'];
 /* ---------- Notifications list (menu → Notifications) ---------- */
 // What HEMERA sent the team and this person, newest first; times in this device's own time zone.
 let NF={list:null,busy:false,err:''};
-const NF_ICON={new_day:'📊',month_closed:'🗓️',announcement:'📣',app_update:'⬇️',tasks:'✅',updated:'📊',celebrate:'🏆',read_alert:'⚠️'};
+const NF_ICON={streak:'🔥',spend_alert:'⚠️',new_day:'📊',month_closed:'🗓️',announcement:'📣',app_update:'⬇️',tasks:'✅',updated:'📊',celebrate:'🏆',read_alert:'⚠️'};
 function nfSeen(){return +storeGet('sekna_nf_seen')||0}
 function nfBadge(){
  const b=document.getElementById('nfBadge');if(!b)return;
  const n=(NF.list||[]).filter(x=>x.at>nfSeen()).length;
  b.hidden=!n;b.textContent=n>9?'9+':String(n);
 }
+// Notes the app raises itself on this device (day streak, spend alert) join the list next to the server's.
+function nfLocal(){try{return JSON.parse(storeGet('sekna_nf_local')||'[]')}catch(e){return []}}
+function nfMerge(list){const loc=nfLocal(),ids=new Set(loc.map(x=>x.id));return (list||[]).filter(x=>!ids.has(x.id)).concat(loc).sort((a,b)=>b.at-a.at)}
+function nfLocalAdd(n){const l=nfLocal();if(l.some(x=>x.id===n.id))return;l.push(Object.assign({at:Date.now()},n));storeSet('sekna_nf_local',JSON.stringify(l.slice(-40)));
+ if(NF.list!==null){NF.list=nfMerge(NF.list);nfRender()}nfBadge()}
 function nfLoad(){
  if(!canDo('notifs'))return;
  if(NF.busy||!getAccessToken())return;NF.busy=true;
- serverCall('myNotifications',getAccessToken()).then(r=>{NF.busy=false;NF.err='';NF.list=Array.isArray(r)?r:[];nfBadge();nfRender()})
+ serverCall('myNotifications',getAccessToken()).then(r=>{NF.busy=false;NF.err='';NF.list=nfMerge(Array.isArray(r)?r:[]);nfBadge();nfRender()})
   .catch(err=>{NF.busy=false;NF.err=errorText(err);nfRender()});
 }
 function localWhen(ms,withDay){
@@ -7562,8 +7601,8 @@ function localWhen(ms,withDay){
 }
 // Filters + compact: chips on top, one short row per notification, like a mail inbox.
 const NF_FILTERS=[['all','All'],['data','Data'],['tasks','Tasks'],['team','Team'],['app','App']];
-const NF_GROUP={new_day:'data',month_closed:'data',updated:'data',tasks:'tasks',announcement:'team',app_update:'app',celebrate:'team',read_alert:'data'};
-const NF_TINT={new_day:'',updated:'',month_closed:'g',tasks:'t',announcement:'y',app_update:'p',celebrate:'y'};
+const NF_GROUP={streak:'data',spend_alert:'data',new_day:'data',month_closed:'data',updated:'data',tasks:'tasks',announcement:'team',app_update:'app',celebrate:'team',read_alert:'data'};
+const NF_TINT={streak:'y',spend_alert:'',new_day:'',updated:'',month_closed:'g',tasks:'t',announcement:'y',app_update:'p',celebrate:'y'};
 function nfShort(ms){
  const d=new Date(ms),now=new Date(),k=x=>new Date(x.getFullYear(),x.getMonth(),x.getDate()).getTime(),df=Math.round((k(now)-k(d))/864e5);
  return df===0?localWhen(ms):df===1?'Yesterday':d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
@@ -7595,6 +7634,7 @@ function closeNotifs(e){if(e&&e.target!==e.currentTarget)return;const o=document
 function nfOpen(id){
  const x=(NF.list||[]).find(n=>n.id===id);if(!x)return;
  closeNotifs();
+ if(x.type==='streak'||x.type==='spend_alert'){if(x.account&&x.account!==CURRENT_ACCOUNT)switchAccount(x.account);switchDashboardTab('overview');return}
  if(x.type==='tasks'){openTasks('mine');return}
  if(x.type==='app_update'){openUpdates();return}
  if(x.type==='celebrate'){serverCall('celebrationLatest',getAccessToken()).then(c=>{if(c&&c.id)celShow(c,true)}).catch(()=>{});return}
@@ -9467,11 +9507,17 @@ function channelCode(s){if(String(s).includes('Brand')&&!String(s).includes('Non
 const CUR_LIST={GBP:{s:'£',name:'pounds'},USD:{s:'$',name:'dollars'}};
 // Each account opens in its own currency (USA in dollars, AR in pounds by default; Settings can change it).
 // The switch on a page changes the screen until the account changes or the app opens again.
-let ACC_CUR=(()=>{try{const o=JSON.parse(storeGet('sekna_cur_acc')||'null');if(o&&CUR_LIST[o.usa]&&CUR_LIST[o.ar])return o}catch(e){}return {usa:'USD',ar:'GBP'}})();
+// Team settings (currency per account, spend alert level) come from the server; only the owner can change them.
+// The last copy is kept on the device so the app opens in the right currency straight away.
+let APP_PREFS=(()=>{try{const o=JSON.parse(storeGet('sekna_app_prefs')||'null');if(o&&o.cur)return o}catch(e){}return {cur:{usa:'USD',ar:'GBP'},alert:120}})();
+let ACC_CUR=APP_PREFS.cur;
+function prefsLoad(){return serverCall('appPrefs',getAccessToken()).then(p=>{if(!p||!p.cur)return;APP_PREFS=p;ACC_CUR=p.cur;storeSet('sekna_app_prefs',JSON.stringify(p));accCurApply();drawAccCur();drawSpendAlertOpts()}).catch(()=>{})}
+function prefsSave(ch){if(!mrOwner())return;Object.assign(APP_PREFS,ch);storeSet('sekna_app_prefs',JSON.stringify(APP_PREFS));drawAccCur();drawSpendAlertOpts();
+ serverCall('appPrefsSet',getAccessToken(),ch).then(p=>{if(p&&p.cur){APP_PREFS=p;ACC_CUR=p.cur;storeSet('sekna_app_prefs',JSON.stringify(p))}showSettingsToast('Saved for the whole team')}).catch(e=>showSettingsToast(errorText(e)))}
 let CUR=ACC_CUR[CURRENT_ACCOUNT]||'GBP';
 function accCurApply(){const c=ACC_CUR[CURRENT_ACCOUNT]||'GBP';if(c===CUR)return;CUR=c;curDraw();if(c!=='GBP'&&!(FX&&FX.rates&&FX.rates[c]))fxLoad(true).then(()=>{if(DASH_DATA)render(DASH_DATA,{animate:false})}).catch(()=>{})}
-function setAccCur(acc,c){if(!CUR_LIST[c]||!ACC_CUR[acc])return;ACC_CUR[acc]=c;storeSet('sekna_cur_acc',JSON.stringify(ACC_CUR));drawAccCur();if(acc===CURRENT_ACCOUNT){CUR='';setCur(c)}}
-function drawAccCur(){const b=document.getElementById('accCurBox');if(!b)return;b.innerHTML=['usa','ar'].map(k=>`<span class="ac-c"><em>${k==='usa'?'USA':'AR'}</em><span class="cur-sw">${Object.keys(CUR_LIST).map(c=>`<button type="button" class="${ACC_CUR[k]===c?'on':''}" onclick="setAccCur('${k}','${c}')">${CUR_LIST[c].s}</button>`).join('')}</span></span>`).join('')}
+function setAccCur(acc,c){if(!mrOwner()||!CUR_LIST[c]||!ACC_CUR[acc])return;ACC_CUR=Object.assign({},ACC_CUR,{[acc]:c});prefsSave({cur:ACC_CUR});if(acc===CURRENT_ACCOUNT&&CUR!==c)setCur(c)}
+function drawAccCur(){tpLock();const b=document.getElementById('accCurBox');if(!b)return;const lk=!mrOwner();b.innerHTML=['usa','ar'].map(k=>`<span class="ac-c"><em>${k==='usa'?'USA':'AR'}</em><span class="cur-sw">${Object.keys(CUR_LIST).map(c=>`<button type="button" class="${ACC_CUR[k]===c?'on':''}"${lk?' disabled':''} onclick="setAccCur('${k}','${c}')">${CUR_LIST[c].s}</button>`).join('')}</span></span>`).join('')}
 let FX=(()=>{try{return JSON.parse(storeGet('sekna_fx')||'null')}catch(e){return null}})();
 let CUR_HOLD=0; // while the monthly report is built it is always in pounds
 function curOn(){return !CUR_HOLD&&CUR!=='GBP'&&FX&&FX.rates&&FX.rates[CUR]>0?CUR:'GBP'}
@@ -9797,7 +9843,7 @@ function fetchProfile(){
    if(p.isAdmin)setTimeout(()=>adminFetch().catch(()=>{}),4000);
    // Position, the "new tasks" notice and today's backups come from the Team Tasks server.
    setTimeout(nfLoad,2500);
-   setTimeout(()=>{fxLoad().catch(()=>{});curDraw()},3500);
+   setTimeout(()=>{fxLoad().catch(()=>{});curDraw();prefsLoad()},3500);
    setTimeout(celCheck,4500);
    serverCall('teamStatus',token).then(t=>{
      if(!t||!ACCESS_PROFILE)return;
