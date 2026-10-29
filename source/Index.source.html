@@ -3512,7 +3512,11 @@ window.addEventListener('load',function(){
     .mp-white .mp-foot{color:#6b7385}
     /* PDF last page: thank-you certificate */
     .cz h1.cz-h{font-family:HArab,"DM Serif Display",Georgia,serif;font-weight:400;font-size:80px;line-height:1;margin:8px 0 8px}
-    .cz-cert{position:relative;margin:32px 46px 0;border:4px solid #d9b46b;border-radius:14px;padding:30px 36px 24px;background:#fffdf8}.cz-cert:after{content:"";position:absolute;inset:9px;border:2px solid #ecd9ae;border-radius:9px;pointer-events:none}
+    .cz-cert{position:relative;margin:32px 46px 0;padding:46px 52px 40px;background:#fffefb;box-shadow:inset 0 0 0 8px #203c8e,inset 0 0 0 11px #fffefb,inset 0 0 0 14px #c9a35a,inset 0 0 0 18px #fffefb,inset 0 0 0 19px #c9a35a}
+    .cz-cn{position:absolute;width:34px;height:34px;background:#203c8e}.cz-cn i{position:absolute;inset:7px;border:2px solid #e2b874}.cz-cn.tl{left:0;top:0}.cz-cn.tr{right:0;top:0}.cz-cn.bl{left:0;bottom:0}.cz-cn.br{right:0;bottom:0}
+    .cz-no{position:absolute;right:48px;top:28px;font-size:12px;font-weight:800;letter-spacing:.14em;color:#b39a6a}.cz-iss{position:absolute;left:48px;bottom:26px;font-size:12px;font-weight:800;letter-spacing:.1em;color:#b39a6a}
+    .cz-hd{text-align:center;font-size:15px;font-weight:900;letter-spacing:.42em;color:#a07316;margin:0 0 14px}.cz-hd:before,.cz-hd:after{content:"";display:inline-block;width:70px;height:1.5px;background:#d9b46b;vertical-align:middle;margin:0 16px}
+    .cz-st{width:150px;height:150px;flex:none;display:block;transform:rotate(-12deg);opacity:.85}
     .cz-msg{margin:0 auto 24px;max-width:780px;text-align:center;font-size:19px;font-weight:600;line-height:1.65;color:#3a4255}
     .cz-ppl{display:grid;gap:20px 18px}.cz-p{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}.cz-p b{font-size:20px;font-weight:900;color:#1c2a5e}.cz-p .rb{font-size:13px;padding:4px 12px 4px 9px}.cz-p .rb svg{width:13px;height:13px}
     .cz-av{position:relative;width:104px;height:104px}.cz-md{position:absolute;inset:0;width:100%;height:100%}.cz-e{position:absolute;left:21%;top:23%;width:58%;height:58%}
@@ -12738,6 +12742,14 @@ function mpMedal(t){
  if(r.crown)body+=`<path d="M38 15 L36 5 L43 10 L50 2 L57 10 L64 5 L62 15 Z" fill="url(#mdl${t})" stroke="${r.b}" stroke-width="1"/>`;
  return `<svg class="cz-md" viewBox="0 0 100 100" aria-hidden="true">${g}${body}</svg>`;
 }
+// The plan accuracy as an ink stamp: two rings, the words around them and the share in the middle.
+function mpStamp(acc,label){
+ const mo=String(label||'').replace(/^(\w{3})\w*/,'$1').toUpperCase();
+ return `<svg class="cz-st" viewBox="0 0 200 200" aria-hidden="true"><defs><path id="czp" d="M100 100 m-70 0 a70 70 0 1 1 140 0 a70 70 0 1 1 -140 0"/><filter id="czr"><feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="2" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3"/></filter></defs>
+  <g filter="url(#czr)" fill="none" stroke="#2a3a72"><circle cx="100" cy="100" r="90" stroke-width="5"/><circle cx="100" cy="100" r="82" stroke-width="1.5"/><circle cx="100" cy="100" r="54" stroke-width="2"/>
+  <text font-family="Inter,Arial,sans-serif" font-weight="900" font-size="13" letter-spacing="4" fill="#2a3a72" stroke="none"><textPath href="#czp">PLAN ACCURACY · HEMERA · DAY BY DAY · ${esc(mo)} ·</textPath></text>
+  <text x="100" y="114" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-weight="900" font-size="40" fill="#2a3a72" stroke="none">${esc(acc)}</text></g></svg>`;
+}
 function mpThanks(m,pg){
  const ppl=(MR.people||[]).slice().sort((a,b)=>roleTier(b.role)-roleTier(a.role)||String(a.name).localeCompare(String(b.name)));
  const next=monthName(isoAdd(m.days[m.days.length-1].date,1).slice(0,7),true).split(' ')[0]+' '+isoAdd(m.days[m.days.length-1].date,1).slice(0,4);
@@ -12746,9 +12758,12 @@ function mpThanks(m,pg){
  return `<div class="mp-pg mp-cv2 cz">
   <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="HEMERA">`:'<b>HEMERA</b>'}${mpTag(m)}</div>
    <div class="cv2-kick" style="margin-top:36px">A NOTE OF THANKS</div><h1 class="cz-h">Thank you</h1><div class="cv2-sub">to the Google Ads team · ${esc(m.label)}</div></div>
-  <div class="cz-cert"><p class="cz-msg">Every number in this report is the work of a team that plans carefully, watches closely and keeps improving. Thank you for another month of focused work. On to ${esc(next)}.</p>
+  <div class="cz-cert">${['tl','tr','bl','br'].map(k=>`<span class="cz-cn ${k}"><i></i></span>`).join('')}
+   <div class="cz-no">No. HMR-${esc(m.month.slice(0,4))}-${esc(m.month.slice(5,7))}-${esc(String(m.meta.shortLabel||'').toUpperCase())}</div>
+   <div class="cz-hd">CERTIFICATE OF APPRECIATION</div><p class="cz-msg">Every number in this report is the work of a team that plans carefully, watches closely and keeps improving. Thank you for another month of focused work. On to ${esc(next)}.</p>
    ${ppl.length?`<div class="cz-ppl" style="grid-template-columns:repeat(${cols},1fr)">${ppl.map(person).join('')}</div>`:''}
-   <div class="cz-end">${m.acc.all!=null?`<div class="cz-seal"><div><b>${mpPct(m.acc.all)}</b>PLAN<br>ACCURACY</div></div>`:'<div></div>'}<div class="cz-sig"><span>Hemera</span><svg viewBox="0 0 120 14" aria-hidden="true"><path d="M4 9 C 30 2, 60 13, 86 6 S 112 4, 116 8" fill="none" stroke="#2a3a72" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></svg><i></i><small>HEMERA · DAY BY DAY</small></div></div></div>
+   <div class="cz-end">${m.acc.all!=null?mpStamp(mpPct(m.acc.all),m.label):'<div></div>'}<div class="cz-sig"><span>Hemera</span><svg viewBox="0 0 120 14" aria-hidden="true"><path d="M4 9 C 30 2, 60 13, 86 6 S 112 4, 116 8" fill="none" stroke="#2a3a72" stroke-width="1.3" stroke-linecap="round" opacity=".7"/></svg><i></i><small>HEMERA · DAY BY DAY</small></div></div>
+   <div class="cz-iss">ISSUED ${esc(new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}).toUpperCase())}</div></div>
   <div class="cz-mo"><p>Day by day, <b>we rise.</b></p><small>${esc(next)} is ours. Let's go, team.</small></div>
   ${mpFoot(String(pg||7))}
  </div>`;
