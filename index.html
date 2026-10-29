@@ -3913,6 +3913,8 @@ window.addEventListener('load',function(){
     .rp-act .rb-a{display:grid;grid-template-columns:1.1fr 1fr 1fr 1fr 1fr;gap:10px;align-items:stretch}.rp-act .rb-a .rb-s{border-left:1px solid rgba(255,255,255,.15);padding-left:12px}
     .rp-act .rb-b{display:grid;grid-template-columns:1fr 2.4fr;gap:14px}.rp-act .rb-b1{display:grid;gap:10px;border-right:1px solid rgba(255,255,255,.15);padding-right:14px}.rp-act .rb-b2{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
     .rp-act .rb-c{display:grid;gap:12px}.rp-act .rb-c1{display:flex;gap:30px;align-items:center}.rp-act .rb-c1 .rb-s{display:flex;gap:30px;border-left:1px solid rgba(255,255,255,.15);padding-left:24px}.rp-act .rb-c2{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .rp-act .rb-c{padding:10px 14px;gap:8px;margin-top:16px}.rp-act .rb-c .big{font-size:30px;margin:0}.rp-act .rb-c em{font-size:11px}.rp-act .rb-c small{font-size:11px}.rp-act .rb-c .rb-s b{font-size:20px}.rp-act .rb-c1 .rb-s{gap:26px;padding-left:20px}.rp-act .rb-c .rb-ch span{font-size:12px;padding:2px 9px}
+    .rp-act .rb-c .rb-p{padding:6px 11px;border-radius:12px}.rp-act .rb-c .rb-bar{height:6px;margin:5px 0 4px}.rp-act .rb-c .rb-l1{font-size:12px}.rp-act .rb-c .rb-l1 b{font-size:14px}.rp-act .rb-c+.rb-lg{margin-bottom:10px;font-size:11px}
     .rp-act .ra-lg{display:flex;gap:16px;font-size:13px;font-weight:800;color:#dbe4ff;margin:0 0 10px}.rp-act .ra-lg span:first-child{margin-right:auto;color:#c9d6ff}
     .rp-act .ra-t{width:100%;border-collapse:separate;border-spacing:0;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:18px;overflow:hidden;font-size:14.5px}
     .rp-act .ra-t th{font-size:10.5px;font-weight:900;letter-spacing:.06em;color:#c9d6ff;text-align:right;padding:9px 7px;background:rgba(255,255,255,.07)}.rp-act .ra-t td{padding:9px 7px;border-top:1px solid rgba(255,255,255,.08);text-align:right;font-weight:800;color:#fff}
@@ -8842,14 +8844,13 @@ function renderAct(){
 function actShareHtml(){
  const d=(STA[CURRENT_ACCOUNT]||{}).data;if(!d||d.missing)return rsHead('ST Action')+'<div class="rs-t"><b>No action log yet</b></div>'+SHARE_FOOT;
  const sm=staSum(d),NA='<span class="sta-na">—</span>';
- const cards=`<div class="ra-sum"><div><small>TERMS</small><b>${sm.R.length}</b></div><div>${sm.rv?`<div class="ra-sp2"><span><small>EXCLUDE</small><b class="r">${sm.ex}</b></span><i></i><span><small>REVIEW</small><b class="y">${sm.rv}</b></span></div>`:`<small>EXCLUDE</small><b>${sm.ex}</b>`}</div><div><small>SPEND TODAY</small><b>${esc(money(sm.spend,2))}</b></div><div class="ra-ws"><small>WASTED · NO RETURN</small><div>${sm.waste.map((v,i)=>`<span><em>${STA_W[i]}</em><b>${esc(money(v,0))}</b></span>`).join('')}</div></div></div>`;
  const lg=`<div class="ra-lg"><span>ACCOUNT TOTAL · 30 / 90 / 180d</span><span><i class="R"></i>Losing</span><span><i class="Y"></i>Running</span><span><i class="G"></i>Winning</span></div>`;
  const pc=x=>x&&x.cost!=null?`${esc(money(x.cost,0))}<small>${fmt(x.conv||0,0)} conv. · ${staRoas(x.roas)}</small>`:'<span class="sta-na">—</span><small>no data</small>';
  const tb=`<table class="ra-t"><tr><th>SEARCH TERM</th><th>CATEGORY</th><th>ACTION</th><th>REASON</th><th>LEVEL</th><th>LIST</th><th>TODAY</th><th>30D CAMP</th><th>90D CAMP</th><th>180D CAMP</th><th>ACCOUNT</th></tr>${sm.R.map(r=>`<tr><td><bdi${stAr(r.term)}>${esc(r.term)}</bdi><small>${esc(staCamp(r.campaign))}${r.match?' · '+esc(r.match):''}</small></td><td>${r.cat?`<span class="sta-ch ct">${esc(r.cat)}</span>`:NA}</td><td>${staAct(r.action)}</td><td class="s">${r.reason?esc(r.reason):NA}</td><td>${staLevel(r.level).replace('Level not set','Not set')}</td><td class="s">${r.list?esc(r.list):NA}</td><td>${esc(money(r.spend||0,2))}</td>${r.p.map(x=>`<td>${pc(x)}</td>`).join('')}<td><span class="ra-dt">${[0,1,2].map(i=>`<i class="${(r.acct||'')[i]||''}"></i>`).join('')}</span></td></tr>`).join('')}</table>`;
- return `${rsHead('ST Action'+(d.date?' · '+d.date:''))}${staShareTop(sm,ACT_SV)}${sm.R.length?lg+tb:'<div class="rs-t"><b>👌 No flagged terms today</b></div>'}${SHARE_FOOT}`;
+ return `${rsHead('ST Action'+(d.date?' · '+staDay(d.date):''))}${staShareTop(sm,ACT_SV)}${sm.R.length?lg+tb:'<div class="rs-t"><b>👌 No flagged terms today</b></div>'}${SHARE_FOOT}`;
 }
 
-let ACT_SV='b';
+let ACT_SV='c';
 function staShareTop(sm,v){
  const W=sm.waste,acts=`<span class="bx">🚫 ${sm.ex} Exclude</span>${sm.rv?`<span class="bv">👀 ${sm.rv} Review</span>`:''}`;
  const per=(p,i,one)=>{const back=Math.max(0,p.cost-W[i]),ro=p.cost?p.value/p.cost:0;return `<div class="rb-p"><small>${STA_W[i]} · <span class="${ro<1?'r':'g'}">${fmt(ro,2)}x</span></small><div class="rb-bar"><i style="flex:${W[i]};background:#ff7a8c"></i><i style="flex:${back};background:#4be39a"></i></div>${one?`<div class="rb-l1"><b>${esc(money(p.cost,0))}</b> cost · <b>${fmt(p.conv,0)}</b> conv. · <b>${esc(money(p.value,0))}</b> value</div>`:`<div class="rb-l"><span><b>${esc(money(p.cost,0))}</b> cost</span><span><b>${fmt(p.conv,0)}</b> conv.</span><span><b>${esc(money(p.value,0))}</b> value</span></div>`}</div>`};
@@ -8860,13 +8861,15 @@ function staShareTop(sm,v){
  if(v==='c')return `<div class="rb rb-c"><div class="rb-c1">${tot}${side}</div><div class="rb-c2">${sm.per.map((p,i)=>per(p,i,true)).join('')}</div></div>${lg}`;
  return `<div class="rb rb-b"><div class="rb-b1">${tot}${side}</div><div class="rb-b2">${sm.per.map((p,i)=>per(p,i)).join('')}</div></div>${lg}`;
 }
+function staDay(x){const d=new Date(String(x||'').slice(0,10)+'T12:00:00');return isNaN(d)?String(x||''):d.toLocaleDateString('en-GB',{day:'numeric',month:'short'})}
 function actShareText(){
  const d=(STA[CURRENT_ACCOUNT]||{}).data;if(!d||d.missing)return '';
  const a=accountMeta(DASH_DATA||{}),sm=staSum(d);
- const L=[`📌 ST Action ${a.shortLabel||CURRENT_ACCOUNT.toUpperCase()}${d.date?' — '+d.date:''} ⚡`,''];
- L.push(`🚫 Exclude: ${sm.ex}${sm.rv?` · 👀 Review: ${sm.rv}`:''}`);
- L.push(`💸 Wasted: ${sm.waste.map((v,i)=>STA_W[i]+' '+money(v,0)).join(' · ')}`);
+ const L=[`📌 ST Action ${a.shortLabel||CURRENT_ACCOUNT.toUpperCase()}${d.date?' — '+staDay(d.date):''} ⚡`,''];
+ if(sm.rv)L.push(`👀 Review: ${sm.rv}`);
+ L.push(`🚫 Exclude: ${sm.ex}`);
  L.push(`💷 Spend today: ${money(sm.spend,2)}`);
+ L.push(`💸 Wasted total: ${money(sm.waste[2],0)}`);
  return L.join('\n');
 }
 function termsShareText(){
