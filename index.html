@@ -8803,10 +8803,10 @@ function staRoas(v){return v==null?'':`<span class="${v<1?'sta-rr':'sta-rg'}">${
 function staAct(a){const ex=staIsEx(a),rv=staIsRv(a);return a?`<span class="sta-ch ${ex?'ex':rv?'sta-rv':''}">${ex?'🚫':rv?'👀':''} ${esc(a)}</span>`:'<span class="sta-na">—</span>'}
 
 function staNeg(r){
- const m=String(r.neg||'').toLowerCase(),raw=String(r.kw||r.term||'').replace(/^[\["+\s]+|[\]"\s]+$/g,'');
- if(!raw||!(r.kw||m))return '';
- const k=/phrase/.test(m)?'np':/broad/.test(m)?'nb':'ne',t=k==='np'?`"${raw}"`:k==='nb'?raw:`[${raw}]`;
- return `<span class="sta-ch ${k}">Neg. <bdi${stAr(raw)}>${esc(t)}</bdi></span>`;
+ const m=String(r.neg||'').toLowerCase(),kw=String(r.kw||'').trim();
+ const k=/phrase/.test(m)||(!m&&/^".*"$/.test(kw))?'np':/broad/.test(m)?'nb':/exact/.test(m)||/^\[.*\]$/.test(kw)?'ne':'';
+ if(!k)return '';
+ return `<span class="sta-ch ${k}">Neg. ${k==='np'?'"Phrase"':k==='nb'?'Broad':'[Exact]'}</span>`;
 }
 function staLevel(l){return /account/i.test(l||'')?'<span class="sta-ch la">✓ Account</span>':l?`<span class="sta-ch lc">${esc(l)}</span>`:'<span class="sta-ch ln">Level not set</span>'}
 function staSum(d){
@@ -8853,7 +8853,7 @@ function actShareHtml(){
  const sm=staSum(d),NA='<span class="sta-na">—</span>';
  const lg=`<div class="ra-lg"><span>ACCOUNT TOTAL · 30 / 90 / 180d</span><span><i class="R"></i>Losing</span><span><i class="Y"></i>Running</span><span><i class="G"></i>Winning</span></div>`;
  const pc=x=>x&&x.cost!=null?`${esc(money(x.cost,0))}<small>${fmt(x.conv||0,0)} conv. · ${staRoas(x.roas)}</small>`:'<span class="sta-na">—</span><small>no data</small>';
- const tb=`<table class="ra-t"><tr><th>SEARCH TERM</th><th>CATEGORY</th><th>ACTION</th><th>REASON</th><th>LEVEL</th><th>NEG. KEYWORD</th><th>LIST</th><th>TODAY</th><th>30D CAMP</th><th>90D CAMP</th><th>180D CAMP</th><th>ACCOUNT</th></tr>${sm.R.map(r=>`<tr><td><bdi${stAr(r.term)}>${esc(r.term)}</bdi><small>${esc(staCamp(r.campaign))}${r.match?' · '+esc(r.match):''}</small></td><td>${r.cat?`<span class="sta-ch ct">${esc(r.cat)}</span>`:NA}</td><td>${staAct(r.action)}</td><td class="s">${r.reason?esc(r.reason):NA}</td><td>${staLevel(r.level).replace('Level not set','Not set')}</td><td>${staNeg(r)||NA}</td><td class="s">${r.list?esc(r.list):NA}</td><td>${esc(money(r.spend||0,2))}</td>${r.p.map(x=>`<td>${pc(x)}</td>`).join('')}<td><span class="ra-dt">${[0,1,2].map(i=>`<i class="${(r.acct||'')[i]||''}"></i>`).join('')}</span></td></tr>`).join('')}</table>`;
+ const tb=`<table class="ra-t"><tr><th>SEARCH TERM</th><th>CATEGORY</th><th>ACTION</th><th>REASON</th><th>LEVEL</th><th>NEG. MATCH</th><th>LIST</th><th>TODAY</th><th>30D CAMP</th><th>90D CAMP</th><th>180D CAMP</th><th>ACCOUNT</th></tr>${sm.R.map(r=>`<tr><td><bdi${stAr(r.term)}>${esc(r.term)}</bdi><small>${esc(staCamp(r.campaign))}${r.match?' · '+esc(r.match):''}</small></td><td>${r.cat?`<span class="sta-ch ct">${esc(r.cat)}</span>`:NA}</td><td>${staAct(r.action)}</td><td class="s">${r.reason?esc(r.reason):NA}</td><td>${staLevel(r.level).replace('Level not set','Not set')}</td><td>${staNeg(r)||NA}</td><td class="s">${r.list?esc(r.list):NA}</td><td>${esc(money(r.spend||0,2))}</td>${r.p.map(x=>`<td>${pc(x)}</td>`).join('')}<td><span class="ra-dt">${[0,1,2].map(i=>`<i class="${(r.acct||'')[i]||''}"></i>`).join('')}</span></td></tr>`).join('')}</table>`;
  return `${rsHead('ST Action'+(d.date?' · '+staDay(d.date):''))}${staShareTop(sm,ACT_SV)}${sm.R.length?lg+tb:'<div class="rs-t"><b>👌 No flagged terms today</b></div>'}${SHARE_FOOT}`;
 }
 
