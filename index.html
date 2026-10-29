@@ -3096,6 +3096,18 @@ window.addEventListener('load',function(){
 
     /* v82 — Channel Delivery WhatsApp report (long, 1080 wide) */
     .rp-report.rp-narrow{width:1080px}
+    /* Report image, design 2: four tiles over the blue header on white. */
+    .rp-report.rp-r2{padding:0;background:#fff;color:#1d2433}
+    .r2-top{background:linear-gradient(90deg,#2a4bb0,#1d3a8f 60%,#16307a);color:#fff;padding:44px 48px 100px}.r2-when{margin-top:14px;font-size:17px;font-weight:700;color:#c9d3f5}
+    .r2-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:-64px 40px 22px}
+    .r2-tl{background:#fff;border-radius:22px;padding:18px 20px 16px;box-shadow:0 12px 28px rgba(20,30,60,.13);border-top:7px solid #203c8e}.r2-tl small{display:block;font-size:13px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#6b7385}
+    .r2-tl b{display:block;font-size:34px;font-weight:900;letter-spacing:-.02em;margin-top:6px;white-space:nowrap}.r2-tl em{display:block;font-style:normal;font-size:15px;font-weight:700;color:#6b7385;margin-top:4px}
+    .r2-tl.v{border-color:#22c47c}.r2-tl.s{border-color:#e2b874}.r2-tl.r{border-color:#3d6bff}
+    .r2-mini{display:flex;margin:0 40px;background:#f6f7fb;border-radius:18px;overflow:hidden}.r2-mini>div{flex:1;text-align:center;padding:14px 6px;border-left:1px solid #e8ebf2}.r2-mini>div:first-child{border-left:0}
+    .r2-mini small{display:block;font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#6b7385}.r2-mini b{display:block;font-size:20px;font-weight:900;margin-top:4px}
+    .r2-sec{padding:0 40px}.rp-r2 .rs-t>b{color:#203c8e}.rp-r2 .rs-t span{color:#6b7385}.rp-r2 .rp-box{padding:0;border-radius:0}
+    .rp-r2 .rs-ch .good,.rp-r2 .rs-ch .bad{justify-self:end;border-radius:999px;padding:4px 12px;font-size:15px}.rp-r2 .rs-ch .good{background:#e6f6ec}.rp-r2 .rs-ch .bad{background:#fde8e6}
+    .rp-r2 .rp-foot{margin-top:24px;background:#f8f9fc;padding:20px;color:#6b7385}.rp-r2 .rp-foot b{color:#1d2433}
     .rp-oct .ox-hero{margin:0 0 12px}
     .rp-oct .ox-tiles{grid-template-columns:1fr 1fr!important}
     .rp-oct .ox-legend{display:flex!important}
@@ -11116,6 +11128,7 @@ function rsChannelBars(list,all){
  const tot=list.reduce((a,c)=>a+c.spend,0)||1;
  return `<div class="rp-box">${list.map(c=>`<div class="rs-ch"><span><i class="m${c.k}"></i>${esc(c.short)}</span><div class="rs-bb"><i class="m${c.k}" style="width:${(c.spend/tot*100).toFixed(1)}%"></i></div><span>${rsK(c.spend)}</span><span class="${c.roas!=null&&c.roas>=all?'good':'bad'}">${c.roas!=null?fmt(c.roas,2)+'x':'—'}</span></div>`).join('')}</div>`;
 }
+const short2=t=>String(t).replace(/\b(January|February|March|April|May|June|July|August|September|October|November|December)\b/g,m=>m.slice(0,3)).replace(/\b20(\d\d)\b/g,'$1');
 function oneMonthShareHtml(){
  const c=rsMonthCtx(), sel=periodSel(), L=periodLabel(sel,c.hist);
  const S=periodStats(sel,c.hist,c.ex,c.d); if(!S.days)return '';
@@ -11124,12 +11137,15 @@ function oneMonthShareHtml(){
  const rest=rows.filter(r=>!['spend','conversions','value','roas'].includes(r.m.k));
  const list=channelList(S,c.avg), all=S.spend?S.value/S.spend:0;
  
- return `${rsHead('Report · '+L.title+mxTypeTag())}
-  ${rsT(esc(L.title),esc(S.partial?`${S.days} days so far`:L.sub)+(c.avg?' · per day':''))}
-  <div class="rp-box rs-hero"><div><small>${esc(v?v.m.l:'Revenue')}</small><b>${v?v.m.f(v.v,c.avg):'—'}</b></div>
-   <div class="rs-hs">${['spend','conversions','roas'].map(k=>{const r=by(k);return r?`<div><small>${esc(r.m.l)}</small><b>${r.m.f(r.v,c.avg)}</b></div>`:''}).join('')}</div></div>
-  ${rest.length?rsT('More numbers')+`<div class="rs-mg">${rest.map(r=>`<div><span>${esc(r.m.l)}</span><b>${r.m.f(r.v,c.avg)}</b></div>`).join('')}</div>`:''}
-  ${list.length?rsT('By channel','spend · ROAS')+rsChannelBars(list,all):''}
+ 
+ const pm=(c.d.dayPlan||[]), cur=!c.avg&&sel.kind!=='days'&&sel.months.length===1&&pm.length&&pm[0].date.slice(0,7)===sel.months[0]?dayTotals(pm).p:null;
+ const of=(x,p)=>cur&&p?`${Math.round(x/p*100)}% of plan`:'';
+ const sub={value:of(S.value,cur&&cur.value),spend:of(S.spend,cur&&cur.spend),conversions:of(S.conversions,cur&&cur.conversions),roas:cur&&cur.roas?`plan ${fmt(cur.roas,2)}x`:''};
+ const tile=(k,cls)=>{const r=by(k);return r?`<div class="r2-tl ${cls}"><small>${esc(k==='value'?'Revenue':r.m.l)}</small><b>${r.m.f(r.v,c.avg)}</b>${sub[k]?`<em>${esc(sub[k])}</em>`:''}</div>`:''};
+ return `<div class="r2-top">${rsHead('Report · '+short2(L.title)+mxTypeTag())}<div class="r2-when">${esc(S.partial?`${S.days} days so far`:L.sub)}${c.avg?' · per day':''}</div></div>
+  <div class="r2-tiles">${tile('value','v')}${tile('spend','s')}${tile('conversions','c')}${tile('roas','r')}</div>
+  ${rest.length?`<div class="r2-mini">${rest.map(r=>`<div><small>${esc(r.m.k==='aov'?'Avg. gift':r.m.l)}</small><b>${r.m.f(r.v,c.avg)}</b></div>`).join('')}</div>`:''}
+  ${list.length?`<div class="r2-sec">${rsT('By channel','spend · ROAS')}${rsChannelBars(list,all)}</div>`:''}
   ${SHARE_FOOT}`;
 }
 function compareShareHtml(){
@@ -11483,7 +11499,7 @@ const SHARE_KINDS={
  channel:{html:()=>channelReportHtml(),cls:'rp-narrow',name:'Channel-Delivery'},
  plan:{html:()=>planShareHtml(),cls:'rp-narrow',name:'Media-Plan'},
  results:{html:()=>resultsShareHtml(),cls:'rp-narrow',name:'Results'},
- report:{html:()=>oneMonthShareHtml(),cls:'rp-narrow',name:'Report'},
+ report:{html:()=>oneMonthShareHtml(),cls:'rp-narrow rp-r2',name:'Report'},
  compare:{html:()=>compareShareHtml(),cls:'rp-narrow',name:'Month-vs-Month'},
  ly:{html:()=>lyShareHtml(),cls:'rp-narrow',name:'Vs-Last-Year'},
  terms:{html:()=>termsShareHtml(),cls:'rp-narrow',name:'Search-Terms'},
