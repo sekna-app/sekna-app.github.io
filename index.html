@@ -8826,7 +8826,7 @@ function staBlue(sm){
 function staCard(r){
  const cc=staCamp(r.campaign);
  return `<div class="sta-c"><div class="sta-h"><div><b><bdi${stAr(r.term)}>${esc(r.term)}</bdi></b><small>${esc(cc)}${r.match?' · '+esc(r.match):''}</small></div><div class="sta-sp"><small>TODAY</small><b>${esc(money(r.spend||0,2))}</b><span class="sta-ad" title="Account total · 30 / 90 / 180 days">${[0,1,2].map(i=>{const k=(r.acct||'')[i]||'';return `<i class="${k}"${k?` title="${STA_W[i]}: ${STA_L[k]}"`:''}></i>`}).join('')}</span></div></div>
- <div class="sta-g"><small>ACTION</small><span>${staAct(r.action)}${r.reason?`<span class="sta-ch">${esc(r.reason)}</span>`:''}</span><small>LEVEL</small><span>${staLevel(r.level)}${r.list?`<span class="sta-ch ls">${esc(r.list)}</span>`:''}</span><small>CATEGORY</small><span>${r.cat?`<span class="sta-ch ct">${esc(r.cat)}</span>`:'<span class="sta-na">—</span>'}${staNeg(r)}</span></div>
+ <div class="sta-g"><small>ACTION</small><span>${staAct(r.action)}${r.reason?`<span class="sta-ch">${esc(r.reason)}</span>`:''}</span><small>LEVEL</small><span>${staLevel(r.level)}${staNeg(r)}${r.list?`<span class="sta-ch ls">${esc(r.list)}</span>`:''}</span><small>CATEGORY</small><span>${r.cat?`<span class="sta-ch ct">${esc(r.cat)}</span>`:'<span class="sta-na">—</span>'}</span></div>
  <div class="sta-p">${r.p.map((x,i)=>{const k=(r.acct||'')[i]||'';return `<div class="${k}"${k?` title="Account ${STA_W[i]}: ${STA_L[k]}"`:''}><small>${STA_W[i]} · CAMP</small><b>${x&&x.cost!=null?esc(money(x.cost,0)):'—'}</b><em>${x&&x.cost!=null?`${fmt(x.conv||0,0)} conv. · ${staRoas(x.roas)}`:'no data'}</em></div>`}).join('')}</div></div>`;
 }
 function renderAct(){
