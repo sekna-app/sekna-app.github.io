@@ -3739,6 +3739,16 @@ window.addEventListener('load',function(){
     .rp-act .ra-sum{display:flex;gap:10px;margin:20px 0 14px}.rp-act .ra-sum>div{flex:1;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.13);border-radius:16px;padding:10px 14px}.rp-act .ra-sum>div.ra-ws{flex:1.6}
     .rp-act .ra-sum small{display:block;font-size:12px;font-weight:900;letter-spacing:.07em;color:#c9d6ff}.rp-act .ra-sum b{font-size:26px}.rp-act .ra-sum b.r{color:#ff8a9a}.rp-act .ra-sum b.y{color:#ffd36b}
     .rp-act .ra-sp2{display:flex;gap:14px;align-items:center}.rp-act .ra-sp2 i{width:1px;align-self:stretch;background:rgba(255,255,255,.2)}.rp-act .ra-ws>div{display:flex;gap:16px}.rp-act .ra-ws span{display:flex;align-items:baseline;gap:5px}.rp-act .ra-ws em{font-style:normal;font-size:12px;font-weight:900;color:#c9d6ff}.rp-act .ra-ws b{font-size:24px;color:#ff8a9a}
+    .rp-act .rb{width:100%;box-sizing:border-box;margin:20px 0 6px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:20px;padding:14px 16px}
+    .rp-act .rb small{display:block;font-size:12px;font-weight:900;letter-spacing:.07em;color:#c9d6ff}.rp-act .rb .big{display:block;font-size:40px;font-weight:900;color:#ff9aa8;line-height:1.1;margin:2px 0}.rp-act .rb em{font-style:normal;font-size:12px;font-weight:800;color:#c9d6ff}
+    .rp-act .rb-s{display:grid;gap:8px;align-content:center}.rp-act .rb-s b{font-size:24px}.rp-act .rb-ch{display:flex;gap:6px;margin-top:3px}.rp-act .rb-ch span{font-size:13px;font-weight:900;border-radius:99px;padding:3px 10px;white-space:nowrap}.rp-act .rb-ch .bx{background:#ffdde2;color:#c23b4f}.rp-act .rb-ch .bv{background:#fff1c2;color:#a87a00}
+    .rp-act .rb-p{background:rgba(255,255,255,.08);border-radius:14px;padding:9px 12px}.rp-act .rb-p small .r{color:#ff8a9a}.rp-act .rb-p small .g{color:#4be39a}
+    .rp-act .rb-bar{display:flex;height:8px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.12);margin:7px 0 6px}.rp-act .rb-bar i{display:block}
+    .rp-act .rb-l{display:grid;gap:1px;font-size:13px;font-weight:700;color:#c9d6ff}.rp-act .rb-l b,.rp-act .rb-l1 b{font-size:16px;color:#fff}.rp-act .rb-l1{font-size:13px;font-weight:700;color:#c9d6ff}
+    .rp-act .rb-lg{display:flex;gap:14px;font-size:12px;font-weight:800;color:#c9d6ff;margin:0 0 12px}.rp-act .rb-lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
+    .rp-act .rb-a{display:grid;grid-template-columns:1.1fr 1fr 1fr 1fr 1fr;gap:10px;align-items:stretch}.rp-act .rb-a .rb-s{border-left:1px solid rgba(255,255,255,.15);padding-left:12px}
+    .rp-act .rb-b{display:grid;grid-template-columns:1fr 2.4fr;gap:14px}.rp-act .rb-b1{display:grid;gap:10px;border-right:1px solid rgba(255,255,255,.15);padding-right:14px}.rp-act .rb-b2{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .rp-act .rb-c{display:grid;gap:12px}.rp-act .rb-c1{display:flex;gap:30px;align-items:center}.rp-act .rb-c1 .rb-s{display:flex;gap:30px;border-left:1px solid rgba(255,255,255,.15);padding-left:24px}.rp-act .rb-c2{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
     .rp-act .ra-lg{display:flex;gap:16px;font-size:13px;font-weight:800;color:#dbe4ff;margin:0 0 10px}.rp-act .ra-lg span:first-child{margin-right:auto;color:#c9d6ff}
     .rp-act .ra-t{width:100%;border-collapse:separate;border-spacing:0;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);border-radius:18px;overflow:hidden;font-size:14.5px}
     .rp-act .ra-t th{font-size:10.5px;font-weight:900;letter-spacing:.06em;color:#c9d6ff;text-align:right;padding:9px 7px;background:rgba(255,255,255,.07)}.rp-act .ra-t td{padding:9px 7px;border-top:1px solid rgba(255,255,255,.08);text-align:right;font-weight:800;color:#fff}
@@ -8641,8 +8651,8 @@ function staLoad(force){
   .catch(err=>{c.busy=false;c.err=errorText(err);if(CURRENT_TAB==='terms'&&ST_MODE==='act'&&k===CURRENT_ACCOUNT)renderAct()});
 }
 const STA_W=['30d','90d','180d'],STA_L={R:'Losing',Y:'Running',G:'Winning'};
-// The campaign as a short name; any Performance Max campaign is just "PMax".
-function staCamp(c){c=String(c||'');return /p\s*max|performance\s*max/i.test(c)?'PMax':c.replace(/^HAUS_AlwaysOn_/i,'').replace(/_GoogleSearch_NA_Donations?$/i,'')}
+// The campaign as a short name; any Performance Max campaign is just "PMax", any brand campaign "Brand".
+function staCamp(c){c=String(c||'');return /p\s*max|performance\s*max/i.test(c)?'PMax':/brand/i.test(c)?'Brand':c.replace(/^HAUS_AlwaysOn_/i,'').replace(/_GoogleSearch_NA_Donations?$/i,'')}
 const staIsEx=a=>/exclu/i.test(a||''),staIsRv=a=>/review/i.test(a||'');
 // Wasted: spend that brought nothing back. No conversions = all of it; ROAS under 1x = the part not returned.
 function staWaste(rows){return [0,1,2].map(i=>rows.reduce((a,r)=>{const x=r.p[i];if(!x||x.cost==null)return a;return a+Math.max(0,x.cost-x.cost*(x.roas||0))},0))}
@@ -8695,7 +8705,19 @@ function actShareHtml(){
  const lg=`<div class="ra-lg"><span>ACCOUNT TOTAL · 30 / 90 / 180d</span><span><i class="R"></i>Losing</span><span><i class="Y"></i>Running</span><span><i class="G"></i>Winning</span></div>`;
  const pc=x=>x&&x.cost!=null?`${esc(money(x.cost,0))}<small>${fmt(x.conv||0,0)} conv. · ${staRoas(x.roas)}</small>`:'<span class="sta-na">—</span><small>no data</small>';
  const tb=`<table class="ra-t"><tr><th>SEARCH TERM</th><th>CATEGORY</th><th>ACTION</th><th>REASON</th><th>LEVEL</th><th>LIST</th><th>TODAY</th><th>30D CAMP</th><th>90D CAMP</th><th>180D CAMP</th><th>ACCOUNT</th></tr>${sm.R.map(r=>`<tr><td><bdi${stAr(r.term)}>${esc(r.term)}</bdi><small>${esc(staCamp(r.campaign))}${r.match?' · '+esc(r.match):''}</small></td><td>${r.cat?`<span class="sta-ch ct">${esc(r.cat)}</span>`:NA}</td><td>${staAct(r.action)}</td><td class="s">${r.reason?esc(r.reason):NA}</td><td>${staLevel(r.level).replace('Level not set','Not set')}</td><td class="s">${r.list?esc(r.list):NA}</td><td>${esc(money(r.spend||0,2))}</td>${r.p.map(x=>`<td>${pc(x)}</td>`).join('')}<td><span class="ra-dt">${[0,1,2].map(i=>`<i class="${(r.acct||'')[i]||''}"></i>`).join('')}</span></td></tr>`).join('')}</table>`;
- return `${rsHead('ST Action'+(d.date?' · '+d.date:''))}${cards}${sm.R.length?lg+tb:'<div class="rs-t"><b>👌 No flagged terms today</b></div>'}${SHARE_FOOT}`;
+ return `${rsHead('ST Action'+(d.date?' · '+d.date:''))}${staShareTop(sm,ACT_SV)}${sm.R.length?lg+tb:'<div class="rs-t"><b>👌 No flagged terms today</b></div>'}${SHARE_FOOT}`;
+}
+// The blue card on the WhatsApp image, laid out wide: the period squares side by side.
+let ACT_SV='b';
+function staShareTop(sm,v){
+ const W=sm.waste,acts=`<span class="bx">🚫 ${sm.ex} Exclude</span>${sm.rv?`<span class="bv">👀 ${sm.rv} Review</span>`:''}`;
+ const per=(p,i,one)=>{const back=Math.max(0,p.cost-W[i]),ro=p.cost?p.value/p.cost:0;return `<div class="rb-p"><small>${STA_W[i]} · <span class="${ro<1?'r':'g'}">${fmt(ro,2)}x</span></small><div class="rb-bar"><i style="flex:${W[i]};background:#ff7a8c"></i><i style="flex:${back};background:#4be39a"></i></div>${one?`<div class="rb-l1"><b>${esc(money(p.cost,0))}</b> cost · <b>${fmt(p.conv,0)}</b> conv. · <b>${esc(money(p.value,0))}</b> value</div>`:`<div class="rb-l"><span><b>${esc(money(p.cost,0))}</b> cost</span><span><b>${fmt(p.conv,0)}</b> conv.</span><span><b>${esc(money(p.value,0))}</b> value</span></div>`}</div>`};
+ const lg=`<div class="rb-lg"><span><i style="background:#ff7a8c"></i>Wasted</span><span><i style="background:#4be39a"></i>Paid back</span></div>`;
+ const tot=`<div class="rb-t"><small>WASTED · TOTAL</small><b class="big">${esc(money(W[2],0))}</b><em>spend with no return · 180 days</em></div>`;
+ const side=`<div class="rb-s"><div><small>SPEND TODAY</small><b>${esc(money(sm.spend,2))}</b></div><div><small>${sm.R.length} TERM${sm.R.length===1?'':'S'}</small><div class="rb-ch">${acts}</div></div></div>`;
+ if(v==='a')return `<div class="rb rb-a">${tot}${side}${sm.per.map((p,i)=>per(p,i)).join('')}</div>${lg}`;
+ if(v==='c')return `<div class="rb rb-c"><div class="rb-c1">${tot}${side}</div><div class="rb-c2">${sm.per.map((p,i)=>per(p,i,true)).join('')}</div></div>${lg}`;
+ return `<div class="rb rb-b"><div class="rb-b1">${tot}${side}</div><div class="rb-b2">${sm.per.map((p,i)=>per(p,i)).join('')}</div></div>${lg}`;
 }
 function actShareText(){
  const d=(STA[CURRENT_ACCOUNT]||{}).data;if(!d||d.missing)return '';
