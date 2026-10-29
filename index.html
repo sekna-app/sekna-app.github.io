@@ -3872,6 +3872,19 @@ window.addEventListener('load',function(){
     .sta-bar{display:flex;height:6px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.12);margin:6px 0 5px}.sta-bar i{display:block}
     .sta-pl{display:grid;gap:1px;font-size:10.5px;font-weight:700;color:#c9d6ff}.sta-pl b{font-size:12.5px;color:#fff}
     .sta-lgc{display:flex;gap:12px;font-size:9.5px;font-weight:800;color:#c9d6ff;margin-top:8px}.sta-lgc i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px}
+    /* Desktop page arrows, and quicker page motion on the big screen */
+    #tabArrows{display:none}
+    @media (min-width:1100px){
+     #tabArrows{display:block}
+     .ta-b{position:fixed;top:50%;z-index:20;width:44px;height:64px;margin-top:-32px;border:0;border-radius:16px;background:rgba(120,128,146,.14);color:#7b8396;display:grid;place-items:center;cursor:pointer;transition:background .15s,color .15s,opacity .15s;opacity:.75}
+     .ta-b:hover{background:rgba(120,128,146,.26);color:#1d2433;opacity:1}.ta-b svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+     .ta-l{left:max(10px,calc((100vw - 1364px)/2 - 64px))}.ta-r{right:max(10px,calc((100vw - 1364px)/2 - 64px))}.ta-b[hidden]{display:none}
+     body.drawer-open .ta-b,body.is-sharing .ta-b{display:none}
+     body.dark-mode .ta-b{background:rgba(255,255,255,.08);color:#9aa3b5}body.dark-mode .ta-b:hover{color:#fff;background:rgba(255,255,255,.16)}
+     html body .tab-panel.motion-scene-in,html body .tab-panel.motion-scene-in-left{animation-duration:.26s!important}
+     .side-drawer{transition-duration:.18s!important}
+     .sk-drawer .sk-section-label,.sk-drawer .sk-account,.sk-drawer .sk-nav-btn{transition-delay:0s!important}
+    }
     /* Currency note before a share (USA in $, AR in £) */
     .cw{position:fixed;z-index:9000;background:#1d2433;color:#fff;border-radius:16px;padding:12px;box-shadow:0 14px 34px rgba(0,0,0,.28);display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:center;animation:cwDn .45s cubic-bezier(.2,.8,.2,1);font-family:inherit}
     .cw:after{content:"";position:absolute;left:var(--ax,50%);top:-6px;width:12px;height:12px;margin-left:-6px;background:#1d2433;transform:rotate(45deg)}.cw.noar:after{display:none}
@@ -4366,8 +4379,8 @@ window.addEventListener('load',function(){
     body .topbar .brand{grid-area:brand;min-width:0;cursor:pointer}
     body .topbar .actions{grid-area:actions;gap:8px}
     .tb-sekna{height:31px;width:auto;display:block}
-    /* The menu's logo a bit bigger, in the middle; the close button stays on the right */
-    .sk-drawer-head{justify-content:center!important}.sk-drawer-head>.sk-icon-btn{position:absolute;right:16px;top:50%;transform:translateY(-50%);margin-top:2px}.sk-drawer-logo{height:38px!important}
+    /* The menu's logo a bit bigger, on the left as before */
+    .sk-drawer-logo{height:36px!important}
     body .topbar .menu-toggle,body.dark-mode .topbar .menu-toggle{background:rgba(255,255,255,.12)!important;border:1px solid rgba(255,255,255,.14)!important;color:#fff!important;box-shadow:none!important}
     body .topbar .menu-toggle svg{stroke:#fff}
     body .topbar .logo,body.dark-mode .topbar .logo{background:#fff!important;border-color:transparent!important}
@@ -6509,6 +6522,20 @@ let SWIPE_FROM='';
 function setFooter(){
  const g=['ranks','terms'].includes(CURRENT_TAB)?'Performance Snapshots':['months','seasons'].includes(CURRENT_TAB)?'AI Report':'Media Plan';
  text('dashboardFooter','HEMERA · '+g+' '+(accountMeta(DASH_DATA||{}).shortLabel||CURRENT_ACCOUNT.toUpperCase()));
+ try{tabArrows()}catch(e){} 
+}
+
+function tabStep(d){
+ const list=DASH_TABS.filter(t=>canDo(t)&&document.getElementById(t+'Panel'));const i=list.indexOf(CURRENT_TAB);
+ const t=list[i+d];if(!t)return;SWIPE_FROM=d<0?'left':'right';switchDashboardTab(t);SWIPE_FROM='';scrollTo({top:0});
+}
+function tabArrows(){
+ let w=document.getElementById('tabArrows');
+ if(!w){w=document.createElement('div');w.id='tabArrows';w.setAttribute('data-share-ui','');
+  w.innerHTML='<button type="button" class="ta-b ta-l" onclick="tabStep(-1)" aria-label="Previous page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><button type="button" class="ta-b ta-r" onclick="tabStep(1)" aria-label="Next page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>';
+  document.body.appendChild(w)}
+ const list=DASH_TABS.filter(t=>canDo(t)&&document.getElementById(t+'Panel')),i=list.indexOf(CURRENT_TAB);
+ w.querySelector('.ta-l').hidden=i<=0;w.querySelector('.ta-r').hidden=i<0||i>=list.length-1;
 }
 function switchDashboardTab(tab){
  if(!canDo(tab)){const first=DASH_TABS.find(t=>canDo(t));if(!first)return;tab=first}
@@ -9916,7 +9943,9 @@ function maybeStartTour(){
  if(TOUR_CHECKED||va)return;const e=tourEmail();if(!e)return;TOUR_CHECKED=true;
  if(tourSeen().indexOf(e)<0)setTimeout(()=>{const t=document.getElementById('tour');if(t&&t.hidden)tourStart()},1200);
 }
+let TOUR_FROM='';
 function tourStart(){
+ TOUR_FROM=CURRENT_TAB;
  const t=document.getElementById('tour');if(!t)return;
  const logo=document.getElementById('tourLogo');if(logo&&!logo.src)logo.src=SEKNA_WHITE_LOGO;
  t.hidden=false;t.classList.add('still');
@@ -9960,6 +9989,8 @@ function tourEnd(){
  const e=tourEmail();if(e){const a=tourSeen();if(a.indexOf(e)<0){a.push(e);storeSet(TOUR_SEEN_KEY,JSON.stringify(a.slice(-20)))}}
  const t=document.getElementById('tour');if(!t)return;
  t.classList.remove('show');window.removeEventListener('resize',tourRelayout);
+ 
+ if(TOUR_FROM&&CURRENT_TAB!==TOUR_FROM&&DASH_TABS.includes(TOUR_FROM))switchDashboardTab(TOUR_FROM);
  setTimeout(()=>{t.hidden=true},460);
 }
 (function(){
@@ -12036,7 +12067,7 @@ function renderUpdates(state){
  if(state==='app-new'){
    const u=APP_UPDATE_STATE||{};
    cls='new';badge='<span class="upx-badge gold"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></span>';
-   title=`HEMERA ${esc(u.latest||'')} is available`;sub=`You have ${esc(u.current||app||'an older version')}. The new app opens from GitHub, then tap SEKNA.apk to install.`;
+   title=`HEMERA ${esc(u.latest||'')} is available`;sub=`You have ${esc(u.current||app||'an older version')}. The new app opens from GitHub, then tap HEMERA.apk to install.`;
    cta=`<button type="button" class="upx-go" onclick="openAppUpdate()">Update to ${esc(u.latest||'the new version')}</button>`;
  }
  if(state==='error'){
