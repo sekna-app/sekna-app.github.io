@@ -9687,7 +9687,11 @@ function downloadShareImage(blob,filename){
  setTimeout(()=>URL.revokeObjectURL(url),3000);
 }
 
+
+const SHARE_MENTIONS='⦿ ➤ @\n⦿ ➤ @';
+function withMentions(t){t=String(t||'').replace(/\s+$/,'');return !t||t.endsWith(SHARE_MENTIONS)?t:t+'\n\n'+SHARE_MENTIONS}
 function openWhatsAppText(summary){
+ summary=withMentions(summary);
  const url='https:\/\/wa.me/?text='+encodeURIComponent(summary);
  try{
    const w=window.open(url,'_blank');
@@ -9723,7 +9727,7 @@ async function shareWhatsApp(tab,btn,curOk){
  if(!DASH_DATA){showShareToast('Dashboard data is still loading.');return;}
  if(!curOk&&curWarn(tab,btn))return;
  setShareButtonState(btn,true);
- const summary=getShareSummary(tab);
+ const summary=withMentions(getShareSummary(tab));
  try{
    const kind=SHARE_KINDS[shareKind(tab)];
    mvSettle();
@@ -12282,7 +12286,7 @@ async function tkShare(btn){
  try{
    const canvas=await captureReport(tkShareHtml(),'tks-report');
    const filename=`HEMERA-Team-Tasks-${TK.month}.png`;
-   const cap=tkShareCaption();copyTextQuietly(cap);
+   const cap=withMentions(tkShareCaption());copyTextQuietly(cap);
    if(window.AndroidShare&&typeof window.AndroidShare.shareImage==='function'){window.AndroidShare.shareImage(canvas.toDataURL('image/png'),cap,filename);return}
    const blob=await canvasToBlob(canvas), file=new File([blob],filename,{type:'image/png'});
    if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){try{await navigator.share({title:'Team Tasks',text:cap,files:[file]});return}catch(e){if(e&&e.name==='AbortError')return}}
