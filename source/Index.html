@@ -6833,30 +6833,19 @@ function stxStories(d,k){
  if(top.length===1)out.push({t:'card',bg:'linear-gradient(160deg,#22c47c,#0e7a4a)',e:'🏆',k:'BEST CAMPAIGN TYPE',big:CHANNEL_SHORT[top[0].channel]||top[0].channel,p:`${fmt(top[0].roas,2)}x ROAS · ${money(top[0].value)} of value`});
  else if(top.length)out.push({t:'top',bg:'linear-gradient(160deg,#22c47c,#0e7a4a)',k:'🏆 TOP CAMPAIGN TYPES',big:CHANNEL_SHORT[top[0].channel]||top[0].channel,p:`${fmt(top[0].roas,2)}x ROAS`,
    top:top.map(c=>({n:CHANNEL_SHORT[c.channel]||c.channel,r:c.roas,v:c.value}))});
- const th=k&&stxThanks(d,k);if(th)out.unshift({t:'thanks',k:'THANK YOU TEAM',bg:'radial-gradient(circle at 50% 30%,#3456c4,#1c3384 60%,#0f1d4a)',month:th.name,score:th.score});
+ const th=stxThanks(d);if(th)out.unshift({t:'thanks',k:'THANK YOU TEAM',bg:'radial-gradient(circle at 50% 30%,#3456c4,#1c3384 60%,#0f1d4a)',month:th.name,score:th.score});
  const pa=Number(x.dayNumber)>=20?planAccuracy(d):null;if(pa&&pa.score!=null)out.push({t:'ring',k:'PLAN ACCURACY · MONTH SO FAR',v:pa.score,c:pa.score>=.9?'#22c47c':pa.score>=.8?'#e2b874':'#ff8f8f',big:pc(pa.score),sub:'of the full plan',p:'Spend 40%\nValue 40%\nConversions 20%'});
  const st=streakOf(d);if(st.n>=3)out.push({t:'streak',bg:'linear-gradient(160deg,#f6a23b,#c2410c)',k:'DAYS IN A ROW ABOVE THE PLAN',big:String(st.n),p:"Conversion value beat the day's plan every day.",days:st.days.slice(-7)});
  return out;
 }
 
 
-
-let STX_TEAM=null,STX_THX=null;
-function stxTeamLoad(){if(STX_TEAM!==null)return;STX_TEAM=false;serverCall('storyTeam',getAccessToken()).then(r=>{STX_TEAM=(r&&r.people)||[];STX_THX=(r&&r.thanks)||{};storyTrayDraw();const el=document.querySelector('#stxView .stx-face:not(.old) .stx-tm');if(el)el.outerHTML=stxTeamHtml()}).catch(()=>{STX_TEAM=null})}
-function stxThanks(d,k){
+let STX_TEAM=null;
+function stxTeamLoad(){if(STX_TEAM!==null)return;STX_TEAM=false;serverCall('storyTeam',getAccessToken()).then(r=>{STX_TEAM=(r&&r.people)||[];const el=document.querySelector('#stxView .stx-face:not(.old) .stx-tm');if(el)el.outerHTML=stxTeamHtml()}).catch(()=>{STX_TEAM=null})}
+function stxThanks(d){
  const x=d.latest||{},dt=String(x.date||'');if(!/^\d{4}-\d{2}-\d{2}$/.test(dt))return null;
- const [y,m,day]=dt.split('-').map(Number),key='sekna_thx_'+k;
- if(day===new Date(y,m,0).getDate()){
-  const pa=planAccuracy(d);if(!(pa&&pa.score>.7))return null;const r={month:dt.slice(0,7),score:pa.score,name:x.monthName||''};
-  if(storeGet(key)!==JSON.stringify(r)){storeSet(key,JSON.stringify(r));serverCall('storyThanks',getAccessToken(),k,r.month,r.score,r.name).catch(()=>{})}
-  return r;
- }
- if(day===1){
-  const pm=m===1?`${y-1}-12`:`${y}-${String(m-1).padStart(2,'0')}`;let r=null;try{r=JSON.parse(storeGet(key)||'null')}catch(e){}
-  if(!(r&&r.month===pm))r=STX_THX&&STX_THX[k];if(!(r&&r.month===pm)){stxTeamLoad();return null}
-  return r.score>.7?r:null;
- }
- return null;
+ const [y,m,day]=dt.split('-').map(Number);if(day!==new Date(y,m,0).getDate())return null;
+ const pa=planAccuracy(d);return pa&&pa.score>.7?{score:pa.score,name:x.monthName||''}:null;
 }
 function stxTeamHtml(){
  if(!STX_TEAM){stxTeamLoad();return '<div class="stx-tm"></div>'}
