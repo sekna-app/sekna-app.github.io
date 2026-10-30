@@ -50,7 +50,7 @@ async function libStore(acc, month, bytes, fileName, pages) {
 const DOC = {
   mode: 'rest/mode', shareMonths: 'rest/share-months', usageDays: 'rest/usage-days', ideas: 'rest/ideas',
   shares: m => 'rest/shares-' + m, usage: d => 'rest/usage-' + d, plans: k => 'rest/plan-' + k,
-  push: 'rest/push', serverMail: 'rest/server-mail', fx: 'rest/fx', fxTime: 'rest/fx-time', reacts: (acc, m) => 'rest/reacts-' + acc + '-' + m, celebrate: 'rest/celebrations'
+  push: 'rest/push', serverMail: 'rest/server-mail', fx: 'rest/fx', fxTime: 'rest/fx-time', reacts: (acc, m) => 'rest/reacts-' + acc + '-' + m, celebrate: 'rest/celebrations', story: (acc, d) => 'rest/story-' + acc + '-' + d
 };
 
 const norm = e => String(e || '').trim().toLowerCase();
@@ -218,6 +218,30 @@ const R = {
     await fsAppend(DOC.shares(m), { t, email: a.email, name: a.name || '', kind: String(kind || '').slice(0, 40), acc: String(accountKey || '').slice(0, 12) });
     await fsUpdate(DOC.shareMonths, o => { o = o || {}; o[m] = (o[m] || 0) + 1; return o; });
     return { ok: true };
+  },
+  /** Stories: a view, a heart (or taking it back) or a comment on one story of the day; only an admin reads them. */
+  async storyLog([token, account, date, key, kind, text]) {
+    const a = await assertAccess(token), acc = account === 'ar' ? 'ar' : 'usa', t = Date.now();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(date || ''))) return { ok: false };
+    const k = String(key || '').replace(/[^a-z0-9-]/g, '').slice(0, 40);
+    if (!k || ['view', 'like', 'unlike', 'comment'].indexOf(kind) < 0) return { ok: false };
+    const x = String(text || '').trim().slice(0, 300);
+    if (kind === 'comment' && !x) return { ok: false };
+    await fsUpdate(DOC.story(acc, date), o => {
+      o = o || {}; o.names = o.names || {}; o.v = o.v || {}; o.l = o.l || {}; o.c = o.c || [];
+      o.names[a.email] = a.name || nameFromEmail(a.email);
+      if (kind === 'view') { if ((o.v[k] = o.v[k] || {})[a.email]) return undefined; o.v[k][a.email] = t; }
+      else if (kind === 'like') { (o.l[k] = o.l[k] || {})[a.email] = t; (o.v[k] = o.v[k] || {})[a.email] = o.v[k][a.email] || t; }
+      else if (kind === 'unlike') { if (o.l[k]) delete o.l[k][a.email]; }
+      else { o.c = o.c.concat([{ e: a.email, k, t, x }]).slice(-200); }
+      return o;
+    });
+    return { ok: true };
+  },
+  async adminStoryStats([token, account, date]) {
+    await assertAdmin(token);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(date || ''))) return {};
+    return (await fsGet(DOC.story(account === 'ar' ? 'ar' : 'usa', date))) || {};
   },
   async adminShareStats([token, monthKey]) { await assertAdmin(token); return shareStats(monthOk(monthKey)); },
   async adminResetShares([token]) { await assertAdmin(token); await resetShares(); return { ok: true }; },
