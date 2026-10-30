@@ -92,9 +92,17 @@ async function moved() {
 async function shareStats(month) {
   const rows = await fsList(DOC.shares(month));
   const people = {}, kinds = {}, days = {};
+  // Each person's pages, accounts, days and last share, for the details under their card.
+  const mem = await require('./tasks').members().catch(() => ({}));
   rows.forEach(r => {
     const email = r.email || '';
-    (people[email] = people[email] || { email, name: r.name || nameFromEmail(email), n: 0 }).n++;
+    const p = people[email] = people[email] || { email, name: r.name || nameFromEmail(email), n: 0, kinds: {}, accs: {}, days: {}, last: 0,
+      role: (mem[email] || {}).role === 'Head of Media' ? 'CEO' : ((mem[email] || {}).role || ''), avatar: (mem[email] || {}).avatar || 0 };
+    p.n++;
+    const pk = r.kind || 'other'; p.kinds[pk] = (p.kinds[pk] || 0) + 1;
+    if (r.acc) p.accs[r.acc] = (p.accs[r.acc] || 0) + 1;
+    const pd = dayOf(r.t); p.days[pd] = (p.days[pd] || 0) + 1;
+    if (r.t > p.last) p.last = r.t;
     const k = r.kind || 'other'; kinds[k] = (kinds[k] || 0) + 1;
     const d = dayOf(r.t); days[d] = (days[d] || 0) + 1;
   });

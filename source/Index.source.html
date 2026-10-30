@@ -3858,6 +3858,13 @@ window.addEventListener('load',function(){
     .ac-box{display:flex;gap:10px;flex:none}.ac-c{display:flex;align-items:center;gap:5px}.ac-c em{font-style:normal;font-size:10.5px;font-weight:900;color:#8a92a6}.ac-c .cur-sw button{padding:5px 8px;min-width:28px}
     @media (max-width:420px){.ac-box{flex-direction:column;gap:5px;align-items:flex-end}}
     .sa-demo{color:#2c4fb8;font-weight:900;text-decoration:none;white-space:nowrap}body.dark-mode .sa-demo{color:#9db4ff}
+    .shl{display:grid;gap:8px;margin-top:10px}.shl-p{background:#f6f7fb;border-radius:16px;padding:10px 12px;cursor:pointer}.shl-p.open{background:#fff;box-shadow:0 0 0 1.5px #203c8e}
+    .shl-h{display:flex;align-items:center;gap:10px}.shl-r{width:18px;font-size:12px;font-weight:900;color:#8a92a6}.shl-av{width:34px;height:34px;flex:none}.shl-av .sk-emb{display:block;width:100%;height:100%;border-radius:50%;overflow:hidden}.shl-av svg{width:100%;height:100%;display:block}
+    .shl-n{flex:1;min-width:0}.shl-n b{display:block;font-size:13.5px;font-weight:900}.shl-n small{display:block;font-size:11px;font-weight:700;color:#6b7385;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.shl-v{font-size:20px;font-weight:900;color:#203c8e}
+    .shl-d{margin-top:10px;border-top:1px solid #eef0f5;padding-top:10px}.shl-k,.shl-a{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}.shl-k span,.shl-a span{font-size:11.5px;font-weight:800;background:#eef2fc;color:#203c8e;border-radius:20px;padding:4px 10px}.shl-a span{background:#fdf3df;color:#8a5a12}
+    .shl-days{display:flex;gap:2px;align-items:flex-end;height:40px}.shl-days i{flex:1;height:100%;background:#eef0f5;border-radius:3px;display:flex;align-items:flex-end;overflow:hidden}.shl-days u{display:block;width:100%;background:#203c8e;border-radius:3px}
+    .shl-dl{display:flex;justify-content:space-between;font-size:10px;font-weight:800;color:#9aa1b2;margin-top:2px}.shl-last{display:block;margin-top:6px;font-size:11px;font-weight:700;color:#6b7385}
+    body.dark-mode .shl-p{background:#151a22}body.dark-mode .shl-p.open{background:#1b212b}body.dark-mode .shl-days i{background:#252a32}
     .rd{position:fixed;inset:0;z-index:9500}.rd-dim{position:absolute;inset:0;background:rgba(12,18,36,.5);animation:rdF .25s ease both}
     .rd-sh{position:absolute;left:0;right:0;bottom:0;margin:0 auto;max-width:520px;background:#fff;border-radius:26px 26px 0 0;padding:10px 18px calc(18px + env(safe-area-inset-bottom));box-shadow:0 -10px 40px rgba(0,0,0,.25);animation:rdUp .38s cubic-bezier(.2,.8,.2,1) both;color:#1d2433}
     .rd.out .rd-sh{animation:rdDn .26s ease-in both}.rd.out .rd-dim{animation:rdF .26s ease reverse both}
@@ -13442,8 +13449,8 @@ function adminActivityHtml(){
  const reset=(k,l)=>`<button type="button" class="sh-reset" onclick="adminResetActivity('${k}',this)">↺ Reset ${l} to zero</button>`;
  let body='';
  if(v==='shares'){const s=a.shares;
-   body=`<small class="ad-sub">Each time someone prepares a WhatsApp image. WhatsApp does not tell us if it was then sent.</small>
-   <div class="sh-total"><b>${s.total}</b><span>image${s.total===1?'':'s'} this month</span></div>${bars(s.people,p=>p.n,p=>p.n)}
+   body=`<small class="ad-sub">Each time someone prepares a WhatsApp image. WhatsApp does not tell us if it was then sent. Tap a person for details.</small>
+   <div class="sh-total"><b>${s.total}</b><span>image${s.total===1?'':'s'} this month</span></div>${shLeaderboard(s)}
    ${s.kinds.length?`<div class="sh-kinds">${s.kinds.map(k=>`<span>${esc(SHARE_NAMES[k.kind]||k.kind)} <b>${k.n}</b></span>`).join('')}</div>`:''}${reset('shares','share counts')}`;
  }else if(v==='opens'){const o=a.opens;
    body=`<small class="ad-sub">Each time someone opens HEMERA, or comes back to it after 30 minutes away.</small>
@@ -13453,6 +13460,23 @@ function adminActivityHtml(){
    <div class="sh-total"><b>${hoursText(t.total)}</b><span>in HEMERA this month</span></div>${bars(t.people,p=>p.sec,p=>hoursText(p.sec))}${reset('time','time in the app')}`;
  }
  return `${head}<div class="act-seg">${seg('shares','💬 Shares')}${seg('opens','📱 Opens')}${seg('time','⏱️ Time')}</div>${body}`;
+}
+// Shares: people ranked by images shared this month, each with their top pages; tapping a person opens
+// their pages, accounts, the days they shared and when they last did.
+let ADMIN_SH_OPEN='';
+function shOpen(e){ADMIN_SH_OPEN=ADMIN_SH_OPEN===e?'':e;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+function shLeaderboard(s){
+ if(!s.people.length)return '<div class="sk-admin-empty">No shares yet this month.</div>';
+ const nm=k=>SHARE_NAMES[k]||k, top=p=>Object.entries(p.kinds||{}).sort((a,b)=>b[1]-a[1]);
+ const dim=new Date(+s.month.slice(0,4),+s.month.slice(5,7),0).getDate();
+ return `<div class="shl">${s.people.map((p,i)=>{const open=ADMIN_SH_OPEN===p.email,tk=top(p),mx=Math.max(1,...Object.values(p.days||{}));
+   return `<div class="shl-p${open?' open':''}" onclick="shOpen('${esc(p.email)}')"><div class="shl-h"><span class="shl-r">${i+1}</span><span class="shl-av">${personAv(p.avatar,p.name)}</span>
+    <div class="shl-n"><b>${esc(p.name)}${i===0?' 🏅':''}</b><small>${p.role?esc(roleLabel(p.role))+' · ':''}${esc(tk.slice(0,2).map(([k,n])=>nm(k)+' ×'+n).join(' · '))}</small></div><span class="shl-v">${p.n}</span></div>
+    ${open?`<div class="shl-d"><div class="shl-k">${tk.map(([k,n])=>`<span>${esc(nm(k))} <b>${n}</b></span>`).join('')}</div>
+     ${Object.keys(p.accs||{}).length?`<div class="shl-a">${Object.entries(p.accs).map(([k,n])=>`<span>${esc(String(k).toUpperCase())} <b>${n}</b></span>`).join('')}</div>`:''}
+     <div class="shl-days">${Array.from({length:dim},(_,d)=>{const k=s.month+'-'+String(d+1).padStart(2,'0'),n=(p.days||{})[k]||0;return `<i title="${d+1}"><u style="height:${n?Math.max(14,n/mx*100):0}%"></u></i>`}).join('')}</div>
+     <div class="shl-dl"><span>1</span><span>${dim}</span></div>
+     ${p.last?`<small class="shl-last">Last shared ${esc(timeAgo(p.last,Date.now()))}</small>`:''}</div>`:''}</div>`}).join('')}</div>`;
 }
 async function adminResetActivity(kind,btn){
  const names={shares:'all WhatsApp share counts',opens:'all app-open counts',time:'all time in the app'};
