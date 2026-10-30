@@ -3675,6 +3675,7 @@ window.addEventListener('load',function(){
     .mp-foot{position:absolute;left:72px;right:72px;bottom:40px;display:flex;justify-content:space-between;font-size:17px;font-weight:700;opacity:.7}
     .mp-white .mp-foot{color:#6b7385}
     /* PDF last page: thank-you certificate */
+    .cz-top{position:relative;overflow:hidden}.cz-cel{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
     .cz h1.cz-h{font-family:HArab,"DM Serif Display",Georgia,serif;font-weight:400;font-size:80px;line-height:1;margin:8px 0 8px}
     /* Plain borders only: the PDF's screenshot library cannot draw stacked inset shadows. */
     .cz-cert{position:relative;margin:32px 46px 0;padding:38px 44px 32px;background:#fffefb;border:8px solid #203c8e}
@@ -12913,13 +12914,20 @@ function mpStamp(acc,label){
   <text font-family="Inter,Arial,sans-serif" font-weight="900" font-size="13" letter-spacing="4" fill="#2a3a72" stroke="none"><textPath href="#czp">PLAN ACCURACY · HEMERA · DAY BY DAY · ${esc(mo)} ·</textPath></text>
   <text x="100" y="114" text-anchor="middle" font-family="Inter,Arial,sans-serif" font-weight="900" font-size="40" fill="#2a3a72" stroke="none">${esc(acc)}</text></g></svg>`;
 }
+
+function mpFireworks(){
+ const burst=(cx,cy,r,c)=>{let g='';for(let i=0;i<16;i++){const a=i*Math.PI/8,x1=cx+Math.cos(a)*r*.35,y1=cy+Math.sin(a)*r*.35,x2=cx+Math.cos(a)*r,y2=cy+Math.sin(a)*r;
+   g+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${c}" stroke-width="3" stroke-linecap="round"/><circle cx="${x2.toFixed(1)}" cy="${y2.toFixed(1)}" r="3.5" fill="${c}"/>`}return g};
+ const star=(cx,cy,s,c)=>{let d='';for(let i=0;i<8;i++){const a=Math.PI/4*i-Math.PI/2,rr=i%2?s*.28:s;d+=(i?'L':'M')+(cx+rr*Math.cos(a)).toFixed(1)+' '+(cy+rr*Math.sin(a)).toFixed(1)}return `<path d="${d}Z" fill="${c}"/>`};
+ return `<svg class="cz-cel" viewBox="0 0 1080 340" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">${burst(770,215,70,'#e2b874')}${burst(940,250,52,'#ffffff')}${burst(640,280,36,'#7ea0ff')}${burst(1010,160,30,'#f6c94f')}${star(860,150,13,'#fff')}${star(600,190,9,'#e2b874')}</svg>`;
+}
 function mpThanks(m,pg){
  const ppl=(MR.people||[]).slice().sort((a,b)=>roleTier(b.role)-roleTier(a.role)||String(a.name).localeCompare(String(b.name)));
  const next=monthName(isoAdd(m.days[m.days.length-1].date,1).slice(0,7),true).split(' ')[0]+' '+isoAdd(m.days[m.days.length-1].date,1).slice(0,4);
  const cols=ppl.length>9?4:3;
  const person=p=>{const t=roleTier(p.role);return `<div class="cz-p"><div class="cz-av ${MP_MEDAL[t]?'md':''}">${mpMedal(t)}<span class="cz-e">${personAv(p.avatar,p.name)}</span></div><b>${esc(p.name)}</b>${roleBadge(p.role)}</div>`};
  return `<div class="mp-pg mp-cv2 cz">
-  <div class="cv2-top"><div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="HEMERA">`:'<b>HEMERA</b>'}${mpTag(m)}</div>
+  <div class="cv2-top cz-top">${mpFireworks()}<div class="mp-top">${mpLogo()?`<img src="${mpLogo()}" alt="HEMERA">`:'<b>HEMERA</b>'}${mpTag(m)}</div>
    <div class="cv2-kick" style="margin-top:36px">A NOTE OF THANKS</div><h1 class="cz-h">Thank you</h1><div class="cv2-sub">to the Google Ads team · ${esc(m.label)}</div></div>
   <div class="cz-cert"><span class="cz-fr1"></span><span class="cz-fr2"></span>${['tl','tr','bl','br'].map(k=>`<span class="cz-cn ${k}"><i></i></span>`).join('')}
    <div class="cz-no">No. HMR-${esc(m.month.slice(0,4))}-${esc(m.month.slice(5,7))}-${esc(String(m.meta.shortLabel||'').toUpperCase())}</div>
