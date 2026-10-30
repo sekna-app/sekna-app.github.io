@@ -238,6 +238,12 @@ const R = {
     });
     return { ok: true };
   },
+  /** The team for the month's thank-you story: everyone approved, with their position and emblem. */
+  async storyTeam([token]) {
+    await assertAccess(token);
+    const mem = await require('./tasks').members().catch(() => ({}));
+    return (await approvedPeople()).map(p => { const m = mem[p.email] || {}; return { name: p.name, role: m.role === 'Head of Media' ? 'CEO' : (m.role || ''), avatar: m.avatar || 0 }; });
+  },
   async adminStoryStats([token, account, date]) {
     await assertAdmin(token);
     if (!/^\d{4}-\d{2}-\d{2}$/.test(String(date || ''))) return {};
