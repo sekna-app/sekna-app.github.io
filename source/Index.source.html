@@ -3889,6 +3889,9 @@ window.addEventListener('load',function(){
     .stx-k{font-size:12px;font-weight:900;letter-spacing:.2em;opacity:.85}.stx-p{margin:14px 0 0;font-size:16px;font-weight:700;opacity:.92;max-width:320px;line-height:1.45}.stx-big{display:block;font-size:64px;font-weight:900;letter-spacing:-.03em;margin-top:8px}
     .stx-ring{width:210px;height:210px;margin-top:22px;position:relative}.stx-ring svg{width:100%;height:100%;transform:rotate(-90deg)}.stx-ring div{position:absolute;inset:0;display:grid;place-items:center;align-content:center}.stx-ring b{font-size:48px;font-weight:900}.stx-ring small{font-size:12px;font-weight:800;opacity:.8}
     .stx-card{width:min(92%,340px);background:#fff;color:#1d2433;border-radius:24px;padding:22px;box-shadow:0 18px 44px rgba(0,0,0,.25)}.stx-card .e{font-size:48px}.stx-card small{display:block;font-size:11px;font-weight:900;letter-spacing:.14em;color:#6b7385;margin-top:4px}.stx-card b{display:block;font-size:32px;font-weight:900;margin-top:4px}.stx-card p{margin:6px 0 0;font-size:14px;font-weight:700;color:#4a5266}
+    .stx-bar{width:100%;max-width:340px;text-align:left;margin-top:22px}.stx-bar div{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;font-weight:800}.stx-bar div b{font-size:22px;font-weight:900}.stx-bar i{display:block;height:11px;border-radius:6px;background:rgba(255,255,255,.18);margin-top:7px;overflow:hidden}.stx-bar u{display:block;height:100%;border-radius:6px}.stx-bar small{display:block;font-size:12.5px;opacity:.78;margin-top:5px;font-weight:700}
+    .stx-md{width:100%;max-width:340px;display:flex;flex-direction:column;gap:10px;margin-top:16px}.stx-md>div{background:#fff;color:#1d2433;border-radius:18px;padding:12px 14px;display:flex;align-items:center;gap:12px;text-align:left;box-shadow:0 10px 26px rgba(0,0,0,.18)}
+    .stx-md>div:first-child{padding:18px 14px}.stx-md>div:first-child span{font-size:34px}.stx-md>div:first-child b{font-size:20px}.stx-md span{font-size:26px}.stx-md p{flex:1;min-width:0;margin:0}.stx-md b{display:block;font-size:15px;font-weight:900}.stx-md i{display:block;height:7px;border-radius:4px;background:#e8f6ee;margin-top:6px;overflow:hidden}.stx-md u{display:block;height:100%;background:#22c47c;border-radius:4px}.stx-md small{display:block;font-size:11.5px;color:#6b7385;font-weight:700;margin-top:4px}.stx-md em{font-style:normal;font-size:16px;font-weight:900;color:#0e7a4a}
     .stx-bot{display:flex;align-items:center;gap:6px;padding:10px 10px calc(12px + env(safe-area-inset-bottom));transition:opacity .2s}
     .stx-cm{flex:1;position:relative;margin:0}.stx-cm input{width:100%;height:46px;border-radius:23px;border:1px solid rgba(255,255,255,.55);background:transparent;color:#fff;padding:0 18px;font:inherit;font-size:15px;outline:0}.stx-cm input::placeholder{color:rgba(255,255,255,.85)}
     .stx-ok{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:800;color:#7ff0bf;opacity:0;transition:opacity .2s;pointer-events:none}.stx-cm.sent .stx-ok{opacity:1}
@@ -6803,11 +6806,17 @@ function stxAlerts(d){
 }
 function stxStories(d){
  const x=d.latest||{},out=[],pc=v=>v==null?'—':Math.round(v*100)+'%',col=v=>v==null?'#c9d3f5':v>=.95&&v<=1.1?'#22c47c':v>=.85?'#e2b874':'#ff8f8f';
- if(x.targetSpend)out.push({t:'ring',k:'SPEND TODAY',v:x.spendAchievement,c:col(x.spendAchievement),big:pc(x.spendAchievement),sub:"of the day's plan",p:`${money(x.spend)} of ${money(x.targetSpend)}`});
- if(x.planValue)out.push({t:'ring',k:'CONV. VALUE TODAY',v:x.valueAchievement,c:x.valueAchievement>=1?'#22c47c':x.valueAchievement>=.9?'#e2b874':'#ff8f8f',big:pc(x.valueAchievement),sub:"of the day's plan",p:`${money(x.value)} of ${money(x.planValue)} · ROAS ${x.spend?fmt(x.value/x.spend,2)+'x':'—'}`});
- const ch=(d.dayChannels||[]).filter(c=>c.spend>0&&c.roas).sort((a,b)=>b.roas-a.roas)[0];
- if(ch)out.push({t:'card',bg:'linear-gradient(160deg,#22c47c,#0e7a4a)',e:'🏆',k:'BEST CAMPAIGN TYPE',big:CHANNEL_SHORT[ch.channel]||ch.channel,p:`${fmt(ch.roas,2)}x ROAS · ${money(ch.value)} of value`});
- const pa=planAccuracy(d);if(pa&&pa.score!=null)out.push({t:'ring',k:'PLAN ACCURACY · MONTH SO FAR',v:pa.score,c:pa.score>=.9?'#22c47c':pa.score>=.8?'#e2b874':'#ff8f8f',big:pc(pa.score),sub:'of the full plan',p:'Spend 40% · value 40% · conversions 20%'});
+ // Spend and conversion value in one story: the day's ROAS big on top, a bar for each against the plan.
+ const bars=[];
+ if(x.targetSpend)bars.push({n:'Spend',v:x.spendAchievement,c:col(x.spendAchievement),p:`${money(x.spend)} of ${money(x.targetSpend)}`});
+ if(x.planValue)bars.push({n:'Conv. value',v:x.valueAchievement,c:x.valueAchievement>=1?'#22c47c':x.valueAchievement>=.9?'#e2b874':'#ff8f8f',p:`${money(x.value)} of ${money(x.planValue)}`});
+ if(bars.length)out.push({t:'bars',k:'ROAS TODAY',big:x.spend?fmt(x.value/x.spend,2)+'x':'—',bars});
+ // The top campaign types by ROAS, only those that brought value at a profit (ROAS 1x and up); one alone keeps the single card.
+ const top=(d.dayChannels||[]).filter(c=>c.spend>0&&c.value>0&&c.roas>=1).sort((a,b)=>b.roas-a.roas).slice(0,3);
+ if(top.length===1)out.push({t:'card',bg:'linear-gradient(160deg,#22c47c,#0e7a4a)',e:'🏆',k:'BEST CAMPAIGN TYPE',big:CHANNEL_SHORT[top[0].channel]||top[0].channel,p:`${fmt(top[0].roas,2)}x ROAS · ${money(top[0].value)} of value`});
+ else if(top.length)out.push({t:'top',bg:'linear-gradient(160deg,#22c47c,#0e7a4a)',k:'🏆 TOP CAMPAIGN TYPES',big:CHANNEL_SHORT[top[0].channel]||top[0].channel,p:`${fmt(top[0].roas,2)}x ROAS`,
+   top:top.map(c=>({n:CHANNEL_SHORT[c.channel]||c.channel,r:c.roas,v:c.value}))});
+ const pa=Number(x.dayNumber)>=20?planAccuracy(d):null;if(pa&&pa.score!=null)out.push({t:'ring',k:'PLAN ACCURACY · MONTH SO FAR',v:pa.score,c:pa.score>=.9?'#22c47c':pa.score>=.8?'#e2b874':'#ff8f8f',big:pc(pa.score),sub:'of the full plan',p:'Spend 40% · value 40% · conversions 20%'});
  const st=streakOf(d);if(st.n>=3)out.push({t:'card',bg:'linear-gradient(160deg,#f6a23b,#c2410c)',e:'🔥',k:'DAYS IN A ROW',big:st.n+' days',p:'Conversion value met the plan every day.'});
  return out;
 }
@@ -6930,10 +6939,12 @@ function stxShow(){
  const G=stxGroup(),s=G.list[STX.i],d=G.d,x=d.latest||{},admin=!!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin);
  storeSet(stxSeenKey(G.k,x.date),'1');
  const ring=`<div class="stx-ring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="3.4"/><circle cx="18" cy="18" r="15" fill="none" stroke="${s.c}" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="${(94.2*Math.max(0,Math.min(1,s.v||0))).toFixed(1)} 99"/></svg><div><b>${esc(s.big)}</b><small>${esc(s.sub||'')}</small></div></div>`;
- const body=s.t==='ring'?`<div class="stx-k">${esc(s.k)}</div>${ring}<p class="stx-p">${esc(s.p)}</p>`
+ const body=s.t==='bars'?`<div class="stx-k">${esc(s.k)}</div><b class="stx-big">${esc(s.big)}</b>${s.bars.map(b=>`<div class="stx-bar"><div><span>${esc(b.n)}</span><b>${b.v==null?'—':Math.round(b.v*100)+'%'}</b></div><i><u style="width:${Math.max(0,Math.min(1,b.v||0))*100}%;background:${b.c}"></u></i><small>${esc(b.p)}</small></div>`).join('')}`
+  :s.t==='top'?`<div class="stx-k">${esc(s.k)}</div><div class="stx-md">${s.top.map((c,i)=>`<div><span>${['🥇','🥈','🥉'][i]}</span><p><b>${esc(c.n)}</b><i><u style="width:${Math.round(c.r/s.top[0].r*100)}%"></u></i><small>${money(c.v)} of value</small></p><em>${fmt(c.r,2)}x</em></div>`).join('')}</div>`
+  :s.t==='ring'?`<div class="stx-k">${esc(s.k)}</div>${ring}<p class="stx-p">${esc(s.p)}</p>`
   :s.t==='card'?`<div class="stx-card"><div class="e">${s.e}</div><small>${esc(s.k)}</small><b>${esc(s.big)}</b><p>${esc(s.p)}</p></div>`
   :`<div class="stx-k">${esc(s.k)}</div><b class="stx-big">${esc(s.big)}</b><p class="stx-p">${esc(s.p)}</p>`;
- const bg=s.t==='card'?s.bg:s.t==='alert'?'linear-gradient(170deg,#e0606c,#8f2330)':'radial-gradient(circle at 50% 30%,#3456c4,#1c3384 60%,#0f1d4a)';
+ const bg=s.bg?s.bg:s.t==='alert'?'linear-gradient(170deg,#e0606c,#8f2330)':'radial-gradient(circle at 50% 30%,#3456c4,#1c3384 60%,#0f1d4a)';
  const logo=document.querySelector('.logo img')?.src||'',ago=stxAgo(d),liked=storeGet(stxLikeKey())==='1';
  const plane='<svg viewBox="0 0 24 24"><path d="M22 3L9.2 10.9M22 3l-7.4 18-3.2-8.3L3 9.6 22 3z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg>';
  const heart='<svg viewBox="0 0 24 24"><path d="M12 20.3s-7.6-4.6-9.3-9.1C1.5 7.9 3.6 4.6 7 4.6c2 0 3.4 1.1 5 3 1.6-1.9 3-3 5-3 3.4 0 5.5 3.3 4.3 6.6-1.7 4.5-9.3 9.1-9.3 9.1z" stroke-width="1.9" stroke-linejoin="round"/></svg>';
@@ -6944,12 +6955,28 @@ function stxShow(){
   <div class="stx-body">${body}</div></div>
   <div class="stx-bot">${admin?stxActHtml():`<form class="stx-cm" onsubmit="stxComment(event)"><input type="text" maxlength="300" placeholder="Leave a comment…" enterkeyhint="send" onfocus="stxFocus(true)" onblur="stxFocus(false)"><span class="stx-ok">Sent ✓</span></form>`}
    <button type="button" class="stx-ht${liked?' on':''}" onclick="stxLike()" aria-label="Like">${heart}</button>
-   <button type="button" class="stx-sd" onclick="openWhatsAppText(stxText())" aria-label="Send on WhatsApp">${plane}</button></div>`;
+   <button type="button" class="stx-sd" onclick="stxSend(this)" aria-label="Send on WhatsApp">${plane}</button></div>`;
  const u=v.querySelector('.stx-bars i.run u');if(u)u.style.animationDuration=STX_MS+'ms';
  STX.left=STX_MS;STX.start=Date.now();STX.paused=false;STX.timer=setTimeout(()=>stxGo(1),STX_MS);
  stxLog('view');
 }
-function stxText(){const G=stxGroup(),s=G&&G.list[STX.i];if(!s)return '';const x=G.d.latest||{};return `📌 ${G.k==='ar'?'AR':'USA'} · ${x.monthName||''} ${x.dayNumber||''}\n\n${s.k}: ${s.big}${s.sub?' '+s.sub:''}\n${s.p}`}
+// Send: the story itself as a picture on WhatsApp, with no caption (the top bar's buttons are left out).
+async function stxSend(btn){
+ const el=document.querySelector('#stxView .stx-card-bg');if(!el||!STX)return;stxPause(true);btn.disabled=true;
+ const G=stxGroup(),x=G.d.latest||{},filename=`HEMERA-Story-${G.k==='ar'?'AR':'USA'}-${x.monthName||''}-${x.dayNumber||''}-${STX.i+1}.png`;
+ try{
+  const h2c=await ensureHtml2Canvas();
+  const r=el.getBoundingClientRect();
+  const canvas=await h2c(el,{backgroundColor:'#0f1d4a',scale:2,useCORS:true,allowTaint:true,logging:false,x:r.left,y:r.top,width:r.width,height:Math.floor(r.height)-5,scrollX:0,scrollY:0,windowWidth:innerWidth,windowHeight:innerHeight,
+   onclone:doc=>{doc.querySelectorAll('.stx-mn,.stx-x,.stx-bars').forEach(n=>n.style.visibility='hidden');const c=doc.querySelector('.stx-card-bg');if(c)c.style.borderRadius='0';const t=doc.querySelector('.stx-top');if(t)t.style.background='none'}});
+  logShareQuiet('story');
+  if(window.AndroidShare&&typeof window.AndroidShare.shareImage==='function'){window.AndroidShare.shareImage(canvas.toDataURL('image/png'),'',filename);return}
+  const blob=await canvasToBlob(canvas),file=new File([blob],filename,{type:'image/png'});
+  if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){try{await navigator.share({files:[file]});return}catch(e){if(e&&e.name==='AbortError')return}}
+  downloadShareImage(blob,filename);showShareToast('Story saved — share it on WhatsApp');
+ }catch(e){showShareToast('Could not make the picture of this story.')}
+ finally{btn.disabled=false;if(STX&&!document.querySelector('#stxView .stx-sh'))stxPause(false)}
+}
 // Day streak: days in a row, up to the last closed day, whose conversion value met the day's plan.
 // From 3 days it shows as a small card under the date for half an hour; the server sends it to the phones with the new day.
 function streakOf(d){
