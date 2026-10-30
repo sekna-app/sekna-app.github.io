@@ -50,7 +50,7 @@ async function libStore(acc, month, bytes, fileName, pages) {
 const DOC = {
   mode: 'rest/mode', shareMonths: 'rest/share-months', usageDays: 'rest/usage-days', ideas: 'rest/ideas',
   shares: m => 'rest/shares-' + m, usage: d => 'rest/usage-' + d, plans: k => 'rest/plan-' + k,
-  push: 'rest/push', serverMail: 'rest/server-mail', fx: 'rest/fx', fxTime: 'rest/fx-time', reacts: (acc, m) => 'rest/reacts-' + acc + '-' + m, celebrate: 'rest/celebrations', story: (acc, d) => 'rest/story-' + acc + '-' + d
+  push: 'rest/push', serverMail: 'rest/server-mail', fx: 'rest/fx', fxTime: 'rest/fx-time', reacts: (acc, m) => 'rest/reacts-' + acc + '-' + m, celebrate: 'rest/celebrations', story: (acc, d) => 'rest/story-' + acc + '-' + d, storyThanks: 'rest/story-thanks'
 };
 
 const norm = e => String(e || '').trim().toLowerCase();
@@ -238,11 +238,20 @@ const R = {
     });
     return { ok: true };
   },
-  /** The team for the month's thank-you story: everyone approved, with their position and emblem. */
+  /** The team for the month's thank-you story (everyone approved, with position and emblem), and each account's last thank-you month. */
   async storyTeam([token]) {
     await assertAccess(token);
     const mem = await require('./tasks').members().catch(() => ({}));
-    return (await approvedPeople()).map(p => { const m = mem[p.email] || {}; return { name: p.name, role: m.role === 'Head of Media' ? 'CEO' : (m.role || ''), avatar: m.avatar || 0 }; });
+    const people = (await approvedPeople()).map(p => { const m = mem[p.email] || {}; return { name: p.name, role: m.role === 'Head of Media' ? 'CEO' : (m.role || ''), avatar: m.avatar || 0 }; });
+    return { people, thanks: (await fsGet(DOC.storyThanks)) || {} };
+  },
+  /** A month that closed above 70% plan accuracy, so the thank-you story still shows on the next month's first day of data. */
+  async storyThanks([token, account, month, score, name]) {
+    await assertAccess(token);
+    const acc = account === 'ar' ? 'ar' : 'usa', sc = Number(score);
+    if (!/^\d{4}-\d{2}$/.test(String(month || '')) || !(sc > 0.7 && sc <= 1)) return { ok: false };
+    await fsUpdate(DOC.storyThanks, o => { o = o || {}; if (o[acc] && o[acc].month === month) return undefined; o[acc] = { month, score: sc, name: String(name || '').slice(0, 20) }; return o; });
+    return { ok: true };
   },
   async adminStoryStats([token, account, date]) {
     await assertAdmin(token);
