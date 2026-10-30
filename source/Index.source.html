@@ -3865,6 +3865,10 @@ window.addEventListener('load',function(){
     .shl-days{display:flex;gap:2px;align-items:flex-end;height:40px}.shl-days i{flex:1;height:100%;background:#eef0f5;border-radius:3px;display:flex;align-items:flex-end;overflow:hidden}.shl-days u{display:block;width:100%;background:#203c8e;border-radius:3px}
     .shl-dl{display:flex;justify-content:space-between;font-size:10px;font-weight:800;color:#9aa1b2;margin-top:2px}.shl-last{display:block;margin-top:6px;font-size:11px;font-weight:700;color:#6b7385}
     body.dark-mode .shl-p{background:#151a22}body.dark-mode .shl-p.open{background:#1b212b}body.dark-mode .shl-days i{background:#252a32}
+    .sk-client-logo.stx-l{border-radius:50%!important;cursor:pointer;position:relative;overflow:visible!important}.sk-client-logo.stx-l img{border-radius:50%}
+    .sk-client-logo.stx-on{box-shadow:0 0 0 2px #14286b,0 0 0 4.5px #e2b874,0 0 0 6px #ff9aa3!important}.sk-account-option .sk-client-logo.stx-on{box-shadow:0 0 0 2px #fff,0 0 0 4.5px #e2b874,0 0 0 6px #ff9aa3!important}
+    .sk-client-logo.stx-seen{box-shadow:0 0 0 2px #14286b,0 0 0 4px rgba(255,255,255,.35)!important}.sk-account-option .sk-client-logo.stx-seen{box-shadow:0 0 0 2px #fff,0 0 0 4px #d5dbe6!important}
+    .stx-sub{display:block;font-size:10.5px;font-weight:700;color:#6b7385;margin-top:1px}body.dark-mode .stx-sub{color:#9aa1b2}
     .stx-tray{display:flex;gap:14px;padding:4px 2px 12px;overflow-x:auto;scrollbar-width:none}.stx-tray::-webkit-scrollbar{display:none}
     .stx-b{border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;font:inherit;flex:none}.stx-b small{font-size:11px;font-weight:900;color:#4a5266}.stx-b.cur small{color:#203c8e}
     .stx-r{width:56px;height:56px;border-radius:50%;padding:3px;background:conic-gradient(#f6c94f,#e2b874,#ff9aa3,#7ea0ff,#f6c94f)}.stx-r.seen{background:#d5dbe6}.stx-r>span{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:#fff;border:2.5px solid #fff;overflow:hidden;font-size:22px}.stx-r img{width:80%;height:80%;object-fit:contain}
@@ -5490,8 +5494,8 @@ window.addEventListener('load',function(){
       <svg class="sk-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
     </button>
     <div class="sk-account-menu" id="accountMenu" role="listbox" aria-label="Select client account">
-      <button class="sk-account-option" type="button" role="option" data-account="usa" onclick="pickAccount('usa')"><span class="sk-client-logo"><img data-client-logo alt=""></span><span class="sk-account-text"><b>Human Appeal USA</b></span><svg class="sk-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
-      <button class="sk-account-option" type="button" role="option" data-account="ar" onclick="pickAccount('ar')"><span class="sk-client-logo"><img data-client-logo alt=""></span><span class="sk-account-text"><b>Human Appeal AR</b></span><svg class="sk-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
+      <button class="sk-account-option" type="button" role="option" data-account="usa" onclick="pickAccount('usa')"><span class="sk-client-logo"><img data-client-logo alt=""></span><span class="sk-account-text"><b>Human Appeal USA</b><small class="stx-sub" data-stx="usa"></small></span><svg class="sk-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
+      <button class="sk-account-option" type="button" role="option" data-account="ar" onclick="pickAccount('ar')"><span class="sk-client-logo"><img data-client-logo alt=""></span><span class="sk-account-text"><b>Human Appeal AR</b><small class="stx-sub" data-stx="ar"></small></span><svg class="sk-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
     </div>
     <select id="accountSelect" hidden aria-hidden="true" tabindex="-1"><option value="usa">Human Appeal USA</option><option value="ar">Human Appeal AR</option></select>
   </div>
@@ -6405,6 +6409,7 @@ function toggleAccountMenu(force){
  const picker=document.getElementById('accountPicker');if(!picker)return;
  const open=typeof force==='boolean'?force:!picker.classList.contains('open');
  picker.classList.toggle('open',open);
+ if(open)try{storyTrayDraw()}catch(e){}
  const btn=document.getElementById('accountCurrent');if(btn)btn.setAttribute('aria-expanded',open?'true':'false');
 }
 function closeAccountMenu(){toggleAccountMenu(false)}
@@ -6788,20 +6793,23 @@ function stxStories(d){
  const st=streakOf(d);if(st.n>=3)out.push({t:'card',bg:'linear-gradient(160deg,#f6a23b,#c2410c)',e:'🔥',k:'DAYS IN A ROW',big:st.n+' days',p:'Conversion value met the plan every day.'});
  return out;
 }
+// The stories live on the account logos in the menu: a coloured ring while today's stories are unseen,
+// grey once seen; under each account in the list, how many are new. Tapping a logo opens its stories.
+function stxCount(k){const c=k===CURRENT_ACCOUNT?DASH_DATA:(getAccountCache(k)||{}).data;return c&&c.latest?{n:stxStories(c).length,date:c.latest.date,d:c}:null}
 function storyTrayDraw(){
- const el=document.getElementById('storyTray');if(!el)return;
- const d=DASH_DATA;if(!d||CURRENT_TAB!=='overview'){el.hidden=true;return}
- const logo=document.querySelector('.logo img')?.src||'';
- const ring=(seen,inner,lbl,on,cls)=>`<button type="button" class="stx-b ${cls||''}" onclick="${on}"><span class="stx-r${seen?' seen':''}"><span>${inner}</span></span><small>${lbl}</small></button>`;
- const seenOf=k=>{const c=k===CURRENT_ACCOUNT?d:(getAccountCache(k)||{}).data;return !!(c&&c.latest&&storeGet(stxSeenKey(k,c.latest.date))==='1')};
- const al=stxAlerts(d);
- el.innerHTML=['usa','ar'].map(k=>ring(seenOf(k),logo?`<img src="${logo}" alt="">`:'HA',k==='usa'?'USA':'AR',`openStories('${k}')`,k===CURRENT_ACCOUNT?'cur':'')).join('')
-  +(al.length?ring(storeGet(stxSeenKey(CURRENT_ACCOUNT+'-al',d.latest&&d.latest.date))==='1','⚠️','Alerts','openStories(\'alerts\')','al'):'')
-  +ring(true,'✅','Tasks',"openTasks('mine')",'tk');
- el.hidden=false;
+ const d=DASH_DATA;if(!d)return;
+ const seen=k=>{const c=stxCount(k);return !!(c&&storeGet(stxSeenKey(k,c.date))==='1')};
+ const day=c=>{const x=c.d.latest||{};return `${x.dayName?String(x.dayName).slice(0,3)+' ':''}${x.dayNumber||''} ${x.monthName?String(x.monthName).slice(0,3):''}`};
+ const ring=(el,k)=>{if(!el)return;el.classList.add('stx-l');el.classList.toggle('stx-on',!seen(k));el.classList.toggle('stx-seen',seen(k));
+   if(!el.dataset.stx){el.dataset.stx=k;el.addEventListener('click',e=>{e.stopPropagation();e.preventDefault();openStories(el.dataset.stx)})}};
+ document.querySelectorAll('#accountMenu .sk-account-option').forEach(o=>ring(o.querySelector('.sk-client-logo'),o.dataset.account));
+ const cur=document.querySelector('#accountCurrent .sk-client-logo');if(cur){cur.dataset.stx='';ring(cur,CURRENT_ACCOUNT);cur.dataset.stx=CURRENT_ACCOUNT}
+ document.querySelectorAll('.stx-sub').forEach(el=>{const k=el.dataset.stx,c=stxCount(k);
+   el.textContent=!c?'Tap the logo for its stories':seen(k)?`Seen · ${day(c)}`:`${c.n} new ${c.n===1?'story':'stories'} · ${day(c)}`});
 }
 function openStories(k){
  const d=DASH_DATA;if(!d)return;
+ closeSidebar();closeAccountMenu();
  if(k!=='alerts'&&k!==CURRENT_ACCOUNT){STX_PENDING=k;switchAccount(k);return}
  const list=k==='alerts'?stxAlerts(d):stxStories(d);if(!list.length)return;
  storeSet(stxSeenKey(k==='alerts'?CURRENT_ACCOUNT+'-al':CURRENT_ACCOUNT,d.latest&&d.latest.date),'1');storyTrayDraw();
