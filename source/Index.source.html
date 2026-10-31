@@ -3389,10 +3389,11 @@ window.addEventListener('load',function(){
     .bd-big{font-size:31px;font-weight:900;letter-spacing:-.02em;line-height:1.05}.bd-ref{font-size:12px;font-weight:800;color:#b4232f;margin-top:3px}
     .bd-gl{display:flex;gap:6px;margin-top:10px}.bd-gl div{flex:1;border-radius:9px;background:#f1f4fa;padding:7px 4px;text-align:center}.bd-gl b{display:block;font-size:15px;font-weight:900}.bd-gl b.v{color:#16955c}.bd-gl small{font-size:9px;font-weight:800;color:#8a92a0}
     .bd-ro{margin-top:8px;display:flex;justify-content:space-between;align-items:center;background:#c89434;color:#fff;border-radius:9px;padding:7px 10px}.bd-ro small{font-size:10.5px;font-weight:900}.bd-ro b{font-size:19px;font-weight:900}
+    .bd-cmp{margin-top:8px;border-top:1px solid #eef0f5;padding-top:6px}.bd-cmp small{font-size:8.5px;font-weight:800;letter-spacing:.12em;color:#8a92a0}.bd-cmp div{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:800;margin-top:3px}.bd-cmp span{width:44px;color:#8a92a0}.bd-cmp em{flex:1;font-style:normal;color:#8a92a0}.bd-cmp em b{color:#14286b}.bd-cmp .up{color:#16955c;font-weight:900}.bd-cmp .dn{color:#b4232f;font-weight:900}
     .bd-wb{display:flex;align-items:flex-end;gap:5px}.bd-wb>span{width:38px;flex:none}.bd-wb>div{flex:1;text-align:center}.bd-wb i{display:block;background:linear-gradient(180deg,#3d6bff,#203c8e);border-radius:8px 8px 2px 2px;color:#fff;font-style:normal;font-size:10px;font-weight:900;padding-top:5px;box-sizing:border-box}.bd-wb small{display:block;font-size:8.5px;font-weight:700;opacity:.8}
     .bd-wt{width:100%;border-collapse:collapse;margin-top:5px;font-size:10.5px;font-weight:800;text-align:center;table-layout:fixed}.bd-wt th{width:38px;text-align:left;font-size:9px;font-weight:800;color:#8a92a0}.bd-wt td,.bd-wt th{padding:3px 0;border-top:1px solid #eef0f5}.bd-wt .v td{color:#16955c;font-weight:900;font-size:11.5px}
     .bd-pl{display:inline-block;background:#eef2fc;color:#203c8e;border-radius:999px;padding:1px 6px;font-size:9.5px;font-weight:900}
-    .bd-ty{display:flex;align-items:center;gap:7px;margin-top:7px;font-size:11px;font-weight:800}.bd-ty span{width:72px;white-space:nowrap;overflow:hidden}.bd-ty i{flex:1;height:8px;border-radius:4px;background:#f1f4fa;overflow:hidden;display:block}.bd-ty u{display:block;height:100%;background:linear-gradient(90deg,#3d6bff,#203c8e)}.bd-ty em{font-style:normal;width:92px;text-align:right;white-space:nowrap}.bd-ty em b{color:#16955c}
+    .bd-ty{display:flex;align-items:center;gap:7px;margin-top:7px;font-size:11px;font-weight:800}.bd-ty span{width:72px;white-space:nowrap;overflow:hidden}.bd-ty i{flex:1;height:8px;border-radius:4px;background:#f1f4fa;overflow:hidden;display:block}.bd-ty u{display:block;height:100%;background:linear-gradient(90deg,#3d6bff,#203c8e)}.bd-ty em{font-style:normal;width:92px;text-align:right;white-space:nowrap}.bd-ty em b{color:#14286b}
     .bd-yr{display:flex;align-items:flex-end;gap:8px;height:112px;border-bottom:1.5px solid #dfe4ee;margin-top:4px}.bd-yr>div{flex:1;display:flex;align-items:flex-end;justify-content:center;gap:3px}.bd-yr i{width:14px;display:block;border-radius:3px 3px 0 0;position:relative;font-style:normal}.bd-yr i b{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);font-size:8px;font-weight:900;white-space:nowrap;margin-bottom:1px;color:#14286b}.bd-yr i.v b,.bd-yr i.p b{color:#16955c}
     .bd-yr i.s,.bd-lgd i.s{background:#c9d3f5}.bd-yr i.v,.bd-lgd i.v{background:#3d6bff}.bd-yr i.p,.bd-lgd i.p{background:#22c47c}
     .bd-yl{display:flex;gap:8px;margin-top:3px}.bd-yl div{flex:1;text-align:center;font-size:10.5px;font-weight:900}.bd-yl .pl{color:#16955c}.bd-yl small{display:block;font-size:9px;color:#8a92a0;font-weight:800}
@@ -8286,15 +8287,21 @@ function budShareHtml(d){
  // The account's own currency big (dollars for USA, pounds for AR); the other one in red, for reference.
  const main=inUsd?'$'+fmt(p.spend*usd,0):'£'+fmt(p.spend,0),ref=CURRENT_ACCOUNT==='ar'?(usd?'$'+fmt(p.spend*usd,0):''):'£'+fmt(p.spend,0);
  const ro=p.roas!=null?p.roas:p.spend?p.rev/p.spend:null;
+ const pk=key?(()=>{const y=+key.slice(0,4),m=+key.slice(5);return m===1?`${y-1}-12`:`${y}-${String(m-1).padStart(2,'0')}`})():'';
+ const lm=((DASH_DATA||{}).history||[]).find(h=>h.month===pk),lmRo=lm&&lm.cost?lm.value/lm.cost:null;
+ const pc=lm&&lm.cost&&p.spend?Math.round((p.spend/lm.cost-1)*100):null,dr=lmRo!=null&&ro!=null?ro-lmRo:null;
+ const cmp=lm?`<div class="bd-cmp"><small>VS ${esc(String(monthName(pk,true)).split(' ')[0].toUpperCase())}</small>
+  <div><span>Budget</span><em>${$k(lm.cost)} → <b>${$k(p.spend)}</b></em><b class="${pc>=0?'up':'dn'}">${pc==null?'—':(pc>0?'+':pc<0?'−':'')+Math.abs(pc)+'%'}</b></div>
+  <div><span>ROAS</span><em>${x2(lmRo)} → <b>${x2(ro)}</b></em><b class="${dr>=0?'up':'dn'}">${dr==null?'—':(dr>=0?'+':'−')+fmt(Math.abs(dr),2)+'x'}</b></div></div>`:'';
  // Weeks: the blue bars, then a table under them with the row names written once on the left.
  const W=(d.weeks||[]).filter(w=>w.planSpend>0).slice(0,5),nW=W.length;
  const wl=w=>{const m=String(w.label).match(/(\d+)\s*[:\-–]\s*(\d+)\s*$/);return m?(+m[1])+'–'+(+m[2]):''};
  const bars=`<div class="bd-wb"><span></span>${W.map((w,i)=>`<div><i style="height:${Math.round(58+62*(nW>1?i/(nW-1):1))}px">W${i+1}<small>${esc(wl(w))}</small>${$k(w.planSpend)}</i></div>`).join('')}</div>`;
  const row=(n,f,cls)=>`<tr class="${cls||''}"><th>${n}</th>${W.map(w=>`<td>${f(w)}</td>`).join('')}</tr>`;
  const tbl=`<table class="bd-wt">${row('Value',w=>$k(w.planRev),'v')}${row('ROAS',w=>`<span class="bd-pl">${x2(w.planSpend?w.planRev/w.planSpend:null)}</span>`)}${row('Conv.',w=>kk(w.planConv))}${row('Clicks',w=>kk(w.planClicks))}</table>`;
- const T=(d.channels||[]).filter(x=>x.budget>0).sort((a,b)=>(b.rev||0)-(a.rev||0)).slice(0,6),mxv=Math.max(1,...T.map(x=>x.rev||0));
+ const T=(d.channels||[]).filter(x=>x.budget>0).sort((a,b)=>(b.budget||0)-(a.budget||0)).slice(0,6),mxb=Math.max(1,...T.map(x=>x.budget||0)),tb=T.reduce((t,x)=>t+(x.budget||0),0)||1;
  const short=n=>String(n).replace(/^Search\s+/i,'').replace(/Performance Max/i,'PMax').replace(/\s*\(.*\)/,'');
- const types=T.map(x=>`<div class="bd-ty"><span>${esc(short(x.name))}</span><i><u style="width:${((x.rev||0)/mxv*100).toFixed(1)}%"></u></i><em>${$k(x.budget)} → <b>${$k(x.rev)}</b></em></div>`).join('');
+ const types=T.map(x=>`<div class="bd-ty"><span>${esc(short(x.name))}</span><i><u style="width:${((x.budget||0)/mxb*100).toFixed(1)}%"></u></i><em><b>${$k(x.budget)}</b> · ${Math.round((x.budget||0)/tb*100)}%</em></div>`).join('');
  const mm=key.slice(5),hist=((DASH_DATA||{}).history||[]).filter(h=>h.month&&h.month.slice(5)===mm&&h.month<key).sort((a,b)=>a.month<b.month?-1:1).slice(-3);
  const Y=hist.map(h=>({y:h.month.slice(0,4),s:h.cost,v:h.value})).concat([{y:key.slice(0,4),s:p.spend,v:p.rev,pl:1}]),ymx=Math.max(1,...Y.map(r=>Math.max(r.s||0,r.v||0)));
  const yb=Y.map(r=>`<div>${[[r.s,'s'],[r.v,r.pl?'p':'v']].map(([v,c])=>`<i class="${c}" style="height:${Math.max(2,(v||0)/ymx*92)}px"><b>${$k(v)}</b></i>`).join('')}</div>`).join('');
@@ -8303,9 +8310,9 @@ function budShareHtml(d){
   <div class="bd-g">
    <div class="bd-p"><div class="bd-k">BUDGET</div><div class="bd-big">${main}</div>${ref?`<div class="bd-ref">${ref} · for reference</div>`:''}
     <div class="bd-gl"><div><b>${kk(p.clicks)}</b><small>clicks</small></div><div><b>${kk(p.conv)}</b><small>conv.</small></div><div><b class="v">${$k(p.rev)}</b><small>value</small></div></div>
-    <div class="bd-ro"><small>PLANNED ROAS</small><b>${x2(ro)}</b></div></div>
+    <div class="bd-ro"><small>PLANNED ROAS</small><b>${x2(ro)}</b></div>${cmp}</div>
    <div class="bd-p"><div class="bd-k">WEEK BY WEEK</div>${bars}${tbl}</div>
-   <div class="bd-p"><div class="bd-k">VALUE EACH TYPE SHOULD BRING</div>${types}</div>
+   <div class="bd-p"><div class="bd-k">SPEND BY CAMPAIGN TYPE</div>${types}</div>
    <div class="bd-p"><div class="bd-k">${esc(String(monthName(key,true)).split(' ')[0].toUpperCase())} BY YEAR · SPEND & VALUE</div><div class="bd-yr">${yb}</div><div class="bd-yl">${yl}</div>
     <div class="bd-lgd"><span><i class="s"></i>Spend</span><span><i class="v"></i>Value</span><span><i class="p"></i>Plan</span></div></div>
   </div></div>`;
