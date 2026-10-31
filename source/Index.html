@@ -3381,10 +3381,12 @@ window.addEventListener('load',function(){
     .fc-r3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.fc-r3 div{background:rgba(255,255,255,.12);border-radius:12px;padding:8px}.fc-r3 b{display:block;font-size:15px}.fc-r3 span{font-size:10px;font-weight:700;opacity:.8}
     .bd-wa{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:10px;border:0;border-radius:14px;padding:12px;background:#22c47c;color:#fff;font:inherit;font-weight:900;font-size:14px;cursor:pointer}.bd-wa svg{width:20px;height:20px}.bd-wa:disabled{opacity:.6}
     .rp-report.rp-bud{width:640px;padding:0;background:#14286b;color:#1d2433;font-family:Inter,ui-sans-serif,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
-    .bd-c{width:640px;height:640px;box-sizing:border-box;background:linear-gradient(150deg,#14286b,#2a4fb8);display:flex;flex-direction:column}
-    .bd-hd{color:#fff;padding:16px 18px 12px;display:flex;justify-content:space-between;align-items:center}.bd-hl{display:flex;align-items:center;gap:14px}.bd-hl>img{height:22px;display:block}.bd-hd small{font-size:9.5px;font-weight:900;letter-spacing:.18em;color:#e2b874}.bd-hd b{display:block;font-family:"DM Serif Display",Georgia,serif;font-size:22px;font-weight:400}
+    .bd-c{width:640px;min-height:640px;box-sizing:border-box;background:linear-gradient(150deg,#14286b,#2a4fb8);display:flex;flex-direction:column}
+    .bd-hd{color:#fff;padding:16px 18px 12px;display:flex;justify-content:space-between;align-items:center}.bd-hl{display:flex;align-items:center;gap:14px}.bd-hd small{font-size:9.5px;font-weight:900;letter-spacing:.18em;color:#e2b874}.bd-hd b{display:block;font-family:"DM Serif Display",Georgia,serif;font-size:22px;font-weight:400}
     .bd-tag{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:800;color:#c9d3f5;border:1.5px solid rgba(255,255,255,.22);border-radius:999px;padding:5px 12px}.bd-tag img{height:17px;width:17px;object-fit:contain}.bd-tag i{width:1.5px;height:14px;background:rgba(255,255,255,.35)}
     .bd-g{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto 1fr;gap:10px;padding:2px 14px 14px}.bd-p{background:#fff;border-radius:16px;padding:12px;min-width:0}
+    .bd-wt{margin-top:6px}.bd-wt>div{display:flex;align-items:center;gap:6px;padding:3px 0;border-top:1px solid #eef0f5;font-size:10px;font-weight:800}.bd-wt span{width:14px;flex:none}.bd-wt b{flex:1;text-align:center}.bd-wt b.v{color:#16955c;font-size:11.5px;font-weight:900}
+    .bd-hd .bd-hl{flex-direction:column;align-items:flex-start;gap:8px}.bd-lg{height:22px;display:block}
     .bd-k{font-size:9.5px;font-weight:900;letter-spacing:.14em;color:#6b7385}
     .bd-tot{display:flex;flex-direction:column;gap:7px}.bd-tot>div{border-radius:13px;padding:9px 12px;position:relative;overflow:hidden}.bd-tot .mn{background:#e3f6ea;color:#0e7a4a}.bd-tot .rf{background:#fde8ea;color:#b4232f}.bd-tot small{position:relative;z-index:1;font-size:9.5px;font-weight:800;opacity:.85}.bd-tot b{position:relative;z-index:1;display:block;font-size:20px;font-weight:900;letter-spacing:-.02em}
     .bd-sp{position:absolute;top:0;bottom:0;right:0;width:45%;background-repeat:repeat}.bd-ref{position:absolute;z-index:1;right:9px;bottom:8px;font-style:normal;font-size:8px;font-weight:900;letter-spacing:.1em;background:#fff;border-radius:4px;padding:1px 4px;color:#b4232f}
@@ -8280,9 +8282,10 @@ function budShareHtml(d){
  const goals=[['click','#3d6bff','#e8eeff',kk(p.clicks),'clicks'],['conv','#e0606c','#fde8ea',kk(p.conv),'conversions'],['val','#16955c','#e3f6ea',$k(p.rev),'value']];
  const W=(d.weeks||[]).filter(w=>w.planSpend>0).slice(0,5);
  const wl=w=>{const m=String(w.label).match(/(\d+)\s*[:\-–]\s*(\d+)\s*$/);return m?(+m[1])+'–'+(+m[2]):''};
- const nW=W.length,SH=222;
- const stairs=W.map((w,i)=>`<div class="bd-st"><div class="bd-sl"><div class="v">${ii(IC.val('#16955c'),11)}${$k(w.planRev)}</div><div>${ii(IC.conv('#e0606c'),9)}${kk(w.planConv)}</div><div>${ii(IC.click('#3d6bff'),9)}${kk(w.planClicks)}</div></div>
-  <div class="bd-sb" style="height:${Math.round((SH-62)*(.42+.58*(nW>1?i/(nW-1):1)))}px"><b>W${i+1}</b><small>${esc(wl(w))}</small><span class="m">${$k(w.planSpend)}</span>${pill(x2(w.planSpend?w.planRev/w.planSpend:null),'rgba(255,255,255,.22)','#fff')}</div></div>`).join('');
+ const nW=W.length,SH=150;
+ const bring=w=>[['val','#16955c',$k(w.planRev)],['conv','#e0606c',kk(w.planConv)],['click','#3d6bff',kk(w.planClicks)]];
+ const stairs=`<div class="bd-sts" style="height:${SH}px">${W.map((w,i)=>`<div class="bd-st"><div class="bd-sb" style="height:${Math.round(SH*(.5+.5*(nW>1?i/(nW-1):1)))}px"><b>W${i+1}</b><small>${esc(wl(w))}</small><span class="m">${$k(w.planSpend)}</span>${pill(x2(w.planSpend?w.planRev/w.planSpend:null),'rgba(255,255,255,.22)','#fff')}</div></div>`).join('')}</div>
+  ${`<div class="bd-wt">${[0,1,2].map(r=>`<div><span>${ii(IC[bring(W[0])[r][0]](bring(W[0])[r][1]),11)}</span>${W.map(w=>`<b class="${r?'':'v'}">${bring(w)[r][2]}</b>`).join('')}</div>`).join('')}</div>`}`;
  const PAL=['#203c8e','#3d6bff','#e2b874','#22c47c','#ff9aa3','#6b3fa0'];
  const T=(d.channels||[]).filter(x=>x.budget>0).sort((a,b)=>(b.rev||0)-(a.rev||0)).slice(0,6),mxv=Math.max(1,...T.map(x=>x.rev||0));
  const short=n=>String(n).replace(/^Search\s+/i,'').replace(/Performance Max/i,'PMax').replace(/\s*\(.*\)/,'');
@@ -8292,11 +8295,12 @@ function budShareHtml(d){
  const yb=Y.map(r=>`<div class="bd-yg">${[[r.s,r.pl?'ps':'s'],[r.v,r.pl?'p':'v']].map(([v,c])=>`<div><small>${$k(v)}</small><i class="${c}" style="height:${Math.max(2,(v||0)/ymx*112)}px"></i></div>`).join('')}</div>`).join('');
  const yl=Y.map(r=>`<div class="${r.pl?'pl':''}">${r.y}${pill(x2(r.s?r.v/r.s:null),r.pl?'#e3f6ea':'#eef2fc',r.pl?'#16955c':'#203c8e')}</div>`).join('');
  const mk=mpMark();
- return `<div class="bd-c"><div class="bd-hd"><div class="bd-hl"><img src="${esc(logo)}" alt=""><div><small>THIS MONTH'S BUDGET</small><b>${esc(mon)}</b></div></div><span class="bd-tag">${mk?`<img src="${mk}" alt=""><i></i>`:''}Media Plan ${CURRENT_ACCOUNT==='ar'?'AR':'USA'}</span></div>
+ const tag=`<span class="bd-tag">${mk?`<img src="${mk}" alt=""><i></i>`:''}Media Plan ${CURRENT_ACCOUNT==='ar'?'AR':'USA'}</span>`,ttl=`<div class="bd-tt"><small>THIS MONTH'S BUDGET</small><b>${esc(mon)}</b></div>`,hl=`<img class="bd-lg" src="${esc(logo)}" alt="">`;
+ return `<div class="bd-c"><div class="bd-hd"><div class="bd-hl">${ttl}${tag}</div>${hl}</div>
   <div class="bd-g">
    <div class="bd-p"><div class="bd-tot">${cur.map((c,i)=>`<div class="${i?'rf':'mn'}">${i?`<i class="bd-sp" style="background-image:url(${budStripes()})"></i><em class="bd-ref">REF.</em>`:''}<span class="bd-cu">${c[2]}</span><small>${c[0]}</small><b>${c[1]}</b></div>`).join('')}</div>
     <div class="bd-gl">${goals.map(g=>`<div><div class="bd-gi" style="background:${g[2]}">${ii(IC[g[0]](g[1]),16)}</div><div><b>${g[3]}</b><small>${g[4]}${g[0]==='val'?` · <span class="r">ROAS ${x2(p.roas!=null?p.roas:p.spend?p.rev/p.spend:null)}</span>`:''}</small></div></div>`).join('')}</div></div>
-   <div class="bd-p"><div class="bd-k">WEEK BY WEEK</div><div class="bd-sts" style="height:${SH}px">${stairs}</div></div>
+   <div class="bd-p"><div class="bd-k">WEEK BY WEEK</div>${stairs}</div>
    <div class="bd-p"><div class="bd-k">VALUE EACH TYPE SHOULD BRING</div><div class="bd-bus">${bub}</div></div>
    <div class="bd-p"><div class="bd-k">${esc(String(monthName(key,true)).split(' ')[0].toUpperCase())} BY YEAR · ROAS</div><div class="bd-yr">${yb}</div><div class="bd-yl">${yl}</div></div>
   </div></div>`;
