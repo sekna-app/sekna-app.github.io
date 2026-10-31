@@ -8310,9 +8310,21 @@ function budStripes(){
  [[-18,18,0,0],[0,18,18,0],[18,18,36,0]].forEach(([a,b,x,y])=>{g.beginPath();g.moveTo(a,b);g.lineTo(x,y);g.stroke()});
  return BUD_STRIPES=c.toDataURL('image/png');
 }
+function budCheck(d){
+ const p=d.plan||{},tot=Number(p.spend)||0,out=[];if(!tot)return out;
+ const usd=FX&&FX.rates&&FX.rates.USD>0?FX.rates.USD:null,inUsd=CURRENT_ACCOUNT!=='ar'&&!!usd,M=v=>(inUsd?'$':'£')+fmt((inUsd?v*usd:v),0);
+ const sum=(l,f)=>l.reduce((t,x)=>t+(Number(f(x))||0),0),far=v=>Math.abs(v-tot)>Math.max(1,tot*.01);
+ const W=(d.weeks||[]).filter(w=>w.planSpend>0),T=(d.channels||[]).filter(x=>x.budget>0),ws=sum(W,w=>w.planSpend),ts=sum(T,x=>x.budget);
+ if(W.length&&far(ws))out.push(`The weeks add up to ${M(ws)}, the budget is ${M(tot)}.`);
+ if(T.length&&far(ts))out.push(`The campaign types add up to ${M(ts)}, the budget is ${M(tot)}.`);
+ return out;
+}
 async function budShare(btn){
  const d=(FC[CURRENT_ACCOUNT]||{}).data;if(!d||!d.plan||!labEdit())return;
  if(!canDo('share')){showShareToast('Sharing is turned off for your account.');return}
+ 
+ const off=budCheck(d);
+ if(off.length&&!(await askSekna({title:'The numbers don\'t add up',text:off.join(' ')+' Send the picture anyway?',ok:'Send anyway'})))return;
  btn.disabled=true;const host=document.createElement('div');host.className='rp-report rp-bud';host.setAttribute('data-share-ui','');host.innerHTML=budShareHtml(d);document.body.appendChild(host);
  try{
   await Promise.all([...host.querySelectorAll('img')].map(i=>i.complete?0:new Promise(r=>{i.onload=i.onerror=r})));
