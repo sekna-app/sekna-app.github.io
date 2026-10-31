@@ -3383,8 +3383,8 @@ window.addEventListener('load',function(){
     .rp-report.rp-bud{width:420px;padding:0;background:#e9edf4;color:#1d2433;font-family:Inter,ui-sans-serif,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
     .bd-c{background:#fff;overflow:hidden}.bd-hd{background:linear-gradient(135deg,#14286b,#2a4fb8);color:#fff;padding:18px 20px;display:flex;justify-content:space-between;align-items:flex-start}.bd-hd small{font-size:10.5px;font-weight:900;letter-spacing:.18em;opacity:.8}.bd-hd b{display:block;font-family:"DM Serif Display",Georgia,serif;font-size:26px;font-weight:400;margin-top:6px}.bd-hd em{display:block;font-style:normal;font-size:11px;font-weight:800;opacity:.85;margin-top:4px}.bd-hd img{height:28px;display:block}
     .bd-pd{padding:16px 20px}.bd-sep{height:1px;background:#eef0f5;margin:0 20px}.bd-k{font-size:10.5px;font-weight:900;letter-spacing:.16em;color:#6b7385}
-    .bd-tot{display:flex;gap:10px}.bd-tot>div{flex:1;border-radius:16px;padding:12px 14px;position:relative}.bd-tot small{font-size:11px;font-weight:800;opacity:.75}.bd-tot b{display:block;font-size:23px;font-weight:900;letter-spacing:-.02em}
-    .bd-cu{position:absolute;right:10px;top:10px;display:grid;place-items:center;width:26px;height:22px;border-radius:7px;background:#fff;font-size:13px;font-weight:900;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+    .bd-tot{display:flex;gap:10px}.bd-tot>div{flex:1;border-radius:16px;padding:12px 14px;position:relative;overflow:hidden}.bd-tot .mn{background:#e3f6ea;color:#0e7a4a}.bd-tot .rf{background:#fde8ea;color:#b4232f}.bd-tot small,.bd-tot b,.bd-cu,.bd-ref{position:relative;z-index:1}.bd-sp{position:absolute;top:0;bottom:0;right:0;width:45%;background-repeat:repeat}.bd-ref{position:absolute;right:12px;bottom:10px;font-style:normal;font-size:9px;font-weight:900;letter-spacing:.1em;background:#fff;border-radius:5px;padding:1px 5px;color:#b4232f}.bd-tot .rf .bd-cu{position:absolute}.bd-tot small{font-size:11px;font-weight:800;opacity:.75}.bd-tot b{display:block;font-size:23px;font-weight:900;letter-spacing:-.02em}
+    .bd-cu{position:absolute!important;right:10px;top:10px;display:grid;place-items:center;width:26px;height:22px;border-radius:7px;background:#fff;font-size:13px;font-weight:900;box-shadow:0 2px 6px rgba(0,0,0,.08)}
     .bd-gl{display:flex;gap:8px;margin-top:12px}.bd-gl>div{flex:1;background:#f6f7fb;border-radius:14px;padding:10px 6px;text-align:center}.bd-gl b{display:block;font-size:17px;font-weight:900;margin-top:4px}.bd-gl small{font-size:10px;font-weight:800;color:#6b7385}.bd-gl>div>div{margin-top:4px}
     .bd-gi{display:block;width:34px;height:34px;margin:0 auto;border-radius:50%;line-height:34px;text-align:center}.bd-ii{display:inline-block;vertical-align:-2px;margin-right:3px;font-style:normal}.bd-gi .bd-ii{margin:0;vertical-align:middle}.bd-ii svg{width:100%;height:100%;display:block}
     .bd-pl{display:inline-block;border-radius:999px;padding:2px 7px;font-size:10px;font-weight:900;line-height:1.4}
@@ -8258,7 +8258,7 @@ function fcDraw(){
 // dollars and pounds, what the plan should bring (clicks, conversions, value and ROAS), the weeks as stairs
 // with what each brings, the value each campaign type should bring, and this month in past years.
 function budShareHtml(d){
- const p=d.plan||{},usd=FX&&FX.rates&&FX.rates.USD>0?FX.rates.USD:null,U=v=>v==null?null:usd?v*usd:v,S=usd?'$':'£';
+ const p=d.plan||{},usd=FX&&FX.rates&&FX.rates.USD>0?FX.rates.USD:null,inUsd=CURRENT_ACCOUNT!=='ar'&&!!usd,U=v=>v==null?null:inUsd?v*usd:v,S=inUsd?'$':'£';
  const kk=n=>n==null?'—':Math.abs(n)>=1e3?(n/1e3).toFixed(Math.abs(n)>=1e4?0:1).replace(/\.0$/,'')+'k':String(Math.round(n)),$k=n=>n==null?'—':S+kk(U(n)),x2=n=>n!=null&&isFinite(n)?fmt(n,2)+'x':'—';
  const IC={click:c=>`<svg viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3v2M4.6 4.6l1.4 1.4M3 9h2"/><path d="M9.5 9.5l10 3.6-4.3 1.6-1.6 4.3z"/></svg>`,
   conv:c=>`<svg viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.8"/><circle cx="12" cy="12" r="1.2" fill="${c}"/></svg>`,
@@ -8266,7 +8266,9 @@ function budShareHtml(d){
  const ii=(svg,sz)=>`<i class="bd-ii" style="width:${sz}px;height:${sz}px">${svg}</i>`,pill=(t,bg,c)=>`<span class="bd-pl" style="background:${bg};color:${c}">${esc(t)}</span>`;
  const mon=String(d.month||''),key=fcMonthKey(d),acc='Human Appeal '+(CURRENT_ACCOUNT==='ar'?'AR':'USA');
  const logo=document.querySelector('img[src*="mail-logo"]')?.src||'icons/mail-logo.png';
- const cur=[['US DOLLARS',usd?'$'+fmt(U(p.spend),0):'—','#eef2fc','#203c8e','$'],['BRITISH POUNDS','£'+fmt(p.spend,0),'#fdf3df','#8a5a12','£']];
+ // The account's own currency first, in green; the other one for reference only, faded red with stripes.
+ const usdC=['US DOLLARS',usd?'$'+fmt(p.spend*usd,0):'—','$'],gbpC=['BRITISH POUNDS','£'+fmt(p.spend,0),'£'];
+ const cur=CURRENT_ACCOUNT==='ar'?[gbpC,usdC]:[usdC,gbpC];
  const goals=[['click','#3d6bff','#e8eeff',kk(p.clicks),'clicks'],['conv','#e0606c','#fde8ea',kk(p.conv),'conversions'],['val','#16955c','#e3f6ea',$k(p.rev),'value']];
  const W=(d.weeks||[]).filter(w=>w.planSpend>0).slice(0,5);
  const wl=w=>{const m=String(w.label).match(/(\d+)\s*[:\-–]\s*(\d+)\s*$/);return m?(+m[1])+'–'+(+m[2]):''};
@@ -8281,12 +8283,19 @@ function budShareHtml(d){
  const yb=Y.map(r=>`<div class="bd-yg">${[[r.s,r.pl?'ps':'s'],[r.v,r.pl?'p':'v']].map(([v,c])=>`<div><small>${$k(v)}</small><i class="${c}" style="height:${Math.max(2,(v||0)/ymx*100)}px"></i></div>`).join('')}</div>`).join('');
  const yl=Y.map(r=>`<div class="${r.pl?'pl':''}">${r.y}<small>${r.t}</small>${pill(x2(r.s?r.v/r.s:null),r.pl?'#e3f6ea':'#eef2fc',r.pl?'#16955c':'#203c8e')}</div>`).join('');
  return `<div class="bd-c"><div class="bd-hd"><div><small>THIS MONTH'S BUDGET</small><b>${esc(mon)}</b><em>${esc(acc)}</em></div><img src="${esc(logo)}" alt=""></div>
-  <div class="bd-pd"><div class="bd-tot">${cur.map(c=>`<div style="background:${c[2]};color:${c[3]}"><span class="bd-cu" style="color:${c[3]}">${c[4]}</span><small>${c[0]}</small><b>${c[1]}</b></div>`).join('')}</div>
+  <div class="bd-pd"><div class="bd-tot">${cur.map((c,i)=>`<div class="${i?'rf':'mn'}">${i?`<i class="bd-sp" style="background-image:url(${budStripes()})"></i><em class="bd-ref">REF.</em>`:''}<span class="bd-cu">${c[2]}</span><small>${c[0]}</small><b>${c[1]}</b></div>`).join('')}</div>
    <div class="bd-gl">${goals.map(g=>`<div><div class="bd-gi" style="background:${g[2]}">${ii(IC[g[0]](g[1]),19)}</div><b>${g[3]}</b><small>${g[4]}</small>${g[0]==='val'?`<div>${pill('ROAS '+x2(p.roas!=null?p.roas:p.spend?p.rev/p.spend:null),'#16955c','#fff')}</div>`:''}</div>`).join('')}</div></div>
   ${W.length?`<div class="bd-sep"></div><div class="bd-pd"><div class="bd-k">WEEK BY WEEK · SPEND → WHAT IT BRINGS</div><div class="bd-sts">${stairs}</div></div>`:''}
   ${T.length?`<div class="bd-sep"></div><div class="bd-pd"><div class="bd-k">VALUE EACH TYPE SHOULD BRING</div><div class="bd-bus">${bub}</div></div>`:''}
   ${Y.length>1?`<div class="bd-sep"></div><div class="bd-pd"><div class="bd-k">${esc(String(monthName(key,true)).split(' ')[0].toUpperCase())} · SPEND & REVENUE BY YEAR · ROAS</div><div class="bd-yr">${yb}</div><div class="bd-yl">${yl}</div></div>`:''}
   <div class="bd-ft"><span>HEMERA · Media Plan</span><span>${esc(acc)}</span></div></div>`;
+}
+let BUD_STRIPES='';
+function budStripes(){
+ if(BUD_STRIPES)return BUD_STRIPES;
+ const c=document.createElement('canvas');c.width=c.height=18;const g=c.getContext('2d');g.strokeStyle='rgba(224,96,108,.42)';g.lineWidth=2.4;
+ [[-18,18,0,0],[0,18,18,0],[18,18,36,0]].forEach(([a,b,x,y])=>{g.beginPath();g.moveTo(a,b);g.lineTo(x,y);g.stroke()});
+ return BUD_STRIPES=c.toDataURL('image/png');
 }
 async function budShare(btn){
  const d=(FC[CURRENT_ACCOUNT]||{}).data;if(!d||!d.plan)return;
@@ -8296,8 +8305,10 @@ async function budShare(btn){
   await Promise.all([...host.querySelectorAll('img')].map(i=>i.complete?0:new Promise(r=>{i.onload=i.onerror=r})));
   await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
   const h2c=await ensureHtml2Canvas(),canvas=await h2c(host,{backgroundColor:'#e9edf4',scale:2.6,useCORS:true,allowTaint:true,logging:false,scrollX:0,scrollY:0,windowWidth:1800,windowHeight:2400});
-  const p=d.plan,usd=FX&&FX.rates&&FX.rates.USD>0?FX.rates.USD:null;
-  const cap=withMentions(`📊 ${d.month||''} budget · Human Appeal ${CURRENT_ACCOUNT==='ar'?'AR':'USA'}\n${usd?'$'+fmt(p.spend*usd,0)+' · ':''}£${fmt(p.spend,0)}`);
+  // 📌 Oct 26 · HA USA 💰 $245K — the account's own currency (pounds for AR).
+  const p=d.plan,usd=FX&&FX.rates&&FX.rates.USD>0?FX.rates.USD:null,ar=CURRENT_ACCOUNT==='ar'||!usd,key=fcMonthKey(d);
+  const mo=key?new Date(Date.UTC(+key.slice(0,4),+key.slice(5)-1,15)).toLocaleDateString('en-GB',{month:'short',timeZone:'UTC'})+' '+key.slice(2,4):String(d.month||'');
+  const cap=withMentions(`📌 ${mo} · HA ${CURRENT_ACCOUNT==='ar'?'AR':'USA'} 💰 ${ar?'£':'$'}${fmt(Math.round((ar?p.spend:p.spend*usd)/1000),0)}K`);
   const filename=`HEMERA-Budget-${CURRENT_ACCOUNT==='ar'?'AR':'USA'}-${String(d.month||'').replace(/\s+/g,'-')}.png`;
   logShareQuiet('budget');copyTextQuietly(cap);
   if(window.AndroidShare&&typeof window.AndroidShare.shareImage==='function'){window.AndroidShare.shareImage(canvas.toDataURL('image/png'),cap,filename);return}
