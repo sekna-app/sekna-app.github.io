@@ -3925,6 +3925,8 @@ window.addEventListener('load',function(){
     .stx-sp{width:100%;max-width:340px;margin-top:22px}.stx-spd{width:100%;max-width:340px;display:flex;justify-content:space-between;font-size:11px;font-weight:800;opacity:.75}.stx-spd .on{opacity:1;color:#fff;text-decoration:underline;text-underline-offset:3px}
     .stx-fl{font-size:74px;line-height:1}.stx-fn{display:block;font-size:88px;font-weight:900;line-height:1;margin:6px 0 8px}
     .stx-tk{display:flex;gap:6px;margin-top:22px;justify-content:center}.stx-tk span{width:36px;height:36px;border-radius:50%;background:#fff;color:#c2410c;display:grid;place-items:center;font-weight:900;font-size:16px}.stx-tk small{display:block;font-size:10.5px;font-weight:800;margin-top:4px;opacity:.88}
+    .stx-pv{display:flex;align-items:center;gap:10px;margin-top:18px;width:100%;max-width:340px}.stx-pv>div{flex:1;background:rgba(255,255,255,.14);border-radius:18px;padding:14px 8px}.stx-pv>div.on{background:#fff;color:#b4232f}.stx-pv small{font-size:10.5px;font-weight:900;letter-spacing:.12em;opacity:.85}.stx-pv b{display:block;font-size:26px;font-weight:900}.stx-pv>span{font-size:22px;font-weight:900}
+    .stx-pb{display:block;font-size:56px;font-weight:900;margin-top:14px;line-height:1}.stx-po{font-size:12.5px;font-weight:800;opacity:.88}.stx-pk{display:block;font-size:10.5px;opacity:.7;font-weight:700;margin-top:4px}
     .stx-bot{display:flex;align-items:center;gap:6px;padding:10px 10px calc(12px + env(safe-area-inset-bottom));transition:opacity .2s}
     .stx-cm{flex:1;position:relative;margin:0}.stx-cm input{width:100%;height:46px;border-radius:23px;border:1px solid rgba(255,255,255,.55);background:transparent;color:#fff;padding:0 18px;font:inherit;font-size:15px;outline:0}.stx-cm input::placeholder{color:rgba(255,255,255,.85)}
     .stx-ok{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:800;color:#7ff0bf;opacity:0;transition:opacity .2s;pointer-events:none}.stx-cm.sent .stx-ok{opacity:1}
@@ -6832,7 +6834,12 @@ let STX=null, STX_PENDING='';
 function stxSeenKey(acc,date){return 'sekna_story_'+acc+'_'+(date||'')}
 function stxAlerts(d){
  const x=d&&d.latest,out=[];if(!x)return out;
- if(x.targetSpend&&x.spendAchievement!=null&&spendAlertPct()&&x.spendAchievement*100>=spendAlertPct())out.push({t:'alert',k:'⚠️ SPEND ALERT',big:Math.round(x.spendAchievement*100)+'%',p:`Spend is ${Math.round(x.spendAchievement*100)}% of the day's plan: ${money(x.spend)} against ${money(x.targetSpend)}.`,go:'overview'});
+ if(x.targetSpend&&x.spendAchievement!=null&&spendAlertPct()&&x.spendAchievement*100>=spendAlertPct()){
+  
+  const rows=((d.dayPlan)||[]).filter(r=>r.actual&&Number(r.actual.spend)>0&&r.date<x.date).sort((a,b)=>a.date<b.date?-1:1).slice(-6);
+  out.push({t:'spend',k:'⚠️ SPEND ALERT · TODAY',big:Math.round(x.spendAchievement*100)+'%',plan:x.targetSpend,spent:x.spend,
+   pts:rows.map(r=>({d:r.date,v:Number(r.actual.spend),p:Number(r.plan&&r.plan.spend)||null})).concat([{d:x.date,v:x.spend,p:x.targetSpend}])});
+ }
  try{const r=roasDropOf(d);if(r&&roasAlertPct()&&r.drop*100>=roasAlertPct())out.push({t:'drop',k:'📉 ROAS DROP',big:fmt(r.today,2)+'x',p:`${fmt(r.today,2)}x today, ${Math.round(r.drop*100)}% under the 7-day average of ${fmt(r.avg,2)}x.`,
    pts:r.before.map(b=>({d:b.date,v:Number(b.actual.value)/Number(b.actual.spend)})).concat([{d:r.x.date,v:r.today}])})}catch(e){}
  return out;
@@ -6874,6 +6881,16 @@ function stxDropHtml(s,acc,ago){
  return `<div class="stx-nfs"><i></i><i></i><div class="stx-nf"><div class="t"><span class="ic">H</span>HEMERA<em>${esc(ago?ago+' ago':'now')}</em></div><b>📉 ROAS drop · ${acc}</b><p>${esc(s.p)}</p></div></div>
   <svg class="stx-sp" viewBox="-8 0 ${w+16} ${h}"><polyline points="${P.map(p=>p.map(n=>n.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>${P.map((p,i)=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${i===L?6:3.5}" fill="${i===L?'#fff':'rgba(255,255,255,.75)'}"${i===L?' stroke="#ff3040" stroke-width="3"':''}/>`).join('')}</svg>
   <div class="stx-spd">${s.pts.map((p,i)=>`<span${i===L?' class="on"':''}>${esc(stxWd(p.d))}</span>`).join('')}</div>`;
+}
+function stxSpendHtml(s){
+ const v=s.pts.map(p=>p.v),pl=s.pts.map(p=>p.p),mx=Math.max(1,...v,...pl.filter(Boolean))*1.1,w=260,h=70,L=s.pts.length-1;
+ const X=i=>i*w/Math.max(1,L),Y=y=>(h-8-(y/mx)*(h-16)).toFixed(1),over=s.spent-s.plan;
+ const plan=pl.every(Boolean)?`<polyline points="${pl.map((y,i)=>X(i).toFixed(1)+','+Y(y)).join(' ')}" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="1.6" stroke-dasharray="4 4"/>`:'';
+ return `<div class="stx-k">${esc(s.k)}</div>
+  <div class="stx-pv"><div><small>PLAN</small><b>${money(s.plan)}</b></div><span>→</span><div class="on"><small>SPENT</small><b>${money(s.spent)}</b></div></div>
+  <b class="stx-pb">${esc(s.big)}</b><small class="stx-po">${over>=0?'+':'−'}${money(Math.abs(over))} ${over>=0?'over':'under'} the day's plan</small>
+  ${L>0?`<svg class="stx-sp" viewBox="-8 0 ${w+16} ${h}">${plan}<polyline points="${v.map((y,i)=>X(i).toFixed(1)+','+Y(y)).join(' ')}" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>${v.map((y,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(y)}" r="${i===L?6:3.2}" fill="#fff"${i===L?' stroke="#ff3040" stroke-width="3"':''}/>`).join('')}</svg>
+  <div class="stx-spd">${s.pts.map((p,i)=>`<span${i===L?' class="on"':''}>${esc(stxWd(p.d))}</span>`).join('')}</div>${plan?`<small class="stx-pk">- - - each day's plan</small>`:''}`:''}`;
 }
 function stxStreakHtml(s){
  return `<div class="stx-fl">🔥</div><b class="stx-fn">${esc(s.big)}</b><div class="stx-k">${esc(s.k)}</div><div class="stx-tk">${s.days.map(d=>`<div><span>✓</span><small>${esc(stxWd(d))}</small></div>`).join('')}</div><p class="stx-p">${esc(s.p)}</p>`;
@@ -7009,12 +7026,13 @@ function stxShow(){
  const body=s.t==='thanks'?stxThanksHtml(s)
   :s.t==='drop'?stxDropHtml(s,G.k==='ar'?'AR':'USA',stxAgo(d))
   :s.t==='streak'?stxStreakHtml(s)
+  :s.t==='spend'?stxSpendHtml(s)
   :s.t==='bars'?`<div class="stx-k">${esc(s.k)}</div><b class="stx-big">${esc(s.big)}</b>${s.bars.map(b=>`<div class="stx-bar"><div><span>${esc(b.n)}</span><b>${b.v==null?'—':Math.round(b.v*100)+'%'}</b></div><i><u style="width:${Math.max(0,Math.min(1,b.v||0))*100}%;background:${b.c}"></u></i><small>${esc(b.p)}</small></div>`).join('')}`
   :s.t==='top'?`<div class="stx-k">${esc(s.k)}</div><div class="stx-md">${s.top.map((c,i)=>`<div><span>${['🥇','🥈','🥉'][i]}</span><p><b>${esc(c.n)}</b><i><u style="width:${Math.round(c.r/s.top[0].r*100)}%"></u></i><small>${money(c.v)} of value</small></p><em>${fmt(c.r,2)}x</em></div>`).join('')}</div>`
   :s.t==='ring'?`<div class="stx-k">${esc(s.k)}</div>${ring}<p class="stx-p">${esc(s.p)}</p>`
   :s.t==='card'?`<div class="stx-card"><div class="e">${s.e}</div><small>${esc(s.k)}</small><b>${esc(s.big)}</b><p>${esc(s.p)}</p></div>`
   :`<div class="stx-k">${esc(s.k)}</div><b class="stx-big">${esc(s.big)}</b><p class="stx-p">${esc(s.p)}</p>`;
- const bg=s.bg?s.bg:s.t==='alert'||s.t==='drop'?'linear-gradient(170deg,#e0606c,#8f2330)':'radial-gradient(circle at 50% 30%,#3456c4,#1c3384 60%,#0f1d4a)';
+ const bg=s.bg?s.bg:s.t==='alert'||s.t==='drop'||s.t==='spend'?'linear-gradient(170deg,#e0606c,#8f2330)':'radial-gradient(circle at 50% 30%,#3456c4,#1c3384 60%,#0f1d4a)';
  const logo=document.querySelector('.logo img')?.src||'',ago=stxAgo(d),liked=storeGet(stxLikeKey())==='1';
  const plane='<svg viewBox="0 0 24 24"><path d="M22 3L9.2 10.9M22 3l-7.4 18-3.2-8.3L3 9.6 22 3z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/></svg>';
  const heart='<svg viewBox="0 0 24 24"><path d="M12 20.3s-7.6-4.6-9.3-9.1C1.5 7.9 3.6 4.6 7 4.6c2 0 3.4 1.1 5 3 1.6-1.9 3-3 5-3 3.4 0 5.5 3.3 4.3 6.6-1.7 4.5-9.3 9.1-9.3 9.1z" stroke-width="1.9" stroke-linejoin="round"/></svg>';
