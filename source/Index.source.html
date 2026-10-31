@@ -8305,10 +8305,11 @@ async function budShare(btn){
   await Promise.all([...host.querySelectorAll('img')].map(i=>i.complete?0:new Promise(r=>{i.onload=i.onerror=r})));
   await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
   const h2c=await ensureHtml2Canvas(),canvas=await h2c(host,{backgroundColor:'#e9edf4',scale:2.6,useCORS:true,allowTaint:true,logging:false,scrollX:0,scrollY:0,windowWidth:1800,windowHeight:2400});
-  // 📌 Oct 26 · HA USA 💰 $245K — the account's own currency (pounds for AR).
+  // 📌 Oct 26 · HA USA, then spend, conversions, value and ROAS a line each — the account's own currency (pounds for AR).
   const p=d.plan,usd=FX&&FX.rates&&FX.rates.USD>0?FX.rates.USD:null,ar=CURRENT_ACCOUNT==='ar'||!usd,key=fcMonthKey(d);
   const mo=key?new Date(Date.UTC(+key.slice(0,4),+key.slice(5)-1,15)).toLocaleDateString('en-GB',{month:'short',timeZone:'UTC'})+' '+key.slice(2,4):String(d.month||'');
-  const cap=withMentions(`📌 ${mo} · HA ${CURRENT_ACCOUNT==='ar'?'AR':'USA'} 💰 ${ar?'£':'$'}${fmt(Math.round((ar?p.spend:p.spend*usd)/1000),0)}K`);
+  const K=v=>(ar?'£':'$')+fmt(Math.round((ar?v:v*usd)/1000),0)+'K',ro=p.roas!=null?p.roas:p.spend?p.rev/p.spend:null;
+  const cap=withMentions(`📌 ${mo} · HA ${CURRENT_ACCOUNT==='ar'?'AR':'USA'}\n💰 ${K(p.spend)}\n🎯 ${fmt(p.conv,0)} Conv\n💵 ${K(p.rev)} Value\n📈 ${ro!=null?fmt(ro,2)+'x':'—'} ROAS`);
   const filename=`HEMERA-Budget-${CURRENT_ACCOUNT==='ar'?'AR':'USA'}-${String(d.month||'').replace(/\s+/g,'-')}.png`;
   logShareQuiet('budget');copyTextQuietly(cap);
   if(window.AndroidShare&&typeof window.AndroidShare.shareImage==='function'){window.AndroidShare.shareImage(canvas.toDataURL('image/png'),cap,filename);return}
