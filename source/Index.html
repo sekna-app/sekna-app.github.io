@@ -1694,6 +1694,18 @@ window.addEventListener('load',function(){
     .sk-code input:focus{border-color:#203c8e;background:#fff;box-shadow:0 0 0 4px rgba(32,60,142,.12)}
     .sk-code input.filled{background:#eef2fd;border-color:#c9d4f3;transform:translateY(-1px)}
     .sk-code.shake{animation:skShake .45s ease}
+    /* The code goes in: the six boxes fly into a gold box in the middle, a ring runs round it while the code is checked, then it turns green with a tick. */
+    .sk-code{position:relative}.sk-code input{transition:border-color .15s ease,transform .45s cubic-bezier(.55,-.25,.35,1.15),background .15s ease,opacity .35s ease}
+    .sk-otp{position:absolute;left:50%;top:50%;width:52px;height:60px;margin:-30px 0 0 -26px;border-radius:14px;background:linear-gradient(160deg,#f2c86a,#c89434);box-shadow:0 8px 22px rgba(200,148,52,.4);
+      display:grid;place-items:center;transform:scale(0);transition:transform .35s cubic-bezier(.2,.9,.3,1.4),background .35s,box-shadow .35s;z-index:2;pointer-events:none}
+    .sk-code.deck .sk-otp{transform:scale(1)}.sk-code.gulp .sk-otp{animation:skGulp .22s ease}
+    @keyframes skGulp{50%{transform:scale(1.12)}}
+    .sk-otp::before{content:"";position:absolute;inset:-6px;border-radius:18px;padding:3px;opacity:0;transition:opacity .3s;background:conic-gradient(from var(--otp-a),transparent 0 60%,#e2b874 80%,#fff3d6 90%,transparent);
+      -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:skOtpSpin 1s linear infinite}
+    @property --otp-a{syntax:'<angle>';inherits:false;initial-value:0deg}@keyframes skOtpSpin{to{--otp-a:360deg}}
+    .sk-code.check .sk-otp::before{opacity:1}
+    .sk-otp svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:30;stroke-dashoffset:30;transition:stroke-dashoffset .4s .2s}
+    .sk-code.ok .sk-otp{background:linear-gradient(160deg,#2fd68b,#16955c);box-shadow:0 0 0 6px rgba(34,196,124,.18),0 0 30px rgba(34,196,124,.5)}.sk-code.ok .sk-otp svg{stroke-dashoffset:0}
     @keyframes skShake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
     .sk-gate-links{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 18px;margin-top:14px}
     .sk-link{border:0;background:none;padding:4px 2px;color:#203c8e;font-family:inherit;font-size:11.5px;font-weight:700;cursor:pointer}
@@ -5497,6 +5509,7 @@ window.addEventListener('load',function(){
       <p class="sk-gate-sub">We sent a 6-digit code to <b id="gateEmailEcho"></b></p>
       <form onsubmit="gateVerify(event)" novalidate>
         <div class="sk-code" id="gateCode">
+          <i class="sk-otp" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>
           <input inputmode="numeric" autocomplete="one-time-code" aria-label="Digit 1"><input inputmode="numeric" aria-label="Digit 2"><input inputmode="numeric" aria-label="Digit 3"><input inputmode="numeric" aria-label="Digit 4"><input inputmode="numeric" aria-label="Digit 5"><input inputmode="numeric" aria-label="Digit 6">
         </div>
         <button class="sk-gate-btn" id="gateVerifyBtn" type="submit"><span>Verify &amp; request access</span></button>
@@ -10306,6 +10319,17 @@ function initCodeInputs(){
    });
  });
 }
+
+async function otpDeck(){
+ const box=document.getElementById('gateCode');if(!box)return;const r=box.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,ins=codeInputs();
+ box.classList.add('deck');await new Promise(r=>setTimeout(r,280));
+ const order=ins.map((_,i)=>i).sort((a,b)=>Math.abs(b-(ins.length-1)/2)-Math.abs(a-(ins.length-1)/2));
+ for(const i of order){const el=ins[i],q=el.getBoundingClientRect();el.style.transform=`translate(${cx-(q.left+q.width/2)}px,${cy-(q.top+q.height/2)}px) scale(.45)`;el.style.opacity='0';
+   setTimeout(()=>{box.classList.remove('gulp');void box.offsetWidth;box.classList.add('gulp')},380);await new Promise(r=>setTimeout(r,90))}
+ await new Promise(r=>setTimeout(r,420));box.classList.add('check');
+}
+function otpReset(){const box=document.getElementById('gateCode');if(!box)return;box.classList.remove('deck','check','ok','gulp');codeInputs().forEach(el=>{el.style.transform='';el.style.opacity=''})}
+async function otpOk(){const box=document.getElementById('gateCode');if(!box)return;box.classList.remove('check');box.classList.add('ok');await new Promise(r=>setTimeout(r,900))}
 async function gateVerify(ev){
  if(ev)ev.preventDefault();
  if(GATE_VERIFYING)return;
@@ -10316,12 +10340,17 @@ async function gateVerify(ev){
  setGateBusy(btn,true);setGateError('');
  try{
    GATE_LAST_CODE=code;
-   const res=await serverCall('accessVerifyCode',GATE_EMAIL,code,deviceLabel(),getDeviceId());
+   const ask=serverCall('accessVerifyCode',GATE_EMAIL,code,deviceLabel(),getDeviceId());ask.catch(()=>{});
+   const h=document.querySelector('[data-step="code"] h1'),was=h&&h.textContent;
+   await otpDeck();if(h)h.textContent='Checking your code';
+   let res;try{res=await ask}finally{if(h)h.textContent=was}
+   if(h)h.textContent='Verified';await otpOk();if(h)h.textContent=was;otpReset();clearCodeInputs();
    storeSet(ACCESS_TOKEN_KEY,res.token);storeSet(ACCESS_NAME_KEY,res.name||'');
    setGateName(res.name);
    if(res.status==='Approved')gateApproved();else gateShow('pending');
  }catch(err){
    GATE_LAST_CODE='';
+   otpReset();clearCodeInputs();setTimeout(()=>{const f=codeInputs()[0];if(f)f.focus()},50);
    setGateError(errorText(err));
    const box=document.getElementById('gateCode');
    box.classList.remove('shake');void box.offsetWidth;box.classList.add('shake');
