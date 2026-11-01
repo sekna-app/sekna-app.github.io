@@ -3400,6 +3400,9 @@ window.addEventListener('load',function(){
     .bd-yr i.s,.bd-lgd i.s{background:#c9d3f5}.bd-yr i.v,.bd-lgd i.v{background:#3d6bff}.bd-yr i.p,.bd-lgd i.p{background:#22c47c}
     .bd-yl{display:flex;gap:8px;margin-top:3px}.bd-yl div{flex:1;text-align:center;font-size:10.5px;font-weight:900}.bd-yl .pl{color:#16955c}.bd-yl small{display:block;font-size:9px;color:#8a92a0;font-weight:800}
     .bd-lgd{display:flex;gap:10px;margin-top:6px;font-size:9px;font-weight:800;color:#8a92a0}.bd-lgd i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:3px}
+    .as-mx{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid #eef0f5;font-size:13px;font-weight:800}.as-mx:first-child{border-top:0}.as-mx span{flex:1}.as-mx small{font-size:10.5px;font-weight:800;color:#8a92a6;background:#f1f4fa;border-radius:999px;padding:2px 8px}.as-mx.tot{border-top:1.5px solid #d5dbe6}.as-mx b.dn{color:#c0392b}
+    .as-mi{display:flex;align-items:center;border:1.5px solid #d5dbe6;border-radius:10px;padding:0 8px;background:#fff}.as-mi.ch{border-color:#203c8e;background:#eef2fc}.as-mi input{width:54px;border:0;background:none;font:inherit;font-weight:900;text-align:right;padding:6px 2px;outline:0;color:#1d2433}.as-mi em{font-style:normal;color:#8a92a6}
+    body.dark-mode .as-mi{background:#11161e;border-color:#2a313c}body.dark-mode .as-mi input{color:#e9eef7}body.dark-mode .as-mx{border-color:#252a32}
     .fc-kv{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px}.fc-kv div{background:#f6f8fc;border-radius:12px;padding:8px 4px;text-align:center}.fc-kv b{display:block;font-size:13.5px}.fc-kv span{font-size:9.5px;font-weight:800;color:#8a92a6}
     .fc-l{font-size:10px;font-weight:900;letter-spacing:.12em;color:#8a92a6;margin:16px 4px 7px;display:flex;justify-content:space-between}.fc-l em{font-style:normal;color:#203c8e;letter-spacing:0;font-size:11px}
     .fc-card{background:#fff;border:1px solid #edf0f6;border-radius:16px;padding:10px 13px}
@@ -8177,7 +8180,7 @@ function fcLoad(force){
  serverCall('getForecast',k,!!force,getAccessToken()).then(r=>{c.busy=false;c.data=r;c.got=Date.now();fcDraw()})
   .catch(err=>{c.busy=false;c.err=errorText(err);fcDraw()});
 }
-function fcSet(k,v){const c=FC[CURRENT_ACCOUNT];if(!c)return;c.edit=c.edit||{};c.edit[k]=v===''?'':Number(v);c.msg='';fcDraw()}
+function fcSet(k,v){const c=FC[CURRENT_ACCOUNT];if(!c)return;c.edit=c.edit||{};c.edit[k]=v===''?'':Number(v);c.msg='';setTimeout(fcDraw,0)}
 function fcUndo(){const c=FC[CURRENT_ACCOUNT];if(!c)return;c.edit={};c.msg='';fcDraw()}
 
 function fcSave(btn){
@@ -8424,12 +8427,12 @@ function asLoad(force){
 }
 function asTab(t){AS.tab=t;fcDraw()}
 function asHj(i){const c=AS[CURRENT_ACCOUNT];if(c){c.hj=i;fcDraw()}}
-function asSet(row,key,v){const c=AS[CURRENT_ACCOUNT];if(!c)return;c.edit=c.edit||{};const k=row+':'+key;if(v==='')delete c.edit[k];else c.edit[k]=Number(v);c.msg='';fcDraw()}
+function asSet(row,key,v){const c=AS[CURRENT_ACCOUNT];if(!c)return;c.edit=c.edit||{};const k=row+':'+key;if(v==='')delete c.edit[k];else c.edit[k]=Number(v);c.msg='';setTimeout(fcDraw,0)}
 function asUndo(){const c=AS[CURRENT_ACCOUNT];if(c){c.edit={};c.msg='';fcDraw()}}
 function asSave(){
  if(!labEdit())return;
  const k=CURRENT_ACCOUNT,c=AS[k];if(!c||c.saving)return;
- const edits=Object.keys(c.edit||{}).map(x=>{const [row,key]=x.split(':');return {row:+row,key,value:c.edit[x]}});if(!edits.length)return;
+ const edits=Object.keys(c.edit||{}).map(x=>{const [row,key]=x.split(':');return {row:+row,key,value:key==='mix'?c.edit[x]/100:c.edit[x]}});if(!edits.length)return;
  c.saving=true;c.msg='';fcDraw();
  serverCall('assumeSet',k,edits,getAccessToken()).then(r=>{c.saving=false;c.data=r;c.edit={};c.msg='✅ Saved to the sheet. The plan is worked out again.';if(FC[k])FC[k].data=null;fcDraw()})
   .catch(err=>{c.saving=false;c.msg='⚠️ '+esc(errorText(err));fcDraw()});
@@ -8454,7 +8457,7 @@ function asHtml(){
    body=`<div class="fc-l">CHANNEL ECONOMICS <em>last ${(((FC[CURRENT_ACCOUNT]||{}).data||{}).settings||{}).window||60} days</em></div><div class="fc-card">${(d.economics||[]).map(r=>`<div class="as-eco"><div><i class="fc-dot" style="background:${CHC[r.name.toLowerCase()]||'#d33b4f'}"></i><b>${esc(r.name)}</b><em>${pc(r.mix)}</em></div>
      <div class="as-chips"><span>CPC <b>${mo(r.cpc,2)}</b></span><span>CVR <b>${pc(r.cvr)}</b></span><span>AOV <b>${mo(r.aov)}</b></span><span>ROAS <b>${r.roas!=null?fmt(r.roas,1)+'x':'—'}</b></span><span>CPA <b>${mo(r.cpa)}</b></span></div></div>`).join('')}
      ${bl?`<div class="as-bl">Blended · ROAS <b>${bl.roas!=null?fmt(bl.roas,1)+'x':'—'}</b> · CPA <b>${mo(bl.cpa)}</b></div>`:''}</div>
-     <div class="fc-foot">Worked out by the sheet from the last days, so it can't be changed here.</div>`;
+     <div class="fc-foot">Worked out by the sheet from the last days, so it can't be changed here.</div>${asMixHtml(d,ed)}${asSaveBar(c,nEd)}`;
  }else if(AS.tab==='weeks'){
    const mx=Math.max(.01,...(d.weeks||[]).map(w=>w.weight||0));
    body=`<div class="fc-l">WEEKLY DISTRIBUTION <em>Share of the budget</em></div><div class="fc-card">${(d.weeks||[]).map(w=>{const m=String(w.label).match(/(\d+)\s*[:\-–]\s*(\d+)\s*$/),nm=String(w.label).replace(/\s*\d+\s*[:\-–]\s*\d+\s*$/,'').replace(/^(First|Second|Third|Fourth|Fifth)\s+/i,'').replace(/[\s\-–]+$/,'');
@@ -8472,11 +8475,23 @@ function asHtml(){
    <div class="fc-l">WEEKDAY <em>Spend · Value · Conv</em></div><div class="fc-card">${tbl(d.weekday||[])}</div>
    <div class="fc-l">WEEK OF MONTH</div><div class="fc-card">${tbl(d.weekOfMonth||[],1)}</div>
    <div class="fc-l">SPECIAL DAYS IN ${esc(mon.toUpperCase())} <em>× a normal day</em></div><div class="fc-card">${(d.special||[]).length?`<div class="as-t"><div class="as-tr hd"><span></span><span>Spend</span><span>Value</span><span>Conv</span></div>${d.special.map(r=>`<div class="as-tr"><span>${esc(r.name)} <small>${esc(mon.slice(0,3))} ${r.inMonth[0]}${r.inMonth.length>1?'–'+r.inMonth[r.inMonth.length-1]:''}</small></span>${num(r,'spend',r.spend)}${num(r,'value',r.value)}${num(r,'conv',r.conv)}</div>`).join('')}</div>`:'<div class="fc-foot" style="text-align:center;margin:4px 0">No special days this month</div>'}</div>
-   ${c.msg?`<div class="mrp-msg">${c.msg}</div>`:''}
-   ${nEd&&labEdit()?`<div class="fc-act"><button type="button" class="pk-ghost" onclick="asUndo()">Undo</button><button type="button" class="lab-go" onclick="asSave()" ${c.saving?'disabled':''}>${c.saving?'<span class="lab-spin"></span>Saving…':`Save ${nEd} change${nEd>1?'s':''} to the sheet`}</button></div>`:''}`;
+   ${asSaveBar(c,nEd)}`;
  }
  return tabs+body;
 }
+
+function asMixHtml(d,ed){
+ const rows=d.manualMix||[];if(!rows.length)return '';
+ const val=r=>{const k=r.row+':mix';return Object.prototype.hasOwnProperty.call(ed,k)?ed[k]:(r.share==null?0:Math.round(r.share*1000)/10)};
+ const tot=rows.reduce((t,r)=>t+(Number(val(r))||0),0),ok=tot===0||Math.abs(tot-100)<0.05;
+ const cell=r=>{if(!labEdit())return `<b class="as-mv">${fmt(val(r),1)}%</b>`;const k=r.row+':mix',has=Object.prototype.hasOwnProperty.call(ed,k);
+   return `<label class="as-mi${has?' ch':''}"><input type="number" inputmode="decimal" step="0.1" min="0" max="100" value="${val(r)}" onchange="asSet(${r.row},'mix',this.value)" aria-label="${esc(r.name)} manual mix"><em>%</em></label>`};
+ return `<div class="fc-l">MANUAL MIX % <em>0 = auto</em></div><div class="fc-card">${rows.map(r=>`<div class="as-mx"><span>${esc(r.name)}</span>${(Number(val(r))||0)===0?'<small>auto</small>':''}${cell(r)}</div>`).join('')}
+  <div class="as-mx tot"><span>Manual total</span><b class="${ok?'':'dn'}">${fmt(tot,1)}%</b></div></div>
+  <div class="fc-foot">${tot===0?'All on auto: the sheet sets the mix from the last days.':ok?'The plan uses these shares.':'The shares should add up to 100% (or all be 0 for auto).'}</div>`;
+}
+function asSaveBar(c,nEd){return `${c.msg?`<div class="mrp-msg">${c.msg}</div>`:''}
+   ${nEd&&labEdit()?`<div class="fc-act"><button type="button" class="pk-ghost" onclick="asUndo()">Undo</button><button type="button" class="lab-go" onclick="asSave()" ${c.saving?'disabled':''}>${c.saving?'<span class="lab-spin"></span>Saving…':`Save ${nEd} change${nEd>1?'s':''} to the sheet`}</button></div>`:''}`}
 const LAB_INTRO='<div class="lab-head"><div><b>Months in the sheet</b><small>A month that is complete can move to the history. That keeps the reports complete and makes room for the new month\'s plan.</small></div></div>';
 
 function drawLabIdle(note){

@@ -1115,10 +1115,11 @@ async function buildAssumptions(accountKey) {
   if (!sh) return { missing: true };
   const ranges = [a1(sh.title, 'A10:G15'), a1(sh.title, 'A19:C23'), a1(sh.title, 'A40:G270')];
   if (fc) ranges.push(a1(fc.title, 'B60'), a1(fc.title, 'B65'));
+  ranges.push(a1(sh.title, 'I10:J15'));
   const v = await batchGet(book.id, ranges);
   const n = x => (typeof x === 'number' && isFinite(x) ? x : null), t = x => String(x == null ? '' : x).trim();
   const isTotal = r => /total|blended/i.test(t(r[0]));
-  const eco = grid(v[0], 6, 7), wk = grid(v[1], 5, 3), all = grid(v[2], 231, 7);
+  const eco = grid(v[0], 6, 7), wk = grid(v[1], 5, 3), all = grid(v[2], 231, 7), mx = grid(v[fc ? 5 : 3], 6, 2);
   // The stored indexes start at their STORED — OLD title (the rows above are the active, formula-only copy).
   const loc = locateIndex(all), ix = all.slice(loc.oldAt), base = 40 + loc.oldAt;
   const ecoRow = r => ({ name: t(r[0]), mix: n(r[1]), cpc: n(r[2]), cvr: n(r[3]), aov: n(r[4]), roas: n(r[5]), cpa: n(r[6]) });
@@ -1164,6 +1165,9 @@ async function buildAssumptions(accountKey) {
     v: 2, at: Date.now(), tab: sh.title, month: MONTHS[m] + ' ' + y, index: useNew ? 'NEW' : 'OLD', indexLabel: b65, ramadanDays,
     economics: eco.filter(r => t(r[0]) && !isTotal(r)).map(ecoRow), blended: (eco.find(isTotal) && ecoRow(eco.find(isTotal))) || null,
     weeks: wk.filter(r => t(r[0]) && !isTotal(r)).map(r => ({ label: t(r[0]), days: n(r[1]), weight: n(r[2]) })),
+    // Manual Mix % (I10:J14, 0 = auto) and its total (row 15).
+    manualMix: mx.map((r, i) => ({ row: 10 + i, name: t(r[0]), share: n(r[1]) })).filter(r => r.name && !isTotal([r.name])),
+    manualTotal: (mx.find(r => isTotal(r)) || [])[1] != null ? n(mx.find(r => isTotal(r))[1]) : null,
     hijri: inMonth.map(x => Object.assign({ num: x.num, year: x.year, days: x.days, from: x.from, to: x.to }, idx.months[x.num - 1] || {})),
     weekday: idx.weekday, weekOfMonth: idx.weeks,
     special: idx.special.map(sp => { const i = SPECIAL.findIndex(x => x[0].test(sp.name)); return Object.assign({}, sp, { inMonth: i >= 0 ? spDays[i] : null }); })
@@ -1183,6 +1187,13 @@ async function setAssumptions(accountKey, edits) {
   const old0 = locateIndex(col).oldAt;
   if (!(old0 > 0)) throw new Error('The stored index was not found in the Assumptions tab.');
   const data = (Array.isArray(edits) ? edits : []).map(e => {
+    // Manual Mix %: J10 to J14, a share from 0 to 1 (0 = auto).
+    if (e && e.key === 'mix') {
+      const row = Math.round(Number(e.row)), x = Number(e.value);
+      if (!(row >= 10 && row <= 14)) throw new Error('That cell cannot be changed here.');
+      if (!isFinite(x) || x < 0 || x > 1) throw new Error('Use a share from 0% to 100%.');
+      return { range: a1(sh.title, 'J' + row), values: [[x]] };
+    }
     const row = Math.round(Number(e && e.row)), c = COL[e && e.key], x = Number(e && e.value), r = col[row - 40] || [];
     if (!(row > 40 + old0 && row <= 270) || !c || typeof r[1] !== 'number') throw new Error('That cell cannot be changed here.');
     if (!isFinite(x) || x < 0 || x > 100) throw new Error('Use a number from 0 to 100.');
