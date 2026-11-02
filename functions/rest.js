@@ -2,7 +2,7 @@
 // the monthly report email, web notifications, and the "new day" phone notifications.
 // Until the admin moves them (adminRestMove), every call is passed to Apps Script.
 const { fsGet, fsSet, fsDelete, fsUpdate, fsAppend, fsList, fsSetList, batchGet, a1, sheetMeta } = require('./google');
-const { ACCESS, assertAccess, assertAdmin, assertPerm, assertOwner, storeRows } = require('./access');
+const { ACCESS, assertAccess, assertAdmin, assertPerm, assertOwner, storeRows, isAdminEmail } = require('./access');
 const notify = require('./notify');
 
 const SHEETS = { shares: 'SEKNA Shares', usage: 'SEKNA Usage', ideas: 'SEKNA Ideas', plans: 'SEKNA Plan History' };
@@ -461,12 +461,14 @@ const R = {
   },
 
   async adminReportRecipients([token]) {
-    await assertOwner(token); // only the HEMERA owner sends the report
-    if (!notify.mailReady()) return notify.appsScript('adminReportRecipients', [token]);
+    // Everyone builds the report, so everyone gets the names for its thank-you page; only the owner gets the emails.
+    const meA = await assertAccess(token);
+    const own = isAdminEmail(meA.email);
+    if (own && !notify.mailReady()) return notify.appsScript('adminReportRecipients', [token]);
     // Each person's position and emblem too, for the thank-you page of the report.
     const mem = await require('./tasks').members().catch(() => ({}));
     const people = (await approvedPeople()).map(p => { const m = mem[p.email] || {}; return Object.assign(p, { role: m.role === 'Head of Media' ? 'CEO' : (m.role || ''), avatar: m.avatar || 0 }); });
-    return { people, quota: 500 };
+    return { people: own ? people : people.map(p => ({ name: p.name, role: p.role, avatar: p.avatar, email: p.email === meA.email ? p.email : '' })), quota: 500 };
   },
   /** The report library of one account: every month's PDF sent to the team, newest first, with its download link. */
   async reportLib([token, account]) {
@@ -477,7 +479,9 @@ const R = {
   },
   /** The month's results PDF (built in the app) to every approved person, or only to the admin as a test. */
   async adminSendMonthlyReport([token, pdfBase64, meta]) {
-    const me = await assertOwner(token);
+    meta = meta || {};
+    // Anyone can email the report to themselves; only the HEMERA owner sends it to the team.
+    const me = meta.testOnly ? await assertAccess(token) : await assertOwner(token);
     if (!notify.mailReady()) return notify.appsScript('adminSendMonthlyReport', [token, pdfBase64, meta]);
     meta = meta || {};
     const bytes = Buffer.from(String(pdfBase64 || ''), 'base64');

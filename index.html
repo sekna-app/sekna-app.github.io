@@ -3308,6 +3308,8 @@ window.addEventListener('load',function(){
       .dc-grid{gap:6px}.dc-grid b{font-size:12.5px}.dc-card{gap:9px;padding:10px}
     }
     body.dark-mode .rx-sticky{background:#181e27}
+    /* Once it sticks under the top bar, square corners, so the lists scrolling under it never show through the rounded corners. */
+    .rx-sticky.stuck{border-radius:0}
     body.dark-mode .dc-card{background:#151a22;border-color:#2a313c}
     body.dark-mode .dc-card.upcoming{background:#12161d}
     body.dark-mode .dc-date{background:#1f2a44;color:#c9d6ff}.dark-mode .dc-date.latest{background:#3d6bff;color:#fff}
@@ -3891,7 +3893,8 @@ window.addEventListener('load',function(){
       /* Monthly Progress */
       #channelPanel.active{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:20px;align-items:start}
       #channelPanel>section{margin:0!important;grid-column:1}
-      #channelPanel>.channel-section{grid-column:2;grid-row:1/span 3;position:sticky;top:90px}
+      /* Channel Delivery scrolls with October Performance (no sticky), so both cards start level. */
+      #channelPanel>.channel-section{grid-column:2;grid-row:1/span 3}
       #app .cc-list{grid-template-columns:1fr!important}
       /* Media Plan Lab */
       .lab-card .fc-folds{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -4122,6 +4125,16 @@ window.addEventListener('load',function(){
     .stx-act{flex:1;display:flex;align-items:center;gap:8px;border:0;background:none;color:#fff;font:inherit;font-size:13px;font-weight:800;cursor:pointer;padding:0 4px;text-align:left}.stx-act em{font-style:normal;opacity:.85}
     .stx-fc{display:flex}.stx-fc i,.stx-vr>i{width:28px;height:28px;border-radius:50%;background:#3456c4;border:2px solid #000;display:grid;place-items:center;font-style:normal;font-size:10px;font-weight:900;margin-right:-8px}.stx-fc:empty{display:none}.stx-fc+b{margin-left:8px}
     .stx-v.held .stx-top,.stx-v.held .stx-bot{opacity:0}
+    /* Desktop: the story is a phone-sized frame in the middle of a dark screen, with arrows either side (keys work too). */
+    .stx-nav{display:none}
+    @media (min-width:760px) and (hover:hover){
+      .stx-v{--sw:min(430px,calc((100vh - 48px) * 9 / 16));background:radial-gradient(circle at 50% 40%,#1c2233,#07090e 70%)}
+      .stx-v .stx-face{inset:24px auto 24px calc(50% - var(--sw) / 2);width:var(--sw);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+      .stx-v .stx-card-bg{margin-top:0}
+      .stx-nav{display:grid;place-items:center;position:absolute;top:50%;z-index:6;width:46px;height:46px;margin-top:-23px;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;cursor:pointer;transition:background .2s}
+      .stx-nav:hover{background:rgba(255,255,255,.28)}.stx-nav svg{width:22px;height:22px}
+      .stx-nav.l{left:calc(50% - var(--sw) / 2 - 70px)}.stx-nav.r{right:calc(50% - var(--sw) / 2 - 70px)}
+    }
     .stx-sh{position:absolute;inset:0;z-index:5}.stx-shbg{position:absolute;inset:0;background:rgba(0,0,0,.45)}
     .stx-shc{position:absolute;left:0;right:0;bottom:0;background:#1b1f26;border-radius:22px 22px 0 0;padding:10px 18px calc(22px + env(safe-area-inset-bottom));animation:stxUp .25s ease both;max-height:75vh;overflow:auto}
     @keyframes stxUp{from{transform:translateY(100%)}}
@@ -6233,7 +6246,7 @@ window.addEventListener('load',function(){
     <div class="cc-list" id="channelRows"></div>
   </section>
   <section class="card section mrp-card" id="mrSection" hidden>
-    <button type="button" class="mr-toggle" id="mrToggle" onclick="MR.open=!MR.open;drawMonthlyReport()" aria-expanded="false"><span class="section-heading-icon month">📄</span><span><b>Monthly Report</b><small>The month as a PDF for the team</small></span><i>▾</i></button>
+    <button type="button" class="mr-toggle" id="mrToggle" onclick="MR.open=!MR.open;drawMonthlyReport()" aria-expanded="true"><span class="section-heading-icon month">📄</span><span><b>Monthly Report</b><small>The month as a PDF for the team</small></span><i>▾</i></button>
     <div id="mrBody"></div>
   </section>
   </div>
@@ -7121,6 +7134,9 @@ function openStories(k){
  const v=document.createElement('div');v.id='stxView';v.className='stx-v';v.setAttribute('data-share-ui','');document.body.appendChild(v);
  v.addEventListener('pointerdown',stxDown);v.addEventListener('pointerup',stxUp);v.addEventListener('pointercancel',stxCancel);
  v.addEventListener('contextmenu',e=>e.preventDefault());
+ 
+ const ch=d=>`<svg viewBox="0 0 24 24"><path d="${d}" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+ v.insertAdjacentHTML('beforeend',`<button type="button" class="stx-nav l" aria-label="Previous" onclick="stxGo(-1)">${ch('M15 5l-7 7 7 7')}</button><button type="button" class="stx-nav r" aria-label="Next" onclick="stxGo(1)">${ch('M9 5l7 7-7 7')}</button>`);
  stxShow();
 }
 const STX_MS=6000;
@@ -7149,9 +7165,14 @@ function stxUp(e){
  if(dy>110&&Math.abs(dy)>Math.abs(dx)){stxClose();return}
  if(Math.abs(dx)>60){stxPause(false);stxJump(dx<0?1:-1);return}
  if(long){stxPause(false);return}
- const w=window.innerWidth;stxGo(e.clientX<w*.3?-1:1);
+ 
+ const fr=document.querySelector('#stxView .stx-face:not(.old)'),r=fr?fr.getBoundingClientRect():{left:0,width:window.innerWidth};
+ stxGo(e.clientX<r.left+r.width*.3?-1:1);
 }
 function stxCancel(){if(!STX)return;clearTimeout(STX.held);STX.down=0;document.getElementById('stxView')?.classList.remove('held');stxPause(false)}
+
+document.addEventListener('keydown',e=>{if(!STX||e.target.closest&&e.target.closest('input,textarea'))return;
+ if(e.key==='ArrowRight'){e.preventDefault();stxGo(1)}else if(e.key==='ArrowLeft'){e.preventDefault();stxGo(-1)}else if(e.key==='Escape'){if(document.querySelector('#stxView .stx-sh'))stxMenuClose();else stxClose()}});
 
 document.addEventListener('visibilitychange',()=>{if(!STX||document.querySelector('#stxView .stx-sh'))return;stxPause(document.visibilityState==='hidden')});
 function stxPause(on){
@@ -9325,6 +9346,8 @@ function setRankSide(s){
  const card=document.querySelector('.rx-card');
  if(card&&card.getBoundingClientRect().top<0)window.scrollTo({top:card.getBoundingClientRect().top+window.pageYOffset-rankTopOffset()+2,behavior:'smooth'});
 }
+
+addEventListener('scroll',()=>{const s=document.getElementById('rxSticky');if(!s||!s.offsetParent)return;s.classList.toggle('stuck',s.getBoundingClientRect().top<=rankTopOffset()+1&&window.scrollY>40)},{passive:true});
 function rankTopOffset(){const t=document.querySelector('.topbar');return t?t.getBoundingClientRect().height:0}
 function rankStickyBottom(){const s=document.getElementById('rxSticky');return s?s.getBoundingClientRect().bottom:rankTopOffset()}
 function setRankCat(c){
@@ -10682,7 +10705,7 @@ function updateProfileUI(){
  if(lock)lock.hidden=true;
  const labLock=document.getElementById('labNavLock');
  if(labLock)labLock.hidden=true;
- ['mrSection'].forEach(id=>{const b=document.getElementById(id);if(b)b.hidden=!p.owner}); 
+ 
  tkQuickNav();
  if(CURRENT_TAB==='channel')renderMonthlyReport();
  if(p.email&&DASHBOARD_STARTED)maybeStartTour();
@@ -13059,7 +13082,7 @@ function trackUsageStart(){
 
  
 const MP_W=1080, MP_H=1527;
-let MR={open:false,pages:null,pdf:null,busy:'',msg:'',people:null,notes:'',sig:''};
+let MR={open:true,pages:null,pdf:null,busy:'',msg:'',people:null,notes:'',sig:''};
 const mpAcc=(a,p)=>p>0?Math.max(0,1-Math.abs(a-p)/p):null;
 function mpPct(v){return v==null||!isFinite(v)?'—':Math.round(v*100)+'%'}
 function mpK(v){v=Number(v)||0;const c=cx(v);return c>=1e6?cs()+(c/1e6).toFixed(2)+'M':c>=1e4?cs()+(c/1e3).toFixed(1)+'k':money(v)}
@@ -13477,7 +13500,8 @@ async function mrBuild(){
      ['Adding campaign types…',()=>mpCapture(mpTypesPage(m))],
      ...(m.ly.have?[['Adding this year against last year…',()=>mpCapture(mpLyPage(m))]]:[]),
      ['Adding the notes…',()=>mpCapture(mpNotesPage(m,MR.notes,m.ly.have?6:5))],
-     ['Adding the thank-you page…',()=>(document.fonts?document.fonts.load('80px "Herr Von Muellerhoff"').catch(()=>{}):Promise.resolve()).then(()=>mpCapture(mpThanks(m,m.ly.have?7:6)))]];
+     
+     ...(m.acc.all!=null&&m.acc.all>.7?[['Adding the thank-you page…',()=>(document.fonts?document.fonts.load('80px "Herr Von Muellerhoff"').catch(()=>{}):Promise.resolve()).then(()=>mpCapture(mpThanks(m,m.ly.have?7:6)))]]:[])];
    const canvases=[];
    for(let i=0;i<steps.length;i++){MR.busy=`${steps[i][0]} (${i+1}/${steps.length})`;drawMonthlyReport();canvases.push(await steps[i][1]())}
    MR.busy='Making the PDF…';drawMonthlyReport();
@@ -13501,32 +13525,32 @@ async function mrBuild(){
 
 function mrOwner(){return !!(ACCESS_PROFILE&&ACCESS_PROFILE.owner)}
 async function mrSend(testOnly){
- const m=MR.m;if(!MR.pdf||!m||MR.busy||!mrOwner())return;
+ const m=MR.m;if(!MR.pdf||!m||MR.busy||(!testOnly&&!mrOwner()))return;
  if(MR.sig!==mrSig()){MR.msg='The notes changed. Press Rebuild PDF first.';drawMonthlyReport();return}
  const n=testOnly?1:(MR.people||[]).length;
  if(!testOnly&&!await askSekna({title:'Send the report?',text:`The ${m.label} report goes by email to ${n} ${n===1?'person':'people'} in the team.`,ok:'Send',tone:'info',icon:'mail'}))return;
  if(MR.busy)return;
- MR.busy=testOnly?'Sending a test to you…':`Sending to ${n} people…`;MR.msg='';drawMonthlyReport();
+ MR.busy=testOnly?'Sending it to you…':`Sending to ${n} people…`;MR.msg='';drawMonthlyReport();
  const meta={testOnly:!!testOnly,
    title:`HEMERA · ${m.meta.dashboardTitle} · ${m.label} results`,
    fileName:`HEMERA-${m.meta.shortLabel}-${m.label.replace(/\s+/g,'-')}-Results`,
    intro:`Here are the ${m.label} media plan results for ${m.meta.dashboardTitle}. ${mpWords(m)}${m.acc.all!=null?` Plan accuracy reached ${mpPct(m.acc.all)}.`:''} Thank you to the Google Ads team for the hard work this month.`,
    lines:mpHighlights(m).slice(0,3),pages:(MR.pages||[]).length,month:m.month,account:CURRENT_ACCOUNT};
  serverCall('adminSendMonthlyReport',getAccessToken(),MR.pdf,meta).then(r=>{
-   MR.busy='';MR.msg=r.testOnly?'✅ Test sent to your email.':`✅ Sent to ${r.sent} ${r.sent===1?'person':'people'}.${r.failed&&r.failed.length?' Not sent to: '+esc(r.failed.join(', ')):''}`;drawMonthlyReport();
+   MR.busy='';MR.msg=r.testOnly?(mrOwner()?'✅ Test sent to your email.':'✅ Sent to your email.'):`✅ Sent to ${r.sent} ${r.sent===1?'person':'people'}.${r.failed&&r.failed.length?' Not sent to: '+esc(r.failed.join(', ')):''}`;drawMonthlyReport();
  }).catch(err=>{MR.busy='';MR.msg='⚠️ '+esc(errorText(err));drawMonthlyReport()});
 }
 function renderMonthlyReport(){
  const body=document.getElementById('mrBody');if(!body)return;
  const sec=document.getElementById('mrSection');
- if(!mrOwner()){if(sec)sec.hidden=true;return}
+ 
  if(sec)sec.hidden=false;
  if(MR.people===null){MR.people=[];serverCall('adminReportRecipients',getAccessToken()).then(r=>{MR.people=(r&&r.people)||[];drawMonthlyReport()}).catch(()=>{})}
  if(MR.pdf&&MR.sig!==mrSig()){MR.pdf=null;MR.pages=null}
  drawMonthlyReport();
 }
 function drawMonthlyReport(){
- const body=document.getElementById('mrBody');if(!body||CURRENT_TAB!=='channel'||!mrOwner())return;
+ const body=document.getElementById('mrBody');if(!body||CURRENT_TAB!=='channel')return;
  const tg=document.getElementById('mrToggle');if(tg)tg.setAttribute('aria-expanded',MR.open?'true':'false');
  if(!MR.open){body.innerHTML='';return}
  const days=(DASH_DATA&&DASH_DATA.dayPlan)||[];
@@ -13543,7 +13567,7 @@ function drawMonthlyReport(){
   ${MR.pages?`<div class="mrp-thumbs">${MR.pages.map((s,i)=>`<img src="${s}" alt="Page ${i+1}">`).join('')}</div>
    ${mrOwner()?`<div class="mr-send"><button type="button" class="mr3-mail" onclick="mrSend(true)" ${!MR.pdf||MR.busy?'disabled':''}>Send a test to me</button>
    <button type="button" class="mr3-go" onclick="mrSend(false)" ${!MR.pdf||MR.busy||!ppl.length?'disabled':''}>Email to the team${ppl.length?` (${ppl.length})`:''}</button></div>
-   <div class="mrp-ppl">${ppl.length?`Goes to: ${ppl.map(p=>esc(p.name)).join(', ')}`:'Loading who it goes to…'}</div>`:'<div class="mrp-ppl">🔒 Only the HEMERA admin can email the report to the team.</div>'}`:''}`;
+   <div class="mrp-ppl">${ppl.length?`Goes to: ${ppl.map(p=>esc(p.name)).join(', ')}`:'Loading who it goes to…'}</div>`:`<div class="mr-send"><button type="button" class="mr3-go" onclick="mrSend(true)" ${!MR.pdf||MR.busy?'disabled':''}>Send it to me</button></div><div class="mrp-ppl">🔒 Only the HEMERA admin can email the report to the team.</div>`}`:''}`;
 }
 
  
