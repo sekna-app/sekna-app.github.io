@@ -5639,6 +5639,66 @@ window.addEventListener('load',function(){
     .tk-covr{margin:8px 0;padding:2px 10px 10px;border:2px solid #f5c84c;border-radius:16px;background:#fffaeb}.tk-covr .tk-task{border:0!important;background:none}
     .tk-from{display:inline-flex;font-size:11.5px;font-weight:900;color:#8a5a12;background:#ffe9a8;border-radius:999px;padding:3px 9px;margin-left:34px}
     body.dark-mode .tk-covr{background:#2a2414;border-color:#8a6a1f}
+    /* v171 · Desktop layouts picked from the designs (screens 1100px and wider) */
+    @media (min-width:1100px){
+      /* Monthly Progress · "Wide rows": October Performance across the top, the five channels in a row under it, Weekly beside the report */
+      #channelPanel.active{grid-template-columns:1fr 1fr!important;gap:16px!important}
+      #channelPanel>.mtd-exec{grid-column:1/-1!important;grid-row:1!important;display:grid!important;grid-template-columns:1.15fr 1fr;column-gap:16px;align-items:start}
+      #channelPanel>.mtd-exec .month-performance-head,#channelPanel>.mtd-exec .ox-legend{grid-column:1/-1}
+      #channelPanel>.mtd-exec .ox-hero{grid-column:1;grid-row:2/span 2;padding:16px 20px!important;height:100%;box-sizing:border-box}#channelPanel .ox-score{font-size:46px!important}
+      #channelPanel>.mtd-exec .ox-tiles{grid-column:2;grid-row:2;margin:0!important;grid-template-columns:1fr 1fr!important;gap:8px!important}#channelPanel .ox-tile{padding:10px 12px!important}#channelPanel .ox-tile b{font-size:20px!important}
+      #channelPanel>.mtd-exec .ox-strip{grid-column:2;grid-row:3;margin-top:8px!important;padding:10px 14px!important}
+      #channelPanel>.channel-section{grid-column:1/-1!important;grid-row:2!important}
+      #app #channelRows{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:10px!important}
+      #channelRows .ccd{padding:11px!important}#channelRows .cc-h b{font-size:12.5px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#channelRows .channel-icon{width:26px!important;height:26px!important}
+      #channelRows .cc-h{gap:6px!important;flex-wrap:wrap}#channelRows .cc-roas{margin-left:auto}
+      #channelRows .cc-sp{flex-direction:column;align-items:flex-start!important;gap:0!important}#channelRows .cc-q{grid-template-columns:1fr!important;gap:4px!important}#channelRows .cc-q div{display:flex;justify-content:space-between;padding:5px 9px!important}#channelRows .cc-q b{order:2}
+      #channelPanel>.weekly-performance{grid-column:1!important;grid-row:3!important}
+      #channelPanel>#mrSection{grid-column:2!important;grid-row:3!important}
+
+      /* Media Plan Lab · Forecast and Years "Pill tabs, two columns" */
+      #labForecast .fc:is(:has(.fc-hero),:has(.yr-c)){position:relative;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);column-gap:18px;align-items:start}
+      #labForecast .fc:is(:has(.fc-hero),:has(.yr-c))>*{grid-column:1/-1}
+      #labForecast .fc:is(:has(.fc-hero),:has(.yr-c))>.fc-top{position:absolute;right:16px;top:16px;width:auto!important;display:flex!important;gap:3px!important;background:#eef1f8;border-radius:12px;padding:3px!important;margin:0!important}
+      #labForecast .fc:is(:has(.fc-hero),:has(.yr-c))>.fc-top button{flex:none!important;width:auto!important;height:32px!important;padding:0 14px!important;font-size:12.5px!important;border:0!important;box-shadow:none!important;border-radius:9px!important}
+      #labForecast .fc:is(:has(.fc-hero),:has(.yr-c))>.fc-top button:not(.on){background:transparent!important}
+      body.dark-mode #labForecast .fc>.fc-top{background:#1d2330}
+      #labForecast .fc:has(.fc-hero)>.fc-hero{grid-column:1;grid-row:3}#labForecast .fc:has(.fc-hero)>.fc-kv{grid-column:1;grid-row:4}
+      #labForecast .fc:has(.fc-hero)>.bd-wa{grid-column:1;grid-row:5}#labForecast .fc:has(.fc-hero)>.bd-nt{grid-column:1;grid-row:6}
+      #labForecast .fc:has(.fc-hero)>.fc-folds{grid-column:2;grid-row:3/span 4;display:flex!important;flex-direction:column;gap:8px}
+      #labForecast .fc:has(.fc-hero)>.fc-rd{grid-column:2;grid-row:7}#labForecast .fc:has(.fc-hero)>.fc-foot{grid-column:2;grid-row:8}
+      #labForecast .fc:has(.yr-c)>.yr-c{grid-column:1;grid-row:3/span 4}
+      #labForecast .fc:has(.yr-c)>.yr-c+.fc-card{grid-column:2;grid-row:3}#labForecast .fc:has(.yr-c)>.fc-rec{grid-column:2;grid-row:4}
+      #labForecast .fc:has(.yr-c)>.fc-rd{grid-column:2;grid-row:5}#labForecast .fc:has(.yr-c)>.fc-foot{grid-column:2;grid-row:6}
+      /* Media Plan Lab · Assumptions "Underline tabs": a narrower page so labels sit close to their numbers */
+      #labForecast .fc:has(.as-seg)>.fc-top{display:flex!important;gap:26px!important;border-bottom:1.5px solid #e6e9f2;padding:0 4px!important;background:none!important}
+      #labForecast .fc:has(.as-seg)>.fc-top button{flex:none!important;width:auto!important;height:40px!important;padding:0 2px!important;background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;color:#6b7385!important;font-size:13.5px!important;border-bottom:2.5px solid transparent!important;margin-bottom:-1.5px}
+      #labForecast .fc:has(.as-seg)>.fc-top button.on{color:#203c8e!important;border-bottom-color:#203c8e!important;font-weight:800}
+      body.dark-mode #labForecast .fc:has(.as-seg)>.fc-top{border-color:#2a313c;background:none}body.dark-mode #labForecast .fc:has(.as-seg)>.fc-top button.on{color:#9fb6ff!important;border-bottom-color:#9fb6ff!important}
+      #labForecast .fc:has(.as-seg)>*:not(.fc-hd):not(.fc-top){max-width:860px;margin-left:auto!important;margin-right:auto!important}
+      #labForecast .fc:has(.as-seg)>.as-seg{max-width:520px!important}
+
+      /* Plan History · "Ledger": one line a month */
+      #phBody .phx-list{display:flex!important;flex-direction:column;gap:0!important;border:1.5px solid #e6e9f2;border-radius:18px;overflow:hidden;background:#fff}
+      #phBody .phs{display:grid!important;grid-template-columns:170px repeat(4,minmax(0,1fr)) 110px 190px;column-gap:18px;align-items:center;padding:14px 20px!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#fff!important;margin:0!important}
+      #phBody .phs::before{display:none!important}
+      #phBody .phs+.phs{border-top:1px solid #eef1f6!important}
+      #phBody .phs:first-child{background:#f8faff!important}
+      #phBody .phs>*{grid-column:1/-1}
+      #phBody .phs-hd,#phBody .phs-ft{display:none!important}
+      #phBody .phs h3{grid-column:1;grid-row:1;font-size:20px!important;margin:0!important}
+      #phBody .phs-sub{grid-column:1;grid-row:2;font-size:10px!important}
+      #phBody .phs-more{grid-column:1;grid-row:3;margin-top:4px!important;font-size:10.5px!important}
+      #phBody .phs-li{grid-row:1/span 3;padding:0!important;border:0!important}
+      #phBody .phs-li:nth-child(4){grid-column:2}#phBody .phs-li:nth-child(5){grid-column:3}#phBody .phs-li:nth-child(6){grid-column:4}#phBody .phs-li:nth-child(7){grid-column:5}
+      #phBody .phs-li .phs-t{flex-direction:column;align-items:flex-start!important;gap:0}#phBody .phs-li .phs-t b{font-size:15px!important}#phBody .phs-li .phs-t span{font-size:10.5px!important}
+      #phBody .phs-big{grid-column:6;grid-row:1/span 3;padding:6px 10px!important;margin:0!important;text-align:center}#phBody .phs-big small{font-size:8.5px!important}#phBody .phs-big b{font-size:26px!important;line-height:30px!important}#phBody .phs-big .phs-ok{display:none}
+      #phBody .phr{grid-column:7;grid-row:1;padding:6px 8px!important;margin:0!important}#phBody .phr-t{font-size:10px!important}#phBody .phr-ic{width:24px!important;height:30px!important;font-size:8px!important}
+      #phBody .phs-cel{grid-column:7;grid-row:2/span 2;height:30px!important;font-size:11.5px!important;margin:4px 0 0!important;align-self:start}
+      #phBody .phs:not(:has(.phr)) .phs-cel{grid-row:1/span 3;align-self:center}
+      #phBody .phx-tw{grid-row:4;margin-top:12px}
+      body.dark-mode #phBody .phx-list{background:#151a22;border-color:#2a313c}body.dark-mode #phBody .phs{background:#151a22!important}body.dark-mode #phBody .phs:first-child{background:#1a2030!important}body.dark-mode #phBody .phs+.phs{border-color:#252a32!important}
+    }
 </style>
 </head>
 <body>
