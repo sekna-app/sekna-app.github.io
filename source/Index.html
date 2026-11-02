@@ -5497,7 +5497,7 @@ window.addEventListener('load',function(){
 
     <section class="sk-step" data-step="email">
       <h1 id="gateTitle">Welcome to HEMERA</h1>
-      <p class="sk-gate-sub">Enter your email to request access to the dashboard.</p>
+      <p class="sk-gate-sub">Enter your email to get started.</p>
       <form onsubmit="gateSendCode(event)" novalidate>
         <label class="sk-field"><span>Email address</span><input id="gateEmail" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="name@company.com"></label>
         <button class="sk-gate-btn" id="gateSendBtn" type="submit"><span>Send verification code</span></button>
@@ -5513,9 +5513,9 @@ window.addEventListener('load',function(){
           <i class="sk-otp" aria-hidden="true"><b class="sk-seal"></b><svg class="sk-tick" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>
           <input inputmode="numeric" autocomplete="one-time-code" aria-label="Digit 1"><input inputmode="numeric" aria-label="Digit 2"><input inputmode="numeric" aria-label="Digit 3"><input inputmode="numeric" aria-label="Digit 4"><input inputmode="numeric" aria-label="Digit 5"><input inputmode="numeric" aria-label="Digit 6">
         </div>
-        <button class="sk-gate-btn" id="gateVerifyBtn" type="submit"><span>Verify &amp; request access</span></button>
+        <button class="sk-gate-btn" id="gateVerifyBtn" type="submit"><span>Verify &amp; Continue</span></button>
       </form>
-      <div class="sk-gate-links"><button type="button" class="sk-link" onclick="gateChangeEmail()">Use a different email</button><button type="button" class="sk-link" id="gateResend" onclick="gateResend()">Resend code</button></div>
+      <div class="sk-gate-links"><button type="button" class="sk-link" onclick="gateChangeEmail()">Change email</button><button type="button" class="sk-link" id="gateResend" onclick="gateResend()">Resend code</button></div>
     </section>
 
     <section class="sk-step" data-step="pending">
@@ -5523,7 +5523,7 @@ window.addEventListener('load',function(){
       <h1>Thanks, <span data-gate-name>there</span>!</h1>
       <p class="sk-gate-sub">Your request is waiting for approval. We'll email you as soon as it's approved — this screen will open the dashboard automatically.</p>
       <div class="sk-status-chip"><i></i>Waiting for approval</div>
-      <div class="sk-gate-links"><button type="button" class="sk-link" onclick="gateReset()">Use a different email</button></div>
+      <div class="sk-gate-links"><button type="button" class="sk-link" onclick="gateReset()">Change email</button></div>
     </section>
 
     <section class="sk-step" data-step="approved">
