@@ -4128,12 +4128,13 @@ window.addEventListener('load',function(){
     /* Desktop: the story is a phone-sized frame in the middle of a dark screen, with arrows either side (keys work too). */
     .stx-nav{display:none}
     @media (min-width:760px) and (hover:hover){
-      .stx-v{--sw:min(430px,calc((100vh - 48px) * 9 / 16));background:radial-gradient(circle at 50% 40%,#1c2233,#07090e 70%)}
-      .stx-v .stx-face{inset:24px auto 24px calc(50% - var(--sw) / 2);width:var(--sw);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.55)}
+      /* Like Instagram on a computer: the page stays behind, blurred; the story is a phone-tall frame in the middle. */
+      .stx-v{--sw:min(480px,calc((100vh - 40px) * 9 / 16));background:rgba(12,16,26,.62);-webkit-backdrop-filter:blur(22px) saturate(1.1);backdrop-filter:blur(22px) saturate(1.1)}
+      .stx-v .stx-face{inset:20px auto 20px calc(50% - var(--sw) / 2);width:var(--sw);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.55)}
       .stx-v .stx-card-bg{margin-top:0}
-      .stx-nav{display:grid;place-items:center;position:absolute;top:50%;z-index:6;width:46px;height:46px;margin-top:-23px;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:#fff;cursor:pointer;transition:background .2s}
-      .stx-nav:hover{background:rgba(255,255,255,.28)}.stx-nav svg{width:22px;height:22px}
-      .stx-nav.l{left:calc(50% - var(--sw) / 2 - 70px)}.stx-nav.r{right:calc(50% - var(--sw) / 2 - 70px)}
+      .stx-nav{display:grid;place-items:center;position:absolute;top:50%;z-index:6;width:36px;height:36px;margin-top:-18px;border:0;border-radius:50%;background:rgba(255,255,255,.92);color:#1d2433;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3);transition:transform .15s,background .15s}
+      .stx-nav:hover{background:#fff;transform:scale(1.08)}.stx-nav svg{width:18px;height:18px}
+      .stx-nav.l{left:calc(50% - var(--sw) / 2 - 56px)}.stx-nav.r{right:calc(50% - var(--sw) / 2 - 56px)}
     }
     .stx-sh{position:absolute;inset:0;z-index:5}.stx-shbg{position:absolute;inset:0;background:rgba(0,0,0,.45)}
     .stx-shc{position:absolute;left:0;right:0;bottom:0;background:#1b1f26;border-radius:22px 22px 0 0;padding:10px 18px calc(22px + env(safe-area-inset-bottom));animation:stxUp .25s ease both;max-height:75vh;overflow:auto}
@@ -5639,6 +5640,21 @@ window.addEventListener('load',function(){
     .tk-covr{margin:8px 0;padding:2px 10px 10px;border:2px solid #f5c84c;border-radius:16px;background:#fffaeb}.tk-covr .tk-task{border:0!important;background:none}
     .tk-from{display:inline-flex;font-size:11.5px;font-weight:900;color:#8a5a12;background:#ffe9a8;border-radius:999px;padding:3px 9px;margin-left:34px}
     body.dark-mode .tk-covr{background:#2a2414;border-color:#8a6a1f}
+    /* v171 · ST Performance on desktop: the ring beside the match types, and the lists in two columns */
+    .stp-dn{display:none}
+    @media (min-width:1100px){
+      #app .stp-mt:not(.sh) .stp-mx{display:grid;grid-template-columns:minmax(0,540px) minmax(0,1fr);column-gap:24px;align-items:center}
+      #app .stp-mt:not(.sh) .stp-mr{grid-template-columns:10px minmax(0,1fr) 120px 120px}
+      #app .stp-dn{display:flex;align-items:center;justify-content:center;gap:28px}
+      #app .stp-dn svg{width:160px;height:160px;flex:none}
+      .stp-dk{display:grid;gap:9px}.stp-dk>div{display:flex;align-items:center;gap:8px;font-size:11.5px;font-weight:800;color:#dfe6ff}
+      .stp-dk i{width:9px;height:9px;border-radius:3px;flex:none}.stp-dk span{min-width:150px}.stp-dk b{font-size:13px;color:#fff;min-width:36px;text-align:right}.stp-dk small{font-size:10px;color:#c9d6ff;font-weight:700}
+      #app .stp-list{display:grid!important;grid-template-columns:1fr 1fr;gap:14px!important;align-items:start}
+      #app .stp-list .stp-sec{margin:0!important;width:auto!important}
+      #app .stp-list .stp-t th.o,#app .stp-list .stp-t td.o{display:none}
+      #app .stp-list .stp-t td,#app .stp-list .stp-t th{padding-top:7px!important;padding-bottom:7px!important}
+      #app .stp-list .stp-h{padding:9px 14px!important;min-height:0!important}
+    }
     /* v171 · Desktop layouts picked from the designs (screens 1100px and wider) */
     @media (min-width:1100px){
       /* Monthly Progress · "Wide rows": October Performance across the top, the five channels in a row under it, Weekly beside the report */
@@ -9599,7 +9615,14 @@ function stpMatchCard(d,share){
  return `<div class="stp-mt${share?' sh':''}"><div class="stp-mk"><svg viewBox="0 0 24 24" aria-hidden="true">${STP_IC.h}</svg>MATCH TYPE · SPEND SPLIT</div>
  <div class="stp-mh"><b>${esc(money(T,2))}</b><small>${esc(money(V,2))} value · ${T?fmt(V/T,2):'0.00'}x ROAS</small></div>
  <div class="stp-mb">${R.filter(r=>r.c>0).map(r=>`<i style="flex:${r.c};background:${r.col}"></i>`).join('')}</div>
- ${R.map(r=>`<div class="stp-mr"><i style="background:${r.col}"></i><div><b>${esc(r.n)}</b><small>${fmt(r.k,0)} clicks · ${fmt(r.cv,0)} conv.</small></div><span class="c">${esc(money(r.c,2))}</span><span class="v">${esc(money(r.v,2))}</span></div>`).join('')}</div>`;
+ <div class="stp-mx"><div class="stp-mrs">${R.map(r=>`<div class="stp-mr"><i style="background:${r.col}"></i><div><b>${esc(r.n)}</b><small>${fmt(r.k,0)} clicks · ${fmt(r.cv,0)} conv.</small></div><span class="c">${esc(money(r.c,2))}</span><span class="v">${esc(money(r.v,2))}</span></div>`).join('')}</div>${share?'':stpDonut(R,T,V)}</div></div>`;
+}
+
+function stpDonut(R,T,V){
+ const C=2*Math.PI*62;let acc=0;
+ const seg=T>0?R.filter(r=>r.c>0).map(r=>{const L=r.c/T*C,x=`<circle cx="80" cy="80" r="62" fill="none" stroke="${r.col}" stroke-width="20" stroke-dasharray="${Math.max(0,L-2).toFixed(1)} ${C.toFixed(1)}" stroke-dashoffset="${(-acc).toFixed(1)}" transform="rotate(-90 80 80)"/>`;acc+=L;return x}).join(''):'';
+ return `<div class="stp-dn" aria-hidden="true"><svg viewBox="0 0 160 160"><circle cx="80" cy="80" r="62" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="20"/>${seg}<text x="80" y="78" text-anchor="middle" fill="#fff" font-size="23" font-weight="900">${T?fmt(V/T,2):'0.00'}x</text><text x="80" y="98" text-anchor="middle" fill="#c9d6ff" font-size="10" font-weight="800" letter-spacing="1.2">ROAS</text></svg>
+  <div class="stp-dk">${R.map(r=>`<div><i style="background:${r.col}"></i><span>${esc(r.n)}</span><b>${T?Math.round(r.c/T*100):0}%</b><small>of spend</small></div>`).join('')}</div></div>`;
 }
 function renderPerf(){
  const body=document.getElementById('stBody');if(!body)return;
