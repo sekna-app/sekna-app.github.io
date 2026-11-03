@@ -5983,6 +5983,9 @@ window.addEventListener('load',function(){
     /* v173 season splash: the picture faint across the top, a gold line at the bottom */
     .sks-sbg{position:absolute;left:0;right:0;top:0;height:min(42vh,330px);background-size:cover;background-position:center;opacity:.5;pointer-events:none;-webkit-mask-image:linear-gradient(#000 35%,transparent 98%);mask-image:linear-gradient(#000 35%,transparent 98%);animation:sksUp .6s ease both}
     .sks-sl{position:absolute;left:0;right:0;bottom:calc(36px + env(safe-area-inset-bottom));text-align:center;font-size:10.5px;font-weight:800;letter-spacing:.22em;color:#f3d79f;animation:sksUp .5s .5s both}
+    /* v173 season splash: crisper picture, a shorter fade at the bottom; on wide screens it keeps its own size in the middle */
+    .sks-sbg{opacity:.78!important;-webkit-mask-image:linear-gradient(#000 74%,transparent)!important;mask-image:linear-gradient(#000 74%,transparent)!important}
+    @media (min-width:900px){.sks-sbg{left:50%!important;right:auto!important;width:640px;margin-left:-320px;height:min(36vh,330px)!important;-webkit-mask-image:linear-gradient(#000 74%,transparent),linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent)!important;-webkit-mask-composite:source-in;mask-image:linear-gradient(#000 74%,transparent),linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent)!important;mask-composite:intersect}}
 </style>
 </head>
 <body>
