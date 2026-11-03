@@ -5954,6 +5954,11 @@ window.addEventListener('load',function(){
     .ss-art .ss-hd .ss-af{border:1px solid rgba(243,215,159,.35);border-radius:99px;background:rgba(14,26,70,.5)}
     .ss-art .ss-hd .ss-af button{border-radius:99px!important}
     .ss-art .ss-hd .ss-af button.on{background:linear-gradient(135deg,#f3d79f,#d9a448)!important;color:#2b1d05!important}
+    .ss-nav{position:absolute;right:12px;top:12px;z-index:2;display:flex;align-items:center;gap:6px;padding:3px;border-radius:99px;background:rgba(14,26,70,.55);border:1px solid rgba(243,215,159,.35);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+    .ss-nav button{width:28px;height:28px;border-radius:50%;border:0;background:linear-gradient(135deg,#f3d79f,#d9a448);color:#2b1d05;font-size:18px;font-weight:900;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0 0 2px}
+    .ss-nav button:disabled{background:rgba(255,255,255,.12);color:rgba(255,255,255,.35);cursor:default}
+    .ss-nav span{font-size:10.5px;font-weight:800;color:#f3d79f;min-width:34px;text-align:center}
+    .ss-a-eidadha>b,.ss-a-ashura>b,.ss-a-thanksgiving>b{background:linear-gradient(180deg,#fbe3a6,#d9a448);-webkit-background-clip:text;background-clip:text;color:transparent!important}
 </style>
 </head>
 <body>
@@ -12381,7 +12386,8 @@ function ssLoadInfo(force){
  serverCall('seasonsInfo',getAccessToken(),words).then(r=>{SS.info=r||{goals:{},prep:{}};if(CURRENT_TAB==='seasons')renderSeasons()}).catch(()=>{SS.info=SS.info||{goals:{},prep:{},fail:1}});
 }
 function ssRetry(){Object.keys(SS.ex).forEach(a=>{if(SS.ex[a]&&SS.ex[a].fail)delete SS.ex[a]});ssLoadExtras();renderSeasons()}
-function ssFilter(f){SS.f=f;SS.more=false;renderSeasons()}
+function ssFilter(f){SS.f=f;SS.more=false;SS.hi=0;renderSeasons()}
+function ssHero(d){SS.hi=(SS.hi||0)+d;renderSeasons()}
 function ssToggle(id){SS.open=SS.open===id?'':id;SS.edit='';renderSeasons()}
 function ssGoalEdit(id,e){if(e)e.stopPropagation();SS.edit=SS.edit===id?'':id;SS.open=SS.open||id;renderSeasons();const i=document.getElementById('ssGoalIn');if(i)i.focus()}
 async function ssGoalSave(id,btn){
@@ -12439,15 +12445,20 @@ function renderSeasons(){
  const t=ssToday(), all=ssList(), next=all.filter(s=>s.to>=t&&ssDays(t,s.from)<=365);
  // The hero: the next big season (Ramadan, Dhul Hijjah) or Eid al-Fitr, each with its own look.
  // v173 the seasons with their own artwork lead the hero
- const SS_ART={ramadan:'Prepare your Ramadan campaigns.',last10:'Prepare campaigns for the final nights.',eidfitr:'Get your Eid campaigns ready.',dhulhijjah:'Plan for the first ten days.',arafah:'Make an impact on the Day of Arafah.'};
- const big=next.find(s=>s.type==='h'&&SS_ART[s.key])||next.find(s=>s.type==='h'&&(s.big||s.key==='eidfitr'));
+ // The hero shows the nearest season for the filter (All, Hijri or US); the arrows step through them.
+ const SS_ART={ramadan:'Prepare your Ramadan campaigns.',last10:'Prepare campaigns for the final nights.',eidfitr:'Get your Eid campaigns ready.',dhulhijjah:'Plan for the first ten days.',arafah:'Make an impact on the Day of Arafah.',eidadha:'Prepare your Eid al-Adha campaigns.',ashura:'Prepare your Ashura campaign plan.',thanksgiving:'Prepare your Thanksgiving campaigns.',givingtuesday:'Plan your Giving Tuesday campaign.',yearend:'Prepare your year-end giving campaigns.'};
+ const heroList=next.filter(s=>SS.f==='all'||s.type===SS.f);
+ if(SS.hi==null||SS.hf!==SS.f){SS.hi=0;SS.hf=SS.f}
+ SS.hi=Math.max(0,Math.min(SS.hi,heroList.length-1));
+ const big=heroList[SS.hi];
  let hero='';
  if(big){const live=big.from<=t, n=ssDays(t,big.from), p=((SS.info||{}).prep||{})[big.key];
    const pct=p&&p.n?Math.round(p.done/p.n*100):0;
    const th=ssTheme(big.key);
    const art=SS_ART[big.key];
-   hero=art?`<div class="ss-hero ss-art ss-a-${big.key}"><i class="ss-img" style="background-image:url('icons/seasons/${big.key}.webp?v=2')"></i><span class="ss-wm">HEMERA</span><i class="ss-ln"></i><small>${live?'ON NOW':'NEXT SEASON'} · HIJRI</small><b>${esc(big.name)}</b><p class="ss-tag">${esc(art)}</p>
-     <div class="ss-cd ss-cd3">${live?`<span><em>${SS_IC.cal}</em><strong>${ssDays(big.from,t)+1}</strong>of ${big.len} days</span><span><em>${SS_IC.flag}</em><strong>${esc(ssD(big.to))}</strong>ends</span>`:`<span><em>${SS_IC.cal}</em><strong>${n}</strong>day${n===1?'':'s'}</span><span><em>${SS_IC.flag}</em><strong>${esc(ssD(big.from))}</strong>starts</span>`}<span><em>${SS_IC.moon}</em><strong>${big.hy}</strong>Hijri year</span></div>
+   const nav=heroList.length>1?`<div class="ss-nav"><button type="button" aria-label="Earlier season" ${SS.hi<=0?'disabled':''} onclick="ssHero(-1)">‹</button><span>${SS.hi+1} / ${heroList.length}</span><button type="button" aria-label="Next season" ${SS.hi>=heroList.length-1?'disabled':''} onclick="ssHero(1)">›</button></div>`:'';
+   hero=art?`<div class="ss-hero ss-art ss-a-${big.key}">${nav}<i class="ss-img" style="background-image:url('icons/seasons/${big.key}.webp?v=2')"></i><span class="ss-wm">HEMERA</span><i class="ss-ln"></i><small>${live?'ON NOW':SS.hi?'COMING UP':'NEXT SEASON'} · ${big.type==='h'?'HIJRI':'US'}</small><b>${esc(big.name)}</b><p class="ss-tag">${esc(art)}</p>
+     <div class="ss-cd ss-cd3">${live?`<span><em>${SS_IC.cal}</em><strong>${ssDays(big.from,t)+1}</strong>of ${big.len} days</span><span><em>${SS_IC.flag}</em><strong>${esc(ssD(big.to))}</strong>ends</span>`:`<span><em>${SS_IC.cal}</em><strong>${n}</strong>day${n===1?'':'s'}</span><span><em>${SS_IC.flag}</em><strong>${esc(ssD(big.from))}</strong>starts</span>`}${big.type==='h'?`<span><em>${SS_IC.moon}</em><strong>${big.hy}</strong>Hijri year</span>`:`<span><em>${SS_IC.moon}</em><strong>${big.len}</strong>day${big.len>1?'s':''} long</span>`}</div>
      ${p?`<div class="ss-rd">Team ready · ${pct}% (${p.done} of ${p.n} prep task${p.n>1?'s':''})</div><div class="ss-bar"><i style="width:${pct}%"></i></div>`:''}
      <div class="ss-hd">${ssDetail(big,all)}</div></div>`:`<div class="ss-hero${th?' th-'+th:''}">${th?ssDeco(th):''}<small>${live?'ON NOW':'NEXT BIG SEASON'} · HIJRI</small><b>${esc(big.name)}</b>
      <div class="ss-cd">${live?`<span><strong>${ssDays(big.from,t)+1}</strong>of ${big.len} days</span><span><strong>${esc(ssD(big.to))}</strong>ends</span>`:`<span><strong>${n}</strong>day${n===1?'':'s'}</span><span><strong>${esc(ssD(big.from))}</strong>starts</span>`}<span><strong>${big.hy}</strong>Hijri year</span></div>
