@@ -3174,6 +3174,12 @@ window.addEventListener('load',function(){
     .ph2-ring>div{position:absolute;inset:0;display:grid;place-items:center;align-content:center;text-align:center}.ph2-ring small{font-size:10px;color:#c9d3f5;font-weight:800;text-transform:uppercase}.ph2-ring b{font-size:22px;font-weight:900;direction:ltr}
     .pr.m0{stroke:#9db4ff}.pr.m1{stroke:#3d6bff}.pr.m2{stroke:#22c47c}.pr.m3{stroke:#e2b874}.pr.m4{stroke:#f0838f}
     .ph2 .ph-legend i.m0{background:#7f9bea}
+    .ph3-sp{margin-top:8px}.ph3-sp small{display:block;font-size:11px;color:#c9d3f5;font-weight:850;letter-spacing:.08em;text-transform:uppercase}.ph3-sp b{display:block;font-size:40px;font-weight:900;line-height:1.1;direction:ltr}
+    .ph3-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}.ph3-list div{background:rgba(255,255,255,.1);border-radius:12px;padding:9px 11px;min-width:0}
+    .ph3-list small{display:block;font-size:10.5px;color:#c9d3f5;font-weight:750}.ph3-list b{display:block;font-size:16px;font-weight:900;direction:ltr;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    @media (min-width:900px){.ph3-list{grid-template-columns:repeat(4,minmax(0,1fr))}.ph3-list b{font-size:19px}}
+    .ph3-bar{display:flex;gap:3px;height:14px;margin:14px 0 6px}.ph3-bar i{display:block;border-radius:5px;min-width:4px}
+    .ph3-bar i.m0{background:#9db4ff}.ph3-bar i.m1{background:#3d6bff}.ph3-bar i.m2{background:#22c47c}.ph3-bar i.m3{background:#e2b874}.ph3-bar i.m4{background:#f0838f}
     .ph2-list{flex:1;display:grid;gap:9px;min-width:0}.ph2-list div{display:flex;justify-content:space-between;align-items:baseline;gap:6px;border-bottom:1px solid rgba(255,255,255,.12);padding-bottom:7px}.ph2-list div:last-child{border:0;padding:0}
     .ph2-list small{font-size:11px;color:#c9d3f5;font-weight:750}.ph2-list b{font-size:15px;font-weight:900;direction:ltr;white-space:nowrap}
     body.dark-mode .dc-r{color:#9db4ff!important}body.dark-mode .dc-r.good{color:#5be3a3!important}body.dark-mode .dc-r.bad{color:#ff9aa6!important}
@@ -8158,18 +8164,17 @@ function daysCards(days,latest,T){
  return (plan?planHero(days,T):resultsHero(days,T))+`<div class="dc-list">${cards}</div>`+(plan?`<div class="dc-legend">${PLAN_MIX_LABELS.map((l,k)=>`<span><i class="m${k}"></i>${l}</span>`).join('')}</div>`:'')+`<div class="dx-note">Tap a day to see more.</div>`;
 }
 
-/* Month plan card: channel-mix ring with the spend in the middle. */
+/* Month plan card ("Mix bar"): the spend big on top, the four numbers as tiles, then the channel mix as one bar. */
 function planHero(days,T){
  const p=T.p;
  const mix=PLAN_CHANNEL_NAMES.map((n,k)=>({n,k,s:dxSum(days,x=>(x.plan.channels[k]||{}).spend)}));
  const tot=mix.reduce((a,m)=>a+m.s,0)||1;
  const aov=p.conversions?p.value/p.conversions:null;
  const legend=`<div class="ph-legend">${mix.map(m=>`<span><i class="m${m.k}"></i>${PLAN_MIX_LABELS[m.k]} <b>${Math.round(m.s/tot*100)}%</b></span>`).join('')}</div>`;
- const R=42,C=2*Math.PI*R;let off=0;
- const arcs=mix.map(m=>{const len=m.s/tot*C;const el=`<circle r="${R}" cx="55" cy="55" fill="none" class="pr m${m.k}" stroke-width="13" stroke-dasharray="${Math.max(0,len-1.5).toFixed(1)} ${C.toFixed(1)}" stroke-dashoffset="${(-off).toFixed(1)}"/>`;off+=len;return el}).join('');
- return `<div class="ph2"><div class="ph2-top"><span>Month plan</span><em>${days.length} days</em></div>
-    <div class="ph2-body"><div class="ph2-ring"><svg viewBox="0 0 110 110"><g transform="rotate(-90 55 55)"><circle r="${R}" cx="55" cy="55" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="13"/>${arcs}</g></svg><div><small>Spend</small><b>${money(p.spend/1000,0)}k</b></div></div>
-    <div class="ph2-list"><div><small>Conversions</small><b>${fmt(p.conversions,0)}</b></div><div><small>Value</small><b>${money(p.value)}</b></div><div><small>ROAS</small><b>${fmt(p.roas,2)}x</b></div><div><small>Avg. donation</small><b>${money(aov,2)}</b></div></div></div>${legend}</div>`;
+ const bar=`<div class="ph3-bar">${mix.filter(m=>m.s>0).map(m=>`<i class="m${m.k}" style="flex:${(m.s/tot).toFixed(4)}"></i>`).join('')}</div>`;
+ return `<div class="ph2 ph3"><div class="ph2-top"><span>Month plan</span><em>${days.length} days</em></div>
+    <div class="ph3-sp"><small>Spend</small><b>${money(p.spend/1000,0)}k</b></div>
+    <div class="ph3-list"><div><small>Conversions</small><b>${fmt(p.conversions,0)}</b></div><div><small>Value</small><b>${money(p.value)}</b></div><div><small>ROAS</small><b>${fmt(p.roas,2)}x</b></div><div><small>Avg. donation</small><b>${money(aov,2)}</b></div></div>${bar}${legend}</div>`;
 }
 
 /* Month-to-date card: spend against the full-month plan as the headline, then value, conversions and ROAS, then the channel mix.
