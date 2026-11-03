@@ -6100,6 +6100,24 @@ window.addEventListener('load',function(){
     .st-qm .quick-metric .quick-icon{order:2!important;margin:0 0 0 auto!important;width:30px!important;height:30px!important;flex:0 0 30px!important}
     .st-qm .quick-copy{align-items:flex-start!important}
     .st-qm .quick-value{font-size:20px!important}
+    /* v173 Seasons hero with artwork: navy and gold, the art on the right fading into the card, three glass tiles */
+    .ss-hero.ss-art{position:relative;overflow:hidden;isolation:isolate;background:linear-gradient(160deg,#0e1a46,#14286e 60%,#1a3290)!important;border:1px solid rgba(243,215,159,.28);box-shadow:0 14px 30px rgba(14,26,70,.35)!important}
+    .ss-art .ss-img{position:absolute;right:0;top:0;width:68%;height:230px;background-size:cover;background-position:center top;z-index:-1;-webkit-mask-image:linear-gradient(to right,transparent,#000 45%),linear-gradient(to bottom,#000 60%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent,#000 45%);opacity:.95}
+    .ss-art .ss-img:after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,transparent 55%,#14286e)}
+    .ss-wm{display:block;font-size:10px;font-weight:800;letter-spacing:.42em;color:#e2b874}
+    .ss-ln{display:block;width:30px;height:2px;border-radius:2px;background:#e2b874;margin:12px 0 10px}
+    .ss-art>small{color:#f3d79f!important;opacity:.85}
+    .ss-art>b{font-family:'DM Serif Display',Georgia,serif!important;font-size:30px!important;line-height:1.08!important;max-width:72%;margin-top:4px}
+    .ss-a-dhulhijjah>b,.ss-a-eidfitr>b{background:linear-gradient(180deg,#fbe3a6,#d9a448);-webkit-background-clip:text;background-clip:text;color:transparent!important}
+    .ss-tag{margin:6px 0 0;font-size:12.5px;color:#c9d6ff;font-weight:600;max-width:70%}
+    .ss-cd3{margin-top:16px!important}
+    .ss-cd3 span{background:rgba(14,26,70,.55)!important;border:1px solid rgba(201,214,255,.22)!important;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-radius:14px!important;padding:10px 4px 9px!important;color:#c9d6ff!important}
+    .ss-cd3 em{display:grid;place-items:center;width:30px;height:30px;margin:0 auto 5px;border-radius:50%;border:1px solid rgba(243,215,159,.45);background:rgba(255,255,255,.04)}
+    .ss-cd3 em svg{width:15px;height:15px;fill:none;stroke:#e2b874;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .ss-cd3 strong{color:#fff!important}
+    .ss-art .ss-hd .ss-af{border:1px solid rgba(243,215,159,.35);border-radius:99px;background:rgba(14,26,70,.5)}
+    .ss-art .ss-hd .ss-af button{border-radius:99px!important}
+    .ss-art .ss-hd .ss-af button.on{background:linear-gradient(135deg,#f3d79f,#d9a448)!important;color:#2b1d05!important}
 </style>
 </head>
 <body>
@@ -12527,7 +12545,7 @@ function ssDetail(s,all){
    }
  }
  const info=SS.info||{}, g=(info.goals||{})[s.id], p=(info.prep||{})[s.key], mgr=tkCanManage();
- const chips=[g?`<button type="button" class="ss-ch" ${mgr?`onclick="ssGoalEdit('${s.id}',event)"`:'disabled'}>🎯 Goal ${money(g.goal)}</button>`:mgr?`<button type="button" class="ss-ch add" onclick="ssGoalEdit('${s.id}',event)">＋ Set a goal</button>`:'',
+ const chips=[g?`<button type="button" class="ss-ch" ${mgr?`onclick="ssGoalEdit('${s.id}',event)"`:'disabled'}>🎯 Goal ${money(g.goal)}</button>`:'',
    p?`<span class="ss-ch">✅ ${p.done} of ${p.n} prep task${p.n>1?'s':''}</span>`:''].filter(Boolean).join('');
  const edit=SS.edit===s.id?`<div class="ss-ge" onclick="event.stopPropagation()"><span>£</span><input id="ssGoalIn" inputmode="numeric" value="${g?g.goal:''}" placeholder="Goal in pounds" onkeydown="if(event.key==='Enter')this.nextElementSibling.click()"><button type="button" onclick="ssGoalSave('${s.id}',this)">Save</button></div><small class="ss-gn">In pounds, like the sheet. Leave it empty to remove the goal.</small>`:'';
  return `<div class="ss-dt">${tabs}<p>${txt}</p>${chips?`<div class="ss-chs">${chips}</div>`:''}${edit}</div>`;
@@ -12549,17 +12567,24 @@ function ssDeco(th){
    return `<div class="sd" aria-hidden="true">${c.map((x,i)=>`<span class="sd-conf" style="left:${8+i*16}%;background:${x};animation-delay:${(i*.9)%3.6}s"></span>`).join('')}${bal(26,38,'#ffd36b',0)}${bal(74,30,'#9ff0c8',-3.4)}</div>`}
  return `<div class="sd" aria-hidden="true"><div class="sd-hill"></div><span class="sd-sheep" style="right:22px;bottom:12px">🐑</span><span class="sd-sheep" style="right:72px;bottom:22px;font-size:20px;animation-delay:-1s">🐑</span><span class="sd-sheep" style="right:120px;bottom:10px;font-size:24px;animation-delay:-2s">🐑</span></div>`;
 }
+const SS_IC={cal:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>',flag:'<svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>',moon:'<svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg>'};
 function renderSeasons(){
  const el=document.getElementById('ssBody');if(!el)return;
  ssLoadInfo();ssLoadExtras();
  const t=ssToday(), all=ssList(), next=all.filter(s=>s.to>=t&&ssDays(t,s.from)<=365);
  
- const big=next.find(s=>s.type==='h'&&(s.big||s.key==='eidfitr'));
+ 
+ const SS_ART={ramadan:'Prepare your Ramadan campaigns.',last10:'Prepare campaigns for the final nights.',eidfitr:'Get your Eid campaigns ready.',dhulhijjah:'Plan for the first ten days.',arafah:'Make an impact on the Day of Arafah.'};
+ const big=next.find(s=>s.type==='h'&&SS_ART[s.key])||next.find(s=>s.type==='h'&&(s.big||s.key==='eidfitr'));
  let hero='';
  if(big){const live=big.from<=t, n=ssDays(t,big.from), p=((SS.info||{}).prep||{})[big.key];
    const pct=p&&p.n?Math.round(p.done/p.n*100):0;
    const th=ssTheme(big.key);
-   hero=`<div class="ss-hero${th?' th-'+th:''}">${th?ssDeco(th):''}<small>${live?'ON NOW':'NEXT BIG SEASON'} · HIJRI</small><b>${esc(big.name)}</b>
+   const art=SS_ART[big.key];
+   hero=art?`<div class="ss-hero ss-art ss-a-${big.key}"><i class="ss-img" style="background-image:url('icons/seasons/${big.key}.webp?v=2')"></i><span class="ss-wm">HEMERA</span><i class="ss-ln"></i><small>${live?'ON NOW':'NEXT SEASON'} · HIJRI</small><b>${esc(big.name)}</b><p class="ss-tag">${esc(art)}</p>
+     <div class="ss-cd ss-cd3">${live?`<span><em>${SS_IC.cal}</em><strong>${ssDays(big.from,t)+1}</strong>of ${big.len} days</span><span><em>${SS_IC.flag}</em><strong>${esc(ssD(big.to))}</strong>ends</span>`:`<span><em>${SS_IC.cal}</em><strong>${n}</strong>day${n===1?'':'s'}</span><span><em>${SS_IC.flag}</em><strong>${esc(ssD(big.from))}</strong>starts</span>`}<span><em>${SS_IC.moon}</em><strong>${big.hy}</strong>Hijri year</span></div>
+     ${p?`<div class="ss-rd">Team ready · ${pct}% (${p.done} of ${p.n} prep task${p.n>1?'s':''})</div><div class="ss-bar"><i style="width:${pct}%"></i></div>`:''}
+     <div class="ss-hd">${ssDetail(big,all)}</div></div>`:`<div class="ss-hero${th?' th-'+th:''}">${th?ssDeco(th):''}<small>${live?'ON NOW':'NEXT BIG SEASON'} · HIJRI</small><b>${esc(big.name)}</b>
      <div class="ss-cd">${live?`<span><strong>${ssDays(big.from,t)+1}</strong>of ${big.len} days</span><span><strong>${esc(ssD(big.to))}</strong>ends</span>`:`<span><strong>${n}</strong>day${n===1?'':'s'}</span><span><strong>${esc(ssD(big.from))}</strong>starts</span>`}<span><strong>${big.hy}</strong>Hijri year</span></div>
      ${p?`<div class="ss-rd">Team ready · ${pct}% (${p.done} of ${p.n} prep task${p.n>1?'s':''})</div><div class="ss-bar"><i style="width:${pct}%"></i></div>`:`<div class="ss-rd ss-rd0">No prep tasks yet. A task with “${esc(big.w[0].replace(/^./,c=>c.toUpperCase()))}” in its name counts here.</div>`}
      <div class="ss-hd">${ssDetail(big,all)}</div></div>`}
