@@ -342,8 +342,7 @@ exports.api = onRequest({
   invoker: 'public'
 }, async (req, res) => {
   const origin = req.get('origin') || '';
-  // The redesign preview link (Firebase preview channel "redesign") reaches the server too.
-  if (ORIGINS.indexOf(origin) >= 0 || /^https:\/\/sekna-app--redesign-[a-z0-9]+\.web\.app$/.test(origin)) {
+  if (ORIGINS.indexOf(origin) >= 0) {
     res.set('Access-Control-Allow-Origin', origin);
     res.set('Vary', 'Origin');
     res.set('Access-Control-Allow-Methods', 'GET, POST');

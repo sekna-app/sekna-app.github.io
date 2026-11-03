@@ -2934,6 +2934,9 @@ window.addEventListener('load',function(){
     .k4-spark{display:block;width:100%;height:46px;margin-top:6px;overflow:visible}
     .k4-spark .k4-t{fill:none;stroke:#c7cee0;stroke-width:1.5;stroke-dasharray:4 4;vector-effect:non-scaling-stroke}
     .k4-sw{position:relative;margin-top:6px}.k4-sw .k4-spark{margin-top:0}
+    /* The 1st of the month: the bar sits in the middle of the space between the figure and its target. */
+    .k4card .kpi-main:has(.k4-fb){display:flex;flex-direction:column}.k4-sw.k4-fb{flex:1;display:flex;align-items:center;min-height:46px}.k4-sw.k4-fb .k4-spark{height:46px}
+    body.dark-mode .k4-sw.k4-fb rect:first-child{fill:#262d38}body.dark-mode .k4-sw.k4-fb line,body.dark-mode .k4-sw.k4-fb text{stroke:#c9d0dc;fill:#c9d0dc}
     .k4-spark .k4-a{fill:var(--k4c);opacity:.08}.k4-spark .k4-l{fill:none;stroke:var(--k4c);stroke-width:2.5;stroke-linejoin:round;vector-effect:non-scaling-stroke}
     .k4-now{position:absolute;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;border:2px solid #fff;box-sizing:border-box;box-shadow:0 1px 4px rgba(0,0,0,.15)}
     .k4-foot{display:flex;justify-content:space-between;align-items:baseline;gap:6px;margin-top:4px}
@@ -7339,7 +7342,21 @@ function drawKpiSparks(d,ach){
    if(pct){pct.textContent=ach[key]!=null&&isFinite(ach[key])?Math.round(ach[key]*100)+'%':'';pct.style.color=st&&st[0]==='good'?'#13804f':st&&st[0]==='bad'?'#c2382f':'#a8701c'}
    if(!svg)return;
    const a=days.map(x=>Number(x[f])||0),b=days.map(x=>Number(x[t])||0);
-   if(a.length<2){svg.innerHTML='';return}
+   // Under two days in the month (the 1st), no line yet: one bar from zero to past the target instead,
+   // with a tick at the target and a ring where the same day last year landed.
+   let wrap0=svg.parentElement;if(!wrap0.classList.contains('k4-sw')){const w=document.createElement('div');w.className='k4-sw';wrap0.insertBefore(w,svg);w.appendChild(svg);wrap0=w}
+   wrap0.classList.toggle('k4-fb',a.length<2);
+   if(a.length<2){
+     const x=d.latest||{},y=d.yoy||{},cur={spend:x.spend,conversions:x.conversions,value:x.value,roas:x.spend?x.value/x.spend:0}[f],
+       tgt={spend:x.targetSpend,conversions:x.planConversions,value:x.planValue,roas:x.targetSpend?x.planValue/x.targetSpend:0}[f],
+       ly={spend:y.spend,conversions:y.conversions,value:y.value,roas:y.spend?y.value/y.spend:0}[f];
+     const W=136,sc=v=>Math.min(Math.max(v,0),1.5)/1.5*W,r=tgt?cur/tgt:0,tx=7+sc(1),lx=tgt&&ly?7+sc(ly/tgt):null;
+     svg.setAttribute('preserveAspectRatio','xMidYMid meet');svg.style.setProperty('--k4c',col);
+     svg.innerHTML=`<rect x="7" y="17" width="${W}" height="12" rx="6" fill="#eef1f7"/><rect x="7" y="17" width="${Math.max(sc(r),r>0?12:0).toFixed(1)}" height="12" rx="6" fill="${col}"/>`
+      +`<line x1="${tx.toFixed(1)}" y1="11" x2="${tx.toFixed(1)}" y2="35" stroke="#1d2433" stroke-width="1.6"/><text x="${tx.toFixed(1)}" y="9" text-anchor="middle" font-size="7" font-weight="800" fill="#1d2433">Target</text>`
+      +(lx!=null?`<circle cx="${lx.toFixed(1)}" cy="23" r="3.4" fill="#fff" stroke="#8a92a6" stroke-width="1.5"/><text x="${lx.toFixed(1)}" y="43" text-anchor="middle" font-size="7" font-weight="700" fill="#8a92a6">Last yr</text>`:'');
+     const n0=wrap0.querySelector('.k4-now');if(n0)n0.remove();return}
+   svg.setAttribute('preserveAspectRatio','none');
    const all=a.concat(b).filter(v=>v>0),mx=Math.max(...all,1)*1.08,mn=Math.min(...all,mx)*.85;
    const X=i=>2+i*146/(a.length-1),Y=v=>43-(v-mn)/((mx-mn)||1)*38;
    const pts=a.map((v,i)=>X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' '),tp=b.map((v,i)=>X(i).toFixed(1)+','+Y(v).toFixed(1)).join(' ');
