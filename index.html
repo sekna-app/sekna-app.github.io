@@ -6004,8 +6004,11 @@ window.addEventListener('load',function(){
     .wx-m:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(#f3d79f,#c9933f)}
     .wx-m .wx-thin span{background:linear-gradient(90deg,#e2b874,#c9933f)!important}
     .wx-m b.up{color:#17835a!important}.wx-m b.mid{color:#a8741c!important}.wx-m b.down{color:#c94b52!important}
-    .wx-m .wx-m-v{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wx-m .wx-m-v b{font-size:17px!important}.wx-m .wx-m-v span{font-size:10.5px!important}
+    .wx-m .wx-m-v{white-space:nowrap}.wx-m .wx-m-v b{font-size:16px!important;letter-spacing:-.01em}.wx-m .wx-m-v span{font-size:10px!important;margin-left:2px!important}
     body.dark-mode .wx-m{background:#0b0d11!important;border-color:#252a32}body.dark-mode .wx-m b.mid{color:#f3d79f!important}
+    /* v173 less text: no tick note, no strip caption, and the week bars alone pick the week (no Week 1-4 tabs) */
+    #mtdTickLegend,#weeklyStripCap,#weeklyTabs{display:none!important}
+    #weeklyStrip{margin-top:10px}#weeklyDetail{margin-top:12px}
 </style>
 </head>
 <body>
