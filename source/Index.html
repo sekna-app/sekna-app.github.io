@@ -12488,7 +12488,7 @@ const SS_GREET={
  givingtuesday:['Happy Giving Tuesday! 💙','Every contribution matters, and every effort brings us closer to our goals. Wishing our team success in creating meaningful change and transforming lives.','يوم عطاء سعيد! 💙','كل مساهمة تصنع فرقًا، وكل جهد يقربنا من هدفنا. نسأل الله التوفيق لفريقنا، وأن يجعل عطاءنا سببًا في تغيير حياة الكثيرين.'],
  yearend:["Let's End the Year with Impact! ✨","May our team's hard work lead to meaningful achievements. May every effort we make leave a lasting legacy of hope, kindness, and generosity.",'لنختتم العام بأثر عظيم ✨','نسأل الله أن يبارك في جهود فريقنا، ويوفقنا لتحقيق أهدافنا، وأن يجعل ما قدمناه من عمل وعطاء أثرًا ممتدًا بالخير والأمل.']};
 
-const SS_GREET_IMG={eidadha:1,ashura:1,thanksgiving:1,givingtuesday:1,yearend:1};
+const SS_GREET_IMG={ramadan:1,last10:1,eidfitr:1,dhulhijjah:1,arafah:1,eidadha:1,ashura:1,thanksgiving:1,givingtuesday:1,yearend:1};
 function ssGreetNow(usa){const t=ssToday();return ssList().find(x=>SS_GREET[x.key]&&SS_GREET_IMG[x.key]&&x.from<=t&&ssDays(x.from,t)<=Math.min(2,x.len-1)&&(usa||x.type==='h'))||null}
 function ssGreetSet(ar){const b=document.querySelector('#ssRem .sgr-b');if(!b)return;const g=SS_GREET[b.dataset.k];b.classList.toggle('ar',ar);b.querySelector('h2').textContent=g[ar?2:0];b.querySelector('p').textContent=g[ar?3:1];b.querySelector('.sgr-ok').textContent=ar?'شكرًا 🤍':'Thank you 🤍';
  b.querySelectorAll('.sgr-tg button').forEach((x,i)=>x.classList.toggle('on',i===(ar?1:0)))}

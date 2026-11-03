@@ -586,8 +586,13 @@ function seasonsDue(today) {
   return out;
 }
 
-// v174 the season's greeting, sent on its first day with its picture (seasons whose picture is in icons/greet).
+// v174 the season's greeting, sent on its first day with its picture (all ten seasons, pictures in icons/greet).
 const SEASON_GREET = {
+  ramadan: ['Ramadan Mubarak 🌙', 'May Allah make this a month of blessings, accept our good deeds, and guide our team toward success. May our efforts bring hope, feed those in need, and make a lasting difference.'],
+  last10: ['Blessed Last 10 Nights 🤍', 'May Allah bless us with Laylatul Qadr, accept our prayers, and grant our team success in every effort to make a meaningful difference.'],
+  eidfitr: ['Eid Mubarak! ✨', 'May Allah accept our good deeds, bless our team\'s efforts, and make our work a source of happiness and hope for those in need.'],
+  dhulhijjah: ['Blessed Days of Dhul Hijjah 🤍', 'May Allah bless these sacred days, accept our efforts, and guide our team toward greater achievements and a lasting impact.'],
+  arafah: ['Blessed Day of Arafah 🤍', 'May Allah answer our prayers, guide our team toward success, and make our efforts a source of relief, kindness, and hope.'],
   eidadha: ['Eid al-Adha Mubarak! ✨', 'May Allah accept our good deeds and sacrifices, bless our team\'s efforts, and help us bring the joy of Eid to families in need.'],
   ashura: ['Blessed Day of Ashura 🤍', 'May Allah accept our fasting, forgive us, and bless our team\'s efforts to spread kindness and make a positive difference.'],
   thanksgiving: ['Happy Thanksgiving! 🧡', 'As we celebrate gratitude and generosity, may our team find success in every effort and help bring support and hope to more families in need.'],
