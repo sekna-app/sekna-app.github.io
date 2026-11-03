@@ -5966,6 +5966,11 @@ window.addEventListener('load',function(){
     .ss-art .ss-ln{margin-bottom:118px!important}
     .ss-art>b,.ss-art .ss-tag{max-width:100%!important}
     .ss-art .ss-img{background-position:center!important}
+    .ssr-ov{position:fixed;inset:0;z-index:2147482000;background:rgba(8,12,30,.6);display:flex;align-items:flex-end;justify-content:center;padding:16px 14px calc(18px + env(safe-area-inset-bottom));opacity:0;transition:opacity .25s}
+    .ssr-ov.on{opacity:1}.ssr-ov .ssr{width:100%;max-width:440px;transform:translateY(30px);transition:transform .35s cubic-bezier(.2,.8,.25,1);margin:0}.ssr-ov.on .ssr{transform:none}
+    .ssr-x{position:absolute;right:12px;top:12px;z-index:3;width:30px;height:30px;border-radius:50%;border:0;background:rgba(14,26,70,.6);color:#fff;font-size:13px;cursor:pointer}
+    .ssr-b{display:flex;gap:8px;margin-top:14px}.ssr-b button{flex:1;height:44px;border-radius:13px;border:0;font:inherit;font-size:13.5px;font-weight:900;cursor:pointer}
+    .ssr-l{background:rgba(255,255,255,.1);color:#c9d6ff;border:1px solid rgba(255,255,255,.15)!important}.ssr-o{background:linear-gradient(135deg,#f3d79f,#d9a448);color:#2b1d05}
 </style>
 </head>
 <body>
@@ -7687,6 +7692,7 @@ function render(d,opts){
  setTimeout(()=>{try{roasDropCheck(d)}catch(e){}},1300);
  try{streakDraw(d)}catch(e){}
  try{bbDraw()}catch(e){}
+ setTimeout(()=>{try{ssRemind()}catch(e){}},2600);
  try{if(!WK_LY)drawWeeklyLy(false)}catch(e){}
  try{storyTrayDraw();if(STX_PENDING===CURRENT_ACCOUNT){STX_PENDING='';setTimeout(()=>openStories(CURRENT_ACCOUNT),400)}}catch(e){}
  kpi('kValue','tValue','dValue','pValue',money(x.value),money(x.planValue),x.valueAchievement,false);
@@ -12446,6 +12452,20 @@ function ssDeco(th){
  return `<div class="sd" aria-hidden="true"><div class="sd-hill"></div><span class="sd-sheep" style="right:22px;bottom:12px">🐑</span><span class="sd-sheep" style="right:72px;bottom:22px;font-size:20px;animation-delay:-1s">🐑</span><span class="sd-sheep" style="right:120px;bottom:10px;font-size:24px;animation-delay:-2s">🐑</span></div>`;
 }
 const SS_IC={cal:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>',flag:'<svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>',moon:'<svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg>'};
+const SS_ART={ramadan:'Prepare your Ramadan campaigns.',last10:'Prepare campaigns for the final nights.',eidfitr:'Get your Eid campaigns ready.',dhulhijjah:'Plan for the first ten days.',arafah:'Make an impact on the Day of Arafah.',eidadha:'Prepare your Eid al-Adha campaigns.',ashura:'Prepare your Ashura campaign plan.',thanksgiving:'Prepare your Thanksgiving campaigns.',givingtuesday:'Plan your Giving Tuesday campaign.',yearend:'Prepare your year-end giving campaigns.'};
+// v173 season reminder in the app: 15 days or less before a season, its card shows once (Later or Open).
+function ssRemind(){
+ if(document.getElementById('ssRem')||!canDo('seasons')||document.body.classList.contains('gate-open'))return;
+ const t=ssToday(),s=ssList().find(x=>x.from>t&&ssDays(t,x.from)<=15&&SS_ART[x.key]);if(!s)return;
+ const k='sekna_ssrem_'+s.id;if(storeGet(k))return;
+ const n=ssDays(t,s.from),o=document.createElement('div');o.id='ssRem';o.className='ssr-ov';o.setAttribute('data-share-ui','');
+ o.innerHTML=`<div class="ss-hero ss-art ss-a-${s.key} ssr" role="dialog" aria-label="${esc(s.name)} reminder"><i class="ss-img" style="background-image:url('icons/seasons/${s.key}.webp?v=5')"></i><button type="button" class="ssr-x" aria-label="Close" onclick="ssRemClose('${k}')">✕</button><span class="ss-wm">HEMERA</span><i class="ss-ln"></i><small>REMINDER · IN ${n} DAY${n===1?'':'S'}</small><b>${esc(s.name)}</b><p class="ss-tag">${esc(SS_ART[s.key])}</p>
+  <div class="ss-cd ss-cd3"><span><em>${SS_IC.cal}</em><strong>${n}</strong>day${n===1?'':'s'}</span><span><em>${SS_IC.flag}</em><strong>${esc(ssD(s.from))}</strong>starts</span>${s.type==='h'?`<span><em>${SS_IC.moon}</em><strong>${s.hy}</strong>Hijri year</span>`:`<span><em>${SS_IC.moon}</em><strong>${s.len}</strong>day${s.len>1?'s':''} long</span>`}</div>
+  <div class="ssr-b"><button type="button" class="ssr-l" onclick="ssRemClose('${k}')">Later</button><button type="button" class="ssr-o" onclick="ssRemOpen('${k}','${s.id}')">Open</button></div></div>`;
+ document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('on'));
+}
+function ssRemClose(k){storeSet(k,'1');const o=document.getElementById('ssRem');if(o){o.classList.remove('on');setTimeout(()=>o.remove(),250)}}
+function ssRemOpen(k,id){ssRemClose(k);SS.f='all';const t=ssToday(),L=ssList().filter(s=>s.to>=t&&ssDays(t,s.from)<=365);SS.hf='all';SS.hi=Math.max(0,L.findIndex(s=>s.id===id));switchDashboardTab('seasons');window.scrollTo(0,0)}
 function renderSeasons(){
  const el=document.getElementById('ssBody');if(!el)return;
  ssLoadInfo();ssLoadExtras();
@@ -12453,7 +12473,6 @@ function renderSeasons(){
  // The hero: the next big season (Ramadan, Dhul Hijjah) or Eid al-Fitr, each with its own look.
  // v173 the seasons with their own artwork lead the hero
  // The hero shows the nearest season for the filter (All, Hijri or US); the arrows step through them.
- const SS_ART={ramadan:'Prepare your Ramadan campaigns.',last10:'Prepare campaigns for the final nights.',eidfitr:'Get your Eid campaigns ready.',dhulhijjah:'Plan for the first ten days.',arafah:'Make an impact on the Day of Arafah.',eidadha:'Prepare your Eid al-Adha campaigns.',ashura:'Prepare your Ashura campaign plan.',thanksgiving:'Prepare your Thanksgiving campaigns.',givingtuesday:'Plan your Giving Tuesday campaign.',yearend:'Prepare your year-end giving campaigns.'};
  const heroList=next.filter(s=>SS.f==='all'||s.type===SS.f);
  if(SS.hi==null||SS.hf!==SS.f){SS.hi=0;SS.hf=SS.f}
  SS.hi=Math.max(0,Math.min(SS.hi,heroList.length-1));
@@ -12464,7 +12483,7 @@ function renderSeasons(){
    const th=ssTheme(big.key);
    const art=SS_ART[big.key];
    const nav=heroList.length>1?`<div class="ss-nav"><button type="button" aria-label="Earlier season" ${SS.hi<=0?'disabled':''} onclick="ssHero(-1)">‹</button><span>${SS.hi+1} / ${heroList.length}</span><button type="button" aria-label="Next season" ${SS.hi>=heroList.length-1?'disabled':''} onclick="ssHero(1)">›</button></div>`:'';
-   hero=art?`<div class="ss-hero ss-art ss-a-${big.key}">${nav}<i class="ss-img" style="background-image:url('icons/seasons/${big.key}.webp?v=4')"></i><span class="ss-wm">HEMERA</span><i class="ss-ln"></i><small>${live?'ON NOW':SS.hi?'COMING UP':'NEXT SEASON'} · ${big.type==='h'?'HIJRI':'US'}</small><b>${esc(big.name)}</b><p class="ss-tag">${esc(art)}</p>
+   hero=art?`<div class="ss-hero ss-art ss-a-${big.key}">${nav}<i class="ss-img" style="background-image:url('icons/seasons/${big.key}.webp?v=5')"></i><span class="ss-wm">HEMERA</span><i class="ss-ln"></i><small>${live?'ON NOW':SS.hi?'COMING UP':'NEXT SEASON'} · ${big.type==='h'?'HIJRI':'US'}</small><b>${esc(big.name)}</b><p class="ss-tag">${esc(art)}</p>
      <div class="ss-cd ss-cd3">${live?`<span><em>${SS_IC.cal}</em><strong>${ssDays(big.from,t)+1}</strong>of ${big.len} days</span><span><em>${SS_IC.flag}</em><strong>${esc(ssD(big.to))}</strong>ends</span>`:`<span><em>${SS_IC.cal}</em><strong>${n}</strong>day${n===1?'':'s'}</span><span><em>${SS_IC.flag}</em><strong>${esc(ssD(big.from))}</strong>starts</span>`}${big.type==='h'?`<span><em>${SS_IC.moon}</em><strong>${big.hy}</strong>Hijri year</span>`:`<span><em>${SS_IC.moon}</em><strong>${big.len}</strong>day${big.len>1?'s':''} long</span>`}</div>
      ${p?`<div class="ss-rd">Team ready · ${pct}% (${p.done} of ${p.n} prep task${p.n>1?'s':''})</div><div class="ss-bar"><i style="width:${pct}%"></i></div>`:''}
      <div class="ss-hd">${ssDetail(big,all)}</div></div>`:`<div class="ss-hero${th?' th-'+th:''}">${th?ssDeco(th):''}<small>${live?'ON NOW':'NEXT BIG SEASON'} · HIJRI</small><b>${esc(big.name)}</b>

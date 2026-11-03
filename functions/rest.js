@@ -562,26 +562,26 @@ async function pushState() {
     releaseTag: st.releaseTag || '' };
 }
 
-/* ---------- season reminders (the Seasons Calendar's seasons, 14 and 3 days ahead) ---------- */
+/* ---------- season reminders (the Seasons Calendar's seasons, 15 days ahead) ---------- */
 const SEASONS_H = [
-  { k: 'ramadan', m: 9, d: 1, name: 'Ramadan', e: '🌙' }, { k: 'last10', m: 9, d: 21, name: 'The last 10 nights', e: '🌙' },
-  { k: 'eidfitr', m: 10, d: 1, name: 'Eid al-Fitr', e: '🎉' }, { k: 'dhulhijjah', m: 12, d: 1, name: 'Dhul Hijjah', e: '🕋' },
+  { k: 'ramadan', m: 9, d: 1, name: 'Ramadan', e: '🌙', y: 1 }, { k: 'last10', m: 9, d: 21, name: 'The last 10 nights', e: '🌙' },
+  { k: 'eidfitr', m: 10, d: 1, name: 'Eid al-Fitr', e: '🎉' }, { k: 'dhulhijjah', m: 12, d: 1, name: 'First 10 days of Dhul Hijjah', e: '🕋', y: 1 },
   { k: 'arafah', m: 12, d: 9, name: 'The Day of Arafah', e: '🕋' }, { k: 'eidadha', m: 12, d: 10, name: 'Eid al-Adha', e: '🐑' },
   { k: 'ashura', m: 1, d: 10, name: 'Ashura', e: '🤲' }];
 const isoPlus = (dk, n) => new Date(Date.parse(dk + 'T00:00:00Z') + n * 864e5).toISOString().slice(0, 10);
 function nthDay(y, mo, wd, n) { const f = new Date(Date.UTC(y, mo - 1, 1)).getUTCDay(); return new Date(Date.UTC(y, mo - 1, 1 + (wd - f + 7) % 7 + (n - 1) * 7)).toISOString().slice(0, 10); }
-/** The seasons that start exactly 14 or 3 days after `today` (yyyy-mm-dd). */
+/** The seasons that start exactly 15 days after `today` (yyyy-mm-dd). */
 function seasonsDue(today) {
   const out = [], fmt = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { day: 'numeric', month: 'numeric', year: 'numeric', timeZone: 'UTC' });
-  for (const left of [14, 3]) {
+  for (const left of [15]) {
     const dk = isoPlus(today, left), before = isoPlus(dk, -1);
     const h = dk => { const p = {}; fmt.formatToParts(new Date(dk + 'T00:00:00Z')).forEach(x => { p[x.type] = parseInt(x.value, 10); }); return p; };
     const a = h(dk), b = h(before);
     // A Hijri season starts on the first day that reaches its Hijri date.
-    SEASONS_H.forEach(s => { if (a.month === s.m && a.day >= s.d && !(b.month === s.m && b.day >= s.d)) out.push({ id: s.k + '-' + a.year, name: s.name, e: s.e, left, acc: '' }); });
+    SEASONS_H.forEach(s => { if (a.month === s.m && a.day >= s.d && !(b.month === s.m && b.day >= s.d)) out.push({ id: s.k + '-' + a.year, name: s.name + (s.y ? ' ' + a.year : ''), e: s.e, left, acc: '', at: dk }); });
     const y = +dk.slice(0, 4), tg = nthDay(y, 11, 4, 4);
     [['thanksgiving', 'Thanksgiving', '🦃', tg], ['givingtuesday', 'Giving Tuesday', '💛', isoPlus(tg, 5)], ['yearend', 'Year-end giving', '🎁', y + '-12-26']]
-      .forEach(([k, name, e, at]) => { if (at === dk) out.push({ id: k + '-' + y, name, e, left, acc: 'usa' }); });
+      .forEach(([k, name, e, at]) => { if (at === dk) out.push({ id: k + '-' + y, name, e, left, acc: 'usa', at: dk }); });
   }
   return out;
 }
@@ -629,7 +629,8 @@ async function pushChecks(latestByAccount, daysByAccount) {
       for (const s of seasonsDue(today)) {
         const key = s.id + '-' + s.left;
         if (sent[key]) continue;
-        await notify.send({ topics: [{ title: s.e + ' ' + s.name + ' in ' + s.left + ' days' + (s.acc ? ' · USA' : ''), body: 'Last year\'s numbers and your prep list are ready. Open HEMERA.',
+        const start = new Date(s.at + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+        await notify.send({ topics: [{ title: s.e + ' ' + s.name + ' is in ' + s.left + ' days' + (s.acc ? ' · USA' : ''), body: 'Starts ' + start + '. Open to see last year\'s numbers.',
           account: s.acc || 'usa', eventType: 'season' }] }).catch(e => console.error('Season reminder: ' + e.message));
         sent[key] = Date.now(); out.season = (out.season || []).concat(key);
       }
