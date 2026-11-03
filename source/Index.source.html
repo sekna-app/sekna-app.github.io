@@ -5850,6 +5850,14 @@ window.addEventListener('load',function(){
     .wly-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
     .wly-btn span{background:rgba(255,255,255,.55);border-radius:99px;padding:2px 7px;font-size:11px}
     .wly-btn.on{background:linear-gradient(135deg,#2a4fd0,#14286e)!important;color:#fff!important;box-shadow:0 6px 14px rgba(20,40,110,.35)!important}.wly-btn.on span{background:rgba(255,255,255,.2)}
+    /* v173 Navy hero: the year box is navy, with this year so far and last year under it; tapping it opens Forecast and Actual same days */
+    body .vly-btn{background:linear-gradient(150deg,#14286e,#2a4fd0)!important;border:0!important;border-radius:18px 18px 0 0!important;padding:14px 12px 10px!important;overflow:hidden}
+    body .vly-btn:after{content:"";position:absolute;right:-30px;top:-40px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(226,184,116,.35),transparent 70%);pointer-events:none}
+    body .vly-btn .vly-y{color:#fff!important}body .vly-btn .vly-y.l{color:#c9d6ff!important}body .vly-btn .vly-y small{color:#f3d79f!important}
+    body .vly-btn .vly-vs{box-shadow:0 0 0 5px rgba(243,215,159,.18)!important}body .vly-btn i{display:none}
+    .vly-tot{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;border:0;margin:0;font:inherit;cursor:pointer;background:linear-gradient(150deg,#1a3392,#2a4fd0);color:#c9d6ff;font-size:11px;font-weight:700;padding:8px 14px 12px;border-radius:0 0 18px 18px}
+    .vly-tot b{color:#fff;font-size:13px;font-weight:900}
+    .vly-more{background:rgba(255,255,255,.14);color:#f3d79f;font-weight:900;font-size:10.5px;padding:4px 9px;border-radius:99px;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -7972,6 +7980,7 @@ function drawWeeklyLy(anim){
    return `<div class="lyx-t ${w.live&&w.t.v>=w.l.v?'w':w.live?'l':'f'}"><div class="lyx-d"><b>Week ${w.i+1}</b>${esc(w.hf)} – ${esc(w.ht)}</div><div class="lyx-v">${w.live?money(w.t.v):'To come'}</div><div class="lyx-ly">Last year ${money(w.l.v)} · ${esc(dd(w.from))} – ${esc(dd(w.to))}${w.live&&w.live<w.n?` · ${w.live} of ${w.n} days so far`:''}</div>
     <div class="lyx-det"><div class="lyx-dr hd"><span>Days ${w.a}–${w.z}</span><b>This year</b><b>Last year</b><span></span></div>${rows.map(([t,x,y,f,g])=>{const d=w.live&&x!=null&&y?x/y-1:null,c=!g||d==null||Math.abs(d)<.005?'neutral':d>0?'good':'bad';return `<div class="lyx-dr"><span>${t}</span><b>${w.live?f(x):'—'}</b><b class="m">${f(y)}</b>${mxArrow(d,c)}</div>`}).join('')}</div></div>`});
  const go=anim&&motionOn();
+ WLY_TOT={t:W.reduce((q,w)=>q+M.g(w.t)*(WLY_M==='r'?0:1),0),l:W.reduce((q,w)=>q+M.g(w.l)*(WLY_M==='r'?0:1),0),f:M.f,r:WLY_M==='r'};
  box.innerHTML=`<div class="wly-cap">Same Hijri weeks last year · ${esc(dd(W[0]&&W[0].from))} – ${esc(dd(W.length&&W[W.length-1].to))}</div>
   <div class="wly-ms">${[['v','Value'],['s','Spend'],['r','ROAS']].map(([k,l])=>`<button type="button" class="${WLY_M===k?'on':''}" onclick="wlyMetric('${k}')">${l}</button>`).join('')}</div>
   ${vlyHtml()}
@@ -7982,7 +7991,7 @@ function drawWeeklyLy(anim){
 function wlyOpen(i){LYX_SHEETS=WLY_SHEETS;lyxOpen(i)}
 // v170 "Night card": the month tab's "<month> vs <month last year>" block — Forecast vs last year (full month)
 // and Actual vs last year (same days), as two cards you swipe. Read on the server with the day's data.
-let VLY={}, VLY_OPEN=false, VLY_K=0;
+let VLY={}, VLY_OPEN=false, VLY_K=0, WLY_TOT=null;
 const VLY_M=['Spend','Clicks','Conv.','Value','ROAS','CPA'];
 function vlyToggle(){VLY_OPEN=!VLY_OPEN;VLY_K=0;const c=VLY[CURRENT_ACCOUNT];if(VLY_OPEN&&(!c||c.err))vlyLoad();drawWeeklyLy(false)}
 function vlyLoad(){
@@ -7995,7 +8004,9 @@ function vlyHtml(){
  // "OCTOBER 2026 vs OCTOBER 2025" from the sheet; before it is read, the dashboard's month and year.
  const tm=String(d&&d.title||'').match(/([A-Za-z]+)\s+(\d{4})\s+vs\.?\s+([A-Za-z]+)\s+(\d{4})/i),x=(DASH_DATA&&DASH_DATA.latest)||{},y0=Number(String(x.date||'').slice(0,4))||new Date().getFullYear();
  const yr=tm?[[tm[2],tm[1]],[tm[4],tm[3]]]:[[y0,x.monthName||''],[y0-1,x.monthName||'']];
- const btn=`<button type="button" class="vly-btn${VLY_OPEN?' on':''}" onclick="vlyToggle()" aria-expanded="${VLY_OPEN}" aria-label="${esc(yr[0][1]+' '+yr[0][0]+' vs '+yr[1][1]+' '+yr[1][0])}"><span class="vly-y">${esc(yr[0][0])}<small>${esc(String(yr[0][1]).toUpperCase())}</small></span><span class="vly-vs">VS</span><span class="vly-y l">${esc(yr[1][0])}<small>${esc(String(yr[1][1]).toUpperCase())}</small></span><i>▾</i></button>`;
+ let btn=`<button type="button" class="vly-btn${VLY_OPEN?' on':''}" onclick="vlyToggle()" aria-expanded="${VLY_OPEN}" aria-label="${esc(yr[0][1]+' '+yr[0][0]+' vs '+yr[1][1]+' '+yr[1][0])}"><span class="vly-y">${esc(yr[0][0])}<small>${esc(String(yr[0][1]).toUpperCase())}</small></span><span class="vly-vs">VS</span><span class="vly-y l">${esc(yr[1][0])}<small>${esc(String(yr[1][1]).toUpperCase())}</small></span><i>▾</i></button>`;
+ const T=WLY_TOT,tot=T&&!T.r?`<button type="button" class="vly-tot" onclick="vlyToggle()"><span>So far <b>${T.f(T.t)}</b></span><span class="vly-more">${VLY_OPEN?'Hide':'Forecast &amp; same days'} ${VLY_OPEN?'▴':'▾'}</span><span>Last year <b>${T.f(T.l)}</b></span></button>`:`<button type="button" class="vly-tot" onclick="vlyToggle()"><span class="vly-more" style="margin:auto">${VLY_OPEN?'Hide':'Forecast &amp; same days'} ${VLY_OPEN?'▴':'▾'}</span></button>`;
+ btn=btn+tot;
  if(!VLY_OPEN)return btn;
  if(!d)return btn+`<div class="vly-wait">${c.err?'⚠️ '+esc(c.err)+' · <a href="#" onclick="vlyLoad();drawWeeklyLy(false);return false">Try again</a>':'<span class="lab-spin dark"></span> Reading the month tab…'}</div>`;
  if(d.missing||!(d.forecast&&d.forecast.ty)&&!(d.actual&&d.actual.ty))return btn+`<div class="vly-wait">The month tab of ${esc(CURRENT_ACCOUNT.toUpperCase())} has no “vs last year” table yet.</div>`;
