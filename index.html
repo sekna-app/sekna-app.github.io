@@ -5959,6 +5959,33 @@ window.addEventListener('load',function(){
     body .sk-drawer .sk-drawer-head .sk-drawer-logo{display:none!important}
     body .sk-drawer .sk-drawer-head .sk-icon-btn{width:30px!important;height:30px!important;min-height:30px!important;border-radius:10px!important}
     body .sk-drawer .sk-drawer-head .sk-icon-btn svg{width:15px!important;height:15px!important}
+    /* v173 Same Hijri day: the years sit on a line; the winner glows gold */
+    .py-list{position:relative;padding-left:26px}
+    .py-list:before{content:"";position:absolute;left:9px;top:28px;bottom:28px;width:3px;border-radius:3px;background:linear-gradient(#cfd6ea,#e7eaf3)}
+    .py-list .py-c2{position:relative;overflow:visible;border:0!important;box-shadow:0 8px 18px rgba(30,45,90,.08)!important}
+    .py-list .py-c2:before{content:"";position:absolute;left:-23px;top:31px;width:13px;height:13px;border-radius:50%;background:#fff;border:3px solid #6470e8;box-sizing:border-box}
+    .py-list .py-c2.open{box-shadow:0 0 0 2px #203c8e,0 8px 18px rgba(30,45,90,.1)!important}
+    .py-list .py-c2.win{background:linear-gradient(150deg,#fff8e8,#fff)!important;box-shadow:0 0 0 2px #e2b874,0 10px 22px rgba(226,184,116,.35)!important}
+    .py-list .py-c2.win:before{border-color:#e2b874;background:#e2b874;box-shadow:0 0 10px rgba(226,184,116,.8)}
+    .py-list .py-c2 .py-badge,.py-list .py-c2.today .py-badge{background:#eef0fb!important;color:#203c8e!important;box-shadow:none!important}
+    .py-list .py-c2.today .py-badge small,.py-list .py-c2 .py-badge small{color:#8a92a6!important}
+    .py-list .py-c2.win .py-badge{background:linear-gradient(135deg,#f3d79f,#e2b874)!important;color:#0c1a46!important}
+    .py-list .py-c2.win .py-badge small{color:#5a3d0c!important}
+    .py-list .py-c2.win .py-winb{background:#e2b874!important;color:#0c1a46!important;box-shadow:none!important}
+    .py-list .py-c2.win .py-bar i{background:linear-gradient(90deg,#f3d79f,#d9a448)!important}
+    body.dark-mode .py-list:before{background:#2a313c}body.dark-mode .py-list .py-c2:before{background:#151a22}
+    body.dark-mode .py-list .py-c2.win{background:linear-gradient(150deg,#2a2414,#151a22)!important}
+    body.dark-mode .py-list .py-c2 .py-badge{background:#1d2440!important;color:#9db4ff!important}
+    /* v173 Month at a Glance, Value and ROAS: the Ring design's lettering and colours on the cards you have */
+    #channelPanel .sx-ftile,#overviewPanel .sx-ftile{background:linear-gradient(150deg,#fff,#f3f5fb)!important;box-shadow:inset 0 1px 0 #fff,0 12px 24px rgba(30,45,90,.10),0 3px 0 #e3e7f0!important}
+    .sx-ftile.st-r{box-shadow:inset 0 1px 0 #fff,0 12px 24px rgba(244,107,107,.18),0 3px 0 #f9caca!important}
+    .sx-ftile.st-g{box-shadow:inset 0 1px 0 #fff,0 12px 24px rgba(32,168,115,.18),0 3px 0 #bfe9d6!important}
+    .sx-ftile.st-a{box-shadow:inset 0 1px 0 #fff,0 12px 24px rgba(226,184,116,.22),0 3px 0 #f1dcb4!important}
+    .sx-ftile .sx-lbl{font-weight:900!important;letter-spacing:.12em!important}
+    .sx-ftile.st-r .sx-lbl{color:#c94b52!important}.sx-ftile.st-g .sx-lbl{color:#17835a!important}.sx-ftile.st-a .sx-lbl{color:#a8741c!important}
+    .sx-ftile>b{font-size:22px!important;font-weight:900!important;color:#1d2433!important}
+    .sx-ftile .mg-rows div{font-size:12.5px!important;color:#4b5263!important}.sx-ftile .mg-rows div b{color:#1d2433;font-weight:800!important}.sx-ftile .mg-rows b.up{color:#17835a!important}.sx-ftile .mg-rows b.down{color:#c94b52!important}
+    body.dark-mode .sx-ftile{background:#0b0d11!important;box-shadow:none!important}body.dark-mode .sx-ftile>b,body.dark-mode .sx-ftile .mg-rows div b:not(.up):not(.down){color:#fff!important}body.dark-mode .sx-ftile .mg-rows div{color:#a7afbf!important}
 </style>
 </head>
 <body>
