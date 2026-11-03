@@ -6164,6 +6164,8 @@ window.addEventListener('load',function(){
     .sgr .ssr-x{background:rgba(0,0,0,.45)}
     .stx-sgr{width:100%;text-align:center}.stx-sgr img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:20px;box-shadow:0 14px 40px rgba(0,0,0,.4);margin-bottom:18px}
     .stx-sgr b{display:block;font-size:24px;line-height:1.2;color:#f3d79f;font-weight:900;margin-bottom:10px}.stx-sgr p{color:#dfe5f5;font-size:15px;line-height:1.6;font-weight:600;margin:0}
+    /* v174 season splash on phones: the full-screen picture (subject on top, the same blue down to the bottom) */
+    @media (max-width:899px){.sks-sbg.sks-m{inset:0!important;height:100%!important;background-size:cover!important;background-position:top center!important;opacity:1!important;-webkit-mask-image:none!important;mask-image:none!important;z-index:0}}
 </style>
 </head>
 <body>
@@ -6181,7 +6183,8 @@ window.addEventListener('load',function(){
  
  window.sksSeason=function(k){var L={ramadan:'RAMADAN MUBARAK',last10:'THE LAST 10 NIGHTS',eidfitr:'EID MUBARAK',dhulhijjah:'THE BEST 10 DAYS',arafah:'THE DAY OF ARAFAH',eidadha:'EID AL-ADHA MUBARAK',ashura:'ASHURA',thanksgiving:'HAPPY THANKSGIVING',givingtuesday:'GIVING TUESDAY',yearend:'YEAR-END GIVING'};
   if(!k||!L[k])return;var b=s.querySelector('.sks-sbg');if(!b){b=document.createElement('i');b.className='sks-sbg';s.insertBefore(b,s.firstChild)}
-  b.style.backgroundImage="url('icons/seasons/"+k+".webp?v=5')";var t=s.querySelector('.sks-sl');if(!t){t=document.createElement('div');t.className='sks-sl';s.appendChild(t)}t.textContent=L[k]};
+  var mob=window.matchMedia&&matchMedia('(max-width:899px)').matches;b.classList.toggle('sks-m',!!mob);
+  b.style.backgroundImage=mob?"url('icons/splash/"+k+".webp?v=1')":"url('icons/seasons/"+k+".webp?v=5')";var t=s.querySelector('.sks-sl');if(!t){t=document.createElement('div');t.className='sks-sl';s.appendChild(t)}t.textContent=L[k]};
  try{var now=new Date(),h={};new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',timeZone:'Asia/Muscat'}).formatToParts(now).forEach(function(x){h[x.type]=parseInt(x.value,10)});
   var m=h.month,d=h.day,k='';
   if(m===9)k=d>=21?'last10':'ramadan';else if(m===10&&d<=3)k='eidfitr';else if(m===12&&d<=8)k='dhulhijjah';else if(m===12&&d===9)k='arafah';else if(m===12&&d<=13)k='eidadha';else if(m===1&&(d===9||d===10))k='ashura';
