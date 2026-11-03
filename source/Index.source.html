@@ -5824,6 +5824,17 @@ window.addEventListener('load',function(){
     body.dark-mode .sx-ftile{background:#0b0d11!important;box-shadow:none!important}body.dark-mode .sx-ftile>b,body.dark-mode .sx-ftile .mg-rows div b:not(.up):not(.down){color:#fff!important}body.dark-mode .sx-ftile .mg-rows div{color:#a7afbf!important}
     /* v173 sharp logo: no light behind the R on the loading screen */
     .sks-logo:after{display:none!important}
+    /* v173 Channel Delivery: white cards with a side band in each type's colour (Night set), the icon and bar in that colour */
+    .ccd.k0{--a:#7b5cf0;--b:#4b2fb8}.ccd.k1{--a:#3a56c9;--b:#1b2c78}.ccd.k2{--a:#f0a94a;--b:#c97a1e}.ccd.k3{--a:#39b8e0;--b:#1d7fb3}.ccd.k4{--a:#f25f6b;--b:#b8283a}
+    .ccd[class*=" k"]{position:relative;overflow:hidden;padding-left:19px!important}
+    .ccd[class*=" k"]:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(var(--a),var(--b))}
+    .ccd[class*=" k"] .channel-icon{background:linear-gradient(135deg,var(--a),var(--b))!important;color:#fff!important;border:0!important;box-shadow:0 4px 10px color-mix(in srgb,var(--b) 30%,transparent)!important}
+    .ccd[class*=" k"] .channel-icon svg,.ccd[class*=" k"] .channel-icon svg *{stroke:#fff!important;color:#fff!important}
+    .ccd[class*=" k"] .channel-icon svg [fill]:not([fill=none]){fill:#fff!important}
+    .ccd[class*=" k"] .channel-icon img{filter:brightness(0) invert(1)}
+    .ccd[class*=" k"] .cc-roas:not(.win){background:color-mix(in srgb,var(--a) 14%,#fff)!important;color:var(--b)!important}
+    .ccd[class*=" k"] .cc-bar span:not(.over){background:linear-gradient(90deg,var(--a),var(--b))!important}
+    body.dark-mode .ccd[class*=" k"] .cc-roas:not(.win){background:color-mix(in srgb,var(--a) 22%,#151a22)!important;color:#fff!important}
 </style>
 </head>
 <body>
@@ -8078,8 +8089,8 @@ function renderChannels(rows){
  if(!host)return;
  const sorted=[...(rows||[])].sort((a,b)=>(Number(b.roas)||0)-(Number(a.roas)||0));
  host.innerHTML=sorted.map((r,i)=>{
-  const roas=Number(r.roas)||0, win=i===0, ach=Number(r.spendAchievement)||0;
-  return `<div class="ccd${win?' win':''}">
+  const roas=Number(r.roas)||0, win=i===0, ach=Number(r.spendAchievement)||0, k=Math.min(Math.max(CHANNEL_ORDER.indexOf(isVideoChannel(r.channel)?'Video (YouTube)':r.channel),0),4);
+  return `<div class="ccd k${k}${win?' win':''}">
    <div class="cc-h"><span class="channel-icon ${channelIconClass(r.channel)}">${channelIconSvg(r.channel)}</span><b>${esc(chName(r.channel))}</b><em class="cc-roas${win?' win':roas<1?' low':''}" style="--i:${i}">${win?'<span class="cc-crown">👑</span> ':''}${fmt(roas,2)}x</em></div>
    <div class="cc-sp"><b>${money(r.actualSpend)}</b> spent · <span class="${ach>1.15?'over':''}">${percent(ach)} of plan</span></div>
    <div class="cc-bar"><span class="${ach>1?'over':''}" style="--w:${Math.min(ach*100,100).toFixed(1)}%;--i:${i};width:${Math.min(ach*100,100)}%"></span></div>
