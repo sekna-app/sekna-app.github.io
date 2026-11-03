@@ -5749,6 +5749,12 @@ window.addEventListener('load',function(){
     .cur-pop:before{content:"";position:absolute;right:16px;top:-4px;width:8px;height:8px;background:#0e1a46;transform:rotate(45deg)}
     .cur-pop.out{animation:curPopOut .3s ease forwards}
     @keyframes curPopIn{from{opacity:0;transform:translateY(-6px) scale(.9)}}@keyframes curPopOut{to{opacity:0;transform:translateY(-4px)}}
+    /* v173 money switch: the arrows spin, the chip bumps and a ring spreads */
+    .cur-sw.cur-chip button{position:relative}
+    .cur-sw.cur-chip.go button svg{animation:curSpin .5s cubic-bezier(.4,0,.2,1)}
+    .cur-sw.cur-chip.go button{animation:curBump .4s ease}
+    .cur-sw.cur-chip.go button:after{content:"";position:absolute;inset:-2px;border-radius:99px;border:2px solid currentColor;opacity:.6;animation:curRip .6s ease-out forwards;pointer-events:none}
+    @keyframes curSpin{to{transform:rotate(180deg)}}@keyframes curBump{40%{transform:scale(1.08)}}@keyframes curRip{to{inset:-12px;opacity:0}}
 </style>
 </head>
 <body>
@@ -10546,6 +10552,7 @@ async function setCur(c){
  if(!CUR_LIST[c]||c===CUR)return;
  if(c!=='GBP'&&!(FX&&FX.rates&&FX.rates[c])){try{await fxLoad(true)}catch(e){}if(!(FX&&FX.rates&&FX.rates[c]))return showSettingsToast('The exchange rate is not available right now. Try again later.')}
  CUR=c;curDraw();curPop();
+ {const sw=document.getElementById('curSw');if(sw){sw.classList.remove('go');void sw.offsetWidth;sw.classList.add('go');setTimeout(()=>sw.classList.remove('go'),650)}}
  
  if(DASH_DATA)render(DASH_DATA,{animate:false});
 }
