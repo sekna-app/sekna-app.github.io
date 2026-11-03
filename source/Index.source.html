@@ -5568,6 +5568,18 @@ window.addEventListener('load',function(){
     #dxBody .dc-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;padding-right:84px;gap:6px!important}
     #dxBody .dc-grid>div:nth-child(4){position:absolute;right:14px;top:22px;text-align:right}#dxBody .dc-grid>div:nth-child(4) b{font-size:21px!important}
     #dxBody .dc-card.open .dc-grid>div:nth-child(4){top:22px}
+    /* v172 Results card in the Month plan card's look */
+    .mt.mt3{background:radial-gradient(120% 140% at 0% 0%,#2c4fb8,#203c8e 50%,#132457);box-shadow:0 14px 30px rgba(32,60,142,.25)}
+    .mt.mt3::before,.mt.mt3::after{display:none}
+    .mt3 .mt-ring{display:none}
+    .mt3 .mt-top small,.mt3 .mt-hero small,.mt3 .mt-t small{color:#c9d3f5}.mt3 .mt-hero i,.mt3 .mt-legend{color:#c9d3f5}
+    .mt3 .mt-hero>div:first-child>b{font-size:40px}
+    .mt3-chip{display:inline-block;margin-left:8px;font-size:11.5px;font-weight:900;border-radius:999px;padding:4px 11px;background:rgba(255,255,255,.16);color:#fff;vertical-align:middle;white-space:nowrap}
+    .mt3-chip.watch{background:#fef3c7;color:#92400e}
+    #app .mt3 .mt-t,#app .mt3 .mt-t *{text-align:left!important}.mt3 .mt-t small{text-transform:none;letter-spacing:0;font-size:10.5px;font-weight:750}
+    .mt3 .mt-grid{gap:8px}.mt3 .mt-t{text-align:left;background:rgba(255,255,255,.1);border:0;border-radius:12px;padding:10px 11px}
+    .mt3 .mt-mix.ph3-bar{height:14px;gap:3px;border-radius:0;overflow:visible;margin:14px 0 6px}.mt3 .mt-mix.ph3-bar span{display:block;border-radius:5px;min-width:4px}
+    .mt3 .mt-mix .m0,.mt3 .mt-legend i.m0{background:#9db4ff}.mt3 .mt-mix .m1,.mt3 .mt-legend i.m1{background:#3d6bff}.mt3 .mt-mix .m2,.mt3 .mt-legend i.m2{background:#22c47c}.mt3 .mt-mix .m3,.mt3 .mt-legend i.m3{background:#e2b874}.mt3 .mt-mix .m4,.mt3 .mt-legend i.m4{background:#f0838f}
 </style>
 </head>
 <body>
@@ -8191,11 +8203,12 @@ function resultsHero(days,T){
  const mix=ch.map(c=>({k:idx(c.channel),s:Number(c.actualSpend)||0})).filter(m=>m.s>0);
  const tot=mix.reduce((x,m)=>x+m.s,0)||1;
  const tile=(l,v,r,sub,c)=>`<div class="mt-t"><small>${l}</small><b>${v}</b><span class="mt-chip ${c}">${sub}</span></div>`;
- return `<div class="mt"><div class="mt-top"><div><small>Month to date</small><b>${a.days} of ${days.length} days</b></div><div class="mt-days"><span style="width:${(days.length?a.days/days.length*100:0).toFixed(1)}%"></span></div></div>
-  <div class="mt-hero"><div><small>Spend</small><b>${money(a.spend)}</b><i>month plan ${money(p.spend)}</i></div>
+ // v172: the same look as the Month plan card (navy, spend big, tiles, one thick mix bar); the share of plan is a chip.
+ return `<div class="mt mt3"><div class="mt-top"><div><small>Month to date</small><b>${a.days} of ${days.length} days</b></div><div class="mt-days"><span style="width:${(days.length?a.days/days.length*100:0).toFixed(1)}%"></span></div></div>
+  <div class="mt-hero"><div><small>Spend</small><b>${money(a.spend)}</b><i>month plan ${money(p.spend)}</i>${sR!=null?`<span class="mt3-chip ${cls(sR,true)}">${Math.round(sR*100)}% of the month plan</span>`:''}</div>
    <div class="mt-ring ${cls(sR,true)}"><svg viewBox="0 0 72 72"><circle r="${R}" cx="36" cy="36" class="t"/><circle r="${R}" cx="36" cy="36" class="f" stroke-dasharray="${(f*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 36 36)"/></svg><b>${sR!=null?Math.round(sR*100)+'%':'—'}</b></div></div>
   <div class="mt-grid">${tile('Conversions',fmt(a.conversions,0),cR,`${pct(a.conversions,p.conversions)} of plan`,cls(cR))}${tile('Value',money(a.value),vR,`${pct(a.value,p.value)} of plan`,cls(vR))}${tile('ROAS',fmt(a.roas,2)+'x',rR,`target ${fmt(tR,2)}x`,rR==null?'':rR>=1?'good':'bad')}</div>
-  ${mix.length?`<div class="mt-mix">${mix.map(m=>`<span class="m${m.k}" style="flex:${m.s/tot}"></span>`).join('')}</div><div class="mt-legend">${mix.map(m=>`<span><i class="m${m.k}"></i>${PLAN_MIX_LABELS[m.k]} ${Math.round(m.s/tot*100)}%</span>`).join('')}</div>`:''}</div>`;
+  ${mix.length?`<div class="mt-mix ph3-bar">${mix.map(m=>`<span class="m${m.k}" style="flex:${m.s/tot}"></span>`).join('')}</div><div class="mt-legend">${mix.map(m=>`<span><i class="m${m.k}"></i>${PLAN_MIX_LABELS[m.k]} ${Math.round(m.s/tot*100)}%</span>`).join('')}</div>`:''}</div>`;
 }
 /* By Campaign Type: the latest day's results per channel, best ROAS first. */
 function mergeDayChannels(rows){
