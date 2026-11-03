@@ -5565,8 +5565,15 @@ window.addEventListener('load',function(){
     #dxBody .dc-date{width:auto!important;height:auto!important;min-height:100%;border-radius:0!important;margin:0!important;background:linear-gradient(160deg,#2c4fb8,#203c8e)!important;color:#fff!important;border:0!important;border-right:2px dashed rgba(255,255,255,.6)!important;box-shadow:none!important;display:grid!important;place-items:center;align-content:center}
     #dxBody .dc-date *{color:#fff!important}#dxBody .dc-date b{font-size:24px!important}
     #dxBody .dc-main{padding:12px 14px!important;position:relative;min-width:0}
-    #dxBody .dc-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;padding-right:84px;gap:6px!important}
-    #dxBody .dc-grid>div:nth-child(4){position:absolute;right:14px;top:22px;text-align:right}#dxBody .dc-grid>div:nth-child(4) b{font-size:21px!important}
+    /* The three figures get the full width; ROAS sits on the date line at the top right (and its target under it on Results). */
+    #dxBody .dc-grid{display:grid!important;grid-template-columns:1.2fr .8fr 1.2fr!important;padding-right:0;gap:8px!important}
+    #dxBody .dc-grid>div{min-width:0}#dxBody .dc-grid>div>b{font-size:15px!important;white-space:nowrap}
+    #dxBody .dc-grid>div:nth-child(4){position:absolute;right:12px;top:9px;text-align:right;display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;justify-content:flex-end;max-width:64%;flex-wrap:nowrap}
+    #dxBody .dc-grid>div:nth-child(4) small{font-size:10px!important}#dxBody .dc-grid>div:nth-child(4) b{font-size:17px!important;line-height:1}
+    #dxBody .dc-grid>div:nth-child(4) i{font-size:10px!important;font-style:normal}#dxBody .dc-grid>div:nth-child(4) i::before{content:'· '}#dxBody .dc-grid>div:nth-child(4) i{white-space:nowrap}
+    @media (max-width:380px){#dxBody .dc-card[data-rx] .dc-grid>div:nth-child(4) small{display:none}#dxBody .dc-card[data-rx] .dc-grid>div:nth-child(4) b{font-size:16px!important}}
+    #dxBody .dc-card[data-rx] .dc-hij{margin-bottom:12px}
+    @media (min-width:900px){#dxBody .dc-grid>div>b{font-size:17px!important}#dxBody .dc-grid>div:nth-child(4) b{font-size:20px!important}}
     #dxBody .dc-card.open .dc-grid>div:nth-child(4){top:22px}
     /* v172 Results card in the Month plan card's look */
     .mt.mt3{background:radial-gradient(120% 140% at 0% 0%,#2c4fb8,#203c8e 50%,#132457);box-shadow:0 14px 30px rgba(32,60,142,.25)}
