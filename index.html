@@ -5936,6 +5936,29 @@ window.addEventListener('load',function(){
     body.dark-mode .sk-drawer .sk-drawer-head{background:radial-gradient(60% 140% at 30% 0%,rgba(110,150,255,.28),transparent 60%),linear-gradient(120deg,#0a1230,#1e3a9e)!important}
     /* the photo's gold ring was cut on the left by the card edge */
     body .sk-drawer .sk-user .sk-user-card{overflow:visible!important;padding:3px 0 3px 3px!important}
+    /* v173 By Campaign Type: the coloured cards from the redesign preview (light mode) */
+    body:not(.dark-mode) #dayChannelsGrid .ctd{border:0!important;border-radius:14px 56px 14px 14px!important;color:#fff!important;box-shadow:0 14px 26px var(--sh)!important;position:relative;padding-top:34px!important;margin-top:18px}
+    body:not(.dark-mode) #dayChannelsGrid .ctd:nth-child(1){background:linear-gradient(160deg,#ff9a7a,#f46b6b)!important;--sh:#f46b6b55}
+    body:not(.dark-mode) #dayChannelsGrid .ctd:nth-child(2){background:linear-gradient(160deg,#ffb36b,#f58a4b)!important;--sh:#f58a4b55}
+    body:not(.dark-mode) #dayChannelsGrid .ctd:nth-child(3){background:linear-gradient(160deg,#8c9cf5,#6470e8)!important;--sh:#6470e855}
+    body:not(.dark-mode) #dayChannelsGrid .ctd:nth-child(4){background:linear-gradient(160deg,#6fd3c4,#3fb3c9)!important;--sh:#3fb3c955}
+    body:not(.dark-mode) #dayChannelsGrid .ctd:nth-child(5){background:linear-gradient(160deg,#ff8fb1,#f2557f)!important;--sh:#f2557f55}
+    body:not(.dark-mode) #dayChannelsGrid .ctd *{color:#fff!important}
+    body:not(.dark-mode) #dayChannelsGrid .ctd .ctd-rk{background:rgba(255,255,255,.25)!important;border:0!important}
+    body:not(.dark-mode) #dayChannelsGrid .ctd .ctd-bar{background:rgba(255,255,255,.3)!important}
+    body:not(.dark-mode) #dayChannelsGrid .ctd .ctd-bar span{background:#fff!important}
+    body:not(.dark-mode) #dayChannelsGrid .ctd .ctd-gr>div{background:rgba(255,255,255,.18)!important;border:0!important}
+    body:not(.dark-mode) #dayChannelsGrid .ctd .channel-icon,body:not(.dark-mode) #dayChannelsGrid .ctd .ctd-h svg{background:#fff!important;border-radius:12px!important}
+    body:not(.dark-mode) #dayChannelsGrid .ctd::before,body:not(.dark-mode) #dayChannelsGrid .ctd::after{display:none!important}
+    body:not(.dark-mode) #dayChannelsGrid .ctd .ctd-gr,body:not(.dark-mode) #dayChannelsGrid .ctd .ctd-gr *{background:transparent!important;box-shadow:none!important;border:0!important}
+    body:not(.dark-mode) #dayChannelsGrid .ctd .ctd-gr>div{background:rgba(255,255,255,.2)!important;border-radius:10px!important}
+    body:not(.dark-mode) #dayChannelsGrid .ctd .ch-ico{background:#fff!important;border-radius:8px!important}
+    body:not(.dark-mode) #dayChannelsGrid .ctd .ch-ico,body:not(.dark-mode) #dayChannelsGrid .ctd .ch-ico *{color:#6470e8!important}
+    /* v173 menu: no HEMERA band at the top, only a small close button */
+    body .sk-drawer .sk-drawer-head{background:none!important;min-height:0!important;padding:10px 12px 0!important;justify-content:flex-end!important;border:0!important;box-shadow:none!important}
+    body .sk-drawer .sk-drawer-head .sk-drawer-logo{display:none!important}
+    body .sk-drawer .sk-drawer-head .sk-icon-btn{width:30px!important;height:30px!important;min-height:30px!important;border-radius:10px!important}
+    body .sk-drawer .sk-drawer-head .sk-icon-btn svg{width:15px!important;height:15px!important}
 </style>
 </head>
 <body>
