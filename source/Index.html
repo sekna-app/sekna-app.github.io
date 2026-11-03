@@ -5971,6 +5971,15 @@ window.addEventListener('load',function(){
     .ssr-x{position:absolute;right:12px;top:12px;z-index:3;width:30px;height:30px;border-radius:50%;border:0;background:rgba(14,26,70,.6);color:#fff;font-size:13px;cursor:pointer}
     .ssr-b{display:flex;gap:8px;margin-top:14px}.ssr-b button{flex:1;height:44px;border-radius:13px;border:0;font:inherit;font-size:13.5px;font-weight:900;cursor:pointer}
     .ssr-l{background:rgba(255,255,255,.1);color:#c9d6ff;border:1px solid rgba(255,255,255,.15)!important}.ssr-o{background:linear-gradient(135deg,#f3d79f,#d9a448);color:#2b1d05}
+    /* v173 season reminder: in the middle of the screen with a blurred backdrop */
+    .ssr-ov{align-items:center!important;background:rgba(8,12,30,.45)!important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+    .ssr-ov .ssr{transform:scale(.94)!important}.ssr-ov.on .ssr{transform:none!important}
+    /* v173 season story */
+    .stx-ssn{position:relative;text-align:left;width:100%;padding-top:190px}
+    .stx-ssn .ss-img{position:absolute;left:-18px;right:-18px;top:-30px;height:250px;background-size:cover;background-position:center;-webkit-mask-image:linear-gradient(transparent,#000 18%,#000 60%,transparent);mask-image:linear-gradient(transparent,#000 18%,#000 60%,transparent);z-index:0}
+    .stx-ssn>*:not(.ss-img){position:relative;z-index:1}
+    .stx-ssn .stx-k{color:#f3d79f!important}.stx-ssn>b{display:block;font-family:'DM Serif Display',Georgia,serif;font-size:34px;line-height:1.08;margin:6px 0}.stx-ssn>p{color:#c9d6ff;font-size:13px;font-weight:600}
+    .stx-sso{display:block;width:100%;height:46px;border:0;border-radius:14px;margin-top:16px;font:inherit;font-size:14px;font-weight:900;cursor:pointer}
 </style>
 </head>
 <body>
@@ -7424,6 +7433,8 @@ function stxStories(d,k){
    top:top.map(c=>({n:CHANNEL_SHORT[c.channel]||c.channel,r:c.roas,v:c.value}))});
  const th=stxThanks(d);if(th)out.unshift({t:'thanks',k:'THANK YOU TEAM',bg:'radial-gradient(circle at 50% 30%,#3456c4,#1c3384 60%,#0f1d4a)',month:th.name,score:th.score});
  const pa=Number(x.dayNumber)>=20?planAccuracy(d):null;if(pa&&pa.score!=null)out.push({t:'ring',k:'PLAN ACCURACY · MONTH SO FAR',v:pa.score,c:pa.score>=.9?'#22c47c':pa.score>=.8?'#e2b874':'#ff8f8f',big:pc(pa.score),sub:'of the full plan',p:'Spend 40%\nValue 40%\nConversions 20%'});
+ 
+ try{const t=ssToday(),ss=ssList().find(z=>z.from>t&&ssDays(t,z.from)<=15&&SS_ART[z.key]&&(z.type==='h'||k==='usa'));if(ss)out.push({t:'season',k:'REMINDER',s:ss,n:ssDays(t,ss.from),bg:'linear-gradient(170deg,#0e1a46,#14286e 60%,#1a3290)'})}catch(e){}
  const st=streakOf(d);if(st.n>=3)out.push({t:'streak',bg:'linear-gradient(160deg,#f6a23b,#c2410c)',k:'DAYS IN A ROW ABOVE THE PLAN',big:String(st.n),p:"Conversion value beat the day's plan every day.",days:st.days.slice(-7)});
  return out;
 }
@@ -7447,6 +7458,12 @@ function stxDropHtml(s,acc,ago){
  return `<div class="stx-nfs"><i></i><i></i><div class="stx-nf"><div class="t"><span class="ic">H</span>HEMERA<em>${esc(ago?ago+' ago':'now')}</em></div><b>📉 ROAS drop · ${acc}</b><p>${esc(s.p)}</p></div></div>
   <svg class="stx-sp" viewBox="-8 0 ${w+16} ${h}"><polyline points="${P.map(p=>p.map(n=>n.toFixed(1)).join(',')).join(' ')}" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>${P.map((p,i)=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="${i===L?6:3.5}" fill="${i===L?'#fff':'rgba(255,255,255,.75)'}"${i===L?' stroke="#ff3040" stroke-width="3"':''}/>`).join('')}</svg>
   <div class="stx-spd">${s.pts.map((p,i)=>`<span${i===L?' class="on"':''}>${esc(stxWd(p.d))}</span>`).join('')}</div>`;
+}
+function stxSeasonHtml(o){
+ const s=o.s,n=o.n;
+ return `<div class="stx-ssn"><i class="ss-img" style="background-image:url('icons/seasons/${s.key}.webp?v=5')"></i><div class="stx-k">${esc(o.k)} · IN ${n} DAY${n===1?'':'S'}</div><b>${esc(s.name)}</b><p>${esc(SS_ART[s.key])}</p>
+  <div class="ss-cd ss-cd3"><span><em>${SS_IC.cal}</em><strong>${n}</strong>day${n===1?'':'s'}</span><span><em>${SS_IC.flag}</em><strong>${esc(ssD(s.from))}</strong>starts</span>${s.type==='h'?`<span><em>${SS_IC.moon}</em><strong>${s.hy}</strong>Hijri year</span>`:`<span><em>${SS_IC.moon}</em><strong>${s.len}</strong>day${s.len>1?'s':''} long</span>`}</div>
+  <button type="button" class="ssr-o stx-sso" onclick="stxClose();ssRemOpen('sekna_ssrem_${s.id}','${s.id}')">Open</button></div>`;
 }
 function stxSpendHtml(s){
  const v=s.pts.map(p=>p.v),pl=s.pts.map(p=>p.p),mx=Math.max(1,...v,...pl.filter(Boolean))*1.1,w=260,h=70,L=s.pts.length-1;
@@ -7604,7 +7621,8 @@ function stxShow(){
  const G=stxGroup(),s=G.list[STX.i],d=G.d,x=d.latest||{},admin=!!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin);
  storeSet(stxSeenKey(G.k,x.date),'1');
  const ring=`<div class="stx-ring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="3.4"/><circle cx="18" cy="18" r="15" fill="none" stroke="${s.c}" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="${(94.2*Math.max(0,Math.min(1,s.v||0))).toFixed(1)} 99"/></svg><div><b>${esc(s.big)}</b><small>${esc(s.sub||'')}</small></div></div>`;
- const body=s.t==='thanks'?stxThanksHtml(s)
+ const body=s.t==='season'?stxSeasonHtml(s)
+  :s.t==='thanks'?stxThanksHtml(s)
   :s.t==='drop'?stxDropHtml(s,G.k==='ar'?'AR':'USA',stxAgo(d))
   :s.t==='streak'?stxStreakHtml(s)
   :s.t==='spend'?stxSpendHtml(s)
@@ -12426,7 +12444,7 @@ const SS_IC={cal:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="
 const SS_ART={ramadan:'Prepare your Ramadan campaigns.',last10:'Prepare campaigns for the final nights.',eidfitr:'Get your Eid campaigns ready.',dhulhijjah:'Plan for the first ten days.',arafah:'Make an impact on the Day of Arafah.',eidadha:'Prepare your Eid al-Adha campaigns.',ashura:'Prepare your Ashura campaign plan.',thanksgiving:'Prepare your Thanksgiving campaigns.',givingtuesday:'Plan your Giving Tuesday campaign.',yearend:'Prepare your year-end giving campaigns.'};
 
 function ssRemind(){
- if(document.getElementById('ssRem')||!canDo('seasons')||document.body.classList.contains('gate-open'))return;
+ if(document.getElementById('ssRem')||document.getElementById('stxView')||!canDo('seasons')||document.body.classList.contains('gate-open'))return;
  const t=ssToday(),s=ssList().find(x=>x.from>t&&ssDays(t,x.from)<=15&&SS_ART[x.key]);if(!s)return;
  const k='sekna_ssrem_'+s.id;if(storeGet(k))return;
  const n=ssDays(t,s.from),o=document.createElement('div');o.id='ssRem';o.className='ssr-ov';o.setAttribute('data-share-ui','');
