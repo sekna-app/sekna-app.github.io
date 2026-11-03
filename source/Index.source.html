@@ -5740,6 +5740,15 @@ window.addEventListener('load',function(){
     body.dark-mode .cur-sw.cur-chip.away button.on{background:rgba(198,47,69,.18)!important;border-color:rgba(245,184,192,.35);color:#ff9aa6!important}
     .cur-at{display:flex;flex-direction:column;align-items:flex-end;line-height:1.15;font-size:11px;font-weight:700;color:#6b7385}
     .cur-at .tb-tz{padding-left:0}
+    /* v173 the money chip a little smaller and higher; the rate shows in a small bubble for two seconds */
+    .cur-box{position:relative;margin-top:-6px}
+    .cur-sw.cur-chip button.on{height:30px!important;gap:6px;padding:0 9px 0 3px!important;font-size:11px}
+    .cur-chip button b{width:24px;height:24px;font-size:12px}
+    .cur-chip button svg{width:12px;height:12px}
+    .cur-pop{position:absolute;right:0;top:calc(100% + 6px);z-index:20;display:flex;align-items:center;gap:6px;white-space:nowrap;padding:6px 10px;border-radius:99px;background:#0e1a46;color:#fff;font-size:10.5px;font-weight:800;box-shadow:0 8px 20px rgba(14,26,70,.25);animation:curPopIn .25s cubic-bezier(.2,.8,.25,1) both}
+    .cur-pop:before{content:"";position:absolute;right:16px;top:-4px;width:8px;height:8px;background:#0e1a46;transform:rotate(45deg)}
+    .cur-pop.out{animation:curPopOut .3s ease forwards}
+    @keyframes curPopIn{from{opacity:0;transform:translateY(-6px) scale(.9)}}@keyframes curPopOut{to{opacity:0;transform:translateY(-4px)}}
 </style>
 </head>
 <body>
@@ -10529,6 +10538,8 @@ function curDraw(){
   sw.classList.add('cur-chip');sw.classList.toggle('away',CUR!==own);
   sw.innerHTML=`<button type="button" class="on" onclick="setCur('${nx}')" aria-label="Showing ${CUR_LIST[CUR].name}. Switch to ${CUR_LIST[nx].name}"><b>${CUR_LIST[CUR].s}</b>${CUR}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4L4 7l3 3M4 7h13M17 20l3-3-3-3M20 17H7"/></svg></button>`}
  const n=document.getElementById('curAt');if(!n)return;
+ // The rate shows for two seconds in a small bubble when the money is switched (curPop), not under the chip.
+ n.hidden=true;return;
  const c=curOn(),at=c!=='GBP'&&FX.at?new Date(FX.at):null;n.hidden=!at;
  if(at)n.innerHTML=`<span class="tb-l1"><span class="tb-dot"></span>Rate from ${esc(at.toLocaleDateString('en-US',{month:'short',day:'numeric'}))}</span><small class="tb-tz">${esc(at.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}))}</small>`;
 }
@@ -10545,10 +10556,20 @@ function fxLoad(force){
  if(!force&&FX&&FX.got&&Date.now()-FX.got<3600e3&&!(fxNoon()>FX.at&&fxNoon()>FX.got))return Promise.resolve(FX);
  return serverCall('fxRates',getAccessToken()).then(r=>{if(r&&r.rates){FX=Object.assign({},r,{got:Date.now()});storeSet('sekna_fx',JSON.stringify(FX));curDraw()}return FX});
 }
+// A small bubble under the chip for two seconds: the rate and when it was taken.
+function curPop(){
+ const box=document.querySelector('.cur-box');if(!box)return;
+ box.querySelector('.cur-pop')?.remove();
+ const usd=FX&&FX.rates&&FX.rates.USD,at=FX&&FX.at?new Date(FX.at):null;
+ const t=(usd?'£1 = $'+fmt(usd,2):'')+(at?' · '+at.toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'');
+ if(!t)return;
+ const el=document.createElement('div');el.className='cur-pop';el.setAttribute('data-share-ui','');el.innerHTML=`<span class="tb-dot"></span>${esc(t)}`;box.appendChild(el);
+ setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),300)},2000);
+}
 async function setCur(c){
  if(!CUR_LIST[c]||c===CUR)return;
  if(c!=='GBP'&&!(FX&&FX.rates&&FX.rates[c])){try{await fxLoad(true)}catch(e){}if(!(FX&&FX.rates&&FX.rates[c]))return showSettingsToast('The exchange rate is not available right now. Try again later.')}
- CUR=c;curDraw();
+ CUR=c;curDraw();curPop();
  // Numbers change in place, without the entrance motion.
  if(DASH_DATA)render(DASH_DATA,{animate:false});
 }
