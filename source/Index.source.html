@@ -5898,6 +5898,30 @@ window.addEventListener('load',function(){
     body.dark-mode .as-ecos .as-eco{background:#151a22;border-color:#252a32!important}body.dark-mode .as-mb{background:#252a32}
     /* v173 Same Hijri day: no timeline line or dots; the year cards line up with the chart card */
     .py-list{padding-left:0!important}.py-list:before,.py-list .py-c2:before{display:none!important}
+    /* v173 AI Max: three columns, a column per result, the total on top */
+    .st-3c{background:linear-gradient(160deg,#14286e,#2a4fd0)!important;color:#fff}
+    .st-3c .st-k{color:#f3d79f!important}
+    .st3-tot{display:flex;justify-content:space-between;align-items:baseline;margin-top:6px}.st3-tot b{font-size:26px;font-weight:900;color:#fff}.st3-tot span{font-size:11px;font-weight:700;color:#c9d6ff}
+    .st3-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:7px;margin-top:12px}
+    .st3-cols>div{position:relative;overflow:hidden;border-radius:14px;padding:11px 6px 10px;background:rgba(255,255,255,.08);text-align:center}
+    .st3-cols>div:before{content:"";position:absolute;left:0;right:0;top:0;height:4px;background:var(--c)}
+    .st3-cols em{display:block;font-style:normal;font-size:21px;font-weight:900;color:var(--c)}.st3-cols b{display:block;font-size:13px;font-weight:900;color:#fff;margin-top:2px}.st3-cols small{display:block;font-size:9.5px;font-weight:700;color:#c9d6ff;margin-top:2px;white-space:nowrap}
+    /* v173 AI Max four tiles: the same cards, raised, with the round icon on top */
+    .st-qm .quick-metric{flex-direction:column!important;align-items:center!important;text-align:center!important;border:0!important;background:linear-gradient(150deg,#fff,#f4f6fb)!important;box-shadow:inset 0 1px 0 #fff,0 10px 20px rgba(30,45,90,.08),0 3px 0 var(--ed,#e3e7f0)!important;border-radius:18px!important}
+    .st-qm .quick-metric:before{display:none!important}
+    .st-qm .quick-metric .quick-icon{order:-1;margin:0 auto 4px!important;border-radius:50%!important;color:#fff!important;background:linear-gradient(135deg,var(--qa),var(--qb))!important;box-shadow:0 6px 12px color-mix(in srgb,var(--qb) 35%,transparent)!important}
+    .st-qm .quick-metric .quick-icon svg{stroke:#fff!important;fill:none}
+    .st-qm .quick-copy{display:flex;flex-direction:column;align-items:center}
+    .st-qm .quick-name{color:var(--qb)!important;font-weight:900!important;letter-spacing:.1em}
+    .st-qm .quick-metric.clicks{--qa:#f0a94a;--qb:#c97a1e;--ed:#f6dfbb}.st-qm .quick-metric.cvr{--qa:#20a873;--qb:#17835a;--ed:#bfe9d6}.st-qm .quick-metric.cpa{--qa:#3d6bff;--qb:#203c8e;--ed:#cfdaf8}.st-qm .quick-metric.ctr{--qa:#7b5cf0;--qb:#4b2fb8;--ed:#ddd4fb}
+    body.dark-mode .st-qm .quick-metric{background:#151a22!important;box-shadow:none!important}
+    /* v173 Seasons Calendar: night sky in our navy and gold for every season card */
+    .ss-hero.th-ram,.ss-hero.th-fitr,.ss-hero.th-adha,.ss-hero{background:radial-gradient(70% 45% at 85% 0%,rgba(226,184,116,.35),transparent 60%),linear-gradient(170deg,#0e1a46,#14286e 55%,#2a4fd0)!important;box-shadow:0 12px 28px rgba(14,26,70,.3)!important}
+    .ss-hero>small{color:#f3d79f!important}
+    .ss-hero .ss-cd span{background:rgba(255,255,255,.1)!important;border:1px solid rgba(243,215,159,.25);color:#c9d6ff!important}
+    .ss-hero .sd-moon{box-shadow:inset -13px 6px 0 0 #f3d79f!important}
+    .ss-hero .ss-hd .ss-af button{color:#c9d6ff!important}.ss-hero .ss-hd .ss-af button.on{background:#f3d79f!important;color:#0e1a46!important}
+    .ss-hero .ss-hd b,.ss-hero .ss-hd strong{color:#f3d79f}
 </style>
 </head>
 <body>
@@ -6879,7 +6903,7 @@ function navGroupApply(){
  });
 }
 function navGroup(k){
- NAV_GRP[k]=!NAV_GRP[k];
+ const on=!NAV_GRP[k];Object.keys(NAV_GRP).forEach(x=>NAV_GRP[x]=false);NAV_GRP[k]=on;
  navGroupApply();
 }
 const SOON={
@@ -9786,6 +9810,7 @@ function stPct(sm,k){return sm.cost?Math.round(sm.by[k]/sm.cost*100):0}
 function stCard(sm,dark){
  const keys=['x','n','f','g'].filter(k=>sm.cnt[k]);
  const ring=stRing(sm,116,15,`<text x="58" y="56" text-anchor="middle" font-size="15" font-weight="900" fill="#fff">${esc(money(sm.cost,2))}</text><text x="58" y="71" text-anchor="middle" font-size="8.5" font-weight="800" fill="#c9d6ff">${sm.T.length} TERMS</text>`,true);
+ if(!dark)return `<div class="st-card st-ai st-3c"><div class="st-k">✦ AI MAX · SPEND BY RESULT</div><div class="st3-tot"><b>${esc(money(sm.cost,2))}</b><span>across ${sm.T.length} terms</span></div><div class="st3-cols">${keys.map(k=>`<div style="--c:${ST_K[k].c}"><em>${stPct(sm,k)}%</em><b>${money(sm.by[k],2)}</b><small>${ST_K[k].l} · ${sm.cnt[k]}</small></div>`).join('')}</div></div>`;
  return `<div class="st-card st-ai${dark?' dk':''}"><div class="st-k">✦ AI MAX · SPEND BY RESULT</div><div class="st-wrap">${ring}<div class="st-tiles">${keys.map(k=>`<div style="--b:${dark?'rgba(255,255,255,.08)':ST_K[k].b};--c:${ST_K[k].c}"><b>${money(sm.by[k],2)}</b><em>${stPct(sm,k)}%</em><small>${ST_K[k].l} · ${sm.cnt[k]}</small></div>`).join('')}</div></div>
   </div>`;
 }
