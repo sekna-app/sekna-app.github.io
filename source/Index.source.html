@@ -5690,6 +5690,16 @@ window.addEventListener('load',function(){
     .sk-glass-app .sk-nav-btn{border-radius:0!important;margin:0!important;padding:11px 14px!important;background:transparent!important;border:0!important;box-shadow:none!important}
     .sk-glass-app .sk-nav-btn:not(:first-child){border-top:1px solid rgba(255,255,255,.07)!important}
     body:has(#sideDrawer.open) .bbar{display:none!important}
+    /* v173 user card: one glass row, sign out as a small icon on the right */
+    body .sk-drawer .sk-drawer-foot.sk-user{display:flex!important;flex-direction:row!important;align-items:center!important;gap:10px!important;margin-top:auto;padding:10px 12px!important;border:0!important;border-top:0!important;border-radius:16px!important;background:rgba(255,255,255,.1)!important;box-shadow:none!important}
+    body .sk-drawer .sk-user .sk-user-card{flex:1;min-width:0;display:flex!important;align-items:center;gap:11px;padding:0!important;margin:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+    body .sk-drawer .sk-user .sk-user-card:before,body .sk-drawer .sk-user .sk-user-card:after{display:none!important}
+    body .sk-drawer .sk-user .sk-user-avatar{width:40px!important;height:40px!important;flex:none}
+    body .sk-drawer .sk-user .sk-user-text{min-width:0}
+    body .sk-drawer .sk-user .sk-user-text b{color:#fff!important;font-size:14px!important}
+    body .sk-drawer .sk-user .sk-user-text small{color:#b9c8f5!important;font-size:11px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+    body .sk-drawer .sk-user .sk-signout{width:36px!important;height:36px!important;min-height:36px!important;flex:none;padding:0!important;margin:0!important;border-radius:11px!important;border:0!important;background:rgba(255,255,255,.12)!important;color:#ffb3bd!important;font-size:0!important;display:grid!important;place-items:center;box-shadow:none!important}
+    body .sk-drawer .sk-user .sk-signout svg{width:18px!important;height:18px!important;margin:0!important;stroke:#ffb3bd!important;fill:none}
 </style>
 </head>
 <body>
@@ -5851,7 +5861,7 @@ window.addEventListener('load',function(){
 
   <div class="sk-drawer-foot sk-user">
     <div class="sk-user-card"><span class="sk-user-avatar" id="profileAvatar">H</span><span class="sk-user-text"><b id="profileName">HEMERA</b><small id="profileEmail">Signed in</small><span class="sk-role" id="profileRole" hidden></span></span></div>
-    <button class="sk-signout" type="button" onclick="confirmSignOut()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg>Sign out</button>
+    <button class="sk-signout" type="button" onclick="confirmSignOut()" aria-label="Sign out" title="Sign out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg>Sign out</button>
   </div>
 </aside>
 
