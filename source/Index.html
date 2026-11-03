@@ -5722,6 +5722,12 @@ window.addEventListener('load',function(){
     .sk-step[data-step="code"].active .sk-shine:before{animation:skShine .8s ease-in-out .35s}
     @keyframes skShine{0%{left:-80px;opacity:1}100%{left:100%;opacity:1}}
     @media (max-width:760px){html:not(.desktop-site-mode) .sk-gate .sk-step[data-step="code"].active{animation:skSunForm .4s cubic-bezier(.2,.8,.25,1) both}}
+    /* v173 waiting page: a gold line turns round a letter */
+    .gob{position:relative;width:96px;height:96px;margin:4px auto 14px;animation:skSunForm .5s ease both}
+    .gob-ring,.gob-arc{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(255,255,255,.12)}
+    .gob-arc{border-color:transparent;border-top-color:#e2b874;animation:skSpin 1.6s linear infinite}
+    .gob-env{position:absolute;inset:24px;border-radius:15px;background:rgba(255,255,255,.1);display:grid;place-items:center;color:#f3d79f}
+    .gob-env svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 </style>
 </head>
 <body>
@@ -5780,7 +5786,7 @@ window.addEventListener('load',function(){
 
     <section class="sk-step" data-step="pending">
       <div class="sk-wait" aria-hidden="true"><span></span><span></span><span></span><div class="sk-wait-core"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path class="hand" d="M12 12V7.5"/><path d="M12 12l3 2"/></svg></div></div>
-      <h1>Thanks, <span data-gate-name>there</span>!</h1>
+      <h1>Almost there, <span data-gate-name>there</span></h1>
       <p class="sk-gate-sub">Your request is waiting for approval. We'll email you as soon as it's approved — this screen will open the dashboard automatically.</p>
       <div class="sk-status-chip"><i></i>Waiting for approval</div>
       <div class="sk-gate-links"><button type="button" class="sk-link" onclick="gateReset()">Change email</button></div>
@@ -10889,7 +10895,9 @@ const SEKNA_WHITE_SVG='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy5
 let GATE_LAST_CODE='';
 function gcHero(step){
  const sec=document.querySelector(`.sk-step[data-step="${step}"]`);if(!sec)return;
- sec.querySelectorAll('.gc,.gc-wait').forEach(e=>e.remove());
+ sec.querySelectorAll('.gc,.gc-wait,.gob').forEach(e=>e.remove());
+ 
+ if(step==='pending'){GATE_LAST_CODE='';sec.insertAdjacentHTML('afterbegin','<div class="gob" aria-hidden="true"><span class="gob-ring"></span><span class="gob-arc"></span><span class="gob-env"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7l8 6 8-6"/></svg></span></div>');return}
  const code=GATE_LAST_CODE;GATE_LAST_CODE='';
  
  const digits=code?code.split('').map((d,i)=>{const a=i*Math.PI/3-Math.PI/2;return `<b style="--x:${Math.round(140*Math.cos(a))-10}px;--y:${Math.round(140*Math.sin(a))-14}px;animation-delay:${(i*.07).toFixed(2)}s">${esc(d)}</b>`}).join(''):'';
