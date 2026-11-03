@@ -5845,6 +5845,11 @@ window.addEventListener('load',function(){
     /* v173 less text: no tick note, no strip caption, and the week bars alone pick the week (no Week 1-4 tabs) */
     #mtdTickLegend,#weeklyStripCap,#weeklyTabs{display:none!important}
     #weeklyStrip{margin-top:10px}#weeklyDetail{margin-top:12px}
+    /* v173 Last year button: a gold chip with last year's year; navy with a cross while open */
+    .wly-btn{display:inline-flex!important;align-items:center;gap:6px;padding:5px 10px 5px 8px!important;border:0!important;background:linear-gradient(135deg,#f3d79f,#d9a448)!important;color:#2b1d05!important;font-weight:900!important;font-size:12px!important;box-shadow:0 6px 14px rgba(217,164,72,.35)!important}
+    .wly-btn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+    .wly-btn span{background:rgba(255,255,255,.55);border-radius:99px;padding:2px 7px;font-size:11px}
+    .wly-btn.on{background:linear-gradient(135deg,#2a4fd0,#14286e)!important;color:#fff!important;box-shadow:0 6px 14px rgba(20,40,110,.35)!important}.wly-btn.on span{background:rgba(255,255,255,.2)}
 </style>
 </head>
 <body>
@@ -7564,6 +7569,7 @@ function render(d,opts){
  setTimeout(()=>{try{roasDropCheck(d)}catch(e){}},1300);
  try{streakDraw(d)}catch(e){}
  try{bbDraw()}catch(e){}
+ try{if(!WK_LY)drawWeeklyLy(false)}catch(e){}
  try{storyTrayDraw();if(STX_PENDING===CURRENT_ACCOUNT){STX_PENDING='';setTimeout(()=>openStories(CURRENT_ACCOUNT),400)}}catch(e){}
  kpi('kValue','tValue','dValue','pValue',money(x.value),money(x.planValue),x.valueAchievement,false);
  kpi('kConv','tConv','dConv','pConv',fmt(x.conversions,0),fmt(x.planConversions,1),x.convAchievement,false);
@@ -7939,7 +7945,8 @@ function toggleWeeklyLy(){WK_LY=!WK_LY;drawWeeklyLy(true)}
 function drawWeeklyLy(anim){
  const box=document.getElementById('weeklyLy'),cards=document.getElementById('weeklyCards'),btn=document.getElementById('wlyBtn');
  if(!box||!cards)return;
- if(btn)btn.classList.toggle('on',WK_LY);
+ if(btn){btn.classList.toggle('on',WK_LY);const ly=(Number(String((DASH_DATA&&DASH_DATA.latest&&DASH_DATA.latest.date)||'').slice(0,4))||new Date().getFullYear())-1;
+  btn.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true">${WK_LY?'<path d="M6 6l12 12M18 6L6 18"/>':'<path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/>'}</svg>vs <span>${ly}</span>`;btn.setAttribute('aria-label',WK_LY?'Close last year':'Compare with '+ly)}
  box.hidden=!WK_LY;cards.hidden=WK_LY;
  if(!WK_LY)return;
  const ex=MONTH_EXTRA[CURRENT_ACCOUNT];
