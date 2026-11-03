@@ -5554,6 +5554,14 @@ window.addEventListener('load',function(){
       #phBody .phx-tw{grid-row:4;margin-top:12px}
       body.dark-mode #phBody .phx-list{background:#151a22;border-color:#2a313c}body.dark-mode #phBody .phs{background:#151a22!important}body.dark-mode #phBody .phs:first-child{background:#1a2030!important}body.dark-mode #phBody .phs+.phs{border-color:#252a32!important}
     }
+    /* v172 Day by Day: each day as a ticket. The date is a navy stub cut off by a dashed line; ROAS sits big on the right. */
+    #dxBody .dc-card{display:grid!important;grid-template-columns:64px minmax(0,1fr)!important;padding:0!important;border-radius:16px!important;overflow:hidden;gap:0!important}
+    #dxBody .dc-date{width:auto!important;height:auto!important;min-height:100%;border-radius:0!important;margin:0!important;background:linear-gradient(160deg,#2c4fb8,#203c8e)!important;color:#fff!important;border:0!important;border-right:2px dashed rgba(255,255,255,.6)!important;box-shadow:none!important;display:grid!important;place-items:center;align-content:center}
+    #dxBody .dc-date *{color:#fff!important}#dxBody .dc-date b{font-size:24px!important}
+    #dxBody .dc-main{padding:12px 14px!important;position:relative;min-width:0}
+    #dxBody .dc-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;padding-right:84px;gap:6px!important}
+    #dxBody .dc-grid>div:nth-child(4){position:absolute;right:14px;top:22px;text-align:right}#dxBody .dc-grid>div:nth-child(4) b{font-size:21px!important}
+    #dxBody .dc-card.open .dc-grid>div:nth-child(4){top:22px}
 </style>
 </head>
 <body>
