@@ -114,7 +114,7 @@ window.addEventListener('load',function(){
     // Usage, shares, ideas, plan history, the monthly report and web notifications.
     logShare:{w:20000,tk:1,k:'sekna_rest_fb'},adminShareStats:{w:30000,tk:1,k:'sekna_rest_fb'},adminResetShares:{w:30000,tk:1,k:'sekna_rest_fb'},
     logUsage:{w:20000,tk:1,k:'sekna_rest_fb'},adminActivity:{w:30000,tk:1,k:'sekna_rest_fb'},adminResetActivity:{w:60000,tk:1,k:'sekna_rest_fb'},
-    submitIdea:{w:30000,tk:1,k:'sekna_rest_fb'},myNotifications:{w:20000,tk:1,k:'sekna_rest_fb'},adminCelebrate:{w:30000,tk:1,k:'sekna_rest_fb'},myCelebration:{w:15000,tk:1,k:'sekna_rest_fb'},celebrationLatest:{w:15000,tk:1,k:'sekna_rest_fb'},celebrationSeen:{w:15000,tk:1,k:'sekna_rest_fb'},celebrationReact:{w:15000,tk:1,k:'sekna_rest_fb'},dayReactions:{w:15000,tk:1,k:'sekna_rest_fb'},dayReact:{w:15000,tk:1,k:'sekna_rest_fb'},fxRates:{w:20000,tk:1,k:'sekna_rest_fb'},adminFxTime:{w:20000,tk:1,k:'sekna_rest_fb'},adminFxTimeSet:{w:20000,tk:1,k:'sekna_rest_fb'},myIdeas:{w:20000,tk:1,k:'sekna_rest_fb'},adminIdeas:{w:20000,tk:1,k:'sekna_rest_fb'},adminIdeaUpdate:{w:30000,tk:1,k:'sekna_rest_fb'},
+    submitIdea:{w:30000,tk:1,k:'sekna_rest_fb'},myNotifications:{w:20000,tk:1,k:'sekna_rest_fb'},adminCelebrate:{w:30000,tk:1,k:'sekna_rest_fb'},myCelebration:{w:15000,tk:1,k:'sekna_rest_fb'},celebratedMonths:{w:15000,tk:1,k:'sekna_rest_fb'},celebrationLatest:{w:15000,tk:1,k:'sekna_rest_fb'},celebrationSeen:{w:15000,tk:1,k:'sekna_rest_fb'},celebrationReact:{w:15000,tk:1,k:'sekna_rest_fb'},dayReactions:{w:15000,tk:1,k:'sekna_rest_fb'},dayReact:{w:15000,tk:1,k:'sekna_rest_fb'},fxRates:{w:20000,tk:1,k:'sekna_rest_fb'},adminFxTime:{w:20000,tk:1,k:'sekna_rest_fb'},adminFxTimeSet:{w:20000,tk:1,k:'sekna_rest_fb'},myIdeas:{w:20000,tk:1,k:'sekna_rest_fb'},adminIdeas:{w:20000,tk:1,k:'sekna_rest_fb'},adminIdeaUpdate:{w:30000,tk:1,k:'sekna_rest_fb'},
     adminSavePlanHistory:{w:60000,tk:1,k:'sekna_rest_fb'},getPlanHistory:{w:20000,tk:1,k:'sekna_rest_fb'},webPushSubscribe:{w:30000,tk:1,k:'sekna_rest_fb'},
     adminReportRecipients:{w:30000,tk:1,k:'sekna_rest_fb'},adminSendMonthlyReport:{w:300000,tk:1,k:'sekna_rest_fb'},reportLib:{w:30000,tk:1,k:'sekna_rest_fb'},storyLog:{w:20000,tk:1,k:'sekna_rest_fb'},adminStoryStats:{w:30000,tk:1,k:'sekna_rest_fb'},storyTeam:{w:20000,tk:1,k:'sekna_rest_fb'},adminRestMove:{w:120000,tk:2},adminRestMoveStatus:{w:20000,tk:2}
    };
@@ -6060,6 +6060,8 @@ window.addEventListener('load',function(){
     .as-ecos .as-chips b{display:block;font-size:11.5px;letter-spacing:0;margin-top:1px;white-space:nowrap}
     .as-mb{height:6px;border-radius:99px;background:#eef0f6;margin-top:8px}.as-mb i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--a),var(--b))}
     body.dark-mode .as-ecos .as-eco{background:#151a22;border-color:#252a32!important}body.dark-mode .as-mb{background:#252a32}
+    /* v173 Same Hijri day: no timeline line or dots; the year cards line up with the chart card */
+    .py-list{padding-left:0!important}.py-list:before,.py-list .py-c2:before{display:none!important}
 </style>
 </head>
 <body>
@@ -10353,7 +10355,7 @@ function renderMonthForecast(x,m,d){
    if(roas!=null&&planRoas){
      const diff=roas/planRoas-1;
      const c=diff>=0?'up':'down',gap=roas-planRoas;
-     rNote.innerHTML=`<span class="mg-rows"><div><span>Target</span><b>${fmt(planRoas,2)}x</b></div><div><span>Gap</span><b class="${c}">${gap>=0?'+':'−'}${fmt(Math.abs(gap),2)}x</b></div><div><span>vs target</span><b class="${c}">${diff>=0?'▲':'▼'} ${Math.abs(Math.round(diff*100))}%</b></div></span>`;
+     rNote.innerHTML=`<span class="mg-rows"><div><span>Target</span><b>${fmt(planRoas,2)}x</b></div><div><span>Gap</span><b class="${c}">${gap>=0?'+':'−'}${fmt(Math.abs(gap),2)}x</b></div>${Number((DASH_DATA&&DASH_DATA.latest&&DASH_DATA.latest.dayNumber)||0)>=25?`<div><span>vs target</span><b class="${c}">${diff>=0?'▲':'▼'} ${Math.abs(Math.round(diff*100))}%</b></div>`:''}</span>`;
    }else rNote.textContent=planRoas?`Target ${fmt(planRoas,2)}x`:'Actual return';
  }
  setProgress('mRoasBar',(roas!=null&&planRoas)?roas/planRoas:0);
@@ -14108,6 +14110,12 @@ function drawMonthlyReport(){
 
  
 let PH={account:'',list:null,open:'',busy:false,msg:'',lib:null,view:'st',shown:{}};
+
+let CEL_SENT=null;
+function celCan(s){
+ if(CEL_SENT===null){CEL_SENT=[];serverCall('celebratedMonths',getAccessToken()).then(r=>{CEL_SENT=Array.isArray(r)?r:[];try{renderPlanHistory()}catch(e){}}).catch(()=>{});return false}
+ const at=Number(s.savedAt)||0;return !CEL_SENT.some(c=>c.account===CURRENT_ACCOUNT&&c.month===s.month&&c.at>=at);
+}
 function renderPlanHistory(){
  const body=document.getElementById('phBody');if(!body)return;
  if(PH.account!==CURRENT_ACCOUNT){PH={account:CURRENT_ACCOUNT,list:null,open:'',busy:false,msg:'',lib:null,view:PH.view||'st',shown:{}}}
@@ -14162,7 +14170,7 @@ function drawPlanHistory(){
     <div class="phs-big"><div><small>PLAN ACHIEVEMENT</small><b>${mpPct(all)}</b></div><span class="phs-ok">✓ SAVED</span></div>
     <div class="phs-ft"><span>${saved?'Saved '+esc(saved):''}</span><span>Spend 40% · Value 40% · Conv. 20%</span></div>
     ${libOf(s.month)?phPdf(libOf(s.month)):''}
-    ${canDo('lab')?`<button type="button" class="phs-cel" onclick="event.stopPropagation();celCompose('${s.month}')">🎉 Celebrate this month</button>`:''}
+    ${canDo('lab')&&celCan(s)?`<button type="button" class="phs-cel" onclick="event.stopPropagation();celCompose('${s.month}')">🎉 Celebrate this month</button>`:''}
     <div class="phs-more">${open?'Hide campaign types ▲':'By campaign type ▼'}</div>
     <button type="button" class="phs-fold" onclick="event.stopPropagation();phFold('${s.month}')">Fold ▴</button>
     ${open?`<div class="phx-tw"><table class="mp-t phx-t"><thead><tr><th class="mp-n">Type</th><th>Plan spend</th><th>Spend</th><th>Of plan</th><th>Value</th><th>ROAS</th></tr></thead><tbody>${ch}</tbody></table></div>`:''}
@@ -14209,7 +14217,7 @@ async function celSend(btn){
  if(!String(CEL.msg).trim())return showSettingsToast('Write a message first');
  CEL.busy=true;celComposeDraw();
  try{await serverCall('adminCelebrate',getAccessToken(),{account:CURRENT_ACCOUNT,month:CEL.month,msg:CEL.msg,stats:celStats(CEL.month)||{}});
-   CEL.busy=false;const o=document.getElementById('celSheet');if(o)o.classList.remove('open');showSettingsToast('Sent to the team 🎉')}
+   CEL.busy=false;const o=document.getElementById('celSheet');if(o)o.classList.remove('open');showSettingsToast('Sent to the team 🎉');(CEL_SENT=CEL_SENT||[]).push({account:CURRENT_ACCOUNT,month:CEL.month,at:Date.now()});try{renderPlanHistory()}catch(e){}}
  catch(err){CEL.busy=false;celComposeDraw();showSettingsToast(errorText(err))}
 }
 function celShow(c,again){

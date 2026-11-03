@@ -346,6 +346,11 @@ const R = {
     const list = (((await fsGet(DOC.celebrate)) || {}).items || []).filter(c => c.at > cut && !(c.seen || {})[e]);
     return list.length ? celebrationOut(list[list.length - 1], e) : null;
   },
+  /** Which saved months were already celebrated (account, month, when), so the button shows once per saved plan. */
+  async celebratedMonths([token]) {
+    await assertAccess(token);
+    return (((await fsGet(DOC.celebrate)) || {}).items || []).map(c => ({ account: c.account, month: c.month, at: c.at }));
+  },
   /** Opened again from Notifications: the newest one, seen or not. */
   async celebrationLatest([token]) {
     const a = await assertAccess(token), list = ((await fsGet(DOC.celebrate)) || {}).items || [];
