@@ -5587,6 +5587,16 @@ window.addEventListener('load',function(){
     .mt3 .mt-grid{gap:8px}.mt3 .mt-t{text-align:left;background:rgba(255,255,255,.1);border:0;border-radius:12px;padding:10px 11px}
     .mt3 .mt-mix.ph3-bar{height:14px;gap:3px;border-radius:0;overflow:visible;margin:14px 0 6px}.mt3 .mt-mix.ph3-bar span{display:block;border-radius:5px;min-width:4px}
     .mt3 .mt-mix .m0,.mt3 .mt-legend i.m0{background:#9db4ff}.mt3 .mt-mix .m1,.mt3 .mt-legend i.m1{background:#3d6bff}.mt3 .mt-mix .m2,.mt3 .mt-legend i.m2{background:#22c47c}.mt3 .mt-mix .m3,.mt3 .mt-legend i.m3{background:#e2b874}.mt3 .mt-mix .m4,.mt3 .mt-legend i.m4{background:#f0838f}
+    /* v172 vs Last year · The gap first */
+    .lyx-sum.lyv{display:block}
+    .lyv-big{display:block;font-size:34px;font-weight:900;line-height:1.05;direction:ltr}.lyv-big.up{color:#39e29a}.lyv-big.dn{color:#ff8f9a}
+    .lyv p{margin:2px 0 0;font-size:13px;font-weight:750;color:#c9d3f5}.lyv-sub{font-size:12px!important}
+    .lyv-chip{display:inline-block;font-size:12px;font-weight:900;border-radius:999px;padding:4px 11px;background:rgba(57,226,154,.18);color:#39e29a;white-space:nowrap}.lyv-chip.dn{background:rgba(255,143,154,.18);color:#ff8f9a}
+    .lyv2-h{display:flex;align-items:center;gap:10px;margin-top:10px}
+    .lyv2-bar{display:grid;grid-template-columns:70px 1fr auto;align-items:center;gap:10px;margin-top:12px;font-size:12px;font-weight:800;color:#c9d3f5}.lyv2-bar i{height:12px;border-radius:99px;background:rgba(255,255,255,.1);overflow:hidden}.lyv2-bar u{display:block;height:100%;border-radius:99px}.lyv2-bar b{color:#fff;font-size:14px}
+    .lyv2-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.lyv2-row div,.lyv4-t div{background:rgba(255,255,255,.08);border-radius:12px;padding:10px 12px}
+    .lyv2-row small,.lyv4-t small{display:block;font-size:10px!important;letter-spacing:.04em!important}.lyv2-row b,.lyv4-t b{display:block;font-size:17px;font-weight:900;margin-top:2px}.lyv2-row em{font-style:normal}
+    @media (min-width:900px){.lyv2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:28px}.lyv2>small,.lyv2-h,.lyv-sub,.lyv2-bar{grid-column:1}.lyv2-row{grid-column:2;grid-row:2/span 4;align-self:center}}
 </style>
 </head>
 <body>
@@ -7993,13 +8003,13 @@ function lyDays(days){
  const {R,has,wins,TA,TL,dl,best}=D, C=2*Math.PI*28, share=wins/has.length, pts=lyRunPts(has,320,82);
  const cal=R.map((r,i)=>`<i class="${!r.a?'f':!r.l?'n':r.w?'w':'l'}" style="--i:${i}" title="${esc(r.x.hijri||'')}">${r.x.dayNumber}</i>`).join('');
  const anim=LYX_ANIM&&motionOn();LYX_ANIM=false;
- const sum=`<div class="lyx-sum${anim?' anim':''}"><div class="lyx-a"><small>VS THE SAME HIJRI DAYS LAST YEAR</small>
-   <div class="lyx-ring"><svg viewBox="0 0 70 70"><circle cx="35" cy="35" r="28" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="8"/><circle class="lyx-arc" cx="35" cy="35" r="28" fill="none" stroke="#39e29a" stroke-width="8" stroke-linecap="round" stroke-dasharray="${(share*C).toFixed(1)} ${C.toFixed(1)}" style="--d:${(share*C).toFixed(1)}px"/></svg>
-   <div><b>${wins}/${has.length}</b><p>days beat last year</p>${best?`<p class="lyx-best">best ${esc(shortDate(best.x.date))} <em class="up">+${mpK(best.a.value-best.l.value)}</em></p>`:''}</div></div>
-   <div class="lyx-cal">${cal}</div>
-   <div class="lyx-key"><span><i class="w"></i>Beat last year</span><span><i class="l"></i>Under</span><span><i class="f"></i>To come</span></div></div>
-  <div class="lyx-b"><small>RUNNING TOTAL · VALUE</small>${lyGapChart(has)}
-   <div class="lyx-lg"><span><i style="background:#39e29a"></i>This year</span><span><i style="background:#c5ccd9"></i>Last year</span><b class="${dl>=0?'up':'dn'}">${lyChip(dl)} · ${TA>=TL?'+':'−'}${mpK(Math.abs(TA-TL))}</b></div></div></div>`;
+ 
+ const mxv=Math.max(TA,TL)||1,gp=(TA>=TL?'+':'−')+mpK(Math.abs(TA-TL)),gc=dl>=0?'up':'dn';
+ const sum=`<div class="lyx-sum lyv${anim?' anim':''}"><div class="lyv2"><small>VS THE SAME HIJRI DAYS LAST YEAR</small>
+   <div class="lyv2-h"><b class="lyv-big ${gc}">${gp}</b>${dl!=null?`<span class="lyv-chip ${gc}">${lyChip(dl)}</span>`:''}</div><p class="lyv-sub">value so far against the same Hijri days last year</p>
+   <div class="lyv2-bar"><span>This year</span><i><u style="width:${(TA/mxv*100).toFixed(1)}%;background:#39e29a"></u></i><b>${mpK(TA)}</b></div>
+   <div class="lyv2-bar"><span>Last year</span><i><u style="width:${(TL/mxv*100).toFixed(1)}%;background:#c5ccd9"></u></i><b>${mpK(TL)}</b></div>
+   <div class="lyv2-row"><div><small>Days won</small><b>${wins} of ${has.length}</b></div><div><small>Best day</small><b>${best?`${esc(shortDate(best.x.date))} <em class="up">+${mpK(best.a.value-best.l.value)}</em>`:'—'}</b></div></div></div></div>`;
  const det=r=>{const a=r.a,l=r.l;
    const rows=[['Value',a.value,l.value,v=>money(v),1],['Spend',a.spend,l.spend,v=>money(v),0],['ROAS',a.spend?a.value/a.spend:null,l.spend?l.value/l.spend:null,v=>v==null?'—':fmt(v,2)+'x',1],
      ['Conversions',a.conversions,l.conversions,v=>fmt(v,0),1],['Clicks',a.clicks,l.extra?l.extra.clicks:null,v=>v==null?'—':fmt(v,0),1],
