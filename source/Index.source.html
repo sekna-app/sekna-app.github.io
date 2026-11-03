@@ -5597,6 +5597,14 @@ window.addEventListener('load',function(){
     .lyv2-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.lyv2-row div,.lyv4-t div{background:rgba(255,255,255,.08);border-radius:12px;padding:10px 12px}
     .lyv2-row small,.lyv4-t small{display:block;font-size:10px!important;letter-spacing:.04em!important}.lyv2-row b,.lyv4-t b{display:block;font-size:17px;font-weight:900;margin-top:2px}.lyv2-row em{font-style:normal}
     @media (min-width:900px){.lyv2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:28px}.lyv2>small,.lyv2-h,.lyv-sub,.lyv2-bar{grid-column:1}.lyv2-row{grid-column:2;grid-row:2/span 4;align-self:center}}
+    /* v172 Plan History: a folded month shows only its plan achievement */
+    .phs.fold{padding:14px!important;cursor:pointer}
+    .phs.fold .phs-big{margin:0!important;display:block!important}.phs.fold .phs-big>div{display:block}
+    .phs-fm{display:block;font-size:14px;font-weight:900;color:#203c8e;margin-bottom:2px}
+    .phs-fx{text-align:right;font-size:12px;font-weight:900;color:#203c8e;margin-top:8px}
+    .phs-fold{display:block;margin:10px 0 0 auto;border:0;background:none;font:inherit;font-size:12px;font-weight:900;color:#6b7385;cursor:pointer}
+    body.dark-mode .phs-fm,body.dark-mode .phs-fx{color:#9fb6ff}
+    @media (min-width:1100px){#phBody .phs.fold{display:flex!important;align-items:center;justify-content:space-between;padding:14px 20px!important}#phBody .phs.fold .phs-big{grid-column:auto!important;grid-row:auto!important;background:none!important;padding:0!important;text-align:left!important}#phBody .phs.fold .phs-big>div{display:flex;align-items:baseline;gap:18px}#phBody .phs.fold .phs-fm{font-size:18px;margin:0;min-width:170px}#phBody .phs.fold .phs-fx{margin:0;grid-column:auto!important}#phBody .phs:not(.fold) .phs-fold{grid-column:1!important;grid-row:4!important;margin:4px 0 0!important;text-align:left}#phBody .phs:not(.fold) .phx-tw{grid-row:5!important}}
 </style>
 </head>
 <body>
@@ -13579,10 +13587,10 @@ function drawMonthlyReport(){
 }
 
 /* ---------- v87: Plan History ---------- */
-let PH={account:'',list:null,open:'',busy:false,msg:'',lib:null,view:'st'};
+let PH={account:'',list:null,open:'',busy:false,msg:'',lib:null,view:'st',shown:{}};
 function renderPlanHistory(){
  const body=document.getElementById('phBody');if(!body)return;
- if(PH.account!==CURRENT_ACCOUNT){PH={account:CURRENT_ACCOUNT,list:null,open:'',busy:false,msg:'',lib:null,view:PH.view||'st'}}
+ if(PH.account!==CURRENT_ACCOUNT){PH={account:CURRENT_ACCOUNT,list:null,open:'',busy:false,msg:'',lib:null,view:PH.view||'st',shown:{}}}
  // The report library: every month's PDF sent to the team.
  if(PH.lib===null){PH.lib=[];serverCall('reportLib',getAccessToken(),CURRENT_ACCOUNT).then(r=>{PH.lib=Array.isArray(r)?r:[];drawPlanHistory()}).catch(()=>{})}
  if(PH.list===null&&!PH.busy){PH.busy=true;
@@ -13598,7 +13606,9 @@ function phAcc(s){
  const conv=p.conversions>0?clamp(a.conversions/p.conversions):0;
  return {p,all:spend*.4+revenue*.4+conv*.2};
 }
-function phToggle(k){PH.open=PH.open===k?'':k;drawPlanHistory()}
+// v172: each month starts folded on its plan achievement; a tap opens the whole statement, the next taps open the campaign types.
+function phToggle(k){PH.shown=PH.shown||{};if(!PH.shown[k]){PH.shown[k]=1;drawPlanHistory();return}PH.open=PH.open===k?'':k;drawPlanHistory()}
+function phFold(k){PH.shown=PH.shown||{};delete PH.shown[k];if(PH.open===k)PH.open='';drawPlanHistory()}
 function phView(v){PH.view=v;drawPlanHistory()}
 // One saved PDF: the file, its pages and size, when it went to the team; tapping it downloads it.
 function phPdf(r,compact){
@@ -13621,6 +13631,9 @@ function drawPlanHistory(){
    const roasR=p.roas?a.roas/p.roas:null;
    const ch=(s.channels||[]).map(c=>Object.assign({},c,{n:chName(c.channel)})).sort((x,y)=>(y.roas||0)-(x.roas||0)).map(c=>`<tr><td class="mp-n">${chIco(c.channel)}${esc(CHANNEL_SHORT[c.channel]||c.n)}</td><td>${mpK(c.planSpend)}</td><td>${mpK(c.spend)}</td><td>${c.planSpend?mpPct(c.spend/c.planSpend):'—'}</td><td>${mpK(c.value)}</td><td>${c.roas!=null?fmt(c.roas,2)+'x':'—'}</td></tr>`).join('');
    const saved=s.savedAt?new Date(s.savedAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
+   const fold=!(PH.shown&&PH.shown[s.month]);
+   if(fold)return `<div class="phs fold" onclick="phToggle('${s.month}')" role="button" tabindex="0" aria-label="${esc(monthName(s.month,true))}, open the statement">
+    <div class="phs-big"><div><span class="phs-fm">${esc(monthName(s.month,true))}</span><small>PLAN ACHIEVEMENT</small><b>${mpPct(all)}</b></div></div><div class="phs-fx">See the details ▾</div></div>`;
    return `<div class="phs${open?' open':''}" onclick="phToggle('${s.month}')">
     <div class="phs-hd"><b>HEMERA<i>·</i></b><div>${esc(accName)}<br>STATEMENT · ${esc(monthName(mon,true).toUpperCase())}</div></div>
     <h3>${esc(monthName(s.month,true))}</h3><div class="phs-sub">${s.daysLive} of ${s.daysTotal} days · ${esc(s.hijriFrom)} – ${esc(s.hijriTo)}</div>
@@ -13631,6 +13644,7 @@ function drawPlanHistory(){
     ${libOf(s.month)?phPdf(libOf(s.month)):''}
     ${canDo('lab')?`<button type="button" class="phs-cel" onclick="event.stopPropagation();celCompose('${s.month}')">🎉 Celebrate this month</button>`:''}
     <div class="phs-more">${open?'Hide campaign types ▲':'By campaign type ▼'}</div>
+    <button type="button" class="phs-fold" onclick="event.stopPropagation();phFold('${s.month}')">Fold ▴</button>
     ${open?`<div class="phx-tw"><table class="mp-t phx-t"><thead><tr><th class="mp-n">Type</th><th>Plan spend</th><th>Spend</th><th>Of plan</th><th>Value</th><th>ROAS</th></tr></thead><tbody>${ch}</tbody></table></div>`:''}
    </div>`}).join('')}</div>`;
 }
