@@ -5980,6 +5980,9 @@ window.addEventListener('load',function(){
     .stx-ssn>*:not(.ss-img){position:relative;z-index:1}
     .stx-ssn .stx-k{color:#f3d79f!important}.stx-ssn>b{display:block;font-family:'DM Serif Display',Georgia,serif;font-size:34px;line-height:1.08;margin:6px 0}.stx-ssn>p{color:#c9d6ff;font-size:13px;font-weight:600}
     .stx-sso{display:block;width:100%;height:46px;border:0;border-radius:14px;margin-top:16px;font:inherit;font-size:14px;font-weight:900;cursor:pointer}
+    /* v173 season splash: the picture faint across the top, a gold line at the bottom */
+    .sks-sbg{position:absolute;left:0;right:0;top:0;height:min(42vh,330px);background-size:cover;background-position:center;opacity:.5;pointer-events:none;-webkit-mask-image:linear-gradient(#000 35%,transparent 98%);mask-image:linear-gradient(#000 35%,transparent 98%);animation:sksUp .6s ease both}
+    .sks-sl{position:absolute;left:0;right:0;bottom:calc(36px + env(safe-area-inset-bottom));text-align:center;font-size:10.5px;font-weight:800;letter-spacing:.22em;color:#f3d79f;animation:sksUp .5s .5s both}
 </style>
 </head>
 <body>
@@ -5994,6 +5997,16 @@ window.addEventListener('load',function(){
  
 (function(){
  var s=document.getElementById('skSplash');if(!s)return;
+ 
+ window.sksSeason=function(k){var L={ramadan:'RAMADAN MUBARAK',last10:'THE LAST 10 NIGHTS',eidfitr:'EID MUBARAK',dhulhijjah:'THE BEST 10 DAYS',arafah:'THE DAY OF ARAFAH',eidadha:'EID AL-ADHA MUBARAK',ashura:'ASHURA',thanksgiving:'HAPPY THANKSGIVING',givingtuesday:'GIVING TUESDAY',yearend:'YEAR-END GIVING'};
+  if(!k||!L[k])return;var b=s.querySelector('.sks-sbg');if(!b){b=document.createElement('i');b.className='sks-sbg';s.insertBefore(b,s.firstChild)}
+  b.style.backgroundImage="url('icons/seasons/"+k+".webp?v=5')";var t=s.querySelector('.sks-sl');if(!t){t=document.createElement('div');t.className='sks-sl';s.appendChild(t)}t.textContent=L[k]};
+ try{var now=new Date(),h={};new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',timeZone:'Asia/Muscat'}).formatToParts(now).forEach(function(x){h[x.type]=parseInt(x.value,10)});
+  var m=h.month,d=h.day,k='';
+  if(m===9)k=d>=21?'last10':'ramadan';else if(m===10&&d<=3)k='eidfitr';else if(m===12&&d<=8)k='dhulhijjah';else if(m===12&&d===9)k='arafah';else if(m===12&&d<=13)k='eidadha';else if(m===1&&(d===9||d===10))k='ashura';
+  if(!k){var y=now.getFullYear(),mo=now.getMonth()+1,dd=now.getDate(),f=new Date(y,10,1).getDay(),tg=1+(4-f+7)%7+21;
+   if(mo===11&&dd===tg)k='thanksgiving';else if((mo===11&&dd===tg+5)||(mo===12&&dd===tg+5-30))k='givingtuesday';else if(mo===12&&dd>=26)k='yearend'}
+  sksSeason(k)}catch(e){}
  var g=s.querySelector('.sks-glint'),im=s.querySelector('.sks-logo img');
  if(g&&im){g.style.webkitMaskImage=g.style.maskImage='url('+im.src+')'}
  
