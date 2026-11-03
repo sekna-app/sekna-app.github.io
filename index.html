@@ -6150,6 +6150,20 @@ window.addEventListener('load',function(){
     /* v173 season splash: crisper picture, a shorter fade at the bottom; on wide screens it keeps its own size in the middle */
     .sks-sbg{opacity:.78!important;-webkit-mask-image:linear-gradient(#000 74%,transparent)!important;mask-image:linear-gradient(#000 74%,transparent)!important}
     @media (min-width:900px){.sks-sbg{left:50%!important;right:auto!important;width:640px;margin-left:-320px;height:min(36vh,330px)!important;-webkit-mask-image:linear-gradient(#000 74%,transparent),linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent)!important;-webkit-mask-composite:source-in;mask-image:linear-gradient(#000 74%,transparent),linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent)!important;mask-composite:intersect}}
+    /* v174 season greeting on its day: picture on top, greeting under it, EN / عربي */
+    .sgr{position:relative;width:100%;max-width:400px;background:#14224a;border-radius:26px;overflow:hidden;box-shadow:0 22px 60px rgba(0,0,0,.5);color:#fff;transform:scale(.94);transition:transform .35s cubic-bezier(.2,.8,.25,1);max-height:calc(100vh - 40px);overflow-y:auto}
+    .ssr-ov.on .sgr{transform:none}
+    .sgr>img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;background:#0e1a46}
+    .sgr-b{position:relative;padding:18px 20px 20px;text-align:center}
+    .sgr-tg{position:absolute;top:-40px;right:14px;display:inline-flex;padding:3px;border-radius:20px;background:rgba(20,34,74,.82);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+    .sgr-tg button{border:0;background:none;color:#fff;font:inherit;font-size:12px;font-weight:700;padding:5px 12px;border-radius:16px;cursor:pointer}.sgr-tg button.on{background:#e8c77a;color:#14224a}
+    .sgr h2{margin:0 0 8px;font-size:21px;line-height:1.25;color:#e8c77a;font-weight:900}
+    .sgr p{margin:0 0 16px;font-size:14px;line-height:1.6;color:#dfe5f5;font-weight:600}
+    .sgr-b.ar{direction:rtl}.sgr-b.ar .sgr-tg{right:auto;left:14px;direction:ltr}.sgr-b.ar p{font-size:14.5px;line-height:1.8}
+    .sgr-ok{display:block;width:100%;height:46px;border:0;border-radius:14px;background:#e8c77a;color:#14224a;font:inherit;font-size:15px;font-weight:900;cursor:pointer}
+    .sgr .ssr-x{background:rgba(0,0,0,.45)}
+    .stx-sgr{width:100%;text-align:center}.stx-sgr img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:20px;box-shadow:0 14px 40px rgba(0,0,0,.4);margin-bottom:18px}
+    .stx-sgr b{display:block;font-size:24px;line-height:1.2;color:#f3d79f;font-weight:900;margin-bottom:10px}.stx-sgr p{color:#dfe5f5;font-size:15px;line-height:1.6;font-weight:600;margin:0}
 </style>
 </head>
 <body>
@@ -7614,6 +7628,8 @@ function stxStories(d,k){
  const th=stxThanks(d);if(th)out.unshift({t:'thanks',k:'THANK YOU TEAM',bg:'radial-gradient(circle at 50% 30%,#3456c4,#1c3384 60%,#0f1d4a)',month:th.name,score:th.score});
  const pa=Number(x.dayNumber)>=20?planAccuracy(d):null;if(pa&&pa.score!=null)out.push({t:'ring',k:'PLAN ACCURACY · MONTH SO FAR',v:pa.score,c:pa.score>=.9?'#22c47c':pa.score>=.8?'#e2b874':'#ff8f8f',big:pc(pa.score),sub:'of the full plan',p:'Spend 40%\nValue 40%\nConversions 20%'});
  
+ try{const gs=ssGreetNow(k==='usa');if(gs)out.unshift({t:'greet',s:gs,bg:'radial-gradient(circle at 50% 20%,#24387a,#14224a 60%,#0b1530)'})}catch(e){}
+ 
  try{const t=ssToday(),ss=ssList().find(z=>z.from>t&&ssDays(t,z.from)<=15&&SS_ART[z.key]&&(z.type==='h'||k==='usa'));if(ss)out.push({t:'season',k:'REMINDER',s:ss,n:ssDays(t,ss.from),bg:'linear-gradient(170deg,#0e1a46,#14286e 60%,#1a3290)'})}catch(e){}
  const st=streakOf(d);if(st.n>=3)out.push({t:'streak',bg:'linear-gradient(160deg,#f6a23b,#c2410c)',k:'DAYS IN A ROW ABOVE THE PLAN',big:String(st.n),p:"Conversion value beat the day's plan every day.",days:st.days.slice(-7)});
  return out;
@@ -7801,7 +7817,8 @@ function stxShow(){
  const G=stxGroup(),s=G.list[STX.i],d=G.d,x=d.latest||{},admin=!!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin);
  storeSet(stxSeenKey(G.k,x.date),'1');
  const ring=`<div class="stx-ring"><svg viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="3.4"/><circle cx="18" cy="18" r="15" fill="none" stroke="${s.c}" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="${(94.2*Math.max(0,Math.min(1,s.v||0))).toFixed(1)} 99"/></svg><div><b>${esc(s.big)}</b><small>${esc(s.sub||'')}</small></div></div>`;
- const body=s.t==='season'?stxSeasonHtml(s)
+ const body=s.t==='greet'?stxGreetHtml(s)
+  :s.t==='season'?stxSeasonHtml(s)
   :s.t==='thanks'?stxThanksHtml(s)
   :s.t==='drop'?stxDropHtml(s,G.k==='ar'?'AR':'USA',stxAgo(d))
   :s.t==='streak'?stxStreakHtml(s)
@@ -12623,8 +12640,35 @@ function ssDeco(th){
 const SS_IC={cal:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>',flag:'<svg viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>',moon:'<svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg>'};
 const SS_ART={ramadan:'Prepare your Ramadan campaigns.',last10:'Prepare campaigns for the final nights.',eidfitr:'Get your Eid campaigns ready.',dhulhijjah:'Plan for the first ten days.',arafah:'Make an impact on the Day of Arafah.',eidadha:'Prepare your Eid al-Adha campaigns.',ashura:'Prepare your Ashura campaign plan.',thanksgiving:'Prepare your Thanksgiving campaigns.',givingtuesday:'Plan your Giving Tuesday campaign.',yearend:'Prepare your year-end giving campaigns.'};
 
+const SS_GREET={
+ ramadan:['Ramadan Mubarak 🌙','May Allah make this a month of blessings, accept our good deeds, and guide our team toward success. May our efforts bring hope, feed those in need, and make a lasting difference.','رمضان كريم 🌙','نسأل الله أن يجعله شهر خير وبركة، وأن يتقبل منا صالح الأعمال، ويوفق فريقنا لتحقيق أهدافه، ويجعل جهودنا سببًا في إطعام المحتاجين وإسعاد القلوب.'],
+ last10:['Blessed Last 10 Nights 🤍','May Allah bless us with Laylatul Qadr, accept our prayers, and grant our team success in every effort to make a meaningful difference.','العشر الأواخر مباركة 🤍','اللهم ارزقنا ليلة القدر، وتقبل دعاءنا، وبارك في جهود فريقنا، ووفقنا لتحقيق الخير وترك أثر لا يُنسى.'],
+ eidfitr:['Eid Mubarak! ✨',"May Allah accept our good deeds, bless our team's efforts, and make our work a source of happiness and hope for those in need.",'عيد فطر مبارك ✨','تقبل الله منا ومنكم صالح الأعمال. نسأل الله أن يكلل جهود فريقنا بالنجاح، ويجعل ما قدمناه من عطاء سببًا في فرحة الكثيرين.'],
+ dhulhijjah:['Blessed Days of Dhul Hijjah 🤍','May Allah bless these sacred days, accept our efforts, and guide our team toward greater achievements and a lasting impact.','أيام العشر المباركة 🤍','نسأل الله أن يبارك لنا في هذه الأيام، ويتقبل أعمالنا، ويوفق فريقنا لتحقيق أهدافه، ويضاعف أثر كل جهد وعطاء.'],
+ arafah:['Blessed Day of Arafah 🤍','May Allah answer our prayers, guide our team toward success, and make our efforts a source of relief, kindness, and hope.','يوم عرفة مبارك 🤍','اللهم استجب دعاءنا، واغفر لنا، ووفق فريقنا لكل خير، واجعل جهودنا سببًا في تخفيف معاناة الآخرين ونشر الأمل.'],
+ eidadha:['Eid al-Adha Mubarak! ✨',"May Allah accept our good deeds and sacrifices, bless our team's efforts, and help us bring the joy of Eid to families in need.",'عيد أضحى مبارك ✨','تقبل الله منا ومنكم صالح الأعمال والأضاحي. نسأل الله أن يوفق فريقنا، ويجعل جهودنا سببًا في وصول فرحة العيد إلى كل محتاج.'],
+ ashura:['Blessed Day of Ashura 🤍',"May Allah accept our fasting, forgive us, and bless our team's efforts to spread kindness and make a positive difference.",'يوم عاشوراء مبارك 🤍','نسأل الله أن يتقبل صيامنا، ويغفر لنا، ويبارك في جهود فريقنا، ويوفقنا دائمًا لصناعة أثر طيب في حياة الآخرين.'],
+ thanksgiving:['Happy Thanksgiving! 🧡','As we celebrate gratitude and generosity, may our team find success in every effort and help bring support and hope to more families in need.','عيد شكر سعيد! 🧡','في موسم الامتنان والعطاء، نسأل الله أن يوفق فريقنا لتحقيق أهدافه، وأن تكون جهودنا سببًا في وصول الخير والدعم إلى المزيد من الأسر المحتاجة.'],
+ givingtuesday:['Happy Giving Tuesday! 💙','Every contribution matters, and every effort brings us closer to our goals. Wishing our team success in creating meaningful change and transforming lives.','يوم عطاء سعيد! 💙','كل مساهمة تصنع فرقًا، وكل جهد يقربنا من هدفنا. نسأل الله التوفيق لفريقنا، وأن يجعل عطاءنا سببًا في تغيير حياة الكثيرين.'],
+ yearend:["Let's End the Year with Impact! ✨","May our team's hard work lead to meaningful achievements. May every effort we make leave a lasting legacy of hope, kindness, and generosity.",'لنختتم العام بأثر عظيم ✨','نسأل الله أن يبارك في جهود فريقنا، ويوفقنا لتحقيق أهدافنا، وأن يجعل ما قدمناه من عمل وعطاء أثرًا ممتدًا بالخير والأمل.']};
+
+const SS_GREET_IMG={eidadha:1,ashura:1,thanksgiving:1,givingtuesday:1,yearend:1};
+function ssGreetNow(usa){const t=ssToday();return ssList().find(x=>SS_GREET[x.key]&&SS_GREET_IMG[x.key]&&x.from<=t&&ssDays(x.from,t)<=Math.min(2,x.len-1)&&(usa||x.type==='h'))||null}
+function ssGreetSet(ar){const b=document.querySelector('#ssRem .sgr-b');if(!b)return;const g=SS_GREET[b.dataset.k];b.classList.toggle('ar',ar);b.querySelector('h2').textContent=g[ar?2:0];b.querySelector('p').textContent=g[ar?3:1];b.querySelector('.sgr-ok').textContent=ar?'شكرًا 🤍':'Thank you 🤍';
+ b.querySelectorAll('.sgr-tg button').forEach((x,i)=>x.classList.toggle('on',i===(ar?1:0)))}
+function ssGreet(){
+ const s=ssGreetNow(true);if(!s)return false;const k='sekna_ssgrt_'+s.id;if(storeGet(k))return false;const g=SS_GREET[s.key];
+ const o=document.createElement('div');o.id='ssRem';o.className='ssr-ov';o.setAttribute('data-share-ui','');
+ o.innerHTML=`<div class="sgr" role="dialog" aria-label="${esc(g[0])}"><button type="button" class="ssr-x" aria-label="Close" onclick="ssRemClose('${k}')">✕</button><img src="icons/greet/${s.key}.webp?v=1" alt="${esc(s.name)}"><div class="sgr-b" data-k="${s.key}"><div class="sgr-tg"><button type="button" class="on" onclick="ssGreetSet(false)">EN</button><button type="button" onclick="ssGreetSet(true)">عربي</button></div>
+  <h2>${esc(g[0])}</h2><p>${esc(g[1])}</p><button type="button" class="sgr-ok" onclick="ssRemClose('${k}')">Thank you 🤍</button></div></div>`;
+ o.addEventListener('click',e=>{if(e.target===o)ssRemClose(k)});
+ document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('on'));return true;
+}
+function stxGreetHtml(o){const g=SS_GREET[o.s.key];return `<div class="stx-sgr"><img src="icons/greet/${o.s.key}.webp?v=1" alt=""><b>${esc(g[0])}</b><p>${esc(g[1])}</p></div>`}
+
 function ssRemind(){
- if(document.getElementById('ssRem')||document.getElementById('stxView')||!canDo('seasons')||document.body.classList.contains('gate-open'))return;
+ if(document.getElementById('ssRem')||document.getElementById('stxView')||document.body.classList.contains('gate-open'))return;
+ if(ssGreet()||!canDo('seasons'))return;
  const t=ssToday(),s=ssList().find(x=>x.from>t&&ssDays(t,x.from)<=15&&SS_ART[x.key]);if(!s)return;
  const k='sekna_ssrem_'+s.id;if(storeGet(k))return;
  const n=ssDays(t,s.from),o=document.createElement('div');o.id='ssRem';o.className='ssr-ov';o.setAttribute('data-share-ui','');

@@ -573,7 +573,7 @@ function nthDay(y, mo, wd, n) { const f = new Date(Date.UTC(y, mo - 1, 1)).getUT
 /** The seasons that start exactly 15 days after `today` (yyyy-mm-dd). */
 function seasonsDue(today) {
   const out = [], fmt = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { day: 'numeric', month: 'numeric', year: 'numeric', timeZone: 'UTC' });
-  for (const left of [15]) {
+  for (const left of [15, 0]) {
     const dk = isoPlus(today, left), before = isoPlus(dk, -1);
     const h = dk => { const p = {}; fmt.formatToParts(new Date(dk + 'T00:00:00Z')).forEach(x => { p[x.type] = parseInt(x.value, 10); }); return p; };
     const a = h(dk), b = h(before);
@@ -585,6 +585,16 @@ function seasonsDue(today) {
   }
   return out;
 }
+
+// v174 the season's greeting, sent on its first day with its picture (seasons whose picture is in icons/greet).
+const SEASON_GREET = {
+  eidadha: ['Eid al-Adha Mubarak! ✨', 'May Allah accept our good deeds and sacrifices, bless our team\'s efforts, and help us bring the joy of Eid to families in need.'],
+  ashura: ['Blessed Day of Ashura 🤍', 'May Allah accept our fasting, forgive us, and bless our team\'s efforts to spread kindness and make a positive difference.'],
+  thanksgiving: ['Happy Thanksgiving! 🧡', 'As we celebrate gratitude and generosity, may our team find success in every effort and help bring support and hope to more families in need.'],
+  givingtuesday: ['Happy Giving Tuesday! 💙', 'Every contribution matters, and every effort brings us closer to our goals. Wishing our team success in creating meaningful change and transforming lives.'],
+  yearend: ['Let\'s End the Year with Impact! ✨', 'May our team\'s hard work lead to meaningful achievements. May every effort we make leave a lasting legacy of hope, kindness, and generosity.']
+};
+const GREET_IMG = 'https://sekna-app.web.app/icons/greet/';
 
 async function pushChecks(latestByAccount, daysByAccount) {
   if (!(await moved())) return { skipped: true };
@@ -629,6 +639,15 @@ async function pushChecks(latestByAccount, daysByAccount) {
       for (const s of seasonsDue(today)) {
         const key = s.id + '-' + s.left;
         if (sent[key]) continue;
+        const k = s.id.replace(/-\d+$/, '');
+        if (s.left === 0) {
+          // On the day: only seasons with a greeting picture.
+          const g = SEASON_GREET[k];
+          if (g) await notify.send({ topics: [{ title: g[0], body: g[1], image: GREET_IMG + k + '.jpg', account: s.acc || 'usa', eventType: 'greeting' }] })
+            .catch(e => console.error('Season greeting: ' + e.message));
+          sent[key] = Date.now(); if (g) out.season = (out.season || []).concat(key);
+          continue;
+        }
         const start = new Date(s.at + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
         await notify.send({ topics: [{ title: s.e + ' ' + s.name + ' is in ' + s.left + ' days' + (s.acc ? ' · USA' : ''), body: 'Starts ' + start + '. Open to see last year\'s numbers.',
           account: s.acc || 'usa', eventType: 'season' }] }).catch(e => console.error('Season reminder: ' + e.message));

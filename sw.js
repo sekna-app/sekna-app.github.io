@@ -21,6 +21,7 @@ function showSeknaNotification(d) {
   const tag = d.eventType === 'new_day' ? 'data-' + (d.accountKey || 'usa') : (d.eventType || 'sekna');
   const options = { body: d.body || '', badge: 'icons/badge-96.png', tag: tag, data: { url: './' } };
   if (!IS_ANDROID) options.icon = 'icons/icon-192.png';
+  if (d.image) options.image = d.image;
   return self.registration.showNotification(d.title || 'HEMERA', options);
 }
 

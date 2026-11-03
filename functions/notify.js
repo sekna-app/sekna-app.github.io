@@ -83,7 +83,7 @@ function topicMessage(t) {
   const s = t.snapshot || {};
   return Object.assign({ topic: MEDIA_TOPIC, data: {
     title: String(t.title || 'Media Plan'), body: String(t.body || 'Media Plan data was updated.'),
-    accountKey: String(t.account || s.accountKey || 'usa'), eventType: String(t.eventType || 'updated'),
+    accountKey: String(t.account || s.accountKey || 'usa'), eventType: String(t.eventType || 'updated'), image: String(t.image || ''),
     date: String(s.date || ''), dayNumber: String(s.dayNumber || 0), monthName: String(s.monthName || ''),
     spend: String(s.spend || 0), conversions: String(s.conversions || 0), value: String(s.value || 0)
   } }, highPriority);
