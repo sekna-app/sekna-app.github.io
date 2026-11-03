@@ -5922,6 +5922,20 @@ window.addEventListener('load',function(){
     .ss-hero .sd-moon{box-shadow:inset -13px 6px 0 0 #f3d79f!important}
     .ss-hero .ss-hd .ss-af button{color:#c9d6ff!important}.ss-hero .ss-hd .ss-af button.on{background:#f3d79f!important;color:#0e1a46!important}
     .ss-hero .ss-hd b,.ss-hero .ss-hd strong{color:#f3d79f}
+    /* v173 no idea box in About */
+    .ab3-idea{display:none!important}
+    #tpTitle[hidden],#tpCard[hidden]{display:none!important}
+    /* v173 menu: the open group gets a gold edge and its pages slide in */
+    .sk-glass .sk-grp.open{box-shadow:inset 3px 0 0 #e2b874!important}
+    .sk-glass .sk-grp-body.open{background:rgba(255,255,255,.06);box-shadow:inset 3px 0 0 #e2b874}
+    .sk-glass .sk-grp-body.open .sk-nav-btn{animation:skSlideIn .35s cubic-bezier(.2,.8,.25,1) both}
+    .sk-glass .sk-grp-body.open .sk-nav-btn:nth-child(2){animation-delay:.05s}.sk-glass .sk-grp-body.open .sk-nav-btn:nth-child(3){animation-delay:.1s}.sk-glass .sk-grp-body.open .sk-nav-btn:nth-child(4){animation-delay:.15s}.sk-glass .sk-grp-body.open .sk-nav-btn:nth-child(5){animation-delay:.2s}
+    @keyframes skSlideIn{from{opacity:0;transform:translateX(-14px)}}
+    /* v173 AI Max tiles: back to short rectangles; the name top left, the round icon top right, still raised */
+    .st-qm .quick-metric{flex-direction:row!important;align-items:flex-start!important;text-align:left!important;min-height:0!important;padding:12px 12px 12px 14px!important}
+    .st-qm .quick-metric .quick-icon{order:2!important;margin:0 0 0 auto!important;width:30px!important;height:30px!important;flex:0 0 30px!important}
+    .st-qm .quick-copy{align-items:flex-start!important}
+    .st-qm .quick-value{font-size:20px!important}
 </style>
 </head>
 <body>
@@ -6115,7 +6129,7 @@ window.addEventListener('load',function(){
       <input type="hidden" id="notificationSoundSetting" value="default">
     </div>
 
-    <div class="sk-group-title">Team settings <span class="tp-lock" id="tpLockNote"></span></div>
+    <div class="sk-group-title" id="tpTitle">Team settings <span class="tp-lock" id="tpLockNote"></span></div>
     <div class="sk-card tp-card" id="tpCard">
       <div class="sk-row" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M14.6 9.2c-.5-.8-1.5-1.2-2.6-1.2-1.5 0-2.6.8-2.6 1.9 0 2.5 5.4 1.3 5.4 4 0 1.1-1.2 2-2.8 2-1.2 0-2.2-.5-2.7-1.3M12 6.5V8M12 16v1.5"/></svg></span><span class="sk-row-text"><b>Default currency</b><small>Each account opens in its own currency.</small></span><span class="ac-box" id="accCurBox"></span></div>
       <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg></span><span class="sk-row-text"><b>Spend alert</b><small>A note when the day's spend passes its plan by this much. <a href="#" class="sa-demo" onclick="spendAlertCheck(DASH_DATA,true);return false">Show me</a></small></span></div>
@@ -6804,6 +6818,8 @@ function syncNativeSettings(){
 }
 function openSettings(){
  closeSidebar();syncSettingsControls();renderProfileCard();settingsUser();drawAccCur();drawSpendAlertOpts();drawRoasAlertOpts();
+ // v173 Team settings are for the owner only
+ ['tpTitle','tpCard'].forEach(id=>{const x=document.getElementById(id);if(x)x.hidden=!mrOwner()});
  const el=document.getElementById('settingsOverlay');if(el)el.classList.add('open');
 }
 // Settings header: who is signed in, and the versions at the bottom.
