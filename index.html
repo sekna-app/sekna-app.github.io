@@ -6048,6 +6048,18 @@ window.addEventListener('load',function(){
     .dx-stats.dx-g3{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,.9fr) minmax(0,1.35fr);gap:10px 8px}.dx-g3 b{text-overflow:clip!important}
     .dx-g3 span{min-width:0}.dx-g3 small{display:block;font-size:10px;font-weight:800;color:#8a92a6;letter-spacing:.02em;white-space:nowrap}
     .dx-g3 b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.dx-g3 em{font-style:normal;font-size:10.5px;font-weight:900;margin-left:3px;display:inline!important}
+    /* v173 Channel Economics: white rows with a side band in each type's colour, figures in small tiles, a mix bar */
+    .as-eco.k0{--a:#7b5cf0;--b:#4b2fb8}.as-eco.k1{--a:#3a56c9;--b:#1b2c78}.as-eco.k2{--a:#f0a94a;--b:#c97a1e}.as-eco.k3{--a:#39b8e0;--b:#1d7fb3}.as-eco.k4{--a:#f25f6b;--b:#b8283a}
+    .as-ecos{background:none!important;box-shadow:none!important;border:0!important;padding:0!important}
+    .as-ecos .as-eco{position:relative;overflow:hidden;background:#fff;border:1.5px solid #edf0f6!important;border-radius:16px;padding:11px 12px 11px 18px!important;margin-top:8px}
+    .as-ecos .as-eco:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(var(--a),var(--b))}
+    .as-ecos .as-eco>div:first-child{font-size:13px!important}.as-ecos .as-eco>div:first-child b{font-weight:900}
+    .as-ecos .as-eco>div:first-child em{font-size:11.5px;padding:3px 9px;border-radius:99px;background:color-mix(in srgb,var(--a) 14%,#fff);color:var(--b)!important}
+    .as-ecos .as-chips{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px!important;margin-top:8px!important}
+    .as-ecos .as-chips span{display:block;text-align:center;font-size:8.5px!important;font-weight:900!important;letter-spacing:.06em;padding:5px 0!important;border-radius:9px!important}
+    .as-ecos .as-chips b{display:block;font-size:11.5px;letter-spacing:0;margin-top:1px;white-space:nowrap}
+    .as-mb{height:6px;border-radius:99px;background:#eef0f6;margin-top:8px}.as-mb i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--a),var(--b))}
+    body.dark-mode .as-ecos .as-eco{background:#151a22;border-color:#252a32!important}body.dark-mode .as-mb{background:#252a32}
 </style>
 </head>
 <body>
@@ -9135,8 +9147,9 @@ function asHtml(){
  if(AS.tab==='channels'){
    const CHC={'search brand':'#c89434','search non-brand':'#2453d6','performance max':'#13894f','demand gen':'#6b3fa0'};
    const bl=d.blended;
-   body=`<div class="fc-l">CHANNEL ECONOMICS <em>last ${(((FC[CURRENT_ACCOUNT]||{}).data||{}).settings||{}).window||60} days</em></div><div class="fc-card">${(d.economics||[]).map(r=>`<div class="as-eco"><div><i class="fc-dot" style="background:${CHC[r.name.toLowerCase()]||'#d33b4f'}"></i><b>${esc(r.name)}</b><em>${pc(r.mix)}</em></div>
-     <div class="as-chips"><span>CPC <b>${mo(r.cpc,2)}</b></span><span>CVR <b>${pc(r.cvr)}</b></span><span>AOV <b>${mo(r.aov)}</b></span><span>ROAS <b>${r.roas!=null?fmt(r.roas,1)+'x':'—'}</b></span><span>CPA <b>${mo(r.cpa)}</b></span></div></div>`).join('')}
+   const ecoMx=Math.max(.01,...(d.economics||[]).map(r=>r.mix||0)),ecoK=n=>{const i=CHANNEL_ORDER.indexOf(n);return i<0?(/video|youtube/i.test(n)?4:0):Math.min(i,4)};
+   body=`<div class="fc-l">CHANNEL ECONOMICS <em>last ${(((FC[CURRENT_ACCOUNT]||{}).data||{}).settings||{}).window||60} days</em></div><div class="fc-card as-ecos">${(d.economics||[]).map(r=>`<div class="as-eco k${ecoK(r.name)}"><div><b>${esc(r.name)}</b><em>${pc(r.mix)}</em></div>
+     <div class="as-chips"><span>CPC<b>${mo(r.cpc,2)}</b></span><span>CVR<b>${pc(r.cvr)}</b></span><span>AOV<b>${mo(r.aov)}</b></span><span>ROAS<b>${r.roas!=null?fmt(r.roas,1)+'x':'—'}</b></span><span>CPA<b>${mo(r.cpa)}</b></span></div><div class="as-mb"><i style="width:${((r.mix||0)/ecoMx*100).toFixed(1)}%"></i></div></div>`).join('')}
      ${bl?`<div class="as-bl">Blended · ROAS <b>${bl.roas!=null?fmt(bl.roas,1)+'x':'—'}</b> · CPA <b>${mo(bl.cpa)}</b></div>`:''}</div>
      <div class="fc-foot">Worked out by the sheet from the last days, so it can't be changed here.</div>${asMixHtml(d,ed)}${asSaveBar(c,nEd)}`;
  }else if(AS.tab==='weeks'){
