@@ -5632,8 +5632,11 @@ window.addEventListener('load',function(){
     #mtdVarianceCard.vc.over{background:radial-gradient(140% 120% at 100% 0%,#d0505e,#8f2330 50%,#4a0f18)!important}
     
     /* v172 Budget remaining in a white card of its own, under Weekly Performance */
-    .vc-sec{padding:14px!important}.vc-sec #mtdVarianceCard.vc{margin:0!important}
+    .vc-sec #mtdVarianceCard.vc{margin:12px 0 0!important}
     @media (min-width:1100px){#channelPanel>.vc-sec{grid-column:1!important;grid-row:4!important;align-self:start}#channelPanel>#mrSection{grid-row:3/span 2!important;align-self:start}#channelPanel.active{align-items:start}}
+    /* v172 the clicks line now sits under the four tiles of the month card */
+    #mtdClicksRow.mc{border-top:0;margin-top:10px;padding-top:0}
+    @media (min-width:1100px){#channelPanel>.mtd-exec #mtdClicksRow.mc{grid-column:2;grid-row:3;margin-top:8px}}
 </style>
 </head>
 <body>
@@ -6210,6 +6213,7 @@ window.addEventListener('load',function(){
         <div class="ox-tile"><span class="ox-lbl">ROAS</span><b id="mtdRoas">—</b><span class="ox-hs" id="mtdRoasPlan">—</span>
           <div class="ox-bar"><span class="roas" id="mtdRoasBar"></span></div></div>
       </div>
+      <div class="ox-cl mc" id="mtdClicksRow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l9 8-4 1-1 4-4-13z"/><path d="M15 15l4 4"/></svg><span id="mtdClicks">Clicks —</span><em id="mtdClicksPct"></em></div>
 
       <div class="ox-legend" id="mtdTickLegend"><i></i><span>Black tick = expected by today</span></div>
     </section>
@@ -6234,11 +6238,12 @@ window.addEventListener('load',function(){
       </div>
     </section>
     <section class="card section vc-sec" id="vcSection">
+      <div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month">◧</span><span>Budget</span></div><div class="section-sub">What is left of the month plan</div></div></div>
 <div class="ox-strip vc" id="mtdVarianceCard"><span class="vc-chip" aria-hidden="true"></span><div class="ox-sr"><div><span class="ox-lbl" id="mtdVarianceLabel">Budget remaining</span><b id="mtdVariance">—</b></div><span class="ox-hs" id="mtdVarianceSub">—</span></div>
         <div class="ox-bar"><span class="budget" id="mtdVarianceBar"></span></div>
         <div class="vc-num" id="vcSpent">•••• •••• SPENT —</div>
         <div class="vc-foot"><div>MONTH PLAN<b id="vcPlan">—</b></div><div id="vcDay"></div><svg class="vc-wave" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8.5a5 5 0 0 1 0 7M11.5 6a8.5 8.5 0 0 1 0 12M15 3.5a12 12 0 0 1 0 17"/></svg></div>
-        <div class="ox-cl" id="mtdClicksRow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l9 8-4 1-1 4-4-13z"/><path d="M15 15l4 4"/></svg><span id="mtdClicks">Clicks —</span><em id="mtdClicksPct"></em></div></div>
+</div>
     </section>
 
     <section class="card section channel-section">
@@ -6554,9 +6559,10 @@ const SEC_IC={trend:'<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>',week:'<
  spark:'<path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/>',
  search:'<circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5M8 10.5h5"/>',
  dot:'<circle cx="12" cy="12" r="5"/>'};
+SEC_IC.wallet='<rect x="3" y="6" width="18" height="14" rx="3"/><path d="M3 10h18M16 15h2"/><path d="M6 6V5a2 2 0 0 1 2-2h9"/>';
 function secIconKey(t){
  t=String(t||'').toLowerCase();
- if(/ai max/.test(t))return 'spark';if(/search terms|st performance/.test(t))return 'search';
+ if(/^[^a-z]*budget$/.test(t.trim()))return 'wallet';if(/ai max/.test(t))return 'spark';if(/search terms|st performance/.test(t))return 'search';
  if(/hijri|last year/.test(t))return 'hist';if(/campaign type/.test(t))return 'layers';if(/glance/.test(t))return 'cal';
  if(/weekly/.test(t))return 'week';if(/day by day/.test(t))return 'grid';if(/channel/.test(t))return 'crown';if(/lab/.test(t))return 'flask';
  if(/plan (performance )?history/.test(t))return 'archive';if(/month vs|report|monthly history/.test(t))return /monthly report/.test(t)?'doc':'swap';
