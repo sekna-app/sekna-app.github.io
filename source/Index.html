@@ -5835,6 +5835,13 @@ window.addEventListener('load',function(){
     .ccd[class*=" k"] .cc-roas:not(.win){background:color-mix(in srgb,var(--a) 14%,#fff)!important;color:var(--b)!important}
     .ccd[class*=" k"] .cc-bar span:not(.over){background:linear-gradient(90deg,var(--a),var(--b))!important}
     body.dark-mode .ccd[class*=" k"] .cc-roas:not(.win){background:color-mix(in srgb,var(--a) 22%,#151a22)!important;color:#fff!important}
+    /* v173 Weekly Performance: white tiles with a gold side band and gold bar; the % shows the state (green on plan, amber close, red behind) */
+    .wx-m{position:relative;overflow:hidden;background:#fff!important;border:1.5px solid #edf0f6;padding-left:18px!important}
+    .wx-m:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(#f3d79f,#c9933f)}
+    .wx-m .wx-thin span{background:linear-gradient(90deg,#e2b874,#c9933f)!important}
+    .wx-m b.up{color:#17835a!important}.wx-m b.mid{color:#a8741c!important}.wx-m b.down{color:#c94b52!important}
+    .wx-m .wx-m-v{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.wx-m .wx-m-v b{font-size:17px!important}.wx-m .wx-m-v span{font-size:10.5px!important}
+    body.dark-mode .wx-m{background:#0b0d11!important;border-color:#252a32}body.dark-mode .wx-m b.mid{color:#f3d79f!important}
 </style>
 </head>
 <body>
@@ -8055,11 +8062,15 @@ function renderWeekDetail(w,isLive,monthName){
  const targetRoas=planSpend?planValue/planSpend:0;
  const roas=has&&Number(w.actualSpend)>0?Number(w.roas)||0:null;
  const range=weekDateRange(w,monthName);
+ const wkM=String(w.sourceLabel||'').match(/(\d{1,2})\s*[:\-–]\s*(\d{1,2})\s*$/),wkT=Number((DASH_DATA&&DASH_DATA.latest&&DASH_DATA.latest.dayNumber)||0);
+ const wkExp=isLive&&wkM&&wkT?Math.min(1,Math.max(.05,(wkT-+wkM[1]+1)/(+wkM[2]-+wkM[1]+1))):1;
  const status=!has?'<span class="wx-status is-wait">Upcoming</span>':isLive?'<span class="wx-status is-live">● In progress</span>':'<span class="wx-status is-done">Complete</span>';
  const metric=(label,actual,plan,f,neutral)=>{
    const ok=has&&plan>0&&actual!=null;
    const r=ok?actual/plan:null;
-   const cls=r==null?'':neutral?'neutral':(r>=1?'up':'down');
+   
+   const pace=r==null?null:r/(neutral?wkExp:1);
+   const cls=pace==null?'':pace>=1?'up':pace>=.85?'mid':'down';
    return `<div class="wx-m"><div class="wx-m-top"><span class="ox-lbl">${label}</span><b class="${cls}">${r==null?'—':Math.round(r*100)+'%'}</b></div>
      <div class="wx-m-v"><b>${has&&actual!=null?f(actual):'—'}</b><span>/ ${plan>0?f(plan):'—'}</span></div>
      <div class="wx-thin"><span class="${r!=null&&r>=1?'full':''}" style="width:${r==null?0:Math.min(r,1)*100}%"></span></div></div>`;
