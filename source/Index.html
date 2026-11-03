@@ -5719,6 +5719,13 @@ window.addEventListener('load',function(){
     @keyframes skSunRise{from{opacity:0;transform:translateY(170px) scale(.4)}to{opacity:1;transform:none}}
     @keyframes skSunLogo{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
     @keyframes skSunForm{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+    /* v173 code page: a gold light runs across the six boxes once when the page opens */
+    .sk-code{position:relative}
+    .sk-shine{position:absolute;inset:0;overflow:hidden;border-radius:12px;pointer-events:none;z-index:2}
+    .sk-shine:before{content:"";position:absolute;top:0;bottom:0;width:70px;left:-80px;background:linear-gradient(90deg,transparent,rgba(243,215,159,.7),transparent);opacity:0}
+    .sk-step[data-step="code"].active .sk-shine:before{animation:skShine .8s ease-in-out .35s}
+    @keyframes skShine{0%{left:-80px;opacity:1}100%{left:100%;opacity:1}}
+    @media (max-width:760px){html:not(.desktop-site-mode) .sk-gate .sk-step[data-step="code"].active{animation:skSunForm .4s cubic-bezier(.2,.8,.25,1) both}}
 </style>
 </head>
 <body>
@@ -5767,7 +5774,7 @@ window.addEventListener('load',function(){
       <h1>Check your inbox</h1>
       <p class="sk-gate-sub">We sent a 6-digit code to <b id="gateEmailEcho"></b></p>
       <form onsubmit="gateVerify(event)" novalidate>
-        <div class="sk-code" id="gateCode">
+        <div class="sk-code" id="gateCode"><i class="sk-shine" aria-hidden="true"></i>
           <i class="sk-otp" aria-hidden="true"><b class="sk-seal"></b><svg class="sk-tick" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>
           <input inputmode="numeric" autocomplete="one-time-code" aria-label="Digit 1"><input inputmode="numeric" aria-label="Digit 2"><input inputmode="numeric" aria-label="Digit 3"><input inputmode="numeric" aria-label="Digit 4"><input inputmode="numeric" aria-label="Digit 5"><input inputmode="numeric" aria-label="Digit 6">
         </div>
