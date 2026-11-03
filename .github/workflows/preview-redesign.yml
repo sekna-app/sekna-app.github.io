@@ -1,0 +1,26 @@
+name: Preview the redesign
+
+# Pushes to the "redesign" branch go to a separate Firebase preview link (channel "redesign"),
+# so the new look can be tried before it reaches sekna-app.web.app. The live site is not touched.
+on:
+  push:
+    branches: [redesign]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to the redesign preview channel
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: human-appeal-media-plan
+          channelId: redesign
+          expires: 30d
