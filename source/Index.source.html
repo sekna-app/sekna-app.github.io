@@ -5729,6 +5729,17 @@ window.addEventListener('load',function(){
     .gob-arc{border-color:transparent;border-top-color:#e2b874;animation:skSpin 1.6s linear infinite}
     .gob-env{position:absolute;inset:24px;border-radius:15px;background:rgba(255,255,255,.1);display:grid;place-items:center;color:#f3d79f}
     .gob-env svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    /* v173 money: one chip, tap to switch; red while it is not the account's own money. The rate time is written like the Live line. */
+    .cur-sw.cur-chip{background:none;padding:0}
+    .cur-sw.cur-chip button.on{display:flex;align-items:center;gap:7px;height:34px;padding:0 10px 0 4px!important;border-radius:99px!important;background:#fff!important;border:1px solid #e3e7f0;color:#0e1a46!important;font-size:12px;font-weight:900;box-shadow:0 3px 10px rgba(20,30,70,.08)!important}
+    .cur-chip button b{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;color:#fff;background:linear-gradient(135deg,#3d6bff,#203c8e);box-shadow:0 3px 8px rgba(32,60,142,.3)}
+    .cur-chip button svg{width:14px;height:14px;fill:none;stroke:#8a92a6;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .cur-sw.cur-chip.away button.on{background:#fdecee!important;border-color:#f5b8c0;color:#c62f45!important}
+    .cur-chip.away button b{background:linear-gradient(135deg,#ff6b7a,#c62f45);box-shadow:0 3px 8px rgba(198,47,69,.35)}.cur-chip.away button svg{stroke:#c62f45}
+    body.dark-mode .cur-sw.cur-chip button.on{background:#151a22!important;border-color:#2a313c;color:#fff!important}
+    body.dark-mode .cur-sw.cur-chip.away button.on{background:rgba(198,47,69,.18)!important;border-color:rgba(245,184,192,.35);color:#ff9aa6!important}
+    .cur-at{display:flex;flex-direction:column;align-items:flex-end;line-height:1.15;font-size:11px;font-weight:700;color:#6b7385}
+    .cur-at .tb-tz{padding-left:0}
 </style>
 </head>
 <body>
@@ -10513,10 +10524,13 @@ function cs(){return CUR_LIST[curOn()].s}
 function money(n,d=0){return cs()+fmt(cx(n),d)}
 function curDraw(){
  const sw=document.getElementById('curSw');
- if(sw)sw.innerHTML=Object.keys(CUR_LIST).map(c=>`<button type="button" class="${c===CUR?'on':''}" onclick="setCur('${c}')" aria-pressed="${c===CUR}">${CUR_LIST[c].s}</button>`).join('');
+ // v173 one chip: the money in use, tap to switch to the other; red while it is not the account's own money.
+ if(sw){const ks=Object.keys(CUR_LIST),nx=ks[(ks.indexOf(CUR)+1)%ks.length],own=(ACC_CUR&&ACC_CUR[CURRENT_ACCOUNT])||'GBP';
+  sw.classList.add('cur-chip');sw.classList.toggle('away',CUR!==own);
+  sw.innerHTML=`<button type="button" class="on" onclick="setCur('${nx}')" aria-label="Showing ${CUR_LIST[CUR].name}. Switch to ${CUR_LIST[nx].name}"><b>${CUR_LIST[CUR].s}</b>${CUR}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4L4 7l3 3M4 7h13M17 20l3-3-3-3M20 17H7"/></svg></button>`}
  const n=document.getElementById('curAt');if(!n)return;
  const c=curOn(),at=c!=='GBP'&&FX.at?new Date(FX.at):null;n.hidden=!at;
- if(at)n.textContent='rate from '+at.toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'});
+ if(at)n.innerHTML=`<span class="tb-l1"><span class="tb-dot"></span>Rate from ${esc(at.toLocaleDateString('en-US',{month:'short',day:'numeric'}))}</span><small class="tb-tz">${esc(at.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}))}</small>`;
 }
 // Rates: the server gets the day's rate at the time the admin picked (12:00 PM Muscat by default);
 // this device asks once an hour, or straight away once a newer refresh time has passed.
