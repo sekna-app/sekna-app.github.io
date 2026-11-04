@@ -6478,6 +6478,26 @@ window.addEventListener('load',function(){
     .mxd-cr .h{background:#f3f5fa;font-size:10px;letter-spacing:.08em;color:#7b84a0;text-transform:uppercase}.mxd-cr .r{border-top:1px solid #e7eaf2;color:#1d2433}
     .mxd-cr span:not(:first-child){text-align:right}.mxd-cr .r em{font-style:normal;color:#b0812e;font-size:11px}.mxd-cr .r .l{color:#9aa1b2}.mxd-cr .r .p{color:#203c8e;font-size:12.5px}
     body.dark-mode .mxd-sm,body.dark-mode .mxd-cr{background:#151a22;border-color:#2a313c}body.dark-mode .mxd-sm b,body.dark-mode .mxd-r .n b,body.dark-mode .mxd-r .v b,body.dark-mode .mxd-cr .r{color:#e7ebf3}
+    /* v179 Seasons on desktop: poster on the left, photo tiles on the right */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) #ssBody{max-width:none!important}
+      .ssd{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:20px;align-items:stretch}
+      .ssd-l{display:flex}.ssd-l>.ss-hero{flex:1;margin:0!important;min-height:600px;display:flex;flex-direction:column;container-type:normal}
+      .ssd-l .ss-art .ss-img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;aspect-ratio:auto!important;background-size:cover!important;background-position:center!important;-webkit-mask-image:linear-gradient(#000 38%,transparent 80%)!important;mask-image:linear-gradient(#000 38%,transparent 80%)!important}
+      .ssd-l .ss-art .ss-ln{margin-bottom:auto!important}
+      .ssd-r{display:flex;flex-direction:column;gap:10px;min-width:0}
+      .ssd-tools{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:8px 14px 8px 8px;box-shadow:0 6px 16px rgba(20,30,70,.05)}
+      .ssd-tools .ss-fs{margin:0!important}.ssd-tools>span{font-size:12px;font-weight:800;color:#8a93ad}
+      .ssd-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+      .ssd-t{position:relative;height:128px;border:0;border-radius:16px;overflow:hidden;cursor:pointer;color:#fff;text-align:left;padding:0;background:linear-gradient(160deg,#14286e,#0a1d62);font:inherit;transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
+      .ssd-t>i{position:absolute;inset:0;background-size:cover;background-position:center;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+      .ssd-t:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,22,80,.05),rgba(8,22,80,.9))}
+      .ssd-t:hover{transform:translateY(-3px);box-shadow:0 14px 26px rgba(14,26,70,.25)}.ssd-t:hover>i{transform:scale(1.06)}
+      .ssd-t.on{box-shadow:0 0 0 3px #e2b874,0 14px 26px rgba(14,26,70,.25)}
+      .ssd-t>em{position:absolute;right:10px;top:10px;z-index:1;font-style:normal;font-size:11px;font-weight:900;background:rgba(255,255,255,.92);color:#203c8e;border-radius:99px;padding:3px 9px}
+      .ssd-t>span{position:absolute;left:12px;right:12px;bottom:10px;z-index:1}.ssd-t b{display:block;font-size:14px;line-height:1.2}.ssd-t small{font-size:11px;font-weight:700;color:#dfe6ff}
+      .ssd-r .ss-more{margin:0}
+    }
 </style>
 </head>
 <body>
@@ -13073,6 +13093,7 @@ function ssLoadInfo(force){
 }
 function ssRetry(){Object.keys(SS.ex).forEach(a=>{if(SS.ex[a]&&SS.ex[a].fail)delete SS.ex[a]});ssLoadExtras();renderSeasons()}
 function ssFilter(f){SS.f=f;SS.more=false;SS.hi=0;renderSeasons()}
+function ssHeroPick(id){const t=ssToday(),L=ssList().filter(s=>s.to>=t&&ssDays(t,s.from)<=365).filter(s=>SS.f==='all'||s.type===SS.f),i=L.findIndex(s=>s.id===id);if(i>=0){SS.hi=i;SS.hf=SS.f;renderSeasons()}}
 function ssHero(d){SS.hi=(SS.hi||0)+d;renderSeasons()}
 function ssToggle(id){SS.open=SS.open===id?'':id;SS.edit='';renderSeasons()}
 function ssGoalEdit(id,e){if(e)e.stopPropagation();SS.edit=SS.edit===id?'':id;SS.open=SS.open||id;renderSeasons();const i=document.getElementById('ssGoalIn');if(i)i.focus()}
@@ -13242,6 +13263,17 @@ function renderSeasons(){
      ${p?`<div class="ss-rd">Team ready · ${pct}% (${p.done} of ${p.n} prep task${p.n>1?'s':''})</div><div class="ss-bar"><i style="width:${pct}%"></i></div>`:`<div class="ss-rd ss-rd0">No prep tasks yet. A task with “${esc(big.w[0].replace(/^./,c=>c.toUpperCase()))}” in its name counts here.</div>`}
      <div class="ss-hd">${ssDetail(big,all)}</div></div>`}
  const list=next.filter(s=>SS.f==='all'||s.type===SS.f), show=SS.more?list:list.slice(0,10);
+ const fsH=`<div class="ss-fs">${[['all','All'],['h','🌙 Hijri'],['u','🇺🇸 US']].map(x=>`<button type="button" class="${SS.f===x[0]?'on':''}" onclick="ssFilter('${x[0]}')">${x[1]}</button>`).join('')}</div>`;
+ 
+ if(mxWide()){
+   const tile=s=>{const n=ssDays(t,s.from),live=s.from<=t&&t<=s.to,art=SS_ART[s.key];
+     return `<button type="button" class="ssd-t${big&&s.id===big.id?' on':''}${art?'':' noart'}" onclick="ssHeroPick('${s.id}')">${art?`<i style="background-image:url('icons/seasons/${s.key}.webp?v=5')"></i>`:''}<em>${esc(ssD(s.from))}</em><span><b>${esc(s.name)}</b><small>${s.type==='h'?'Hijri':'US'} · ${live?'on now':'in '+n+' day'+(n===1?'':'s')}</small></span></button>`};
+   el.innerHTML=`<div class="ssd"><div class="ssd-l">${hero}</div><div class="ssd-r"><div class="ssd-tools">${fsH}<span>Tap one to open it on the left</span></div>
+    <div class="ssd-grid">${show.map(tile).join('')}</div>
+    ${list.length>show.length?`<button type="button" class="ss-more" onclick="SS.more=true;renderSeasons()">Show ${list.length-show.length} more ›</button>`:''}</div></div>
+    <p class="ss-note">Hijri dates use the Umm al-Qura calendar and can move by a day with the moon sighting. US days are worked out every year by themselves. Numbers are from the sheet's daily history.</p>`;
+   return;
+ }
  el.innerHTML=`${hero}
    <div class="ss-fs">${[['all','All'],['h','🌙 Hijri'],['u','🇺🇸 US']].map(x=>`<button type="button" class="${SS.f===x[0]?'on':''}" onclick="ssFilter('${x[0]}')">${x[1]}</button>`).join('')}</div>
    <div class="ss-lbl">COMING UP · TAP ONE FOR LAST YEAR</div>
