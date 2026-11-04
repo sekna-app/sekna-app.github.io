@@ -6586,6 +6586,64 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-pd{order:5!important;margin:0 0 0 auto!important}
       html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-ctl{flex-wrap:wrap}
     }
+    /* v179 desktop: HEMERA logo in the top bar */
+    @media (min-width:1100px){html.dk-on:not(.desktop-site-mode) body .topbar .dk-brand{display:flex}}
+    .dk-brand{display:none;flex-direction:column;align-items:flex-start;gap:2px}
+    .dk-brand img{height:24px;width:auto;filter:brightness(0) saturate(100%) invert(16%) sepia(53%) saturate(2700%) hue-rotate(218deg) brightness(92%)}
+    .dk-brand small{font-size:9.5px;font-weight:900;letter-spacing:.32em;color:#7b84a0;padding-left:2px}
+    /* v179 Reports Studio desktop: one row of filters; Per day (and the quick compare picks) sit just under the strip on the right */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-card{position:relative}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-ctl{flex-wrap:nowrap!important;gap:10px!important;padding:10px 16px!important;min-height:72px}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-types{min-width:0;flex:0 1 auto}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tls{gap:4px!important;flex-wrap:nowrap}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl{padding:3px 9px 3px 3px!important;font-size:11px!important;gap:5px!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl .channel-icon.ch-ico,html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl .mx-all{width:19px!important;height:19px!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-mode .wx-tab{padding:0 12px!important;font-size:12.5px!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-pick{order:3!important;margin:0 0 0 auto!important;flex:none}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-pick.one .mx-period{padding:6px 8px 6px 10px!important;gap:8px!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-pick.one .mx-period-t b{font-size:14px!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-pick:not(.one) .mx-sel b{font-size:14px}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-pd{position:absolute!important;right:24px;top:84px;margin:0!important;z-index:2}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-presets{position:absolute!important;right:230px;top:82px;margin:0!important;flex-basis:auto!important;display:flex;gap:6px;z-index:2}
+    }
+    /* v179 Day by Day desktop: the month plan card a little smaller with its numbers centred; the results card the same size */
+    @media (min-width:1100px){
+      #dxBody .ph3{padding:16px 18px!important}
+      #dxBody .ph3 .ph3-sp b{font-size:34px}
+      #dxBody .ph3 .ph3-list{margin-top:10px}
+      #dxBody .ph3 .ph3-list div{text-align:center;padding:9px 10px}
+      #dxBody .ph3 .ph3-list b{font-size:18px}
+      #dxBody .ph3 .ph3-bar,#dxBody .mt3 .mt-mix.ph3-bar{margin:12px 0 6px}
+      #dxBody .mt3{padding:16px 18px!important}
+      #dxBody .mt3 .mt-top{margin-bottom:6px}
+      #dxBody .mt3 .mt-hero{margin:4px 0 0!important}
+      #dxBody .mt3 .mt-hero>div:first-child>b{font-size:34px!important}
+      #dxBody .mt3 .mt-grid{margin-top:10px!important}
+      html body #app #dxBody .mt3 .mt-t{padding:9px 10px!important;gap:3px!important}
+      html body #app #dxBody .mt3 .mt-t b{font-size:18px!important}
+    }
+    /* v179 Reports Studio desktop: chips go to icons when the row is tight, compare pickers compact */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-pick:not(.one) .mx-sel{padding:4px 6px!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-pick:not(.one) .mxs-arr{width:24px!important;height:24px!important;min-width:24px!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-pick:not(.one) .mx-sel>span{font-size:9px!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-card:has(.mx-pick:not(.one)) .mx-tl:not(:first-child)>span:last-child{display:none}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-card:has(.mx-pick:not(.one)) .mx-tl:not(:first-child){padding:3px!important}
+    }
+    @media (min-width:1100px) and (max-width:1399px){
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl:not(:first-child)>span:last-child{display:none}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl:not(:first-child){padding:3px!important}
+    }
+    /* v179 Day by Day desktop: results card as slim as the plan card */
+    @media (min-width:1100px){
+      html body #app #dxBody .mt3 .mt-t{display:grid!important;grid-template-columns:1fr auto;align-items:center!important;column-gap:10px;row-gap:2px!important;padding:8px 14px!important}
+      html body #app #dxBody .mt3 .mt-t,html body #app #dxBody .mt3 .mt-t *{text-align:left!important}
+      html body #app #dxBody .mt3 .mt-t small{grid-column:1/-1}
+      html body #app #dxBody .mt3 .mt-t .mt-chip{justify-self:end}
+      #dxBody .mt3 .mt-hero>div:first-child>b{font-size:32px!important;line-height:1.1}
+      #dxBody .mt3 .mt-top{margin-bottom:2px!important}
+    }
 </style>
 </head>
 <body>
@@ -7894,8 +7952,9 @@ function dkTip(){
 function dkTop(){
  const left=document.querySelector('.topbar .topbar-left');if(!left)return;
  if(!document.getElementById('dkSearch')){
-  const w=document.createElement('div');w.className='dk-srch';w.setAttribute('data-share-ui','');
-  w.innerHTML=`${dkSvg('<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>')}<input id="dkSearch" type="search" placeholder="Search pages…" autocomplete="off" aria-label="Search pages" oninput="dkFind()" onfocus="dkFind()" onkeydown="dkKey(event)"><kbd>Ctrl K</kbd><div class="dk-res" id="dkRes" hidden></div>`;
+  
+  const w=document.createElement('div');w.className='dk-brand';w.id='dkSearch';w.setAttribute('data-share-ui','');
+  w.innerHTML=`<img src="${SEKNA_WHITE_SVG}" alt="HEMERA"><small>HEMERA</small>`;
   left.appendChild(w);
   const c=document.createElement('div');c.className='dk-acc';c.id='dkAcc';c.setAttribute('data-share-ui','');
   const acts=document.querySelector('.topbar .actions');(acts||left).insertBefore(c,acts?acts.firstChild:null);
