@@ -295,56 +295,12 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
 .fr .bt{position:absolute;width:3px;border-radius:2px;background:linear-gradient(90deg,#5a6aa8,#26326a)}
 .fr .bt.a{left:-3px;top:18%;height:6%}.fr .bt.b{left:-3px;top:27%;height:11%}.fr .bt.c{left:-3px;top:40%;height:11%}.fr .bt.d{right:-3px;top:30%;height:16%}
 .rp.front .fr{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.22),0 0 0 1px rgba(226,184,116,.18),0 30px 60px rgba(0,0,0,.35)}
-/* v174 seasons section: one phone walks through every season */
-.ssg{display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;align-items:center}
-.ssp-wrap{position:relative;display:flex;justify-content:center;padding:30px 0 10px}
-.ssp-wrap:before{content:"";position:absolute;left:50%;top:48%;width:420px;height:420px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,var(--sg,rgba(226,184,116,.35)),transparent 66%);filter:blur(10px);transition:background 1s ease}
-.ssp{--pw:270px;position:relative;width:var(--pw);aspect-ratio:1/2.164;animation:sspb 7s ease-in-out infinite}
-@keyframes sspb{0%,100%{transform:perspective(1200px) rotateY(-9deg) rotateX(4deg) translateY(0)}50%{transform:perspective(1200px) rotateY(-4deg) rotateX(2deg) translateY(-10px)}}
-.ssp .fr{transform:none;inset:0;position:absolute}
-.ssp .ly{transition:opacity .9s ease,transform 6s ease}
-.ssp .ly img{transform:scale(1.0)}
-.ssp .ly.on img{animation:sspz 4.6s ease-out forwards}
-@keyframes sspz{from{transform:scale(1.035)}to{transform:scale(1)}}
-.ssp-sh{position:absolute;left:50%;bottom:-6px;width:70%;height:34px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.55),transparent);filter:blur(5px)}
-.ssn{position:absolute;z-index:6;right:calc(50% + 66px);top:12%;width:236px;border-radius:18px;padding:11px 13px;background:rgba(18,30,78,.82);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 18px 40px rgba(0,0,0,.4);transition:opacity .45s ease,transform .45s ease}
-.ssn.out{opacity:0;transform:translateY(-8px)}
-.ssn .h{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--sub);font-weight:700}
-.ssn .h img{width:18px;height:18px;border-radius:5px;background:#0b1236;padding:2px}
-.ssn .h em{margin-left:auto;font-style:normal;color:var(--mute)}
-.ssn b{display:block;margin-top:6px;font-size:13.5px;line-height:1.25}
-.ssn p{margin:3px 0 0;font-size:12px;line-height:1.4;color:var(--sub);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.ssn .pic{margin-top:8px;border-radius:10px;overflow:hidden;aspect-ratio:2/1;background:#0b1236}
-.ssn .pic img{width:100%;height:100%;object-fit:cover;display:block}
-.ssd{position:absolute;z-index:6;left:calc(50% + 96px);bottom:18%;border-radius:16px;padding:10px 13px;background:linear-gradient(135deg,rgba(226,184,116,.95),#c89434);color:#1c1405;box-shadow:0 16px 34px rgba(0,0,0,.35);text-align:center;transition:opacity .45s ease,transform .45s ease}
-.ssd.out{opacity:0;transform:translateY(8px)}
-.ssd small{display:block;font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;opacity:.75}
-.ssd b{display:block;font-size:22px;font-weight:900;line-height:1.1}
-.ssd span{display:block;font-size:11.5px;font-weight:800}
-.sst .kk{display:inline-flex;align-items:center;gap:8px}
-.sst h2 em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent}
-.ssl{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:18px 0 16px}
-.ssl button{position:relative;overflow:hidden;display:flex;align-items:center;gap:10px;text-align:left;font:inherit;color:#fff;border:1px solid var(--line);border-radius:14px;padding:8px 10px;background:rgba(255,255,255,.04);cursor:pointer;transition:background .25s,border-color .25s,transform .15s}
-.ssl button:active{transform:scale(.98)}
-.ssl button i{flex:0 0 34px;width:34px;height:34px;border-radius:10px;background-size:cover;background-position:center;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}
-.ssl button b{display:block;font-size:13px;line-height:1.2}
-.ssl button small{display:block;font-size:11px;color:var(--mute);font-weight:700}
-.ssl button.on{border-color:rgba(226,184,116,.6);background:linear-gradient(135deg,rgba(226,184,116,.16),rgba(255,255,255,.03))}
-.ssl button.on small{color:var(--gold)}
-.ssl button em{position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--gold)}
-.ssl button.on em{animation:ltab var(--sd2,4600ms) linear forwards}
-.ssf{display:flex;flex-wrap:wrap;gap:8px}
-.ssf span{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--sub);border:1px solid var(--line);border-radius:99px;padding:6px 11px;background:rgba(255,255,255,.04)}
-.ssf span b{color:#fff}
-@media (max-width:900px){.ssg{grid-template-columns:1fr;gap:26px}.sst{text-align:center}.ssf{justify-content:center}.ssn{left:auto;right:0;width:200px;top:8%}.ssd{right:auto;left:0}}
-@media (min-width:901px) and (max-width:1180px){.ssn{right:auto;left:0}}
-@media (max-width:520px){.ssp{--pw:210px}.ssn{width:170px;right:0;padding:9px 10px}.ssn .pic{display:none}.ssd{left:0;padding:8px 10px}.ssd b{font-size:18px}.ssl{grid-template-columns:1fr}.ssp-wrap:before{width:300px;height:300px}}
 /* v174 laptop: browser bar, dark screen, keyboard deck */
 .lbar{display:flex;align-items:center;gap:6px;height:22px;padding:0 9px;border-radius:6px 6px 0 0;background:#0e173f;border-bottom:1px solid rgba(255,255,255,.06)}
 .lbar i{width:7px;height:7px;border-radius:50%;background:#ff5f57}.lbar i:nth-child(2){background:#febc2e}.lbar i:nth-child(3){background:#28c840}
 .lbar span{flex:1;max-width:52%;margin:0 auto;height:13px;border-radius:5px;background:rgba(255,255,255,.07);color:#8a97c4;font-size:8.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:4px}
 .lbar span:before{content:"🔒";font-size:7px}
-.lid .scr{border-radius:0 0 6px 6px;background:#0b1236}
+.lid .scr{border-radius:0 0 6px 6px;background:#eef1f8}
 .base{height:18px}
 .base:after{content:"";position:absolute;left:3%;right:3%;top:2px;height:1px;background:rgba(255,255,255,.18)}
 .dsh{display:inline-block;font-size:.55em;font-weight:700;vertical-align:.32em;margin:0 .22em;opacity:.85}
@@ -407,11 +363,11 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
   <section class="sec">
     <div class="lapgrid">
       <div><div class="lap" id="lap"><div class="lid"><div class="lbar"><i></i><i></i><i></i><span>sekna-app.web.app</span></div><div class="scr" id="lapScr">
-        <img class="on" src="/get/shots/desk-daily.webp?v=14" alt="Daily Performance on a laptop" loading="lazy">
-        <img src="/get/shots/desk-month.webp?v=14" alt="Monthly Progress on a laptop" loading="lazy">
-        <img src="/get/shots/desk-days.webp?v=14" alt="Day by Day on a laptop" loading="lazy">
-        <img src="/get/shots/desk-studio.webp?v=14" alt="Reports Studio on a laptop" loading="lazy">
-        <img src="/get/shots/desk-seasons.webp?v=14" alt="Seasons Calendar on a laptop" loading="lazy">
+        <img class="on" src="/get/shots/desk-daily.webp?v=15" alt="Daily Performance on a laptop" loading="lazy">
+        <img src="/get/shots/desk-month.webp?v=15" alt="Monthly Progress on a laptop" loading="lazy">
+        <img src="/get/shots/desk-days.webp?v=15" alt="Day by Day on a laptop" loading="lazy">
+        <img src="/get/shots/desk-studio.webp?v=15" alt="Reports Studio on a laptop" loading="lazy">
+        <img src="/get/shots/desk-seasons.webp?v=15" alt="Seasons Calendar on a laptop" loading="lazy">
       </div></div><div class="base"></div><div class="lap-sh"></div></div>
       <div class="ltabs" id="lapTabs"><button type="button" class="on">Daily<em></em></button><button type="button">Monthly<em></em></button><button type="button">Day by Day<em></em></button><button type="button">Reports Studio<em></em></button><button type="button">Seasons<em></em></button></div></div>
       <div class="txt">
@@ -423,23 +379,6 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
   </section>
 
 
-  <section class="sec">
-    <div class="ssg">
-      <div class="ssp-wrap" id="sspW">
-        <div class="ssp" id="ssp"><div class="fr"><i class="bt a"></i><i class="bt b"></i><i class="bt c"></i><i class="bt d"></i><div class="scn" id="sspS"></div></div></div>
-        <div class="ssp-sh"></div>
-        <div class="ssn" id="ssN"><div class="h"><img src="/icons/favicon-64.png" alt="">HEMERA<em>now</em></div><b></b><p></p><div class="pic"><img alt="" loading="lazy"></div></div>
-        <div class="ssd" id="ssD"><small></small><b></b><span></span></div>
-      </div>
-      <div class="sst">
-        <span class="kk">🌙 New · Seasons Calendar</span>
-        <h2>Every <em>Hijri season</em>, ready before it starts.</h2>
-        <p class="s">HEMERA follows the Umm al-Qura calendar and the US giving days. Each season has its own picture, a countdown, its Hijri year and last year’s numbers for the same dates, for both accounts.</p>
-        <div class="ssl" id="ssL"></div>
-        <div class="ssf"><span>🔔 Reminder <b>15 days</b> before</span><span>🎉 Greeting card <b>on the day</b></span><span>🖼️ Season <b>loading screen</b></span><span>📊 <b>Last year</b> on the same dates</span></div>
-      </div>
-    </div>
-  </section>
   <section class="sec">
     <div class="mpw" id="mpw">
       <div class="mpw-h"><div><span class="kk">The model behind the plan</span><h2>How the Media Plan Works</h2></div>
@@ -512,7 +451,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
 // 3D phones on a turning ring: one screen at a time comes to the front, and its
 // two-screen phones switch between their screens.
 (function(){
-  var S=[[['home-dark'],'Daily Performance','Dark mode','Today against target, in a calm dark theme that is easy on the eyes at night.'],
+  var S=[[['home'],'Daily Performance','Today against target','Today against target: spend, conversions, value and ROAS, each with its own plan line.'],
          [['types','yoy'],'By Campaign Type','Search, PMax, Demand Gen, Video','Each campaign type for the day, ranked by ROAS, with spend against its plan, then the same day last year.'],
          [['results'],'Day by Day','Results against the plan','Every day of the month against the plan, and the month so far against the full month’s plan.'],
          [['years'],'Same Hijri day','This day in every past year','How the same Hijri date did last year and every year before, side by side.'],
@@ -526,7 +465,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   S.forEach(function(x,i){
     var d=document.createElement('div');d.className='rp';
     d.innerHTML='<div class="ed l"></div><div class="ed r"></div><div class="bk"><img src="/get/logo-white.webp?v=17" alt=""></div><div class="fr"><i class="bt a"></i><i class="bt b"></i><i class="bt c"></i><i class="bt d"></i><div class="scn">'+SB+
-      x[0].map(function(f,k){return '<div class="ly'+(k?'':' on')+'"><img src="/get/shots/'+f+'.webp?v=14" alt="'+x[1]+'"'+(i>1?' loading="lazy"':'')+'></div>'}).join('')+'<i class="hb"></i><i class="gl"></i></div></div>';
+      x[0].map(function(f,k){return '<div class="ly'+(k?'':' on')+'"><img src="/get/shots/'+f+'.webp?v=15" alt="'+x[1]+'"'+(i>1?' loading="lazy"':'')+'></div>'}).join('')+'<i class="hb"></i><i class="gl"></i></div></div>';
     ring.appendChild(d);
     dots.appendChild(document.createElement('i'));
   });
@@ -609,38 +548,6 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
 })();
 
 
-// Seasons: one phone walks through every season; the list, the countdown chip and
-// the greeting notification follow it. Tap a season to jump to it.
-(function(){
-  var W=document.getElementById('sspW');if(!W)return;
-  var L=[['ramadan','Ramadan','1 Ramadan','Ramadan Mubarak 🌙','May Allah make this a month of blessings, accept our good deeds, and guide our team toward success.','rgba(226,184,116,.4)'],
-    ['last10','Last 10 nights','21 Ramadan','Blessed Last 10 Nights 🤍','May Allah bless us with Laylatul Qadr, accept our prayers, and grant our team success.','rgba(120,150,255,.45)'],
-    ['eidfitr','Eid al-Fitr','1 Shawwal','Eid Mubarak! ✨','May Allah accept our good deeds, bless our team’s efforts, and bring hope to those in need.','rgba(226,184,116,.45)'],
-    ['dhulhijjah','Dhul Hijjah','1 Dhul Hijjah','Blessed Days of Dhul Hijjah 🤍','May Allah bless these sacred days, accept our efforts, and guide our team.','rgba(90,140,255,.45)'],
-    ['arafah','Day of Arafah','9 Dhul Hijjah','Blessed Day of Arafah 🤍','May Allah answer our prayers and make our efforts a source of relief and hope.','rgba(255,170,80,.42)'],
-    ['eidadha','Eid al-Adha','10 Dhul Hijjah','Eid al-Adha Mubarak! ✨','May Allah accept our good deeds and sacrifices, and help us bring the joy of Eid to families in need.','rgba(226,184,116,.45)'],
-    ['ashura','Ashura','10 Muharram','Blessed Day of Ashura 🤍','May Allah accept our fasting, forgive us, and bless our team’s efforts.','rgba(255,190,110,.35)'],
-    ['thanksgiving','Thanksgiving','4th Thursday · Nov','Happy Thanksgiving! 🧡','May our team help bring support and hope to more families in need.','rgba(255,140,60,.42)'],
-    ['givingtuesday','Giving Tuesday','Tuesday after','Happy Giving Tuesday! 💙','Every contribution matters, and every effort brings us closer to our goals.','rgba(226,184,116,.42)'],
-    ['yearend','Year-end giving','26 – 31 Dec','Let’s End the Year with Impact! ✨','May every effort we make leave a lasting legacy of hope, kindness, and generosity.','rgba(255,210,120,.38)']];
-  var scn=document.getElementById('sspS'), list=document.getElementById('ssL'), N=document.getElementById('ssN'), D=document.getElementById('ssD'), cur=-1, t=null, MS=4600;
-  scn.innerHTML=SB+L.map(function(x,i){return '<div class="ly"><img src="/get/shots/ss-'+x[0]+'.webp?v=14" alt="'+x[1]+' in HEMERA"'+(i>1?' loading="lazy"':'')+'></div>'}).join('')+'<i class="hb"></i><i class="gl"></i>';
-  list.innerHTML=L.map(function(x){return '<button type="button"><i style="background-image:url(/icons/seasons/'+x[0]+'.webp?v=5)"></i><span><b>'+x[1]+'</b><small>'+x[2]+'</small></span><em></em></button>'}).join('');
-  document.documentElement.style.setProperty('--sd2',MS+'ms');
-  var ly=scn.querySelectorAll('.ly'), bs=list.children;
-  function show(i){cur=(i+L.length)%L.length;var x=L[cur];
-    for(var k=0;k<L.length;k++){ly[k].classList.toggle('on',k===cur);bs[k].classList.remove('on')}
-    void bs[cur].offsetWidth;bs[cur].classList.add('on');W.style.setProperty('--sg',x[5]);
-    N.classList.add('out');D.classList.add('out');
-    setTimeout(function(){N.querySelector('b').textContent=x[3];N.querySelector('p').textContent=x[4];N.querySelector('.pic img').src='/icons/greet/'+x[0]+'.webp?v=1';
-      D.querySelector('small').textContent=x[0]==='thanksgiving'||x[0]==='givingtuesday'||x[0]==='yearend'?'US season':'Hijri season';D.querySelector('b').textContent=x[1];D.querySelector('span').textContent=x[2];
-      N.classList.remove('out');D.classList.remove('out')},380);
-    clearTimeout(t);t=setTimeout(function(){show(cur+1)},MS)}
-  for(var k=0;k<bs.length;k++)(function(k){bs[k].onclick=function(){show(k)}})(k);
-  var start=function(){show(0)};
-  if(!('IntersectionObserver' in window)){start();return}
-  new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){start();o.disconnect()}})},{threshold:.25}).observe(W);
-})();
 // How the media plan works: the five steps rise in one after another.
 (function(){var m=document.getElementById('mpw');if(!m)return;if(!('IntersectionObserver' in window)){m.classList.add('in');return}
   new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){m.classList.add('in');o.disconnect()}})},{threshold:.2}).observe(m)})();
