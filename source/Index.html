@@ -6059,6 +6059,14 @@ window.addEventListener('load',function(){
     .sk-gate,.tour{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),radial-gradient(62% 42% at 12% 10%,rgba(52,99,230,.75) 0%,rgba(52,99,230,0) 72%),radial-gradient(55% 38% at 96% 82%,rgba(226,184,116,.30),rgba(226,184,116,0) 70%),radial-gradient(70% 34% at 50% 0%,rgba(28,76,175,.8),rgba(28,76,175,0) 75%),linear-gradient(180deg,#0b2a78 0%,#0a1d62 35%,#081650 62%,#060f38 100%)!important}
     /* v178 daily card %: the share of the plan, with a small 'of plan' under it */
     .kx-r small{display:block;font-size:.62em;font-weight:800;opacity:.75;letter-spacing:.02em;text-align:right;margin-top:1px}
+    /* v178 notifications: separate cards, grouped by day, each edged in its type's colour */
+    .nf-box{background:none!important;box-shadow:none!important;overflow:visible!important;display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+    .nf-tx{min-width:0;flex:1}
+    .nf-r{box-sizing:border-box;background:#fff!important;border-radius:18px;padding:13px 14px!important;box-shadow:0 6px 18px rgba(20,30,60,.06);border:1px solid rgba(32,60,142,.05)!important;border-left:3px solid var(--nfc,#203c8e)!important}
+    .nf-c-n{--nfc:#203c8e}.nf-c-g{--nfc:#22c47c}.nf-c-y{--nfc:#e2b874}.nf-c-o{--nfc:#f0aa35}.nf-c-t{--nfc:#3d6bff}
+    .nf-day{margin:14px 4px 0;font-size:11px;font-weight:900;letter-spacing:.14em;color:#8a93ad}
+    .nf-day:first-child{margin-top:2px}
+    body.dark-mode .nf-r{background:#151a22!important;border-color:#2a313c!important;box-shadow:none}body.dark-mode .nf-day{color:#7d87a3}
 </style>
 </head>
 <body>
@@ -8835,6 +8843,7 @@ function localWhen(ms,withDay){
 
 const NF_FILTERS=[['all','All'],['data','Data'],['tasks','Tasks'],['team','Team'],['app','App']];
 const NF_GROUP={season:'data',streak:'data',spend_alert:'data',roas_drop:'data',new_day:'data',month_closed:'data',updated:'data',tasks:'tasks',announcement:'team',app_update:'app',celebrate:'team',read_alert:'data'};
+const NF_EDGE={new_day:'g',updated:'g',month_closed:'g',streak:'y',celebrate:'y',season:'y',announcement:'y',spend_alert:'o',roas_drop:'o',read_alert:'o',tasks:'t',app_update:'n'};
 const NF_TINT={season:'y',streak:'y',spend_alert:'',roas_drop:'',new_day:'',updated:'',month_closed:'g',tasks:'t',announcement:'y',app_update:'p',celebrate:'y'};
 function nfShort(ms){
  const d=new Date(ms),now=new Date(),k=x=>new Date(x.getFullYear(),x.getMonth(),x.getDate()).getTime(),df=Math.round((k(now)-k(d))/864e5);
@@ -8849,9 +8858,12 @@ function nfRender(){
  const has=g=>g==='all'||NF.list.some(x=>(NF_GROUP[x.type]||'data')===g);
  const chips=`<div class="nf-fs">${NF_FILTERS.filter(([k])=>has(k)).map(([k,l])=>`<button type="button" class="${f===k?'on':''}" onclick="nfFilter('${k}')">${l}</button>`).join('')}</div>`;
  const list=NF.list.filter(x=>f==='all'||(NF_GROUP[x.type]||'data')===f), shown=NF.all?list:list.slice(0,20);
- const rows=shown.map(x=>`<button type="button" class="nf-r" onclick="nfOpen('${esc(x.id)}')"><span class="nf-ic ${NF_TINT[x.type]||''}">${NF_ICON[x.type]||'🔔'}</span>
+ 
+ const nfDay=ms=>{const d=new Date(ms),t=new Date();const k=x=>x.getFullYear()+'-'+x.getMonth()+'-'+x.getDate();const y=new Date(t);y.setDate(t.getDate()-1);return k(d)===k(t)?'TODAY':k(d)===k(y)?'YESTERDAY':d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}).toUpperCase()};
+ let nfLast='';
+ const rows=shown.map(x=>{const dl=nfDay(x.at),hd=dl!==nfLast?`<div class="nf-day">${esc(dl)}</div>`:'';nfLast=dl;return hd+`<button type="button" class="nf-r nf-c-${NF_EDGE[x.type]||'n'}" onclick="nfOpen('${esc(x.id)}')"><span class="nf-ic ${NF_TINT[x.type]||''}">${NF_ICON[x.type]||'🔔'}</span>
    <span class="nf-tx"><b>${esc(x.title)}${x.account&&!/ (AR|USA)$| · (AR|USA)$/.test(x.title)?` <em>${x.account==='ar'?'AR':'USA'}</em>`:''}</b><span>${esc(x.body||'')}</span></span>
-   <em class="nf-t">${esc(nfShort(x.at))}${x.at>seen?'<i></i>':''}</em></button>`).join('');
+   <em class="nf-t">${esc(nfShort(x.at))}${x.at>seen?'<i></i>':''}</em></button>`}).join('');
  body.innerHTML=chips+(rows?`<div class="nf-box">${rows}</div>`:'<div class="nf-empty">Nothing here.</div>')
   +(list.length>shown.length?`<button type="button" class="nf-more" onclick="NF.all=true;nfRender()">Older notifications ›</button>`:'');
 }
