@@ -13,8 +13,8 @@ h = open(src).read()
 head = '''<meta name="theme-color" content="#203C8E">
   <meta name="description" content="HEMERA — media planning, campaign monitoring and reporting in one place.">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" type="image/png" href="icons/favicon-64.png">
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" href="icons/favicon-64.png?v=2">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=2">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="HEMERA">

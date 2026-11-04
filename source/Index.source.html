@@ -6095,6 +6095,67 @@ window.addEventListener('load',function(){
     /* v179 the share scan light on every screen size */
     @keyframes shscan{from{transform:translate3d(0,-64px,0)}to{transform:translate3d(0,100vh,0)}}
     #shScan{position:fixed;left:0;right:0;top:0;height:64px;z-index:100000;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(61,107,255,.14) 80%,rgba(61,107,255,.3));will-change:transform;transform:translate3d(0,-64px,0);animation:shscan 1.4s linear infinite}#shScan::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:#9fb6ff;box-shadow:0 0 6px 1px #3d6bff,0 0 16px 2px rgba(61,107,255,.6)}
+    /* v179 desktop: icon rail + cool silver page panel, always open */
+    #dkRail,#dkPanel,.dk-srch,.dk-acc{display:none}
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body:not(.gate-open){padding-left:290px}
+      html.dk-on:not(.desktop-site-mode) body:not(.gate-open) #dkRail{display:flex}
+      html.dk-on:not(.desktop-site-mode) body:not(.gate-open) #dkPanel{display:block}
+      html.dk-on:not(.desktop-site-mode) body .topbar .menu-toggle,html.dk-on:not(.desktop-site-mode) body .topbar #tbSekna{display:none!important}
+      html.dk-on:not(.desktop-site-mode) body .topbar .dk-srch,html.dk-on:not(.desktop-site-mode) body .topbar .dk-acc{display:flex}
+      html.dk-on:not(.desktop-site-mode) body .topbar,html.dk-on:not(.desktop-site-mode) body.dark-mode .topbar{background:rgba(255,255,255,.94)!important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid #e7eaf2!important;box-shadow:none!important;padding:0 24px!important;min-height:64px;z-index:25}
+      html.dk-on:not(.desktop-site-mode) body .topbar .topbar-left{display:flex;align-items:center;gap:14px;min-width:0}
+      html.dk-on:not(.desktop-site-mode) body .topbar .live{color:#127a4d!important}
+      html.dk-on:not(.desktop-site-mode) body .topbar .btn.tb-refresh,html.dk-on:not(.desktop-site-mode) body .topbar .btn.tb-bell{background:#eef1fa!important;color:#203c8e!important;border:0!important;box-shadow:none!important}
+      html.dk-on:not(.desktop-site-mode) body .topbar .btn.tb-refresh svg,html.dk-on:not(.desktop-site-mode) body .topbar .btn.tb-bell svg{stroke:#203c8e!important}
+      html.dk-on:not(.desktop-site-mode) body .topbar{overflow:visible!important}
+      html.dk-on:not(.desktop-site-mode) body:not(.gate-open) .ta-b{display:none!important}
+    }
+    #dkRail{position:fixed;left:0;top:0;bottom:0;width:74px;z-index:30;flex-direction:column;align-items:center;gap:10px;padding:18px 0;background:linear-gradient(180deg,#0b2a78,#081650 70%,#060f38)}
+    #dkRail .dk-ic{width:42px;height:42px;border-radius:12px;margin-bottom:14px;box-shadow:0 6px 14px rgba(0,0,0,.3)}
+    #dkRail .dk-sp{flex:1}
+    .dk-rb{position:relative;width:46px;height:46px;border:0;border-radius:14px;display:grid;place-items:center;background:none;color:rgba(255,255,255,.62);cursor:pointer}
+    .dk-rb svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .dk-rb:hover{color:#fff;background:rgba(255,255,255,.08)}
+    .dk-rb.on{background:rgba(255,255,255,.14);color:#fff}
+    .dk-rb.here:before{content:"";position:absolute;left:-14px;top:10px;bottom:10px;width:4px;border-radius:0 4px 4px 0;background:#e2b874}
+    .dk-rb .dk-dot{position:absolute;right:10px;top:10px;width:8px;height:8px;border-radius:50%;background:#ff5a6a;border:2px solid #0a1d62}
+    .dk-av{width:38px;height:38px;border-radius:50%;padding:0;border:2px solid #ffd23f;overflow:hidden;cursor:pointer;background:#2a4fb8;color:#fff;font-weight:800;display:grid;place-items:center;margin-top:4px}
+    .dk-av>*{width:100%;height:100%}.dk-av img,.dk-av svg{width:100%;height:100%;display:block;object-fit:cover}
+    #dkPanel{position:fixed;left:74px;top:0;bottom:0;width:216px;z-index:29;overflow:auto;padding:22px 14px;background:linear-gradient(180deg,#f3f4f7,#e7e9ee);border-right:1px solid #d9dce4}
+    #dkPanel h3{margin:0 8px 2px;font:400 22px/1.15 "DM Serif Display",Georgia,serif;color:#203c8e}
+    #dkPanel>small{display:block;margin:0 8px 16px;color:#7b84a0;font-size:11.5px;font-weight:700}
+    .dk-list{display:grid;gap:3px}
+    #dkPanel .dk-it{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:0;border-radius:12px;background:none;font:700 13px/1.25 HArab,Inter,system-ui,sans-serif;color:#3f475e;text-align:left;cursor:pointer;min-height:0}
+    #dkPanel .dk-it .sk-nav-icon{width:18px;height:18px;flex:none;display:grid;place-items:center;background:none!important;box-shadow:none!important;color:inherit}
+    #dkPanel .dk-it .sk-nav-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2}
+    #dkPanel .dk-it>span:not(.sk-nav-icon):not(.sk-soon){flex:1;min-width:0}
+    #dkPanel .dk-it .sk-soon,#dkPanel .dk-it .sk-nav-lock{margin-left:auto;font-size:9.5px;font-weight:900;padding:2px 7px;border-radius:99px;background:#fbefd6;color:#a06d17;flex:none}
+    #dkPanel .dk-it .sk-nav-lock svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2}
+    #dkPanel .dk-it:hover{background:rgba(255,255,255,.6);color:#203c8e}
+    #dkPanel .dk-it.on{background:#fff;color:#203c8e;font-weight:800;box-shadow:inset 3px 0 0 #203c8e,0 6px 14px rgba(20,30,70,.1)}
+    .dk-tip{display:block;width:100%;text-align:left;border:0;cursor:pointer;margin-top:18px;border-radius:16px;padding:14px;color:#fff;background:radial-gradient(90% 70% at 0 0,rgba(52,99,230,.8),transparent 70%),linear-gradient(160deg,#0b2a78,#081650)}
+    .dk-tip small{display:block;font-size:9.5px;font-weight:900;letter-spacing:.14em;color:#e2b874}.dk-tip b{display:block;font-size:15px;margin:4px 0 2px}.dk-tip span{font-size:11.5px;color:#c7d3ff;font-weight:600}
+    .dk-srch{position:relative;align-items:center;gap:9px;width:330px;height:40px;border-radius:12px;background:#f3f5fa;color:#7b84a0;padding:0 12px}
+    .dk-srch svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;flex:none}
+    .dk-srch input{flex:1;min-width:0;border:0;background:none;outline:0;font:600 13px Inter,system-ui,sans-serif;color:#141b33}
+    .dk-srch kbd{font:800 10.5px Inter,system-ui,sans-serif;background:#fff;border:1px solid #e7eaf2;border-radius:6px;padding:2px 6px;color:#7b84a0}
+    .dk-srch:focus-within{background:#fff;box-shadow:0 0 0 2px #3d6bff33,0 0 0 1px #3d6bff}
+    .dk-res{position:absolute;left:0;right:0;top:46px;background:#fff;border-radius:14px;box-shadow:0 18px 40px rgba(20,30,70,.18);padding:6px;z-index:40}
+    .dk-res button{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;border:0;background:none;border-radius:10px;padding:9px 10px;font:700 13px Inter,system-ui,sans-serif;color:#141b33;cursor:pointer;text-align:left}
+    .dk-res button small{color:#7b84a0;font-weight:700;font-size:11px}.dk-res button.on,.dk-res button:hover{background:#eef2ff;color:#203c8e}
+    .dk-res p{margin:0;padding:10px;color:#7b84a0;font-size:12.5px;font-weight:600}
+    .dk-acc{position:relative}
+    .dk-accb{display:flex;align-items:center;gap:8px;border:1px solid #e7eaf2;background:#fff;border-radius:99px;padding:4px 12px 4px 4px;font:800 12.5px Inter,system-ui,sans-serif;color:#141b33;cursor:pointer}
+    .dk-accb svg{width:14px;height:14px;fill:none;stroke:#7b84a0;stroke-width:2.4}
+    .dk-acc .sk-client-logo{width:28px;height:28px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:#f3f5fa;flex:none}.dk-acc .sk-client-logo img{width:22px;height:22px;object-fit:contain}
+    .dk-accm{display:none;position:absolute;left:0;top:44px;min-width:220px;background:#fff;border-radius:14px;box-shadow:0 18px 40px rgba(20,30,70,.18);padding:6px;z-index:40}
+    .dk-acc.open .dk-accm{display:block}
+    .dk-accm button{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;border-radius:10px;padding:8px;font:700 13px Inter,system-ui,sans-serif;color:#141b33;cursor:pointer}.dk-accm button:hover{background:#eef2ff}
+    body.dark-mode #dkPanel{background:linear-gradient(180deg,#1a1f29,#151a22);border-right-color:#2a313c}body.dark-mode #dkPanel h3{color:#9fb6ff}
+    body.dark-mode #dkPanel .dk-it{color:#c3cad8}body.dark-mode #dkPanel .dk-it.on{background:#232a36;color:#fff;box-shadow:inset 3px 0 0 #9fb6ff}
+    html.dk-on:not(.desktop-site-mode) body.dark-mode .topbar{background:rgba(21,26,34,.94)!important;border-bottom-color:#2a313c!important}
+    body.dark-mode .dk-srch{background:#1e242f}body.dark-mode .dk-srch input{color:#e7ebf3}body.dark-mode .dk-accb{background:#1e242f;border-color:#2a313c;color:#e7ebf3}
 </style>
 </head>
 <body>
@@ -7352,7 +7413,75 @@ function bbCloseAll(){
  f.forEach(x=>{try{x()}catch(e){}});
 }
 function bbGo(k){bbCloseAll();switchDashboardTab(k);window.scrollTo(0,0)}
+// v179 desktop: an icon rail (the app icon, one button per group, alerts, settings and you) next to a
+// cool silver panel with the pages of the group, always open. The white top bar gets a page search and the account.
+const DK_GRP=[['mp','Media Plan','<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>'],['ps','Performance Snapshots','<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'],['ai','AI Reports','<path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/>'],['tt','Team Tasks','<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>']];
+const DK={g:null,act:''};
+const dkSvg=p=>`<svg viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
+function dkBtns(g){const b=document.getElementById('grp-'+g);return b?[...b.querySelectorAll('.sk-nav-btn')].filter(x=>!x.hidden&&getComputedStyle(x).display!=='none'):[]}
+function dkTasksOpen(){const o=document.getElementById('tasksOverlay');return !!(o&&o.classList.contains('open'))}
+function dkActive(){
+ if(dkTasksOpen()){const v=(window.TK&&TK.view)||'team',m={team:'ttTeamBtn',mine:'ttMineBtn',build:'ttBuildBtn',leave:'ttLeaveBtn',quick:'ttQuickBtn'};return document.getElementById(m[v])}
+ return document.querySelector('#sideDrawer .sk-grp-body .sk-nav-btn.active');
+}
+function dkPick(g){DK.g=g;dkDraw(true)}
+function dkDraw(pick){
+ if(!document.getElementById('sideDrawer'))return;
+ document.documentElement.classList.add('dk-on');
+ let r=document.getElementById('dkRail'),p=document.getElementById('dkPanel');
+ if(!r){r=document.createElement('nav');r.id='dkRail';r.setAttribute('aria-label','Sections');r.setAttribute('data-share-ui','');document.body.appendChild(r)}
+ if(!p){p=document.createElement('aside');p.id='dkPanel';p.setAttribute('aria-label','Pages');p.setAttribute('data-share-ui','');document.body.appendChild(p)}
+ const a=dkActive(),ak=a?(a.id||a.textContent):'',ag=a&&a.closest('.sk-grp-body')?a.closest('.sk-grp-body').id.replace('grp-',''):'mp';
+ // a new page moves the panel to its group; picking a group in the rail only changes the panel
+ if(!pick&&ak!==DK.act){DK.g=ag;DK.act=ak}
+ const groups=DK_GRP.filter(([k])=>dkBtns(k).length);if(!groups.some(x=>x[0]===DK.g))DK.g=(groups[0]||['mp'])[0];
+ const nf=document.getElementById('nfBadge'),av=document.getElementById('profileAvatar');
+ r.innerHTML=`<img class="dk-ic" src="icons/icon-192.png?v=2" alt="HEMERA">`+groups.map(([k,l,ic])=>`<button type="button" class="dk-rb${k===DK.g?' on':''}${k===ag?' here':''}" onclick="dkPick('${k}')" aria-label="${l}" title="${l}">${dkSvg(ic)}</button>`).join('')
+  +`<i class="dk-sp"></i><button type="button" class="dk-rb" onclick="openNotifs()" aria-label="Notifications" title="Notifications">${dkSvg('<path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.3 20a1.9 1.9 0 0 0 3.4 0"/>')}${nf&&!nf.hidden?'<i class="dk-dot"></i>':''}</button>`
+  +`<button type="button" class="dk-rb" onclick="openSettings()" aria-label="Settings" title="Settings">${dkSvg('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>')}</button>`
+  +`<button type="button" class="dk-av" onclick="openSidebar()" aria-label="Your account and the full menu" title="Menu">${av?av.innerHTML:''}</button>`;
+ const g=DK_GRP.find(x=>x[0]===DK.g)||DK_GRP[0],list=dkBtns(g[0]);
+ p.innerHTML=`<h3>${esc(g[1])}</h3><small>${list.length} page${list.length===1?'':'s'}</small><nav class="dk-list"></nav>${dkTip()}`;
+ const nav=p.querySelector('.dk-list');
+ list.forEach((b,i)=>{const c=b.cloneNode(true);c.removeAttribute('id');c.classList.remove('active');c.classList.add('dk-it');c.style.setProperty('--i',i);if(b===a)c.classList.add('on');
+  c.addEventListener('click',()=>{if(dkTasksOpen()&&!/openTasks/.test(b.getAttribute('onclick')||''))try{closeTasks();closeTasks()}catch(e){}});nav.appendChild(c)});
+ dkTop();
+}
+function dkTip(){
+ try{const t=ssToday(),s=ssList().filter(x=>x.to>=t).sort((a,b)=>a.from<b.from?-1:1)[0];if(!s)return '';
+  const n=ssDays(t,s.from),live=s.from<=t;
+  return `<button type="button" class="dk-tip" onclick="bbGo('seasons')"><small>${live?'ON NOW':'NEXT SEASON'}</small><b>${esc(s.name)}</b><span>${live?'Until '+esc(ssD(s.to)):`In ${n} day${n===1?'':'s'} · ${esc(ssD(s.from))}`}</span></button>`}catch(e){return ''}
+}
+// The top bar: a search for any page (Ctrl K) and the account switch.
+function dkTop(){
+ const left=document.querySelector('.topbar .topbar-left');if(!left)return;
+ if(!document.getElementById('dkSearch')){
+  const w=document.createElement('div');w.className='dk-srch';w.setAttribute('data-share-ui','');
+  w.innerHTML=`${dkSvg('<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>')}<input id="dkSearch" type="search" placeholder="Search pages…" autocomplete="off" aria-label="Search pages" oninput="dkFind()" onfocus="dkFind()" onkeydown="dkKey(event)"><kbd>Ctrl K</kbd><div class="dk-res" id="dkRes" hidden></div>`;
+  left.appendChild(w);
+  const c=document.createElement('div');c.className='dk-acc';c.id='dkAcc';c.setAttribute('data-share-ui','');left.appendChild(c);
+  document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'&&document.documentElement.classList.contains('dk-on')){e.preventDefault();const i=document.getElementById('dkSearch');if(i){i.focus();i.select()}}});
+  document.addEventListener('pointerdown',e=>{if(!e.target.closest('.dk-srch')){const x=document.getElementById('dkRes');if(x)x.hidden=true}if(!e.target.closest('.dk-acc'))document.getElementById('dkAcc')?.classList.remove('open')});
+ }
+ const c=document.getElementById('dkAcc'),cur=document.querySelector('#accountCurrent .sk-client-logo'),nm=(document.getElementById('accountCurrentName')||{}).textContent||'';
+ c.innerHTML=`<button type="button" class="dk-accb" onclick="this.parentNode.classList.toggle('open')" aria-label="Switch account">${cur?cur.outerHTML:''}<b>${esc(nm)}</b>${dkSvg('<path d="M6 9l6 6 6-6"/>')}</button><div class="dk-accm">${[...document.querySelectorAll('#accountMenu .sk-account-option')].map(o=>`<button type="button" onclick="document.getElementById('dkAcc').classList.remove('open');pickAccount('${o.dataset.account}')">${o.querySelector('.sk-client-logo')?.outerHTML||''}<b>${esc(o.querySelector('b')?.textContent||'')}</b></button>`).join('')}</div>`;
+}
+function dkPages(){return [...document.querySelectorAll('#sideDrawer .sk-nav-btn')].filter(b=>!b.hidden&&getComputedStyle(b).display!=='none').map(b=>({b,l:(b.querySelector('span:not(.sk-nav-icon):not(.sk-soon)')||b).textContent.trim(),g:(b.closest('.sk-grp-body')?.previousElementSibling?.querySelector('b')?.textContent)||'App'}))}
+function dkFind(){
+ const i=document.getElementById('dkSearch'),r=document.getElementById('dkRes');if(!i||!r)return;
+ const q=i.value.trim().toLowerCase(),L=dkPages().filter(x=>!q||x.l.toLowerCase().includes(q)||x.g.toLowerCase().includes(q)).slice(0,8);
+ r.innerHTML=L.length?L.map((x,k)=>`<button type="button" class="${k===0?'on':''}" data-k="${k}"><b>${esc(x.l)}</b><small>${esc(x.g)}</small></button>`).join(''):'<p>No page with that name</p>';
+ [...r.querySelectorAll('button')].forEach((b,k)=>b.onclick=()=>{r.hidden=true;i.value='';i.blur();L[k].b.click()});
+ r.hidden=false;
+}
+function dkKey(e){
+ const r=document.getElementById('dkRes');if(!r)return;const B=[...r.querySelectorAll('button')];let k=B.findIndex(b=>b.classList.contains('on'));
+ if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();k=(k+(e.key==='ArrowDown'?1:-1)+B.length)%B.length;B.forEach((b,j)=>b.classList.toggle('on',j===k))}
+ else if(e.key==='Enter'){e.preventDefault();(B[k]||B[0])?.click()}
+ else if(e.key==='Escape'){r.hidden=true;e.target.blur()}
+}
 function bbDraw(){
+ try{dkDraw()}catch(e){}
  let b=document.getElementById('bottomBar');
  if(!b){b=document.createElement('nav');b.id='bottomBar';b.className='bbar';b.setAttribute('aria-label','Pages');b.setAttribute('data-share-ui','');document.body.appendChild(b)}
  const ic=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${BB_IC[k]}</svg>`;
