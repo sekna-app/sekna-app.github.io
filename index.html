@@ -6167,6 +6167,25 @@ window.addEventListener('load',function(){
     /* v174 season splash on phones: the full-screen picture (subject on top, the same blue down to the bottom) */
     .sks-sbg.sks-m{inset:0!important;left:0!important;right:0!important;width:auto!important;margin:0!important;height:100%!important;background-size:cover!important;background-position:top center!important;opacity:1!important;-webkit-mask-image:none!important;mask-image:none!important;z-index:0}
     @media (min-width:900px){.sks.sks-art .sks-brand{margin-top:30vh}}
+    /* v175 splash "Live pulse · light from above": plain HEMERA blue lit from the top, the logo alone in the
+       centre, a green heartbeat line runs across and fades behind the logo, Live above, the sync line below. */
+    .sks.sks-lp{background:radial-gradient(120% 70% at 50% -8%,#2a4fb8 0%,#14317f 32%,#0a1e5a 62%,#06123c 100%)!important}
+    .sks.sks-lp:before{display:none}
+    .sks.sks-lp:after{content:"";position:absolute;inset:0;background:radial-gradient(130% 90% at 50% 50%,transparent 55%,rgba(0,0,0,.45));pointer-events:none}
+    .sks-lp .sks-brand{margin-top:0;z-index:2}
+    .sks-lp .sks-tag,.sks-lp .sks-bar,.sks-lp .sks-lt{display:none}
+    .sks-lp .sks-logo{animation:sksIn .9s .1s ease both!important}
+    @keyframes sksIn{from{opacity:0}}
+    .sks-ekg{position:absolute;left:0;top:50%;width:100%;height:84px;margin-top:-42px;overflow:visible;z-index:1;-webkit-mask:linear-gradient(90deg,#000 0,#000 calc(50% - 132px),transparent calc(50% - 116px),transparent calc(50% + 116px),#000 calc(50% + 132px));mask:linear-gradient(90deg,#000 0,#000 calc(50% - 132px),transparent calc(50% - 116px),transparent calc(50% + 116px),#000 calc(50% + 132px))}
+    .sks-ekg path{fill:none;stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
+    .sks-ekg .d{stroke:rgba(57,226,154,.16)}
+    .sks-ekg .l{stroke:#39e29a;stroke-dasharray:38 62;stroke-dashoffset:100;animation:sksEkg 2s linear infinite;filter:drop-shadow(0 0 5px rgba(57,226,154,.6))}
+    @keyframes sksEkg{to{stroke-dashoffset:0}}
+    .sks-live{position:absolute;left:50%;top:50%;margin-top:-92px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.16em;color:#39e29a;z-index:2;animation:sksIn .6s both}
+    .sks-live i{width:9px;height:9px;border-radius:50%;background:#39e29a;animation:sksDot 1.4s infinite}
+    @keyframes sksDot{0%{box-shadow:0 0 0 0 rgba(57,226,154,.7)}70%{box-shadow:0 0 0 9px rgba(57,226,154,0)}100%{box-shadow:0 0 0 0 rgba(57,226,154,0)}}
+    .sks-sync{position:absolute;left:0;right:0;bottom:calc(56px + env(safe-area-inset-bottom));text-align:center;font-size:12px;font-weight:700;color:#9fb0e0;z-index:2;animation:sksIn .5s .4s both}
+    .sks-sync.ok{color:#39e29a}
 </style>
 </head>
 <body>
@@ -6192,6 +6211,12 @@ window.addEventListener('load',function(){
   if(!k){var y=now.getFullYear(),mo=now.getMonth()+1,dd=now.getDate(),f=new Date(y,10,1).getDay(),tg=1+(4-f+7)%7+21;
    if(mo===11&&dd===tg)k='thanksgiving';else if((mo===11&&dd===tg+5)||(mo===12&&dd===tg+5-30))k='givingtuesday';else if(mo===12&&dd>=26)k='yearend'}
   sksSeason(k)}catch(e){}
+ 
+ if(!s.classList.contains('sks-art'))try{s.classList.add('sks-lp');
+  var W=Math.max(320,innerWidth),cx=W/2,o=Math.min(186,118+(cx-118)*.42),beat=function(x){return ' L'+(x-14)+' 42 L'+(x-6)+' 20 L'+(x+2)+' 70 L'+(x+10)+' 6 L'+(x+18)+' 42'};
+  var d='M0 42'+(W>700?beat(cx-o-260)+beat(cx+o+230):'')+beat(cx-o)+beat(cx+o)+' L'+W+' 42';
+  s.insertAdjacentHTML('beforeend','<svg class="sks-ekg" viewBox="0 0 '+W+' 84" preserveAspectRatio="none" aria-hidden="true"><path class="d" d="'+d+'"/><path class="l" pathLength="100" d="'+d+'"/></svg><div class="sks-live"><i></i>LIVE</div><div class="sks-sync">Syncing Human Appeal USA…</div>');
+  var sy=s.querySelector('.sks-sync'),T=['Syncing Human Appeal USA…','Syncing AR…','Ready'];T.forEach(function(x,j){if(j)setTimeout(function(){sy.textContent=x;sy.classList.toggle('ok',j===2)},j*650)})}catch(e){}
  var g=s.querySelector('.sks-glint'),im=s.querySelector('.sks-logo img');
  if(g&&im){g.style.webkitMaskImage=g.style.maskImage='url('+im.src+')'}
  
