@@ -11589,10 +11589,11 @@ function tourShow(i,quiet){
  
  const lw=i===0?Math.min(210,W*.56):i===3?Math.min(230,W*.6):120;
  const lt=i===0?H*.2:i===3?H*.22:Math.max(64,H*.09);
- const lh=lw*171/667, lx=(W-lw)/2;
+ const lh=lw*233/1016, lx=(W-lw)/2;
  const logo=document.getElementById('tourLogo');logo.style.width=lw+'px';logo.style.left=lx+'px';logo.style.top=lt+'px';
  
- const onLogo=[lx+lw*134/667,lt+lh*76/171,lw*82/667,lh*21/171];
+ 
+ const onLogo=[lx+lw*432/1016,lt+lh*105/233,lw*118/1016,lh*47/233];
  const bar=document.getElementById('tourBar'),pieces=[...bar.children];
  const bw=Math.min(280,W-64),bh=Math.min(180,H*.25),bx=(W-bw)/2,by=lt+lh+Math.max(28,H*.06);
  let box,parts,rows=false;
@@ -11600,9 +11601,9 @@ function tourShow(i,quiet){
  else if(i===2){box=[bx,by,bw,bh];rows=true;parts=[1,.76,.68,.48,.36].map(w=>[0,bw*w,24])}
  else{box=onLogo;parts=pieces.map(()=>[0,onLogo[2],onLogo[3]])}
  bar.style.left=box[0]+'px';bar.style.top=box[1]+'px';bar.style.width=box[2]+'px';bar.style.height=box[3]+'px';
- const onL=box===onLogo;bar.style.transform=onL?'skewX(-8deg)':'';
+ const onL=box===onLogo;bar.style.transform=onL?'skewX(-42deg)':'';
  pieces.forEach((p,k)=>{const q=parts[k];p.style.left=q[0]+'px';p.style.width=q[1]+'px';p.style.height=q[2]+'px';
-   p.style.bottom=rows?(bh-24-k*(bh-24)/4)+'px':'0';p.style.opacity=(i===0||i===3)&&k>0?0:1;p.style.borderRadius=onL?'99px':'';p.textContent=rows?TOUR_ROWS[k]:''});
+   p.style.bottom=rows?(bh-24-k*(bh-24)/4)+'px':'0';p.style.opacity=(i===0||i===3)&&k>0?0:1;p.style.borderRadius=onL?'2px':'';p.textContent=rows?TOUR_ROWS[k]:''});
  const ring=document.getElementById('tourRing'),rs=Math.min(W-56,290);
  ring.style.width=ring.style.height=rs+'px';ring.style.left=(W-rs)/2+'px';ring.style.top=(lt+lh/2-rs/2)+'px';
  const txt=document.getElementById('tourTxt'),put=()=>{const [k,h,p]=TOUR_TXT[i];txt.children[0].textContent=k;txt.children[1].textContent=h;txt.children[2].textContent=p;txt.classList.remove('out')};
