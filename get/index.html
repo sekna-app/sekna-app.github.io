@@ -307,40 +307,72 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
 .rp.far .bk,.rp.far .ed{opacity:0!important}
 .ip-steps{margin-right:18px}
 .fr .ly img.nvb{position:absolute;left:0;right:0;bottom:0;top:auto;width:100%;height:auto;min-height:0;z-index:2;pointer-events:none}
-/* v174 iPhone guide in 3D: the phone stands at an angle with real thickness, follows the pointer,
-   and the four steps sit on a gold track with their own icons */
-.guide{position:relative;overflow:hidden;background:radial-gradient(520px 380px at 22% 58%,rgba(226,184,116,.16),transparent 70%),radial-gradient(600px 400px at 85% 10%,rgba(79,124,255,.22),transparent 70%),linear-gradient(160deg,rgba(79,124,255,.14),rgba(255,255,255,.02))}
-.guide:after{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:32px 32px;-webkit-mask-image:radial-gradient(circle at 25% 60%,#000,transparent 65%);mask-image:radial-gradient(circle at 25% 60%,#000,transparent 65%)}
-.guide>*{position:relative;z-index:1}
-.ipg{grid-template-columns:340px 1fr;gap:56px}
-.ip-wrap{perspective:1000px;padding:10px 0 0}
-.ip{--rx:8deg;--ry:-20deg;transform:rotateY(160deg) rotateX(8deg)}
-.ip.in{transform:rotateY(var(--ry)) rotateX(var(--rx)) rotateZ(1.5deg);transition:transform 1.3s cubic-bezier(.55,0,.25,1)}
-.ip.in.mv{transition:transform .25s ease-out}
-.ip-l{position:absolute;inset:0;border-radius:calc(var(--w) * .17);background:linear-gradient(145deg,#3f4566,#11152a 60%,#2a2f4a)}
-.ip-front{box-shadow:inset 0 0 0 2px rgba(255,255,255,.2),inset 0 0 0 4px rgba(0,0,0,.35)}
-.ip-front:after{content:"";position:absolute;inset:9px;border-radius:calc(var(--w) * .14);pointer-events:none;z-index:7;background:linear-gradient(115deg,rgba(255,255,255,.22),rgba(255,255,255,0) 28%,rgba(255,255,255,0) 70%,rgba(255,255,255,.08))}
-.ip-btn{position:absolute;width:4px;border-radius:2px;background:linear-gradient(90deg,#6a7194,#2a2f4a);transform:translateZ(0)}
-.ip-btn.a{left:-3px;top:17%;height:5%}.ip-btn.b{left:-3px;top:25%;height:9%}.ip-btn.c{left:-3px;top:36%;height:9%}.ip-btn.d{right:-3px;top:28%;height:14%}
-.ip-tag{position:absolute;z-index:9;right:-34px;top:20%;transform:translateZ(70px);border-radius:14px;padding:8px 12px;background:linear-gradient(135deg,var(--gold),#c89434);color:#1c1405;font-size:12px;font-weight:900;box-shadow:0 16px 30px rgba(0,0,0,.4);white-space:nowrap;opacity:0;transition:opacity .4s ease}
-.ip.in .ip-tag{opacity:1}
-.ip-tag small{display:block;font-size:9.5px;letter-spacing:.12em;opacity:.7}
-.ip-sh{width:82%;height:34px;margin-top:26px;background:radial-gradient(closest-side,rgba(0,0,0,.6),transparent);transform:skewX(-20deg)}
-.ip-steps{position:relative;gap:14px;padding-left:26px}
-.ip-steps:before{content:"";position:absolute;left:15px;top:22px;bottom:22px;width:2px;border-radius:2px;background:linear-gradient(180deg,rgba(226,184,116,.15),var(--gold),rgba(226,184,116,.15))}
-.ip-steps li{padding:16px 18px 16px 14px;border-radius:18px;background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(255,255,255,.02));box-shadow:0 10px 24px rgba(0,0,0,.18);transform:perspective(800px) rotateY(-4deg);transform-origin:left center;transition:transform .35s cubic-bezier(.2,.8,.2,1),background .25s,border-color .25s,box-shadow .35s}
-.ip-steps li.on{transform:perspective(800px) rotateY(0) translateX(8px) scale(1.02);background:linear-gradient(135deg,rgba(226,184,116,.2),rgba(255,255,255,.03));box-shadow:0 18px 36px rgba(0,0,0,.3),0 0 0 1px rgba(226,184,116,.35)}
-.ip-steps .n{position:absolute;left:-26px;top:50%;transform:translateY(-50%);flex:none;width:30px;height:30px;border:2px solid rgba(226,184,116,.5);background:#0e1a4a;font-size:13px}
-.ip-steps li{overflow:visible}
-.ip-steps li em{border-radius:0 0 18px 18px}
-.ip-steps li.on .n{box-shadow:0 0 0 6px rgba(226,184,116,.18)}
-.ip-steps .gi{flex:0 0 42px;width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(145deg,#2c3c86,#121c52);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14),0 6px 14px rgba(0,0,0,.3)}
-.ip-steps li.on .gi{background:linear-gradient(145deg,var(--gold),#c89434)}
-.ip-steps .gi svg{width:21px;height:21px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.ip-steps li.on .gi svg{stroke:#1c1405}
-@media (max-width:900px){.ipg{grid-template-columns:1fr;gap:30px}.ip-tag{right:-18px}
-  .ip-steps{display:flex;flex-direction:column;gap:10px}.ip-steps li{transform:none;padding:12px 14px 12px 12px}.ip-steps li.on{transform:translateX(6px)}.ip-steps .gi{flex-basis:36px;width:36px;height:36px}}
-@media (prefers-reduced-motion:reduce){.ip.in{transform:rotateY(-14deg) rotateX(6deg)}}
+/* v174 iPhone guide: the result first, a lock screen filling with HEMERA alerts */
+.g3{--gy:-12deg;--gx:5deg;position:relative;overflow:hidden;background:radial-gradient(520px 420px at 24% 50%,rgba(79,124,255,.32),transparent 70%),radial-gradient(420px 300px at 30% 90%,rgba(226,184,116,.14),transparent 70%),linear-gradient(160deg,rgba(79,124,255,.12),rgba(255,255,255,.02))}
+.g3g{display:grid;grid-template-columns:460px 1fr;gap:40px;align-items:center}
+.g3s{position:relative;height:600px;perspective:1200px}
+.ph3{position:absolute;aspect-ratio:1/2.05;width:var(--w);border-radius:calc(var(--w) * .17);padding:calc(var(--w) * .03);background:linear-gradient(145deg,#5a6182,#1a1f36 55%,#3a405c);box-shadow:inset 0 0 0 2px rgba(255,255,255,.2),inset 0 0 0 4px rgba(0,0,0,.3),0 40px 70px rgba(0,0,0,.5);transition:transform .35s ease-out}
+.ph3:after{content:"";position:absolute;inset:calc(var(--w) * .03);border-radius:calc(var(--w) * .14);pointer-events:none;z-index:9;background:linear-gradient(115deg,rgba(255,255,255,.2),rgba(255,255,255,0) 30%,rgba(255,255,255,0) 72%,rgba(255,255,255,.07))}
+.ph3:before{content:"";position:absolute;left:-3px;top:22%;width:3px;height:10%;border-radius:2px;background:#5a6182;box-shadow:0 calc(var(--w) * .28) 0 #5a6182}
+.g3b{left:6px;top:150px;transform:rotateY(24deg) rotateX(var(--gx)) translateZ(-90px);opacity:.92}
+.g3f{left:120px;top:40px;transform:rotateY(var(--gy)) rotateX(var(--gx));z-index:2}
+.g3sh{position:absolute;left:90px;right:10px;bottom:-6px;height:40px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.55),transparent);filter:blur(5px)}
+.sc3{position:relative;width:100%;height:100%;overflow:hidden;border-radius:calc(var(--w) * .14);background:#f2f4f9;color:#111;font-size:calc(var(--w) * .05)}
+.isl3{position:absolute;top:2.4%;left:50%;width:31%;height:3.6%;transform:translateX(-50%);border-radius:99px;background:#000;z-index:8}
+.stb3{position:absolute;top:0;left:0;right:0;height:7%;display:flex;justify-content:space-between;align-items:center;padding:0 9% 0 11%;font-size:calc(var(--w) * .055);font-weight:800;z-index:7}
+.stb3.w{color:#fff}
+.si3{width:22%;height:36%;background:linear-gradient(90deg,currentColor 0 14%,transparent 14% 20%,currentColor 20% 34%,transparent 34% 44%,currentColor 44% 100%);-webkit-mask:linear-gradient(#000,#000);opacity:.9;border-radius:2px}
+.k3{position:absolute;inset:0;opacity:0;transition:opacity .45s ease}.k3.on{opacity:1}
+.app3{position:absolute;left:0;right:0;top:7%;bottom:12%;background:url(/get/shots/home.webp?v=16) top/cover}
+.saf3{position:absolute;left:0;right:0;bottom:0;height:12%;background:rgba(246,246,248,.97);border-top:1px solid #ddd;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+.url3{width:88%;height:40%;border-radius:8px;background:#e6e7ec;font-size:calc(var(--w) * .045);display:flex;align-items:center;justify-content:center;color:#333;font-weight:600}
+.tb3{width:86%;display:flex;justify-content:space-between;color:#1a73e8;font-size:calc(var(--w) * .06)}
+.dim3{position:absolute;inset:0;background:rgba(0,0,0,.35)}
+.sheet3{position:absolute;left:4%;right:4%;bottom:3%;border-radius:12px;background:#fff;overflow:hidden;box-shadow:0 -6px 24px rgba(0,0,0,.25)}
+.k3.on .sheet3{animation:ipup .5s cubic-bezier(.2,.8,.2,1) both .1s}
+.sheet3 div{padding:7% 8%;border-bottom:1px solid #eee}.sheet3 .on{background:#fff6e3;font-weight:800;color:#8a5a00}
+.home3{position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,#3a5bd0,#0c1d5c 60%,#070f33)}
+.grid3{position:absolute;top:14%;left:8%;right:8%;display:grid;grid-template-columns:repeat(4,1fr);gap:16% 10%}
+.grid3 i{display:block;aspect-ratio:1;border-radius:24%;background:rgba(255,255,255,.18)}
+.grid3 span{color:#fff;font-size:calc(var(--w) * .045);text-align:center;font-weight:600}
+.grid3 .me{background:url(/icons/apple-touch-icon.png) center/cover;box-shadow:0 0 0 2px var(--gold),0 0 18px rgba(226,184,116,.8);margin-bottom:3px}
+.k3.on .me{animation:ipme 1.4s ease-in-out .2s both}
+.al3{position:absolute;left:10%;right:10%;top:34%;border-radius:12px;background:rgba(242,242,247,.97);text-align:center;overflow:hidden}
+.k3.on .al3{animation:ippop .45s cubic-bezier(.2,1.4,.4,1) both .15s}
+.al3 b{display:block;padding:10% 8% 6%}.al3 div{display:flex;border-top:1px solid #ccc}.al3 em{flex:1;padding:6%;font-style:normal;color:#1a73e8}.al3 em+em{border-left:1px solid #ccc;font-weight:800}
+.tap3{position:absolute;width:22px;height:22px;border-radius:50%;background:rgba(226,184,116,.6);transform:translate(-50%,-50%);z-index:5;animation:tap3 1.2s ease-out infinite}
+@keyframes tap3{0%{box-shadow:0 0 0 0 rgba(226,184,116,.5)}100%{box-shadow:0 0 0 16px rgba(226,184,116,0)}}
+.lk3{background:radial-gradient(circle at 50% 28%,#3557d6,#0b1a55 55%,#060d2e);color:#fff}
+.lk3:before{content:"";position:absolute;left:-20%;right:-20%;bottom:-10%;height:55%;background:radial-gradient(closest-side,rgba(226,184,116,.28),transparent);pointer-events:none}
+.dt3{position:absolute;top:11%;left:0;right:0;text-align:center;font-weight:700;font-size:calc(var(--w) * .055);color:#dfe6ff}
+.tm3{position:absolute;top:14%;left:0;right:0;text-align:center;font-weight:800;font-size:calc(var(--w) * .27);letter-spacing:-.04em;line-height:1.1}
+.ns3{position:absolute;left:5%;right:5%;top:43%;display:flex;flex-direction:column;gap:7px}
+.nt3{border-radius:16px;padding:8px 10px;background:rgba(255,255,255,.2);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);font-size:calc(var(--w) * .046);animation:nt3 .55s cubic-bezier(.2,1,.3,1) both}
+.nt3:nth-child(2){opacity:.85;transform:scale(.97)}.nt3:nth-child(3){opacity:.55;transform:scale(.94)}
+@keyframes nt3{from{opacity:0;transform:translateY(-16px) scale(.96)}}
+.nt3 .h{display:flex;gap:6px;align-items:center;font-weight:700;opacity:.85;font-size:.92em}.nt3 .h img{width:15px;height:15px;border-radius:4px}.nt3 .h em{margin-left:auto;font-style:normal;opacity:.7}
+.nt3 b{display:block;margin-top:3px}.nt3 p{margin:1px 0 0;opacity:.9;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lb3{position:absolute;left:9%;right:9%;bottom:6%;display:flex;justify-content:space-between}.lb3 i{width:15%;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.18);display:grid;place-items:center;font-style:normal;font-size:calc(var(--w) * .05)}
+.hb3{position:absolute;left:50%;bottom:2%;width:34%;height:1%;transform:translateX(-50%);border-radius:9px;background:#fff;opacity:.85}
+.pl3{position:absolute;z-index:4;display:flex;gap:10px;align-items:center;padding:10px 14px;border-radius:16px;background:rgba(18,30,78,.86);border:1px solid rgba(255,255,255,.18);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 16px 34px rgba(0,0,0,.4);font-size:13px;white-space:nowrap;animation:pl3 5s ease-in-out infinite}
+.pl3.a{left:250px;top:6px}.pl3.b{left:0;top:470px;animation-delay:-2.5s}
+@keyframes pl3{50%{transform:translateY(-8px)}}
+.pl3 b{display:block}.pl3 small{color:var(--sub)}
+.n3{flex:0 0 30px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold),#c89434);color:#1c1405;font-weight:900;font-size:13px}
+.g3x h2 em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tl3{list-style:none;margin:20px 0 18px;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tl3 li{position:relative;overflow:hidden;padding:14px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid var(--line);cursor:pointer;transition:background .25s,border-color .25s,transform .25s}
+.tl3 li .n3{background:rgba(255,255,255,.12);color:#fff}
+.tl3 li.on{transform:translateY(-4px);border-color:rgba(226,184,116,.6);background:linear-gradient(160deg,rgba(226,184,116,.18),rgba(255,255,255,.03))}
+.tl3 li.on .n3{background:linear-gradient(135deg,var(--gold),#c89434);color:#1c1405}
+.tl3 b{display:block;margin-top:10px;font-size:15px}.tl3 small{display:block;color:var(--sub);font-size:12px;font-weight:600}
+.tl3 em{position:absolute;left:0;bottom:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.tl3 li.on em{animation:ltab var(--sd3,2400ms) linear forwards}
+.g3go{display:inline-flex;gap:8px;align-items:center;border-radius:14px;padding:12px 18px;background:#fff;color:#0a1748;font-weight:900}
+.g3 .gnote{text-align:left;margin-top:14px}
+@media (max-width:980px){.g3g{grid-template-columns:1fr;gap:20px}.g3s{max-width:460px;width:100%;margin:0 auto}.g3x{text-align:center}.g3 .gnote{text-align:center}}
+@media (max-width:520px){.g3s{height:470px}.g3f{--w:205px!important;left:auto;right:6px;top:30px}.g3b{--w:118px!important;left:0;top:120px}.pl3{font-size:11.5px;padding:8px 10px}.pl3.a{left:auto;right:0;top:4px}.pl3.b{left:0;top:390px}.n3{flex-basis:26px;width:26px;height:26px}.tl3{grid-template-columns:1fr 1fr}.g3sh{left:40px}}
+@media (prefers-reduced-motion:reduce){.pl3,.tap3,.nt3{animation:none}}
 .dsh{display:inline-block;font-size:.55em;font-weight:700;vertical-align:.32em;margin:0 .22em;opacity:.85}
 </style>
 </head>
@@ -440,28 +472,37 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
   </section>
 
   <section class="sec">
-    <div class="guide" id="guide">
-      <div class="gh"><div><span class="kk ki"><svg class="ap" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.5 2.1-3.7 2.2-3.8-1.2-1.7-3-2-3.7-2-1.6-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.8-1-2.8-4.1zM13.9 5.1c.7-.9 1.2-2 1-3.1-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3 1.1.1 2.2-.6 2.9-1.4z"/></svg>iPhone</span><h2>Add it as an app, turn on alerts.</h2></div><p>Four taps in Safari. After that HEMERA opens full screen from its own icon.</p></div>
-      <div class="ipg">
-        <div class="ip-wrap"><div class="ip" id="ip"><i class="ip-l" style="transform:translateZ(-4px)"></i><i class="ip-l" style="transform:translateZ(-2px)"></i><i class="ip-l" style="transform:translateZ(0px)"></i><i class="ip-l" style="transform:translateZ(2px)"></i><i class="ip-l" style="transform:translateZ(4px)"></i><i class="ip-btn a"></i><i class="ip-btn b"></i><i class="ip-btn c"></i><i class="ip-btn d"></i><div class="ip-tag" id="ipTag"><small>STEP</small>1 of 4</div>
-          <div class="ip-back"><div class="ip-cam"><i></i><i></i><i></i><b></b></div><img src="/get/logo-white.webp?v=17" alt=""></div>
-          <div class="ip-front"><div class="ip-scr" id="ipScr"><div class="ip-k" id="ipK">
-            <div class="st on"><div class="sf"><div class="pg"><i></i><i></i><i></i><i></i></div><div class="ad">🔒 sekna-app.web.app</div>
-              <div class="tb"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span class="hl"><svg viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></span><svg viewBox="0 0 24 24"><rect x="5" y="5" width="11" height="11" rx="2"/></svg></div></div></div>
-            <div class="st"><div class="sf"><div class="pg"><i></i><i></i><i></i><i></i></div></div><div class="dim"></div><div class="sheet"><div class="row">Copy</div><div class="row">Add Bookmark</div><div class="row on">Add to Home Screen</div><div class="row">Find on Page</div></div></div>
-            <div class="st"><div class="home"><div class="apps"><s></s><s></s><s></s><s></s><s></s><s class="me"></s><s></s><s></s></div><div class="lbl">HEMERA</div></div></div>
-            <div class="st"><img src="/get/shots/push.webp" alt="" loading="lazy"><div class="dim"></div><div class="alert"><b>“HEMERA” Would Like to Send You Notifications</b><div><em>Don’t Allow</em><em>Allow</em></div></div></div>
-          </div><div class="ip-isl"></div></div></div>
-        </div><div class="ip-sh"></div></div>
-        <ol class="ip-steps" id="ipSteps">
-          <li class="on"><span class="n">1</span><span class="gi"><svg viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></span><div><b>Tap Share</b><small>at the bottom of Safari</small></div><em></em></li>
-          <li><span class="n">2</span><span class="gi"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg></span><div><b>Add to Home Screen</b><small>then tap Add</small></div><em></em></li>
-          <li><span class="n">3</span><span class="gi"><svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M10 7h4"/><circle cx="12" cy="16" r="1.2"/></svg></span><div><b>Open HEMERA</b><small>from its new icon</small></div><em></em></li>
-          <li><span class="n">4</span><span class="gi"><svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 1 1 12 0v5l1.5 2h-15z"/><path d="M10 21h4"/></svg></span><div><b>Turn on → Allow</b><small>to get the notifications</small></div><em></em></li>
-        </ol>
+    <div class="guide g3" id="guide">
+      <div class="g3g">
+        <div class="g3s" id="g3s">
+          <div class="g3b ph3" style="--w:150px" id="g3back"><div class="sc3"><div class="isl3"></div><div class="stb3"><span>9:41</span><span class="si3"></span></div>
+            <div class="k3 on"><div class="app3"></div><div class="saf3"><div class="url3">🔒 sekna-app.web.app</div><div class="tb3"><span>‹</span><span>›</span><b>⇪</b><span>▭</span><span>⧉</span></div></div><i class="tap3" style="left:50%;top:94%"></i></div>
+            <div class="k3"><div class="app3"></div><div class="dim3"></div><div class="sheet3"><div>Copy</div><div>Add Bookmark</div><div class="on">Add to Home Screen</div><div>Find on Page</div></div><i class="tap3" style="left:50%;top:84%"></i></div>
+            <div class="k3"><div class="home3"><div class="grid3"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><span><i class="me"></i>HEMERA</span><i></i><i></i></div></div><i class="tap3" style="left:41%;top:41%"></i></div>
+            <div class="k3"><div class="app3"></div><div class="dim3"></div><div class="al3"><b>“HEMERA” Would Like to Send You Notifications</b><div><em>Don’t Allow</em><em>Allow</em></div></div><i class="tap3" style="left:67%;top:48%"></i></div>
+          </div></div>
+          <div class="g3f ph3" style="--w:260px" id="g3f"><div class="sc3 lk3"><div class="isl3"></div><div class="stb3 w"><span>9:41</span><span class="si3"></span></div>
+            <div class="dt3" id="g3d"></div><div class="tm3" id="g3t">9:41</div><div class="ns3" id="g3n"></div><div class="lb3"><i>🔦</i><i>📷</i></div><div class="hb3"></div></div></div>
+          <div class="pl3 a"><span class="n3">✓</span><div><b>Added to Home Screen</b><small>opens full screen</small></div></div>
+          <div class="pl3 b"><span class="n3">🔔</span><div><b>Alerts on</b><small>new day, seasons, tasks</small></div></div>
+          <div class="g3sh"></div>
+        </div>
+        <div class="g3x">
+          <span class="kk ki"><svg class="ap" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.5 2.1-3.7 2.2-3.8-1.2-1.7-3-2-3.7-2-1.6-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.8-1-2.8-4.1zM13.9 5.1c.7-.9 1.2-2 1-3.1-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3 1.1.1 2.2-.6 2.9-1.4z"/></svg>iPhone</span>
+          <h2>Your numbers on the lock screen, <em>every morning.</em></h2>
+          <p class="s">Add HEMERA to your Home Screen and allow notifications. Four taps in Safari, then it opens full screen from its own icon.</p>
+          <ol class="tl3" id="g3l">
+            <li class="on"><span class="n3">1</span><b>Share</b><small>at the bottom of Safari</small><em></em></li>
+            <li><span class="n3">2</span><b>Add to Home</b><small>then tap Add</small><em></em></li>
+            <li><span class="n3">3</span><b>Open</b><small>from the new icon</small><em></em></li>
+            <li><span class="n3">4</span><b>Allow</b><small>the notifications</small><em></em></li>
+          </ol>
+          <a class="g3go" href="https://sekna-app.web.app/" target="_blank" rel="noopener">Open in Safari <span>→</span></a>
+          <div class="gnote">Needs iOS 16.4 or newer. Always open HEMERA from the Home Screen icon.</div>
+        </div>
       </div>
-      <div class="gnote">Needs iOS 16.4 or newer. Always open HEMERA from the Home Screen icon.</div>
     </div>
+
   </section>
 </div>
 
@@ -566,31 +607,34 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
 })();
 
 
-// iPhone guide: in view, the phone turns from its back to its screen, then runs the
-// four steps on the screen; tap a step to jump to it.
+// iPhone guide: the lock screen fills with HEMERA alerts one after another while the
+// small Safari phone runs the four steps; tap a step to jump to it.
 (function(){
-  var ip=document.getElementById('ip'), k=document.getElementById('ipK'), scr=document.getElementById('ipScr'), list=document.getElementById('ipSteps');
-  if(!ip)return;
-  var st=k.children, li=list.children, cur=0, t=null, D=2200;
-  document.documentElement.style.setProperty('--sd',D+'ms');
-  function fit(){var w=scr.clientWidth,h=scr.clientHeight,z=w/180;k.style.transform='scale('+z+')';k.style.height=(h/z)+'px'}
-  function show(i){cur=(i+st.length)%st.length;
-    for(var n=0;n<st.length;n++){st[n].classList.remove('on');li[n].classList.remove('on')}
-    void st[cur].offsetWidth;st[cur].classList.add('on');li[cur].classList.add('on');var tg=document.getElementById('ipTag');if(tg)tg.innerHTML='<small>STEP</small>'+(cur+1)+' of '+st.length;
+  var g=document.getElementById('guide');if(!g||!document.getElementById('g3f'))return;
+  var ks=document.querySelectorAll('#g3back .k3'), li=document.getElementById('g3l').children, ns=document.getElementById('g3n'), f=document.getElementById('g3f'), cur=0, t=null, D=2400;
+  document.documentElement.style.setProperty('--sd3',D+'ms');
+  var d=new Date();document.getElementById('g3d').textContent=d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'long'});
+  var N=[['now','📈 New day in · USA','Spend $6,243 · ROAS 4.43x · 117% of target'],
+         ['9:00','🦃 Thanksgiving is in 15 days · USA','Starts 26 Nov. Open to see last year’s numbers.'],
+         ['8:30','✅ Your tasks for today','SEKNA Report USA · Search Terms · Media Plan'],
+         ['8:00','🌙 Ramadan Mubarak','May Allah make this a month of blessings and guide our team toward success.'],
+         ['7:45','🏆 4 days above plan','Conversion value beat the day’s plan every day.']], ni=0;
+  function note(){var x=N[ni%N.length];ni++;var e=document.createElement('div');e.className='nt3';
+    e.innerHTML='<div class="h"><img src="/icons/apple-touch-icon.png" alt="">HEMERA<em>'+x[0]+'</em></div><b>'+x[1]+'</b><p>'+x[2]+'</p>';
+    ns.insertBefore(e,ns.firstChild);while(ns.children.length>2)ns.removeChild(ns.lastChild)}
+  function show(i){cur=(i+ks.length)%ks.length;
+    for(var n=0;n<ks.length;n++){ks[n].classList.remove('on');li[n].classList.remove('on')}
+    void ks[cur].offsetWidth;ks[cur].classList.add('on');li[cur].classList.add('on');note();
     clearTimeout(t);t=setTimeout(function(){show(cur+1)},D)}
   for(var n=0;n<li.length;n++)(function(n){li[n].onclick=function(){show(n)}})(n);
-  fit();window.addEventListener('resize',fit);
-  // The phone leans toward the pointer.
-  var g=document.getElementById('guide');
-  if(g&&window.matchMedia&&matchMedia('(hover:hover)').matches){g.addEventListener('mousemove',function(e){if(!ip.classList.contains('in'))return;var r=ip.getBoundingClientRect(),dx=(e.clientX-(r.left+r.width/2))/r.width,dy=(e.clientY-(r.top+r.height/2))/r.height;
-    ip.classList.add('mv');ip.style.setProperty('--ry',(-20+Math.max(-1,Math.min(1,dx))*14)+'deg');ip.style.setProperty('--rx',(8-Math.max(-1,Math.min(1,dy))*8)+'deg')});
-    g.addEventListener('mouseleave',function(){ip.style.setProperty('--ry','-20deg');ip.style.setProperty('--rx','8deg')})}
-  for(var n=0;n<li.length;n++)li[n].classList.remove('on');
-  var start=function(){ip.classList.add('in');setTimeout(function(){show(0)},1300)};
+  // The phones lean toward the pointer.
+  if(window.matchMedia&&matchMedia('(hover:hover)').matches){g.addEventListener('mousemove',function(e){var r=f.getBoundingClientRect(),dx=Math.max(-1,Math.min(1,(e.clientX-(r.left+r.width/2))/r.width)),dy=Math.max(-1,Math.min(1,(e.clientY-(r.top+r.height/2))/r.height));
+    g.style.setProperty('--gy',(-12+dx*10)+'deg');g.style.setProperty('--gx',(5-dy*6)+'deg')});
+    g.addEventListener('mouseleave',function(){g.style.setProperty('--gy','-12deg');g.style.setProperty('--gx','5deg')})}
+  var start=function(){g.classList.add('in');note();note();setTimeout(function(){show(0)},700)};
   if(!('IntersectionObserver' in window)){start();return}
-  new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){start();o.disconnect()}})},{threshold:.4}).observe(ip);
+  new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){start();o.disconnect()}})},{threshold:.3}).observe(g);
 })();
-
 
 // How the media plan works: the five steps rise in one after another.
 (function(){var m=document.getElementById('mpw');if(!m)return;if(!('IntersectionObserver' in window)){m.classList.add('in');return}
