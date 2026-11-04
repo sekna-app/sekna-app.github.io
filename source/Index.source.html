@@ -6341,6 +6341,24 @@ window.addEventListener('load',function(){
       #channelPanel .weekly-performance .wx-m-v{display:block!important;white-space:normal!important}
       #channelPanel .weekly-performance .wx-m-v span{display:block;white-space:nowrap;margin-top:1px}
     }
+    /* v179 Seasons on desktop, Photo card and list: the card keeps its photo whole on the left, the seasons are rows on the right */
+    @media (min-width:1100px){
+      .ssd{align-items:start!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important}
+      .ssd-l>.ss-hero{min-height:0!important;display:block!important;container-type:inline-size!important}
+      .ssd-l .ss-art .ss-img{position:absolute!important;left:0!important;right:0!important;top:0!important;bottom:auto!important;width:100%!important;height:auto!important;aspect-ratio:760/447!important;background-size:100% auto!important;background-position:center top!important;-webkit-mask-image:linear-gradient(#000 62%,transparent)!important;mask-image:linear-gradient(#000 62%,transparent)!important}
+      .ssd-l .ss-art .ss-ln{margin-bottom:calc(58.8cqw - 96px)!important}
+      .ssd-l{position:sticky;top:80px}
+      .ssd-lbl{font-size:10.5px;font-weight:900;letter-spacing:.14em;color:#8a93ad;margin:4px 4px 0}
+      .ssd-list{display:grid;gap:8px}
+      .ssd-row{display:grid;grid-template-columns:52px 58px minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;border:0;background:#fff;border-radius:16px;padding:8px 14px 8px 8px;box-shadow:0 6px 16px rgba(20,30,70,.05);cursor:pointer;text-align:left;font:inherit;color:#1d2433;transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .2s}
+      .ssd-row:hover{transform:translateX(3px);box-shadow:0 10px 20px rgba(20,30,70,.09)}
+      .ssd-row.on{box-shadow:inset 3px 0 0 #203c8e,0 10px 20px rgba(20,30,70,.09)}
+      .ssd-row .dt{text-align:center}.ssd-row .dt b{display:block;font-size:21px;line-height:1}.ssd-row .dt small{font-size:10px;font-weight:800;color:#7b84a0}
+      .ssd-row .th{width:58px;height:42px;border-radius:10px;background:linear-gradient(160deg,#14286e,#0a1d62) center/cover}
+      .ssd-row .n b{display:block;font-size:14px}.ssd-row .n small{font-size:11.5px;color:#7b84a0;font-weight:700}
+      .ssd-row em{font-style:normal;font-size:11px;font-weight:900;padding:4px 10px;border-radius:99px;background:#eef2ff;color:#203c8e}.ssd-row em.h{background:#fbefd6;color:#a06d17}
+      body.dark-mode .ssd-row{background:#151a22;color:#e7ebf3}
+    }
 </style>
 </head>
 <body>
@@ -13146,10 +13164,11 @@ function renderSeasons(){
  const fsH=`<div class="ss-fs">${[['all','All'],['h','🌙 Hijri'],['u','🇺🇸 US']].map(x=>`<button type="button" class="${SS.f===x[0]?'on':''}" onclick="ssFilter('${x[0]}')">${x[1]}</button>`).join('')}</div>`;
  // v179 desktop: the season card as a tall poster on the left, the coming seasons as photo tiles on the right
  if(mxWide()){
-   const tile=s=>{const n=ssDays(t,s.from),live=s.from<=t&&t<=s.to,art=SS_ART[s.key];
-     return `<button type="button" class="ssd-t${big&&s.id===big.id?' on':''}${art?'':' noart'}" onclick="ssHeroPick('${s.id}')">${art?`<i style="background-image:url('icons/seasons/${s.key}.webp?v=5')"></i>`:''}<em>${esc(ssD(s.from))}</em><span><b>${esc(s.name)}</b><small>${s.type==='h'?'Hijri':'US'} · ${live?'on now':'in '+n+' day'+(n===1?'':'s')}</small></span></button>`};
-   el.innerHTML=`<div class="ssd"><div class="ssd-l">${hero}</div><div class="ssd-r"><div class="ssd-tools">${fsH}<span>Tap one to open it on the left</span></div>
-    <div class="ssd-grid">${show.map(tile).join('')}</div>
+   // v179 Photo card and list: each coming season is a row with its date, a small photo, how long it runs and Hijri or US
+   const tile=s=>{const n=ssDays(t,s.from),live=s.from<=t&&t<=s.to,art=SS_ART[s.key],d=new Date(s.from+'T00:00:00Z');
+     return `<button type="button" class="ssd-row${big&&s.id===big.id?' on':''}" onclick="ssHeroPick('${s.id}')"><span class="dt"><b>${d.getUTCDate()}</b><small>${d.toLocaleDateString('en-GB',{month:'short',timeZone:'UTC'}).toUpperCase()}</small></span><i class="th"${art?` style="background-image:url('icons/seasons/${s.key}.webp?v=5')"`:''}></i><span class="n"><b>${esc(s.name)}</b><small>${s.len} day${s.len===1?'':'s'} · ${live?'on now':'in '+n+' day'+(n===1?'':'s')}</small></span><em class="${s.type==='h'?'h':''}">${s.type==='h'?'Hijri':'US'}</em></button>`};
+   el.innerHTML=`<div class="ssd"><div class="ssd-l">${hero}</div><div class="ssd-r"><div class="ssd-tools">${fsH}<span>${list.length} seasons · next 12 months</span></div>
+    <div class="ssd-lbl">COMING UP · TAP ONE TO OPEN IT</div><div class="ssd-list">${show.map(tile).join('')}</div>
     ${list.length>show.length?`<button type="button" class="ss-more" onclick="SS.more=true;renderSeasons()">Show ${list.length-show.length} more ›</button>`:''}</div></div>
     <p class="ss-note">Hijri dates use the Umm al-Qura calendar and can move by a day with the moon sighting. US days are worked out every year by themselves. Numbers are from the sheet's daily history.</p>`;
    return;
