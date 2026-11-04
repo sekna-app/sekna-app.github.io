@@ -5657,7 +5657,7 @@ window.addEventListener('load',function(){
       .bbar .bb-fab.no span{background:linear-gradient(135deg,#ff6b7a,#c62f45);box-shadow:0 10px 20px rgba(198,47,69,.4),0 0 0 5px #f4f6fb}.bbar .bb-fab.no small{color:#c62f45}
       .bbar .bb-fab.shake span{animation:bbshake .45s cubic-bezier(.36,.07,.19,.97)}
       .bbar .bb-fab.done span{background:#25d366;transform:scale(1.1);transition:transform .2s}
-      #shScan{position:fixed;left:0;right:0;top:0;height:64px;z-index:9998;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(61,107,255,.14) 80%,rgba(61,107,255,.3));will-change:transform;transform:translate3d(0,-64px,0);animation:shscan 1.4s linear infinite}#shScan::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:#9fb6ff;box-shadow:0 0 6px 1px #3d6bff,0 0 16px 2px rgba(61,107,255,.6)}.bbar .bb-fab small{color:#203c8e}
+      .bbar .bb-fab small{color:#203c8e}
       body:has(.bbar) .wrap,body:has(.bbar) main:not(.sk-gate-card){padding-bottom:86px!important}
       body.gate-open .bbar{display:none!important}
       body:has(.bbar) .top-share-btn{display:none!important}
@@ -6092,6 +6092,9 @@ window.addEventListener('load',function(){
     /* v179 tasks picture: the weekly days off tile */
     .t2h>img{margin-left:auto;height:50px;width:auto}
     .t2s .y{background:linear-gradient(135deg,rgba(255,210,63,.26),rgba(255,210,63,.1));border:2px solid rgba(255,210,63,.55);box-shadow:none;padding:11px 16px}.t2s .y b{color:#ffd23f}.t2s .y span{color:#ffe9a8}
+    /* v179 the share scan light on every screen size */
+    @keyframes shscan{from{transform:translate3d(0,-64px,0)}to{transform:translate3d(0,100vh,0)}}
+    #shScan{position:fixed;left:0;right:0;top:0;height:64px;z-index:100000;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(61,107,255,.14) 80%,rgba(61,107,255,.3));will-change:transform;transform:translate3d(0,-64px,0);animation:shscan 1.4s linear infinite}#shScan::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:#9fb6ff;box-shadow:0 0 6px 1px #3d6bff,0 0 16px 2px rgba(61,107,255,.6)}
 </style>
 </head>
 <body>
@@ -7794,7 +7797,7 @@ function stxShow(){
 }
 // Send: the story itself as a picture on WhatsApp, with no caption (the top bar's buttons are left out).
 async function stxSend(btn){
- const el=document.querySelector('#stxView .stx-face:not(.old) .stx-card-bg');if(!el||!STX)return;stxPause(true);btn.disabled=true;
+ const el=document.querySelector('#stxView .stx-face:not(.old) .stx-card-bg');if(!el||!STX)return;stxPause(true);btn.disabled=true;shScan(true);
  const G=stxGroup(),x=G.d.latest||{},filename=`HEMERA-Story-${G.k==='ar'?'AR':'USA'}-${x.monthName||''}-${x.dayNumber||''}-${STX.i+1}.png`;
  try{
   const h2c=await ensureHtml2Canvas();
@@ -7807,7 +7810,7 @@ async function stxSend(btn){
   if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){try{await navigator.share({files:[file]});return}catch(e){if(e&&e.name==='AbortError')return}}
   downloadShareImage(blob,filename);showShareToast('Story saved — share it on WhatsApp');
  }catch(e){showShareToast('Could not make the picture of this story.')}
- finally{btn.disabled=false;if(STX&&!document.querySelector('#stxView .stx-sh'))stxPause(false)}
+ finally{btn.disabled=false;shScan(false);if(STX&&!document.querySelector('#stxView .stx-sh'))stxPause(false)}
 }
 // Day streak: days in a row, up to the last closed day, whose conversion value met the day's plan.
 // From 3 days it shows as a small card under the date for half an hour; the server sends it to the phones with the new day.
@@ -9127,7 +9130,7 @@ async function budShare(btn){
  // A quick check first: the weeks and the campaign types should add up to the month's budget.
  const off=budCheck(d);
  if(off.length&&!(await askSekna({title:'The numbers don\'t add up',text:off.join(' ')+' Send the picture anyway?',ok:'Send anyway'})))return;
- btn.disabled=true;const host=document.createElement('div');host.className='rp-report rp-bud';host.setAttribute('data-share-ui','');host.innerHTML=budShareHtml(d);document.body.appendChild(host);
+ setShareButtonState(btn,true);const host=document.createElement('div');host.className='rp-report rp-bud';host.setAttribute('data-share-ui','');host.innerHTML=budShareHtml(d);document.body.appendChild(host);
  try{
   await Promise.all([...host.querySelectorAll('img')].map(i=>i.complete?0:new Promise(r=>{i.onload=i.onerror=r})));
   await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
@@ -9144,7 +9147,7 @@ async function budShare(btn){
   if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){try{await navigator.share({text:cap,files:[file]});return}catch(e){if(e&&e.name==='AbortError')return}}
   downloadShareImage(blob,filename);showShareToast('Image saved — share it on WhatsApp');
  }catch(e){showShareToast('Could not make the budget image.')}
- finally{host.remove();btn.disabled=false}
+ finally{host.remove();setShareButtonState(btn,false)}
 }
 /* ---------- Lab month picker ("Arrows + list"), beside the page title ----------
  * ‹ › go one month back or on; the month opens a list by year with the big seasons tagged. Picking writes B2.
@@ -10625,6 +10628,8 @@ function showShareToast(message,timeout=2600){
  showShareToast._t=setTimeout(()=>toast.classList.remove('show'),timeout);
 }
 
+// v179 the scan light that runs down the screen while any share picture is made.
+function shScan(on){let sc=document.getElementById('shScan');if(on){if(!sc){sc=document.createElement('div');sc.id='shScan';sc.setAttribute('data-share-ui','');document.body.appendChild(sc)}}else if(sc)sc.remove()}
 function setShareButtonState(btn,busy){
  if(!btn)return;
  // The bottom bar's round button: a light runs down the page while the picture is made, then a tick.
@@ -10636,6 +10641,7 @@ function setShareButtonState(btn,busy){
      setTimeout(()=>{btn.classList.remove('done');btn.disabled=false;if(btn.dataset.ic)sp.innerHTML=btn.dataset.ic},900)}
    return;
  }
+ shScan(busy);
  if(busy){
    btn.dataset.originalHtml=btn.innerHTML;
    btn.disabled=true;
@@ -13549,7 +13555,7 @@ function tkShareHtml(){
 }
 async function tkShare(btn){
  if(!TK.data||!TK.data.tasks.length)return showSettingsToast('No tasks to share yet');
- btn.disabled=true;
+ setShareButtonState(btn,true);
  try{
    const canvas=await captureReport(tkShareHtml(),'tks-report');
    const filename=`HEMERA-Team-Tasks-${TK.month}.png`;
@@ -13559,7 +13565,7 @@ async function tkShare(btn){
    if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){try{await navigator.share({title:'Team Tasks',text:cap,files:[file]});return}catch(e){if(e&&e.name==='AbortError')return}}
    downloadShareImage(blob,filename);showSettingsToast('Image saved — share it on WhatsApp');
  }catch(err){showSettingsToast(errorText(err))}
- finally{btn.disabled=false}
+ finally{setShareButtonState(btn,false)}
 }
 // ---- "New tasks" notice: a dot on My Tasks until it is opened
 function tkNoticeNew(){const n=ACCESS_PROFILE&&ACCESS_PROFILE.taskNotice;return !!(n&&n.at>(+storeGet('sekna_task_seen')||0))}
