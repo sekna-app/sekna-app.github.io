@@ -8037,7 +8037,7 @@ function drawKpiPlans(d){
    const ok=a!=null&&isFinite(a)&&plan&&isFinite(plan);if(c)c.innerHTML=ok?cap:'';if(!r)return;
    if(!ok){r.textContent='';r.className='kx-r';return}
    const ratio=a/plan,good=lowGood?ratio<=1:ratio>=1;
-   r.innerHTML=`${Math.round(ratio*100)}%<small> ${of||'of plan'}</small>`;r.className='kx-r '+(good?'up':'dn')};
+   r.textContent=`${Math.round(ratio*100)}%`;r.className='kx-r '+(good?'up':'dn')};
  set('topClicks',x.clicks,x.planClicks,`Plan <b>${fmt(x.planClicks,0)}</b>`);
  set('topCTR',x.ctr,ly,`Last year <b>${percent(ly)}</b>`,false,'of last year');
  set('topCPA',x.cpa,dp.cpa,`Plan <b>${money(dp.cpa,2)}</b>`,true);
