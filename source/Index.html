@@ -6334,6 +6334,13 @@ window.addEventListener('load',function(){
       .ssd-t>span{position:absolute;left:12px;right:12px;bottom:10px;z-index:1}.ssd-t b{display:block;font-size:14px;line-height:1.2}.ssd-t small{font-size:11px;font-weight:700;color:#dfe6ff}
       .ssd-r .ss-more{margin:0}
     }
+    /* v179 Monthly Progress: Weekly wider than Budget so the targets show in full */
+    @media (min-width:1100px){
+      #channelPanel.active{grid-template-columns:minmax(0,1.45fr) minmax(0,1fr)!important}
+      #channelPanel>.mtd-exec{grid-template-columns:1.15fr 1fr!important}
+      #channelPanel .weekly-performance .wx-m-v{display:block!important;white-space:normal!important}
+      #channelPanel .weekly-performance .wx-m-v span{display:block;white-space:nowrap;margin-top:1px}
+    }
 </style>
 </head>
 <body>
@@ -11728,6 +11735,7 @@ function maybeShowWhatsNew(){
  if(storeGet('sekna_seen_version')===DASHBOARD_VERSION)return;
  if(JUST_WELCOMED){storeSet('sekna_seen_version',DASHBOARD_VERSION);return}
  if(document.body.classList.contains('gate-open'))return;
+ if(tourAfter(maybeShowWhatsNew))return;
  openWhatsNew();
 }
 
@@ -11778,8 +11786,13 @@ function tourSeen(){try{const a=JSON.parse(storeGet(TOUR_SEEN_KEY)||'[]');return
 function maybeStartTour(){
  let va=null;try{va=VIEW_AS}catch(e){}
  if(TOUR_CHECKED||va)return;const e=tourEmail();if(!e)return;TOUR_CHECKED=true;
- if(tourSeen().indexOf(e)<0)setTimeout(()=>{const t=document.getElementById('tour');if(t&&t.hidden)tourStart()},1200);
+ if(tourSeen().indexOf(e)<0){TOUR_PENDING=true;setTimeout(()=>{TOUR_PENDING=false;const t=document.getElementById('tour');if(t&&t.hidden)tourStart();else tourFlush()},1200)}
 }
+
+let TOUR_PENDING=false;const TOUR_AFTER=[];
+function tourBusy(){const t=document.getElementById('tour');return TOUR_PENDING||!!(t&&!t.hidden)}
+function tourAfter(fn){if(tourBusy()){if(!TOUR_AFTER.includes(fn))TOUR_AFTER.push(fn);return true}return false}
+function tourFlush(){const q=TOUR_AFTER.splice(0);q.forEach((f,i)=>setTimeout(()=>{try{f()}catch(e){}},700+i*400))}
 let TOUR_FROM='';
 function tourStart(){
  TOUR_FROM=CURRENT_TAB;
@@ -11824,6 +11837,7 @@ function tourNext(){if(TOUR_I<3)tourShow(TOUR_I+1);else tourEnd()}
 function tourBack(){if(TOUR_I>0)tourShow(TOUR_I-1)}
 function tourEnd(){
  storeSet(TOUR_KEY,'1');
+ setTimeout(tourFlush,0);
  const e=tourEmail();if(e){const a=tourSeen();if(a.indexOf(e)<0){a.push(e);storeSet(TOUR_SEEN_KEY,JSON.stringify(a.slice(-20)))}}
  const t=document.getElementById('tour');if(!t)return;
  t.classList.remove('show');window.removeEventListener('resize',tourRelayout);
@@ -13062,6 +13076,7 @@ function ssGreet(){
 function stxGreetHtml(o){const g=SS_GREET[o.s.key];return `<div class="stx-sgr"><img src="icons/greet/${o.s.key}.webp?v=1" alt=""><b>${esc(g[0])}</b><p>${esc(g[1])}</p></div>`}
 
 function ssRemind(){
+ if(tourAfter(ssRemind))return;
  if(document.getElementById('ssRem')||document.getElementById('stxView')||document.body.classList.contains('gate-open'))return;
  if(ssGreet()||!canDo('seasons'))return;
  const t=ssToday(),s=ssList().find(x=>x.from>t&&ssDays(t,x.from)<=15&&SS_ART[x.key]);if(!s)return;
@@ -14694,7 +14709,7 @@ function drawMonthlyReport(){
   ${MR.pages?`<div class="mrp-thumbs">${MR.pages.map((s,i)=>`<img src="${s}" alt="Page ${i+1}">`).join('')}</div>
    ${mrOwner()?`<div class="mr-send"><button type="button" class="mr3-mail" onclick="mrSend(true)" ${!MR.pdf||MR.busy?'disabled':''}>Send a test to me</button>
    <button type="button" class="mr3-go" onclick="mrSend(false)" ${!MR.pdf||MR.busy||!ppl.length?'disabled':''}>Email to the team${ppl.length?` (${ppl.length})`:''}</button></div>
-   <div class="mrp-ppl">${ppl.length?`Goes to: ${ppl.map(p=>esc(p.name)).join(', ')}`:'Loading who it goes to…'}</div>`:`<div class="mr-send"><button type="button" class="mr3-go" onclick="mrSend(true)" ${!MR.pdf||MR.busy?'disabled':''}>Send it to me</button></div><div class="mrp-ppl">🔒 Only the HEMERA admin can email the report to the team.</div>`}`:''}`;
+   <div class="mrp-ppl">${ppl.length?`Goes to: ${ppl.map(p=>esc(p.name)).join(', ')}`:'Loading who it goes to…'}</div>`:`<div class="mr-send"><button type="button" class="mr3-go" onclick="mrSend(true)" ${!MR.pdf||MR.busy?'disabled':''}>Send it to me</button></div>`}`:''}`;
 }
 
  
@@ -14826,7 +14841,7 @@ async function celReact(r,btn){
  btn.classList.toggle('on',!had);btn.querySelector('b').textContent=c.counts[r];
  try{const n=await serverCall('celebrationReact',getAccessToken(),c.id,r);if(n){CEL.cur=n}}catch(e){}
 }
-function celCheck(){serverCall('myCelebration',getAccessToken()).then(c=>{if(c&&c.id)celShow(c)}).catch(()=>{})}
+function celCheck(){if(tourAfter(celCheck))return;serverCall('myCelebration',getAccessToken()).then(c=>{if(c&&c.id)celShow(c)}).catch(()=>{})}
 
 let LAB_SAVE={busy:false,msg:''};
 

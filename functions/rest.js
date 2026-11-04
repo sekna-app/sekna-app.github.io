@@ -127,7 +127,7 @@ const ideaOut = i => ({ id: i.id, time: isoLocal(i.t), email: i.email, name: i.n
 /* ---------- celebrations (Plan History → Celebrate this month) ---------- */
 // The team gets a notification; the full-screen card shows once to each person (then it stays in Notifications).
 const CELEBRATE_REACTS = ['❤️', '🤲', '🔥'];
-const CELEBRATE_DAYS = 7;
+const CELEBRATE_DAYS = 3;  // the pop-up shows on opening only in the first 3 days; after that it is only in Notifications
 function celebrationOut(c, email) {
   const counts = {}, mine = [];
   CELEBRATE_REACTS.forEach(r => { const who = (c.react || {})[r] || []; counts[r] = who.length; if (who.indexOf(email) >= 0) mine.push(r); });
