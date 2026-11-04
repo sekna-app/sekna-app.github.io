@@ -6232,6 +6232,23 @@ window.addEventListener('load',function(){
     @media (min-width:1100px){.wly-page .sk-modal-head{padding-left:max(16px,calc((100% - 900px)/2 + 16px))!important;padding-right:max(16px,calc((100% - 900px)/2 + 16px))!important}}
     .dk-acco{display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px}.dk-acco:hover{background:#eef2ff}
     body.dark-mode .dk-accb>button b,body.dark-mode .dk-acco>button b{color:#e7ebf3}
+    /* v179 Top & Bottom 5: the total as one slim line */
+    @media (min-width:760px){
+      .rx-sum{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"t g r";align-items:center;column-gap:18px;padding:8px 12px 8px 16px!important;border-radius:14px!important}
+      .rx-sum .rx-sum-head{display:contents}
+      .rx-sum .rx-sum-head>div{grid-area:t}.rx-sum .rx-sum-head>div b{font-size:13.5px;margin-top:1px}.rx-sum .rx-sum-head small{font-size:9.5px}
+      .rx-sum .rx-sum-roas{grid-area:r;font-size:22px;display:flex;align-items:baseline;gap:5px}.rx-sum .rx-sum-roas small{display:inline}
+      .rx-sum .rx-sum-grid{grid-area:g;margin:0!important;border-radius:10px}
+      .rx-sum .rx-sum-grid>div{display:flex;align-items:baseline;justify-content:center;gap:7px;padding:7px 10px}
+      .rx-sum .rx-sum-grid b{font-size:14px}
+    }
+    /* v179 Seasons: the photo keeps its shape on wide screens (no heavy zoom), like on the phone */
+    @media (min-width:1100px){
+      #ssBody{max-width:600px;margin-left:auto;margin-right:auto}
+      .ss-hero.ss-art{container-type:inline-size}
+      .ss-art .ss-img{height:auto!important;aspect-ratio:760/447;background-size:100% auto!important;background-position:center top!important}
+      .ss-art .ss-ln{margin-bottom:calc(58.8cqw - 96px)!important}
+    }
 </style>
 </head>
 <body>
@@ -10192,7 +10209,8 @@ let RANK_DAY='';
 function renderRanks(d){
  const bw=d.bestWorst, body=document.getElementById('rxBody'), cats=document.getElementById('rxCats');
  if(!body)return;
- document.documentElement.style.setProperty('--rx-top',rankTopOffset()+'px');
+ const zm=parseFloat(getComputedStyle(document.getElementById('app')||document.body).zoom)||1;
+ document.documentElement.style.setProperty('--rx-top',(rankTopOffset()/zm-1)+'px');
  if(!bw){cats.innerHTML='';text('rxSub','Not linked yet');body.innerHTML='<div class="dx-empty">The Best &amp; Worst tab is not linked for this account yet.</div>';return}
  RANK_DAY=bw.day||'';
  text('rxSub',`${shortDate(bw.day)} · last closed day · ranked by ${bw.rankBy}`);
