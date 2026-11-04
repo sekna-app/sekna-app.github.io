@@ -6644,6 +6644,20 @@ window.addEventListener('load',function(){
       #dxBody .mt3 .mt-hero>div:first-child>b{font-size:32px!important;line-height:1.1}
       #dxBody .mt3 .mt-top{margin-bottom:2px!important}
     }
+    /* v179 Seasons desktop: rows that scroll up go behind a page-coloured band above the fixed filter bar */
+    @media (min-width:1100px){
+      .ssd-tools{box-shadow:0 -14px 0 0 var(--bg,#f4f6fb),0 6px 16px rgba(20,30,70,.05)!important}
+      .ssd-tools:before{content:"";position:absolute;left:-6px;right:-6px;bottom:100%;height:90px;background:var(--bg,#f4f6fb);pointer-events:none;z-index:-1}
+      body.dark-mode .ssd-tools:before{background:#0b0d11}
+    }
+    /* v179 vs last year page: tighter and narrower */
+    @media (min-width:1100px){
+      .wly-page .wly-body{max-width:720px!important}
+      @media (min-width:1100px){.wly-page .sk-modal-head{padding-left:max(16px,calc((100% - 720px)/2 + 16px))!important;padding-right:max(16px,calc((100% - 720px)/2 + 16px))!important}}
+      .wly-page .wly-bars{height:150px!important;gap:10px!important}
+      .wly-page .wly-list button{padding:7px 0!important}
+      .wly-page .lyv-h,.wly-page [class*="lyv"]{font-size:inherit}
+    }
 </style>
 </head>
 <body>
