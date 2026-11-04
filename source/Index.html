@@ -6022,6 +6022,23 @@ window.addEventListener('load',function(){
     @keyframes sksDot{0%{box-shadow:0 0 0 0 rgba(57,226,154,.7)}70%{box-shadow:0 0 0 9px rgba(57,226,154,0)}100%{box-shadow:0 0 0 0 rgba(57,226,154,0)}}
     .sks-sync{position:absolute;left:0;right:0;bottom:calc(56px + env(safe-area-inset-bottom));text-align:center;font-size:12px;font-weight:700;color:#9fb0e0;z-index:2;animation:sksIn .5s .4s both}
     .sks-sync.ok{color:#39e29a}
+    /* v176 splash "Aurora glass": soft colour drifts behind a frosted card; a light sweeps across the logo while three dots wait. */
+    .sks.sks-au{background:#070b22!important}
+    .sks.sks-au:before{display:none}
+    .sks-bl{position:absolute;width:80vmax;height:80vmax;border-radius:50%;filter:blur(90px);pointer-events:none}
+    .sks-bl.b1{background:#2d55ff;top:-35vmax;left:-30vmax;opacity:.62;animation:sksDr1 9s ease-in-out infinite alternate}
+    .sks-bl.b2{background:#e2b874;bottom:-40vmax;right:-38vmax;opacity:.5;animation:sksDr2 11s ease-in-out infinite alternate}
+    .sks-bl.b3{background:#7a3cff;width:55vmax;height:55vmax;top:30%;left:20%;opacity:.36;animation:sksDr1 13s ease-in-out infinite alternate-reverse}
+    @keyframes sksDr1{to{transform:translate(25%,20%) scale(1.15)}}@keyframes sksDr2{to{transform:translate(-30%,-25%) scale(.9)}}
+    .sks-nz{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:3px 3px;mix-blend-mode:overlay;pointer-events:none}
+    .sks-au .sks-brand{margin-top:0;z-index:2;padding:40px 44px 32px;border-radius:28px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);animation:sksUp .9s .3s both}
+    .sks-au .sks-bar,.sks-au .sks-lt{display:none}
+    .sks-au .sks-logo{overflow:hidden}
+    .sks-shine{position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.75) 50%,transparent 65%);transform:translateX(-120%);animation:sksShine 2.4s 1s ease-in-out infinite;-webkit-mask:url(get/logo-white.webp?v=17) center/100% no-repeat;mask:url(get/logo-white.webp?v=17) center/100% no-repeat;pointer-events:none}
+    @keyframes sksShine{0%{transform:translateX(-120%)}60%,100%{transform:translateX(120%)}}
+    .sks-dots{display:flex;gap:8px;margin-top:22px}.sks-dots i{width:7px;height:7px;border-radius:50%;background:#fff;opacity:.3;animation:sksDt 1.2s infinite}.sks-dots i:nth-child(2){animation-delay:.2s}.sks-dots i:nth-child(3){animation-delay:.4s}
+    @keyframes sksDt{40%{opacity:1;transform:translateY(-4px)}}
+    @media (max-width:520px){.sks-au .sks-brand{padding:32px 30px 26px}}
 </style>
 </head>
 <body>
@@ -6048,11 +6065,10 @@ window.addEventListener('load',function(){
    if(mo===11&&dd===tg)k='thanksgiving';else if((mo===11&&dd===tg+5)||(mo===12&&dd===tg+5-30))k='givingtuesday';else if(mo===12&&dd>=26)k='yearend'}
   sksSeason(k)}catch(e){}
  
- if(!s.classList.contains('sks-art'))try{s.classList.add('sks-lp');
-  var W=Math.max(320,innerWidth),cx=W/2,o=Math.min(186,118+(cx-118)*.42),beat=function(x){return ' L'+(x-14)+' 42 L'+(x-6)+' 20 L'+(x+2)+' 70 L'+(x+10)+' 6 L'+(x+18)+' 42'};
-  var d='M0 42'+(W>700?beat(cx-o-260)+beat(cx+o+230):'')+beat(cx-o)+beat(cx+o)+' L'+W+' 42';
-  s.insertAdjacentHTML('beforeend','<svg class="sks-ekg" viewBox="0 0 '+W+' 84" preserveAspectRatio="none" aria-hidden="true"><path class="d" d="'+d+'"/><path class="l" pathLength="100" d="'+d+'"/></svg><div class="sks-live"><i></i>LIVE</div><div class="sks-sync">Syncing Human Appeal USA…</div>');
-  var sy=s.querySelector('.sks-sync'),T=['Syncing Human Appeal USA…','Syncing AR…','Ready'];T.forEach(function(x,j){if(j)setTimeout(function(){sy.textContent=x;sy.classList.toggle('ok',j===2)},j*650)})}catch(e){}
+ if(!s.classList.contains('sks-art'))try{s.classList.add('sks-au');
+  s.insertAdjacentHTML('afterbegin','<i class="sks-bl b1"></i><i class="sks-bl b2"></i><i class="sks-bl b3"></i><i class="sks-nz"></i>');
+  var tg=s.querySelector('.sks-tag');if(tg)tg.insertAdjacentHTML('afterend','<div class="sks-dots"><i></i><i></i><i></i></div>');
+  var lg=s.querySelector('.sks-logo');if(lg)lg.insertAdjacentHTML('beforeend','<i class="sks-shine"></i>')}catch(e){}
  var g=s.querySelector('.sks-glint'),im=s.querySelector('.sks-logo img');
  if(g&&im){g.style.webkitMaskImage=g.style.maskImage='url('+im.src+')'}
  
