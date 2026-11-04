@@ -7307,10 +7307,14 @@ const BB_IC={overview:'<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>',days:
 // Pages without a picture of their own: the Share button is red and shakes when tapped.
 const BB_NOSHARE=['lab','plans','ranks','seasons'];
 // Lab: people who can edit the plan share the month's budget picture from here; for everyone else the button is red.
-function bbNoShare(){return BB_NOSHARE.includes(CURRENT_TAB)&&!(CURRENT_TAB==='lab'&&labEdit()&&canDo('share'))}
+// v179 inside Team Tasks the Share button shares the Builder's month picture; on Team, My Tasks, Quick and Leave it is red.
+function bbTasksOpen(){const o=document.getElementById('tasksOverlay');return !!(o&&o.classList.contains('open'))}
+function bbTkShareOk(){try{return TK.view==='build'&&tkCan('build')&&!TK.form&&canDo('share')}catch(e){return false}}
+function bbNoShare(){if(bbTasksOpen())return !bbTkShareOk();return BB_NOSHARE.includes(CURRENT_TAB)&&!(CURRENT_TAB==='lab'&&labEdit()&&canDo('share'))}
 function bbShare(btn){
+ if(bbTasksOpen()&&!bbNoShare()){tkShare(btn);return}
  if(CURRENT_TAB==='lab'&&!bbNoShare()){budShare(btn);return}
- if(bbNoShare()){btn.classList.remove('shake');void btn.offsetWidth;btn.classList.add('shake');setTimeout(()=>btn.classList.remove('shake'),500);try{if(navigator.vibrate)navigator.vibrate([30,40,30])}catch(e){}showShareToast('This page has no picture to share.');return}
+ if(bbNoShare()){btn.classList.remove('shake');void btn.offsetWidth;btn.classList.add('shake');setTimeout(()=>btn.classList.remove('shake'),500);try{if(navigator.vibrate)navigator.vibrate([30,40,30])}catch(e){}showShareToast(bbTasksOpen()?'Open the Builder to share the month.':'This page has no picture to share.');return}
  shareWhatsApp(CURRENT_TAB,btn);
 }
 // v178 a tab in the bottom bar always takes you to that page: any page opened from the menu
@@ -12935,7 +12939,7 @@ function openTasks(view){
  if(!TK.data||TK.data.month!==TK.month){try{const c=JSON.parse(storeGet('sekna_tasks_'+TK.month)||'null');if(c)TK.data=c}catch(e){}}
  tkRender();tkLoad();
 }
-function closeTasks(e){if(e&&e.target!==e.currentTarget)return;if(TK.form&&!e){tkSheetClose();return}TK.form=null;const o=document.getElementById('tasksOverlay');if(o)o.classList.remove('open')}
+function closeTasks(e){if(e&&e.target!==e.currentTarget)return;if(TK.form&&!e){tkSheetClose();return}TK.form=null;const o=document.getElementById('tasksOverlay');if(o)o.classList.remove('open');setTimeout(()=>{try{bbDraw()}catch(e){}},0)}
 async function tkLoad(){
  if(TK.view==='build'&&!tkCan('build')&&TK.data){tkRender();return}
  TK.busy=true;TK.err='';tkRender();
@@ -12947,8 +12951,8 @@ async function tkLoad(){
 }
 function tkMonth(n){TK.month=tkShift(TK.month,n);TK.data=null;try{const c=JSON.parse(storeGet('sekna_tasks_'+TK.month)||'null');if(c)TK.data=c}catch(e){}TK.week=TK.month===tkMonthNow()?tkWeekOf(tkToday().d):1;tkRender();tkLoad()}
 function tkSetWeek(w){TK.week=w;if(TK.today&&w!==tkWeekOf(tkToday().d))TK.today=false;tkRender()}
-// Gold WhatsApp button in the header: Builder only, for leaders, managers and the admin.
-function tkWaShow(on){const w=document.getElementById('tkWa');if(!w)return;if(on&&!w.firstChild){const ic=document.querySelector('.top-share-btn .wa-ic');w.innerHTML=ic?ic.outerHTML:WA_IC}w.hidden=!on}
+// v179 the gold WhatsApp button in the header is gone: the bottom bar's Share button shares the Builder now.
+function tkWaShow(){const w=document.getElementById('tkWa');if(w)w.hidden=true;setTimeout(()=>{try{bbDraw()}catch(e){}},0)}
 function tkRender(){
  if(TK.form)return tkForm(true);
  if(!tkViewOk(TK.view))TK.view=Object.keys(TK_VIEW_PERM).find(tkViewOk)||'team';
