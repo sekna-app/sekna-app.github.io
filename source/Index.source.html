@@ -6371,6 +6371,40 @@ window.addEventListener('load',function(){
     #phBody .phr-list{grid-template-columns:minmax(0,440px)!important;justify-content:start}
     #phBody .phr-list .phr{grid-column:auto!important;grid-row:auto!important;padding:9px 11px!important}
     @media (min-width:1100px){.ssd-tools{position:sticky;top:76px;z-index:5}}
+    /* v179 desktop: Channel Delivery as a ranked table */
+    #app #channelRows.cdt{display:block!important;grid-template-columns:none!important}
+    #channelRows.cdt .channel-icon{width:30px!important;height:30px!important}
+    .cdt-h,.cdt-r{display:grid;grid-template-columns:30px minmax(0,1.7fr) minmax(0,1.6fr) .7fr .6fr .9fr 84px;gap:14px;align-items:center}
+    .cdt-h{font-size:10px;font-weight:900;letter-spacing:.08em;color:#7b84a0;text-transform:uppercase;padding:0 14px 8px}.cdt-h span:nth-child(n+4){text-align:right}
+    .cdt-r{padding:12px 14px;border-radius:14px;border-left:4px solid var(--c);background:#f8f9fc;margin-bottom:8px;font-size:14px;font-weight:700;color:#1d2433}
+    .cdt-r>span{text-align:right}.cdt-r>u{text-decoration:none;font-weight:900;color:#7b84a0}
+    .cdt-r .n{display:flex;align-items:center;gap:10px;min-width:0}.cdt-r .n b{font-size:14.5px}.cdt-r .n .channel-icon{flex:none}
+    .cdt-r .n em{font-style:normal;font-size:10.5px;font-weight:900;background:#fbefd6;color:#a06d17;border-radius:99px;padding:3px 8px;white-space:nowrap}
+    .cdt-r .s{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center}.cdt-r .s b{font-size:14.5px}.cdt-r .s small{grid-column:1/-1;font-size:11px;color:#7b84a0}.cdt-r .s small.over{color:#c2382f}
+    .cdt-r .bar{height:6px;border-radius:9px;background:#e6e9f1;overflow:hidden}.cdt-r .bar i{display:block;height:100%;border-radius:9px;background:var(--c)}
+    .cdt-r .ro{font-size:19px;font-weight:900}.cdt-r .ro.up{color:#13804f}.cdt-r .ro.dn{color:#c2382f}
+    body.dark-mode .cdt-r{background:#151a22;color:#e7ebf3}
+    /* v179 desktop: Forecast plan across, the four sections as tabs */
+    @media (min-width:1100px){
+      html.dk-on #labForecast .fc:has(.fc-hero){grid-template-columns:minmax(0,1.9fr) minmax(0,1fr)!important;column-gap:0!important}
+      html.dk-on #labForecast .fc:has(.fc-hero)>.fc-hero{grid-column:1!important;grid-row:3!important;border-radius:18px 0 0 18px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);column-gap:18px;align-items:center;align-self:stretch}
+      html.dk-on #labForecast .fc-hero>small,html.dk-on #labForecast .fc-hero>.fc-big,html.dk-on #labForecast .fc-hero>.fc-hs{grid-column:1}
+      html.dk-on #labForecast .fc-hero>.fc-r3{grid-column:2;grid-row:1/span 3;margin:0!important}
+      html.dk-on #labForecast .fc:has(.fc-hero)>.fc-kv{grid-column:2!important;grid-row:3!important;margin:0!important;align-self:stretch;grid-template-columns:1fr 1fr!important;align-content:center;gap:8px;padding:16px 16px 16px 0;border-radius:0 18px 18px 0;background:linear-gradient(135deg,#3456c4,#3a5fd0)}
+      html.dk-on #labForecast .fc:has(.fc-hero)>.bd-nt{grid-column:1/-1!important;grid-row:4!important;margin-top:12px}
+      html.dk-on #labForecast .fc:has(.fc-hero)>.fc-folds{grid-column:1/-1!important;grid-row:5!important;display:flex!important;flex-direction:row!important;flex-wrap:wrap;gap:0 4px!important;margin-top:14px;border-bottom:1px solid #e7eaf2}
+      html.dk-on #labForecast .fc:has(.fc-hero)>.fc-rd{grid-column:1/-1!important;grid-row:6!important}
+      html.dk-on #labForecast .fc:has(.fc-hero)>.fc-foot{grid-column:1/-1!important;grid-row:7!important}
+      html.dk-on #labForecast .fc-folds>.fc-acc{width:auto!important;flex:none;margin:0!important;border:0!important;border-bottom:2.5px solid transparent!important;border-radius:0!important;background:none!important;box-shadow:none!important;padding:10px 14px!important;gap:6px}
+      html.dk-on #labForecast .fc-folds>.fc-acc i{width:auto!important;height:auto!important;background:none!important;font-size:15px}
+      html.dk-on #labForecast .fc-folds>.fc-acc small,html.dk-on #labForecast .fc-folds>.fc-acc em{display:none!important}
+      html.dk-on #labForecast .fc-folds>.fc-acc b{font-size:13.5px;color:#6b7390}
+      html.dk-on #labForecast .fc-folds>.fc-acc.open{border-bottom-color:#203c8e!important}html.dk-on #labForecast .fc-folds>.fc-acc.open b{color:#203c8e}
+      html.dk-on #labForecast .fc-folds>.fc-accb{order:10;flex-basis:100%;margin:0!important;padding:14px 2px 6px!important;border:0!important;background:none!important;box-shadow:none!important}
+      .fc-ph{display:flex;align-items:baseline;gap:12px;margin-bottom:10px}.fc-ph b{font-size:15px;color:#1d2433}.fc-ph small{font-size:12px;color:#7b84a0;font-weight:700}
+    }
+    .fc-ph{display:none}
+    @media (min-width:1100px){html.dk-on .fc-ph{display:flex}}
 </style>
 </head>
 <body>
@@ -8780,6 +8814,17 @@ function renderChannels(rows){
  const host=document.getElementById('channelRows');
  if(!host)return;
  const sorted=[...(rows||[])].sort((a,b)=>(Number(b.roas)||0)-(Number(a.roas)||0));
+ // v179 desktop: a ranked table, one row per type with straight columns
+ host.classList.toggle('cdt',mxWide());
+ if(mxWide()){
+  const C=['#7a45d6','#2a4fb8','#e08a2a','#1fa3c9','#d23a55'];
+  host.innerHTML=`<div class="cdt-h"><span>#</span><span>Type</span><span>Spend · of plan</span><span>Clicks</span><span>Conv.</span><span>Value</span><span>ROAS</span></div>`+sorted.map((r,i)=>{
+   const roas=Number(r.roas)||0,ach=Number(r.spendAchievement)||0,k=Math.min(Math.max(CHANNEL_ORDER.indexOf(isVideoChannel(r.channel)?'Video (YouTube)':r.channel),0),4);
+   return `<div class="cdt-r" style="--c:${C[k]}"><u>${i+1}</u><div class="n"><span class="channel-icon ${channelIconClass(r.channel)}">${channelIconSvg(r.channel)}</span><b>${esc(chName(r.channel))}</b>${i===0?'<em>👑 Best</em>':''}</div>
+    <div class="s"><b>${money(r.actualSpend)}</b><div class="bar"><i style="width:${Math.min(ach*100,100).toFixed(1)}%"></i></div><small class="${ach>1.15?'over':''}">${percent(ach)} of plan</small></div>
+    <span>${fmt(r.clicks,0)}</span><span>${fmt(r.conversions,0)}</span><span><b>${money(r.actualValue)}</b></span><span class="ro ${i===0||roas>=1?'up':'dn'}">${fmt(roas,2)}x</span></div>`}).join('');
+  return;
+ }
  host.innerHTML=sorted.map((r,i)=>{
   const roas=Number(r.roas)||0, win=i===0, ach=Number(r.spendAchievement)||0, k=Math.min(Math.max(CHANNEL_ORDER.indexOf(isVideoChannel(r.channel)?'Video (YouTube)':r.channel),0),4);
   return `<div class="ccd k${k}${win?' win':''}">
@@ -9366,7 +9411,7 @@ async function fcMonth(v){
   .catch(err=>{c.moving='';c.msg='⚠️ '+esc(errorText(err));fcDraw()});
 }
 function fcView(v){FC_VIEW=v;fcDraw()}
-function fcFold(k){FC_OPEN=FC_OPEN===k?'':k;fcDraw()}
+function fcFold(k){FC_OPEN=mxWide()?k:FC_OPEN===k?'':k;fcDraw()}
 const fcPct=v=>v==null?'—':Math.round(v*100)+'%';
 const fcK=v=>v==null?'—':cs()+fmt(cx(v)/1000,0)+'k';
 function fcDraw(){
@@ -9412,7 +9457,9 @@ function fcDraw(){
  const short=n=>n.replace(/^Search\s+/i,'').replace(/Performance Max/i,'PMax').replace(/Demand Gen/i,'DG').replace(/\s*\(.*\)/,'');
  const ahead=chList.filter(x=>ach(x.name).revAch>=1&&!(ach(x.name).spendAch>1.15)).map(x=>short(x.name)),behind=chList.filter(x=>ach(x.name).revAch!=null&&ach(x.name).revAch<.7).map(x=>short(x.name)),over=chList.filter(x=>ach(x.name).spendAch>1.15).map(x=>short(x.name));
  const chSum=[ahead.length?ahead.join(' & ')+' ahead':'',behind.length?behind.join(' & ')+' behind':'',over.length?over.join(' & ')+' overspent':''].filter(Boolean).join(' · ')||'Budget, spent and revenue';
- const fold=(k,ic,t,sum,body)=>`<button type="button" class="fc-acc${FC_OPEN===k?' open':''}" onclick="fcFold('${k}')"><i>${ic}</i><span><b>${t}</b><small>${sum}</small></span><em>${FC_OPEN===k?'⌄':'›'}</em></button>${FC_OPEN===k?`<div class="fc-accb">${body}</div>`:''}`;
+ // v179 on desktop the four sections are tabs under the plan, and one is always open (Weeks first)
+ if(mxWide()&&!['weeks','channels','source','settings'].includes(FC_OPEN))FC_OPEN='weeks';
+ const fold=(k,ic,t,sum,body)=>`<button type="button" class="fc-acc${FC_OPEN===k?' open':''}" onclick="fcFold('${k}')"><i>${ic}</i><span><b>${t}</b><small>${sum}</small></span><em>${FC_OPEN===k?'⌄':'›'}</em></button>${FC_OPEN===k?`<div class="fc-accb"><div class="fc-ph"><b>${ic} ${t}</b><small>${sum}</small></div>${body}</div>`:''}`;
  box.innerHTML=`<div class="lab-box fc">${head}
   <div class="fc-hero"><small>${esc(String(mon).toUpperCase())} PLAN</small><div class="fc-big">${money(p.spend)}</div><div class="fc-hs">budget → ${money(p.rev)} revenue</div>
    <div class="fc-r3"><div><b>${p.roas!=null?fmt(p.roas,2)+'x':'—'}</b><span>ROAS</span></div><div><b>${fmt(p.conv,0)}</b><span>Conv</span></div><div><b>${fmt(p.clicks,0)}</b><span>Clicks</span></div></div></div>
