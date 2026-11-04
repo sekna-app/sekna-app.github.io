@@ -6494,6 +6494,15 @@ window.addEventListener('load',function(){
       .wly-page .wly-list button{padding:7px 0!important}
       .wly-page .lyv-h,.wly-page [class*="lyv"]{font-size:inherit}
     }
+    /* v179 desktop polish: logo keeps its gold; type chips always icons; quick picks and Per day sit lower */
+    .dk-brand img{filter:none!important}
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl:not(:first-child)>span:last-child{display:none!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl:not(:first-child){padding:3px!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-pd{top:96px!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-presets{top:94px!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-card>.section-head{padding-top:6px}
+    }
 </style>
 </head>
 <body>
@@ -7804,7 +7813,9 @@ function dkTop(){
  if(!document.getElementById('dkSearch')){
   
   const w=document.createElement('div');w.className='dk-brand';w.id='dkSearch';w.setAttribute('data-share-ui','');
-  w.innerHTML=`<img src="${SEKNA_WHITE_SVG}" alt="HEMERA"><small>HEMERA</small>`;
+  
+  let nv=SEKNA_WHITE_SVG;try{nv='data:image/svg+xml;base64,'+btoa(atob(SEKNA_WHITE_SVG.split(',')[1]).replace(/fill="#fff(fff)?"/gi,'fill="#14286e"'))}catch(e){}
+  w.innerHTML=`<img src="${nv}" alt="HEMERA"><small>HEMERA</small>`;
   left.appendChild(w);
   const c=document.createElement('div');c.className='dk-acc';c.id='dkAcc';c.setAttribute('data-share-ui','');
   const acts=document.querySelector('.topbar .actions');(acts||left).insertBefore(c,acts?acts.firstChild:null);
