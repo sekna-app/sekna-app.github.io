@@ -6503,6 +6503,19 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-presets{top:94px!important}
       html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-card>.section-head{padding-top:6px}
     }
+    /* v179 Display (teal) and Smart (coral) */
+    .channel-icon.disp{background:#e6f6f3!important;color:#0f9d8a!important}
+    .channel-icon.smart{background:#fdece8!important;color:#e0533c!important}
+    body.dark-mode .channel-icon.disp{background:#0f2a27!important;color:#4fd6c3!important}
+    body.dark-mode .channel-icon.smart{background:#34160f!important;color:#ff8a72!important}
+    /* v179 Reports Studio desktop: Grow into a pill — on hover (or when picked) the icon stretches and its name slides out */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl:not(:first-child)>span:last-child{display:inline-block!important;max-width:0;opacity:0;overflow:hidden;white-space:nowrap;margin:0;transition:max-width .35s cubic-bezier(.2,.8,.2,1),opacity .25s,margin .35s}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl:not(:first-child){gap:0!important;transition:border-color .2s,box-shadow .2s}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl:not(:first-child):hover>span:last-child,html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl.on:not(:first-child)>span:last-child{max-width:110px;opacity:1;margin:0 7px 0 5px}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl:not(:first-child):hover{border-color:#9fb0e6;box-shadow:0 4px 12px rgba(32,60,142,.15)}
+      @media (prefers-reduced-motion:reduce){html.dk-on #monthsPanel .mx-tl>span:last-child{transition:none!important}}
+    }
 </style>
 </head>
 <body>
@@ -11059,6 +11072,8 @@ function channelIconClass(s){
  if(t.includes('Performance')||t==='PMax')return 'pmax';
  if(t.includes('Demand'))return 'dg';
  if(/video|youtube/i.test(t))return 'video';
+ if(/display/i.test(t))return 'disp';
+ if(/smart/i.test(t))return 'smart';
  return 'search';
 }
 
@@ -11067,6 +11082,9 @@ const HA_BLUE_MARK='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAA
 function channelIconSvg(s){
  const t=String(s);
  if(/brand/i.test(t)&&!/non/i.test(t))return `<img class="ha-mk" src="${HA_BLUE_MARK}" alt="">`;
+ 
+ if(/display/i.test(t))return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 15l5-4 4 3 3-2 6 4"/><circle cx="16.5" cy="9" r="1.6"/></svg>`;
+ if(/smart/i.test(t))return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M18.5 15.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></svg>`;
  if(t.includes('Performance')||t==='PMax'){
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
     <path d="M12 3l2.2 4.7 5.1.7-3.7 3.6.9 5.1-4.5-2.4-4.5 2.4.9-5.1-3.7-3.6 5.1-.7L12 3z"/>
