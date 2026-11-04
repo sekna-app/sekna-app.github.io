@@ -6367,6 +6367,10 @@ window.addEventListener('load',function(){
     .mw-fill,.mw-hot{animation-name:mwSeam2}
     .mw-bead,.mw-spk{left:42.52%;top:55.14%;animation-name:mwRide2}
     @media(prefers-reduced-motion:reduce){.mw-fill,.mw-hot{width:11.61%;animation:none}}
+    /* v179 Plan History reports list on the left; Seasons filter bar stays on screen */
+    #phBody .phr-list{grid-template-columns:minmax(0,440px)!important;justify-content:start}
+    #phBody .phr-list .phr{grid-column:auto!important;grid-row:auto!important;padding:9px 11px!important}
+    @media (min-width:1100px){.ssd-tools{position:sticky;top:76px;z-index:5}}
 </style>
 </head>
 <body>
@@ -8906,7 +8910,9 @@ function setDayView(v){
 // Opening a day only flips that card, so the list does not redraw or animate again.
 function toggleDay(date){
  DAY_OPEN=DAY_OPEN===date?'':date;
- document.querySelectorAll('#dxBody .dc-card[data-date]').forEach(c=>c.classList.toggle('open',c.dataset.date===DAY_OPEN));
+ // v179 on wide screens the cards in the same row open with it, so the row stays even
+ const cs=[...document.querySelectorAll('#dxBody .dc-card[data-date]')],me=cs.find(c=>c.dataset.date===DAY_OPEN),y=me&&matchMedia('(min-width:760px)').matches?me.offsetTop:null;
+ cs.forEach(c=>c.classList.toggle('open',!!me&&(c===me||y!=null&&Math.abs(c.offsetTop-y)<4)));
 }
 function achClass(v,isSpend){
  if(v==null||!isFinite(v))return '';
@@ -9411,7 +9417,7 @@ function fcDraw(){
   <div class="fc-hero"><small>${esc(String(mon).toUpperCase())} PLAN</small><div class="fc-big">${money(p.spend)}</div><div class="fc-hs">budget → ${money(p.rev)} revenue</div>
    <div class="fc-r3"><div><b>${p.roas!=null?fmt(p.roas,2)+'x':'—'}</b><span>ROAS</span></div><div><b>${fmt(p.conv,0)}</b><span>Conv</span></div><div><b>${fmt(p.clicks,0)}</b><span>Clicks</span></div></div></div>
   <div class="fc-kv"><div><b>${p.cpc!=null?cs()+fmt(cx(p.cpc),2):'—'}</b><span>CPC</span></div><div><b>${money(p.aov)}</b><span>Avg gift</span></div><div><b>${p.cvr!=null?fmt(p.cvr*100,1)+'%':'—'}</b><span>CVR</span></div><div><b>${fcPct(wt.acc)}</b><span>Spent</span></div></div>
-  ${ro?'':`<button type="button" class="bd-wa" onclick="budShare(this)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5a9.5 9.5 0 0 0-8.2 14.3L2.5 21.5l4.8-1.3A9.5 9.5 0 1 0 12 2.5z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"/><path d="M8.6 7.9c.3-.6.6-.6.9-.6h.6c.2 0 .4 0 .6.5l.8 1.9c.1.2.1.4 0 .6l-.6.8c-.1.2-.2.3 0 .6.5.9 1.6 2.1 3 2.7.3.1.4.1.6-.1l.8-1c.2-.2.4-.2.6-.1l1.8.9c.3.1.4.2.4.4 0 .5-.2 1.3-.9 1.7-.6.4-1.6.6-3.6-.3-2.4-1.1-4.2-3.6-4.6-4.4-.4-.8-.5-1.8 0-2.6z" fill="currentColor"/></svg>Share the month's budget</button><label class="bd-nt"><small>Note for the picture <em>(optional)</em></small><textarea rows="2" maxlength="160" placeholder="e.g. We raised PMax for the season." oninput="budNoteSet(this.value)">${esc(budNote())}</textarea></label>`}
+  ${ro?'':`<label class="bd-nt"><small>Note for the picture <em>(optional)</em></small><textarea rows="2" maxlength="160" placeholder="e.g. We raised PMax for the season." oninput="budNoteSet(this.value)">${esc(budNote())}</textarea></label>`}
   <div class="fc-folds">
   ${fold('weeks','📆','Weeks',`${onPlan} on plan${liveW?' · '+esc(wkInfo(liveW).nm.toLowerCase())+' at '+fcPct(liveW.acc)+' so far':''}`,(d.weeks||[]).map(wk).join('')||'<div class="dx-empty">No weeks yet.</div>')}
   ${fold('channels','📺','Channels',esc(chSum),chs||'<div class="dx-empty">No channels yet.</div>')}
