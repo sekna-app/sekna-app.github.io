@@ -6522,6 +6522,17 @@ window.addEventListener('load',function(){
     @keyframes dkLgShine{0%{background-position:150% 0}25%,100%{background-position:-50% 0}}
     .dk-brand img{height:26px!important}
     @media (prefers-reduced-motion:reduce){.dk-lg i{animation:none;display:none}}
+    /* v179 Reports Studio desktop: a picked type keeps its coloured icon on a white circle */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl.on .channel-icon.ch-ico{background:#fff!important;box-shadow:none!important;border:0!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl.on .channel-icon.search{color:#4d78de!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl.on .channel-icon.pmax{color:#7455d8!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl.on .channel-icon.dg{color:#2a9d78!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl.on .channel-icon.video{color:#d85f6b!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl.on .channel-icon.disp{color:#0f9d8a!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl.on .channel-icon.smart{color:#e0533c!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl.on .channel-icon svg{stroke:currentColor!important}
+    }
 </style>
 </head>
 <body>
