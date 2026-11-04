@@ -6579,6 +6579,13 @@ window.addEventListener('load',function(){
       .rx-sum .rx-sum-grid>div{display:flex;align-items:baseline;justify-content:center;gap:5px;padding:5px 6px!important}
       .rx-sum .rx-sum-grid small{font-size:8.5px!important}.rx-sum .rx-sum-grid b{font-size:13px!important}
     }
+    /* v179 Reports Studio desktop: no chart; the month picker sits where Per day was and Per day moves to the right end */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) #monthsPanel #mxChart{display:none!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-pick{order:3!important;margin:0!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-pd{order:5!important;margin:0 0 0 auto!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-ctl{flex-wrap:wrap}
+    }
 </style>
 </head>
 <body>
