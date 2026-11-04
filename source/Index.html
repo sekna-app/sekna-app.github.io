@@ -6057,6 +6057,8 @@ window.addEventListener('load',function(){
     @keyframes pyShine{0%{left:-60%}55%,100%{left:130%}}
     /* v178 the sign-in, its steps, the tour, upkeep and offline screens on the loading screen's blue, keeping the blue and gold corner lights */
     .sk-gate,.tour{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),radial-gradient(62% 42% at 12% 10%,rgba(52,99,230,.75) 0%,rgba(52,99,230,0) 72%),radial-gradient(55% 38% at 96% 82%,rgba(226,184,116,.30),rgba(226,184,116,0) 70%),radial-gradient(70% 34% at 50% 0%,rgba(28,76,175,.8),rgba(28,76,175,0) 75%),linear-gradient(180deg,#0b2a78 0%,#0a1d62 35%,#081650 62%,#060f38 100%)!important}
+    /* v178 daily card %: the share of the plan, with a small 'of plan' under it */
+    .kx-r small{display:block;font-size:.62em;font-weight:800;opacity:.75;letter-spacing:.02em;text-align:right;margin-top:1px}
 </style>
 </head>
 <body>
@@ -8023,12 +8025,13 @@ function renderMtdSparklines(m){
 
 function drawKpiPlans(d){
  const x=d.latest||{},dp=((d.dayPlan||[]).find(r=>r.date===x.date)||{}).plan||{},ly=d.yoy&&d.yoy.hasData?d.yoy.ctr:null;
- const set=(id,a,plan,cap,lowGood)=>{const c=document.getElementById(id+'Plan'),r=document.getElementById(id+'Pct');
+ const set=(id,a,plan,cap,lowGood,of)=>{const c=document.getElementById(id+'Plan'),r=document.getElementById(id+'Pct');
    const ok=a!=null&&isFinite(a)&&plan&&isFinite(plan);if(c)c.innerHTML=ok?cap:'';if(!r)return;
    if(!ok){r.textContent='';r.className='kx-r';return}
-   const ratio=a/plan,good=lowGood?ratio<=1:ratio>=1;r.textContent=`${ratio>=1?'▲':'▼'} ${Math.round(ratio*100)}%`;r.className='kx-r '+(good?'up':'dn')};
+   const ratio=a/plan,good=lowGood?ratio<=1:ratio>=1;
+   r.innerHTML=`${Math.round(ratio*100)}%<small> ${of||'of plan'}</small>`;r.className='kx-r '+(good?'up':'dn')};
  set('topClicks',x.clicks,x.planClicks,`Plan <b>${fmt(x.planClicks,0)}</b>`);
- set('topCTR',x.ctr,ly,`Last year <b>${percent(ly)}</b>`);
+ set('topCTR',x.ctr,ly,`Last year <b>${percent(ly)}</b>`,false,'of last year');
  set('topCPA',x.cpa,dp.cpa,`Plan <b>${money(dp.cpa,2)}</b>`,true);
  set('topCVR',x.cvr,dp.cvr,`Plan <b>${percent(dp.cvr)}</b>`);
 }
@@ -8073,7 +8076,7 @@ function renderMtd(d){
  const kA=sum(live,r=>r.actual.clicks),kP=sum(rows,r=>r.plan&&r.plan.clicks),kE=sum(live,r=>r.plan&&r.plan.clicks);
  const kRow=document.getElementById('mtdClicksRow');if(kRow)kRow.style.display=kP?'':'none';
  if(kP){const K=v=>v>=1e4?(v/1e3).toFixed(1)+'k':fmt(v,0);document.getElementById('mtdClicks').innerHTML=`Clicks <b>${K(kA)}</b> of ${K(kP)}`;
-   const e=document.getElementById('mtdClicksPct');e.textContent=`${kA>=kE?'▲':'▼'} ${Math.round(kA/kP*100)}%`;e.className=kA>=kE?'up':'dn'}
+   const e=document.getElementById('mtdClicksPct');e.textContent=`${Math.round(kA/kP*100)}%`;e.title=`${Math.round(kA/kP*100)}% of the month's clicks plan; ${Math.round(kE/kP*100)}% was planned by today`;e.className=kA>=kE?'up':'dn'}
  text('mtdDayBadge',day&&dim?`Day ${day} of ${dim}`:'');
  ['mtdSpendTick','mtdRevenueTick'].forEach(id=>{
    const t=document.getElementById(id);
