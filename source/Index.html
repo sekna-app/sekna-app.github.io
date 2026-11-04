@@ -6533,6 +6533,66 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl.on .channel-icon.smart{color:#e0533c!important}
       html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl.on .channel-icon svg{stroke:currentColor!important}
     }
+    /* v179 Reports Studio on phones and tablets: the desktop layout (strip on top, no chart, rows) */
+    @media (max-width:1099px){
+      html:not(.desktop-site-mode) #monthsPanel #mxChart{display:none!important}
+      html:not(.desktop-site-mode) #monthsPanel .mx-card{display:flex!important;flex-direction:column;overflow:hidden}
+      html:not(.desktop-site-mode) #monthsPanel .mx-top{display:contents!important}
+      html:not(.desktop-site-mode) #monthsPanel .mx-ctl{order:-1;display:flex!important;flex-wrap:wrap;align-items:center;gap:8px;margin:-18px -16px 12px;padding:10px 12px 8px;background:linear-gradient(180deg,#f3f4f7,#e9ebf0);border-bottom:1px solid #dde1ea}
+      html:not(.desktop-site-mode) #monthsPanel .mx-mode{order:1;margin:0!important;width:auto!important;flex:none}
+      html:not(.desktop-site-mode) #monthsPanel .mx-mode .wx-tab{padding:0 10px!important;font-size:11.5px!important;white-space:nowrap}
+      html:not(.desktop-site-mode) #monthsPanel .mx-types{order:2;flex:1 1 0;min-width:0;margin:0!important;position:relative}
+      html:not(.desktop-site-mode) #monthsPanel .mx-types>small{display:none}
+      html:not(.desktop-site-mode) #monthsPanel .mx-tls{display:flex!important;gap:4px!important;overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth;padding:2px;width:auto}
+      html:not(.desktop-site-mode) #monthsPanel .mx-tls::-webkit-scrollbar{display:none}
+      html:not(.desktop-site-mode) #monthsPanel .mx-tl{flex:none;flex-direction:row;gap:0!important;padding:3px!important;border:1px solid #e1e5ee;background:#fff;border-radius:99px;font-size:11px}
+      html:not(.desktop-site-mode) #monthsPanel .mx-tl .channel-icon.ch-ico,html:not(.desktop-site-mode) #monthsPanel .mx-tl .mx-all{width:22px!important;height:22px!important;border-radius:50%!important;border:0!important;font-size:8px}
+      html:not(.desktop-site-mode) #monthsPanel .mx-tl .channel-icon.ch-ico svg{width:12px;height:12px}
+      html:not(.desktop-site-mode) #monthsPanel .mx-tl>span:last-child{display:inline-block;max-width:0;opacity:0;overflow:hidden;white-space:nowrap;transition:max-width .35s cubic-bezier(.2,.8,.2,1),opacity .25s,margin .35s}
+      html:not(.desktop-site-mode) #monthsPanel .mx-tl:first-child>span:last-child,html:not(.desktop-site-mode) #monthsPanel .mx-tl.on>span:last-child{max-width:110px;opacity:1;margin:0 7px 0 5px}
+      html:not(.desktop-site-mode) #monthsPanel .mx-tl.on{background:#203c8e;border-color:#203c8e}
+      html:not(.desktop-site-mode) #monthsPanel .mx-tl.on span{color:#fff}
+      html:not(.desktop-site-mode) #monthsPanel .mx-tl.on .mx-all{background:#fff;color:#203c8e}
+      html:not(.desktop-site-mode) #monthsPanel .mx-tl.on .channel-icon.ch-ico{background:#fff!important;box-shadow:none!important}
+      html:not(.desktop-site-mode) #monthsPanel .mx-tl.on .channel-icon.search{color:#4d78de!important}html:not(.desktop-site-mode) #monthsPanel .mx-tl.on .channel-icon.pmax{color:#7455d8!important}html:not(.desktop-site-mode) #monthsPanel .mx-tl.on .channel-icon.dg{color:#2a9d78!important}html:not(.desktop-site-mode) #monthsPanel .mx-tl.on .channel-icon.video{color:#d85f6b!important}html:not(.desktop-site-mode) #monthsPanel .mx-tl.on .channel-icon.disp{color:#0f9d8a!important}html:not(.desktop-site-mode) #monthsPanel .mx-tl.on .channel-icon.smart{color:#e0533c!important}
+      /* the hint that there are more types: soft fades on the edges and dots under the row */
+      html:not(.desktop-site-mode) #monthsPanel .mx-types:before,html:not(.desktop-site-mode) #monthsPanel .mx-types:after{content:"";position:absolute;top:0;height:32px;width:26px;pointer-events:none;opacity:0;transition:opacity .2s;z-index:1}
+      html:not(.desktop-site-mode) #monthsPanel .mx-types:after{right:0;background:linear-gradient(90deg,rgba(236,238,243,0),#eceef3 80%)}
+      html:not(.desktop-site-mode) #monthsPanel .mx-types:before{left:0;background:linear-gradient(270deg,rgba(236,238,243,0),#eceef3 80%)}
+      html:not(.desktop-site-mode) #monthsPanel .mx-types.mx-more:after,html:not(.desktop-site-mode) #monthsPanel .mx-types.mx-less:before{opacity:1}
+      .mx-dots{display:flex;justify-content:center;gap:4px;height:6px;margin-top:4px}.mx-dots:empty{display:none}
+      .mx-dots i{width:5px;height:5px;border-radius:9px;background:#c3cad8;transition:width .25s,background .25s}.mx-dots i.on{width:14px;background:#203c8e}
+      html:not(.desktop-site-mode) #monthsPanel .mx-pick{order:3;flex:1 1 100%;margin:0!important;width:auto!important}
+      html:not(.desktop-site-mode) #monthsPanel .mx-pick.one .mx-period{padding:7px 8px 7px 10px;gap:8px;box-shadow:0 4px 12px rgba(61,107,255,.15)}
+      html:not(.desktop-site-mode) #monthsPanel .mx-presets{order:4;margin:0!important;display:flex;gap:5px}
+      html:not(.desktop-site-mode) #monthsPanel .mx-presets:empty{display:none}
+      html:not(.desktop-site-mode) #monthsPanel .mx-pd{order:5;margin:0 0 0 auto!important}
+      /* the report rows on a phone */
+      #monthsPanel .mxd-sm{grid-template-columns:repeat(3,minmax(0,1fr))}
+      #monthsPanel .mxd-sm>div:nth-child(3n){border-right:0}#monthsPanel .mxd-sm>div:nth-child(-n+3){border-bottom:1px solid #e7eaf2}
+      #monthsPanel .mxd-r,#monthsPanel .mxd-ty.c .mxd-r{grid-template-columns:26px minmax(0,1fr) auto;gap:8px 10px}
+      #monthsPanel .mxd-r>.v{display:none}
+      #monthsPanel .mxd-r>.v3{grid-column:2/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+      #monthsPanel .mxd-ty.c .mxd-r>.v3{grid-template-columns:repeat(4,minmax(0,1fr))}
+      #monthsPanel .mxd-r>.v3>div{background:#f5f7fb;border-radius:9px;padding:5px 8px}
+      #monthsPanel .mxd-r>.v3 small{display:block;font-size:9px;color:#7b84a0;font-weight:800}#monthsPanel .mxd-r>.v3 b{display:block;font-size:12px;font-weight:800;color:#1d2433}#monthsPanel .mxd-r>.v3 b.l{color:#9aa1b2;font-weight:700;font-size:11px}
+      #monthsPanel .mxd-board .t{padding:12px}#monthsPanel .mxd-board .t b{font-size:15px}#monthsPanel .mxd-board .t small{font-size:8.5px}#monthsPanel .mxd-board .s b{font-size:28px}#monthsPanel .mxd-board .s{padding:6px}
+      #monthsPanel .mxd-cr .h,#monthsPanel .mxd-cr .r{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr) auto;padding:8px 10px;font-size:12px}
+      #monthsPanel .mxd-cr .h span:last-child,#monthsPanel .mxd-cr .r span:last-child{display:none}
+      #monthsPanel .mxd-say{flex-direction:column;gap:2px;font-size:12px}
+    }
+    @media (min-width:1100px){#monthsPanel .mxd-r>.v3{display:none}.mx-dots{display:none}}
+    @media (max-width:1099px){
+      html:not(.desktop-site-mode) #monthsPanel .mx-mode{align-self:flex-start;margin-top:1px!important}
+      html:not(.desktop-site-mode) #monthsPanel .mx-presets .mx-preset{padding:5px 9px!important;font-size:10.5px!important;min-height:0!important}
+      html:not(.desktop-site-mode) #monthsPanel .mx-pd .mx-pd-t{font-size:10.5px!important}
+      html:not(.desktop-site-mode) #monthsPanel .mx-card:has(.mx-pick:not(.one)) .mx-pd .mx-pd-t{display:none}
+      html:not(.desktop-site-mode) #monthsPanel .mx-card:has(.mx-pick:not(.one)) .mx-pd:after{content:"Per day";font-size:10.5px;font-weight:700;color:#9aa2b3}
+      #monthsPanel .mxd-board{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important}
+      #monthsPanel .mxd-board .s{white-space:nowrap}#monthsPanel .mxd-board .s small{font-size:8px}
+      #monthsPanel .mxd-board .t small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+      #monthsPanel .mxd-cr .h{font-size:9px!important}
+    }
 </style>
 </head>
 <body>
@@ -7815,6 +7875,7 @@ function dkDraw(pick){
  r.innerHTML=`<img class="dk-ic" src="icons/icon-192.png?v=2" alt="HEMERA">`+groups.map(([k,l,ic])=>`<button type="button" class="dk-rb${k===DK.g?' on':''}${k===ag?' here':''}" onclick="dkPick('${k}')" aria-label="${l}">${dkSvg(ic)}<span class="dk-tt">${l}</span></button>`).join('')
   +`<i class="dk-sp"></i><button type="button" class="dk-rb" onclick="openNotifs()" aria-label="Notifications"><span class="dk-tt">Notifications</span>${dkSvg('<path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.3 20a1.9 1.9 0 0 0 3.4 0"/>')}${nf&&!nf.hidden?'<i class="dk-dot"></i>':''}</button>`
   +`<button type="button" class="dk-rb" onclick="openSettings()" aria-label="Settings"><span class="dk-tt">Settings</span>${dkSvg('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>')}</button>`
+  +`<button type="button" class="dk-rb" onclick="openAbout()" aria-label="About HEMERA"><span class="dk-tt">About HEMERA</span>${dkSvg('<circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 7.5v.1"/>')}</button>`
   +`<button type="button" class="dk-av" onclick="openSidebar()" aria-label="Your account and the full menu" title="Menu">${av?av.innerHTML:''}</button>`;
  r.insertAdjacentHTML('beforeend','<i class="dk-bar"></i>');dkGlide(r.querySelector('.dk-bar'),r.querySelector('.dk-rb.here'),'barY',10);
  const g=DK_GRP.find(x=>x[0]===DK.g)||DK_GRP[0],list=dkBtns(g[0]);
@@ -10132,7 +10193,7 @@ function renderMonthCompare(){
  text('mxTitle',one?'Report':'Month vs Month');
  const ex=MONTH_EXTRA[CURRENT_ACCOUNT]||{months:{},days:{}};
  text('mxSub',`${hist.length} months of history${mxTypeTag()}${extraState()==='ok'?'':extraState()==='fail'?' · daily data could not load':' · loading days, clicks & channels…'}`);
- const typesEl=document.getElementById('mxTypes');if(typesEl)typesEl.innerHTML=mxTypesHtml(ex);
+ const typesEl=document.getElementById('mxTypes');if(typesEl){typesEl.innerHTML=mxTypesHtml(ex);mxDots(typesEl)}
  const noTypeData=`<div class="dx-empty">No ${esc(mxTypesLabel())} numbers for this period. Campaign types come from the daily data${dailyStartText()}.</div>`;
  const pre=document.getElementById('mxPresets');
  const avg=MONTH_BASIS==='avg';
@@ -10149,7 +10210,7 @@ function renderMonthCompare(){
    const note=S.partial&&!avg?`<div class="mx-note">This includes a month that is still running (${S.days} days) — <b>Per day</b> gives a fair view.</div>`:'';
    if(chartEl)chartEl.innerHTML=monthChart(hist,ex,d,selMonths,[],avg);
    if(mxTypes()&&(S.none||!S.spend&&!S.value)){body.innerHTML=noTypeData;return}
-   body.innerHTML=note+(mxWide()?mxdBody(S,U,avg):reportBody(S,U,avg));
+   body.innerHTML=note+mxdBody(S,U,avg);
    return;
  }
  const ha=hist.find(h=>h.month===aKey), hb=hist.find(h=>h.month===bKey);
@@ -10171,7 +10232,7 @@ function renderMonthCompare(){
  const note=partial&&!avg?`<div class="mx-note">${esc(monthName(partial.key,true))} is still running (${partial.days} days) — switch to <b>Per day</b> for a fair comparison.</div>`:'';
  if(chartEl)chartEl.innerHTML=monthChart(hist,ex,d,[aKey],[bKey],avg);
  if(mxTypes()&&(A.none||B.none)){body.innerHTML=noTypeData;return}
- body.innerHTML=mxWide()?mxdScore(rows,A,B,avg,ha,hb)+note:scoreBody(rows,A,B,avg,ha,hb)+note;
+ body.innerHTML=mxdScore(rows,A,B,avg,ha,hb)+note;
 
 }
  
@@ -10239,6 +10300,21 @@ function compareTypes(A,B,avg,an,bn){
 }
 
 
+
+function mxDots(el){
+ const row=el.querySelector('.mx-tls');if(!row)return;
+ let d=el.querySelector('.mx-dots');if(!d){d=document.createElement('div');d.className='mx-dots';d.setAttribute('aria-hidden','true');el.appendChild(d)}
+ const upd=()=>{const n=Math.ceil(row.scrollWidth/Math.max(1,row.clientWidth));const more=row.scrollWidth-row.clientWidth>4;
+  el.classList.toggle('mx-more',more&&row.scrollLeft+row.clientWidth<row.scrollWidth-4);el.classList.toggle('mx-less',more&&row.scrollLeft>4);
+  if(!more||n<2){d.innerHTML='';return}
+  const i=Math.round(row.scrollLeft/Math.max(1,row.scrollWidth-row.clientWidth)*(n-1));
+  d.innerHTML=Array.from({length:n},(_,k)=>`<i class="${k===i?'on':''}"></i>`).join('')};
+ const on=row.querySelector('.mx-tl.on:not(:first-child)');if(on&&MX_DOTS_X==null)row.scrollLeft=Math.max(0,on.offsetLeft-row.clientWidth/2);
+ if(MX_DOTS_X!=null)row.scrollLeft=MX_DOTS_X;
+ row.addEventListener('scroll',()=>{MX_DOTS_X=row.scrollLeft;upd()},{passive:true});
+ requestAnimationFrame(upd);
+}
+let MX_DOTS_X=null;
 function mxWide(){return matchMedia('(min-width:1100px)').matches&&!document.documentElement.classList.contains('desktop-site-mode')}
 try{matchMedia('(min-width:1100px)').addEventListener('change',()=>{if(CURRENT_TAB==='months')renderMonthCompare()})}catch(e){}
 const MXD_C=['#203c8e','#3d6bff','#22c47c','#e2b874','#f0838f','#8a93ad'];
@@ -10259,7 +10335,8 @@ function mxdTypes(S,avg){
  const rows=list.filter(c=>c.roas!=null).sort((a,b)=>b.roas-a.roas).concat(list.filter(c=>c.roas==null));
  return hd+cov+`<div class="mxd-ty">${rows.map((c,i)=>`<div class="mxd-r"><u style="background:${MXD_C[c.k]||MXD_C[5]}">${i+1}</u><div class="n">${chIco(c.n)}<div><b>${esc(chName(c.n))}</b><small>${Math.round(c.spend/tot*100)}% of spend</small></div></div>
   <div class="v"><small>Spend</small><b>${money(c.spend)}</b></div><div class="v"><small>Conv.</small><b>${fmt(c.conversions,avg?1:0)}</b></div><div class="v"><small>Revenue</small><b>${money(c.value)}</b></div>
-  <em class="${c.roas!=null&&c.roas>=all?'up':'dn'}">${c.roas!=null?fmt(c.roas,2)+'x':'—'}</em></div>`).join('')}</div>`;
+  <em class="${c.roas!=null&&c.roas>=all?'up':'dn'}">${c.roas!=null?fmt(c.roas,2)+'x':'—'}</em>
+  <div class="v3"><div><small>Spend</small><b>${money(c.spend)}</b></div><div><small>Conv.</small><b>${fmt(c.conversions,avg?1:0)}</b></div><div><small>Revenue</small><b>${money(c.value)}</b></div></div></div>`).join('')}</div>`;
 }
 function mxdScore(rows,A,B,avg,ha,hb){
  const an=monthName(ha.month),bn=monthName(hb.month),{pa,pb,win,tie}=mxPoints(rows),f1=n=>esc(n.split(' ')[0]);
@@ -10285,7 +10362,7 @@ function mxdCmpTypes(A,B,avg,an,bn){
    const r2=v=>v==null?'—':fmt(v,2)+'x';
    return `<div class="mxd-r"><u style="background:${MXD_C[k]||MXD_C[5]}">${i+1}</u><div class="n">${chIco(n)}<div><b>${esc(chName(n))}</b><small>${w?`better in ${esc((w==='a'?an:bn).split(' ')[0])}`:'even'}</small></div></div>
     ${cell('Spend',a.spend,b.spend,'',v=>money(v))}${cell('Conv.',a.conversions,b.conversions,co,v=>fmt(v,avg?1:0))}${cell('Revenue',a.value,b.value,rv,v=>money(v))}${cell('ROAS',a.roas,b.roas,ro,r2)}
-    <em class="${w==='a'?'up':w==='b'?'dn':''}">${w==='a'?'▲':w==='b'?'▼':'='}</em></div>`}).join('')}</div>`;
+    <em class="${w==='a'?'up':w==='b'?'dn':''}">${w==='a'?'▲':w==='b'?'▼':'='}</em><div class="v3">${cell('Spend',a.spend,b.spend,'',v=>money(v))}${cell('Conv.',a.conversions,b.conversions,co,v=>fmt(v,avg?1:0))}${cell('Revenue',a.value,b.value,rv,v=>money(v))}${cell('ROAS',a.roas,b.roas,ro,r2)}</div></div>`}).join('')}</div>`;
 }
 function mxArrow(delta,cls){return `<span class="mx-arrow ${cls}">${delta==null?'—':(delta>=0?'▲ ':'▼ ')+percent(Math.abs(delta))}</span>`}
 
