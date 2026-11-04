@@ -6156,6 +6156,24 @@ window.addEventListener('load',function(){
     body.dark-mode #dkPanel .dk-it{color:#c3cad8}body.dark-mode #dkPanel .dk-it.on{background:#232a36;color:#fff;box-shadow:inset 3px 0 0 #9fb6ff}
     html.dk-on:not(.desktop-site-mode) body.dark-mode .topbar{background:rgba(21,26,34,.94)!important;border-bottom-color:#2a313c!important}
     body.dark-mode .dk-srch{background:#1e242f}body.dark-mode .dk-srch input{color:#e7ebf3}body.dark-mode .dk-accb{background:#1e242f;border-color:#2a313c;color:#e7ebf3}
+    /* v179 Glide motion for the desktop rail and panel */
+    #dkRail .dk-bar{position:absolute;left:0;top:0;width:4px;height:26px;border-radius:0 4px 4px 0;background:#e2b874;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+    .dk-rb.here:before{display:none}
+    .dk-rb{transition:color .2s,background .25s,transform .25s cubic-bezier(.2,.8,.2,1)}
+    .dk-rb:hover{transform:translateY(-2px)}
+    .dk-rb .dk-tt{position:absolute;left:58px;top:50%;white-space:nowrap;background:#0b2a78;color:#fff;font:800 12px Inter,system-ui,sans-serif;padding:7px 11px;border-radius:9px;box-shadow:0 10px 22px rgba(0,0,0,.25);pointer-events:none;opacity:0;transform:translate(-6px,-50%);transition:opacity .2s,transform .2s;z-index:5}
+    .dk-rb .dk-tt:before{content:"";position:absolute;left:-5px;top:50%;width:10px;height:10px;background:#0b2a78;transform:translateY(-50%) rotate(45deg)}
+    .dk-rb:hover .dk-tt,.dk-rb:focus-visible .dk-tt{opacity:1;transform:translate(0,-50%)}
+    .dk-list{position:relative}
+    .dk-list .dk-pill{position:absolute;left:0;right:0;top:0;border-radius:12px;background:#fff;box-shadow:inset 3px 0 0 #203c8e,0 6px 14px rgba(20,30,70,.1);transition:transform .45s cubic-bezier(.2,.8,.2,1),height .3s;z-index:0;pointer-events:none}
+    #dkPanel .dk-it{position:relative;z-index:1;transition:color .2s,transform .25s cubic-bezier(.2,.8,.2,1),background .2s}
+    #dkPanel .dk-it.on{background:none;box-shadow:none}
+    #dkPanel .dk-it:hover{transform:translateX(4px);background:none}
+    #dkPanel .dk-list.swap .dk-it{animation:dkIn .45s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*45ms)}
+    #dkPanel .dk-list.swap .dk-pill{animation:dkIn .45s cubic-bezier(.2,.8,.2,1) both}
+    @keyframes dkIn{from{opacity:0;transform:translateY(10px)}}
+    body.dark-mode .dk-list .dk-pill{background:#232a36;box-shadow:inset 3px 0 0 #9fb6ff}
+    @media (prefers-reduced-motion:reduce){#dkRail .dk-bar,.dk-list .dk-pill,.dk-rb,#dkPanel .dk-it{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
@@ -7436,16 +7454,25 @@ function dkDraw(pick){
  if(!pick&&ak!==DK.act){DK.g=ag;DK.act=ak}
  const groups=DK_GRP.filter(([k])=>dkBtns(k).length);if(!groups.some(x=>x[0]===DK.g))DK.g=(groups[0]||['mp'])[0];
  const nf=document.getElementById('nfBadge'),av=document.getElementById('profileAvatar');
- r.innerHTML=`<img class="dk-ic" src="icons/icon-192.png?v=2" alt="HEMERA">`+groups.map(([k,l,ic])=>`<button type="button" class="dk-rb${k===DK.g?' on':''}${k===ag?' here':''}" onclick="dkPick('${k}')" aria-label="${l}" title="${l}">${dkSvg(ic)}</button>`).join('')
-  +`<i class="dk-sp"></i><button type="button" class="dk-rb" onclick="openNotifs()" aria-label="Notifications" title="Notifications">${dkSvg('<path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.3 20a1.9 1.9 0 0 0 3.4 0"/>')}${nf&&!nf.hidden?'<i class="dk-dot"></i>':''}</button>`
-  +`<button type="button" class="dk-rb" onclick="openSettings()" aria-label="Settings" title="Settings">${dkSvg('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>')}</button>`
+ r.innerHTML=`<img class="dk-ic" src="icons/icon-192.png?v=2" alt="HEMERA">`+groups.map(([k,l,ic])=>`<button type="button" class="dk-rb${k===DK.g?' on':''}${k===ag?' here':''}" onclick="dkPick('${k}')" aria-label="${l}">${dkSvg(ic)}<span class="dk-tt">${l}</span></button>`).join('')
+  +`<i class="dk-sp"></i><button type="button" class="dk-rb" onclick="openNotifs()" aria-label="Notifications"><span class="dk-tt">Notifications</span>${dkSvg('<path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.3 20a1.9 1.9 0 0 0 3.4 0"/>')}${nf&&!nf.hidden?'<i class="dk-dot"></i>':''}</button>`
+  +`<button type="button" class="dk-rb" onclick="openSettings()" aria-label="Settings"><span class="dk-tt">Settings</span>${dkSvg('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>')}</button>`
   +`<button type="button" class="dk-av" onclick="openSidebar()" aria-label="Your account and the full menu" title="Menu">${av?av.innerHTML:''}</button>`;
+ r.insertAdjacentHTML('beforeend','<i class="dk-bar"></i>');dkGlide(r.querySelector('.dk-bar'),r.querySelector('.dk-rb.here'),'barY',10);
  const g=DK_GRP.find(x=>x[0]===DK.g)||DK_GRP[0],list=dkBtns(g[0]);
- p.innerHTML=`<h3>${esc(g[1])}</h3><small>${list.length} page${list.length===1?'':'s'}</small><nav class="dk-list"></nav>${dkTip()}`;
+ const swap=DK.lastG!==g[0];DK.lastG=g[0];
+ p.innerHTML=`<h3>${esc(g[1])}</h3><small>${list.length} page${list.length===1?'':'s'}</small><nav class="dk-list${swap&&DK.drawn?' swap':''}"><i class="dk-pill"></i></nav>${dkTip()}`;
  const nav=p.querySelector('.dk-list');
  list.forEach((b,i)=>{const c=b.cloneNode(true);c.removeAttribute('id');c.classList.remove('active');c.classList.add('dk-it');c.style.setProperty('--i',i);if(b===a)c.classList.add('on');
   c.addEventListener('click',()=>{if(dkTasksOpen()&&!/openTasks/.test(b.getAttribute('onclick')||''))try{closeTasks();closeTasks()}catch(e){}});nav.appendChild(c)});
- dkTop();
+ if(swap)DK.pillY=null;dkGlide(nav.querySelector('.dk-pill'),nav.querySelector('.dk-it.on'),'pillY',0,true);
+ DK.drawn=true;dkTop();
+}
+// v179 Glide: the marker starts where it was on the last draw and slides to the new place.
+function dkGlide(m,to,key,off,size){
+ if(!m)return;if(!to){m.style.display='none';DK[key]=null;return}
+ const y=to.offsetTop+off;m.style.transition='none';m.style.transform=`translateY(${DK[key]==null?y:DK[key]}px)`;if(size)m.style.height=to.offsetHeight+'px';
+ void m.offsetWidth;m.style.transition='';m.style.transform=`translateY(${y}px)`;DK[key]=y;
 }
 function dkTip(){
  try{const t=ssToday(),s=ssList().filter(x=>x.to>=t).sort((a,b)=>a.from<b.from?-1:1)[0];if(!s)return '';
