@@ -7303,11 +7303,18 @@ function bbShare(btn){
  if(bbNoShare()){btn.classList.remove('shake');void btn.offsetWidth;btn.classList.add('shake');setTimeout(()=>btn.classList.remove('shake'),500);try{if(navigator.vibrate)navigator.vibrate([30,40,30])}catch(e){}showShareToast('This page has no picture to share.');return}
  shareWhatsApp(CURRENT_TAB,btn);
 }
+// v178 a tab in the bottom bar always takes you to that page: any page opened from the menu
+// (Team Tasks, Settings, About, Notifications, Updates, Admin, Past years...) closes first.
+function bbCloseAll(){
+ const f=[()=>{closeTasks();closeTasks()},closeSettings,closeAbout,closeSoon,closeSidebar,closeAccountMenu,closeNotifs,closePeriodPicker,closeWhatsNew,closeAdmin,closePastYears,closeUpdates,closeIdeas,()=>{if(typeof stxClose==='function')stxClose()}];
+ f.forEach(x=>{try{x()}catch(e){}});
+}
+function bbGo(k){bbCloseAll();switchDashboardTab(k);window.scrollTo(0,0)}
 function bbDraw(){
  let b=document.getElementById('bottomBar');
  if(!b){b=document.createElement('nav');b.id='bottomBar';b.className='bbar';b.setAttribute('aria-label','Pages');b.setAttribute('data-share-ui','');document.body.appendChild(b)}
  const ic=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${BB_IC[k]}</svg>`;
- const tab=(k,l)=>canDo(k)?`<button type="button" class="${CURRENT_TAB===k?'on':''}" onclick="switchDashboardTab('${k}');window.scrollTo(0,0)" aria-label="${l}">${ic(k)}<small>${l}</small></button>`:'<span></span>';
+ const tab=(k,l)=>canDo(k)?`<button type="button" class="${CURRENT_TAB===k?'on':''}" onclick="bbGo('${k}')" aria-label="${l}">${ic(k)}<small>${l}</small></button>`:'<span></span>';
  b.innerHTML=tab('overview','Daily')+tab('days','Days')+`<button type="button" class="bb-fab${bbNoShare()?' no':''}" onclick="bbShare(this)" aria-label="Share this page on WhatsApp"><span>${ic('wa')}</span><small>Share</small></button>`+tab('channel','Month')+tab('lab','Lab');
 }
 function switchDashboardTab(tab){
