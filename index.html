@@ -6430,6 +6430,54 @@ window.addEventListener('load',function(){
     .mr3-in span{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #eef0f5;font-size:14px;font-weight:800;color:#1d2433}
     .mr3-in span:last-child{border:0}.mr3-in u{text-decoration:none;font:400 20px "DM Serif Display",Georgia,serif;color:#b0812e;width:28px}
     body.dark-mode .mr3-in span{color:#e7ebf3;border-color:#2a313c}body.dark-mode .mr3-in{border-color:#2a313c}
+    /* v179 Reports Studio on desktop: toolbar strip + compact numbers + type rows + scoreboard compare */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-card{display:flex!important;flex-direction:column;overflow:hidden}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-top{display:contents!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-ctl{order:-1;display:flex!important;align-items:center;gap:12px;flex-wrap:wrap;margin:-22px -24px 16px;padding:12px 20px;background:linear-gradient(180deg,#f3f4f7,#e9ebf0);border-bottom:1px solid #dde1ea}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-mode{order:1;margin:0!important;width:auto!important;flex:none}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-types{order:2;margin:0!important;width:auto}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-types>small{display:none}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-pd{order:3;margin:0!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-presets{order:6;margin:0!important;flex-basis:100%}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-presets:empty{display:none}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-pick{order:5;margin:0 0 0 auto!important;width:auto!important}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-mode .wx-tab{white-space:nowrap;padding-left:16px;padding-right:16px}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-pick:not(.one) .mx-sel{padding:6px 8px!important;min-width:0}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-pick.one .mx-period{width:auto;padding:7px 10px 7px 12px;gap:10px;box-shadow:0 4px 12px rgba(61,107,255,.15)}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tls{display:flex!important;gap:5px;width:auto}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl{flex-direction:row;gap:6px;padding:4px 11px 4px 4px;border:1px solid #e1e5ee;background:#fff;border-radius:99px;font-size:11.5px}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl .channel-icon.ch-ico,html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl .mx-all{width:22px;height:22px;border-radius:50%;border:0;font-size:8px}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl .channel-icon.ch-ico svg{width:12px;height:12px}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl.on{background:#203c8e;border-color:#203c8e}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl.on span{color:#fff}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel .mx-tl.on .mx-all{background:#fff;color:#203c8e}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel #mxChart{order:1;position:relative}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel #mxChart .mc-keys{position:absolute;right:0;top:-54px;margin:0}
+      html.dk-on:not(.desktop-site-mode) #monthsPanel #mxBody{order:2}
+    }
+    .mxd-sm{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));margin-top:12px;border:1px solid #e7eaf2;border-radius:14px;overflow:hidden;background:#fff}
+    .mxd-sm>div{padding:10px 12px;border-right:1px solid #e7eaf2;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px}.mxd-sm>div:last-child{border:0}
+    .mxd-sm small{width:100%;font-size:10.5px;font-weight:800;color:#7b84a0}.mxd-sm b{font-size:16px;font-weight:900;color:#1d2433}
+    .mxd-ty{display:grid}
+    .mxd-r{display:grid;grid-template-columns:28px minmax(0,1.5fr) repeat(3,minmax(0,1fr)) 70px;gap:14px;align-items:center;padding:11px 4px;border-top:1px solid #e7eaf2}
+    .mxd-ty.c .mxd-r{grid-template-columns:28px minmax(0,1.4fr) repeat(4,minmax(0,1fr)) 30px}
+    .mxd-r>u{text-decoration:none;width:26px;height:26px;border-radius:8px;color:#fff;display:grid;place-items:center;font-size:11.5px;font-weight:900}
+    .mxd-r .n{display:flex;align-items:center;gap:10px;min-width:0}.mxd-r .n b{display:block;font-size:14px;color:#1d2433}.mxd-r .n small{font-size:11px;color:#7b84a0;font-weight:700}
+    .mxd-r .v small{display:block;font-size:10px;color:#7b84a0;font-weight:800}.mxd-r .v b{display:block;font-size:14px;font-weight:800;color:#1d2433}
+    .mxd-r .v b.l{color:#9aa1b2;font-weight:700}.mxd-r .v b.w{color:#1d2433}
+    .mxd-ty.c .mxd-r .v b:nth-of-type(2){font-size:12.5px}
+    .mxd-r>em{font-style:normal;font-weight:900;font-size:16px;text-align:right}.mxd-r>em.up{color:#13804f}.mxd-r>em.dn{color:#c2382f}
+    .mxd-lg{display:flex;gap:14px;font-size:11px;font-weight:800;color:#4a5370;margin:-2px 0 6px}.mxd-lg i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;vertical-align:-1px}.mxd-lg i.a{background:#1d2433}.mxd-lg i.b{background:#9aa1b2}
+    .mxd-board{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;border-radius:18px;overflow:hidden;color:#fff;background:linear-gradient(90deg,#2a4fd0,#14286e 42%,#14286e 58%,#b3263d)}
+    .mxd-board .t{padding:16px 20px}.mxd-board .t.b{text-align:right}.mxd-board .t small{font-size:10px;font-weight:900;letter-spacing:.1em;color:#dfe6ff;text-transform:uppercase}.mxd-board .t b{display:block;font-size:22px;margin-top:2px}
+    .mxd-board .s{text-align:center;padding:10px 18px}.mxd-board .s b{font-size:38px;font-weight:900}.mxd-board .s b.w{color:#e8c36f}.mxd-board .s i{font-style:normal;margin:0 10px;color:#9fb0e6;font-size:26px}.mxd-board .s small{display:block;font-size:10px;font-weight:900;letter-spacing:.12em;color:#c7d3ff}
+    .mxd-say{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin:10px 2px 0;font-size:13px;font-weight:700;color:#4a5370}.mxd-say p{margin:0}.mxd-say b{color:#203c8e}.mxd-say span{font-size:11.5px;color:#8a93ad}
+    .mxd-cr{margin:12px 0 4px;border:1px solid #e7eaf2;border-radius:14px;overflow:hidden;background:#fff}
+    .mxd-cr .h,.mxd-cr .r{display:grid;grid-template-columns:1.3fr 1fr 1fr .9fr .7fr;gap:10px;padding:10px 14px;font-size:13.5px;font-weight:800;align-items:center}
+    .mxd-cr .h{background:#f3f5fa;font-size:10px;letter-spacing:.08em;color:#7b84a0;text-transform:uppercase}.mxd-cr .r{border-top:1px solid #e7eaf2;color:#1d2433}
+    .mxd-cr span:not(:first-child){text-align:right}.mxd-cr .r em{font-style:normal;color:#b0812e;font-size:11px}.mxd-cr .r .l{color:#9aa1b2}.mxd-cr .r .p{color:#203c8e;font-size:12.5px}
+    body.dark-mode .mxd-sm,body.dark-mode .mxd-cr{background:#151a22;border-color:#2a313c}body.dark-mode .mxd-sm b,body.dark-mode .mxd-r .n b,body.dark-mode .mxd-r .v b,body.dark-mode .mxd-cr .r{color:#e7ebf3}
 </style>
 </head>
 <body>
@@ -10024,7 +10072,7 @@ function renderMonthCompare(){
    const note=S.partial&&!avg?`<div class="mx-note">This includes a month that is still running (${S.days} days) — <b>Per day</b> gives a fair view.</div>`:'';
    if(chartEl)chartEl.innerHTML=monthChart(hist,ex,d,selMonths,[],avg);
    if(mxTypes()&&(S.none||!S.spend&&!S.value)){body.innerHTML=noTypeData;return}
-   body.innerHTML=note+reportBody(S,U,avg);
+   body.innerHTML=note+(mxWide()?mxdBody(S,U,avg):reportBody(S,U,avg));
    return;
  }
  const ha=hist.find(h=>h.month===aKey), hb=hist.find(h=>h.month===bKey);
@@ -10046,7 +10094,7 @@ function renderMonthCompare(){
  const note=partial&&!avg?`<div class="mx-note">${esc(monthName(partial.key,true))} is still running (${partial.days} days) — switch to <b>Per day</b> for a fair comparison.</div>`:'';
  if(chartEl)chartEl.innerHTML=monthChart(hist,ex,d,[aKey],[bKey],avg);
  if(mxTypes()&&(A.none||B.none)){body.innerHTML=noTypeData;return}
- body.innerHTML=scoreBody(rows,A,B,avg,ha,hb)+note;
+ body.innerHTML=mxWide()?mxdScore(rows,A,B,avg,ha,hb)+note:scoreBody(rows,A,B,avg,ha,hb)+note;
 
 }
  
@@ -10111,6 +10159,56 @@ function compareTypes(A,B,avg,an,bn){
     <div class="sbx-det"><div class="sbx-dr hd"><span></span><b>${esc(an)}</b><b class="mut">${esc(bn)}</b><span></span></div>${det}</div>
     <div class="sbx-more"><span class="o">Details</span><span class="c">Hide details</span> ▾</div></div>`;
  }).join('');
+}
+
+
+function mxWide(){return matchMedia('(min-width:1100px)').matches&&!document.documentElement.classList.contains('desktop-site-mode')}
+try{matchMedia('(min-width:1100px)').addEventListener('change',()=>{if(CURRENT_TAB==='months')renderMonthCompare()})}catch(e){}
+const MXD_C=['#203c8e','#3d6bff','#22c47c','#e2b874','#f0838f','#8a93ad'];
+function mxdBody(S,U,avg){
+ const rows=reportRows(S,U,avg),keys=['spend','conversions','value','roas'];
+ const head=keys.map(k=>rows.find(r=>r.m.k===k)).filter(Boolean),rest=rows.filter(r=>!keys.includes(r.m.k));
+ const usual=r=>r.u!=null?`usual ${r.m.f(r.u,avg)}`:'no earlier data';
+ const top=`<div class="mr3-grid">${head.map(r=>`<div class="mr3 ${r.m.k}"><small>${esc(r.m.l)}</small><b>${r.m.f(r.v,avg)}</b><div class="mr3-f"><span class="mr3-chip ${r.cls}">${r.delta==null?'—':(r.delta>=0?'▲ ':'▼ ')+percent(Math.abs(r.delta))}</span><i>${usual(r)}</i></div></div>`).join('')}</div>`;
+ const sm=rest.length?`<div class="mxd-sm">${rest.map(r=>`<div><small>${esc(r.m.l)}</small><b>${r.m.f(r.v,avg)}</b>${mxArrow(r.delta,r.cls)}</div>`).join('')}</div>`:'';
+ return top+sm+(extraState()==='ok'?'':extraWaitHtml('clicks, CTR, CPC and CVR'))+mxdTypes(S,avg)+'<div class="mx-foot">▲▼ vs the usual level: the 12 months before, scaled to the same number of days · <i class="good"></i> better <i class="bad"></i> worse</div>';
+}
+function mxdTypes(S,avg){
+ const list=channelList(S,avg),hd=`<div class="mx-sub rl-sub">By campaign type<span>ranked by ROAS</span></div>`;
+ if(!list.length&&extraState()!=='ok')return hd+extraWaitHtml('the campaign types');
+ if(!list.length)return S.channels===null?hd+`<div class="dx-empty">The campaign types need daily data${dailyStartText()}.</div>`:'';
+ const tot=list.reduce((a,c)=>a+c.spend,0)||1,all=list.reduce((a,c)=>a+c.value,0)/tot;
+ const cov=S.coverage&&S.coverage.covered<S.coverage.total?`<div class="mx-note">Based on ${S.coverage.covered} of ${S.coverage.total} months — daily data${dailyStartText()}.</div>`:'';
+ const rows=list.filter(c=>c.roas!=null).sort((a,b)=>b.roas-a.roas).concat(list.filter(c=>c.roas==null));
+ return hd+cov+`<div class="mxd-ty">${rows.map((c,i)=>`<div class="mxd-r"><u style="background:${MXD_C[c.k]||MXD_C[5]}">${i+1}</u><div class="n">${chIco(c.n)}<div><b>${esc(chName(c.n))}</b><small>${Math.round(c.spend/tot*100)}% of spend</small></div></div>
+  <div class="v"><small>Spend</small><b>${money(c.spend)}</b></div><div class="v"><small>Conv.</small><b>${fmt(c.conversions,avg?1:0)}</b></div><div class="v"><small>Revenue</small><b>${money(c.value)}</b></div>
+  <em class="${c.roas!=null&&c.roas>=all?'up':'dn'}">${c.roas!=null?fmt(c.roas,2)+'x':'—'}</em></div>`).join('')}</div>`;
+}
+function mxdScore(rows,A,B,avg,ha,hb){
+ const an=monthName(ha.month),bn=monthName(hb.month),{pa,pb,win,tie}=mxPoints(rows),f1=n=>esc(n.split(' ')[0]);
+ const say=!win?'Even on points':`<b>${esc(win==='a'?an:bn)}</b> ${tie?'wins on revenue (even on points)':'is the better month'}`;
+ const side=(h,n,me)=>`<div class="t ${me}${win===me?' win':''}"><small>${esc(h.hijri)}${h.partial?' · so far':''}${win===me?' · 👑 WINNER':''}</small><b>${esc(n)}</b></div>`;
+ const board=`<div class="mxd-board">${side(ha,an,'a')}<div class="s"><b class="${win==='a'?'w':''}">${pa}</b><i>–</i><b class="${win==='b'?'w':''}">${pb}</b><small>OF ${pa+pb} POINTS${avg?' · PER DAY':''}</small></div>${side(hb,bn,'b')}</div>
+  <div class="mxd-say"><p>${say}</p><span>Revenue and ROAS = 3 points · Conversions = 2 · the rest = 1</span></div>`;
+ const tbl=`<div class="mxd-cr"><div class="h"><span>Metric</span><span>${esc(an)}</span><span>${esc(bn)}</span><span>Change</span><span>Point</span></div>${rows.map(r=>{
+   const c=r.m.better==='none'||r.delta==null||Math.abs(r.delta)<.005?'neutral':(r.m.better==='high'?r.delta>0:r.delta<0)?'good':'bad';
+   return `<div class="r"><span>${esc(r.m.l)}${mxPts(r.m.k)>1?` <em>×${mxPts(r.m.k)}</em>`:''}</span><span class="${r.w==='a'?'w':r.w?'l':''}">${r.m.f(r.a,avg)}${r.w==='a'?' ✓':''}</span><span class="${r.w==='b'?'w':r.w?'l':''}">${r.m.f(r.b,avg)}${r.w==='b'?' ✓':''}</span><span>${mxArrow(r.delta,c)}</span><span class="p">${r.w?`${f1(r.w==='a'?an:bn)} +${mxPts(r.m.k)}`:'—'}</span></div>`}).join('')}</div>`;
+ return board+tbl+(extraState()==='ok'?'':extraWaitHtml('clicks, CTR, CPC and CVR'))+mxdCmpTypes(A,B,avg,an,bn);
+}
+function mxdCmpTypes(A,B,avg,an,bn){
+ const head=`<div class="mx-sub rl-sub">By campaign type<span>${esc(an)} · ${esc(bn)}</span></div>`;
+ if((!A.channels||!B.channels)&&extraState()!=='ok')return head+extraWaitHtml('the campaign types');
+ if(!A.channels||!B.channels)return head+`<div class="dx-empty">The campaign types need daily data${dailyStartText()}.</div>`;
+ const la=channelList(A,avg),lb=channelList(B,avg),names=[...new Set(la.map(x=>x.n).concat(lb.map(x=>x.n)))];
+ const zero={spend:0,value:0,conversions:0,roas:null},cmp=(a,b,hi)=>a==null||b==null||!b&&!a||b&&Math.abs(a/b-1)<.005?'':(hi?a>b:a<b)?'a':'b';
+ const cell=(l,x,y,w,f)=>`<div class="v"><small>${l}</small><b class="${w==='a'?'w':w?'l':''}">${f(x)}</b><b class="${w==='b'?'w':w?'l':''}">${f(y)}</b></div>`;
+ return head+`<div class="mxd-ty c"><div class="mxd-lg"><span><i class="a"></i>${esc(an)}</span><span><i class="b"></i>${esc(bn)}</span></div>${names.map((n,i)=>{
+   const a=la.find(x=>x.n===n)||zero,b=lb.find(x=>x.n===n)||zero,k=(la.find(x=>x.n===n)||lb.find(x=>x.n===n)).k;
+   const rv=cmp(a.value,b.value,true),ro=cmp(a.roas,b.roas,true),co=cmp(a.conversions,b.conversions,true),p=w=>(rv===w?3:0)+(ro===w?3:0)+(co===w?2:0),w=p('a')===p('b')?'':p('a')>p('b')?'a':'b';
+   const r2=v=>v==null?'—':fmt(v,2)+'x';
+   return `<div class="mxd-r"><u style="background:${MXD_C[k]||MXD_C[5]}">${i+1}</u><div class="n">${chIco(n)}<div><b>${esc(chName(n))}</b><small>${w?`better in ${esc((w==='a'?an:bn).split(' ')[0])}`:'even'}</small></div></div>
+    ${cell('Spend',a.spend,b.spend,'',v=>money(v))}${cell('Conv.',a.conversions,b.conversions,co,v=>fmt(v,avg?1:0))}${cell('Revenue',a.value,b.value,rv,v=>money(v))}${cell('ROAS',a.roas,b.roas,ro,r2)}
+    <em class="${w==='a'?'up':w==='b'?'dn':''}">${w==='a'?'▲':w==='b'?'▼':'='}</em></div>`}).join('')}</div>`;
 }
 function mxArrow(delta,cls){return `<span class="mx-arrow ${cls}">${delta==null?'—':(delta>=0?'▲ ':'▼ ')+percent(Math.abs(delta))}</span>`}
 
