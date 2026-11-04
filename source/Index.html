@@ -3701,7 +3701,6 @@ window.addEventListener('load',function(){
       #pastYearsOverlay .sk-modal-head{padding-left:max(16px,calc((100% - 1240px)/2 + 16px))!important;padding-right:max(16px,calc((100% - 1240px)/2 + 16px))!important}
       #pastYearsOverlay .py-body{max-width:1240px!important;margin:0 auto;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:22px;align-items:start}
       #pastYearsOverlay .py-side{position:sticky;top:90px}
-      #pastYearsOverlay .py-sum{display:grid}
       #app .mx-split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px;align-items:start}#app .mx-split>div>.mx-sub:first-child{margin-top:12px}
     }
     @media (min-width:1500px){
@@ -6209,7 +6208,7 @@ window.addEventListener('load',function(){
     .mr3-side .mr3-d{margin:0;color:#6b7385;font-size:14px;font-weight:600;line-height:1.5;max-width:44ch}
     .mr3-side .mr3-st{margin:0;color:#8a93ad;font-size:12px;font-weight:700}
     .mr3-side .mr3-go{width:100%;max-width:420px}
-    @media (min-width:1100px){#mrSection .mr3-side{align-items:flex-start;text-align:left}#mrSection .mr3-side h4{font-size:40px}#mrSection .mr3-side .mr3-go{max-width:360px}}
+    @media (min-width:1100px){#mrSection .mr3-side{align-items:flex-start;text-align:left}#mrSection .mr3-side h4{font-size:34px}#mrSection .mr3-side .mr3-go{max-width:360px}}
     body.dark-mode .mr3-side h4{color:#e7ebf3}
     /* desktop share button: the phone's round one, blue when the page has a picture, red when not */
     #dkShare{display:none;align-items:center;gap:8px;border:0;background:none;cursor:pointer;padding:0;font:inherit}
@@ -6249,6 +6248,24 @@ window.addEventListener('load',function(){
       .ss-art .ss-img{height:auto!important;aspect-ratio:760/447;background-size:100% auto!important;background-position:center top!important}
       .ss-art .ss-ln{margin-bottom:calc(58.8cqw - 96px)!important}
     }
+    /* v179 desktop polish 2 */
+    @media (min-width:1100px){
+      #app .lyv2-row{align-self:stretch!important;gap:12px}
+      #app .lyv2-row div{display:flex;flex-direction:column;justify-content:center;padding:20px 22px;border-radius:16px}
+      #app .lyv2-row small{font-size:12px!important}
+      #app .lyv2-row b{font-size:30px;margin-top:6px}
+      #channelPanel>.mtd-exec .ox-hero{margin:0!important;align-self:stretch!important;height:auto!important;gap:10px}
+      #channelPanel>.mtd-exec .ox-hero .ox-score{font-size:54px!important}
+      #channelPanel>.mtd-exec .ox-hero .ox-legs b{font-size:21px!important}
+      #channelPanel>.mtd-exec .ox-tiles{align-self:start}
+      #mrSection .mr3c{grid-template-columns:auto minmax(0,1.2fr) minmax(0,1fr)!important;gap:40px!important}
+      #mrSection .mr3-in{display:flex}
+    }
+    .mr3-in{display:none;flex-direction:column;gap:2px;border-left:1px solid #e7eaf2;padding-left:32px}
+    .mr3-in small{font-size:10.5px;font-weight:900;letter-spacing:.16em;color:#8a93ad;margin-bottom:8px}
+    .mr3-in span{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #eef0f5;font-size:14px;font-weight:800;color:#1d2433}
+    .mr3-in span:last-child{border:0}.mr3-in u{text-decoration:none;font:400 20px "DM Serif Display",Georgia,serif;color:#b0812e;width:28px}
+    body.dark-mode .mr3-in span{color:#e7ebf3;border-color:#2a313c}body.dark-mode .mr3-in{border-color:#2a313c}
 </style>
 </head>
 <body>
@@ -7563,7 +7580,7 @@ function dkTop(){
   const c=document.createElement('div');c.className='dk-acc';c.id='dkAcc';c.setAttribute('data-share-ui','');
   const acts=document.querySelector('.topbar .actions');(acts||left).insertBefore(c,acts?acts.firstChild:null);
   if(acts){const f=document.createElement('button');f.type='button';f.id='dkShare';f.className='bb-fab dk-fab';f.setAttribute('data-share-ui','');f.setAttribute('aria-label','Share this page on WhatsApp');f.onclick=()=>bbShare(f);
-   f.innerHTML=`<small>Share</small><span>${dkSvg('<path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z"/>')}</span>`;acts.appendChild(f)}
+   f.innerHTML=`<span>${dkSvg('<path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z"/>')}</span>`;acts.appendChild(f)}
   document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'&&document.documentElement.classList.contains('dk-on')){e.preventDefault();const i=document.getElementById('dkSearch');if(i){i.focus();i.select()}}});
   document.addEventListener('pointerdown',e=>{if(!e.target.closest('.dk-srch')){const x=document.getElementById('dkRes');if(x)x.hidden=true}if(!e.target.closest('.dk-acc'))document.getElementById('dkAcc')?.classList.remove('open')});
  }
@@ -14539,7 +14556,8 @@ function drawMonthlyReport(){
  body.innerHTML=`<div class="mr3c"><div class="mr3-book"><small>${esc(String(acc.label||'').toUpperCase())}</small><b>${esc(label)}<br>report</b><img src="${SEKNA_WHITE_LOGO}" alt="HEMERA"><i></i><u></u></div>
    <div class="mr3-side"><small class="mr3-k">MONTHLY REPORT · ${esc(String(label).toUpperCase())}</small><h4>The month, in pages.</h4><p class="mr3-d">Results, the plan and every campaign type, ready to send to the team.</p>
    <button type="button" class="mr3-go" onclick="mrBuild()" ${MR.busy?'disabled':''}>${MR.pages?'Rebuild PDF':'Build PDF'}</button>
-   ${running?`<p class="mr3-st">Day ${live} of ${days.length} · month in progress</p>`:`<p class="mr3-st">The month is complete · ${days.length} days.</p>`}</div></div>
+   ${running?`<p class="mr3-st">Day ${live} of ${days.length} · month in progress</p>`:`<p class="mr3-st">The month is complete · ${days.length} days.</p>`}</div>
+   <div class="mr3-in"><small>INSIDE THE REPORT</small>${['Results vs the plan','Week by week','Every campaign type','Last year, same days','Your notes for the team'].map((t,i)=>`<span><u>${String(i+1).padStart(2,'0')}</u>${t}</span>`).join('')}</div></div>
   <details class="mr-notes"${MR.notes?' open':''}><summary>Notes for the team (optional)</summary><textarea id="mrNotes" class="mrp-notes" rows="3" placeholder="e.g. Gaza Emergency appeal launched on the 9th" oninput="MR.notes=this.value">${esc(MR.notes)}</textarea></details>
   ${MR.busy?`<div class="mrp-busy"><span class="lab-spin dark"></span>${esc(MR.busy)}</div>`:''}
   ${MR.msg?`<div class="mrp-msg">${MR.msg}</div>`:''}
