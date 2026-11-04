@@ -6174,6 +6174,64 @@ window.addEventListener('load',function(){
     @keyframes dkIn{from{opacity:0;transform:translateY(10px)}}
     body.dark-mode .dk-list .dk-pill{background:#232a36;box-shadow:inset 3px 0 0 #9fb6ff}
     @media (prefers-reduced-motion:reduce){#dkRail .dk-bar,.dk-list .dk-pill,.dk-rb,#dkPanel .dk-it{transition:none!important;animation:none!important}}
+    /* v179 desktop fixes: top bar account and share, cards, Monthly Progress layout */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body .topbar .tb-refresh,html.dk-on:not(.desktop-site-mode) body .topbar .top-share-btn{display:none!important}
+      html.dk-on:not(.desktop-site-mode) body .topbar .actions{display:flex!important;align-items:center;gap:14px}
+      html.dk-on:not(.desktop-site-mode) body .topbar #dkShare{display:flex}
+      /* Same Hijri day reads like the phone: one column in the middle */
+      #pastYearsOverlay .py-body{display:block!important;max-width:620px!important}
+      #pastYearsOverlay .py-side{position:static!important}
+      #pastYearsOverlay .sk-modal-head{padding-left:max(16px,calc((100% - 620px)/2 + 16px))!important;padding-right:max(16px,calc((100% - 620px)/2 + 16px))!important}
+      .wly-page .wly-body{max-width:900px;margin:0 auto}
+      /* Results: the three tiles centred with bigger numbers */
+      html body #app .mt3 .mt-grid{gap:12px}
+      html body #app .mt3 .mt-t{align-items:center!important;justify-content:center!important;text-align:center!important;padding:16px 14px!important;display:flex!important;flex-direction:column;gap:6px}
+      html body #app .mt3 .mt-t,html body #app .mt3 .mt-t *{text-align:center!important}
+      html body #app .mt3 .mt-t b{font-size:28px!important;line-height:1.1}
+      html body #app .mt3 .mt-t small{font-size:12px!important}
+      /* Monthly: the plan achievement card fills its height evenly */
+      #channelPanel>.mtd-exec .ox-hero{display:flex!important;flex-direction:column;justify-content:center;gap:14px;position:relative}
+      #channelPanel>.mtd-exec .ox-hero .ox-day{position:absolute;top:16px;right:20px}
+      #channelPanel>.mtd-exec .ox-hero .ox-score{font-size:64px!important;line-height:1}
+      #channelPanel>.mtd-exec .ox-hero .ox-legs b{font-size:24px!important}
+      /* Weekly and Budget side by side, the same height; the report runs across under them */
+      #channelPanel>.weekly-performance{grid-column:1!important;grid-row:3!important;align-self:stretch!important}
+      #channelPanel>.vc-sec{grid-column:2!important;grid-row:3!important;align-self:stretch!important;margin:0!important;display:flex;flex-direction:column}
+      #channelPanel>.vc-sec>.ox-strip{flex:1;display:flex;flex-direction:column;justify-content:space-between}
+      #channelPanel>#mrSection{grid-column:1/-1!important;grid-row:4!important;align-self:start}
+      #mrSection .mr3c{display:grid!important;grid-template-columns:auto minmax(0,1fr);gap:36px;align-items:center;text-align:left;padding:8px 24px 8px 12px}
+      #mrSection .mr3-book{margin:0!important}
+    }
+    .mr3-side{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;width:100%}
+    .mr3-side .mr3-k{font-size:11px;font-weight:900;letter-spacing:.16em;color:#b0812e}
+    .mr3-side h4{margin:0;font:400 30px/1.1 "DM Serif Display",Georgia,serif;color:#141b33}
+    .mr3-side .mr3-d{margin:0;color:#6b7385;font-size:14px;font-weight:600;line-height:1.5;max-width:44ch}
+    .mr3-side .mr3-st{margin:0;color:#8a93ad;font-size:12px;font-weight:700}
+    .mr3-side .mr3-go{width:100%;max-width:420px}
+    @media (min-width:1100px){#mrSection .mr3-side{align-items:flex-start;text-align:left}#mrSection .mr3-side h4{font-size:40px}#mrSection .mr3-side .mr3-go{max-width:360px}}
+    body.dark-mode .mr3-side h4{color:#e7ebf3}
+    /* desktop share button: the phone's round one, blue when the page has a picture, red when not */
+    #dkShare{display:none;align-items:center;gap:8px;border:0;background:none;cursor:pointer;padding:0;font:inherit}
+    #dkShare span{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,#3d6bff,#203c8e);box-shadow:0 8px 18px rgba(61,107,255,.4);transition:transform .2s}
+    #dkShare span svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    #dkShare small{font:800 12.5px Inter,system-ui,sans-serif;color:#203c8e}
+    #dkShare:hover span{transform:translateY(-2px)}
+    #dkShare.no span{background:linear-gradient(135deg,#ff6b7a,#c62f45);box-shadow:0 8px 18px rgba(198,47,69,.35)}#dkShare.no small{color:#c62f45}
+    #dkShare.shake span{animation:dkshake .45s cubic-bezier(.36,.07,.19,.97)}
+    #dkShare.done span{background:#25d366;transform:scale(1.1)}
+    @keyframes dkshake{10%,90%{transform:translateX(-1px)}20%,80%{transform:translateX(2px)}30%,50%,70%{transform:translateX(-4px)}40%,60%{transform:translateX(4px)}}
+    .dk-accb{gap:10px!important;padding:4px 12px 4px 4px!important;cursor:default}
+    .dk-accb>button,.dk-acco>button{border:0;background:none;padding:0;text-align:left;cursor:pointer;font:inherit;color:inherit;display:flex;flex-direction:column;line-height:1.2}
+    .dk-accb>button b,.dk-acco>button b{font:800 12.5px Inter,system-ui,sans-serif;color:#141b33}
+    .dk-accb>button small,.dk-acco>button small{font:700 10.5px Inter,system-ui,sans-serif;color:#6b7385;margin-top:1px}
+    .dk-acc .sk-client-logo{width:32px!important;height:32px!important;cursor:pointer}
+    .dk-accm{left:auto!important;right:0}
+    .dk-accm .dk-acco>button{align-items:flex-start;width:auto;flex:1;padding:0}
+    .wly-page .wly-body{padding:16px 16px 120px;box-sizing:border-box}
+    @media (min-width:1100px){.wly-page .sk-modal-head{padding-left:max(16px,calc((100% - 900px)/2 + 16px))!important;padding-right:max(16px,calc((100% - 900px)/2 + 16px))!important}}
+    .dk-acco{display:flex;align-items:center;gap:10px;padding:8px;border-radius:10px}.dk-acco:hover{background:#eef2ff}
+    body.dark-mode .dk-accb>button b,body.dark-mode .dk-acco>button b{color:#e7ebf3}
 </style>
 </head>
 <body>
@@ -7427,7 +7485,7 @@ function bbShare(btn){
 // v178 a tab in the bottom bar always takes you to that page: any page opened from the menu
 // (Team Tasks, Settings, About, Notifications, Updates, Admin, Past years...) closes first.
 function bbCloseAll(){
- const f=[()=>{closeTasks();closeTasks()},closeSettings,closeAbout,closeSoon,closeSidebar,closeAccountMenu,closeNotifs,closePeriodPicker,closeWhatsNew,closeAdmin,closePastYears,closeUpdates,closeIdeas,()=>{if(typeof stxClose==='function')stxClose()}];
+ const f=[()=>{closeTasks();closeTasks()},closeSettings,closeAbout,closeSoon,closeSidebar,closeAccountMenu,closeNotifs,closePeriodPicker,closeWhatsNew,closeAdmin,closePastYears,closeWly,closeUpdates,closeIdeas,()=>{if(typeof stxClose==='function')stxClose()}];
  f.forEach(x=>{try{x()}catch(e){}});
 }
 function bbGo(k){bbCloseAll();switchDashboardTab(k);window.scrollTo(0,0)}
@@ -7486,12 +7544,19 @@ function dkTop(){
   const w=document.createElement('div');w.className='dk-srch';w.setAttribute('data-share-ui','');
   w.innerHTML=`${dkSvg('<circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>')}<input id="dkSearch" type="search" placeholder="Search pages…" autocomplete="off" aria-label="Search pages" oninput="dkFind()" onfocus="dkFind()" onkeydown="dkKey(event)"><kbd>Ctrl K</kbd><div class="dk-res" id="dkRes" hidden></div>`;
   left.appendChild(w);
-  const c=document.createElement('div');c.className='dk-acc';c.id='dkAcc';c.setAttribute('data-share-ui','');left.appendChild(c);
+  const c=document.createElement('div');c.className='dk-acc';c.id='dkAcc';c.setAttribute('data-share-ui','');
+  const acts=document.querySelector('.topbar .actions');(acts||left).insertBefore(c,acts?acts.firstChild:null);
+  if(acts){const f=document.createElement('button');f.type='button';f.id='dkShare';f.className='bb-fab dk-fab';f.setAttribute('data-share-ui','');f.setAttribute('aria-label','Share this page on WhatsApp');f.onclick=()=>bbShare(f);
+   f.innerHTML=`<small>Share</small><span>${dkSvg('<path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z"/>')}</span>`;acts.appendChild(f)}
   document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'&&document.documentElement.classList.contains('dk-on')){e.preventDefault();const i=document.getElementById('dkSearch');if(i){i.focus();i.select()}}});
   document.addEventListener('pointerdown',e=>{if(!e.target.closest('.dk-srch')){const x=document.getElementById('dkRes');if(x)x.hidden=true}if(!e.target.closest('.dk-acc'))document.getElementById('dkAcc')?.classList.remove('open')});
  }
  const c=document.getElementById('dkAcc'),cur=document.querySelector('#accountCurrent .sk-client-logo'),nm=(document.getElementById('accountCurrentName')||{}).textContent||'';
- c.innerHTML=`<button type="button" class="dk-accb" onclick="this.parentNode.classList.toggle('open')" aria-label="Switch account">${cur?cur.outerHTML:''}<b>${esc(nm)}</b>${dkSvg('<path d="M6 9l6 6 6-6"/>')}</button><div class="dk-accm">${[...document.querySelectorAll('#accountMenu .sk-account-option')].map(o=>`<button type="button" onclick="document.getElementById('dkAcc').classList.remove('open');pickAccount('${o.dataset.account}')">${o.querySelector('.sk-client-logo')?.outerHTML||''}<b>${esc(o.querySelector('b')?.textContent||'')}</b></button>`).join('')}</div>`;
+ const sub=k=>esc((document.querySelector(`#accountMenu .stx-sub[data-stx="${k}"]`)||{}).textContent||'');
+ // the logo opens that account's stories, like on the phone; the name opens the account list
+ const logo=(el,k)=>el?el.outerHTML.replace('<span ',`<span role="button" tabindex="0" aria-label="Stories" onclick="event.stopPropagation();document.getElementById('dkAcc').classList.remove('open');openStories('${k}')" `):'';
+ c.innerHTML=`<div class="dk-accb">${logo(cur,CURRENT_ACCOUNT)}<button type="button" onclick="this.closest('.dk-acc').classList.toggle('open')" aria-label="Switch account"><b>${esc(nm)}</b><small>${sub(CURRENT_ACCOUNT)}</small></button>${dkSvg('<path d="M6 9l6 6 6-6"/>')}</div><div class="dk-accm">${[...document.querySelectorAll('#accountMenu .sk-account-option')].map(o=>`<div class="dk-acco">${logo(o.querySelector('.sk-client-logo'),o.dataset.account)}<button type="button" onclick="document.getElementById('dkAcc').classList.remove('open');pickAccount('${o.dataset.account}')"><b>${esc(o.querySelector('b')?.textContent||'')}</b><small>${sub(o.dataset.account)}</small></button></div>`).join('')}</div>`;
+ const f=document.getElementById('dkShare');if(f&&!f.classList.contains('busy')&&!f.classList.contains('done'))f.classList.toggle('no',bbNoShare());
 }
 function dkPages(){return [...document.querySelectorAll('#sideDrawer .sk-nav-btn')].filter(b=>!b.hidden&&getComputedStyle(b).display!=='none').map(b=>({b,l:(b.querySelector('span:not(.sk-nav-icon):not(.sk-soon)')||b).textContent.trim(),g:(b.closest('.sk-grp-body')?.previousElementSibling?.querySelector('b')?.textContent)||'App'}))}
 function dkFind(){
@@ -7793,6 +7858,7 @@ function storyTrayDraw(){
  const cur=document.querySelector('#accountCurrent .sk-client-logo');if(cur){cur.dataset.stx='';ring(cur,CURRENT_ACCOUNT);cur.dataset.stx=CURRENT_ACCOUNT}
  document.querySelectorAll('.stx-sub').forEach(el=>{const k=el.dataset.stx,c=stxCount(k);
    el.textContent=!c?'Tap the logo for its stories':seen(k)?`Seen · ${day(c)}`:`${c.n} new ${c.n===1?'story':'stories'} · ${day(c)}`});
+ try{if(document.getElementById('dkAcc'))dkTop()}catch(e){}
 }
 // The viewer works like Instagram: the stories run one after another, then on to the other account's;
 // hold the screen to pause, tap the sides to go back or on. Views, hearts and comments go to the server,
@@ -8384,12 +8450,24 @@ function weekRangeEnd(w){
 let WK_LY=false, WLY_SHEETS=[], WLY_M='v';
 function wlyMetric(m){WLY_M=m;drawWeeklyLy(true)}
 function toggleWeeklyLy(){WK_LY=!WK_LY;drawWeeklyLy(true)}
+// v179 "vs last year" opens as its own page (like Same Hijri day), on the phone and the desktop; the weeks stay on Monthly Progress.
+function wlyPage(on){
+ let o=document.getElementById('wlyOverlay');
+ if(!o){o=document.createElement('div');o.className='app-modal-overlay sk-page';o.id='wlyOverlay';o.setAttribute('data-share-ui','');o.onclick=e=>{if(e.target===o)closeWly()};
+  o.innerHTML='<section class="app-modal sk-modal wly-page" role="dialog" aria-modal="true" aria-labelledby="wlyTitle"><div class="sk-modal-head"><div><div class="sk-kicker" id="wlyKicker">WEEKLY PERFORMANCE</div><h2 id="wlyTitle">vs last year</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeWly()" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div><div class="wly-body" id="wlyBody"></div></section>';
+  document.body.appendChild(o)}
+ const box=document.getElementById('weeklyLy');if(box&&box.parentNode.id!=='wlyBody')document.getElementById('wlyBody').appendChild(box);
+ const ly=(Number(String((DASH_DATA&&DASH_DATA.latest&&DASH_DATA.latest.date)||'').slice(0,4))||new Date().getFullYear())-1;
+ text('wlyTitle','vs '+ly);
+ o.classList.toggle('open',!!on);
+}
+function closeWly(){if(WK_LY){WK_LY=false;drawWeeklyLy(false)}else wlyPage(false)}
 function drawWeeklyLy(anim){
  const box=document.getElementById('weeklyLy'),cards=document.getElementById('weeklyCards'),btn=document.getElementById('wlyBtn');
  if(!box||!cards)return;
  if(btn){btn.classList.toggle('on',WK_LY);const ly=(Number(String((DASH_DATA&&DASH_DATA.latest&&DASH_DATA.latest.date)||'').slice(0,4))||new Date().getFullYear())-1;
   btn.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true">${WK_LY?'<path d="M6 6l12 12M18 6L6 18"/>':'<path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/>'}</svg>vs <span>${ly}</span>`;btn.setAttribute('aria-label',WK_LY?'Close last year':'Compare with '+ly)}
- box.hidden=!WK_LY;cards.hidden=WK_LY;
+ box.hidden=!WK_LY;wlyPage(WK_LY);
  if(!WK_LY)return;
  const ex=MONTH_EXTRA[CURRENT_ACCOUNT];
  if(!ex){loadMonthExtras();box.innerHTML=extraWaitHtml('last year’s weeks');return}
@@ -14470,8 +14548,9 @@ function drawMonthlyReport(){
  const notes=document.getElementById('mrNotes');if(notes)MR.notes=notes.value;
  // Tap the title: the cover and Build PDF; once the pages are made, the email buttons appear.
  body.innerHTML=`<div class="mr3c"><div class="mr3-book"><small>${esc(String(acc.label||'').toUpperCase())}</small><b>${esc(label)}<br>report</b><img src="${SEKNA_WHITE_LOGO}" alt="HEMERA"><i></i><u></u></div>
+   <div class="mr3-side"><small class="mr3-k">MONTHLY REPORT · ${esc(String(label).toUpperCase())}</small><h4>The month, in pages.</h4><p class="mr3-d">Results, the plan and every campaign type, ready to send to the team.</p>
    <button type="button" class="mr3-go" onclick="mrBuild()" ${MR.busy?'disabled':''}>${MR.pages?'Rebuild PDF':'Build PDF'}</button>
-   ${running?'':`<p>The month is complete · ${days.length} days.</p>`}</div>
+   ${running?`<p class="mr3-st">Day ${live} of ${days.length} · month in progress</p>`:`<p class="mr3-st">The month is complete · ${days.length} days.</p>`}</div></div>
   <details class="mr-notes"${MR.notes?' open':''}><summary>Notes for the team (optional)</summary><textarea id="mrNotes" class="mrp-notes" rows="3" placeholder="e.g. Gaza Emergency appeal launched on the 9th" oninput="MR.notes=this.value">${esc(MR.notes)}</textarea></details>
   ${MR.busy?`<div class="mrp-busy"><span class="lab-spin dark"></span>${esc(MR.busy)}</div>`:''}
   ${MR.msg?`<div class="mrp-msg">${MR.msg}</div>`:''}
@@ -14538,10 +14617,10 @@ function drawPlanHistory(){
    return `<div class="phs${open?' open':''}" onclick="phToggle('${s.month}')">
     <div class="phs-hd"><b>HEMERA<i>·</i></b><div>${esc(accName)}<br>STATEMENT · ${esc(monthName(mon,true).toUpperCase())}</div></div>
     <h3>${esc(monthName(s.month,true))}</h3><div class="phs-sub">${s.daysLive} of ${s.daysTotal} days · ${esc(s.hijriFrom)} – ${esc(s.hijriTo)}</div>
-    ${line('Conv. Value',a.value,p.value,v=>money(v))}${line('Spend',a.spend,p.spend,v=>money(v),1)}${line('Conversions',a.conversions,p.conversions,v=>fmt(v,0))}
+    ${line('Spend',a.spend,p.spend,v=>money(v),1)}${line('Conversions',a.conversions,p.conversions,v=>fmt(v,0))}${line('Conv. Value',a.value,p.value,v=>money(v))}
     <div class="phs-li"><div class="phs-t"><span>ROAS</span><b>${fmt(a.roas,2)}x</b></div><div class="phs-q">Plan ${fmt(p.roas,2)}x<i><u style="width:${roasR!=null?Math.min(100,roasR*100).toFixed(1):0}%"></u></i><em class="${roasR>=1?'ok':'bd'}">${roasR==null?'—':roasR>=1?'▲':'▼'}</em></div></div>
     <div class="phs-big"><div><small>PLAN ACHIEVEMENT</small><b>${mpPct(all)}</b></div><span class="phs-ok">✓ SAVED</span></div>
-    <div class="phs-ft"><span>${saved?'Saved '+esc(saved):''}</span><span>Spend 40% · Value 40% · Conv. 20%</span></div>
+    <div class="phs-ft"><span>${saved?'Saved '+esc(saved):''}</span><span>Spend 40% · Conv. 20% · Value 40%</span></div>
     ${libOf(s.month)?phPdf(libOf(s.month)):''}
     ${canDo('lab')&&celCan(s)?`<button type="button" class="phs-cel" onclick="event.stopPropagation();celCompose('${s.month}')">🎉 Celebrate this month</button>`:''}
     <div class="phs-more">${open?'Hide campaign types ▲':'By campaign type ▼'}</div>
