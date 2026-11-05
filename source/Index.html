@@ -6610,45 +6610,72 @@ window.addEventListener('load',function(){
     .app-modal-overlay.sk-page.push-anim .app-modal{transform:none!important;transition:none!important}
     #pushShade{position:fixed;inset:0;background:#0b1430;opacity:0;pointer-events:none;z-index:45;will-change:opacity}
     /* Team Tasks inside the page area (top bar, menu and bottom bar stay around them) */
-    #tasksOverlay.tk-in{left:var(--tkl,0px)!important;top:var(--tkt,0px)!important;right:0!important;bottom:0!important;width:auto!important;height:auto!important}
+    #tasksOverlay.tk-in,#notifsOverlay.tk-in{left:var(--tkl,0px)!important;top:var(--tkt,0px)!important;right:0!important;bottom:0!important;width:auto!important;height:auto!important}
     #tasksOverlay.tk-in .sk-modal-head{padding-top:14px!important;padding-left:15px!important;padding-right:15px!important}
     @media (min-width:1100px){#tasksOverlay.tk-in .sk-modal-head{padding-left:calc(max(32px,(100% - 1240px)/2) + 15px)!important;padding-right:calc(max(32px,(100% - 1240px)/2) + 15px)!important}}
     /* inside the page there is nothing to go back to, and the menu opens over them */
-    #tasksOverlay.tk-in{z-index:20}
-    #tasksOverlay.tk-in .sk-modal-head>.sk-icon-btn{display:none!important}
+    #tasksOverlay.tk-in,#notifsOverlay.tk-in{z-index:20}
+    #tasksOverlay.tk-in .sk-modal-head>.sk-icon-btn,#notifsOverlay.tk-in .sk-modal-head>.sk-icon-btn{display:none!important}
+    #notifsOverlay.tk-in .sk-modal-head{padding-top:14px!important}
+    #notifsOverlay.tk-in .app-modal{padding-bottom:110px!important}
     #tasksOverlay.tk-in .tk-body{padding-bottom:110px}
-    /* Top & Bottom 5 on computers: best and worst side by side */
-    .rx-card.rx-duo .rx-switch{display:none!important}
-    .rx2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:6px}
-    .rx2-col{border-radius:18px;border:1px solid #edf0f6;overflow:hidden;background:#fff;display:flex;flex-direction:column}
-    .rx2-h{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-    .rx2-h b{font-size:14.5px;font-weight:900}
-    .rx2-h small{display:flex;gap:6px;font-size:11.5px;font-weight:800;opacity:.8;white-space:nowrap}
-    .rx2-h small span{background:rgba(255,255,255,.7);border-radius:99px;padding:2px 9px}
-    .rx2-col.g .rx2-h{background:linear-gradient(90deg,#e3f6ec,#f4fbf7);color:#0f6b41}
-    .rx2-col.w .rx2-h{background:linear-gradient(90deg,#fdeaec,#fff6f7);color:#a02c3a}
-    .rx2-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 16px;border-top:1px solid #f1f3f8}
-    .rx2-row.stale{opacity:.6}
-    .rx2-mid{display:flex;flex-direction:column;gap:5px;min-width:0}
-    .rx2-nm{font-weight:900;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .rx2-bar{height:6px;border-radius:9px;background:#edf0f6;overflow:hidden}.rx2-bar i{display:block;height:100%;border-radius:9px}
-    .rx2-col.g .rx2-bar i{background:linear-gradient(90deg,#2fc283,#13804f)}.rx2-col.w .rx2-bar i{background:linear-gradient(90deg,#f29aa3,#c63a4a)}
-    .rx2-meta{font-size:11.5px;font-weight:700;color:#7b84a0}.rx2-meta b{color:#3f475e}
-    .rx2-roas{font-weight:900;font-size:13px;padding:3px 10px;border-radius:99px;font-variant-numeric:tabular-nums}
-    .rx2-col.g .rx2-roas{background:#e3f6ec;color:#13804f}.rx2-col.w .rx2-roas{background:#fdeaec;color:#c63a4a}
-    .rx2-col.w .rx-icon em{background:#c63a4a}.rx2-col.g .rx-icon em{background:#13804f}
-    .rx2-foot{margin-top:auto;padding:10px 16px;background:#f7f8fc;font-size:12px;font-weight:800;color:#6b7385;display:flex;justify-content:space-between;gap:8px}
-    .rx2-foot b{color:#141b33}
-    .rx2-ok{padding:22px 16px;text-align:center;font-weight:800;color:#13804f;font-size:13px}
-    body.dark-mode .rx2-col{background:#151a22;border-color:#2a313c}body.dark-mode .rx2-row{border-top-color:#232a36}
-    body.dark-mode .rx2-foot{background:#1a1f29;color:#9aa4bd}body.dark-mode .rx2-foot b,body.dark-mode .rx2-meta b{color:#e7ebf3}
-    body.dark-mode .rx2-col.g .rx2-h{background:linear-gradient(90deg,#11352a,#151a22);color:#7fe0b0}
-    body.dark-mode .rx2-col.w .rx2-h{background:linear-gradient(90deg,#3a1820,#151a22);color:#ff9aa6}
-    body.dark-mode .rx2-bar{background:#232a36}
+    /* Top & Bottom 5 on computers: kinds on the left, one ranked table */
+    .rx-card.rx-duo .rx-cats{display:none!important}
+    .rx3{display:grid;grid-template-columns:200px minmax(0,1fr);gap:20px;margin-top:8px}
+    .rx3-cats{display:flex;flex-direction:column;gap:4px;border-right:1px solid #edf0f6;padding-right:14px;align-self:start}
+    .rx3-cats .rx3-cat{all:unset;box-sizing:border-box;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:12px;font-weight:800;font-size:13.5px;color:#4b5263}
+    .rx3-cats .rx3-cat em{font-style:normal;font-size:11px;font-weight:900;color:#8a93ad;background:#f1f3f8;border-radius:99px;padding:2px 8px}
+    .rx3-cats .rx3-cat.on{background:#eef2ff;color:#203c8e;box-shadow:inset 3px 0 0 #203c8e}
+    .rx3.w .rx3-cats .rx3-cat.on{background:#fdeef0;color:#a02c3a;box-shadow:inset 3px 0 0 #c63a4a}
+    .rx3-cats .rx3-cat.off{opacity:.45}.rx3-cats .rx3-cat[disabled]{cursor:default}
+    .rx3-cats .rx3-cat:focus-visible{outline:2px solid #203c8e}
+    .rx3-main{min-width:0}
+    .rx3-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:2px 0 10px}
+    .rx3-h b{font-size:16px;font-weight:900;margin-right:4px}
+    .rx3-h span{font-size:11.5px;font-weight:800;color:#8a93ad;background:#f1f3f8;border-radius:99px;padding:3px 10px}
+    .rx3-t{width:100%;border-collapse:collapse;table-layout:fixed}
+    .rx3-t col.a{width:100px}.rx3-t col.b{width:72px}.rx3-t col.c{width:150px}
+    .rx3-t th{text-align:right;font-size:10.5px;letter-spacing:.1em;color:#8a93ad;font-weight:900;padding:0 10px 8px;border-bottom:1px solid #edf0f6}
+    .rx3-t th:first-child{text-align:left}
+    .rx3-t td{padding:11px 10px;border-bottom:1px solid #f1f3f8;text-align:right;font-weight:800;font-size:13px;color:#3f475e;font-variant-numeric:tabular-nums}
+    .rx3-t td:first-child{text-align:left}
+    .rx3-r.stale{opacity:.6}
+    .rx3-who{display:flex;gap:12px;align-items:center;min-width:0}
+    .rx3-nm{min-width:0;display:flex;flex-direction:column;gap:2px}
+    .rx3-nm b{font-weight:900;font-size:13.5px;color:#141b33;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .rx3-nm small{font-size:11px;color:#a06d17;font-weight:800}
+    .rx3-rs{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+    .rx3-p{font-weight:900;font-size:13px;padding:3px 10px;border-radius:99px}
+    .rx3.g .rx3-p{background:#e3f6ec;color:#13804f}.rx3.w .rx3-p{background:#fdeaec;color:#c63a4a}
+    .rx3-bar{width:100%;height:6px;border-radius:9px;background:#edf0f6;overflow:hidden}.rx3-bar i{display:block;height:100%;border-radius:9px}
+    .rx3.g .rx3-bar i{background:linear-gradient(90deg,#2fc283,#13804f)}.rx3.w .rx3-bar i{background:linear-gradient(90deg,#f29aa3,#c63a4a)}
+    .rx3.g .rx-icon em{background:#13804f}.rx3.w .rx-icon em{background:#c63a4a}
+    .rx3-tot td{border-bottom:0;font-weight:900;color:#141b33;background:#f7f8fc}
+    .rx3-tot td:first-child{border-radius:12px 0 0 12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rx3-tot td:last-child{border-radius:0 12px 12px 0}
+    body.dark-mode .rx3-cats{border-right-color:#2a313c}body.dark-mode .rx3-cats .rx3-cat{color:#c3cad8}body.dark-mode .rx3-cats .rx3-cat em,body.dark-mode .rx3-h span{background:#232a36;color:#9aa4bd}
+    body.dark-mode .rx3-cats .rx3-cat.on{background:#232a36;color:#fff}
+    body.dark-mode .rx3-t th{border-bottom-color:#2a313c}body.dark-mode .rx3-t td{border-bottom-color:#232a36;color:#c3cad8}body.dark-mode .rx3-nm b,body.dark-mode .rx3-tot td{color:#fff}
+    body.dark-mode .rx3-tot td{background:#1a1f29}body.dark-mode .rx3-bar{background:#232a36}
     /* November Performance tiles on computers: the "of plan" line sits halfway between the number and the bar */
     @media (min-width:1100px){
       #channelPanel>.mtd-exec .ox-tile{display:flex!important;flex-direction:column}
       #channelPanel>.mtd-exec .ox-tile>.ox-hs{flex:1 0 auto;display:flex;align-items:center;flex-wrap:wrap;gap:0 4px;min-height:34px}
+    }
+    /* Plan achievement card on computers: the big number in the middle, the three parts below it,
+       each with its own bar across the card */
+    .ox-lbar{display:none}
+    @media (min-width:1100px){
+      #channelPanel>.mtd-exec .ox-hero{display:flex!important;flex-direction:column;justify-content:flex-start!important;gap:12px!important}
+      #channelPanel>.mtd-exec .ox-hero .ox-score{flex:1 0 auto;display:flex!important;align-items:center;margin:0!important;font-size:60px!important}
+      #channelPanel>.mtd-exec .ox-hero .ox-accbar{display:none!important}
+      #channelPanel>.mtd-exec .ox-hero .ox-legs{display:flex!important;flex-direction:column;gap:12px;margin:0!important}
+      #channelPanel>.mtd-exec .ox-hero .ox-leg{display:grid!important;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;align-items:end;font-size:12.5px;font-weight:800;color:#dfe6ff}
+      #channelPanel>.mtd-exec .ox-hero .ox-leg>i{display:none}
+      #channelPanel>.mtd-exec .ox-hero .ox-leg>span{grid-column:1;padding:0!important;margin:0!important}
+      #channelPanel>.mtd-exec .ox-hero .ox-leg>b{grid-column:2;grid-row:1;font-size:16px!important;color:#fff;margin:0!important;padding:0!important}
+      #channelPanel>.mtd-exec .ox-hero .ox-lbar{display:block;grid-column:1/-1;height:6px;border-radius:9px;background:rgba(255,255,255,.14);overflow:hidden}
+      #channelPanel>.mtd-exec .ox-hero .ox-lbar span{display:block;height:100%;border-radius:9px;transition:width .7s ease}
+      #channelPanel>.mtd-exec .ox-lbar .spend{background:#8b7bff}#channelPanel>.mtd-exec .ox-lbar .revenue{background:#2fc283}#channelPanel>.mtd-exec .ox-lbar .roas{background:#3fa9f5}
     }
 </style>
 </head>
@@ -7228,9 +7255,9 @@ window.addEventListener('load',function(){
           <div class="ox-seg" style="flex:20"><span id="accuracyRoasBar" class="roas"></span></div>
         </div>
         <div class="ox-legs">
-          <div class="ox-leg"><i class="spend"></i><span>Spend plan <em>40%</em></span><b id="accuracySpend">—</b></div>
-          <div class="ox-leg"><i class="revenue"></i><span>Revenue target <em>40%</em></span><b id="accuracyRevenue">—</b></div>
-          <div class="ox-leg"><i class="roas"></i><span>Conversions <em>20%</em></span><b id="accuracyRoas">—</b></div>
+          <div class="ox-leg"><i class="spend"></i><span>Spend plan <em>40%</em></span><b id="accuracySpend">—</b><div class="ox-lbar"><span id="accuracySpendLeg" class="spend"></span></div></div>
+          <div class="ox-leg"><i class="revenue"></i><span>Revenue target <em>40%</em></span><b id="accuracyRevenue">—</b><div class="ox-lbar"><span id="accuracyRevenueLeg" class="revenue"></span></div></div>
+          <div class="ox-leg"><i class="roas"></i><span>Conversions <em>20%</em></span><b id="accuracyRoas">—</b><div class="ox-lbar"><span id="accuracyRoasLeg" class="roas"></span></div></div>
         </div>
       </div>
 
@@ -8007,6 +8034,7 @@ function bbDraw(){
 }
 function switchDashboardTab(tab){
  {const o=document.getElementById('tasksOverlay');if(o&&o.classList.contains('open')){if(TK.form)tkSheetClose();closeTasks()}}
+ {const n=document.getElementById('notifsOverlay');if(n&&n.classList.contains('open'))closeNotifs()}
  setTimeout(()=>{try{bbDraw()}catch(e){}},0);
  setTimeout(()=>{try{storyTrayDraw()}catch(e){}},0);
  if(!canDo(tab)){const first=DASH_TABS.find(t=>canDo(t));if(!first)return;tab=first}
@@ -8667,6 +8695,7 @@ function renderPlanAccuracy(d){
  setAccuracyBar('accuracySpendBar',a.spend);
  setAccuracyBar('accuracyRevenueBar',a.revenue);
  setAccuracyBar('accuracyRoasBar',a.conv);
+ setAccuracyBar('accuracySpendLeg',a.spend);setAccuracyBar('accuracyRevenueLeg',a.revenue);setAccuracyBar('accuracyRoasLeg',a.conv);
 }
 
 function setAccuracyBar(id,ratio){
@@ -9577,11 +9606,15 @@ function nfRender(){
 function openNotifs(){
  closeSidebar();if(!canDo('notifs'))return;
  const o=document.getElementById('notifsOverlay');if(!o)return;
+ 
+ if(o.classList.contains('open')){closeNotifs();return}
+ {const t=document.getElementById('tasksOverlay');if(t&&t.classList.contains('open')){if(TK.form)tkSheetClose();closeTasks()}}
+ tkInset(o);setTimeout(()=>{try{bbDraw()}catch(e){}},0);
  NF.openSeen=nfSeen();NF.filter='all';NF.all=false;o.classList.add('open');nfRender();nfLoad();
  
  const top=Math.max(Date.now(),...((NF.list||[]).map(x=>x.at)));storeSet('sekna_nf_seen',String(top));setTimeout(nfBadge,0);
 }
-function closeNotifs(e){if(e&&e.target!==e.currentTarget)return;const o=document.getElementById('notifsOverlay');if(o)o.classList.remove('open');nfBadge()}
+function closeNotifs(e){if(e&&e.target!==e.currentTarget)return;const o=document.getElementById('notifsOverlay');if(o)o.classList.remove('open');nfBadge();setTimeout(()=>{try{bbDraw()}catch(e){}},0)}
 
 function nfOpen(id){
  const x=(NF.list||[]).find(n=>n.id===id);if(!x)return;
@@ -10703,24 +10736,24 @@ let RANK_DAY='';
 function rxDuo(){return !!(window.matchMedia&&matchMedia('(min-width:1100px)').matches)}
 window.addEventListener('load',()=>{try{matchMedia('(min-width:1100px)').addEventListener('change',()=>{if(CURRENT_TAB==='ranks'&&DASH_DATA)renderRanks(DASH_DATA)})}catch(e){}});
 function renderRanksDuo(bw,body,cats){
- const blk=(side,k)=>(bw[side]||[]).find(b=>b.key===k);
- const keys=RANK_CATS.filter(([k])=>blk('best',k)||blk('worst',k));
- if(!keys.some(([k])=>k===RANK_CAT)&&keys[0])RANK_CAT=keys[0][0];
- cats.innerHTML=keys.map(([k,l])=>`<button type="button" class="rx-cat${k===RANK_CAT?' on':''}" data-cat="${k}" onclick="setRankCat('${k}')">${esc(l)}</button>`).join('');
- const icon=RANK_ICONS[RANK_CAT]||RANK_ICONS.campaigns, day=RANK_DAY;
- const col=side=>{
-   const worst=side==='worst', b=blk(side,RANK_CAT), title=(RANK_TITLES[side]||{})[RANK_CAT]||(b&&b.title)||'';
-   const chips=b?`${b.rankNote?`<span>${esc(b.rankNote)}</span>`:''}${b.minSpend?`<span>Spent ${money(b.minSpend)}+</span>`:''}`:'';
-   const head=`<div class="rx2-h"><b>${worst?'📉':'🏆'} ${esc(title)}</b><small>${chips||(worst?'':'by '+esc(bw.rankBy||'ROAS'))}</small></div>`;
-   if(!b||!b.rows.length)return `<div class="rx2-col ${worst?'w':'g'}">${head}<div class="rx2-ok">👌 Nothing ${worst?'needs action':'to show'} here${b&&b.minSpend?` · no item spent ${money(b.minSpend)} or more`:''}.</div></div>`;
-   const rows=b.rows.map((r,i)=>{const stale=RANK_CAT==='projects'&&offSeason(r.name,day),det=rxDetails(r);
-     return `<div class="rx2-row${stale?' stale':''}"><span class="rx-icon">${icon}<em>${r.rank||i+1}</em></span><div class="rx2-mid"><b class="rx2-nm" title="${esc(r.name)}">${rxName(r.name)}</b>${stale?'<span class="rx-stale">Redirected page · out of season</span>':''}<div class="rx2-bar"><i style="width:${rxBarW(b,r,worst)}%"></i></div><span class="rx2-meta">Spend <b>${money(r.spend)}</b> · Conv. <b>${fmt(r.conversions,0)}</b> · Value <b>${money(r.value)}</b></span>${det?`<div class="rx-det">${det}</div>`:''}</div><span class="rx2-roas">${fmt(r.roas,2)}x</span></div>`}).join('');
-   const t=b.total||b.rows.reduce((a,r)=>({spend:a.spend+(+r.spend||0),value:a.value+(+r.value||0),conversions:a.conversions+(+r.conversions||0)}),{spend:0,value:0,conversions:0});
-   const roas=t.roas!=null?t.roas:(t.spend?t.value/t.spend:0);
-   return `<div class="rx2-col ${worst?'w':'g'}">${head}${rows}<div class="rx2-foot"><span>Spend <b>${money(t.spend)}</b></span><span>Value <b>${money(t.value)}</b></span><span>ROAS <b>${fmt(roas,2)}x</b></span></div></div>`;
- };
- body.innerHTML=`<div class="rx2">${col('best')}${col('worst')}</div>`;
- revealOnScroll(body,'.rx2-row');
+ const side=RANK_SIDE, worst=side==='worst', blocks=bw[side]||[], blk=k=>blocks.find(b=>b.key===k);
+ if(!blk(RANK_CAT)){const f=RANK_CATS.find(([k])=>blk(k)&&blk(k).rows.length)||RANK_CATS.find(([k])=>blk(k));if(f)RANK_CAT=f[0]}
+ cats.innerHTML='';
+ const list=RANK_CATS.map(([k,l])=>{const b=blk(k),n=b?b.rows.length:0;return `<button type="button" class="rx-cat rx3-cat${k===RANK_CAT?' on':''}${n?'':' off'}" data-cat="${k}" onclick="setRankCat('${k}')"${b?'':' disabled'}>${esc(l)}<em>${n}</em></button>`}).join('');
+ const b=blk(RANK_CAT), title=(RANK_TITLES[side]||{})[RANK_CAT]||(b&&b.title)||'', icon=RANK_ICONS[RANK_CAT]||RANK_ICONS.campaigns;
+ const kind=(RANK_CATS.find(c=>c[0]===RANK_CAT)||['',''])[1].replace(/s$/,'').toUpperCase();
+ const head=`<div class="rx3-h"><b>${esc(title)}</b>${b&&b.rankNote?`<span>${esc(b.rankNote)}</span>`:''}${b&&b.minSpend?`<span>Spent ${money(b.minSpend)}+</span>`:''}</div>`;
+ let table;
+ if(!b||!b.rows.length)table=`<div class="rx-ok">👌 Nothing ${worst?'needs action':'to show'} here${b&&b.minSpend?` — no item spent ${money(b.minSpend)} or more`:''}.</div>`;
+ else{
+  const t=b.total||b.rows.reduce((a,r)=>({spend:a.spend+(+r.spend||0),value:a.value+(+r.value||0),conversions:a.conversions+(+r.conversions||0)}),{spend:0,value:0,conversions:0});
+  const troas=t.roas!=null?t.roas:(t.spend?t.value/t.spend:0), lost=Math.max(0,(+t.spend||0)-(+t.value||0));
+  table=`<table class="rx3-t"><colgroup><col><col class="a"><col class="b"><col class="a"><col class="c"></colgroup><tr><th>${esc(kind||'NAME')}</th><th>SPEND</th><th>CONV.</th><th>VALUE</th><th>ROAS</th></tr>
+   ${b.rows.map((r,i)=>{const stale=RANK_CAT==='projects'&&offSeason(r.name,RANK_DAY),det=rxDetails(r);return `<tr class="rx3-r${stale?' stale':''}"><td><div class="rx3-who"><span class="rx-icon">${icon}<em>${r.rank||i+1}</em></span><div class="rx3-nm"><b title="${esc(r.name)}">${rxName(r.name)}</b>${stale?'<small>Redirected page · out of season</small>':''}${det?`<div class="rx-det">${det}</div>`:''}</div></div></td><td>${money(r.spend)}</td><td>${fmt(r.conversions,0)}</td><td>${money(r.value)}</td><td><div class="rx3-rs"><span class="rx3-p">${fmt(r.roas,2)}x</span><div class="rx3-bar"><i style="width:${rxBarW(b,r,worst)}%"></i></div></div></td></tr>`}).join('')}
+   <tr class="rx3-tot"><td>Total of the ${b.rows.length}${worst&&lost?` · lost ${money(lost)}`:''}</td><td>${money(t.spend)}</td><td>${fmt(t.conversions,0)}</td><td>${money(t.value)}</td><td><span class="rx3-p">${fmt(troas,2)}x</span></td></tr></table>`;
+ }
+ body.innerHTML=`<div class="rx3 ${worst?'w':'g'}"><nav class="rx3-cats">${list}</nav><div class="rx3-main">${head}${table}</div></div>`;
+ revealOnScroll(body,'.rx3-r');
 }
 function renderRanks(d){
  const bw=d.bestWorst, body=document.getElementById('rxBody'), cats=document.getElementById('rxCats');
@@ -13808,7 +13841,7 @@ function tkInset(o){
  o.style.setProperty('--tkl',(pn?Math.max(0,Math.round(pn.right)):0)+'px');
  o.classList.add('tk-in');
 }
-window.addEventListener('resize',()=>{const o=document.getElementById('tasksOverlay');if(o&&o.classList.contains('open'))tkInset(o)});
+window.addEventListener('resize',()=>{['tasksOverlay','notifsOverlay'].forEach(id=>{const o=document.getElementById(id);if(o&&o.classList.contains('open'))tkInset(o)})});
 function openTasks(view){
  closeSidebar();
  view=view||'team';if(!tkViewOk(view)){view=Object.keys(TK_VIEW_PERM).find(tkViewOk);if(!view)return}
@@ -13816,6 +13849,7 @@ function openTasks(view){
  if(!TK.month){TK.month=tkMonthNow();TK.week=tkWeekOf(tkToday().d)}
  const o=document.getElementById('tasksOverlay');if(!o)return;
  text('tkKicker','TEAM TASKS');tkSetTitle(TK_VIEWS[TK.view][0]);
+ {const n=document.getElementById('notifsOverlay');if(n&&n.classList.contains('open'))closeNotifs()}
  tkInset(o);o.classList.add('open');
  if(TK.view==='mine')tkSeenNotice();
  if(!TK.data||TK.data.month!==TK.month){try{const c=JSON.parse(storeGet('sekna_tasks_'+TK.month)||'null');if(c)TK.data=c}catch(e){}}
