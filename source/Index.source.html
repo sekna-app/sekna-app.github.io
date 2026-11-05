@@ -6593,6 +6593,15 @@ window.addEventListener('load',function(){
       #monthsPanel .mxd-board .t small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
       #monthsPanel .mxd-cr .h{font-size:9px!important}
     }
+    /* Monthly Report on phones: short text, and the floating book keeps clear of the gold line */
+    @media (max-width:1099px){
+      #mrSection .mr3-book{width:144px;height:202px}
+      #mrSection .mr3-book img{width:86px}
+      #mrSection .mr3-side{margin-top:26px;gap:6px}
+      #mrSection .mr3-side .mr3-k,#mrSection .mr3-side .mr3-d{display:none}
+      #mrSection .mr3-side h4{font-size:24px}
+      #mrSection .mr3c .mr3-go{margin-top:10px}
+    }
 </style>
 </head>
 <body>
