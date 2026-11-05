@@ -6604,7 +6604,9 @@ window.addEventListener('load',function(){
     }
     /* pages that slide in from the side: the slide replaces the usual rise */
     .app-modal-overlay.sk-page.push-anim,.app-modal-overlay.sk-page.push-anim .sk-modal>*{animation:none!important}
+    .app-modal-overlay.sk-page.push-anim{z-index:46;will-change:transform}
     .app-modal-overlay.sk-page.push-anim .app-modal{transform:none!important;transition:none!important}
+    #pushShade{position:fixed;inset:0;background:#0b1430;opacity:0;pointer-events:none;z-index:45;will-change:opacity}
 </style>
 </head>
 <body>
@@ -8840,7 +8842,8 @@ function wlyPage(on){
  const box=document.getElementById('weeklyLy');if(box&&box.parentNode.id!=='wlyBody')document.getElementById('wlyBody').appendChild(box);
  const ly=(Number(String((DASH_DATA&&DASH_DATA.latest&&DASH_DATA.latest.date)||'').slice(0,4))||new Date().getFullYear())-1;
  text('wlyTitle','vs '+ly);
- pushPage(o,!!on);
+ // the page's content is drawn first, then it slides in
+ if(on)requestAnimationFrame(()=>{if(WK_LY)pushPage(o,true)});else pushPage(o,false);
 }
 function closeWly(){if(WK_LY){WK_LY=false;drawWeeklyLy(false)}else wlyPage(false)}
 function drawWeeklyLy(anim){
@@ -13516,29 +13519,28 @@ function pyYears(){
  }
  return out;
 }
-// Past years and Weekly vs last year: the page slides in from the side while the screen behind
-// moves a little to the left and dims; closing plays it backwards.
+// Past years and Weekly vs last year: the page slides in from the side over a soft shade and
+// slides back out when closed. Only transform and opacity move, so it stays smooth on phones.
 function pushPage(o,on){
  if(!o)return;
  const st=o._push, now=st?st.on:o.classList.contains('open');
  if(now===on)return;
  const calm=document.body.classList.contains('no-motion')||!o.animate||(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
- if(st){st.a.cancel();st.bs.forEach(x=>x.cancel());o._push=null}
+ if(st){st.as.forEach(x=>x.cancel());o._push=null}
  if(calm){o.classList.toggle('open',on);o.classList.remove('push-anim');return}
- const back=['app','bottomBar','dkRail','dkPanel'].map(id=>document.getElementById(id)).concat(document.querySelector('header.topbar')).filter(e=>e&&e.getClientRects().length);
- const opt={duration:on?420:340,easing:on?'cubic-bezier(.2,.8,.2,1)':'cubic-bezier(.4,0,.6,1)',fill:'both',direction:on?'normal':'reverse'};
+ let sh=document.getElementById('pushShade');
+ if(!sh){sh=document.createElement('div');sh.id='pushShade';document.body.appendChild(sh)}
+ const opt={duration:on?340:260,easing:on?'cubic-bezier(.22,.9,.3,1)':'cubic-bezier(.5,0,.75,0)',fill:'both',direction:on?'normal':'reverse'};
  o.classList.add('open','push-anim');
- const a=o.animate([{transform:'translateX(100%)',boxShadow:'-20px 0 40px rgba(0,0,0,0)'},{transform:'translateX(0)',boxShadow:'-20px 0 40px rgba(0,0,0,.18)'}],opt);
- const dx=-Math.round(innerWidth*.28)+'px';
- const bs=back.map(e=>e.animate([{transform:'translateX(0)',filter:'brightness(1)'},{transform:'translateX('+dx+')',filter:'brightness(.8)'}],opt));
- const me={on,a,bs};o._push=me;
- a.finished.then(()=>{if(o._push!==me)return;o._push=null;if(!on)o.classList.remove('open');o.classList.remove('push-anim');a.cancel();bs.forEach(x=>x.cancel())}).catch(()=>{});
+ const as=[o.animate([{transform:'translate3d(100%,0,0)'},{transform:'translate3d(0,0,0)'}],opt),sh.animate([{opacity:0},{opacity:.28}],opt)];
+ const me={on,as};o._push=me;
+ as[0].finished.then(()=>{if(o._push!==me)return;o._push=null;if(!on)o.classList.remove('open');o.classList.remove('push-anim');as.forEach(x=>x.cancel())}).catch(()=>{});
 }
 function openPastYears(){
  PY_OPEN=true; PY_PICK=null; PY_METRIC='value'; PY_ANIM=true;
- pushPage(document.getElementById('pastYearsOverlay'),true);
  if(!MONTH_EXTRA[CURRENT_ACCOUNT])loadMonthExtras();
  renderPastYears();
+ pushPage(document.getElementById('pastYearsOverlay'),true);
 }
 function closePastYears(event){
  if(event&&event.target!==event.currentTarget)return;
