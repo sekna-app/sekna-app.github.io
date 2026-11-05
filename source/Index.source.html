@@ -6617,6 +6617,34 @@ window.addEventListener('load',function(){
     #tasksOverlay.tk-in{z-index:20}
     #tasksOverlay.tk-in .sk-modal-head>.sk-icon-btn{display:none!important}
     #tasksOverlay.tk-in .tk-body{padding-bottom:110px}
+    /* Top & Bottom 5 on computers: best and worst side by side */
+    .rx-card.rx-duo .rx-switch{display:none!important}
+    .rx2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:6px}
+    .rx2-col{border-radius:18px;border:1px solid #edf0f6;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+    .rx2-h{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+    .rx2-h b{font-size:14.5px;font-weight:900}
+    .rx2-h small{display:flex;gap:6px;font-size:11.5px;font-weight:800;opacity:.8;white-space:nowrap}
+    .rx2-h small span{background:rgba(255,255,255,.7);border-radius:99px;padding:2px 9px}
+    .rx2-col.g .rx2-h{background:linear-gradient(90deg,#e3f6ec,#f4fbf7);color:#0f6b41}
+    .rx2-col.w .rx2-h{background:linear-gradient(90deg,#fdeaec,#fff6f7);color:#a02c3a}
+    .rx2-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 16px;border-top:1px solid #f1f3f8}
+    .rx2-row.stale{opacity:.6}
+    .rx2-mid{display:flex;flex-direction:column;gap:5px;min-width:0}
+    .rx2-nm{font-weight:900;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .rx2-bar{height:6px;border-radius:9px;background:#edf0f6;overflow:hidden}.rx2-bar i{display:block;height:100%;border-radius:9px}
+    .rx2-col.g .rx2-bar i{background:linear-gradient(90deg,#2fc283,#13804f)}.rx2-col.w .rx2-bar i{background:linear-gradient(90deg,#f29aa3,#c63a4a)}
+    .rx2-meta{font-size:11.5px;font-weight:700;color:#7b84a0}.rx2-meta b{color:#3f475e}
+    .rx2-roas{font-weight:900;font-size:13px;padding:3px 10px;border-radius:99px;font-variant-numeric:tabular-nums}
+    .rx2-col.g .rx2-roas{background:#e3f6ec;color:#13804f}.rx2-col.w .rx2-roas{background:#fdeaec;color:#c63a4a}
+    .rx2-col.w .rx-icon em{background:#c63a4a}.rx2-col.g .rx-icon em{background:#13804f}
+    .rx2-foot{margin-top:auto;padding:10px 16px;background:#f7f8fc;font-size:12px;font-weight:800;color:#6b7385;display:flex;justify-content:space-between;gap:8px}
+    .rx2-foot b{color:#141b33}
+    .rx2-ok{padding:22px 16px;text-align:center;font-weight:800;color:#13804f;font-size:13px}
+    body.dark-mode .rx2-col{background:#151a22;border-color:#2a313c}body.dark-mode .rx2-row{border-top-color:#232a36}
+    body.dark-mode .rx2-foot{background:#1a1f29;color:#9aa4bd}body.dark-mode .rx2-foot b,body.dark-mode .rx2-meta b{color:#e7ebf3}
+    body.dark-mode .rx2-col.g .rx2-h{background:linear-gradient(90deg,#11352a,#151a22);color:#7fe0b0}
+    body.dark-mode .rx2-col.w .rx2-h{background:linear-gradient(90deg,#3a1820,#151a22);color:#ff9aa6}
+    body.dark-mode .rx2-bar{background:#232a36}
 </style>
 </head>
 <body>
@@ -10656,6 +10684,7 @@ function rankTopOffset(){const t=document.querySelector('.topbar');return t?t.ge
 function rankStickyBottom(){const s=document.getElementById('rxSticky');return s?s.getBoundingClientRect().bottom:rankTopOffset()}
 function setRankCat(c){
  RANK_CAT=c;
+ if(rxDuo()){if(DASH_DATA)renderRanks(DASH_DATA);return}
  const sec=document.getElementById('rx-sec-'+c);
  markRankChip(c);
  if(!sec)return;
@@ -10685,6 +10714,30 @@ function rankSpy(){
 }
 window.addEventListener('scroll',()=>{if(RANK_SPY)return;RANK_SPY=requestAnimationFrame(()=>{RANK_SPY=null;rankSpy()})},{passive:true});
 let RANK_DAY='';
+/* Top & Bottom 5 on computers: the best and the worst of one kind side by side, picked with the chips
+   above them (no Top / Under switch and no long page of every kind). */
+function rxDuo(){return !!(window.matchMedia&&matchMedia('(min-width:1100px)').matches)}
+window.addEventListener('load',()=>{try{matchMedia('(min-width:1100px)').addEventListener('change',()=>{if(CURRENT_TAB==='ranks'&&DASH_DATA)renderRanks(DASH_DATA)})}catch(e){}});
+function renderRanksDuo(bw,body,cats){
+ const blk=(side,k)=>(bw[side]||[]).find(b=>b.key===k);
+ const keys=RANK_CATS.filter(([k])=>blk('best',k)||blk('worst',k));
+ if(!keys.some(([k])=>k===RANK_CAT)&&keys[0])RANK_CAT=keys[0][0];
+ cats.innerHTML=keys.map(([k,l])=>`<button type="button" class="rx-cat${k===RANK_CAT?' on':''}" data-cat="${k}" onclick="setRankCat('${k}')">${esc(l)}</button>`).join('');
+ const icon=RANK_ICONS[RANK_CAT]||RANK_ICONS.campaigns, day=RANK_DAY;
+ const col=side=>{
+   const worst=side==='worst', b=blk(side,RANK_CAT), title=(RANK_TITLES[side]||{})[RANK_CAT]||(b&&b.title)||'';
+   const chips=b?`${b.rankNote?`<span>${esc(b.rankNote)}</span>`:''}${b.minSpend?`<span>Spent ${money(b.minSpend)}+</span>`:''}`:'';
+   const head=`<div class="rx2-h"><b>${worst?'📉':'🏆'} ${esc(title)}</b><small>${chips||(worst?'':'by '+esc(bw.rankBy||'ROAS'))}</small></div>`;
+   if(!b||!b.rows.length)return `<div class="rx2-col ${worst?'w':'g'}">${head}<div class="rx2-ok">👌 Nothing ${worst?'needs action':'to show'} here${b&&b.minSpend?` · no item spent ${money(b.minSpend)} or more`:''}.</div></div>`;
+   const rows=b.rows.map((r,i)=>{const stale=RANK_CAT==='projects'&&offSeason(r.name,day),det=rxDetails(r);
+     return `<div class="rx2-row${stale?' stale':''}"><span class="rx-icon">${icon}<em>${r.rank||i+1}</em></span><div class="rx2-mid"><b class="rx2-nm" title="${esc(r.name)}">${rxName(r.name)}</b>${stale?'<span class="rx-stale">Redirected page · out of season</span>':''}<div class="rx2-bar"><i style="width:${rxBarW(b,r,worst)}%"></i></div><span class="rx2-meta">Spend <b>${money(r.spend)}</b> · Conv. <b>${fmt(r.conversions,0)}</b> · Value <b>${money(r.value)}</b></span>${det?`<div class="rx-det">${det}</div>`:''}</div><span class="rx2-roas">${fmt(r.roas,2)}x</span></div>`}).join('');
+   const t=b.total||b.rows.reduce((a,r)=>({spend:a.spend+(+r.spend||0),value:a.value+(+r.value||0),conversions:a.conversions+(+r.conversions||0)}),{spend:0,value:0,conversions:0});
+   const roas=t.roas!=null?t.roas:(t.spend?t.value/t.spend:0);
+   return `<div class="rx2-col ${worst?'w':'g'}">${head}${rows}<div class="rx2-foot"><span>Spend <b>${money(t.spend)}</b></span><span>Value <b>${money(t.value)}</b></span><span>ROAS <b>${fmt(roas,2)}x</b></span></div></div>`;
+ };
+ body.innerHTML=`<div class="rx2">${col('best')}${col('worst')}</div>`;
+ revealOnScroll(body,'.rx2-row');
+}
 function renderRanks(d){
  const bw=d.bestWorst, body=document.getElementById('rxBody'), cats=document.getElementById('rxCats');
  if(!body)return;
@@ -10693,6 +10746,8 @@ function renderRanks(d){
  if(!bw){cats.innerHTML='';text('rxSub','Not linked yet');body.innerHTML='<div class="dx-empty">The Best &amp; Worst tab is not linked for this account yet.</div>';return}
  RANK_DAY=bw.day||'';
  text('rxSub',`${shortDate(bw.day)} · last closed day · ranked by ${bw.rankBy}`);
+ document.querySelector('.rx-card').classList.toggle('rx-duo',rxDuo());
+ if(rxDuo())return renderRanksDuo(bw,body,cats);
  document.querySelector('.rx-card').dataset.side=RANK_SIDE;
  const blocks=(bw[RANK_SIDE]||[]).slice().sort((a,b)=>RANK_CATS.findIndex(c=>c[0]===a.key)-RANK_CATS.findIndex(c=>c[0]===b.key));
  if(!blocks.some(b=>b.key===RANK_CAT)&&blocks[0])RANK_CAT=blocks[0].key;
