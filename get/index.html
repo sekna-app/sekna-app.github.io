@@ -448,11 +448,11 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
   <section class="sec">
     <div class="lapgrid">
       <div><div class="lap" id="lap"><div class="lid"><div class="lbar"><i></i><i></i><i></i><span>sekna-app.web.app</span></div><div class="scr" id="lapScr">
-        <img class="on" src="/get/shots/desk-daily.webp?v=17" alt="Daily Performance on a laptop" loading="lazy">
-        <img src="/get/shots/desk-month.webp?v=17" alt="Monthly Progress on a laptop" loading="lazy">
-        <img src="/get/shots/desk-days.webp?v=17" alt="Day by Day on a laptop" loading="lazy">
-        <img src="/get/shots/desk-studio.webp?v=17" alt="Reports Studio on a laptop" loading="lazy">
-        <img src="/get/shots/desk-seasons.webp?v=17" alt="Seasons Calendar on a laptop" loading="lazy">
+        <img class="on" src="/get/shots/desk-daily.webp?v=18" alt="Daily Performance on a laptop" loading="lazy">
+        <img src="/get/shots/desk-month.webp?v=18" alt="Monthly Progress on a laptop" loading="lazy">
+        <img src="/get/shots/desk-days.webp?v=18" alt="Day by Day on a laptop" loading="lazy">
+        <img src="/get/shots/desk-studio.webp?v=18" alt="Reports Studio on a laptop" loading="lazy">
+        <img src="/get/shots/desk-seasons.webp?v=18" alt="Seasons Calendar on a laptop" loading="lazy">
       </div></div><div class="base"></div><div class="lap-sh"></div></div>
       <div class="ltabs" id="lapTabs"><button type="button" class="on">Daily<em></em></button><button type="button">Monthly<em></em></button><button type="button">Day by Day<em></em></button><button type="button">Reports Studio<em></em></button><button type="button">Seasons<em></em></button></div></div>
       <div class="txt">
@@ -556,7 +556,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   S.forEach(function(x,i){
     var d=document.createElement('div');d.className='rp';
     d.innerHTML='<div class="ed l"></div><div class="ed r"></div><div class="bk"><img src="/get/logo-white.webp?v=18" alt=""></div><div class="fr"><i class="bt a"></i><i class="bt b"></i><i class="bt c"></i><i class="bt d"></i><div class="scn">'+SB+
-      x[0].map(function(f,k){return '<div class="ly'+(k?'':' on')+'"><img src="/get/shots/'+f+'.webp?v=17" alt="'+x[1]+'"'+(i>1?' loading="lazy"':'')+'>'+(NAV[f]?'<img class="nvb" src="/get/shots/'+f+'-nav.webp?v=17" alt="" loading="lazy">':'')+'</div>'}).join('')+'<i class="hb"></i><i class="gl"></i></div></div>';
+      x[0].map(function(f,k){return '<div class="ly'+(k?'':' on')+'"><img src="/get/shots/'+f+'.webp?v='+(/^(studio|compare)$/.test(f)?18:17)+'" alt="'+x[1]+'"'+(i>1?' loading="lazy"':'')+'>'+(NAV[f]?'<img class="nvb" src="/get/shots/'+f+'-nav.webp?v='+(/^(studio|compare)$/.test(f)?18:17)+'" alt="" loading="lazy">':'')+'</div>'}).join('')+'<i class="hb"></i><i class="gl"></i></div></div>';
     ring.appendChild(d);
     dots.appendChild(document.createElement('i'));
   });
