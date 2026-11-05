@@ -6778,7 +6778,11 @@ window.addEventListener('load',function(){
     #pushShade{position:fixed;inset:0;background:#0b1430;opacity:0;pointer-events:none;z-index:45;will-change:opacity}
     /* Team Tasks inside the page area (top bar, menu and bottom bar stay around them) */
     #tasksOverlay.tk-in{left:var(--tkl,0px)!important;top:var(--tkt,0px)!important;right:0!important;bottom:0!important;width:auto!important;height:auto!important}
-    #tasksOverlay.tk-in .sk-modal-head{padding-top:14px!important}
+    #tasksOverlay.tk-in .sk-modal-head{padding-top:14px!important;padding-left:15px!important;padding-right:15px!important}
+    @media (min-width:1100px){#tasksOverlay.tk-in .sk-modal-head{padding-left:calc(max(32px,(100% - 1240px)/2) + 15px)!important;padding-right:calc(max(32px,(100% - 1240px)/2) + 15px)!important}}
+    /* inside the page there is nothing to go back to, and the menu opens over them */
+    #tasksOverlay.tk-in{z-index:20}
+    #tasksOverlay.tk-in .sk-modal-head>.sk-icon-btn{display:none!important}
     #tasksOverlay.tk-in .tk-body{padding-bottom:110px}
 </style>
 </head>
