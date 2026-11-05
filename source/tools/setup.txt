@@ -1,0 +1,24 @@
+await p.evaluate(()=>{
+ const d=JSON.parse(JSON.stringify(DASH_DATA));
+ const names=['Thu','Fri','Sat','Sun','Mon','Tue','Wed'];const ch=['Search Brand','Search Non-Brand','Performance Max','Demand Gen','Video (YouTube)'],mix=[.1,.6,.21,.06,.03];
+ const days=[];let rnd=7;const r=()=>{rnd=(rnd*9301+49297)%233280;return rnd/233280};
+ for(let i=1;i<=31;i++){const ps=183250/31*(0.85+0.3*r()),pv=ps*2.58,pc=5280/31*(ps/(183250/31));
+  const x={date:'2026-10-'+String(i).padStart(2,'0'),dayNumber:i,dayName:names[(i-1)%7]+'day',hijri:(19+i>30?(19+i-30)+' Jumada I':(19+i)+' Rabi II'),
+   plan:{spend:ps,value:pv,conversions:pc,clicks:pc*4,roas:2.58,cpa:ps/pc,cvr:.295,aov:pv/pc,channels:ch.map((c,k)=>({channel:c,spend:ps*mix[k]}))}};
+  if(i<=20){const s=115688/20*(0.85+0.3*r()),v=s*(2.6+0.8*r()),c=3301/20*(0.8+0.4*r());x.actual={spend:s,value:v,conversions:c,clicks:c*12,target:ps,roas:v/s,spendAchievement:s/ps,convAchievement:c/pc,valueAchievement:v/pv,clicksAchievement:3,cpa:s/c,cvr:.08,ctr:.017}}
+  days.push(x)}
+ const ps0=days.reduce((a,x)=>a+x.plan.spend,0),pc0=days.reduce((a,x)=>a+x.plan.conversions,0);days.forEach(x=>{x.plan.spend*=183250/ps0;x.plan.value=x.plan.spend*473612/183250;x.plan.conversions*=5280/pc0;x.plan.channels.forEach((c,k)=>c.spend=x.plan.spend*mix[k]);if(x.actual)x.actual.target=x.plan.spend});
+ // scale actuals to the real month totals
+ const live=days.filter(x=>x.actual),sum=f=>live.reduce((a,x)=>a+f(x),0),ks=115688/sum(x=>x.actual.spend),kv=344076/sum(x=>x.actual.value),kc=3301/sum(x=>x.actual.conversions);
+ live.forEach(x=>{const a=x.actual;a.spend*=ks;a.value*=kv;a.conversions=Math.round(a.conversions*kc);a.roas=a.value/a.spend;a.spendAchievement=a.spend/x.plan.spend;a.valueAchievement=a.value/x.plan.value;a.convAchievement=a.conversions/x.plan.conversions});
+ d.dayPlan=days;
+ d.mtd=Object.assign({},d.mtd,{planSpend:183250,actualSpend:115688,planValue:473612,actualValue:344076,actualRoas:2.97,targetRoas:2.58,spendAchievement:115688/183250,valueAchievement:344076/473612,roasAchievement:2.97/2.58,budgetRemaining:67562,budgetVariancePct:.369});
+ d.channels=ch.map((c,k)=>({channel:c,planSpend:183250*mix[k],actualSpend:115688*mix[k],spendAchievement:.63,clicks:1000,conversions:3301*mix[k],actualValue:344076*mix[k],roas:2.97}));
+ d.latest=Object.assign({},d.latest,{date:'2026-10-20',dayNumber:20,monthName:'October',dayName:'Tuesday'});
+ const H=[];const hj=['Jumada II','Rajab','Shaban','Ramadan','Shawwal','Dhul Qadah','Dhul Hijjah','Muharram','Safar','Rabi I','Rabi II','Jumada I','Jumada II'];
+ for(let k=0;k<13;k++){const y=2025+Math.floor((9+k)/12),m=((9+k)%12)+1;const sp=150000+((k*37)%9)*6000+(k===5?60000:0);H.push({month:y+'-'+String(m).padStart(2,'0'),hijri:hj[k],cost:k===12?115688:sp,value:k===12?344076:sp*(2.4+((k*13)%7)/10),conversions:k===12?3301:Math.round(sp/35),partial:k===12})}
+ d.history=H;
+ d.topProjects=[{name:'The Jummah Club',spend:958,conversions:13,value:9665,roas:10.09},{name:'Humanappealusa.org',spend:1319,conversions:54,value:11007,roas:8.34},{name:'Kaffarah Broken Fast',spend:88,conversions:2,value:135,roas:1.54}];d.topProjectsDay='2026-10-20';
+ d.dayChannels=[{channel:'Search Brand',spend:483,clicks:210,conversions:38,value:10283,roas:21.29,planSpend:549},{channel:'Performance Max',spend:952,clicks:420,conversions:22,value:9282,roas:9.75,planSpend:1100},{channel:'Search Non-Brand',spend:3100,clicks:520,conversions:35,value:5900,roas:1.9,planSpend:3200},{channel:'Demand Gen',spend:320,clicks:120,conversions:4,value:300,roas:.94,planSpend:330},{channel:'Video (YouTube)',spend:160,clicks:40,conversions:1,value:20,roas:.12,planSpend:160}]; MONTH_EXTRA[CURRENT_ACCOUNT]={months:{},days:{},channels:[]};
+ render(d);
+});
