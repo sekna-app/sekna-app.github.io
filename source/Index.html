@@ -7900,7 +7900,7 @@ function dkDraw(pick){
  r.insertAdjacentHTML('beforeend','<i class="dk-bar"></i>');dkGlide(r.querySelector('.dk-bar'),r.querySelector('.dk-rb.here'),'barY',10);
  const g=DK_GRP.find(x=>x[0]===DK.g)||DK_GRP[0],list=dkBtns(g[0]);
  const swap=DK.lastG!==g[0];DK.lastG=g[0];
- p.innerHTML=`<h3>${esc(g[1])}</h3><small>${list.length} page${list.length===1?'':'s'}</small><nav class="dk-list${swap&&DK.drawn?' swap':''}"><i class="dk-pill"></i></nav>${dkTip()}`;
+ p.innerHTML=`<h3>${esc(g[1])}</h3><small>${list.length} page${list.length===1?'':'s'}</small><nav class="dk-list${swap&&DK.drawn?' swap':''}"><i class="dk-pill"></i></nav>`;
  const nav=p.querySelector('.dk-list');
  list.forEach((b,i)=>{const c=b.cloneNode(true);c.removeAttribute('id');c.classList.remove('active');c.classList.add('dk-it');c.style.setProperty('--i',i);if(b===a)c.classList.add('on');
   c.addEventListener('click',()=>{if(dkTasksOpen()&&!/openTasks/.test(b.getAttribute('onclick')||''))try{closeTasks();closeTasks()}catch(e){}});nav.appendChild(c)});
