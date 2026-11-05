@@ -6645,6 +6645,11 @@ window.addEventListener('load',function(){
     body.dark-mode .rx2-col.g .rx2-h{background:linear-gradient(90deg,#11352a,#151a22);color:#7fe0b0}
     body.dark-mode .rx2-col.w .rx2-h{background:linear-gradient(90deg,#3a1820,#151a22);color:#ff9aa6}
     body.dark-mode .rx2-bar{background:#232a36}
+    /* November Performance tiles on computers: the "of plan" line sits halfway between the number and the bar */
+    @media (min-width:1100px){
+      #channelPanel>.mtd-exec .ox-tile{display:flex!important;flex-direction:column}
+      #channelPanel>.mtd-exec .ox-tile>.ox-hs{flex:1 0 auto;display:flex;align-items:center;flex-wrap:wrap;gap:0 4px;min-height:34px}
+    }
 </style>
 </head>
 <body>
