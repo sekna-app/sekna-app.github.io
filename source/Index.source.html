@@ -6609,6 +6609,10 @@ window.addEventListener('load',function(){
     .app-modal-overlay.sk-page.push-anim{z-index:46;will-change:transform}
     .app-modal-overlay.sk-page.push-anim .app-modal{transform:none!important;transition:none!important}
     #pushShade{position:fixed;inset:0;background:#0b1430;opacity:0;pointer-events:none;z-index:45;will-change:opacity}
+    /* Team Tasks inside the page area (top bar, menu and bottom bar stay around them) */
+    #tasksOverlay.tk-in{left:var(--tkl,0px)!important;top:var(--tkt,0px)!important;right:0!important;bottom:0!important;width:auto!important;height:auto!important}
+    #tasksOverlay.tk-in .sk-modal-head{padding-top:14px!important}
+    #tasksOverlay.tk-in .tk-body{padding-bottom:110px}
 </style>
 </head>
 <body>
@@ -7874,7 +7878,7 @@ const dkSvg=p=>`<svg viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
 function dkBtns(g){const b=document.getElementById('grp-'+g);return b?[...b.querySelectorAll('.sk-nav-btn')].filter(x=>!x.hidden&&getComputedStyle(x).display!=='none'):[]}
 function dkTasksOpen(){const o=document.getElementById('tasksOverlay');return !!(o&&o.classList.contains('open'))}
 function dkActive(){
- if(dkTasksOpen()){const v=(window.TK&&TK.view)||'team',m={team:'ttTeamBtn',mine:'ttMineBtn',build:'ttBuildBtn',leave:'ttLeaveBtn',quick:'ttQuickBtn'};return document.getElementById(m[v])}
+ if(dkTasksOpen()){const v=(typeof TK!=='undefined'&&TK.view)||'team',m={team:'ttTeamBtn',mine:'ttMineBtn',build:'ttBuildBtn',leave:'ttLeaveBtn',quick:'ttQuickBtn'};return document.getElementById(m[v])}
  return document.querySelector('#sideDrawer .sk-grp-body .sk-nav-btn.active');
 }
 function dkPick(g){DK.g=g;dkDraw(true)}
@@ -7966,6 +7970,7 @@ function bbDraw(){
  b.innerHTML=tab('overview','Daily')+tab('days','Days')+`<button type="button" class="bb-fab${bbNoShare()?' no':''}" onclick="bbShare(this)" aria-label="Share this page on WhatsApp"><span>${ic('wa')}</span><small>Share</small></button>`+tab('channel','Month')+tab('lab','Lab');
 }
 function switchDashboardTab(tab){
+ {const o=document.getElementById('tasksOverlay');if(o&&o.classList.contains('open')){if(TK.form)tkSheetClose();closeTasks()}}
  setTimeout(()=>{try{bbDraw()}catch(e){}},0);
  setTimeout(()=>{try{storyTrayDraw()}catch(e){}},0);
  if(!canDo(tab)){const first=DASH_TABS.find(t=>canDo(t));if(!first)return;tab=first}
@@ -13759,6 +13764,17 @@ const TK_VIEWS={team:['Team Board','The whole team, week by week'],mine:['My Tas
 function tkSetTitle(t){const el=document.getElementById('tkTitle');if(!el)return;const w=String(t).split(' '),l=w.pop();el.innerHTML=(w.length?esc(w.join(' '))+' ':'')+`<span>${esc(l)}</span>`}
 const TK_VIEW_PERM={team:'team',mine:'mine',build:'build',quick:'quick',leave:'leaveview'};
 function tkViewOk(v){return canDo(TK_VIEW_PERM[v]||v)}
+// Team Tasks open inside the page area: under the top bar, and on computers beside the menu, so the
+// top bar, the menu and the phone's bottom bar stay in place around them.
+function tkInset(o){
+ o=o||document.getElementById('tasksOverlay');if(!o)return;
+ const vis=e=>e&&e.getClientRects().length&&getComputedStyle(e).display!=='none'?e.getBoundingClientRect():null;
+ const t=vis(document.querySelector('header.topbar')),pn=vis(document.getElementById('dkPanel'));
+ o.style.setProperty('--tkt',(t?Math.max(0,Math.round(t.bottom)):0)+'px');
+ o.style.setProperty('--tkl',(pn?Math.max(0,Math.round(pn.right)):0)+'px');
+ o.classList.add('tk-in');
+}
+window.addEventListener('resize',()=>{const o=document.getElementById('tasksOverlay');if(o&&o.classList.contains('open'))tkInset(o)});
 function openTasks(view){
  closeSidebar();
  view=view||'team';if(!tkViewOk(view)){view=Object.keys(TK_VIEW_PERM).find(tkViewOk);if(!view)return}
@@ -13766,12 +13782,12 @@ function openTasks(view){
  if(!TK.month){TK.month=tkMonthNow();TK.week=tkWeekOf(tkToday().d)}
  const o=document.getElementById('tasksOverlay');if(!o)return;
  text('tkKicker','TEAM TASKS');tkSetTitle(TK_VIEWS[TK.view][0]);
- o.classList.add('open');
+ tkInset(o);o.classList.add('open');
  if(TK.view==='mine')tkSeenNotice();
  if(!TK.data||TK.data.month!==TK.month){try{const c=JSON.parse(storeGet('sekna_tasks_'+TK.month)||'null');if(c)TK.data=c}catch(e){}}
  tkRender();tkLoad();
 }
-function closeTasks(e){if(e&&e.target!==e.currentTarget)return;if(TK.form&&!e){tkSheetClose();return}TK.form=null;const o=document.getElementById('tasksOverlay');if(o)o.classList.remove('open');setTimeout(()=>{try{bbDraw()}catch(e){}},0)}
+function closeTasks(e){if(e&&e.target!==e.currentTarget)return;if(TK.form&&!e){tkSheetClose();return}TK.form=null;TK._dkv=null;const o=document.getElementById('tasksOverlay');if(o)o.classList.remove('open');setTimeout(()=>{try{bbDraw()}catch(e){}},0)}
 async function tkLoad(){
  if(TK.view==='build'&&!tkCan('build')&&TK.data){tkRender();return}
  TK.busy=true;TK.err='';tkRender();
@@ -13786,6 +13802,8 @@ function tkSetWeek(w){TK.week=w;if(TK.today&&w!==tkWeekOf(tkToday().d))TK.today=
 // v179 the gold WhatsApp button in the header is gone: the bottom bar's Share button shares the Builder now.
 function tkWaShow(){const w=document.getElementById('tkWa');if(w)w.hidden=true;setTimeout(()=>{try{bbDraw()}catch(e){}},0)}
 function tkRender(){
+ // the menu beside the page follows the Team Tasks page that is open
+ if(TK._dkv!==TK.view&&dkTasksOpen()){TK._dkv=TK.view;setTimeout(()=>{try{bbDraw()}catch(e){}},0)}
  if(TK.form)return tkForm(true);
  if(!tkViewOk(TK.view))TK.view=Object.keys(TK_VIEW_PERM).find(tkViewOk)||'team';
  const b=document.getElementById('tasksBody');if(!b)return;
