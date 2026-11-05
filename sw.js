@@ -48,21 +48,36 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   if (event.request.method !== 'GET' || url.origin !== self.location.origin) return;
+  const nav = event.request.mode === 'navigate';
+  // the app page itself (other pages such as the download page keep their own copy)
+  const app = nav && (url.pathname === '/' || url.pathname === '/index.html');
   // Pages skip the browser's HTTP cache too, so a new release shows on the next open.
   // Redirects stay manual so the browser follows them itself (a followed redirect
   // handed back to a page load makes it fail).
-  const req = event.request.mode === 'navigate'
+  const net = (nav
     ? fetch(url.href, { cache: 'no-cache', credentials: 'same-origin', redirect: 'manual' })
-    : fetch(event.request);
-  event.respondWith(
-    req
-      .then(res => {
-        if (res.ok && res.type === 'basic') {
-          const copy = res.clone();
-          caches.open(CACHE).then(cache => cache.put(event.request, copy));
-        }
-        return res;
-      })
-      .catch(() => caches.match(event.request).then(hit => hit || caches.match('./index.html')))
-  );
+    : fetch(event.request))
+    .then(res => {
+      if (res.ok && res.type === 'basic') {
+        const copy = res.clone();
+        caches.open(CACHE).then(cache => cache.put(app ? './index.html' : event.request, copy));
+      }
+      return res;
+    });
+  const cached = () => caches.match(app ? './index.html' : event.request);
+  if (!app) {
+    event.respondWith(net.catch(() => cached().then(hit => hit || caches.match('./index.html'))));
+    return;
+  }
+  // Opening the app on a slow connection: if the page has not come back within 2.5 seconds,
+  // the saved copy opens instead, and the download carries on to update it for next time.
+  // The opening screen never waits on the internet.
+  event.respondWith(new Promise(resolve => {
+    let done = false;
+    const give = r => { if (!done && r) { done = true; resolve(r); } };
+    const timer = setTimeout(() => cached().then(give), 2500);
+    net.then(res => { clearTimeout(timer); give(res); })
+      .catch(() => { clearTimeout(timer); cached().then(hit => { if (hit) give(hit); else if (!done) { done = true; resolve(Response.error()); } }); });
+  }));
+  event.waitUntil(net.catch(() => {}));
 });

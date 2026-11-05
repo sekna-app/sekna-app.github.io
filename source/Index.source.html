@@ -5,7 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Changa:wght@500;600;700&family=Inter:wght@800&family=Herr+Von+Muellerhoff&family=Space+Grotesk:wght@500&display=swap" rel="stylesheet">
+  <!-- the fonts load beside the page so a slow connection never holds back the opening screen -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Changa:wght@500;600;700&family=Inter:wght@800&family=Herr+Von+Muellerhoff&family=Space+Grotesk:wght@500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Changa:wght@500;600;700&family=Inter:wght@800&family=Herr+Von+Muellerhoff&family=Space+Grotesk:wght@500&display=swap" rel="stylesheet"></noscript>
   <script>
 // v75 — startup diagnostics: show why the dashboard did not start instead of an endless "Loading…".
 window.SEKNA_ERRORS=[];
@@ -12833,6 +12835,9 @@ var FB_MESSAGING=null;
 function webPushConfigured(){return !!(window.SEKNA_WEB&&window.SEKNA_FIREBASE&&window.SEKNA_FIREBASE.apiKey&&window.SEKNA_FIREBASE.vapidKey)}
 function isIosDevice(){return /iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1)}
 function isInstalledApp(){return (window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true}
+// Every visitor gets the saved copy of the app (not only those with notifications on), so on a slow
+// connection the page opens from it instead of waiting on the download.
+if('serviceWorker' in navigator&&location.protocol==='https:')window.addEventListener('load',()=>setTimeout(()=>{try{navigator.serviceWorker.register('sw.js').catch(()=>{})}catch(e){}},3000));
 function webPushBrowserReady(){return 'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window}
 function webPushOn(){return !!storeGet(WEB_PUSH_KEY)&&('Notification' in window)&&Notification.permission==='granted'}
 function loadScriptOnce(src){
