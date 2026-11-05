@@ -86,13 +86,13 @@ function doGet(e) {
   }
 
   return HtmlService.createHtmlOutputFromFile('Index')
-    .setTitle('SEKNA')
+    .setTitle('HEMERA')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
 }
 
 /**
  * Small JSON endpoint for the Android app. While a device waits for approval the app
- * asks here (in the background) and shows a SEKNA notification once access is granted.
+ * asks here (in the background) and shows a HEMERA notification once access is granted.
  * The token travels in the POST body, never in the URL.
  */
 function doPost(e) {
@@ -109,7 +109,7 @@ function doPost(e) {
 }
 
 /**
- * The SEKNA web page (sekna-app.github.io) calls the same functions the dashboard
+ * The HEMERA web page (sekna-app.github.io) calls the same functions the dashboard
  * already uses through google.script.run. Only this list can be called, and each
  * function keeps its own access-token / admin checks.
  */
@@ -827,7 +827,7 @@ function aggregateCampaignRows_(rows, tz, channels) {
 }
 
 /**
- * The archive summary, kept in a Drive file named "SEKNA archive summary (USA).json".
+ * The archive summary, kept in a Drive file named "HEMERA archive summary (USA).json".
  * Its fingerprint is the archive's row count plus its last row, so moving a month into
  * the archive (or editing its last row) rebuilds it on the next request.
  */
@@ -858,7 +858,7 @@ function getArchiveSummary_(ss, account, tz) {
     let file = null;
     if (fileId) { try { file = DriveApp.getFileById(fileId); } catch (e) {} }
     if (file) file.setContent(text);
-    else props.setProperty(fileKey, DriveApp.createFile('SEKNA archive summary (' + account.shortLabel + ').json', text, 'application/json').getId());
+    else props.setProperty(fileKey, DriveApp.createFile('HEMERA archive summary (' + account.shortLabel + ').json', text, 'application/json').getId());
   } catch (err) {
     console.error('Archive summary file could not be saved: ' + err);
   }
@@ -1498,7 +1498,7 @@ function handleMediaPlanSheetChange(e) {
  * as formula recalculation, imports, APIs, or another script writing values.
  */
 function checkMediaPlanAndPush() {
-  if (restMoved_()) return; // the SEKNA server checks every 2 minutes now
+  if (restMoved_()) return; // the HEMERA server checks every 2 minutes now
   try { sendDueAnnouncementPush_(); } catch (err) { console.error('Announcement push failed: ' + err); }
   try { checkAppReleaseAndPush_(); } catch (err) { console.error('App release check failed: ' + err); }
   if (!shouldRunScheduledCheck_()) return;
@@ -1906,7 +1906,7 @@ function base64UrlBytes_(bytes) {
 
 
 /**
- * SEKNA access control
+ * HEMERA access control
  * --------------------
  * Nobody receives dashboard data until their device is approved:
  * 1) they enter their email and confirm it with a 6-digit code sent by email;
@@ -1922,14 +1922,14 @@ function base64UrlBytes_(bytes) {
 const ACCESS = {
   SPREADSHEET_ID: '1PWV9exRy9dwW3H66bt7W4E1SQb63EJbgVz96yS6fQkI',
   SHEET_NAME: 'SEKNA Access',
-  // Access requests, ideas and server notices go to the SEKNA inbox.
+  // Access requests, ideas and server notices go to the HEMERA inbox.
   ADMIN_EMAIL: 'seknaapp@gmail.com',
   // These accounts open the Admin tab and are approved as soon as they confirm their email code.
   ADMIN_EMAILS: ['ibrahim.amin6700@gmail.com', 'ibrahim@sekna.co.uk'],
-  SENDER_NAME: 'SEKNA',
+  SENDER_NAME: 'HEMERA',
   // Emails go out from this address. It is a "Send mail as" alias of the account that runs the script.
   SENDER_EMAIL: 'seknaapp@gmail.com',
-  // The SEKNA web app people open in the browser (links in invite / approval emails).
+  // The HEMERA web app people open in the browser (links in invite / approval emails).
   WEB_PAGE_URL: 'https://sekna-app.web.app',
   WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbzjgZ1nXxLTcFdeFCIEznOj2H0XCo9YGUeu1YF2pJdsQiOo_aM-Mn6HxKKNk8peEuM1Ig/exec',
   CODE_TTL_SECONDS: 600,
@@ -1954,13 +1954,13 @@ function setupAccessControl() {
   sendSeknaEmail_({
     to: ACCESS.ADMIN_EMAIL,
     name: ACCESS.SENDER_NAME,
-    subject: 'SEKNA access control is ready',
+    subject: 'HEMERA access control is ready',
     htmlBody: accessEmailHtml_('Access control is ready',
-      '<p style="margin:0 0 12px;font-size:14px;line-height:1.6;color:#4c5464">New access requests for the SEKNA dashboard will arrive at this address.</p>' +
+      '<p style="margin:0 0 12px;font-size:14px;line-height:1.6;color:#4c5464">New access requests for the HEMERA dashboard will arrive at this address.</p>' +
       '<p style="margin:0;font-size:14px;line-height:1.6;color:#4c5464">You can review or revoke access at any time in the ' +
       '<a href="' + escapeHtml_(sheet.getParent().getUrl()) + '" style="color:#203C8E;font-weight:700">SEKNA Access sheet</a>.</p>')
   });
-  return 'SEKNA access control is ready: ' + sheet.getParent().getUrl();
+  return 'HEMERA access control is ready: ' + sheet.getParent().getUrl();
 }
 
 /** Called by the dashboard: emails a 6-digit verification code. */
@@ -1986,9 +1986,9 @@ function accessRequestCode(email, device) {
     to: email,
     name: ACCESS.SENDER_NAME,
     replyTo: ACCESS.SENDER_EMAIL,
-    subject: 'Your SEKNA verification code: ' + code,
+    subject: 'Your HEMERA verification code: ' + code,
     htmlBody: accessEmailHtml_('Hi ' + escapeHtml_(name) + ',',
-      '<p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#4c5464">Use this code to verify your email and request access to the SEKNA dashboard:</p>' +
+      '<p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#4c5464">Use this code to verify your email and request access to the HEMERA dashboard:</p>' +
       '<div style="margin:0 0 16px;padding:16px;border-radius:12px;background:#eef2fd;text-align:center;font-size:30px;font-weight:800;letter-spacing:8px;color:#203C8E">' + code + '</div>' +
       '<p style="margin:0;font-size:12px;line-height:1.6;color:#8a92a0">The code expires in 10 minutes. If you did not request it, you can ignore this email.</p>')
   });
@@ -2180,7 +2180,7 @@ function sendAdminAccessEmail_(req, autoApproved) {
       ' is already approved and confirmed their email on a new device, so it was approved automatically.</p>' + details +
       emailButton_(accessReviewUrl_(req.id, 'revoke'), 'Revoke this device', false)
     : '<p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#4c5464">' + escapeHtml_(req.name) +
-      ' confirmed their email and is asking for access to the SEKNA dashboard.</p>' + details +
+      ' confirmed their email and is asking for access to the HEMERA dashboard.</p>' + details +
       emailButton_(accessReviewUrl_(req.id, 'approve'), 'Approve', true) +
       emailButton_(accessReviewUrl_(req.id, 'deny'), 'Deny', false);
   sendSeknaEmail_({
@@ -2209,11 +2209,11 @@ function accessReviewUrl_(id, decision) {
 /** Review page opened from the admin email. A button confirms the decision, so link scanners cannot approve anything. */
 function renderAccessReviewPage_(p) {
   if (accessMoved_()) {
-    // Sign-in lives on the SEKNA server now: the same link opens its review page.
+    // Sign-in lives on the HEMERA server now: the same link opens its review page.
     const url = 'https://europe-west2-human-appeal-media-plan.cloudfunctions.net/api/review?id=' + encodeURIComponent(String(p.id || '')) +
       '&decision=' + encodeURIComponent(String(p.decision || '')) + '&sig=' + encodeURIComponent(String(p.sig || ''));
     return HtmlService.createHtmlOutput('<!DOCTYPE html><html><head><meta charset="utf-8"><base target="_top"></head><body style="font-family:Arial,sans-serif;padding:30px;text-align:center">' +
-      '<p>The SEKNA review page moved.</p><p><a href="' + escapeHtml_(url) + '" style="display:inline-block;padding:12px 22px;border-radius:10px;background:#203C8E;color:#fff;font-weight:700;text-decoration:none">Open the request</a></p>' +
+      '<p>The HEMERA review page moved.</p><p><a href="' + escapeHtml_(url) + '" style="display:inline-block;padding:12px 22px;border-radius:10px;background:#203C8E;color:#fff;font-weight:700;text-decoration:none">Open the request</a></p>' +
       '<script>try{window.top.location.href=' + JSON.stringify(url) + '}catch(e){}</script></body></html>').setTitle('HEMERA • Access request');
   }
   const id = String(p.id || '');
@@ -2246,13 +2246,13 @@ function renderAccessReviewPage_(p) {
     'h1{margin:6px 0 14px;font-size:22px;letter-spacing:-.02em}.muted{font-size:13px;color:#636b7a}' +
     'button{width:100%;margin-top:8px;padding:14px;border:0;border-radius:13px;font-size:14px;font-weight:800;color:#fff;cursor:pointer}' +
     'button.primary{background:linear-gradient(180deg,#2b4db0,#203c8e)}button.danger{background:#c0392b}button:disabled{opacity:.75;cursor:default}' +
-    '</style></head><body><div class="card"><div class="brand">SEKNA</div>' + body + '</div></body></html>';
+    '</style></head><body><div class="card"><div class="brand">HEMERA</div>' + body + '</div></body></html>';
   return HtmlService.createHtmlOutput(html).setTitle('HEMERA • Access request')
     .addMetaTag('viewport', 'width=device-width, initial-scale=1');
 }
 
 /**
- * Sends every SEKNA email from ACCESS.SENDER_EMAIL when that address is set up as a
+ * Sends every HEMERA email from ACCESS.SENDER_EMAIL when that address is set up as a
  * Gmail "Send mail as" alias of this account. Until then (or if Gmail refuses), the
  * email still goes out the old way so sign-in codes never stop.
  */
@@ -2296,7 +2296,7 @@ function testSeknaEmail() {
     to: ACCESS.ADMIN_EMAIL,
     name: ACCESS.SENDER_NAME,
     replyTo: ACCESS.SENDER_EMAIL,
-    subject: 'SEKNA email test',
+    subject: 'HEMERA email test',
     htmlBody: accessEmailHtml_('Email test', '<p style="margin:0;font-size:14px;line-height:1.6;color:#4c5464">' +
       (ready ? 'This email was sent from ' + escapeHtml_(ACCESS.SENDER_EMAIL) + '.' : 'The alias ' + escapeHtml_(ACCESS.SENDER_EMAIL) + ' is not ready yet, so this came from the default sender.') + '</p>')
   });
@@ -2306,7 +2306,7 @@ function testSeknaEmail() {
 function accessEmailHtml_(title, bodyHtml) {
   return '<div style="background:#f4f6fb;padding:28px 12px;font-family:Arial,Helvetica,sans-serif;color:#1d2433">' +
     '<div style="max-width:480px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6eaf4">' +
-    '<div style="background:#203C8E;padding:20px 24px;color:#ffffff;font-size:22px;font-weight:800;letter-spacing:1px">SEKNA' +
+    '<div style="background:#203C8E;padding:20px 24px;color:#ffffff;font-size:22px;font-weight:800;letter-spacing:1px">HEMERA' +
     '<div style="height:3px;width:38px;background:#C28D3E;margin-top:8px;border-radius:2px"></div></div>' +
     '<div style="padding:24px"><h2 style="margin:0 0 12px;font-size:19px;color:#1d2433">' + title + '</h2>' + bodyHtml + '</div>' +
     '<div style="padding:14px 24px;background:#f8f9fc;color:#8a92a0;font-size:11px">HEMERA • Named after daylight, built for clarity.</div></div></div>';
@@ -2442,11 +2442,11 @@ function adminInvite(token, email) {
       to: email,
       name: ACCESS.SENDER_NAME,
       replyTo: ACCESS.SENDER_EMAIL,
-      subject: name + ', you have access to the SEKNA dashboard',
+      subject: name + ', you have access to the HEMERA dashboard',
       htmlBody: accessEmailHtml_('Hi ' + escapeHtml_(name) + ',',
-        '<p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#4c5464">You have been given access to the SEKNA dashboard. ' +
-        'Open the SEKNA app, or the link below, and confirm your email with the code we send you.</p>' +
-        emailButton_(ACCESS.WEB_PAGE_URL, 'Open SEKNA', true))
+        '<p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#4c5464">You have been given access to the HEMERA dashboard. ' +
+        'Open the HEMERA app, or the link below, and confirm your email with the code we send you.</p>' +
+        emailButton_(ACCESS.WEB_PAGE_URL, 'Open HEMERA', true))
     });
     return { ok: true, already: false, name: name };
   } finally {
@@ -2470,11 +2470,11 @@ function applyAccessDecision_(id, status) {
         to: row.email,
         name: ACCESS.SENDER_NAME,
         replyTo: ACCESS.SENDER_EMAIL,
-        subject: "You're verified, " + row.name + ' — SEKNA dashboard access is active',
+        subject: "You're verified, " + row.name + ' — HEMERA dashboard access is active',
         htmlBody: accessEmailHtml_("You're verified, " + escapeHtml_(row.name) + '!',
-          '<p style="margin:0 0 12px;font-size:14px;line-height:1.6;color:#4c5464">Your identity has been confirmed and your access to the SEKNA dashboard is now active.</p>' +
-          '<p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#4c5464">Open the SEKNA app — or SEKNA on the web — to continue.</p>' +
-          emailButton_(ACCESS.WEB_PAGE_URL, 'Open SEKNA', true))
+          '<p style="margin:0 0 12px;font-size:14px;line-height:1.6;color:#4c5464">Your identity has been confirmed and your access to the HEMERA dashboard is now active.</p>' +
+          '<p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#4c5464">Open the HEMERA app — or HEMERA on the web — to continue.</p>' +
+          emailButton_(ACCESS.WEB_PAGE_URL, 'Open HEMERA', true))
       });
     }
     return { status: status, name: row.name, email: row.email };
@@ -2723,7 +2723,7 @@ function adminClearAnnouncement(token) {
 function sendAnnouncementPush_(s) {
   const a = s.announcement;
   const body = String(a.message).replace(/\{name\}/gi, 'team');
-  sendFcmTopicMessage_(a.title || 'SEKNA', body.length > 180 ? body.slice(0, 177) + '…' : body, null, 'usa', 'announcement');
+  sendFcmTopicMessage_(a.title || 'HEMERA', body.length > 180 ? body.slice(0, 177) + '…' : body, null, 'usa', 'announcement');
   a.pushed = true;
   setAppState_(s);
   return true;
@@ -2735,7 +2735,7 @@ function sendDueAnnouncementPush_() {
   if (a && a.push && !a.pushed && announcementIsLive_(a)) sendAnnouncementPush_(s);
 }
 
-/** Tells the team when a new signed SEKNA app version is published on GitHub. */
+/** Tells the team when a new signed HEMERA app version is published on GitHub. */
 function checkAppReleaseAndPush_() {
   const props = PropertiesService.getScriptProperties();
   const last = Number(props.getProperty(APP_RELEASE.LAST_CHECK_KEY)) || 0;
@@ -2755,14 +2755,14 @@ function checkAppReleaseAndPush_() {
   if (previous === tag) return;
   if (previous) {
     const version = tag.replace(/^v/i, '');
-    sendFcmTopicMessage_('SEKNA ' + version + ' is available',
-      'A new version of the SEKNA app is ready. Open SEKNA to install it.', null, 'usa', 'app_update');
+    sendFcmTopicMessage_('HEMERA ' + version + ' is available',
+      'A new version of the HEMERA app is ready. Open HEMERA to install it.', null, 'usa', 'app_update');
   }
   props.setProperty(APP_RELEASE.LAST_TAG_KEY, tag);
 }
 
 
-/* ---------- v78: notifications for SEKNA on the web ---------- */
+/* ---------- v78: notifications for HEMERA on the web ---------- */
 /**
  * Adds (or removes) a browser's notification token to the same topic the Android
  * app listens to, so the web app gets the same notifications. Only approved people.
@@ -2855,7 +2855,7 @@ function adminSendMonthlyReport(token, pdfBase64, meta) {
   if (!bytes.length) throw new Error('The report is empty.');
   if (bytes.length > V87.REPORT_MAX_BYTES) throw new Error('The report is too large to email.');
   const title = String(meta.title || 'Media Plan results').slice(0, 120);
-  const fileName = (String(meta.fileName || '').replace(/[^\w.\- ]/g, '').slice(0, 80) || 'SEKNA-Report') .replace(/\.pdf$/i, '') + '.pdf';
+  const fileName = (String(meta.fileName || '').replace(/[^\w.\- ]/g, '').slice(0, 80) || 'HEMERA-Report') .replace(/\.pdf$/i, '') + '.pdf';
   const people = meta.testOnly
     ? [{ email: me.email, name: me.name || nameFromEmail_(me.email) }]
     : approvedPeople_();
@@ -2865,7 +2865,7 @@ function adminSendMonthlyReport(token, pdfBase64, meta) {
   }
   const blob = Utilities.newBlob(bytes, 'application/pdf', fileName);
   // The email's button downloads the PDF, kept in a Drive folder that anyone with the link can view.
-  let button = emailButton_(ACCESS.WEB_PAGE_URL, 'Open SEKNA', true);
+  let button = emailButton_(ACCESS.WEB_PAGE_URL, 'Open HEMERA', true);
   try {
     const it = DriveApp.getFoldersByName(V87.REPORTS_FOLDER);
     const folder = it.hasNext() ? it.next() : DriveApp.createFolder(V87.REPORTS_FOLDER);
@@ -2978,11 +2978,11 @@ function submitIdea(token, title, text) {
       to: ACCESS.ADMIN_EMAIL,
       name: ACCESS.SENDER_NAME,
       replyTo: a.email,
-      subject: '💡 New idea from ' + (a.name || a.email),
+      subject: 'New idea from ' + (a.name || a.email),
       htmlBody: accessEmailHtml_('New idea from ' + escapeHtml_(a.name || a.email),
         (title ? '<p style="margin:0 0 8px;font-size:15px;font-weight:700">' + escapeHtml_(title) + '</p>' : '') +
         '<p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#4c5464;white-space:pre-wrap">' + escapeHtml_(text) + '</p>' +
-        emailButton_(ACCESS.WEB_PAGE_URL, 'Open SEKNA', true))
+        emailButton_(ACCESS.WEB_PAGE_URL, 'Open HEMERA', true))
     });
   } catch (e) {}
   return { ok: true, id: id };
@@ -3036,12 +3036,12 @@ function adminIdeaUpdate(token, id, status, reply) {
         to: String(r[2]),
         name: ACCESS.SENDER_NAME,
         replyTo: ACCESS.SENDER_EMAIL,
-        subject: 'Your SEKNA idea is ' + label,
+        subject: 'Your HEMERA idea is ' + label,
         htmlBody: accessEmailHtml_('Hi ' + escapeHtml_(String(r[3] || nameFromEmail_(r[2]))) + ',',
           '<p style="margin:0 0 10px;font-size:14px;line-height:1.6;color:#4c5464">Your idea' +
           (r[4] ? ' “' + escapeHtml_(r[4]) + '”' : '') + ' is now <b>' + escapeHtml_(label) + '</b>.</p>' +
           (reply ? '<p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#1d2433;white-space:pre-wrap">' + escapeHtml_(reply) + '</p>' : '') +
-          emailButton_(ACCESS.WEB_PAGE_URL, 'Open SEKNA', true))
+          emailButton_(ACCESS.WEB_PAGE_URL, 'Open HEMERA', true))
       });
     } catch (e) {}
   }
@@ -3235,10 +3235,10 @@ function rerankCampaigns_(ss, account, tz, bw) {
 }
 
 /* Server switches (v89, v90) ---------------------------------------------------
- * The dashboard data now comes from the SEKNA server on Firebase. When it fails, the
+ * The dashboard data now comes from the HEMERA server on Firebase. When it fails, the
  * app moves to Apps Script by itself. Since v90 the switch log lives on the server;
  * Apps Script only sends the email (at most one every 3 hours), and keeps the log in
- * the "SEKNA Server" tab only when the server itself cannot be reached.
+ * the "HEMERA Server" tab only when the server itself cannot be reached.
  */
 const SERVER_LOG = { SHEET: 'SEKNA Server', EMAIL_EVERY_MS: 3 * 3600 * 1000, HEADER: ['Time', 'Name', 'Email', 'Server', 'Reason', 'Device'] };
 
@@ -3252,7 +3252,7 @@ function reportServerEvent(token, kind, reason, device) {
   return { ok: true };
 }
 
-/** Called by the SEKNA server after it logged a switch: the email only. */
+/** Called by the HEMERA server after it logged a switch: the email only. */
 function notifyServerSwitch(token, reason) {
   serverSwitchEmail_(assertAccess_(token), String(reason || '').slice(0, 200));
   return { ok: true };
@@ -3267,12 +3267,12 @@ function serverSwitchEmail_(who, reason) {
     sendSeknaEmail_({
       to: ACCESS.ADMIN_EMAIL,
       name: ACCESS.SENDER_NAME,
-      subject: '🟠 SEKNA moved to the backup server',
-      htmlBody: accessEmailHtml_('SEKNA is running on the backup server',
-        '<p style="margin:0 0 10px;font-size:14px;line-height:1.6;color:#4c5464">The Firebase server did not answer, so SEKNA switched to Apps Script by itself. The team can keep working.</p>' +
+      subject: 'HEMERA moved to the backup server',
+      htmlBody: accessEmailHtml_('HEMERA is running on the backup server',
+        '<p style="margin:0 0 10px;font-size:14px;line-height:1.6;color:#4c5464">The Firebase server did not answer, so HEMERA switched to Apps Script by itself. The team can keep working.</p>' +
         '<p style="margin:0 0 16px;font-size:13px;line-height:1.6;color:#4c5464"><b>Reason:</b> ' + escapeHtml_(reason || 'Unknown') + '<br><b>Seen by:</b> ' + escapeHtml_(who.name || who.email) + '</p>' +
-        '<p style="margin:0 0 16px;font-size:13px;line-height:1.6;color:#4c5464">Open Admin → Server in SEKNA for details. If the monthly limit was reached, billing has to be turned back on in Google Cloud.</p>' +
-        emailButton_(ACCESS.WEB_PAGE_URL, 'Open SEKNA', true))
+        '<p style="margin:0 0 16px;font-size:13px;line-height:1.6;color:#4c5464">Open Admin → Server in HEMERA for details. If the monthly limit was reached, billing has to be turned back on in Google Cloud.</p>' +
+        emailButton_(ACCESS.WEB_PAGE_URL, 'Open HEMERA', true))
     });
   } catch (e) {}
 }
@@ -3296,7 +3296,7 @@ function adminClearServerEvents(token) {
 }
 
 /* ===================== Team Tasks =====================
- * One sheet ("SEKNA Tasks") holds every task as a row. Weekly tasks carry the month and the
+ * One sheet ("HEMERA Tasks") holds every task as a row. Weekly tasks carry the month and the
  * weeks (1–4) they repeat in; quick requests are one-off asks with an optional deadline.
  * Managers (Team Leader, Media Manager, Head of Media) and the admins build the tasks;
  * everyone with access can see the board and tick their own tasks.
@@ -3567,7 +3567,7 @@ function tasksSendWeek(token, month, week) {
     try {
       sendSeknaEmail_({
         to: email, name: ACCESS.SENDER_NAME, replyTo: a.email,
-        subject: '📋 Your SEKNA tasks — Week ' + week + ' (' + range + ')',
+        subject: 'Your HEMERA tasks — Week ' + week + ' (' + range + ')',
         htmlBody: accessEmailHtml_('Week ' + week + ' tasks · ' + escapeHtml_(range),
           '<p style="margin:0 0 14px;font-size:14px;color:#4c5464">Hi ' + escapeHtml_(String(p.name).split(' ')[0]) + ', here are your tasks for this week.</p>' + list +
           emailButton_(ACCESS.WEB_PAGE_URL + '/?tasks=mine', 'Open My Tasks', true))
@@ -3575,7 +3575,7 @@ function tasksSendWeek(token, month, week) {
     } catch (e) { console.error('Task email to ' + email + ' failed: ' + e); }
   });
   setTaskNotice_(emails, 'Week ' + week + ' · ' + range, e => mine[e].length);
-  emails.forEach(email => { try { sendUserPush_(email, 'SEKNA · Week ' + week + ' tasks', 'Your tasks for ' + range + ' are ready.'); } catch (e) {} });
+  emails.forEach(email => { try { sendUserPush_(email, 'HEMERA · Week ' + week + ' tasks', 'Your tasks for ' + range + ' are ready.'); } catch (e) {} });
   const props = PropertiesService.getScriptProperties();
   let sent = {};
   try { sent = JSON.parse(props.getProperty(TASKS.SENT_PROP) || '{}') || {}; } catch (e) {}
@@ -3648,7 +3648,7 @@ function backupTodayFor_(email) {
  * Run installLeaveMorningPush() once from the Apps Script editor to start it.
  */
 function leaveMorningPush() {
-  if (tasksMoved_()) return; // the SEKNA server sends it now
+  if (tasksMoved_()) return; // the HEMERA server sends it now
   let rows;
   try { rows = readTaskRows_(true); } catch (e) { return; }
   const now = new Date();
@@ -3662,8 +3662,8 @@ function leaveMorningPush() {
       const snaps = (b.snaps || []).slice().sort((x, y) => toMin(x.t) - toMin(y.t));
       const first = String(b.name).split(' ')[0];
       const body = first + ' is off today — you are covering. ' +
-        (snaps.length ? snaps.length + ' snapshot' + (snaps.length > 1 ? 's' : '') + ', first ' + snaps[0].n + ' at ' + snaps[0].t + '.' : 'Open SEKNA for the details.');
-      try { sendUserPush_(email, 'SEKNA · You are the backup today', body); } catch (e) { console.error('Backup push to ' + email + ' failed: ' + e); }
+        (snaps.length ? snaps.length + ' snapshot' + (snaps.length > 1 ? 's' : '') + ', first ' + snaps[0].n + ' at ' + snaps[0].t + '.' : 'Open HEMERA for the details.');
+      try { sendUserPush_(email, 'HEMERA · You are the backup today', body); } catch (e) { console.error('Backup push to ' + email + ' failed: ' + e); }
     });
   });
 }
@@ -3699,12 +3699,12 @@ function sendUserPush_(email, title, body) {
   return res.getResponseCode();
 }
 
-/* ---------- Team Tasks on the SEKNA server (Firebase) ----------
+/* ---------- Team Tasks on the HEMERA server (Firebase) ----------
  * The admin moves Team Tasks once from Admin → Server. After that this script keeps only
  * two jobs for the server: sending its emails and pushes (relaySend), and a copy of members. */
 function tasksMoved_() { return PropertiesService.getScriptProperties().getProperty('SEKNA_TASKS_MOVED') === '1'; }
 function assertTasksHere_() {
-  if (tasksMoved_()) throw new Error('Team Tasks moved to the new SEKNA server. Close SEKNA and open it again.');
+  if (tasksMoved_()) throw new Error('Team Tasks moved to the new HEMERA server. Close HEMERA and open it again.');
 }
 /** The settings the move copies: members, leave freeze, "new tasks" notices, weeks sent. lock: stop answering Team Tasks here. */
 function tasksExportProps(token, lock) {
@@ -3722,7 +3722,7 @@ function teamStatus(token) {
   return { member: getMembers_()[normalizeEmail_(a.email)] || {}, taskNotice: taskNoticeFor_(a.email), backupToday: backupTodayFor_(a.email) };
 }
 /**
- * Emails and pushes asked for by the SEKNA server. Google signs the server's request (an identity
+ * Emails and pushes asked for by the HEMERA server. Google signs the server's request (an identity
  * token), and Google checks it here, so only that server account can use this; no key is stored.
  */
 function relaySend(idToken, payload) {
@@ -3739,21 +3739,21 @@ function relaySend(idToken, payload) {
     if (!to) return;
     try {
       sendSeknaEmail_({ to: to, name: ACCESS.SENDER_NAME, replyTo: m.replyTo ? normalizeEmail_(m.replyTo) : undefined,
-        subject: String(m.subject || 'SEKNA').slice(0, 200),
+        subject: String(m.subject || 'HEMERA').slice(0, 200),
         htmlBody: accessEmailHtml_(String(m.title || ''), String(m.html || '') +
-          (m.button && m.button.url ? emailButton_(String(m.button.url), String(m.button.label || 'Open SEKNA'), true) : '') +
+          (m.button && m.button.url ? emailButton_(String(m.button.url), String(m.button.label || 'Open HEMERA'), true) : '') +
           (Array.isArray(m.buttons) ? m.buttons.slice(0, 3).map(b => emailButton_(String(b.url || ''), String(b.label || 'Open'), !!b.primary)).join('') : '') +
           (m.footer ? '<p style="margin:18px 0 0;font-size:12px;color:#8a92a0">' + escapeHtml_(m.footer) + '</p>' : '')) });
       emails++;
     } catch (e) { console.error('Relay email to ' + to + ' failed: ' + e); }
   });
   (Array.isArray(payload.pushes) ? payload.pushes : []).slice(0, 60).forEach(p => {
-    try { if (normalizeEmail_(p.email)) { sendUserPush_(normalizeEmail_(p.email), String(p.title || 'SEKNA'), String(p.body || '')); pushes++; } }
+    try { if (normalizeEmail_(p.email)) { sendUserPush_(normalizeEmail_(p.email), String(p.title || 'HEMERA'), String(p.body || '')); pushes++; } }
     catch (e) { console.error('Relay push to ' + p.email + ' failed: ' + e); }
   });
   let topics = 0;
   (Array.isArray(payload.topics) ? payload.topics : []).slice(0, 5).forEach(t => {
-    try { sendFcmTopicMessage_(String(t.title || 'SEKNA'), String(t.body || ''), null, String(t.account || 'usa'), String(t.eventType || 'announcement')); topics++; }
+    try { sendFcmTopicMessage_(String(t.title || 'HEMERA'), String(t.body || ''), null, String(t.account || 'usa'), String(t.eventType || 'announcement')); topics++; }
     catch (e) { console.error('Relay topic push failed: ' + e); }
   });
   // The server keeps maintenance and the team message; this copy feeds the Apps Script backup.
@@ -3761,12 +3761,12 @@ function relaySend(idToken, payload) {
   return { emails: emails, pushes: pushes, topics: topics };
 }
 
-/* ---------- Sign-in on the SEKNA server (Firebase) ----------
+/* ---------- Sign-in on the HEMERA server (Firebase) ----------
  * After the admin moves sign-in (Admin → Server), the server keeps the devices and rewrites
  * the SEKNA Access sheet as a copy after every change, so the checks below keep working. */
 function accessMoved_() { return PropertiesService.getScriptProperties().getProperty('SEKNA_ACCESS_MOVED') === '1'; }
 function assertAccessHere_() {
-  if (accessMoved_()) throw new Error('Sign-in moved to the new SEKNA server. Close SEKNA and open it again.');
+  if (accessMoved_()) throw new Error('Sign-in moved to the new HEMERA server. Close HEMERA and open it again.');
 }
 /** What the move copies: the key that signs review links, and maintenance / team message. lock: stop sign-in changes here. */
 function accessExportProps(token, lock) {
@@ -3775,13 +3775,13 @@ function accessExportProps(token, lock) {
   return { secret: getAccessSecret_(), app: getAppState_(), moved: accessMoved_() };
 }
 
-/* ---------- Everything else on the SEKNA server ----------
+/* ---------- Everything else on the HEMERA server ----------
  * Usage and share counts, ideas, plan history and the "new day" notifications move with
  * Admin → Server → Move the rest. The monthly report and web notifications keep working
  * here as the server's fallback until the Gmail password and the push permission are set. */
 function restMoved_() { return PropertiesService.getScriptProperties().getProperty('SEKNA_REST_MOVED') === '1'; }
 function assertRestHere_() {
-  if (restMoved_()) throw new Error('This moved to the new SEKNA server. Close SEKNA and open it again.');
+  if (restMoved_()) throw new Error('This moved to the new HEMERA server. Close HEMERA and open it again.');
 }
 /** Where the notifications are up to (so the server neither repeats nor misses a day). lock: stop here. */
 function restExportProps(token, lock) {

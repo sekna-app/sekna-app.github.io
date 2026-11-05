@@ -166,8 +166,10 @@ window.addEventListener('load',function(){
    function setMode(mode,reason,token){
     var was=SRV.mode;
     if(mode!==was){SRV.mode=mode;SRV.since=Date.now();SRV.reason=reason||''}
-    if(mode==='backup'&&was!=='backup')report('backup',reason,token);
-    if(mode==='firebase'&&load('sekna_srv_on_backup')==='1')report('firebase','',token);
+    // v179 the backup email only goes out when Firebase stays down for 2 minutes (a blip or a slow phone network sends nothing)
+    if(mode==='backup'&&was!=='backup'){SRV.downAt=Date.now();SRV.downReason=reason;SRV.downTok=token;SRV.told=false}
+    if(mode==='firebase'&&load('sekna_srv_on_backup')==='1'&&SRV.told)report('firebase','',token);
+    if(mode==='firebase'){SRV.downAt=0;SRV.told=false}
     save('sekna_srv_on_backup',mode==='backup'?'1':null);
     try{window.dispatchEvent(new Event('sekna-server'))}catch(e){}
    }
@@ -183,7 +185,8 @@ window.addEventListener('load',function(){
     if(backTimer)return;
     backTimer=setInterval(function(){
      if(SRV.mode!=='backup'){clearInterval(backTimer);backTimer=null;return}
-     alive().then(function(up){if(up){SRV.hold=0;clearInterval(backTimer);backTimer=null;setMode('firebase','',token)}});
+     alive().then(function(up){if(up){SRV.hold=0;clearInterval(backTimer);backTimer=null;setMode('firebase','',token)}
+      else if(!SRV.told&&SRV.downAt&&Date.now()-SRV.downAt>=120000&&navigator.onLine!==false){SRV.told=true;report('backup',SRV.downReason,SRV.downTok||token)}});
     },30000);
    }
    function call(name,args){
