@@ -7128,6 +7128,14 @@ window.addEventListener('load',function(){
     /* Results day cards: each box gets a side line in its status colour */
     html body .dcR-k{border-left:3px solid #c9d0df;padding-left:10px!important}
     html body .dcR-k.good{border-left-color:#22c07a}html body .dcR-k.watch{border-left-color:#e2a23c}html body .dcR-k.bad{border-left-color:#e5606e}
+    /* v202 Assumptions: Channels / Weeks / Index with a glowing gold line under the picked one */
+    html body .as-seg{background:none!important;border-radius:0!important;padding:0!important;gap:0!important;border-bottom:1px solid #e3e7f0;position:relative;margin-bottom:10px}
+    html body .as-seg button{background:none!important;box-shadow:none!important;border-radius:0!important;color:#8a93ad!important;padding:10px 0!important;position:relative;font-size:13px!important}
+    html body .as-seg button.on{color:#141b33!important;font-weight:900!important}
+    html body .as-seg button.on:after{content:"";position:absolute;left:22%;right:22%;bottom:-1px;height:3px;border-radius:3px;background:linear-gradient(90deg,#f0cf8c,#c99a45);box-shadow:0 0 10px rgba(226,184,116,.8);animation:asLine .35s cubic-bezier(.2,.8,.2,1)}
+    @keyframes asLine{from{transform:scaleX(.2);opacity:.3}}
+    html body .as-seg>.gsl-pill{display:none!important}
+    body.dark-mode .as-seg{border-bottom-color:#2a313c}body.dark-mode .as-seg button.on{color:#fff!important}
 </style>
 </head>
 <body>
