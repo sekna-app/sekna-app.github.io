@@ -7194,6 +7194,31 @@ window.addEventListener('load',function(){
     html body #channelPanel .oxL .ox-tile>.ox-bar{margin-top:8px!important}
     body.dark-mode #channelPanel .oxL .ox-tile>b{color:#fff!important}
     body.dark-mode #channelPanel .oxL .ox-pc{background:rgba(57,226,154,.12);color:#39e29a}body.dark-mode #channelPanel .oxL .st-a .ox-pc{background:rgba(243,197,107,.12);color:#f3c56b}body.dark-mode #channelPanel .oxL .st-r .ox-pc{background:rgba(255,138,152,.12);color:#ff8a98}
+    /* v207 every sliding filter moves like the Days switch: one light track, see-through buttons, the blue pill slides along it */
+    html body :is(.phr-tabs,.ss-fs,.tk-views,.tk-weeks,.nf-fs).gslA{background:#eef1f7!important;border-radius:14px!important;padding:4px!important;gap:2px!important;border:0!important}
+    html body :is(.phr-tabs,.ss-fs,.tk-views,.tk-weeks,.nf-fs).gslA>*:not(.gsl-pill){background:transparent!important;border-color:transparent!important;box-shadow:none!important}
+    html body .gslA>.gsl-pill{transition:transform .4s cubic-bezier(.2,.8,.2,1),width .4s cubic-bezier(.2,.8,.2,1)!important}
+    html body .gslA>*:not(.gsl-pill){transition:color .3s!important}
+    body.dark-mode :is(.phr-tabs,.ss-fs,.tk-views,.tk-weeks,.nf-fs).gslA{background:#1a1f29!important}
+    /* v207 Leave: Change button on the tile and the lock window */
+    .lc-ch{display:inline-block;margin-top:5px;border:0;font:inherit;font-size:10.5px;font-weight:900;padding:3px 11px;border-radius:99px;cursor:pointer;background:linear-gradient(135deg,#f7e3a3,#c99a45);color:#141b33;box-shadow:0 3px 8px rgba(201,154,69,.35)}
+    .lvl{position:fixed;inset:0;z-index:9000;display:grid;place-items:center;padding:20px;background:rgba(14,22,56,.3);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;transition:opacity .25s}
+    .lvl.on{opacity:1}
+    .lvl-md{position:relative;width:100%;max-width:380px;border-radius:24px;overflow:hidden;background:#0f1d58;color:#fff;box-shadow:0 24px 60px rgba(8,14,40,.45);transform:scale(.92) translateY(10px);transition:transform .3s cubic-bezier(.2,.9,.3,1.1)}
+    .lvl.on .lvl-md{transform:none}
+    .lvl-x{position:absolute;top:10px;right:10px;z-index:3;width:30px;height:30px;border-radius:50%;border:0;background:rgba(255,255,255,.18);color:#fff;font:700 15px/1 system-ui;cursor:pointer}
+    .lvl-cv{position:relative}.lvl-cv img{display:block;width:100%;height:auto;transition:opacity .45s}.lvl-cv img+img{position:absolute;inset:0;opacity:0}
+    .lvl-cv.f img+img{opacity:1}.lvl-cv.f img:first-child{opacity:0}
+    .lvl-seg{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:grid;grid-template-columns:1fr 1fr;width:220px;padding:4px;border-radius:99px;background:rgba(10,18,52,.6);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+    .lvl-seg button{position:relative;z-index:1;border:0;background:none;font:inherit;font-size:13px;font-weight:900;padding:8px 0;color:#c9d3f5;cursor:pointer;transition:color .3s}.lvl-seg button.on{color:#141b33}
+    .lvl-seg i{position:absolute;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:99px;background:linear-gradient(135deg,#f7e3a3,#c99a45);transition:transform .4s cubic-bezier(.2,.8,.2,1)}.lvl-seg.f i{transform:translateX(100%)}
+    .lvl-tx{padding:14px 18px 18px}.lvl-tx h3{margin:0 0 3px;font-size:18px;font-weight:900;color:#fff}.lvl-tx p{margin:0 0 12px;font-size:12.5px;line-height:1.5;color:#c9d3f5;font-weight:600}
+    .lvl-nt{display:flex;align-items:center;gap:8px;border:0;background:none;padding:0;margin:0 0 12px;font:inherit;font-size:12.5px;font-weight:800;color:#c9d3f5;cursor:pointer}
+    .lvl-ck{width:18px;height:18px;border-radius:6px;display:grid;place-items:center;font-size:11px;font-weight:900;background:#e2b874;color:#141b33;border:1.5px solid #e2b874;transition:background .2s,color .2s}
+    .lvl-nt.off .lvl-ck{background:transparent;color:transparent;border-color:#6f7fb8}
+    .lvl-go{width:100%;border:0;border-radius:14px;padding:12px;font:inherit;font-size:14px;font-weight:900;cursor:pointer;background:linear-gradient(135deg,#f7e3a3,#c99a45);color:#141b33;box-shadow:0 8px 18px rgba(201,154,69,.35);transition:opacity .2s}
+    .lvl-go.same{opacity:.5}.lvl-go:disabled{opacity:.6}
+    @media (prefers-reduced-motion:reduce){.lvl,.lvl-md,.lvl-cv img,.lvl-seg i{transition:none}}
 </style>
 </head>
 <body>
@@ -9753,16 +9778,16 @@ let DAY_VIEW='plan', DAY_OPEN='';
 
 const GSL_SEL=['.py-seg','#weeklyTabs','.wly-ms','.phr-tabs','.stp-sw2','#monthsPanel .mx-mode','.ss-fs','.tk-views','.tk-weeks','.nf-fs'];
 const GSL_LAST={};let GSL_RAF=0;
-function gslAll(){GSL_RAF=0;GSL_SEL.forEach(sel=>document.querySelectorAll(sel).forEach(g=>{
+function gslAll(){GSL_RAF=0;GSL_SEL.forEach(sel=>document.querySelectorAll(sel).forEach((g,gi)=>{const lk=sel+'#'+gi;
   const on=g.querySelector(':scope>.on');if(!on||!g.offsetParent||!on.offsetWidth)return;
   g.classList.add('gslA');let p=g.querySelector(':scope>.gsl-pill');const fresh=!p;
   if(!p){p=document.createElement('span');p.className='gsl-pill';g.insertBefore(p,g.firstChild)}
   const pos={x:on.offsetLeft,y:on.offsetTop,w:on.offsetWidth,h:on.offsetHeight,r:getComputedStyle(on).borderRadius},k=[pos.x,pos.y,pos.w,pos.h].join(',');
   if(p.dataset.k===k)return;
-  const last=GSL_LAST[sel],put=q=>{p.style.width=q.w+'px';p.style.height=q.h+'px';p.style.transform=`translate(${q.x}px,${q.y}px)`;p.style.borderRadius=q.r};
-  const moved=last&&(last.x!==pos.x||last.y!==pos.y);
+  const last=GSL_LAST[lk],put=q=>{p.style.width=q.w+'px';p.style.height=q.h+'px';p.style.transform=`translate(${q.x}px,${q.y}px)`;p.style.borderRadius=q.r};
+  const moved=last&&last.y===pos.y&&last.x!==pos.x;
   if(fresh){p.style.transition='none';put(last&&moved?last:pos);void p.offsetWidth;p.style.transition=''}
-  put(pos);p.dataset.k=k;GSL_LAST[sel]=pos;
+  if(!fresh&&!moved){p.style.transition='none';put(pos);void p.offsetWidth;p.style.transition=''}else put(pos);p.dataset.k=k;GSL_LAST[lk]=pos;
   if(moved&&motionOn()){p.classList.remove('shine');void p.offsetWidth;p.classList.add('shine')}
  }))}
 function gslSoon(){if(!GSL_RAF)GSL_RAF=requestAnimationFrame(gslAll)}
@@ -10141,7 +10166,7 @@ function localWhen(ms,withDay){
 const NF_FILTERS=[['all','All'],['data','Data'],['tasks','Tasks'],['team','Team'],['app','App']];
 const NF_GROUP={season:'data',streak:'data',spend_alert:'data',roas_drop:'data',new_day:'data',month_closed:'data',updated:'data',tasks:'tasks',announcement:'team',app_update:'app',celebrate:'team',read_alert:'data'};
 
-const NF_KIND={season:'cal',month_closed:'cal',streak:'flame',spend_alert:'warn',read_alert:'warn',roas_drop:'down',new_day:'data',updated:'data',announcement:'mega',app_update:'app',tasks:'check',celebrate:'trophy'};
+const NF_KIND={season:'cal',month_closed:'cal',streak:'flame',spend_alert:'warn',read_alert:'warn',roas_drop:'down',new_day:'data',updated:'data',announcement:'mega',app_update:'app',tasks:'check',celebrate:'trophy',leave:'cal'};
 const NF_SVG={cal:'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/>',flame:'<path d="M12 21c-3.9 0-6.5-2.6-6.5-6.2 0-3.4 2.6-5.2 3.6-8.3.8 1.5 1.9 2.4 3.1 2.8.3-2 1.4-4 3.3-5.3-.2 3.4 3 5.4 3 9.3C19.5 18.1 16.3 21 12 21z"/>',
  warn:'<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.1"/>',down:'<path d="M4 7l6 6 4-4 6 8"/><path d="M20 12v5h-5"/>',data:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
  mega:'<path d="M4 10v4h3l6 4V6L7 10z"/><path d="M17 9a4 4 0 0 1 0 6"/>',app:'<rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18h3"/>',check:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.8"/>',
@@ -14606,7 +14631,7 @@ function tkLeaveHtml(){
  const off=people.map(p=>({p,l:tkOffToday(p.email)})).filter(x=>x.l);
  const first=n=>esc(String(n||'').split(' ')[0]);
  const day=esc(new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'}).toUpperCase());
- const stats=`<div class="lc-st"><div class="g"><b>${Math.max(0,people.length-off.length)}</b><small>Working today</small></div><div class="o"><b>${off.length}</b><small>Off today</small></div><div class="${fr?'fr':''}"><b class="lc-lk">${fr?'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>':'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.6-1.7"/></svg>'}</b><small>${fr?'Leave frozen':'Leave open'}</small></div></div>`;
+ const stats=`<div class="lc-st"><div class="g"><b>${Math.max(0,people.length-off.length)}</b><small>Working today</small></div><div class="o"><b>${off.length}</b><small>Off today</small></div><div class="${fr?'fr':''}"><b class="lc-lk">${fr?'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>':'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.6-1.7"/></svg>'}</b><small>${fr?'Leave frozen':'Leave open'}</small>${admin?'<button type="button" class="lc-ch" onclick="lvLockOpen()">Change</button>':''}</div></div>`;
  const live=TK.month===tkMonthNow();
  const covers=off.length?off.map(({p,l},i)=>{const b=l.data.backup?tkPerson(l.data.backup):null;
    const n=live?tkTasksFor(p.email,tkWeekOf(tkToday().d)).filter(tkIsToday).length:0;
@@ -14626,6 +14651,37 @@ function tkLeaveHtml(){
      ${extra.length?`<div class="lp-ex">${extra.map(l=>{const tt=TK_LEAVE_TYPES.find(x=>x[0]===l.data.type)||TK_LEAVE_TYPES[1];return `<span>${tt[1]} ${(l.data.days||[]).join(', ')}</span>`}).join('')}</div>`:''}</div>
      <em>${w?`<u>${esc(wd)}</u>${b?` · <strong>${first(b.name)}</strong>`:''}`:'No day off'}</em>${admin?'<i class="ln-go">›</i>':''}</button>`}).join('');
  return stats+covers+(admin?freeze:'')+(people.length?`<div class="lc-ls">${rows}</div>`:'<div class="tk-empty"><b>No one yet</b></div>');
+}
+
+
+const LV={pick:false,notify:true};
+function lvLockOpen(){
+ const f=(TK.data&&TK.data.freeze)||{};LV.now=!!f.on;LV.pick=LV.now;LV.notify=true;
+ document.getElementById('lvLock')?.remove();
+ const el=document.createElement('div');el.id='lvLock';el.className='lvl';el.setAttribute('role','dialog');el.setAttribute('aria-modal','true');el.setAttribute('aria-label','Team leave');
+ el.innerHTML=`<div class="lvl-md"><button type="button" class="lvl-x" aria-label="Close" onclick="lvLockClose()">✕</button>
+  <div class="lvl-cv"><img src="icons/leave/open.webp" alt="Calendar with an open gold lock"><img src="icons/leave/frozen.webp" alt="Calendar locked with a red lock for the season">
+   <div class="lvl-seg"><i></i><button type="button" data-v="0" onclick="lvPick(false)">Open</button><button type="button" data-v="1" onclick="lvPick(true)">Frozen</button></div></div>
+  <div class="lvl-tx"><h3></h3><p></p><button type="button" class="lvl-nt" role="checkbox" onclick="lvNotify()"><span class="lvl-ck">✓</span>Notify the team</button><button type="button" class="lvl-go" onclick="lvLockSave(this)">Save</button></div></div>`;
+ el.onclick=e=>{if(e.target===el)lvLockClose()};
+ document.body.appendChild(el);lvDraw();requestAnimationFrame(()=>el.classList.add('on'));
+}
+function lvLockClose(){const el=document.getElementById('lvLock');if(!el)return;el.classList.remove('on');setTimeout(()=>el.remove(),260)}
+function lvPick(v){LV.pick=v;lvDraw()}
+function lvNotify(){LV.notify=!LV.notify;lvDraw()}
+function lvDraw(){const el=document.getElementById('lvLock');if(!el)return;const f=LV.pick;
+ el.querySelector('.lvl-cv').classList.toggle('f',f);el.querySelector('.lvl-seg').classList.toggle('f',f);
+ el.querySelectorAll('.lvl-seg button').forEach(b=>b.classList.toggle('on',(b.dataset.v==='1')===f));
+ el.querySelector('h3').textContent=f?'Freeze leave':'Leave open';
+ el.querySelector('p').textContent=f?'Weekly days off stop for everyone until you open it again. Sick days still count.':'Everyone takes their weekly day off as usual.';
+ const n=el.querySelector('.lvl-nt');n.classList.toggle('off',!LV.notify);n.setAttribute('aria-checked',String(LV.notify));
+ el.querySelector('.lvl-go').classList.toggle('same',LV.pick===LV.now)}
+async function lvLockSave(btn){
+ if(LV.pick===LV.now){lvLockClose();return}
+ const f=Object.assign({on:false,seasons:[]},TK.data.freeze);f.on=LV.pick;btn.disabled=true;
+ try{TK.data.freeze=await serverCall('leaveFreezeSet',getAccessToken(),f,LV.notify);storeSet('sekna_tasks_'+TK.month,JSON.stringify(TK.data));
+  lvLockClose();showSettingsToast((f.on?'Leave frozen':'Leave open')+(LV.notify?' · team notified':''));tkRender()}
+ catch(err){btn.disabled=false;showSettingsToast(errorText(err))}
 }
 async function tkFreezeToggle(btn){
  const f=Object.assign({on:false,seasons:[]},TK.data.freeze);f.on=!f.on;btn.disabled=true;

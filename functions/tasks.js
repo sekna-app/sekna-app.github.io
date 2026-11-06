@@ -432,7 +432,7 @@ const T = {
     return { sent: emails.length, at: sentAt };
   },
 
-  async leaveFreezeSet([token, cfg]) {
+  async leaveFreezeSet([token, cfg, notifyTeam]) {
     const a = await assertAccess(token);
     if (!(await can(a.email, 'leave'))) throw new Error(NO_PERM.leave);
     cfg = cfg || {};
@@ -441,7 +441,17 @@ const T = {
       .map(s => ({ name: String((s && s.name) || 'Season').trim().slice(0, 40), from: String((s && s.from) || ''), to: String((s && s.to) || '') }))
       .filter(s => ok(s.from) && ok(s.to)).map(s => s.from > s.to ? { name: s.name, from: s.to, to: s.from } : s);
     const out = { on: !!cfg.on, seasons };
-    await fsUpdate(DOC.meta, meta => Object.assign(meta || {}, { freeze: out }));
+    let was = null;
+    await fsUpdate(DOC.meta, meta => { was = !!(meta && meta.freeze && meta.freeze.on); return Object.assign(meta || {}, { freeze: out }); });
+    // Optional: tell the whole team when leave is frozen or opened again (the admin ticks "Notify the team").
+    if (notifyTeam && was !== out.on) {
+      try {
+        const people = await teamPeople(await members());
+        const title = out.on ? 'HEMERA · Leave is frozen' : 'HEMERA · Leave is open again';
+        const body = out.on ? 'Weekly days off stop until it opens again.' : 'Weekly days off are back as usual.';
+        await relay({ pushes: people.map(p => ({ email: p.email, title, body, eventType: 'leave' })) });
+      } catch (e) { console.warn('Leave notice: ' + e.message); }
+    }
     return out;
   },
 
