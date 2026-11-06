@@ -6850,6 +6850,45 @@ window.addEventListener('load',function(){
     .dcR-b{display:block;height:6px;border-radius:9px;background:#e8ebf3;margin-top:4px;overflow:hidden}.dcR-b i{display:block;height:100%;border-radius:9px;background:#9aa3b5}
     .dcR-b.good i{background:#22c07a}.dcR-b.watch i{background:#e2a23c}.dcR-b.bad i{background:#e5606e}
     body.dark-mode .dcR-v b{color:#fff}body.dark-mode .dcR-t{color:#c3cad8}body.dark-mode .dcR-b{background:#232a36}
+    /* v192 one sliding blue pill with a gold shine for every tab group */
+    .gslA{position:relative!important}
+    .gslA>.gsl-pill{top:0!important;left:0!important;bottom:auto!important;width:0;height:0;transition:transform .4s cubic-bezier(.2,.8,.2,1),width .4s cubic-bezier(.2,.8,.2,1),height .4s}
+    html body .gslA>*:not(.gsl-pill){position:relative;z-index:1}
+    html body .gslA>.on{background:transparent!important;box-shadow:none!important;border-color:transparent!important;color:#fff!important}
+    html body .gslA>.on *{color:inherit!important}html body .gslA>.on small{opacity:.8}
+    html body .gslA>.on .ic{background:rgba(255,255,255,.18)!important}
+    /* Weekly strip: the picked week glows blue and gets the gold shine */
+    .wx-seg.picked .wx-seg-bar{position:relative;overflow:hidden;box-shadow:0 0 0 2px #3d6bff,0 6px 14px rgba(32,60,142,.25)!important}
+    .wx-seg.picked .wx-seg-bar:after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,224,150,.8) 50%,transparent 70%);transform:translateX(-120%);animation:fcShine .8s ease .1s}
+    .wx-seg.picked .wx-seg-name{color:#203c8e!important;font-weight:900}
+    /* Daily's four small figures: shorter card, smaller numbers, icon on the label's line */
+    @media (max-width:1099px){
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm){padding:8px 2px!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm)>.quick-metric{gap:2px 3px!important;align-items:center!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-icon,html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-icon svg{width:12px!important;height:12px!important;flex-basis:12px!important;display:block!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-icon{display:flex!important;align-self:center}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-name{font-size:9px!important;line-height:12px!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-value{font-size:14px!important;width:100%}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-c{font-size:9px!important;width:100%}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r{font-size:11px!important;width:100%}
+    }
+    /* Same Hijri day: smaller calendar pages and shorter year cards */
+    html body .py-list .py-c2{padding:10px 12px!important;gap:10px!important;grid-template-columns:38px 1fr!important;margin-top:8px!important}
+    html body .py-list .py-c2 .py-badge.py-cal{width:38px!important;border-radius:10px!important}
+    .py-cal i{font-size:7.5px!important;padding:2px 0!important}.py-cal b{font-size:13px!important;padding-top:2px!important}
+    html body .py-list .py-c2 .py-cal small{font-size:8.5px!important;padding-bottom:3px!important}
+    /* Results day cards: short outside (the % of plan for spend, conversions and value), rows inside when opened */
+    .dcR-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+    .dcR-k{background:#f5f7fb;border-radius:10px;padding:7px 9px;min-width:0}
+    .dcR-k small{display:block;font-size:9.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#7b84a0}
+    .dcR-k b{display:block;font-size:17px;font-weight:900;line-height:1.2}.dcR-k span{display:block;font-size:11px;font-weight:700;color:#7b84a0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .dcR-k.good b{color:#13804f}.dcR-k.watch b{color:#b9770e}.dcR-k.bad b{color:#c63a4a}
+    .dcR-rows{margin:2px 0 10px}
+    body.dark-mode .dcR-k{background:#1a1f29}
+    /* Results month card: no day bar */
+    .mt3 .mt-days{display:none!important}
+    /* Budget: a little room above it */
+    html body #channelPanel>#vcSection{margin-top:14px!important}
 </style>
 </head>
 <body>
@@ -9398,6 +9437,25 @@ function renderExtraTab(d){
  
 let DAY_VIEW='plan', DAY_OPEN='';
 
+
+const GSL_SEL=['.py-seg','#weeklyTabs','.wly-ms','.phr-tabs','.stp-sw2','#monthsPanel .mx-mode','.ss-fs','.tk-views','.tk-weeks','.nf-fs'];
+const GSL_LAST={};let GSL_RAF=0;
+function gslAll(){GSL_RAF=0;GSL_SEL.forEach(sel=>document.querySelectorAll(sel).forEach(g=>{
+  const on=g.querySelector(':scope>.on');if(!on||!g.offsetParent||!on.offsetWidth)return;
+  g.classList.add('gslA');let p=g.querySelector(':scope>.gsl-pill');const fresh=!p;
+  if(!p){p=document.createElement('span');p.className='gsl-pill';g.insertBefore(p,g.firstChild)}
+  const pos={x:on.offsetLeft,y:on.offsetTop,w:on.offsetWidth,h:on.offsetHeight,r:getComputedStyle(on).borderRadius},k=[pos.x,pos.y,pos.w,pos.h].join(',');
+  if(p.dataset.k===k)return;
+  const last=GSL_LAST[sel],put=q=>{p.style.width=q.w+'px';p.style.height=q.h+'px';p.style.transform=`translate(${q.x}px,${q.y}px)`;p.style.borderRadius=q.r};
+  const moved=last&&(last.x!==pos.x||last.y!==pos.y);
+  if(fresh){p.style.transition='none';put(last&&moved?last:pos);void p.offsetWidth;p.style.transition=''}
+  put(pos);p.dataset.k=k;GSL_LAST[sel]=pos;
+  if(moved&&motionOn()){p.classList.remove('shine');void p.offsetWidth;p.classList.add('shine')}
+ }))}
+function gslSoon(){if(!GSL_RAF)GSL_RAF=requestAnimationFrame(gslAll)}
+window.addEventListener('load',()=>{try{new MutationObserver(ms=>{if(ms.some(m=>!(m.target.classList&&m.target.classList.contains('gsl-pill'))))gslSoon()}).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class']})}catch(e){}gslSoon()});
+window.addEventListener('resize',gslSoon);
+
 function gslMove(g){if(!g)return;const on=g.querySelector('.on'),p=g.querySelector('.gsl-pill');if(!on||!p)return;
  p.style.width=on.offsetWidth+'px';p.style.transform=`translateX(${on.offsetLeft-4}px)`;p.classList.remove('shine');void p.offsetWidth;if(motionOn())p.classList.add('shine')}
 window.addEventListener('resize',()=>gslMove(document.querySelector('.dx-switch.gsl')));
@@ -9663,9 +9721,10 @@ function daysCards(days,latest,T){
    
    const rr=(l,act,pl,r,cls)=>`<div class="dcR-r"><div class="dcR-t"><span>${l}</span><span class="dcR-v"><b>${act}</b> <em>/ ${pl}</em></span><b class="dcR-p ${cls}">${r==null||!isFinite(r)?'—':Math.round(r*100)+'%'}</b></div><span class="dcR-b ${cls}"><i style="width:${Math.max(2,Math.min(100,(r||0)*100)).toFixed(0)}%"></i></span></div>`;
    const roR=a.roas!=null&&p.roas?a.roas/p.roas:null;
-   return `<div class="dc-card dcH dcR${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" data-rx="1" onclick="toggleDay('${x.date}')">${rxBadge(x.date)}${hdr}<div class="dc-main">
-     ${rr('Spend',money(a.spend),money(p.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${rr('Conv.',fmt(a.conversions,0),fmt(p.conversions,0),a.convAchievement,achClass(a.convAchievement))}${rr('Value',money(a.value),money(p.value),a.valueAchievement,achClass(a.valueAchievement))}${rr('ROAS',fmt(a.roas,2)+'x',fmt(p.roas,2)+'x',roR,achClass(roR))}
-     <div class="dc-more">${dxResultMore(x)}</div></div></div>`;
+   const box=(l,act,r,cls)=>`<div class="dcR-k ${cls}"><small>${l}</small><b>${r==null||!isFinite(r)?'—':Math.round(r*100)+'%'}</b><span>${act}</span></div>`;
+   return `<div class="dc-card dcA dcH dcR${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" data-rx="1" onclick="toggleDay('${x.date}')">${rxBadge(x.date)}${hdr}<div class="dc-main">
+     <div class="dcR-g">${box('Spend',money(a.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${box('Conv.',fmt(a.conversions,0),a.convAchievement,achClass(a.convAchievement))}${box('Value',money(a.value),a.valueAchievement,achClass(a.valueAchievement))}</div>
+     <div class="dc-more"><div class="dcR-rows">${rr('Spend',money(a.spend),money(p.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${rr('Conv.',fmt(a.conversions,0),fmt(p.conversions,0),a.convAchievement,achClass(a.convAchievement))}${rr('Value',money(a.value),money(p.value),a.valueAchievement,achClass(a.valueAchievement))}${rr('ROAS',fmt(a.roas,2)+'x',fmt(p.roas,2)+'x',roR,achClass(roR))}</div>${dxResultMore(x)}</div></div></div>`;
  }).join('');
  return (plan?planHero(days,T):resultsHero(days,T))+`<div class="dc-list">${cards}</div>`+(plan?`<div class="dc-legend">${PLAN_MIX_LABELS.map((l,k)=>`<span><i class="m${k}"></i>${l}</span>`).join('')}</div>`:'')+`<div class="dx-note">Tap a day to see more.</div>`;
 }
