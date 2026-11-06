@@ -5804,8 +5804,8 @@ window.addEventListener('load',function(){
     #channelPanel>.vc-sec{margin-bottom:12px!important}#channelPanel>.vc-sec+.channel-section{margin-top:0!important}
     @media (min-width:1100px){#channelPanel>.vc-sec{grid-column:1!important;grid-row:4!important;align-self:start}#channelPanel>#mrSection{grid-row:3/span 2!important;align-self:start}#channelPanel.active{align-items:start}}
     /* v172 the clicks line now sits under the four tiles of the month card */
-    #mtdClicksRow.mc{margin-top:10px;border:1.5px solid #e6e9f2;background:#fff;border-radius:999px;padding:9px 10px 9px 14px;box-shadow:0 6px 16px rgba(32,60,142,.07)}
-    #mtdClicksRow.mc em{border-radius:999px;padding:4px 10px;background:#e3f6ea}#mtdClicksRow.mc em.dn{background:#fde8ea}
+    #mtdClicksRow.mc,#mtdClkRow.mc{margin-top:10px;border:1.5px solid #e6e9f2;background:#fff;border-radius:999px;padding:9px 10px 9px 14px;box-shadow:0 6px 16px rgba(32,60,142,.07)}
+    #mtdClicksRow.mc em,#mtdClkRow.mc em{border-radius:999px;padding:4px 10px;background:#e3f6ea}#mtdClicksRow.mc em.dn,#mtdClkRow.mc em.dn{background:#fde8ea}
     body.dark-mode #mtdClicksRow.mc{background:#151a22;border-color:#2a313c;box-shadow:none}body.dark-mode #mtdClicksRow.mc em{background:rgba(57,226,154,.15)}body.dark-mode #mtdClicksRow.mc em.dn{background:rgba(255,143,154,.15)}
     @media (min-width:1100px){#channelPanel>.mtd-exec #mtdClicksRow.mc{grid-column:2;grid-row:3;margin-top:8px}}
     /* v172 the Human Appeal mark inside the Search Brand icon */
@@ -7222,6 +7222,23 @@ window.addEventListener('load',function(){
     /* v208 filters do not slide: the blue pill is on the tapped button straight away and only the gold shine plays */
     html body .gsl-pill,html body .gslA>.gsl-pill,html body .fcP-pill,html body .dx-switch .gsl-pill{transition:transform .4s cubic-bezier(.2,.8,.2,1),width .4s cubic-bezier(.2,.8,.2,1)!important}
     /* v211 every filter moves exactly like the Days switch (Media Plan / Results / vs Last year) */
+    /* v212 Search Terms filters on the same track; Index tables framed in light blue; week badges in Assumptions */
+    html body :is(.st-chips,.st-sort).gslA{background:#eef1f7!important;border-radius:14px!important;padding:4px!important;gap:2px!important;border:0!important}
+    html body :is(.st-chips,.st-sort).gslA>button:not(.gsl-pill){background:transparent!important;border-color:transparent!important;box-shadow:none!important}
+    html body .fc-card.as-bl2{border-color:#c9d8ff!important}
+    body.dark-mode .fc-card.as-bl2{border-color:#2c3f78!important}
+    .fc-wk .fc-wkb{display:inline-grid;place-items:center;margin-right:6px}
+    /* v212 Clicks shown as a line like ROAS */
+    html body #channelPanel #mtdClkTile{display:none!important}
+    #mtdClkRow.mc{margin-top:8px}
+    #mtdClkLine b{color:#141b33;font-weight:900}#mtdClkLine small{font-size:12px;font-weight:700;color:#7b84a0}
+    body.dark-mode #mtdClkLine b{color:#fff}body.dark-mode #mtdClkRow.mc{background:#151a22;border-color:#2a313c;box-shadow:none}
+    #mtdClkRow.mc em:empty{display:none}
+    @media (min-width:1100px){#channelPanel>.mtd-exec #mtdClkRow.mc{grid-column:2;grid-row:4}}
+    /* v212 Reports Studio: the silver header reaches the card edges (no white strip) and the One month / Compare track is silver too */
+    @media (max-width:1099px){html:not(.desktop-site-mode) #monthsPanel .mx-ctl{margin-left:-18px!important;margin-right:-18px!important;padding-left:14px!important;padding-right:14px!important;border-radius:18px 18px 0 0}}
+    html body #monthsPanel .mx-mode{background:#e2e5ed!important}
+    body.dark-mode #monthsPanel .mx-mode{background:#1a1f29!important}
 </style>
 </head>
 <body>
@@ -7817,6 +7834,7 @@ window.addEventListener('load',function(){
           <div class="ox-bar"><span class="clicks" id="mtdClkBar"></span><em class="ox-tick" id="mtdClkTick"></em></div></div>
       </div>
       <div class="ox-cl mc" id="mtdClicksRow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/></svg><span id="mtdRoasLine">ROAS <b id="mtdRoas">—</b> <small id="mtdRoasPlan"></small></span><em id="mtdClicksPct"></em></div>
+      <div class="ox-cl mc" id="mtdClkRow" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l9 8-4 1-1 4-4-13z"/><path d="M15 15l4 4"/></svg><span id="mtdClkLine">Clicks <b id="mtdClk2">—</b> <small id="mtdClkPlan2"></small></span><em id="mtdClkPct2"></em></div>
 
       <div class="ox-legend" id="mtdTickLegend"><i></i><span>Black tick = expected by today</span></div>
     </section>
@@ -9345,6 +9363,9 @@ function renderMtd(d){
  {const tile=document.getElementById('mtdClkTile');if(tile)tile.style.display=kP||kA?'':'none';
   text('mtdClk',fmt(kA,0));oxHs('mtdClkPlan',kP?percent(kA/kP):'',kP?fmt(kP,0):'');setProgress('mtdClkBar',kP?kA/kP:0);
   const kt=document.getElementById('mtdClkTick');if(kt){kt.style.display=kP?'':'none';if(kP)kt.style.left=Math.min(100,kE/kP*100)+'%'}
+  
+  {const row=document.getElementById('mtdClkRow');if(row){row.hidden=!(kP||kA);text('mtdClk2',fmt(kA,0));const pl=document.getElementById('mtdClkPlan2');if(pl)pl.textContent=kP?`· plan ${fmt(kP,0)}`:'';
+    const e=document.getElementById('mtdClkPct2');if(e){const pc=pace==null?1:pace||1,r=kP?(kA/kP)/pc:null;e.textContent=kP?percent(kA/kP):'';e.className=r==null?'':r>=.95?'up':'dn'}}}
   if(tile){tile.classList.remove('st-g','st-a','st-r');const pc=pace==null?1:pace||1,r=kP?(kA/kP)/pc:null;if(r!=null&&isFinite(r))tile.classList.add('st-'+(r>=.95?'g':r>=.8?'a':'r'))}}
  text('mtdDayBadge',day&&dim?`Day ${day} of ${dim}`:'');
  ['mtdSpendTick','mtdRevenueTick'].forEach(id=>{
@@ -9448,7 +9469,7 @@ function weekRangeEnd(w){
  
 let WK_LY=false, WLY_SHEETS=[], WLY_M='v';
 function wlyMetric(m){WLY_M=m;drawWeeklyLy(true)}
-function toggleWeeklyLy(){WK_LY=!WK_LY;drawWeeklyLy(true)}
+function toggleWeeklyLy(){WK_LY=!WK_LY;window.WLY_SHONE=0;drawWeeklyLy(true)}
 
 function wlyPage(on){
  let o=document.getElementById('wlyOverlay');
@@ -9464,7 +9485,7 @@ function wlyPage(on){
 function closeWly(){if(WK_LY){WK_LY=false;drawWeeklyLy(false)}else wlyPage(false)}
 
 function drawWeeklyLy(anim){const was=!!document.querySelector('#weeklyLy .vly-btn');drawWeeklyLy0(anim);
- if(!WK_LY||!motionOn())return;const b=document.querySelector('#weeklyLy .vly-btn');if(b&&(anim||!was)){b.classList.remove('shn');void b.offsetWidth;b.classList.add('shn')}}
+ if(!WK_LY||!motionOn())return;const b=document.querySelector('#weeklyLy .vly-btn');if(b&&!was&&!window.WLY_SHONE){window.WLY_SHONE=1;b.classList.remove('shn');void b.offsetWidth;b.classList.add('shn')}}
 function drawWeeklyLy0(anim){
  const box=document.getElementById('weeklyLy'),cards=document.getElementById('weeklyCards'),btn=document.getElementById('wlyBtn');
  if(!box||!cards)return;
@@ -9779,7 +9800,10 @@ function renderExtraTab(d){
 let DAY_VIEW='plan', DAY_OPEN='';
 
 
-const GSL_SEL=['.py-seg','#weeklyTabs','.wly-ms','.phr-tabs','.stp-sw2','#monthsPanel .mx-mode','.ss-fs','.tk-views','.tk-weeks','.nf-fs'];
+const GSL_SEL=['.py-seg','#weeklyTabs','.wly-ms','.phr-tabs','.stp-sw2','#monthsPanel .mx-mode','.ss-fs','.tk-views','.tk-weeks','.nf-fs','.st-chips','.st-sort'];
+
+let GSL_TAP={sel:'',t:0};
+document.addEventListener('pointerdown',e=>{const t=e.target;if(!t||!t.closest)return;const sel=GSL_SEL.find(q=>t.closest(q));if(sel)GSL_TAP={sel,t:Date.now()}},true);
 const GSL_LAST={};let GSL_RAF=0;
 function gslAll(){GSL_RAF=0;GSL_SEL.forEach(sel=>document.querySelectorAll(sel).forEach((g,gi)=>{const lk=sel+'#'+gi;
   const on=g.querySelector(':scope>.on');if(!on||!g.offsetParent||!on.offsetWidth)return;
@@ -9788,9 +9812,10 @@ function gslAll(){GSL_RAF=0;GSL_SEL.forEach(sel=>document.querySelectorAll(sel).
   const pos={x:on.offsetLeft,y:on.offsetTop,w:on.offsetWidth,h:on.offsetHeight,r:getComputedStyle(on).borderRadius},k=[pos.x,pos.y,pos.w,pos.h].join(',');
   if(p.dataset.k===k)return;
   const last=GSL_LAST[lk],put=q=>{p.style.width=q.w+'px';p.style.height=q.h+'px';p.style.transform=`translate(${q.x}px,${q.y}px)`;p.style.borderRadius=q.r};
-  const moved=last&&last.y===pos.y&&last.x!==pos.x;
-  if(fresh){p.style.transition='none';put(last&&moved?last:pos);void p.offsetWidth;p.style.transition=''}
-  if(!fresh&&!moved){p.style.transition='none';put(pos);void p.offsetWidth;p.style.transition=''}else put(pos);p.dataset.k=k;GSL_LAST[lk]=pos;
+  const moved=last&&last.y===pos.y&&last.x!==pos.x&&GSL_TAP.sel===sel&&Date.now()-GSL_TAP.t<1500;
+  const still=q=>{p.style.setProperty('transition','none','important');put(q);void p.offsetWidth;p.style.removeProperty('transition')};
+  if(fresh)still(moved?last:pos);
+  if(!fresh&&!moved)still(pos);else put(pos);p.dataset.k=k;GSL_LAST[lk]=pos;
   if(moved&&motionOn()){p.classList.remove('shine');void p.offsetWidth;p.classList.add('shine')}
  }))}
 function gslSoon(){if(!GSL_RAF)GSL_RAF=requestAnimationFrame(gslAll)}
@@ -10288,6 +10313,8 @@ const FC_IC={okc:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.8
  weeks:'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 14h8"/>',channels:'<path d="M4 6h16M4 12h10M4 18h6"/><circle cx="18" cy="12" r="2"/><circle cx="14" cy="18" r="2"/>',source:'<path d="M5 4h14v4l-5 5v7l-4-2v-5L5 8z"/>',
  settings:'<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2L14.3 3h-4l-.3 2.6a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2l.3 2.7h4l.3-2.7a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z"/>'};
 const fcIc=k=>`<svg class="fc-ic" viewBox="0 0 24 24" aria-hidden="true">${FC_IC[k]||''}</svg>`;
+
+function noEmoji(t){return String(t||'').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}]/gu,'').replace(/\s+/g,' ').trim()}
 function fcFold(k){FC_OPEN=mxWide()?k:FC_OPEN===k?'':k;fcDraw()}
 
 var FC_SHINE=1;
@@ -10349,7 +10376,7 @@ function fcDraw0(){
   <div class="fc-folds">
   ${fold('weeks',fcIc('weeks'),'Weeks',`${onPlan} on plan${liveW?' · '+esc(wkInfo(liveW).nm.toLowerCase())+' at '+fcPct(liveW.acc)+' so far':''}`,(d.weeks||[]).map(wk).join('')||'<div class="dx-empty">No weeks yet.</div>')}
   ${fold('channels',fcIc('channels'),'Channels',esc(chSum),chs||'<div class="dx-empty">No channels yet.</div>')}
-  ${fold('source',fcIc('source'),'Where the plan comes from',`${st.window||60} days ${money(l6.cost)} · LY ${money(ly.cost)}${e.rec?' · '+esc(e.rec.split('—')[0].trim()):''}`,
+  ${fold('source',fcIc('source'),'Where the plan comes from',`${st.window||60} days ${money(l6.cost)} · LY ${money(ly.cost)}${e.rec?' · '+esc(noEmoji(e.rec.split('—')[0])):''}`,
     `<div class="fc-src">${src('LAST '+(st.window||60)+' DAYS',l6)}${src('SAME HIJRI DAYS LAST YEAR',ly)}</div>
     ${e.rec?`<div class="fc-rec ${rc}"><span class="fc-ri">${fcIc(rc==='bad'?'alert':rc==='warm'?'warn':'okc')}</span><div><b>${esc(e.rec.replace(/^\S+\s*/,''))}</b><small>Model ${fcK((e.spend||{}).model)} · Last year ${fcK((e.spend||{}).ly)} · Recommended ${fcK(e.recommended)} · Used ${fcK(e.used)}${e.mine?' · '+esc(e.mine):''}</small></div></div>`:''}`)}
   ${fold('settings',fcIc('settings'),'Settings',ro?'From the sheet · view only':nEd?`<span style="color:#203c8e">${nEd} change${nEd>1?'s':''} not saved yet</span>`:'Changes write to the sheet',
@@ -10553,8 +10580,8 @@ function asHtml(){
      <div class="fc-foot">Worked out by the sheet from the last days, so it can't be changed here.</div>${asMixHtml(d,ed)}${asSaveBar(c,nEd)}`;
  }else if(AS.tab==='weeks'){
    const mx=Math.max(.01,...(d.weeks||[]).map(w=>w.weight||0));
-   body=`<div class="fc-l">WEEKLY DISTRIBUTION <em>Share of the budget</em></div><div class="fc-card">${(d.weeks||[]).map(w=>{const m=String(w.label).match(/(\d+)\s*[:\-–]\s*(\d+)\s*$/),nm=String(w.label).replace(/\s*\d+\s*[:\-–]\s*\d+\s*$/,'').replace(/^(First|Second|Third|Fourth|Fifth)\s+/i,'').replace(/[\s\-–]+$/,'');
-     return `<div class="fc-wk"><div>${esc(nm)}${(()=>{const n=w.days||(m?(+m[2])-(+m[1])+1:0);return n&&n!==7?`<small class="fc-dn">${n} days</small>`:''})()}</div><div class="fc-bar"><i class="n" style="width:${((w.weight||0)/mx*100).toFixed(1)}%"></i></div><div class="fc-pc navy">${pc(w.weight)}</div></div>`}).join('')}</div>
+   body=`<div class="fc-l">WEEKLY DISTRIBUTION <em>Share of the budget</em></div><div class="fc-card">${(d.weeks||[]).map((w,wi)=>{const m=String(w.label).match(/(\d+)\s*[:\-–]\s*(\d+)\s*$/),nm=String(w.label).replace(/\s*\d+\s*[:\-–]\s*\d+\s*$/,'').replace(/^(First|Second|Third|Fourth|Fifth)\s+/i,'').replace(/[\s\-–]+$/,'');
+     const wn=(String(nm).match(/(\d+)/)||[])[1]||(/week/i.test(nm)?wi+1:'');return `<div class="fc-wk"><div>${wn?`<span class="wly-wk wx-wk fc-wkb" aria-label="Week ${wn}">W${wn}</span>`:esc(nm)}${(()=>{const n=w.days||(m?(+m[2])-(+m[1])+1:0);return n&&n!==7?`<small class="fc-dn">${n} days</small>`:''})()}</div><div class="fc-bar"><i class="n" style="width:${((w.weight||0)/mx*100).toFixed(1)}%"></i></div><div class="fc-pc navy">${pc(w.weight)}</div></div>`}).join('')}</div>
      <div class="fc-foot">The sum of the daily plan, so it can't be changed here.</div>`;
  }else{
    const isNew=d.index==='NEW', hjs=d.hijri||[], i=Math.min(c.hj||0,Math.max(0,hjs.length-1)), h=hjs[i]||{};
@@ -10565,8 +10592,8 @@ function asHtml(){
    ${h.num?`<div class="fc-card" style="margin-top:8px"><div class="as-hjh"><b>${esc(h.name||HIJRI_NAMES[h.num-1]||'')}</b><span>${esc(mon.slice(0,3))} ${h.from}–${h.to}</span></div>
      <div class="as-3">${['spend','value','conv'].map(k=>`<label><small>${k==='conv'?'Conv':k[0].toUpperCase()+k.slice(1)}</small>${num(h,k,h[k])}</label>`).join('')}</div>
      <div class="as-kv"><span>Whole month value · spend</span><b>${x2(h.effValue)} · ${x2(h.effSpend)}</b></div><div class="as-kv"><span>ROAS idx</span><b class="${h.roasIdx>=1?'up':'dn'}">${x2(h.roasIdx)}</b></div></div>`:''}
-   <div class="fc-l">WEEKDAY <em>Spend · Value · Conv</em></div><div class="fc-card">${tbl(d.weekday||[])}</div>
-   <div class="fc-l">WEEK OF MONTH</div><div class="fc-card">${tbl(d.weekOfMonth||[],1)}</div>
+   <div class="fc-l">WEEKDAY <em>Spend · Value · Conv</em></div><div class="fc-card as-bl2">${tbl(d.weekday||[])}</div>
+   <div class="fc-l">WEEK OF MONTH</div><div class="fc-card as-bl2">${tbl(d.weekOfMonth||[],1)}</div>
    <div class="fc-l">SPECIAL DAYS IN ${esc(mon.toUpperCase())} <em>× a normal day</em></div><div class="fc-card">${(d.special||[]).length?`<div class="as-t"><div class="as-tr hd"><span></span><span>Spend</span><span>Value</span><span>Conv</span></div>${d.special.map(r=>`<div class="as-tr"><span>${esc(r.name)} <small>${esc(mon.slice(0,3))} ${r.inMonth[0]}${r.inMonth.length>1?'–'+r.inMonth[r.inMonth.length-1]:''}</small></span>${num(r,'spend',r.spend)}${num(r,'value',r.value)}${num(r,'conv',r.conv)}</div>`).join('')}</div>`:'<div class="fc-foot" style="text-align:center;margin:4px 0">No special days this month</div>'}</div>
    ${asSaveBar(c,nEd)}`;
  }
