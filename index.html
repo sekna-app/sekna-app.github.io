@@ -7094,6 +7094,19 @@ window.addEventListener('load',function(){
     html body .cur-chip button svg{stroke:#c9d3f5!important}
     html body .cur-sw.cur-chip.away button.on{background:linear-gradient(135deg,#c63a4a,#8f1f2d)!important;color:#fff!important}
     body.dark-mode .date-line{color:#fff!important}
+    /* v196 Daily date: a small calendar page (gold month band) with the weekday and the Hijri date */
+    html body .date-line.dlCal{display:inline-flex!important;align-items:center;gap:10px;background:none!important;box-shadow:none!important;border:0!important;padding:0!important;color:#0f1b4d!important}
+    html body .date-line.dlCal:before{display:none!important}
+    .dlc-p{width:44px;flex:none;border-radius:10px;overflow:hidden;text-align:center;background:#fff;box-shadow:0 6px 14px rgba(20,40,110,.18)}
+    .dlc-p i{display:block;font-style:normal;font-size:9px;font-weight:900;letter-spacing:.1em;padding:2px 0;background:linear-gradient(135deg,#f7e3a3,#c99a45);color:#141b33}
+    .dlc-p b{display:block;font-size:20px;font-weight:900;color:#203c8e;line-height:1.3}
+    .dlc-t b{display:block;font-size:15px;font-weight:900;color:#0f1b4d;line-height:1.2}
+    .dlc-t small{display:block;font-size:12px;font-weight:800;color:#b0812e;margin-top:1px}
+    body.dark-mode .dlc-p{background:#151a22}body.dark-mode .dlc-p b{color:#9fb6ff}body.dark-mode .dlc-t b{color:#fff}body.dark-mode .dlc-t small{color:#e2b874}
+    /* the streak chip sits level with the calendar date on computers and under it on phones */
+    html body .date-line.dlCal{vertical-align:middle;margin-right:12px}
+    html body .date-line.dlCal+.stk{vertical-align:middle;margin-top:0}
+    @media (max-width:1099px){html body .date-line.dlCal+.stk{display:flex;width:max-content;max-width:100%;margin-top:10px}}
 </style>
 </head>
 <body>
@@ -8936,7 +8949,9 @@ function render(d,opts){
  const planRoas=x.targetSpend?x.planValue/x.targetSpend:null;
  const roasAch=planRoas?roas/planRoas:null;
 
- text('dateLine',`${x.dayName||''}, ${x.monthName} ${x.dayNumber}`);
+ 
+ {const dl=document.getElementById('dateLine');if(dl){dl.classList.add('dlCal');dl.setAttribute('aria-label',`${x.dayName||''}, ${x.monthName} ${x.dayNumber}${x.hijriDate?' · '+x.hijriDate:''}`);
+  dl.innerHTML=`<span class="dlc-p"><i>${esc(String(x.monthName||'').slice(0,3).toUpperCase())}</i><b>${esc(String(x.dayNumber||''))}</b></span><span class="dlc-t"><b>${esc(x.dayName||'')}</b>${x.hijriDate?`<small>${esc(x.hijriDate)}</small>`:''}</span>`}}
  text('syncText',`Last sync: ${d.generatedAt||'—'}`);
  tbLive(d);
 
