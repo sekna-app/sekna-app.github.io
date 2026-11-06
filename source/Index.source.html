@@ -7018,6 +7018,18 @@ window.addEventListener('load',function(){
     html body .gsl-pill.shine:after,html body .fcP-pill.shine:after{animation:fcShine 1.2s ease-in-out!important}
     html body .as-seg button.on:after{animation-duration:.55s!important;animation-timing-function:cubic-bezier(.4,0,.2,1)!important}
     @media (prefers-reduced-motion:reduce){.lyx-sum.anim .lyv2-bar u,#weeklyLy .vly-btn.shn:after{animation:none}}
+    /* v206 November Performance list: small label on top, the number under it (smaller), % pill on the right, full-width bar, plan under it */
+    html body #channelPanel .ox-tiles.oxL>.ox-tile{grid-template-columns:36px minmax(0,1fr) auto!important;grid-template-areas:"ic lbl pc" "ic val pc" "ic bar bar" "ic of of"!important;gap:0 12px!important;padding:12px 0!important}
+    #channelPanel .oxL .ox-ic{align-self:center}
+    html body #channelPanel .oxL .ox-tile>.ox-lbl{font-size:9.5px!important;font-weight:900!important;letter-spacing:.08em!important;text-transform:uppercase!important;color:#7b84a0!important}
+    html body #channelPanel .oxL .ox-tile>b{font-size:15px!important;font-weight:800!important;color:#141b33!important;text-align:left!important;margin-top:1px!important;font-variant-numeric:tabular-nums}
+    html body #channelPanel .oxL .ox-tile>.ox-hs{display:contents!important}
+    #channelPanel .oxL .ox-pc{grid-area:pc;align-self:center;font-style:normal;font-size:11px;font-weight:900;border-radius:99px;padding:3px 9px;color:#13804f;background:#e3f6ec;font-variant-numeric:tabular-nums}
+    #channelPanel .oxL .st-a .ox-pc{color:#a56a06;background:#fdf1d8}#channelPanel .oxL .st-r .ox-pc{color:#c63a4a;background:#fdeaec}
+    #channelPanel .oxL .ox-of{grid-area:of;text-align:right;font-size:10px;font-weight:700;color:#8a93ad;margin-top:4px;font-variant-numeric:tabular-nums}
+    html body #channelPanel .oxL .ox-tile>.ox-bar{margin-top:8px!important}
+    body.dark-mode #channelPanel .oxL .ox-tile>b{color:#fff!important}
+    body.dark-mode #channelPanel .oxL .ox-pc{background:rgba(57,226,154,.12);color:#39e29a}body.dark-mode #channelPanel .oxL .st-a .ox-pc{background:rgba(243,197,107,.12);color:#f3c56b}body.dark-mode #channelPanel .oxL .st-r .ox-pc{background:rgba(255,138,152,.12);color:#ff8a98}
 </style>
 </head>
 <body>
@@ -9093,6 +9105,8 @@ function renderMtdSparklines(m){
 }
 
 // K2: under each small card the plan number, under the icon the % of the plan (CTR: vs last year).
+// v206 month list: the % of plan as a coloured pill (colour from the tile's status) and "of <plan>" under the bar
+function oxHs(id,pc,of){const e=document.getElementById(id);if(!e)return;e.innerHTML=pc?`<em class="ox-pc">${esc(pc)}</em><span class="ox-of">of ${esc(of)}</span>`:'<em class="ox-pc">—</em><span class="ox-of"></span>'}
 function drawKpiPlans(d){
  const x=d.latest||{},dp=((d.dayPlan||[]).find(r=>r.date===x.date)||{}).plan||{},ly=d.yoy&&d.yoy.hasData?d.yoy.ctr:null;
  const set=(id,a,plan,cap,lowGood,of)=>{const c=document.getElementById(id+'Plan'),r=document.getElementById(id+'Pct');
@@ -9120,12 +9134,12 @@ function renderMtd(d){
  text('mtdPeriodSub',`Full-month plan · actuals to ${String(x.monthName||'').slice(0,3)} ${x.dayNumber||'—'}`);
 
  text('mtdSpend',money(m.actualSpend));
- text('mtdSpendPlan',`${percent(spendAch)} of ${money(m.planSpend)}`);
+ oxHs('mtdSpendPlan',percent(spendAch),money(m.planSpend));
  setProgress('mtdSpendBar',spendAch);
  document.getElementById('mtdSpendBar')?.classList.toggle('over',spendAch>1);
 
  text('mtdRevenue',money(m.actualValue));
- text('mtdRevenuePlan',`${percent(valueAch)} of ${money(m.planValue)}`);
+ oxHs('mtdRevenuePlan',percent(valueAch),money(m.planValue));
  setProgress('mtdRevenueBar',valueAch);
 
  text('mtdRoas',fmt(m.actualRoas,2)+'x');
@@ -9140,12 +9154,12 @@ function renderMtd(d){
  // Conversions and clicks to date, from the daily plan rows.
  const rows=d.dayPlan||[],live=rows.filter(r=>r.actual),sum=(a,f)=>a.reduce((t,r)=>t+(Number(f(r))||0),0);
  const cA=sum(live,r=>r.actual.conversions),cP=sum(rows,r=>r.plan&&r.plan.conversions),cE=sum(live,r=>r.plan&&r.plan.conversions);
- text('mtdConv',fmt(cA,0));text('mtdConvPlan',cP?`${percent(cA/cP)} of ${fmt(cP,0)}`:'—');setProgress('mtdConvBar',cP?cA/cP:0);
+ text('mtdConv',fmt(cA,0));oxHs('mtdConvPlan',cP?percent(cA/cP):'',cP?fmt(cP,0):'');setProgress('mtdConvBar',cP?cA/cP:0);
  const ct=document.getElementById('mtdConvTick');if(ct){ct.style.display=cP?'':'none';if(cP)ct.style.left=Math.min(100,cE/cP*100)+'%'}
  const kA=sum(live,r=>r.actual.clicks),kP=sum(rows,r=>r.plan&&r.plan.clicks),kE=sum(live,r=>r.plan&&r.plan.clicks);
  // Clicks sit in the list with the other figures; ROAS is the line under them.
  {const tile=document.getElementById('mtdClkTile');if(tile)tile.style.display=kP||kA?'':'none';
-  text('mtdClk',fmt(kA,0));text('mtdClkPlan',kP?`${percent(kA/kP)} of ${fmt(kP,0)}`:'—');setProgress('mtdClkBar',kP?kA/kP:0);
+  text('mtdClk',fmt(kA,0));oxHs('mtdClkPlan',kP?percent(kA/kP):'',kP?fmt(kP,0):'');setProgress('mtdClkBar',kP?kA/kP:0);
   const kt=document.getElementById('mtdClkTick');if(kt){kt.style.display=kP?'':'none';if(kP)kt.style.left=Math.min(100,kE/kP*100)+'%'}
   if(tile){tile.classList.remove('st-g','st-a','st-r');const pc=pace==null?1:pace||1,r=kP?(kA/kP)/pc:null;if(r!=null&&isFinite(r))tile.classList.add('st-'+(r>=.95?'g':r>=.8?'a':'r'))}}
  text('mtdDayBadge',day&&dim?`Day ${day} of ${dim}`:'');
