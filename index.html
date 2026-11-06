@@ -7091,6 +7091,24 @@ window.addEventListener('load',function(){
     html body .cur-chip button b{background:linear-gradient(135deg,#f7e3a3,#c99a45)!important;color:#141b33!important;box-shadow:0 3px 8px rgba(201,154,69,.35)!important}
     html body .cur-chip button svg{stroke:#c9d3f5!important}
     html body .cur-sw.cur-chip.away button.on{background:linear-gradient(135deg,#c63a4a,#8f1f2d)!important;color:#fff!important}
+    /* v198 Same Hijri day: simple, small year cards (the year as a big number, the date under it); details only when opened */
+    html body .py-list .py-c2{grid-template-columns:62px 1fr!important;padding:10px 14px!important;gap:12px!important;align-items:center;margin-top:7px!important;border-radius:14px!important;min-height:0}
+    .py-yr{border-right:1px solid #eef1f6;padding-right:10px}
+    .py-yr b{display:block;font-size:19px;font-weight:900;color:#141b33;line-height:1.1}
+    .py-yr small{display:block;font-size:10.5px;font-weight:700;color:#8a93ad;margin-top:2px}
+    .py-c2.today .py-yr b{color:#203c8e}.py-c2.win .py-yr b{color:#b0812e}
+    html body .py-list .py-c2 .py-v b{font-size:16px!important}
+    html body .py-list .py-c2.win{border:1.5px solid #e2b874!important;background:#fff!important;box-shadow:0 6px 16px rgba(201,154,69,.15)!important}
+    body.dark-mode .py-yr{border-right-color:#2a313c}body.dark-mode .py-yr b{color:#fff}body.dark-mode .py-list .py-c2.win{background:#151a22!important}
+    /* Top 3 Projects: the winner glows gold */
+    html body .sx-neon-green{border:1.5px solid #e2b874!important;background:linear-gradient(160deg,#fffaf0,#fbf0d8)!important;box-shadow:0 0 0 3px rgba(226,184,116,.16),0 0 22px rgba(226,184,116,.45),inset 0 0 14px rgba(226,184,116,.12)!important}
+    html body .sx-rank.g{background:linear-gradient(135deg,#f7e3a3,#c99a45)!important;color:#141b33!important;box-shadow:0 0 12px rgba(226,184,116,.75)!important}
+    html body .sx-crown{background:linear-gradient(135deg,#f0cf8c,#c99a45)!important;color:#141b33!important;box-shadow:0 0 12px rgba(226,184,116,.6)!important}
+    html body .sx-lroas.g{color:#a06d17!important}
+    html body .sx-lbar.g span{background:linear-gradient(90deg,#f0cf8c,#c99a45)!important;box-shadow:0 0 10px rgba(226,184,116,.8)!important}
+    body.dark-mode .sx-neon-green{background:linear-gradient(160deg,#2a2112,#1d170c)!important}body.dark-mode .sx-lroas.g{color:#f2d38f!important}
+    /* By Campaign Type (Daily): Performance Max in gold */
+    body:not(.dark-mode) #dayChannelsGrid .ctd.k2{background:linear-gradient(160deg,#e9c47a,#b8862f)!important;--sh:#b8862f55}
 </style>
 </head>
 <body>
@@ -14142,10 +14160,10 @@ function renderPastYears(){
    const typeBlock=types.length?`<div class="py-lbl">By campaign type</div><div class="py-mix">${[...types].sort((m,n)=>m.k-n.k).map(t=>`<i class="m${t.k}" style="flex:${t.c.spend/tot}"></i>`).join('')}</div>
      <div class="py-tl2"><span class="py-h"></span><span class="py-h c">Spend · Conv. · Value</span><span class="py-h">ROAS</span>${byRoas.map(t=>`<span class="py-tn">${chIco(t.n)}${esc(CHANNEL_SHORT[t.n]||t.n)}</span><span class="py-ts"><b>${money(t.c.spend)}</b><i>·</i><b>${fmt(t.c.conversions,0)}</b><i>·</i><b>${money(t.c.value)}</b></span><span class="py-chip ${t.r!=null&&t.r>=(a.roas||0)?'g':'r'}">${t.r!=null?fmt(t.r,2)+'x':'—'}</span>`).join('')}</div>`:'';
    return `<div class="py-c2${y.back?'':' today'}${isWin?' win':''}${open?' open':''}" onclick="pyPick('${y.dk}')">
-     <div class="py-badge py-cal"><i>${esc(shortDay(y.dk).toLocaleDateString('en-GB',{month:'short'}).toUpperCase())}</i><b>${shortDay(y.dk).getDate()}</b><small>${yr(y)}</small></div>
+     <div class="py-yr"><b>${yr(y)}</b><small>${esc(shortDay(y.dk).toLocaleDateString('en-GB',{day:'numeric',month:'short'}))}</small></div>
      <div class="py-main"><div class="py-v"><b>${money(a.value)}</b>${isWin?'<span class="py-winb">Winner</span>':chip(a.value,b&&b.value)}</div>
        ${open?`<div class="py-bar"><i style="width:${(a.value/maxV*100).toFixed(1)}%"></i></div>
-       <div class="py-st"><span>Spend <b>${money(a.spend)}</b>${dl(a.spend,b&&b.spend)}</span><span>Conv. <b>${fmt(a.conversions,0)}</b>${dl(a.conversions,b&&b.conversions)}</span><span>ROAS <b>${fmt(a.roas,2)}x</b>${dl(a.roas,b&&b.roas)}</span></div>`:`<div class="py-shut">Spend ${money(a.spend)} · ROAS ${fmt(a.roas,2)}x<em>›</em></div>`}</div>
+       <div class="py-st"><span>Spend <b>${money(a.spend)}</b>${dl(a.spend,b&&b.spend)}</span><span>Conv. <b>${fmt(a.conversions,0)}</b>${dl(a.conversions,b&&b.conversions)}</span><span>ROAS <b>${fmt(a.roas,2)}x</b>${dl(a.roas,b&&b.roas)}</span></div>`:''}</div>
      ${open?`<div class="py-more"><div class="py-day">${esc(day(y.dk))}</div><div class="py-q">${[['Clicks',fmt(a.clicks,0)],['CTR',percent(a.ctr)],['CPA',money(a.cpa,2)],['CVR',percent(a.cvr)]].map(([l,v])=>`<span>${l} <b>${v}</b></span>`).join('')}</div>${typeBlock}</div>`:''}
    </div>`;
  }).join('');
