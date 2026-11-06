@@ -6889,6 +6889,18 @@ window.addEventListener('load',function(){
     .mt3 .mt-days{display:none!important}
     /* Budget: a little room above it */
     html body #channelPanel>#vcSection{margin-top:14px!important}
+    /* Notifications: a line icon in the notification's colour with a small dot, no tile behind it */
+    html body .nf-ic.nf-ln{position:relative;background:none!important;width:34px;height:34px;color:var(--nfc,#203c8e)}
+    .nf-ln svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .nf-ln i{position:absolute;right:2px;top:3px;width:8px;height:8px;border-radius:50%;background:var(--nfc,#203c8e);border:2px solid #fff}
+    body.dark-mode .nf-ln i{border-color:#151a22}
+    /* Results details: a simple table with coloured % */
+    .dcR-tb{width:100%;border-collapse:collapse;margin:2px 0 10px;font-size:12.5px;font-variant-numeric:tabular-nums}
+    .dcR-tb th{font-size:9.5px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#8a93ad;text-align:right;padding:0 0 5px}
+    .dcR-tb td{padding:7px 0;border-top:1px solid #f1f3f8;text-align:right;font-weight:900;color:#141b33}
+    .dcR-tb td:first-child{text-align:left;font-weight:800;color:#3f475e}.dcR-tb td:nth-child(3){color:#8a93ad;font-weight:700}
+    .dcR-tb td.dcR-p.good{color:#13804f}.dcR-tb td.dcR-p.watch{color:#b9770e}.dcR-tb td.dcR-p.bad{color:#c63a4a}
+    body.dark-mode .dcR-tb td{color:#fff;border-top-color:#232a36}body.dark-mode .dcR-tb td:first-child{color:#c3cad8}
 </style>
 </head>
 <body>
@@ -9730,12 +9742,13 @@ function daysCards(days,latest,T){
    }
    if(!a)return `<div class="dc-card upcoming">${head}<div class="dc-main">${hij}<div class="dc-up">Upcoming · plan ${money(p.spend)} · ${money(p.value)}</div></div></div>`;
    // v191 one row per figure: what happened / the plan on one line, its % on the right, and a bar in the status colour
-   const rr=(l,act,pl,r,cls)=>`<div class="dcR-r"><div class="dcR-t"><span>${l}</span><span class="dcR-v"><b>${act}</b> <em>/ ${pl}</em></span><b class="dcR-p ${cls}">${r==null||!isFinite(r)?'—':Math.round(r*100)+'%'}</b></div><span class="dcR-b ${cls}"><i style="width:${Math.max(2,Math.min(100,(r||0)*100)).toFixed(0)}%"></i></span></div>`;
+   // v193 inside: a plain table (actual, plan, coloured %), no bars
+   const rr=(l,act,pl,r,cls)=>`<tr><td>${l}</td><td>${act}</td><td>${pl}</td><td class="dcR-p ${cls}">${r==null||!isFinite(r)?'—':Math.round(r*100)+'%'}</td></tr>`;
    const roR=a.roas!=null&&p.roas?a.roas/p.roas:null;
    const box=(l,act,r,cls)=>`<div class="dcR-k ${cls}"><small>${l}</small><b>${r==null||!isFinite(r)?'—':Math.round(r*100)+'%'}</b><span>${act}</span></div>`;
    return `<div class="dc-card dcA dcH dcR${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" data-rx="1" onclick="toggleDay('${x.date}')">${rxBadge(x.date)}${hdr}<div class="dc-main">
      <div class="dcR-g">${box('Spend',money(a.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${box('Conv.',fmt(a.conversions,0),a.convAchievement,achClass(a.convAchievement))}${box('Value',money(a.value),a.valueAchievement,achClass(a.valueAchievement))}</div>
-     <div class="dc-more"><div class="dcR-rows">${rr('Spend',money(a.spend),money(p.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${rr('Conv.',fmt(a.conversions,0),fmt(p.conversions,0),a.convAchievement,achClass(a.convAchievement))}${rr('Value',money(a.value),money(p.value),a.valueAchievement,achClass(a.valueAchievement))}${rr('ROAS',fmt(a.roas,2)+'x',fmt(p.roas,2)+'x',roR,achClass(roR))}</div>${dxResultMore(x)}</div></div></div>`;
+     <div class="dc-more"><table class="dcR-tb"><tr><th></th><th>Actual</th><th>Plan</th><th>%</th></tr>${rr('Spend',money(a.spend),money(p.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${rr('Conv.',fmt(a.conversions,0),fmt(p.conversions,0),a.convAchievement,achClass(a.convAchievement))}${rr('Value',money(a.value),money(p.value),a.valueAchievement,achClass(a.valueAchievement))}${rr('ROAS',fmt(a.roas,2)+'x',fmt(p.roas,2)+'x',roR,achClass(roR))}</table>${dxResultMore(x)}</div></div></div>`;
  }).join('');
  return (plan?planHero(days,T):resultsHero(days,T))+`<div class="dc-list">${cards}</div>`+(plan?`<div class="dc-legend">${PLAN_MIX_LABELS.map((l,k)=>`<span><i class="m${k}"></i>${l}</span>`).join('')}</div>`:'')+`<div class="dx-note">Tap a day to see more.</div>`;
 }
@@ -9838,6 +9851,12 @@ function localWhen(ms,withDay){
 // Filters + compact: chips on top, one short row per notification, like a mail inbox.
 const NF_FILTERS=[['all','All'],['data','Data'],['tasks','Tasks'],['team','Team'],['app','App']];
 const NF_GROUP={season:'data',streak:'data',spend_alert:'data',roas_drop:'data',new_day:'data',month_closed:'data',updated:'data',tasks:'tasks',announcement:'team',app_update:'app',celebrate:'team',read_alert:'data'};
+// v193 line icons (no emoji): the icon and a small dot take the notification's colour
+const NF_KIND={season:'cal',month_closed:'cal',streak:'flame',spend_alert:'warn',read_alert:'warn',roas_drop:'down',new_day:'data',updated:'data',announcement:'mega',app_update:'app',tasks:'check',celebrate:'trophy'};
+const NF_SVG={cal:'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/>',flame:'<path d="M12 21c-3.9 0-6.5-2.6-6.5-6.2 0-3.4 2.6-5.2 3.6-8.3.8 1.5 1.9 2.4 3.1 2.8.3-2 1.4-4 3.3-5.3-.2 3.4 3 5.4 3 9.3C19.5 18.1 16.3 21 12 21z"/>',
+ warn:'<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.1"/>',down:'<path d="M4 7l6 6 4-4 6 8"/><path d="M20 12v5h-5"/>',data:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+ mega:'<path d="M4 10v4h3l6 4V6L7 10z"/><path d="M17 9a4 4 0 0 1 0 6"/>',app:'<rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18h3"/>',check:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.8"/>',
+ trophy:'<path d="M8 4h8v4a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 12v4M9 20h6M10 16h4v4h-4z"/>',bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.3 20a1.9 1.9 0 0 0 3.4 0"/>'};
 const NF_EDGE={new_day:'g',updated:'g',month_closed:'g',streak:'y',celebrate:'y',season:'y',announcement:'y',spend_alert:'o',roas_drop:'o',read_alert:'o',tasks:'t',app_update:'n'};
 const NF_TINT={season:'y',streak:'y',spend_alert:'',roas_drop:'',new_day:'',updated:'',month_closed:'g',tasks:'t',announcement:'y',app_update:'p',celebrate:'y'};
 function nfShort(ms){
@@ -9856,7 +9875,7 @@ function nfRender(){
  // v178 grouped under Today / Yesterday / the date, each card edged in its type's colour
  const nfDay=ms=>{const d=new Date(ms),t=new Date();const k=x=>x.getFullYear()+'-'+x.getMonth()+'-'+x.getDate();const y=new Date(t);y.setDate(t.getDate()-1);return k(d)===k(t)?'TODAY':k(d)===k(y)?'YESTERDAY':d.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}).toUpperCase()};
  let nfLast='';
- const rows=shown.map(x=>{const dl=nfDay(x.at),hd=dl!==nfLast?`<div class="nf-day">${esc(dl)}</div>`:'';nfLast=dl;return hd+`<button type="button" class="nf-r nf-c-${NF_EDGE[x.type]||'n'}" onclick="nfOpen('${esc(x.id)}')"><span class="nf-ic ${NF_TINT[x.type]||''}">${NF_ICON[x.type]||'🔔'}</span>
+ const rows=shown.map(x=>{const dl=nfDay(x.at),hd=dl!==nfLast?`<div class="nf-day">${esc(dl)}</div>`:'';nfLast=dl;return hd+`<button type="button" class="nf-r nf-c-${NF_EDGE[x.type]||'n'}" onclick="nfOpen('${esc(x.id)}')"><span class="nf-ic nf-ln"><svg viewBox="0 0 24 24" aria-hidden="true">${NF_SVG[NF_KIND[x.type]||'bell']}</svg><i></i></span>
    <span class="nf-tx"><b>${esc(x.title)}${x.account&&!/ (AR|USA)$| · (AR|USA)$/.test(x.title)?` <em>${x.account==='ar'?'AR':'USA'}</em>`:''}</b><span>${esc(x.body||'')}</span></span>
    <em class="nf-t">${esc(nfShort(x.at))}${x.at>seen?'<i></i>':''}</em></button>`}).join('');
  body.innerHTML=chips+(rows?`<div class="nf-box">${rows}</div>`:'<div class="nf-empty">Nothing here.</div>')
