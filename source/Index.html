@@ -6901,6 +6901,24 @@ window.addEventListener('load',function(){
     .dcR-tb td:first-child{text-align:left;font-weight:800;color:#3f475e}.dcR-tb td:nth-child(3){color:#8a93ad;font-weight:700}
     .dcR-tb td.dcR-p.good{color:#13804f}.dcR-tb td.dcR-p.watch{color:#b9770e}.dcR-tb td.dcR-p.bad{color:#c63a4a}
     body.dark-mode .dcR-tb td{color:#fff;border-top-color:#232a36}body.dark-mode .dcR-tb td:first-child{color:#c3cad8}
+    .kx-c i{font-style:normal}
+    /* v194 Daily on phones: Clicks, CTR, CPA and CVR as one navy strip (white numbers, plan · % on one line) */
+    @media (max-width:1099px){
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm){background:radial-gradient(120% 200% at 0 0,#2c4fb8,#203c8e 55%,#132457)!important;border:0!important;padding:13px 4px 12px!important;box-shadow:0 10px 22px rgba(20,40,110,.22)!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm)>.quick-metric{border-left-color:rgba(255,255,255,.12)!important;gap:4px 3px!important;padding:0 4px!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-icon{color:#c9d3f5!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-icon svg{stroke:#c9d3f5!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-name{color:#c9d3f5!important;font-size:9.5px!important;font-weight:900!important;letter-spacing:.07em!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-value{color:#fff!important;font-size:clamp(14px,4.4vw,17px)!important;font-weight:900!important;margin:2px 0 1px!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-c,html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r{flex:0 0 auto!important;width:auto!important;font-size:clamp(8.5px,2.6vw,10.5px)!important;letter-spacing:-.01em;font-weight:800!important;line-height:1.3}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-c{color:#c9d3f5!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-c i{display:none}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-c b{color:#c9d3f5!important;font-weight:800}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r:not(:empty):before{content:"· ";color:#c9d3f5}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r.up{color:#7fe0b0!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r.mid{color:#f2d38f!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r.dn{color:#ff9aa6!important}
+    }
 </style>
 </head>
 <body>
@@ -8972,10 +8990,10 @@ function drawKpiPlans(d){
    if(!ok){r.textContent='';r.className='kx-r';return}
    const ratio=a/plan,good=lowGood?ratio<=1:ratio>=1,near=lowGood?ratio<=1.15:ratio>=.85;
    r.textContent=`${Math.round(ratio*100)}%`;r.className='kx-r '+(good?'up':near?'mid':'dn')};
- set('topClicks',x.clicks,x.planClicks,`Plan <b>${fmt(x.planClicks,0)}</b>`);
- set('topCTR',x.ctr,ly,`LY <b>${percent(ly)}</b>`,false,'of last year');
- set('topCPA',x.cpa,dp.cpa,`Plan <b>${money(dp.cpa,2)}</b>`,true);
- set('topCVR',x.cvr,dp.cvr,`Plan <b>${percent(dp.cvr)}</b>`);
+ set('topClicks',x.clicks,x.planClicks,`<i>Plan </i><b>${fmt(x.planClicks,0)}</b>`);
+ set('topCTR',x.ctr,ly,`<i>LY </i><b>${percent(ly)}</b>`,false,'of last year');
+ set('topCPA',x.cpa,dp.cpa,`<i>Plan </i><b>${money(dp.cpa,2)}</b>`,true);
+ set('topCVR',x.cvr,dp.cvr,`<i>Plan </i><b>${percent(dp.cvr)}</b>`);
 }
 function renderMtd(d){
  const m=d.mtd||{};
