@@ -6793,18 +6793,27 @@ window.addEventListener('load',function(){
     html body .weekly-performance .wx-m .wx-m-v span{color:#c9d3f5!important}
     html body .weekly-performance .wx-m .wx-thin{background:rgba(255,255,255,.18)!important}
     html body .weekly-performance .wx-m .wx-thin span{background:linear-gradient(90deg,#f0cf8c,#e2b874)!important}
-    /* Daily Performance on phones: Clicks, CTR, CPA and CVR side by side in one short card */
+    /* Daily Performance on phones: Clicks, CTR, CPA and CVR side by side in one short card (four equal, centred columns) */
+    .kx-r.mid{color:#b9770e}body.dark-mode .kx-r.mid{color:#f3c56b}
     @media (max-width:1099px){
-      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm){display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;background:#fff!important;border:1px solid #edf0f6!important;border-radius:18px!important;padding:10px 4px!important;box-shadow:0 6px 18px rgba(20,30,70,.05)!important}
-      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-metric{display:flex!important;flex-direction:column;align-items:center;text-align:center;gap:2px;min-height:0!important;padding:4px 2px!important;background:none!important;border:0!important;border-left:1px solid #f1f3f8!important;border-radius:0!important;box-shadow:none!important}
-      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-metric:first-child{border-left:0!important}
-      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-metric:before,html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-metric:after{display:none!important}
-      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-icon{display:none!important}
-      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-copy{display:flex!important;flex-direction:column;align-items:center;gap:1px;min-width:0}
-      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-name{font-size:9.5px!important;letter-spacing:.08em}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm){display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;background:#fff!important;border:1px solid #edf0f6!important;border-radius:18px!important;padding:12px 2px!important;box-shadow:0 6px 18px rgba(20,30,70,.05)!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm)>.quick-metric{display:flex!important;flex-flow:row wrap;justify-content:center;align-items:center;align-content:flex-start;text-align:center!important;gap:3px 4px;min-width:0;min-height:0!important;padding:2px 3px!important;margin:0!important;background:none!important;border:0!important;border-left:1px solid #eef1f6!important;border-radius:0!important;box-shadow:none!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm)>.quick-metric:first-child{border-left:0!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm)>.quick-metric:before,html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm)>.quick-metric:after{display:none!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-icon{position:static!important;display:grid!important;place-items:center;width:16px!important;height:16px!important;min-width:0!important;flex:0 0 16px!important;margin:0!important;padding:0!important;background:none!important;box-shadow:none!important;border:0!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-icon svg{width:13px!important;height:13px!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-copy{display:contents!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-name{font-size:9.5px!important;letter-spacing:.06em;margin:0!important;text-align:center!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-value,html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-c,html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r{flex:0 0 100%;text-align:center!important;margin:0!important}
       html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-value{font-size:16px!important;line-height:1.2!important;white-space:nowrap}
-      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-c{font-size:9.5px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r{position:static!important;font-size:11px!important;margin-top:2px!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-c{font-size:10px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r{position:static!important;font-size:12px!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r small{display:none}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-icon{order:0!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-name{order:1!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-value{order:2!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-c{order:3!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r{order:4!important}
     }
     /* Lab tabs: words only; the Days switch gets the same sliding blue pill with a gold shine */
     html body .fc-top.fcP .fc-ic{display:none}
@@ -6825,6 +6834,22 @@ window.addEventListener('load',function(){
     .fc-rec .fc-ri .fc-ic{width:17px;height:17px;color:#13894f}.fc-rec.warm .fc-ri .fc-ic{color:#b9770e}.fc-rec.bad .fc-ri .fc-ic{color:#c63a4a}
     /* vs Last year summary: the same light from the top-left as the Media Plan and Results cards */
     html body .lyx-sum{background:radial-gradient(120% 140% at 0% 0%,#2c4fb8,#203c8e 50%,#132457)!important;box-shadow:0 14px 30px rgba(32,60,142,.25)!important}
+    /* Days: each card with a blue header on top (date, Hijri day, ROAS); Results as rows with bars */
+    html body #dxBody .dc-card.dcH{display:flex!important;flex-direction:column;padding:0!important;gap:0!important;overflow:hidden;border-radius:16px!important}
+    html body #dxBody .dc-card.dcH>.dc-date{display:none!important}
+    .dcH-h{display:flex;align-items:center;gap:8px;padding:9px 14px;color:#fff;background:radial-gradient(120% 220% at 0 0,#2c4fb8,#203c8e 60%,#132457)}
+    .dcH-h b{font-size:13.5px;font-weight:900;white-space:nowrap}.dcH-h span{font-size:12px;font-weight:700;color:#c9d3f5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+    .dcH-h .dcH-l{font-style:normal;font-size:10px;font-weight:900;background:#e2b874;color:#141b33;border-radius:99px;padding:1px 7px}
+    .dcH-h i{margin-left:auto;font-style:normal;font-size:12px;font-weight:900;background:rgba(255,255,255,.16);border-radius:99px;padding:3px 10px;white-space:nowrap}
+    html body #dxBody .dc-card.dcH>.dc-main{padding:12px 14px!important}
+    html body #dxBody .dc-card.dcH.dcA .dcA-g{margin-top:0!important}
+    .dcR-r+.dcR-r{margin-top:9px}
+    .dcR-t{display:grid;grid-template-columns:52px minmax(0,1fr) 46px;gap:8px;align-items:baseline;font-size:12.5px;font-weight:800;color:#3f475e}
+    .dcR-v{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}.dcR-v b{font-size:14px;color:#141b33}.dcR-v em{font-style:normal;color:#8a93ad;font-weight:700}
+    .dcR-p{text-align:right;font-size:13px}.dcR-p.good{color:#13804f}.dcR-p.watch{color:#b9770e}.dcR-p.bad{color:#c63a4a}
+    .dcR-b{display:block;height:6px;border-radius:9px;background:#e8ebf3;margin-top:4px;overflow:hidden}.dcR-b i{display:block;height:100%;border-radius:9px;background:#9aa3b5}
+    .dcR-b.good i{background:#22c07a}.dcR-b.watch i{background:#e2a23c}.dcR-b.bad i{background:#e5606e}
+    body.dark-mode .dcR-v b{color:#fff}body.dark-mode .dcR-t{color:#c3cad8}body.dark-mode .dcR-b{background:#232a36}
 </style>
 </head>
 <body>
@@ -8894,10 +8919,10 @@ function drawKpiPlans(d){
  const set=(id,a,plan,cap,lowGood,of)=>{const c=document.getElementById(id+'Plan'),r=document.getElementById(id+'Pct');
    const ok=a!=null&&isFinite(a)&&plan&&isFinite(plan);if(c)c.innerHTML=ok?cap:'';if(!r)return;
    if(!ok){r.textContent='';r.className='kx-r';return}
-   const ratio=a/plan,good=lowGood?ratio<=1:ratio>=1;
-   r.textContent=`${Math.round(ratio*100)}%`;r.className='kx-r '+(good?'up':'dn')};
+   const ratio=a/plan,good=lowGood?ratio<=1:ratio>=1,near=lowGood?ratio<=1.15:ratio>=.85;
+   r.textContent=`${Math.round(ratio*100)}%`;r.className='kx-r '+(good?'up':near?'mid':'dn')};
  set('topClicks',x.clicks,x.planClicks,`Plan <b>${fmt(x.planClicks,0)}</b>`);
- set('topCTR',x.ctr,ly,`Last year <b>${percent(ly)}</b>`,false,'of last year');
+ set('topCTR',x.ctr,ly,`LY <b>${percent(ly)}</b>`,false,'of last year');
  set('topCPA',x.cpa,dp.cpa,`Plan <b>${money(dp.cpa,2)}</b>`,true);
  set('topCVR',x.cvr,dp.cvr,`Plan <b>${percent(dp.cvr)}</b>`);
 }
@@ -9622,20 +9647,24 @@ function daysCards(days,latest,T){
  const cards=days.map(x=>{
    const p=x.plan,a=x.actual,open=DAY_OPEN===x.date;
    const head=`<div class="dc-date${x.date===latest?' latest':''}"><b>${x.dayNumber}</b><span>${esc(String(x.dayName||'').slice(0,3))}</span></div>`;
+   
+   const dLbl=shortDay(x.date).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+   const hRoas=plan?p.roas:(a&&a.roas);
+   const hdr=`<div class="dcH-h"><b>${esc(dLbl)}</b><span>${esc(x.hijri)}</span>${x.date===latest?'<em class="dcH-l">Latest</em>':''}<i>${hRoas!=null?fmt(hRoas,2)+'x ROAS':''}</i></div>`;
    const hij=`<div class="dc-hij">${esc(x.hijri)}${x.date===latest?'<em>Latest</em>':''}</div>`;
    if(plan){
      const tot=p.spend||1;
-     return `<div class="dc-card dcA${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" onclick="toggleDay('${x.date}')">${head}<div class="dc-main"><div class="dcA-top">${hij}<span class="dcA-roas">${fmt(p.roas,2)}x ROAS</span></div>
+     return `<div class="dc-card dcA dcH${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" onclick="toggleDay('${x.date}')">${hdr}<div class="dc-main">
       <div class="dc-grid dcA-g"><div><small>Spend</small><b>${money(p.spend)}</b></div><div><small>Conv.</small><b>${fmt(p.conversions,0)}</b></div><div><small>Value</small><b>${money(p.value)}</b></div></div>
       <div class="dc-mix">${p.channels.map((c,k)=>`<span class="m${k}" style="flex:${c.spend/tot}"></span>`).join('')}</div>
       <div class="dc-more">${dxPlanMore(p)}</div></div></div>`;
    }
    if(!a)return `<div class="dc-card upcoming">${head}<div class="dc-main">${hij}<div class="dc-up">Upcoming · plan ${money(p.spend)} · ${money(p.value)}</div></div></div>`;
-   return `<div class="dc-card${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" data-rx="1" onclick="toggleDay('${x.date}')">${rxBadge(x.date)}${head}<div class="dc-main">${hij}
-     <div class="dc-grid"><div><small>Spend</small><b>${money(a.spend)}</b>${bar(a.spendAchievement,achClass(a.spendAchievement,true))}<i class="${achClass(a.spendAchievement,true)}">${percent(a.spendAchievement)}</i></div>
-     <div><small>Conv.</small><b>${fmt(a.conversions,0)}</b>${bar(a.convAchievement,achClass(a.convAchievement))}<i class="${achClass(a.convAchievement)}">${percent(a.convAchievement)}</i></div>
-     <div><small>Value</small><b>${money(a.value)}</b>${bar(a.valueAchievement,achClass(a.valueAchievement))}<i class="${achClass(a.valueAchievement)}">${percent(a.valueAchievement)}</i></div>
-     <div><small>ROAS</small><b class="dc-r ${a.roas!=null&&p.roas?(a.roas>=p.roas?'good':'bad'):''}">${fmt(a.roas,2)}x</b><i title="Target ROAS">Tgt ${fmt(p.roas,2)}x</i></div></div>
+   
+   const rr=(l,act,pl,r,cls)=>`<div class="dcR-r"><div class="dcR-t"><span>${l}</span><span class="dcR-v"><b>${act}</b> <em>/ ${pl}</em></span><b class="dcR-p ${cls}">${r==null||!isFinite(r)?'—':Math.round(r*100)+'%'}</b></div><span class="dcR-b ${cls}"><i style="width:${Math.max(2,Math.min(100,(r||0)*100)).toFixed(0)}%"></i></span></div>`;
+   const roR=a.roas!=null&&p.roas?a.roas/p.roas:null;
+   return `<div class="dc-card dcH dcR${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" data-rx="1" onclick="toggleDay('${x.date}')">${rxBadge(x.date)}${hdr}<div class="dc-main">
+     ${rr('Spend',money(a.spend),money(p.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${rr('Conv.',fmt(a.conversions,0),fmt(p.conversions,0),a.convAchievement,achClass(a.convAchievement))}${rr('Value',money(a.value),money(p.value),a.valueAchievement,achClass(a.valueAchievement))}${rr('ROAS',fmt(a.roas,2)+'x',fmt(p.roas,2)+'x',roR,achClass(roR))}
      <div class="dc-more">${dxResultMore(x)}</div></div></div>`;
  }).join('');
  return (plan?planHero(days,T):resultsHero(days,T))+`<div class="dc-list">${cards}</div>`+(plan?`<div class="dc-legend">${PLAN_MIX_LABELS.map((l,k)=>`<span><i class="m${k}"></i>${l}</span>`).join('')}</div>`:'')+`<div class="dx-note">Tap a day to see more.</div>`;
