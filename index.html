@@ -7118,6 +7118,11 @@ window.addEventListener('load',function(){
     .py-tb td{padding:6px 0;border-top:1px solid #f1f3f8;font-weight:800;color:#3f475e}.py-tb tr:first-child td{border-top:0}
     .py-tb td:last-child{text-align:right;font-weight:900;color:#141b33}
     body.dark-mode .py-tb td{color:#c3cad8;border-top-color:#232a36}body.dark-mode .py-tb td:last-child{color:#fff}
+    /* v200 Performance Max is gold everywhere (Demand Gen moves to teal in the mixes) */
+    .ccd.k2,.as-eco.k2{--a:#e9c47a!important;--b:#b8862f!important}
+    .ctd.k2{--c:#c99a45!important;--s:#fbf3e3!important}
+    html body .m2,html body .ph3-bar i.m2,html body .dx-chrow em.m2,html body .dx-chrow i.dx-dot.m2,html body .mt3 .mt-mix .m2,html body .mt3 .mt-legend i.m2,html body .mp-t i.k2,html body .dcA-ch i.m2{background:#c99a45!important}
+    html body .m3,html body .ph3-bar i.m3,html body .dx-chrow em.m3,html body .dx-chrow i.dx-dot.m3,html body .mt3 .mt-mix .m3,html body .mt3 .mt-legend i.m3,html body .mp-t i.k3,html body .dcA-ch i.m3{background:#2aa6c9!important}
 </style>
 </head>
 <body>
@@ -9925,7 +9930,7 @@ function dxPlanMore(p){
 function dxResultMore(x){
  const a=x.actual;
  
- return `<div class="dx-stats dx-g3"><span><small>Target spend</small><b>${money(a.target)}</b></span><span><small>Plan value</small><b>${money(x.plan.value)}</b></span><span><small>Target ROAS</small><b>${fmt(x.plan.roas,2)}x</b></span><span><small>CPA</small><b>${money(a.cpa,2)}</b></span><span><small>CVR</small><b>${percent(a.cvr)}</b></span><span><small>Clicks</small><b>${fmt(a.clicks,0)} <em class="dx-ach ${achClass(a.clicksAchievement)}">${percent(a.clicksAchievement)}</em></b></span><span><small>CTR</small><b>${percent(a.ctr)}</b></span></div>`;
+ return `<div class="dx-stats dx-g3"><span><small>CPA</small><b>${money(a.cpa,2)}</b></span><span><small>CVR</small><b>${percent(a.cvr)}</b></span><span><small>Clicks</small><b>${fmt(a.clicks,0)} <em class="dx-ach ${achClass(a.clicksAchievement)}">${percent(a.clicksAchievement)}</em></b></span><span><small>CTR</small><b>${percent(a.ctr)}</b></span></div>`;
 }
  
 function daysCards(days,latest,T){
@@ -10206,7 +10211,7 @@ function fcDraw(){
    return {m,live:w===lastW&&lastDay&&end&&lastDay<end&&(w.acc||0)<.85,nm:String(w.label).replace(/\s*[\d]+\s*[:\-–]\s*\d+\s*$/,'').replace(/^(First|Second|Third|Fourth|Fifth)\s+/i,'').replace(/[\s\-–]+$/,'')||w.label}};
  const wk=w=>{const {m,live,nm}=wkInfo(w),a=w.acc,cl=live?'n':a==null?'n':a>1.15||a<.7?'a':'',pc=live?'navy':a==null?'mut':a>1.15||a<.7?'a':'g';
    return `<div class="fc-wk"><div>${esc(nm)}<small>${m?(+m[1])+'–'+(+m[2]):''}</small></div><div><div class="fc-bar"><i class="${cl}" style="width:${Math.min(100,(a||0)*100).toFixed(1)}%"></i></div><div class="fc-wkt"><span>${w.actSpend?money(w.actSpend):'—'}</span><span>of ${money(w.planSpend)}</span></div></div><div class="fc-pc ${pc}">${fcPct(a)}${live?'<small>so far</small>':''}</div></div>`};
- const CHC={'search brand':'#c89434','search non-brand':'#2453d6','performance max':'#13894f','demand gen':'#6b3fa0'};
+ const CHC={'search brand':'#7b5cf0','search non-brand':'#2453d6','performance max':'#c99a45','demand gen':'#1d9cc8'};
  const ach=n=>(d.ach||[]).find(x=>x.name.toLowerCase().split(' (')[0]===n.toLowerCase().split(' (')[0])||{};
  const chList=(d.channels||[]).slice().sort((x,y)=>(y.budget||0)-(x.budget||0));
  const chs=chList.map(x=>{const r=ach(x.name),sa=r.spendAch,ra=r.revAch,over=sa>1.15;
@@ -10428,7 +10433,7 @@ function asHtml(){
  const tabs=`<div class="as-seg">${[['channels','Channels'],['weeks','Weeks'],['index','Index']].map(([k,l])=>`<button type="button" class="${AS.tab===k?'on':''}" onclick="asTab('${k}')">${l}</button>`).join('')}</div>`;
  let body='';
  if(AS.tab==='channels'){
-   const CHC={'search brand':'#c89434','search non-brand':'#2453d6','performance max':'#13894f','demand gen':'#6b3fa0'};
+   const CHC={'search brand':'#7b5cf0','search non-brand':'#2453d6','performance max':'#c99a45','demand gen':'#1d9cc8'};
    const bl=d.blended;
    const ecoMx=Math.max(.01,...(d.economics||[]).map(r=>r.mix||0)),ecoK=n=>{const i=CHANNEL_ORDER.indexOf(n);return i<0?(/video|youtube/i.test(n)?4:0):Math.min(i,4)};
    body=`<div class="fc-l">CHANNEL ECONOMICS <em>last ${(((FC[CURRENT_ACCOUNT]||{}).data||{}).settings||{}).window||60} days</em></div><div class="fc-card as-ecos">${(d.economics||[]).map(r=>`<div class="as-eco k${ecoK(r.name)}"><div><b>${esc(r.name)}</b><em>${pc(r.mix)}</em></div>
