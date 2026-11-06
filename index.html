@@ -7123,6 +7123,11 @@ window.addEventListener('load',function(){
     .ctd.k2{--c:#c99a45!important;--s:#fbf3e3!important}
     html body .m2,html body .ph3-bar i.m2,html body .dx-chrow em.m2,html body .dx-chrow i.dx-dot.m2,html body .mt3 .mt-mix .m2,html body .mt3 .mt-legend i.m2,html body .mp-t i.k2,html body .dcA-ch i.m2{background:#c99a45!important}
     html body .m3,html body .ph3-bar i.m3,html body .dx-chrow em.m3,html body .dx-chrow i.dx-dot.m3,html body .mt3 .mt-mix .m3,html body .mt3 .mt-legend i.m3,html body .mp-t i.k3,html body .dcA-ch i.m3{background:#2aa6c9!important}
+    /* v201 the best year on the Same Hijri day chart: a 3D gold ball with a soft glow */
+    html body .py-chart circle.win{fill:url(#pyGold)!important;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35)) drop-shadow(0 0 7px rgba(242,211,143,.95))!important}
+    /* Results day cards: each box gets a side line in its status colour */
+    html body .dcR-k{border-left:3px solid #c9d0df;padding-left:10px!important}
+    html body .dcR-k.good{border-left-color:#22c07a}html body .dcR-k.watch{border-left-color:#e2a23c}html body .dcR-k.bad{border-left-color:#e5606e}
 </style>
 </head>
 <body>
@@ -14163,7 +14168,7 @@ function renderPastYears(){
  const mk=PY_METRIC, val=y=>Number(y.s[mk])||0, lab=v=>mk==='roas'?fmt(v,2)+'x':cs()+(cx(v)/1000).toFixed(1)+'k';
  const pts=[...ys].reverse(), mx=Math.max(...pts.map(val),mk==='roas'?0.01:1), best=pts.reduce((a,b)=>val(b)>val(a)?b:a), W=320, H=104;
  const X=i=>34+i*(W-68)/Math.max(1,pts.length-1), Y=v=>H-18-v/mx*(H-46);
- const chart=`<svg class="py-chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet"><polyline points="${pts.map((y,i)=>X(i).toFixed(1)+','+Y(val(y)).toFixed(1)).join(' ')}" fill="none" stroke="#e2b874" stroke-width="3" stroke-linejoin="round"/>
+ const chart=`<svg class="py-chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet"><defs><radialGradient id="pyGold" cx=".32" cy=".28" r=".75"><stop offset="0" stop-color="#fffbe8"/><stop offset=".22" stop-color="#f7e3a3"/><stop offset=".62" stop-color="#d6a548"/><stop offset="1" stop-color="#8a5c17"/></radialGradient></defs><polyline points="${pts.map((y,i)=>X(i).toFixed(1)+','+Y(val(y)).toFixed(1)).join(' ')}" fill="none" stroke="#e2b874" stroke-width="3" stroke-linejoin="round"/>
    ${pts.map((y,i)=>`<circle cx="${X(i).toFixed(1)}" cy="${Y(val(y)).toFixed(1)}" r="${y===best?7:5}" class="${y===best?'win':''}"/><text x="${X(i).toFixed(1)}" y="${(Y(val(y))-11).toFixed(1)}" class="v">${lab(val(y))}</text><text x="${X(i).toFixed(1)}" y="${H-2}" class="y">${yr(y)}</text>`).join('')}</svg>`;
  const seg=`<div class="py-seg">${Object.keys(PY_METRICS).map(k=>`<button type="button" class="${k===mk?'on':''}" onclick="pyMetric('${k}')">${PY_METRICS[k].l}</button>`).join('')}</div>`;
  const maxV=Math.max(...ys.map(y=>y.s.value),1);
