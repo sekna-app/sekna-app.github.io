@@ -14571,7 +14571,7 @@ function tkWdToday(){const t=tkToday();return (new Date(Date.UTC(t.y,t.m-1,t.d))
 function tkLeaveAll(){return (TK.data&&TK.data.leave)||[]}
 function tkLeaveOf(email){return tkLeaveAll().filter(l=>l.email===email&&(l.month==='ALL'||l.month===TK.month))}
 function tkWeeklyOf(email){return tkLeaveAll().find(l=>l.email===email&&l.data&&l.data.type==='Weekly')||null}
-function tkFrozenToday(){const f=(TK.data&&TK.data.freeze)||{},t=tkToday(),iso=tkIso(t.y,t.m,t.d);return !!(f.on||(f.seasons||[]).some(s=>s.from<=iso&&iso<=s.to))}
+function tkFrozenToday(){const f=(TK.data&&TK.data.freeze)||{};return !!f.on}
 function tkOffToday(email){
  const t=tkToday(),m=`${t.y}-${String(t.m).padStart(2,'0')}`,fr=tkFrozenToday(),wd=tkWdToday();
  return tkLeaveAll().find(l=>l.email===email&&l.data&&(l.data.type==='Weekly'?!fr&&(l.data.weekdays||[]).includes(wd):l.month===m&&(l.data.days||[]).includes(t.d)&&!(fr&&l.data.type==='Vacation')))||null;
@@ -14581,7 +14581,7 @@ function tkOffToday(email){
 function tkOffOn(email,iso){
  if(!email||!iso)return null;
  const y=+iso.slice(0,4),m=+iso.slice(5,7),d=+iso.slice(8,10),mon=iso.slice(0,7),f=(TK.data&&TK.data.freeze)||{},t=tkToday(),now=tkIso(t.y,t.m,t.d);
- const frozen=!!((f.on&&iso>=now)||(f.seasons||[]).some(x=>x.from<=iso&&iso<=x.to)), wd=(new Date(Date.UTC(y,m-1,d)).getUTCDay()+1)%7;
+ const frozen=!!(f.on&&iso>=now), wd=(new Date(Date.UTC(y,m-1,d)).getUTCDay()+1)%7;
  return tkLeaveAll().find(l=>l.email===email&&l.data&&(l.data.type==='Weekly'?(l.data.weekdays||[]).includes(wd)&&!frozen:l.month===mon&&(l.data.days||[]).includes(d)&&!(l.data.type==='Vacation'&&frozen)))||null;
 }
 function tkOffDays(email){
@@ -14652,7 +14652,7 @@ function tkLeaveHtml(){
      ${p.role?`<div class="ln-r"><span>${esc(roleLabel(p.role).toUpperCase())}</span>${dots}</div>`:''}
      ${extra.length?`<div class="lp-ex">${extra.map(l=>{const tt=TK_LEAVE_TYPES.find(x=>x[0]===l.data.type)||TK_LEAVE_TYPES[1];return `<span>${tt[1]} ${(l.data.days||[]).join(', ')}</span>`}).join('')}</div>`:''}</div>
      <em>${w?`<u>${esc(wd)}</u>${b?` · <strong>${first(b.name)}</strong>`:''}`:'No day off'}</em>${admin?'<i class="ln-go">›</i>':''}</button>`}).join('');
- return stats+covers+(admin?freeze:'')+(people.length?`<div class="lc-ls">${rows}</div>`:'<div class="tk-empty"><b>No one yet</b></div>');
+ return stats+covers+(people.length?`<div class="lc-ls">${rows}</div>`:'<div class="tk-empty"><b>No one yet</b></div>');
 }
 
 
@@ -14680,7 +14680,7 @@ function lvDraw(){const el=document.getElementById('lvLock');if(!el)return;const
  el.querySelector('.lvl-go').classList.toggle('same',LV.pick===LV.now)}
 async function lvLockSave(btn){
  if(LV.pick===LV.now){lvLockClose();return}
- const f=Object.assign({on:false,seasons:[]},TK.data.freeze);f.on=LV.pick;btn.disabled=true;
+ const f={on:LV.pick,seasons:[]};btn.disabled=true;
  try{TK.data.freeze=await serverCall('leaveFreezeSet',getAccessToken(),f,LV.notify);storeSet('sekna_tasks_'+TK.month,JSON.stringify(TK.data));
   lvLockClose();showSettingsToast((f.on?'Leave frozen':'Leave open')+(LV.notify?' · team notified':''));tkRender()}
  catch(err){btn.disabled=false;showSettingsToast(errorText(err))}

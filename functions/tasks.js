@@ -92,7 +92,7 @@ async function teamPeople(mem, me) {
 
 function frozenOn(meta, iso) {
   const f = (meta && meta.freeze) || {};
-  return !!f.on || (f.seasons || []).some(s => s.from && s.to && s.from <= iso && iso <= s.to);
+  return !!f.on; // freezing by season dates was removed: only the Freeze switch on the Leave tile counts
 }
 function leavesToday(leave, meta, now) {
   const t = muscatToday(now), frozen = frozenOn(meta, t.iso);
@@ -440,7 +440,7 @@ const T = {
     const seasons = (Array.isArray(cfg.seasons) ? cfg.seasons : []).slice(0, 12)
       .map(s => ({ name: String((s && s.name) || 'Season').trim().slice(0, 40), from: String((s && s.from) || ''), to: String((s && s.to) || '') }))
       .filter(s => ok(s.from) && ok(s.to)).map(s => s.from > s.to ? { name: s.name, from: s.to, to: s.from } : s);
-    const out = { on: !!cfg.on, seasons };
+    const out = { on: !!cfg.on, seasons: [] }; // seasons are no longer used
     let was = null;
     await fsUpdate(DOC.meta, meta => { was = !!(meta && meta.freeze && meta.freeze.on); return Object.assign(meta || {}, { freeze: out }); });
     // Optional: tell the whole team when leave is frozen or opened again (the admin ticks "Notify the team").
