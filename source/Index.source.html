@@ -6993,6 +6993,31 @@ window.addEventListener('load',function(){
     .phx-t .phx-op.ok{color:#13804f;background:#e3f6ec}.phx-t .phx-op.mid{color:#a56a06;background:#fdf1d8}.phx-t .phx-op.bd{color:#c63a4a;background:#fdeaec}
     body.dark-mode .phx-t .phx-op.ok{color:#39e29a;background:rgba(57,226,154,.12)}body.dark-mode .phx-t .phx-op.mid{color:#f3c56b;background:rgba(243,197,107,.12)}body.dark-mode .phx-t .phx-op.bd{color:#ff8a98;background:rgba(255,138,152,.12)}
     .phx-t .ch-ico:has(img.ha-mk){background:#f3eafa!important;border-color:#e2cff2!important}
+    /* v205 opened year: small tiles in two columns, label right above the number; opens fast and sharp */
+    .py-g2{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    .py-g2>div{background:#f6f7fb;border-radius:10px;padding:7px 10px;animation:pyIt .22s cubic-bezier(.2,.9,.3,1) both;animation-delay:calc(.05s + var(--d,0)*.03s)}
+    .py-g2 small{display:block;font-size:10px;font-weight:900;letter-spacing:.06em;color:#7b84a0;text-transform:uppercase}
+    .py-g2 b{display:block;font-size:16px;font-weight:900;color:#141b33;font-variant-numeric:tabular-nums}
+    body.dark-mode .py-g2>div{background:#1a2030}body.dark-mode .py-g2 b{color:#fff}
+    html body .py-list .py-c2 .py-more.py-tb{animation:pyOpen .26s cubic-bezier(.3,.9,.3,1) both;transform-origin:top}
+    @keyframes pyOpen{from{opacity:0;clip-path:inset(0 0 100% 0)}to{opacity:1;clip-path:inset(0)}}
+    @keyframes pyIt{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    @media (prefers-reduced-motion:reduce){.py-g2>div,html body .py-list .py-c2 .py-more.py-tb{animation:none}}
+    /* v205 vs Last year (Days): the two year bars fill in */
+    .lyx-sum.anim .lyv2-bar u{animation:lyFill 1s cubic-bezier(.2,.8,.2,1) both}
+    .lyx-sum.anim .lyv2-bar+.lyv2-bar u{animation-delay:.18s}
+    .lyx-sum.anim .lyv2-bar b{animation:pgIn .45s .5s both}
+    @keyframes lyFill{from{width:0}}
+    /* v205 vs 2025: a simple white shine over the card */
+    #weeklyLy .vly-btn{position:relative;overflow:hidden}
+    #weeklyLy .vly-btn.shn:after{content:"";position:absolute;top:0;bottom:0;left:0;width:55%;background:linear-gradient(105deg,transparent 0,rgba(255,255,255,.45) 50%,transparent 100%);transform:translateX(-130%) skewX(-12deg);animation:fcHeroShn 1.1s .35s cubic-bezier(.4,0,.2,1) forwards;pointer-events:none;z-index:2}
+    /* v205 sliding filters: calmer move and a softer, slower shine */
+    html body .gsl-pill,html body .gslA>.gsl-pill{transition:transform .6s cubic-bezier(.4,0,.2,1),width .6s cubic-bezier(.4,0,.2,1),height .6s cubic-bezier(.4,0,.2,1)!important}
+    html body .fcP-pill{transition-duration:.6s!important;transition-timing-function:cubic-bezier(.4,0,.2,1)!important}
+    html body .gsl-pill:after,html body .fcP-pill:after{background:linear-gradient(105deg,transparent 30%,rgba(255,224,150,.42) 50%,transparent 70%)!important}
+    html body .gsl-pill.shine:after,html body .fcP-pill.shine:after{animation:fcShine 1.2s ease-in-out!important}
+    html body .as-seg button.on:after{animation-duration:.55s!important;animation-timing-function:cubic-bezier(.4,0,.2,1)!important}
+    @media (prefers-reduced-motion:reduce){.lyx-sum.anim .lyv2-bar u,#weeklyLy .vly-btn.shn:after{animation:none}}
 </style>
 </head>
 <body>
@@ -9239,7 +9264,10 @@ function wlyPage(on){
  if(on)requestAnimationFrame(()=>{if(WK_LY)pushPage(o,true)});else pushPage(o,false);
 }
 function closeWly(){if(WK_LY){WK_LY=false;drawWeeklyLy(false)}else wlyPage(false)}
-function drawWeeklyLy(anim){
+// v205 a simple white shine crosses the vs-last-year card once when the page opens
+function drawWeeklyLy(anim){const was=!!document.querySelector('#weeklyLy .vly-btn');drawWeeklyLy0(anim);
+ if(!WK_LY||!motionOn())return;const b=document.querySelector('#weeklyLy .vly-btn');if(b&&(anim||!was)){b.classList.remove('shn');void b.offsetWidth;b.classList.add('shn')}}
+function drawWeeklyLy0(anim){
  const box=document.getElementById('weeklyLy'),cards=document.getElementById('weeklyCards'),btn=document.getElementById('wlyBtn');
  if(!box||!cards)return;
  if(btn){btn.classList.toggle('on',WK_LY);const ly=(Number(String((DASH_DATA&&DASH_DATA.latest&&DASH_DATA.latest.date)||'').slice(0,4))||new Date().getFullYear())-1;
@@ -14086,7 +14114,7 @@ function renderPastYears(){
      <div class="py-yr"><b>${yr(y)}</b><small>${esc(shortDay(y.dk).toLocaleDateString('en-GB',{day:'numeric',month:'short'}))}</small></div>
      <div class="py-main"><div class="py-v"><b>${money(a.value)}</b>${isWin?'<span class="py-winb">Winner</span>':chip(a.value,b&&b.value)}</div>
 </div>
-     ${open?`<div class="py-more py-tb"><div class="py-day">${esc(day(y.dk))}</div><table>${[['Value',money(a.value)],['Spend',money(a.spend)],['Conversions',fmt(a.conversions,0)],['ROAS',fmt(a.roas,2)+'x'],['CPA',money(a.cpa,2)],['Clicks',fmt(a.clicks,0)],['CTR',percent(a.ctr)],['CVR',percent(a.cvr)]].map(([l,v])=>`<tr><td>${l}</td><td>${v}</td></tr>`).join('')}</table></div>`:''}
+     ${open?`<div class="py-more py-tb"><div class="py-day">${esc(day(y.dk))}</div><div class="py-g2">${[['Spend',money(a.spend)],['Conversions',fmt(a.conversions,0)],['Value',money(a.value)],['ROAS',fmt(a.roas,2)+'x'],['Clicks',fmt(a.clicks,0)],['CPA',money(a.cpa,2)],['CTR',percent(a.ctr)],['CVR',percent(a.cvr)]].map(([l,v],i)=>`<div style="--d:${i}"><small>${l}</small><b>${v}</b></div>`).join('')}</div></div>`:''}
    </div>`;
  }).join('');
  body.innerHTML=`<div class="py-side">${seg}<div class="py-hero"><small>${esc(String(x.hijriDate||'').toUpperCase())} · ${PY_METRICS[mk].t} BY YEAR</small>${chart}</div>
@@ -15609,7 +15637,11 @@ function phAcc(s){
 // v172: each month starts folded on its plan achievement; a tap opens the whole statement, the next taps open the campaign types.
 function phToggle(k){PH.shown=PH.shown||{};if(!PH.shown[k]){PH.shown[k]=1;drawPlanHistory();return}PH.open=PH.open===k?'':k;drawPlanHistory()}
 function phFold(k){PH.shown=PH.shown||{};delete PH.shown[k];if(PH.open===k)PH.open='';drawPlanHistory()}
-function phView(v){PH.view=v;drawPlanHistory()}
+// v205 the number next to Reports counts only reports not opened yet on this device; opening Reports clears it
+function phRpKey(){return 'sekna_ph_rp_seen_'+CURRENT_ACCOUNT}
+function phRpSeen(){try{return JSON.parse(storeGet(phRpKey())||'null')}catch(e){return null}}
+function phNewRp(){const L=PH.lib||[];if(!L.length)return 0;const seen=phRpSeen();if(seen===null){storeSet(phRpKey(),JSON.stringify(L.map(r=>r.month)));return 0}return L.filter(r=>!seen.includes(r.month)).length}
+function phView(v){PH.view=v;if(v==='rp'&&PH.lib)storeSet(phRpKey(),JSON.stringify(PH.lib.map(r=>r.month)));drawPlanHistory()}
 // One saved PDF: the file, its pages and size, when it went to the team; tapping it downloads it.
 function phPdf(r,compact){
  const mb=(r.size/1048576).toFixed(1),when=r.sentAt?new Date(r.sentAt).toLocaleDateString('en-GB',{day:'numeric',month:'short'})+', '+new Date(r.sentAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'';
@@ -15618,7 +15650,7 @@ function phPdf(r,compact){
 function drawPlanHistory(){
  const body=document.getElementById('phBody');if(!body||CURRENT_TAB!=='plans')return;
  if(PH.list===null){body.innerHTML='<div class="dx-empty"><span class="lab-spin dark"></span>Loading Plan History…</div>';return}
- const tabs=`<div class="phr-tabs"><button type="button" class="${PH.view!=='rp'?'on':''}" onclick="phView('st')">Statements</button><button type="button" class="${PH.view==='rp'?'on':''}" onclick="phView('rp')">Reports${PH.lib&&PH.lib.length?` <i>${PH.lib.length}</i>`:''}</button></div>`;
+ const tabs=`<div class="phr-tabs"><button type="button" class="${PH.view!=='rp'?'on':''}" onclick="phView('st')">Statements</button><button type="button" class="${PH.view==='rp'?'on':''}" onclick="phView('rp')">Reports${phNewRp()?` <i>${phNewRp()}</i>`:''}</button></div>`;
  if(PH.view==='rp'){body.innerHTML=tabs+(PH.lib&&PH.lib.length?`<div class="phr-list">${PH.lib.map(r=>phPdf(r,1)).join('')}</div>`:`<div class="phx-empty"><span>📄</span><b>No reports yet</b><small>Each month's PDF is kept here once it is sent to the team.</small></div>`);return}
  if(!PH.list.length){body.innerHTML=tabs+`<div class="phx-empty"><span>🏛️</span><b>Nothing saved yet</b>${PH.msg?`<small>⚠️ ${esc(PH.msg)}</small>`:''}</div>`;return}
  // v170: each saved month as a statement (header, a bar on every line, the achievement in a box).
