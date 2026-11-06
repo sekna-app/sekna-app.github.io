@@ -7107,6 +7107,17 @@ window.addEventListener('load',function(){
     html body .date-line.dlCal{vertical-align:middle;margin-right:12px}
     html body .date-line.dlCal+.stk{vertical-align:middle;margin-top:0}
     @media (max-width:1099px){html body .date-line.dlCal+.stk{display:flex;width:max-content;max-width:100%;margin-top:10px}}
+    /* v197 Daily date and currency as light blue chips with a gold icon */
+    html body .date-line.dlChip{display:inline-flex!important;align-items:center;gap:8px;border-radius:12px!important;padding:8px 13px!important;background:#e3e9fb!important;border:0!important;box-shadow:none!important;color:#203c8e!important;font-size:13px!important;vertical-align:middle;margin-right:12px}
+    html body .date-line.dlChip:before{display:none!important}
+    .dlChip svg{width:15px;height:15px;fill:none;stroke:#c99a45;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+    .dlChip .dlx-d{font-weight:700;color:#5a6aa8}.dlChip b{font-weight:900;color:#203c8e}
+    html body .date-line.dlChip+.stk{vertical-align:middle;margin-top:0}
+    @media (max-width:1099px){html body .date-line.dlChip+.stk{display:flex;width:max-content;max-width:100%;margin-top:10px}}
+    html body .cur-sw.cur-chip button.on{background:#e3e9fb!important;color:#203c8e!important;box-shadow:none!important;border-radius:12px!important}
+    html body .cur-chip button b{background:none!important;box-shadow:none!important;color:#c99a45!important;font-size:16px!important;width:20px!important}
+    html body .cur-chip button svg{stroke:#c99a45!important}
+    body.dark-mode .date-line.dlChip,body.dark-mode .cur-sw.cur-chip button.on{background:#1d2440!important;color:#c9d6ff!important}body.dark-mode .dlChip b{color:#fff}
 </style>
 </head>
 <body>
@@ -8951,7 +8962,8 @@ function render(d,opts){
 
  
  {const dl=document.getElementById('dateLine');if(dl){dl.classList.add('dlCal');dl.setAttribute('aria-label',`${x.dayName||''}, ${x.monthName} ${x.dayNumber}${x.hijriDate?' · '+x.hijriDate:''}`);
-  dl.innerHTML=`<span class="dlc-p"><i>${esc(String(x.monthName||'').slice(0,3).toUpperCase())}</i><b>${esc(String(x.dayNumber||''))}</b></span><span class="dlc-t"><b>${esc(x.dayName||'')}</b>${x.hijriDate?`<small>${esc(x.hijriDate)}</small>`:''}</span>`}}
+  dl.classList.remove('dlCal');dl.classList.add('dlChip');
+  dl.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg><span class="dlx-d">${esc(x.dayName||'')}</span><b>${esc(String(x.dayNumber||''))} ${esc(String(x.monthName||'').slice(0,3))}</b>`}}
  text('syncText',`Last sync: ${d.generatedAt||'—'}`);
  tbLive(d);
 
