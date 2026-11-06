@@ -6793,6 +6793,38 @@ window.addEventListener('load',function(){
     html body .weekly-performance .wx-m .wx-m-v span{color:#c9d3f5!important}
     html body .weekly-performance .wx-m .wx-thin{background:rgba(255,255,255,.18)!important}
     html body .weekly-performance .wx-m .wx-thin span{background:linear-gradient(90deg,#f0cf8c,#e2b874)!important}
+    /* Daily Performance on phones: Clicks, CTR, CPA and CVR side by side in one short card */
+    @media (max-width:1099px){
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm){display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;background:#fff!important;border:1px solid #edf0f6!important;border-radius:18px!important;padding:10px 4px!important;box-shadow:0 6px 18px rgba(20,30,70,.05)!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-metric{display:flex!important;flex-direction:column;align-items:center;text-align:center;gap:2px;min-height:0!important;padding:4px 2px!important;background:none!important;border:0!important;border-left:1px solid #f1f3f8!important;border-radius:0!important;box-shadow:none!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-metric:first-child{border-left:0!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-metric:before,html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-metric:after{display:none!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-icon{display:none!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-copy{display:flex!important;flex-direction:column;align-items:center;gap:1px;min-width:0}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-name{font-size:9.5px!important;letter-spacing:.08em}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-value{font-size:16px!important;line-height:1.2!important;white-space:nowrap}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-c{font-size:9.5px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r{position:static!important;font-size:11px!important;margin-top:2px!important}
+    }
+    /* Lab tabs: words only; the Days switch gets the same sliding blue pill with a gold shine */
+    html body .fc-top.fcP .fc-ic{display:none}
+    .gsl{position:relative}
+    .gsl-pill{position:absolute;top:4px;bottom:4px;left:4px;border-radius:11px;background:linear-gradient(135deg,#3d6bff,#203c8e);box-shadow:0 6px 14px rgba(32,60,142,.3);transition:transform .4s cubic-bezier(.2,.8,.2,1),width .4s cubic-bezier(.2,.8,.2,1);overflow:hidden;z-index:0;pointer-events:none}
+    .gsl-pill:after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,224,150,.75) 50%,transparent 70%);transform:translateX(-120%)}
+    .gsl-pill.shine:after{animation:fcShine .7s ease}
+    html body .gsl .wx-tab{position:relative;z-index:1;background:none!important;box-shadow:none!important}
+    html body .gsl .wx-tab.on{color:#fff!important}
+    /* an open part in the Lab gets a light blue frame that opens out from the sides */
+    html body .fc-acc.open{background:linear-gradient(180deg,#eef3ff,#f7f9ff)!important;border-color:#c9d6ff!important}
+    html body .fc-accb{border-color:#c9d6ff!important;background:#f7f9ff!important;animation:fcOpen .38s cubic-bezier(.2,.8,.2,1)}
+    @keyframes fcOpen{from{clip-path:inset(0 50% 0 50% round 16px);opacity:.4}to{clip-path:inset(0 0 0 0 round 0);opacity:1}}
+    body.dark-mode .fc-acc.open,body.dark-mode .fc-accb{background:#18203a!important;border-color:#2c3a6b!important}
+    @media (prefers-reduced-motion:reduce){.gsl-pill{transition:none}.gsl-pill.shine:after,.fc-accb{animation:none}}
+    /* line icons in the plan notes instead of emoji */
+    html body .fc-rec .fc-ri{font-size:0!important;flex:none;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:rgba(255,255,255,.7)}
+    .fc-rec .fc-ri .fc-ic{width:17px;height:17px;color:#13894f}.fc-rec.warm .fc-ri .fc-ic{color:#b9770e}.fc-rec.bad .fc-ri .fc-ic{color:#c63a4a}
+    /* vs Last year summary: the same light from the top-left as the Media Plan and Results cards */
+    html body .lyx-sum{background:radial-gradient(120% 140% at 0% 0%,#2c4fb8,#203c8e 50%,#132457)!important;box-shadow:0 14px 30px rgba(32,60,142,.25)!important}
 </style>
 </head>
 <body>
@@ -7412,6 +7444,11 @@ window.addEventListener('load',function(){
         <div class="wx-detail" id="weeklyDetail"></div>
       </div>
     </section>
+
+    <section class="card section channel-section">
+    <div class="section-head"><div><div class="section-title section-title-with-icon"><span class="title-crown">👑</span><span>Channel Delivery</span></div><div class="section-sub">Month to date · ranked by ROAS</div></div></div>
+    <div class="cc-list" id="channelRows"></div>
+  </section>
     <section class="card section vc-sec" id="vcSection">
       <div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month">◧</span><span>Budget</span></div><div class="section-sub">What is left of the month plan</div></div></div>
 <div class="ox-strip vc" id="mtdVarianceCard"><span class="vc-chip" aria-hidden="true"></span><div class="ox-sr"><div><span class="ox-lbl" id="mtdVarianceLabel">Budget remaining</span><b id="mtdVariance">—</b></div><span class="ox-hs" id="mtdVarianceSub">—</span></div>
@@ -7420,11 +7457,6 @@ window.addEventListener('load',function(){
         <div class="vc-foot"><div>MONTH PLAN<b id="vcPlan">—</b></div><div id="vcDay"></div><svg class="vc-wave" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8.5a5 5 0 0 1 0 7M11.5 6a8.5 8.5 0 0 1 0 12M15 3.5a12 12 0 0 1 0 17"/></svg></div>
 </div>
     </section>
-
-    <section class="card section channel-section">
-    <div class="section-head"><div><div class="section-title section-title-with-icon"><span class="title-crown">👑</span><span>Channel Delivery</span></div><div class="section-sub">Month to date · ranked by ROAS</div></div></div>
-    <div class="cc-list" id="channelRows"></div>
-  </section>
   <section class="card section mrp-card" id="mrSection" hidden>
     <button type="button" class="mr-toggle" id="mrToggle" onclick="MR.open=!MR.open;drawMonthlyReport()" aria-expanded="true"><span class="section-heading-icon month">📄</span><span><b>Monthly Report</b><small>The month as a PDF for the team</small></span><i>▾</i></button>
     <div id="mrBody"></div>
@@ -7440,7 +7472,7 @@ window.addEventListener('load',function(){
           <div class="section-sub" id="dxSub">Every day of the month, from the 1st</div>
         </div>
       </div>
-      <div class="wx-tabs dx-switch" role="tablist">
+      <div class="wx-tabs dx-switch gsl" role="tablist"><span class="gsl-pill"></span>
         <button class="wx-tab on" type="button" id="dxPlanBtn" onclick="setDayView('plan')">Media Plan</button>
         <button class="wx-tab" type="button" id="dxResultsBtn" onclick="setDayView('results')">Results</button>
         <button class="wx-tab" type="button" id="dxLyBtn" onclick="setDayView('ly')">vs Last year</button>
@@ -9348,12 +9380,17 @@ function renderExtraTab(d){
 
 /* ---------- Day by Day ---------- */
 let DAY_VIEW='plan', DAY_OPEN='';
+// A blue pill that slides under the picked button, with the gold shine (Days switch).
+function gslMove(g){if(!g)return;const on=g.querySelector('.on'),p=g.querySelector('.gsl-pill');if(!on||!p)return;
+ p.style.width=on.offsetWidth+'px';p.style.transform=`translateX(${on.offsetLeft-4}px)`;p.classList.remove('shine');void p.offsetWidth;if(motionOn())p.classList.add('shine')}
+window.addEventListener('resize',()=>gslMove(document.querySelector('.dx-switch.gsl')));
 function setDayView(v){
  DAY_VIEW=v==='results'||v==='ly'?v:'plan';
  LYX_ANIM=DAY_VIEW==='ly';
  document.getElementById('dxPlanBtn').classList.toggle('on',DAY_VIEW==='plan');
  document.getElementById('dxResultsBtn').classList.toggle('on',DAY_VIEW==='results');
  document.getElementById('dxLyBtn').classList.toggle('on',DAY_VIEW==='ly');
+ gslMove(document.querySelector('.dx-switch.gsl'));
  if(DASH_DATA){renderDays(DASH_DATA);mvArm(document.getElementById('dxBody'))}
 }
 // Opening a day only flips that card, so the list does not redraw or animate again.
@@ -9571,6 +9608,7 @@ function renderDays(d){
  text('dxTitle',mName?`${mName} · Day by Day`:'Day by Day');
  text('dxSub',DAY_VIEW==='plan'?'The media plan, day by day':DAY_VIEW==='ly'?'Each day vs the same Hijri day last year':'Results vs plan, day by day');
  if(!days.length){body.innerHTML='<div class="dx-empty">No days found in the Media Plan tab.</div>';return}
+ setTimeout(()=>gslMove(document.querySelector('.dx-switch.gsl')),0);
  if(DAY_VIEW==='ly'){body.innerHTML=lyDays(days);return}
  const latest=(d.latest||{}).date;
  body.innerHTML=daysCards(days,latest,dayTotals(days))+(DAY_VIEW==='results'?'<div class="dx-note">Press and hold a day to react.</div>':'');
@@ -9825,7 +9863,7 @@ function fcViewGo(v,btn){const g=btn&&btn.parentNode,i=['forecast','assume','yea
  if(!g||!motionOn()||v===FC_VIEW){fcView(v);return}
  g.style.setProperty('--i',i);g.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b===btn));const p=g.querySelector('.fcP-pill');if(p){p.classList.remove('shine');void p.offsetWidth;p.classList.add('shine')}
  setTimeout(()=>{FC_VIEW=v;fcDraw();const n=document.querySelector('#labForecast .fcP-pill');if(n)n.classList.add('shine')},380)}
-const FC_IC={chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',list:'<rect x="4" y="3.5" width="16" height="17" rx="3"/><path d="M8 9h8M8 13h8M8 17h5"/>',years:'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17M8 14h2M14 14h2M8 17h2"/>',
+const FC_IC={okc:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.8"/>',warn:'<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.1"/>',alert:'<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',list:'<rect x="4" y="3.5" width="16" height="17" rx="3"/><path d="M8 9h8M8 13h8M8 17h5"/>',years:'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17M8 14h2M14 14h2M8 17h2"/>',
  weeks:'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 14h8"/>',channels:'<path d="M4 6h16M4 12h10M4 18h6"/><circle cx="18" cy="12" r="2"/><circle cx="14" cy="18" r="2"/>',source:'<path d="M5 4h14v4l-5 5v7l-4-2v-5L5 8z"/>',
  settings:'<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2L14.3 3h-4l-.3 2.6a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2l.3 2.7h4l.3-2.7a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z"/>'};
 const fcIc=k=>`<svg class="fc-ic" viewBox="0 0 24 24" aria-hidden="true">${FC_IC[k]||''}</svg>`;
@@ -9843,7 +9881,7 @@ function fcDraw(){
  const dd=months.length&&!ro?`<label class="fc-dd${c.moving?' busy':''}"><span>📅</span><select onchange="fcMonth(this.value)" ${c.moving?'disabled':''}>${months.map(m=>`<option value="${esc(String(m.v))}" ${String(m.v)===String(d.monthRaw)?'selected':''}>${esc(m.t)}</option>`).join('')}</select><em>▾</em></label>`:(d&&d.month?`<span class="fc-dd"><span>📅</span>${esc(d.month)}</span>`:'');
  lmpDraw();
  const head=`<div class="fc-hd"><div><small>MEDIA PLAN LAB</small><b>${isAs?'Assumptions':isYr?'Same month':'Forecast'}</b></div></div>
-  <div class="fc-top fcP" style="--i:${Math.max(0,['forecast','assume','years'].indexOf(FC_VIEW))}"><span class="fcP-pill"></span>${[['forecast','chart','Forecast'],['assume','list','Assumptions'],['years','years','Years']].map(([k,i,l])=>`<button type="button" class="${FC_VIEW===k?'on':''}" onclick="fcViewGo('${k}',this)">${fcIc(i)}${l}</button>`).join('')}</div>
+  <div class="fc-top fcP" style="--i:${Math.max(0,['forecast','assume','years'].indexOf(FC_VIEW))}"><span class="fcP-pill"></span>${[['forecast','chart','Forecast'],['assume','list','Assumptions'],['years','years','Years']].map(([k,i,l])=>`<button type="button" class="${FC_VIEW===k?'on':''}" onclick="fcViewGo('${k}',this)">${l}</button>`).join('')}</div>
   ${ro?'<div class="fc-vo">👁 <span><b>View only</b>You can look at everything here. Ask the admin to let you make changes.</span></div>':''}
   ${c.moving?`<div class="fc-note"><span class="lab-spin dark"></span>Changing the month to ${esc(c.moving)} in the sheet…</div>`:''}`;
  const foot=`<button type="button" class="pk-ghost fc-rd" onclick="${isAs?'asLoad(true)':'fcLoad(true)'}" ${busy?'disabled':''}>${busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read '+(isAs?'Assumptions':'the month tab')+' now'}</button>${d&&d.at&&!isAs?`<div class="fc-foot" style="text-align:center">Read ${esc(new Date(d.at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}))} · ${esc(d.tab||'')}</div>`:''}`;
@@ -9888,7 +9926,7 @@ function fcDraw(){
   ${fold('channels',fcIc('channels'),'Channels',esc(chSum),chs||'<div class="dx-empty">No channels yet.</div>')}
   ${fold('source',fcIc('source'),'Where the plan comes from',`${st.window||60} days ${money(l6.cost)} · LY ${money(ly.cost)}${e.rec?' · '+esc(e.rec.split('—')[0].trim()):''}`,
     `<div class="fc-src">${src('LAST '+(st.window||60)+' DAYS',l6)}${src('SAME HIJRI DAYS LAST YEAR',ly)}</div>
-    ${e.rec?`<div class="fc-rec ${rc}"><span>${esc((e.rec.match(/^\S+/)||[''])[0])}</span><div><b>${esc(e.rec.replace(/^\S+\s*/,''))}</b><small>Model ${fcK((e.spend||{}).model)} · Last year ${fcK((e.spend||{}).ly)} · Recommended ${fcK(e.recommended)} · Used ${fcK(e.used)}${e.mine?' · '+esc(e.mine):''}</small></div></div>`:''}`)}
+    ${e.rec?`<div class="fc-rec ${rc}"><span class="fc-ri">${fcIc(rc==='bad'?'alert':rc==='warm'?'warn':'okc')}</span><div><b>${esc(e.rec.replace(/^\S+\s*/,''))}</b><small>Model ${fcK((e.spend||{}).model)} · Last year ${fcK((e.spend||{}).ly)} · Recommended ${fcK(e.recommended)} · Used ${fcK(e.used)}${e.mine?' · '+esc(e.mine):''}</small></div></div>`:''}`)}
   ${fold('settings',fcIc('settings'),'Settings',ro?'From the sheet · view only':nEd?`<span style="color:#203c8e">${nEd} change${nEd>1?'s':''} not saved yet</span>`:'Changes write to the sheet',
     `<div class="fc-set">
      ${inp('override','Approved budget £',st.override,'Empty = recommended '+(e.recommended?'£'+fmt(e.recommended,0):''),'full ed',1)}
@@ -10048,7 +10086,7 @@ function yrHtml(d){
    <div class="yr-ch">${bars}</div><div class="yr-x">${xl}</div>
    <div class="yr-lg"><span><i style="background:#9fb3ea"></i>Spend</span><span><i style="background:#203c8e"></i>Revenue</span><span><i style="background:#13894f"></i>Plan</span></div></div>
   <div class="fc-card" style="margin-top:8px">${tbl}</div>
-  ${ly?`<div class="fc-rec ${dr!=null&&dr<0?'warm':''}"><span>📈</span><div><b>Plan vs ${esc(name.slice(0,3))} ${ly.month.slice(0,4)}: ${sg(ds)} spend, ${sg(dr)} revenue</b><small>ROAS ${fmt(p.roas,2)}x vs ${fmt(ly.roas||(ly.cost?ly.value/ly.cost:0),2)}x${soFar?' · '+soFar:''}</small></div></div>`:soFar?`<div class="fc-foot">${soFar}</div>`:''}`;
+  ${ly?`<div class="fc-rec ${dr!=null&&dr<0?'warm':''}"><span class="fc-ri">${fcIc('chart')}</span><div><b>Plan vs ${esc(name.slice(0,3))} ${ly.month.slice(0,4)}: ${sg(ds)} spend, ${sg(dr)} revenue</b><small>ROAS ${fmt(p.roas,2)}x vs ${fmt(ly.roas||(ly.cost?ly.value/ly.cost:0),2)}x${soFar?' · '+soFar:''}</small></div></div>`:soFar?`<div class="fc-foot">${soFar}</div>`:''}`;
 }
 /* ---------- Assumptions ("Three tabs": Channels · Weeks · Index) ----------
  * Index: only the plan month's Hijri months, from the stored index in use (OLD, or NEW when the month has Ramadan).
