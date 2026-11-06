@@ -6942,6 +6942,15 @@ window.addEventListener('load',function(){
     body.dark-mode .sx-neon-green{background:linear-gradient(160deg,#2a2112,#1d170c)!important}body.dark-mode .sx-lroas.g{color:#f2d38f!important}
     /* By Campaign Type (Daily): Performance Max in gold */
     body:not(.dark-mode) #dayChannelsGrid .ctd.k2{background:linear-gradient(160deg,#e9c47a,#b8862f)!important;--sh:#b8862f55}
+    /* v199 Same Hijri day: an opened year shows a simple table of that year's numbers; a smaller year number */
+    .py-yr b{font-size:16px!important}
+    html body .py-list .py-c2.open{grid-template-columns:62px 1fr!important}
+    html body .py-list .py-c2 .py-more.py-tb{grid-column:1/-1;margin:2px 0 0;padding-top:8px;border-top:1px dashed #eadfc8}
+    .py-tb .py-day{font-size:11px;font-weight:800;color:#8a93ad;margin-bottom:4px}
+    .py-tb table{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
+    .py-tb td{padding:6px 0;border-top:1px solid #f1f3f8;font-weight:800;color:#3f475e}.py-tb tr:first-child td{border-top:0}
+    .py-tb td:last-child{text-align:right;font-weight:900;color:#141b33}
+    body.dark-mode .py-tb td{color:#c3cad8;border-top-color:#232a36}body.dark-mode .py-tb td:last-child{color:#fff}
 </style>
 </head>
 <body>
@@ -14025,9 +14034,8 @@ function renderPastYears(){
    return `<div class="py-c2${y.back?'':' today'}${isWin?' win':''}${open?' open':''}" onclick="pyPick('${y.dk}')">
      <div class="py-yr"><b>${yr(y)}</b><small>${esc(shortDay(y.dk).toLocaleDateString('en-GB',{day:'numeric',month:'short'}))}</small></div>
      <div class="py-main"><div class="py-v"><b>${money(a.value)}</b>${isWin?'<span class="py-winb">Winner</span>':chip(a.value,b&&b.value)}</div>
-       ${open?`<div class="py-bar"><i style="width:${(a.value/maxV*100).toFixed(1)}%"></i></div>
-       <div class="py-st"><span>Spend <b>${money(a.spend)}</b>${dl(a.spend,b&&b.spend)}</span><span>Conv. <b>${fmt(a.conversions,0)}</b>${dl(a.conversions,b&&b.conversions)}</span><span>ROAS <b>${fmt(a.roas,2)}x</b>${dl(a.roas,b&&b.roas)}</span></div>`:''}</div>
-     ${open?`<div class="py-more"><div class="py-day">${esc(day(y.dk))}</div><div class="py-q">${[['Clicks',fmt(a.clicks,0)],['CTR',percent(a.ctr)],['CPA',money(a.cpa,2)],['CVR',percent(a.cvr)]].map(([l,v])=>`<span>${l} <b>${v}</b></span>`).join('')}</div>${typeBlock}</div>`:''}
+</div>
+     ${open?`<div class="py-more py-tb"><div class="py-day">${esc(day(y.dk))}</div><table>${[['Value',money(a.value)],['Spend',money(a.spend)],['Conversions',fmt(a.conversions,0)],['ROAS',fmt(a.roas,2)+'x'],['CPA',money(a.cpa,2)],['Clicks',fmt(a.clicks,0)],['CTR',percent(a.ctr)],['CVR',percent(a.cvr)]].map(([l,v])=>`<tr><td>${l}</td><td>${v}</td></tr>`).join('')}</table></div>`:''}
    </div>`;
  }).join('');
  body.innerHTML=`<div class="py-side">${seg}<div class="py-hero"><small>${esc(String(x.hijriDate||'').toUpperCase())} · ${PY_METRICS[mk].t} BY YEAR</small>${chart}</div>
