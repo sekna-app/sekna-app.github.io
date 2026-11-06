@@ -2107,9 +2107,9 @@ window.addEventListener('load',function(){
     .of-word .mw-logo{opacity:.35}
     .of-scan{position:absolute;top:-10%;bottom:-10%;width:22%;background:linear-gradient(90deg,transparent,rgba(201,211,245,.5) 50%,transparent);filter:blur(4px);mix-blend-mode:screen;animation:ofScan 2.6s ease-in-out infinite}
     @keyframes ofScan{0%{left:-25%}100%{left:105%}}
-    .of-bar{position:absolute;left:24.7%;top:43%;width:8.7%;height:15.4%;border-radius:3px;background:linear-gradient(180deg,#f3d79f,#c28d3e);animation:ofBulb 2.2s steps(1) infinite}
+    .of-bar{position:absolute;left:40.35%;top:45.06%;width:15.75%;height:19.3%;border-radius:0;clip-path:polygon(28% 0,100% 0,75% 100%,0 100%);background:linear-gradient(180deg,#f3d79f,#c28d3e);animation:ofBulb 2.2s steps(1) infinite}
     @keyframes ofBulb{0%,8%,20%,26%,60%,64%{opacity:1;box-shadow:0 0 16px rgba(226,184,116,.8)}9%,19%,27%,59%,65%,100%{opacity:.15;box-shadow:none}}
-    .of-rip{position:absolute;left:29%;top:50%;width:14px;height:14px;margin:-7px;border-radius:50%;border:2px solid rgba(226,184,116,.6);animation:ofRip 2.2s ease-out infinite}
+    .of-rip{position:absolute;left:48.2%;top:54.7%;width:14px;height:14px;margin:-7px;border-radius:50%;border:2px solid rgba(226,184,116,.6);animation:ofRip 2.2s ease-out infinite}
     .of-rip+.of-rip{animation-delay:.7s}
     @keyframes ofRip{0%{transform:scale(1);opacity:1}100%{transform:scale(9);opacity:0}}
     .of .of-kick{margin-top:56px;color:#ff8f9a}
@@ -7011,7 +7011,7 @@ window.addEventListener('load',function(){
     <div class="mw-word of-word" aria-hidden="true"><img class="mw-logo" id="offLogo" alt=""><i class="of-scan"></i><i class="of-rip"></i><i class="of-rip"></i><i class="of-bar"></i></div>
     <span class="mw-kick of-kick">NO INTERNET</span>
     <h2 class="sk-maint-title" id="offTitle">Connection lost</h2>
-    <p class="sk-maint-note">We'll keep trying in the background. HEMERA updates the moment you're back online.</p>
+    <p class="sk-maint-note">We'll update when you're back online.</p>
     <span class="of-status" id="offStatus"><i></i><span>Searching for a connection</span></span>
     <button class="mw-btn" id="offRetry" type="button" onclick="offlineRetry()">Try again</button>
     <button class="of-ghost" id="offKeep" type="button" onclick="offlineHide()" hidden>Keep reading what's on screen</button>
