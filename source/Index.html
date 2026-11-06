@@ -6694,6 +6694,87 @@ window.addEventListener('load',function(){
     .fc-wk .fc-dn{opacity:.55;font-weight:700}
     /* calm tick for "nothing to show" lines */
     .ok-ic{width:16px;height:16px;fill:none;stroke:#13804f;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px;margin-right:7px;flex:none}
+    /* Same Hijri day: each year as a small calendar page (gold for the winner) */
+    html body .py-list .py-c2 .py-badge.py-cal{width:54px!important;height:auto!important;padding:0!important;border-radius:12px!important;overflow:hidden;display:flex!important;flex-direction:column;align-items:stretch;background:#fff!important;border:1px solid #e3e7f0;box-shadow:0 3px 10px rgba(20,30,70,.1)!important;color:#141b33!important;line-height:1.1}
+    .py-cal i{display:block;font-style:normal;background:#203c8e;color:#fff;font-size:9px;font-weight:900;letter-spacing:.08em;padding:3px 0;text-align:center}
+    .py-cal b{display:block;font-size:17px;font-weight:900;text-align:center;padding-top:3px}
+    html body .py-list .py-c2 .py-cal small{display:block;font-size:10px!important;font-weight:900;color:#7b84a0!important;text-align:center;padding-bottom:4px;margin:0}
+    .py-c2.win .py-cal i{background:linear-gradient(135deg,#f0cf8c,#c99a45);color:#141b33}
+    .py-c2.today .py-cal i{background:#13804f}
+    body.dark-mode .py-list .py-c2 .py-badge.py-cal{background:#151a22!important;border-color:#2a313c;color:#fff!important}
+    /* Media plan day: tidy sections (date and ROAS on top, three figures, the mix, small figures, then the types) */
+    .dcA-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .dcA-roas{font-size:12.5px;font-weight:900;color:#203c8e;background:#eef2ff;border-radius:99px;padding:3px 10px;white-space:nowrap}
+    html body .dc-card.dcA .dcA-g{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;margin:9px 0!important}
+    html body .dc-card.dcA .dcA-g>div{background:#f5f7fb;border-radius:10px;padding:7px 9px;min-width:0}
+    html body .dc-card.dcA .dcA-g small{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase}
+    .dcA-s4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;text-align:center;margin:10px 0 8px}
+    .dcA-s4 small{display:block;font-size:10px;font-weight:800;color:#7b84a0}.dcA-s4 b{font-size:13px;font-weight:900;color:#141b33}
+    .dcA-ch{border-top:1px dashed #e3e7f0;padding-top:8px;display:flex;flex-direction:column;gap:5px}
+    .dcA-ch>div{display:grid;grid-template-columns:10px minmax(0,1fr) 40px auto;gap:8px;align-items:center;font-size:13px;font-weight:800;color:#141b33}
+    .dcA-ch i{width:9px;height:9px;border-radius:3px}.dcA-ch em{font-style:normal;color:#7b84a0;text-align:right;font-variant-numeric:tabular-nums}.dcA-ch b{text-align:right;font-variant-numeric:tabular-nums;min-width:64px}
+    body.dark-mode html body .dc-card.dcA .dcA-g>div,body.dark-mode .dc-card.dcA .dcA-g>div{background:#1a1f29}body.dark-mode .dcA-s4 b,body.dark-mode .dcA-ch>div{color:#fff}body.dark-mode .dcA-roas{background:#232a36;color:#9fb6ff}
+    /* November Performance: the four figures as rows in one card (icon, name and number, bar with today's tick, plan line) */
+    .ox-ic{display:none}
+    html body #channelPanel .ox-tiles.oxL{display:flex!important;flex-direction:column;gap:0!important;background:#fff;border:1px solid #edf0f6;border-radius:18px;padding:4px 14px!important;box-shadow:0 6px 18px rgba(20,30,70,.05);grid-template-columns:none!important}
+    html body #channelPanel .ox-tiles.oxL>.ox-tile{display:grid!important;grid-template-columns:36px minmax(0,1fr) auto;grid-template-areas:"ic lbl val" "ic bar hs";gap:4px 12px;align-items:center;background:none!important;border:0!important;border-top:1px solid #f1f3f8!important;border-radius:0!important;padding:11px 0!important;box-shadow:none!important;min-height:0!important}
+    html body #channelPanel .ox-tiles.oxL>.ox-tile:first-child{border-top:0!important}
+    html body #channelPanel .ox-tiles.oxL>.ox-tile:before,html body #channelPanel .ox-tiles.oxL>.ox-tile:after{display:none!important}
+    #channelPanel .oxL .ox-ic{grid-area:ic;display:grid;place-items:center;width:34px;height:34px;border-radius:11px}
+    #channelPanel .oxL .ox-ic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    #channelPanel .oxL-sp .ox-ic{background:#eef2ff;color:#2a3f8f}#channelPanel .oxL-cv .ox-ic{background:#f1eeff;color:#6a4cff}
+    #channelPanel .oxL-va .ox-ic{background:#e6f6ee;color:#13804f}#channelPanel .oxL-ro .ox-ic{background:#fdf4df;color:#b0812e}
+    html body #channelPanel .oxL .ox-tile>.ox-lbl{grid-area:lbl;font-size:13px!important;font-weight:800!important;letter-spacing:0!important;text-transform:none!important;color:#141b33!important;margin:0!important}
+    html body #channelPanel .oxL .ox-tile>b{grid-area:val;font-size:17px!important;margin:0!important;text-align:right}
+    html body #channelPanel .oxL .ox-tile>.ox-hs{grid-area:hs;min-height:0!important;margin:0!important;font-size:11px!important;text-align:right;white-space:nowrap;display:block!important;flex:none!important}
+    html body #channelPanel .oxL .ox-tile>.ox-bar{grid-area:bar;margin:0!important;height:6px!important}
+    body.dark-mode #channelPanel .ox-tiles.oxL{background:#151a22;border-color:#2a313c}body.dark-mode #channelPanel .oxL .ox-tile{border-top-color:#232a36!important}body.dark-mode #channelPanel .oxL .ox-tile>.ox-lbl{color:#fff!important}
+    /* Weekly Performance: the week badge as a progress ring */
+    .wk-ring{position:relative;width:44px;height:44px;flex:none;display:inline-grid;place-items:center}
+    .wk-ring svg{position:absolute;inset:0;width:100%;height:100%}
+    .wk-ring circle{fill:none;stroke-width:4;stroke-linecap:round}.wk-ring .t{stroke:#e8ebf3}.wk-ring .f{stroke:#22c07a;transition:stroke-dasharray .8s cubic-bezier(.2,.8,.2,1)}.wk-ring .f.live{stroke:#3d6bff}
+    .wk-ring b{position:relative;font-size:12px;font-weight:900;color:#203c8e}
+    body.dark-mode .wk-ring .t{stroke:#2a313c}body.dark-mode .wk-ring b{color:#9fb6ff}
+    /* Daily Performance: the four small figures as full-width rows (icon, name and plan, number, %) */
+    @media (max-width:1099px){
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm){grid-template-columns:1fr!important;gap:8px!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-metric{display:grid!important;grid-template-columns:38px minmax(0,1fr) auto auto;grid-template-areas:"ic nm val pc" "ic pl val pc";align-items:center;gap:0 12px;min-height:0!important;padding:11px 14px!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-copy{display:contents}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-icon{grid-area:ic;position:static!important;width:38px!important;height:38px!important;margin:0!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-name{grid-area:nm;margin:0!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-c{grid-area:pl;margin:0!important}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-value{grid-area:val;font-size:20px!important;margin:0!important;text-align:right}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r:empty{visibility:hidden}
+      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r{grid-area:pc;position:static!important;margin:0!important;font-size:12px!important;border-radius:99px;padding:3px 9px;background:#f1f3f8;min-width:52px;text-align:center}
+    }
+    /* Lab: Forecast / Assumptions / Years as a sliding blue pill with a gold shine; line icons instead of emoji */
+    html body .fc-top.fcP{position:relative;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:0!important;background:#eef1f7;border-radius:14px;padding:4px!important;border:0!important}
+    html body .fc-top.fcP button{position:relative;z-index:1;border:0!important;background:none!important;box-shadow:none!important;color:#6b7385!important;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 4px!important;font-weight:800;min-width:0;white-space:nowrap}
+    html body .fc-top.fcP button.on{color:#fff!important}
+    .fcP-pill{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px)/3);border-radius:11px;background:linear-gradient(135deg,#3d6bff,#203c8e);box-shadow:0 6px 14px rgba(32,60,142,.3);transform:translateX(calc(var(--i,0)*100%));transition:transform .4s cubic-bezier(.2,.8,.2,1);overflow:hidden}
+    .fcP-pill:after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,224,150,.75) 50%,transparent 70%);transform:translateX(-120%)}
+    .fcP-pill.shine:after{animation:fcShine .7s ease}
+    @keyframes fcShine{to{transform:translateX(120%)}}
+    .fc-ic{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+    .fc-acc>i .fc-ic,.fc-ph .fc-ic{width:18px;height:18px;color:#203c8e}
+    .fc-ph b{display:flex;align-items:center;gap:7px}
+    @media (max-width:420px){html body .fc-top.fcP button{font-size:12px!important;gap:4px}html body .fc-top.fcP .fc-ic{width:14px;height:14px}}
+    body.dark-mode html body .fc-top.fcP,body.dark-mode .fc-top.fcP{background:#1a1f29}
+    @media (prefers-reduced-motion:reduce){.fcP-pill{transition:none}.fcP-pill.shine:after{animation:none}}
+    /* Month vs Month · by campaign type: a small two-column table per type */
+    .mxt{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:6px}
+    .mxt-c{background:#fff;border:1px solid #edf0f6;border-radius:16px;padding:12px 14px;box-shadow:0 4px 14px rgba(20,30,70,.04);min-width:0}
+    .mxt-h{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .mxt-n{display:flex;align-items:center;gap:7px;min-width:0}.mxt-n i{width:9px;height:9px;border-radius:3px;flex:none}
+    .mxt-n b{font-size:14px;font-weight:900;color:#141b33;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .mxt-n .ch-ico,.mxt-n svg{width:18px;height:18px;flex:none}
+    .mxt-h small{font-size:11px;font-weight:800;color:#7b84a0;white-space:nowrap}.mxt-h small em{font-style:normal;color:#203c8e;font-weight:900}
+    .mxt table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12.5px;font-variant-numeric:tabular-nums}
+    .mxt th{font-size:10px;font-weight:900;letter-spacing:.06em;color:#7b84a0;text-align:right;padding:0 0 5px;text-transform:uppercase}
+    .mxt td{padding:6px 0;border-top:1px solid #f1f3f8;text-align:right;font-weight:800;color:#3f475e}
+    .mxt td:first-child{text-align:left;color:#7b84a0}
+    .mxt td.w{color:#141b33;font-weight:900}.mxt td.w:after{content:" ✓";color:#13804f;font-size:11px}.mxt td.l{color:#9aa2b5}
+    body.dark-mode .mxt-c{background:#151a22;border-color:#2a313c}body.dark-mode .mxt-n b,body.dark-mode .mxt td.w{color:#fff}body.dark-mode .mxt td{border-top-color:#232a36;color:#c3cad8}
 </style>
 </head>
 <body>
@@ -7278,14 +7359,14 @@ window.addEventListener('load',function(){
         </div>
       </div>
 
-      <div class="ox-tiles">
-        <div class="ox-tile"><span class="ox-lbl">Spend</span><b id="mtdSpend">—</b><span class="ox-hs" id="mtdSpendPlan">—</span>
+      <div class="ox-tiles oxL">
+        <div class="ox-tile oxL-sp"><span class="ox-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18M7 15h3"/></svg></span><span class="ox-lbl">Spend</span><b id="mtdSpend">—</b><span class="ox-hs" id="mtdSpendPlan">—</span>
           <div class="ox-bar"><span class="spend" id="mtdSpendBar"></span><em class="ox-tick" id="mtdSpendTick"></em></div></div>
-        <div class="ox-tile"><span class="ox-lbl">Conversions</span><b id="mtdConv">—</b><span class="ox-hs" id="mtdConvPlan">—</span>
+        <div class="ox-tile oxL-cv"><span class="ox-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M8.5 12.3l2.4 2.4 4.8-5"/></svg></span><span class="ox-lbl">Conversions</span><b id="mtdConv">—</b><span class="ox-hs" id="mtdConvPlan">—</span>
           <div class="ox-bar"><span class="conv" id="mtdConvBar"></span><em class="ox-tick" id="mtdConvTick"></em></div></div>
-        <div class="ox-tile"><span class="ox-lbl">Value</span><b id="mtdRevenue">—</b><span class="ox-hs" id="mtdRevenuePlan">—</span>
+        <div class="ox-tile oxL-va"><span class="ox-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></span><span class="ox-lbl">Value</span><b id="mtdRevenue">—</b><span class="ox-hs" id="mtdRevenuePlan">—</span>
           <div class="ox-bar"><span class="revenue" id="mtdRevenueBar"></span><em class="ox-tick" id="mtdRevenueTick"></em></div></div>
-        <div class="ox-tile"><span class="ox-lbl">ROAS</span><b id="mtdRoas">—</b><span class="ox-hs" id="mtdRoasPlan">—</span>
+        <div class="ox-tile oxL-ro"><span class="ox-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/></svg></span><span class="ox-lbl">ROAS</span><b id="mtdRoas">—</b><span class="ox-hs" id="mtdRoasPlan">—</span>
           <div class="ox-bar"><span class="roas" id="mtdRoasBar"></span></div></div>
       </div>
       <div class="ox-cl mc" id="mtdClicksRow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l9 8-4 1-1 4-4-13z"/><path d="M15 15l4 4"/></svg><span id="mtdClicks">Clicks —</span><em id="mtdClicksPct"></em></div>
@@ -9068,6 +9149,9 @@ function pickWeek(i){
  const q=RENDER_QUIET;RENDER_QUIET=true;
  try{renderWeekly((DASH_DATA&&DASH_DATA.weekly)||[])}finally{RENDER_QUIET=q}
 }
+
+function wkRing(n,p,live){const R=17,C=2*Math.PI*R,f=Math.max(0,Math.min(1,p||0));
+ return `<span class="wk-ring" aria-label="Week ${n}"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="${R}" class="t"/><circle cx="22" cy="22" r="${R}" class="f${live?' live':''}" stroke-dasharray="${(C*f).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 22 22)"/></svg><b>W${n}</b></span>`}
 function renderWeekDetail(w,isLive,monthName){
  const host=document.getElementById('weeklyDetail');
  if(!host)return;
@@ -9093,7 +9177,7 @@ function renderWeekDetail(w,isLive,monthName){
  };
  const roasF=v=>fmt(v,2)+'x';
  const wkN=(String(w.week||'').match(/\d+/)||[''])[0];
- host.innerHTML=`<div class="wx-d-head">${wkN?`<span class="wly-wk wx-wk">W${wkN}</span>`:`<b>${esc(w.week||'')}</b>`}${range?`<span>${esc(range)}</span>`:''}${status}</div>
+ host.innerHTML=`<div class="wx-d-head">${wkN?wkRing(wkN,!has?0:isLive?wkExp:1,isLive):`<b>${esc(w.week||'')}</b>`}${range?`<span>${esc(range)}</span>`:''}${status}</div>
    <div class="wx-grid">
      ${metric('Spend',Number(w.actualSpend)||0,planSpend,v=>money(v),isLive)}
      ${metric('Revenue',Number(w.actualValue)||0,planValue,v=>money(v),isLive)}
@@ -9463,10 +9547,11 @@ function renderDays(d){
  revealOnScroll(body,'.dc-card');
  if(DAY_VIEW==='results'){rxLoad(first.date.slice(0,7));rxArm(body)}
 }
+
 function dxPlanMore(p){
- const max=Math.max(...p.channels.map(c=>c.spend),0.0001);
- return `<div class="dx-stats"><span>Clicks <b>${fmt(p.clicks,0)}</b></span><span>CPA <b>${money(p.cpa,2)}</b></span><span>CVR <b>${percent(p.cvr)}</b></span><span>Avg. donation <b>${money(p.aov,2)}</b></span></div>
-  <div class="dx-ch">${p.channels.map((c,k)=>`<div class="dx-chrow"><span>${chIco(c.channel)}${esc(CHANNEL_SHORT[c.channel]||chName(c.channel))}</span><i><em class="m${k}" style="width:${(c.spend/max*100).toFixed(1)}%"></em></i><b>${money(c.spend)}</b></div>`).join('')}</div>`;
+ const tot=p.channels.reduce((a,c)=>a+(c.spend||0),0)||1;
+ return `<div class="dcA-s4"><div><small>Clicks</small><b>${fmt(p.clicks,0)}</b></div><div><small>CPA</small><b>${money(p.cpa,2)}</b></div><div><small>CVR</small><b>${percent(p.cvr)}</b></div><div><small>Avg. gift</small><b>${money(p.aov,2)}</b></div></div>
+  <div class="dcA-ch">${p.channels.map((c,k)=>`<div><i class="m${k}"></i><span>${esc(CHANNEL_SHORT[c.channel]||chName(c.channel))}</span><em>${Math.round((c.spend||0)/tot*100)}%</em><b>${money(c.spend)}</b></div>`).join('')}</div>`;
 }
 function dxResultMore(x){
  const a=x.actual;
@@ -9483,8 +9568,8 @@ function daysCards(days,latest,T){
    const hij=`<div class="dc-hij">${esc(x.hijri)}${x.date===latest?'<em>Latest</em>':''}</div>`;
    if(plan){
      const tot=p.spend||1;
-     return `<div class="dc-card${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" onclick="toggleDay('${x.date}')">${head}<div class="dc-main">${hij}
-      <div class="dc-grid"><div><small>Spend</small><b>${money(p.spend)}</b></div><div><small>Conv.</small><b>${fmt(p.conversions,0)}</b></div><div><small>Value</small><b>${money(p.value)}</b></div><div><small>ROAS</small><b class="dc-r">${fmt(p.roas,2)}x</b></div></div>
+     return `<div class="dc-card dcA${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" onclick="toggleDay('${x.date}')">${head}<div class="dc-main"><div class="dcA-top">${hij}<span class="dcA-roas">${fmt(p.roas,2)}x ROAS</span></div>
+      <div class="dc-grid dcA-g"><div><small>Spend</small><b>${money(p.spend)}</b></div><div><small>Conv.</small><b>${fmt(p.conversions,0)}</b></div><div><small>Value</small><b>${money(p.value)}</b></div></div>
       <div class="dc-mix">${p.channels.map((c,k)=>`<span class="m${k}" style="flex:${c.spend/tot}"></span>`).join('')}</div>
       <div class="dc-more">${dxPlanMore(p)}</div></div></div>`;
    }
@@ -9701,6 +9786,15 @@ async function fcMonth(v){
   .catch(err=>{c.moving='';c.msg='⚠️ '+esc(errorText(err));fcDraw()});
 }
 function fcView(v){FC_VIEW=v;fcDraw()}
+
+function fcViewGo(v,btn){const g=btn&&btn.parentNode,i=['forecast','assume','years'].indexOf(v);
+ if(!g||!motionOn()||v===FC_VIEW){fcView(v);return}
+ g.style.setProperty('--i',i);g.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b===btn));const p=g.querySelector('.fcP-pill');if(p){p.classList.remove('shine');void p.offsetWidth;p.classList.add('shine')}
+ setTimeout(()=>{FC_VIEW=v;fcDraw();const n=document.querySelector('#labForecast .fcP-pill');if(n)n.classList.add('shine')},380)}
+const FC_IC={chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',list:'<rect x="4" y="3.5" width="16" height="17" rx="3"/><path d="M8 9h8M8 13h8M8 17h5"/>',years:'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17M8 14h2M14 14h2M8 17h2"/>',
+ weeks:'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 14h8"/>',channels:'<path d="M4 6h16M4 12h10M4 18h6"/><circle cx="18" cy="12" r="2"/><circle cx="14" cy="18" r="2"/>',source:'<path d="M5 4h14v4l-5 5v7l-4-2v-5L5 8z"/>',
+ settings:'<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2L14.3 3h-4l-.3 2.6a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2l.3 2.7h4l.3-2.7a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z"/>'};
+const fcIc=k=>`<svg class="fc-ic" viewBox="0 0 24 24" aria-hidden="true">${FC_IC[k]||''}</svg>`;
 function fcFold(k){FC_OPEN=mxWide()?k:FC_OPEN===k?'':k;fcDraw()}
 const fcPct=v=>v==null?'—':Math.round(v*100)+'%';
 const fcK=v=>v==null?'—':cs()+fmt(cx(v)/1000,0)+'k';
@@ -9715,7 +9809,7 @@ function fcDraw(){
  const dd=months.length&&!ro?`<label class="fc-dd${c.moving?' busy':''}"><span>📅</span><select onchange="fcMonth(this.value)" ${c.moving?'disabled':''}>${months.map(m=>`<option value="${esc(String(m.v))}" ${String(m.v)===String(d.monthRaw)?'selected':''}>${esc(m.t)}</option>`).join('')}</select><em>▾</em></label>`:(d&&d.month?`<span class="fc-dd"><span>📅</span>${esc(d.month)}</span>`:'');
  lmpDraw();
  const head=`<div class="fc-hd"><div><small>MEDIA PLAN LAB</small><b>${isAs?'Assumptions':isYr?'Same month':'Forecast'}</b></div></div>
-  <div class="fc-top">${[['forecast','📊','Forecast'],['assume','📋','Assumptions'],['years','🗓️','Years']].map(([k,i,l])=>`<button type="button" class="${FC_VIEW===k?'on':''}" onclick="fcView('${k}')">${i} ${l}</button>`).join('')}</div>
+  <div class="fc-top fcP" style="--i:${Math.max(0,['forecast','assume','years'].indexOf(FC_VIEW))}"><span class="fcP-pill"></span>${[['forecast','chart','Forecast'],['assume','list','Assumptions'],['years','years','Years']].map(([k,i,l])=>`<button type="button" class="${FC_VIEW===k?'on':''}" onclick="fcViewGo('${k}',this)">${fcIc(i)}${l}</button>`).join('')}</div>
   ${ro?'<div class="fc-vo">👁 <span><b>View only</b>You can look at everything here. Ask the admin to let you make changes.</span></div>':''}
   ${c.moving?`<div class="fc-note"><span class="lab-spin dark"></span>Changing the month to ${esc(c.moving)} in the sheet…</div>`:''}`;
  const foot=`<button type="button" class="pk-ghost fc-rd" onclick="${isAs?'asLoad(true)':'fcLoad(true)'}" ${busy?'disabled':''}>${busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read '+(isAs?'Assumptions':'the month tab')+' now'}</button>${d&&d.at&&!isAs?`<div class="fc-foot" style="text-align:center">Read ${esc(new Date(d.at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}))} · ${esc(d.tab||'')}</div>`:''}`;
@@ -9756,12 +9850,12 @@ function fcDraw(){
   <div class="fc-kv"><div><b>${p.cpc!=null?cs()+fmt(cx(p.cpc),2):'—'}</b><span>CPC</span></div><div><b>${money(p.aov)}</b><span>Avg gift</span></div><div><b>${p.cvr!=null?fmt(p.cvr*100,1)+'%':'—'}</b><span>CVR</span></div><div><b>${fcPct(wt.acc)}</b><span>Spent</span></div></div>
   ${ro?'':`<label class="bd-nt"><small>Note for the picture <em>(optional)</em></small><textarea rows="2" maxlength="160" placeholder="e.g. We raised PMax for the season." oninput="budNoteSet(this.value)">${esc(budNote())}</textarea></label>`}
   <div class="fc-folds">
-  ${fold('weeks','📆','Weeks',`${onPlan} on plan${liveW?' · '+esc(wkInfo(liveW).nm.toLowerCase())+' at '+fcPct(liveW.acc)+' so far':''}`,(d.weeks||[]).map(wk).join('')||'<div class="dx-empty">No weeks yet.</div>')}
-  ${fold('channels','📺','Channels',esc(chSum),chs||'<div class="dx-empty">No channels yet.</div>')}
-  ${fold('source','🧮','Where the plan comes from',`${st.window||60} days ${money(l6.cost)} · LY ${money(ly.cost)}${e.rec?' · '+esc(e.rec.split('—')[0].trim()):''}`,
+  ${fold('weeks',fcIc('weeks'),'Weeks',`${onPlan} on plan${liveW?' · '+esc(wkInfo(liveW).nm.toLowerCase())+' at '+fcPct(liveW.acc)+' so far':''}`,(d.weeks||[]).map(wk).join('')||'<div class="dx-empty">No weeks yet.</div>')}
+  ${fold('channels',fcIc('channels'),'Channels',esc(chSum),chs||'<div class="dx-empty">No channels yet.</div>')}
+  ${fold('source',fcIc('source'),'Where the plan comes from',`${st.window||60} days ${money(l6.cost)} · LY ${money(ly.cost)}${e.rec?' · '+esc(e.rec.split('—')[0].trim()):''}`,
     `<div class="fc-src">${src('LAST '+(st.window||60)+' DAYS',l6)}${src('SAME HIJRI DAYS LAST YEAR',ly)}</div>
     ${e.rec?`<div class="fc-rec ${rc}"><span>${esc((e.rec.match(/^\S+/)||[''])[0])}</span><div><b>${esc(e.rec.replace(/^\S+\s*/,''))}</b><small>Model ${fcK((e.spend||{}).model)} · Last year ${fcK((e.spend||{}).ly)} · Recommended ${fcK(e.recommended)} · Used ${fcK(e.used)}${e.mine?' · '+esc(e.mine):''}</small></div></div>`:''}`)}
-  ${fold('settings','⚙️','Settings',ro?'From the sheet · view only':nEd?`<span style="color:#203c8e">${nEd} change${nEd>1?'s':''} not saved yet</span>`:'Changes write to the sheet',
+  ${fold('settings',fcIc('settings'),'Settings',ro?'From the sheet · view only':nEd?`<span style="color:#203c8e">${nEd} change${nEd>1?'s':''} not saved yet</span>`:'Changes write to the sheet',
     `<div class="fc-set">
      ${inp('override','Approved budget £',st.override,'Empty = recommended '+(e.recommended?'£'+fmt(e.recommended,0):''),'full ed',1)}
      ${inp('adjust','Quick change %',st.adjust||0,'10 = +10%')}${inp('window','Days looked at',st.window,'1 to 60')}
@@ -10469,13 +10563,14 @@ function mxdCmpTypes(A,B,avg,an,bn){
  const la=channelList(A,avg),lb=channelList(B,avg),names=[...new Set(la.map(x=>x.n).concat(lb.map(x=>x.n)))];
  const zero={spend:0,value:0,conversions:0,roas:null},cmp=(a,b,hi)=>a==null||b==null||!b&&!a||b&&Math.abs(a/b-1)<.005?'':(hi?a>b:a<b)?'a':'b';
  const cell=(l,x,y,w,f)=>`<div class="v"><small>${l}</small><b class="${w==='a'?'w':w?'l':''}">${f(x)}</b><b class="${w==='b'?'w':w?'l':''}">${f(y)}</b></div>`;
- return head+`<div class="mxd-ty c"><div class="mxd-lg"><span><i class="a"></i>${esc(an)}</span><span><i class="b"></i>${esc(bn)}</span></div>${names.map((n,i)=>{
+ 
+ const sa=mxShortName(an,an,bn),sb=mxShortName(bn,an,bn),r2=v=>v==null?'—':fmt(v,2)+'x';
+ return head+`<div class="mxt">${names.map((n,i)=>{
    const a=la.find(x=>x.n===n)||zero,b=lb.find(x=>x.n===n)||zero,k=(la.find(x=>x.n===n)||lb.find(x=>x.n===n)).k;
    const rv=cmp(a.value,b.value,true),ro=cmp(a.roas,b.roas,true),co=cmp(a.conversions,b.conversions,true),p=w=>(rv===w?3:0)+(ro===w?3:0)+(co===w?2:0),w=p('a')===p('b')?'':p('a')>p('b')?'a':'b';
-   const r2=v=>v==null?'—':fmt(v,2)+'x';
-   return `<div class="mxd-r"><u style="background:${MXD_C[k]||MXD_C[5]}">${i+1}</u><div class="n">${chIco(n)}<div><b>${esc(chName(n))}</b><small>${w?`better in ${esc(mxShortName(w==='a'?an:bn,an,bn))}`:'even'}</small></div></div>
-    ${cell('Spend',a.spend,b.spend,'',v=>money(v))}${cell('Conv.',a.conversions,b.conversions,co,v=>fmt(v,avg?1:0))}${cell('Revenue',a.value,b.value,rv,v=>money(v))}${cell('ROAS',a.roas,b.roas,ro,r2)}
-    <em class="${w==='a'?'up':w==='b'?'dn':''}">${w==='a'?'▲':w==='b'?'▼':'='}</em><div class="v3">${cell('Spend',a.spend,b.spend,'',v=>money(v))}${cell('Conv.',a.conversions,b.conversions,co,v=>fmt(v,avg?1:0))}${cell('Revenue',a.value,b.value,rv,v=>money(v))}${cell('ROAS',a.roas,b.roas,ro,r2)}</div></div>`}).join('')}</div>`;
+   const row=(l,x,y,win,f)=>`<tr><td>${l}</td><td class="${win==='a'?'w':win?'l':''}">${f(x)}</td><td class="${win==='b'?'w':win?'l':''}">${f(y)}</td></tr>`;
+   return `<div class="mxt-c"><div class="mxt-h"><span class="mxt-n"><i style="background:${MXD_C[k]||MXD_C[5]}"></i>${chIco(n)}<b>${esc(CHANNEL_SHORT[n]||chName(n))}</b></span><small>${w?`better in <em class="${w}">${esc(w==='a'?sa:sb)}</em>`:'even'}</small></div>
+    <table><tr><th></th><th>${esc(sa)}</th><th>${esc(sb)}</th></tr>${row('Spend',a.spend,b.spend,'',v=>money(v))}${row('Conv.',a.conversions,b.conversions,co,v=>fmt(v,avg?1:0))}${row('Revenue',a.value,b.value,rv,v=>money(v))}${row('ROAS',a.roas,b.roas,ro,r2)}</table></div>`}).join('')}</div>`;
 }
 
 let MX_PD=null;
@@ -13693,7 +13788,7 @@ function renderPastYears(){
    const typeBlock=types.length?`<div class="py-lbl">By campaign type</div><div class="py-mix">${[...types].sort((m,n)=>m.k-n.k).map(t=>`<i class="m${t.k}" style="flex:${t.c.spend/tot}"></i>`).join('')}</div>
      <div class="py-tl2"><span class="py-h"></span><span class="py-h c">Spend · Conv. · Value</span><span class="py-h">ROAS</span>${byRoas.map(t=>`<span class="py-tn">${chIco(t.n)}${esc(CHANNEL_SHORT[t.n]||t.n)}</span><span class="py-ts"><b>${money(t.c.spend)}</b><i>·</i><b>${fmt(t.c.conversions,0)}</b><i>·</i><b>${money(t.c.value)}</b></span><span class="py-chip ${t.r!=null&&t.r>=(a.roas||0)?'g':'r'}">${t.r!=null?fmt(t.r,2)+'x':'—'}</span>`).join('')}</div>`:'';
    return `<div class="py-c2${y.back?'':' today'}${isWin?' win':''}${open?' open':''}" onclick="pyPick('${y.dk}')">
-     <div class="py-badge">${yr(y)}<small>${isWin?'🏆 WIN':esc(shortDay(y.dk).toLocaleDateString('en-GB',{day:'numeric',month:'short'}))}</small></div>
+     <div class="py-badge py-cal"><i>${esc(shortDay(y.dk).toLocaleDateString('en-GB',{month:'short'}).toUpperCase())}</i><b>${shortDay(y.dk).getDate()}</b><small>${yr(y)}</small></div>
      <div class="py-main"><div class="py-v"><b>${money(a.value)}</b>${isWin?'<span class="py-winb">Winner</span>':chip(a.value,b&&b.value)}</div>
        ${open?`<div class="py-bar"><i style="width:${(a.value/maxV*100).toFixed(1)}%"></i></div>
        <div class="py-st"><span>Spend <b>${money(a.spend)}</b>${dl(a.spend,b&&b.spend)}</span><span>Conv. <b>${fmt(a.conversions,0)}</b>${dl(a.conversions,b&&b.conversions)}</span><span>ROAS <b>${fmt(a.roas,2)}x</b>${dl(a.roas,b&&b.roas)}</span></div>`:`<div class="py-shut">Spend ${money(a.spend)} · ROAS ${fmt(a.roas,2)}x<em>›</em></div>`}</div>
