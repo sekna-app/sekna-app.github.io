@@ -6695,10 +6695,10 @@ window.addEventListener('load',function(){
     /* calm tick for "nothing to show" lines */
     .ok-ic{width:16px;height:16px;fill:none;stroke:#13804f;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px;margin-right:7px;flex:none}
     /* Same Hijri day: each year as a small calendar page (gold for the winner) */
-    html body .py-list .py-c2 .py-badge.py-cal{width:54px!important;height:auto!important;padding:0!important;border-radius:12px!important;overflow:hidden;display:flex!important;flex-direction:column;align-items:stretch;background:#fff!important;border:1px solid #e3e7f0;box-shadow:0 3px 10px rgba(20,30,70,.1)!important;color:#141b33!important;line-height:1.1}
-    .py-cal i{display:block;font-style:normal;background:#203c8e;color:#fff;font-size:9px;font-weight:900;letter-spacing:.08em;padding:3px 0;text-align:center}
-    .py-cal b{display:block;font-size:17px;font-weight:900;text-align:center;padding-top:3px}
-    html body .py-list .py-c2 .py-cal small{display:block;font-size:10px!important;font-weight:900;color:#7b84a0!important;text-align:center;padding-bottom:4px;margin:0}
+    html body .py-list .py-c2 .py-badge.py-cal{width:44px!important;height:auto!important;padding:0!important;border-radius:12px!important;overflow:hidden;display:flex!important;flex-direction:column;align-items:stretch;background:#fff!important;border:1px solid #e3e7f0;box-shadow:0 3px 10px rgba(20,30,70,.1)!important;color:#141b33!important;line-height:1.1}
+    .py-cal i{display:block;font-style:normal;background:#203c8e;color:#fff;font-size:8px;font-weight:900;letter-spacing:.08em;padding:3px 0;text-align:center}
+    .py-cal b{display:block;font-size:14px;font-weight:900;text-align:center;padding-top:3px}
+    html body .py-list .py-c2 .py-cal small{display:block;font-size:9px!important;font-weight:900;color:#7b84a0!important;text-align:center;padding-bottom:4px;margin:0}
     .py-c2.win .py-cal i{background:linear-gradient(135deg,#f0cf8c,#c99a45);color:#141b33}
     .py-c2.today .py-cal i{background:#13804f}
     body.dark-mode .py-list .py-c2 .py-badge.py-cal{background:#151a22!important;border-color:#2a313c;color:#fff!important}
@@ -6735,18 +6735,6 @@ window.addEventListener('load',function(){
     .wk-ring circle{fill:none;stroke-width:4;stroke-linecap:round}.wk-ring .t{stroke:#e8ebf3}.wk-ring .f{stroke:#22c07a;transition:stroke-dasharray .8s cubic-bezier(.2,.8,.2,1)}.wk-ring .f.live{stroke:#3d6bff}
     .wk-ring b{position:relative;font-size:12px;font-weight:900;color:#203c8e}
     body.dark-mode .wk-ring .t{stroke:#2a313c}body.dark-mode .wk-ring b{color:#9fb6ff}
-    /* Daily Performance: the four small figures as full-width rows (icon, name and plan, number, %) */
-    @media (max-width:1099px){
-      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm){grid-template-columns:1fr!important;gap:8px!important}
-      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-metric{display:grid!important;grid-template-columns:38px minmax(0,1fr) auto auto;grid-template-areas:"ic nm val pc" "ic pl val pc";align-items:center;gap:0 12px;min-height:0!important;padding:11px 14px!important}
-      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-copy{display:contents}
-      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-icon{grid-area:ic;position:static!important;width:38px!important;height:38px!important;margin:0!important}
-      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-name{grid-area:nm;margin:0!important}
-      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-c{grid-area:pl;margin:0!important}
-      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-value{grid-area:val;font-size:20px!important;margin:0!important;text-align:right}
-      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r:empty{visibility:hidden}
-      html:not(.desktop-site-mode) #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r{grid-area:pc;position:static!important;margin:0!important;font-size:12px!important;border-radius:99px;padding:3px 9px;background:#f1f3f8;min-width:52px;text-align:center}
-    }
     /* Lab: Forecast / Assumptions / Years as a sliding blue pill with a gold shine; line icons instead of emoji */
     html body .fc-top.fcP{position:relative;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:0!important;background:#eef1f7;border-radius:14px;padding:4px!important;border:0!important}
     html body .fc-top.fcP button{position:relative;z-index:1;border:0!important;background:none!important;box-shadow:none!important;color:#6b7385!important;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 4px!important;font-weight:800;min-width:0;white-space:nowrap}
@@ -6775,6 +6763,27 @@ window.addEventListener('load',function(){
     .mxt td:first-child{text-align:left;color:#7b84a0}
     .mxt td.w{color:#141b33;font-weight:900}.mxt td.w:after{content:" ✓";color:#13804f;font-size:11px}.mxt td.l{color:#9aa2b5}
     body.dark-mode .mxt-c{background:#151a22;border-color:#2a313c}body.dark-mode .mxt-n b,body.dark-mode .mxt td.w{color:#fff}body.dark-mode .mxt td{border-top-color:#232a36;color:#c3cad8}
+    /* November Performance: Clicks in the list (amber), ROAS on the line under it */
+    #channelPanel .oxL-ck .ox-ic{background:#fff1e3;color:#e08a2e}
+    .ox-bar .clicks{background:linear-gradient(90deg,#e08a2e,#f3b768)}
+    #mtdRoasLine b{color:#141b33;font-weight:900}#mtdRoasLine small{font-size:12px;font-weight:700;color:#7b84a0}
+    body.dark-mode #mtdRoasLine b{color:#fff}
+    #mtdClicksRow.mc em:empty{display:none}
+    /* VS last year button in Weekly Performance: blue */
+    html body .wly-btn{background:linear-gradient(135deg,#3d6bff,#203c8e)!important;color:#fff!important;box-shadow:0 6px 14px rgba(32,60,142,.3)!important}
+    html body .wly-btn span{background:rgba(255,255,255,.2)!important;color:#fff}
+    /* Reports Studio: Per day in the report's title row; the quick compare picks live in the month pop-up */
+    html body #monthsPanel .mx-card>.section-head{display:flex!important;align-items:flex-start;justify-content:space-between;gap:10px}
+    html body #monthsPanel .mx-card>.section-head .mx-pd{position:static!important;margin:4px 0 0!important;flex:none}
+    #monthsPanel #mxPresets{display:none!important}
+    html body #monthsPanel #mxBody{margin-top:0!important}
+    html body #monthsPanel #mxBody>*:first-child{margin-top:4px!important}
+    html body #monthsPanel .mxd-board{margin-top:4px!important}
+    .pk-pre{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:4px 16px 10px}
+    .pk-pre small{width:100%;font-size:10px;font-weight:900;letter-spacing:.1em;color:#8a93ad;text-transform:uppercase}
+    .pk-pre button{border:1px solid #dfe3ec;background:#fff;border-radius:99px;padding:6px 12px;font:inherit;font-size:12px;font-weight:800;color:#3f475e;cursor:pointer}
+    .pk-pre button.on{background:#203c8e;border-color:#203c8e;color:#fff}
+    body.dark-mode .pk-pre button{background:#151a22;border-color:#2a313c;color:#c3cad8}
 </style>
 </head>
 <body>
@@ -7367,10 +7376,10 @@ window.addEventListener('load',function(){
           <div class="ox-bar"><span class="conv" id="mtdConvBar"></span><em class="ox-tick" id="mtdConvTick"></em></div></div>
         <div class="ox-tile oxL-va"><span class="ox-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></span><span class="ox-lbl">Value</span><b id="mtdRevenue">—</b><span class="ox-hs" id="mtdRevenuePlan">—</span>
           <div class="ox-bar"><span class="revenue" id="mtdRevenueBar"></span><em class="ox-tick" id="mtdRevenueTick"></em></div></div>
-        <div class="ox-tile oxL-ro"><span class="ox-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/></svg></span><span class="ox-lbl">ROAS</span><b id="mtdRoas">—</b><span class="ox-hs" id="mtdRoasPlan">—</span>
-          <div class="ox-bar"><span class="roas" id="mtdRoasBar"></span></div></div>
+        <div class="ox-tile oxL-ck" id="mtdClkTile"><span class="ox-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4l9 8-4 1-1 4-4-13z"/><path d="M15 15l4 4"/></svg></span><span class="ox-lbl">Clicks</span><b id="mtdClk">—</b><span class="ox-hs" id="mtdClkPlan">—</span>
+          <div class="ox-bar"><span class="clicks" id="mtdClkBar"></span><em class="ox-tick" id="mtdClkTick"></em></div></div>
       </div>
-      <div class="ox-cl mc" id="mtdClicksRow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l9 8-4 1-1 4-4-13z"/><path d="M15 15l4 4"/></svg><span id="mtdClicks">Clicks —</span><em id="mtdClicksPct"></em></div>
+      <div class="ox-cl mc" id="mtdClicksRow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/></svg><span id="mtdRoasLine">ROAS <b id="mtdRoas">—</b> <small id="mtdRoasPlan"></small></span><em id="mtdClicksPct"></em></div>
 
       <div class="ox-legend" id="mtdTickLegend"><i></i><span>Black tick = expected by today</span></div>
     </section>
@@ -8887,10 +8896,9 @@ function renderMtd(d){
  if(roasPlan){
    const delta=roasAch-1;
    roasPlan.innerHTML=Number(m.targetRoas)
-     ?`Target ${fmt(m.targetRoas,2)}x · <b class="${delta>=0?'up':'down'}">${delta>=0?'+':''}${percent(delta)}</b>`
-     :'Target —';
+     ?`· target ${fmt(m.targetRoas,2)}x`:'';
+   const pc=document.getElementById('mtdClicksPct');if(pc){pc.textContent=Number(m.targetRoas)?`${delta>=0?'+':''}${percent(delta)}`:'';pc.className=delta>=0?'up':'dn'}
  }
- setProgress('mtdRoasBar',roasAch);
 
  // Conversions and clicks to date, from the daily plan rows.
  const rows=d.dayPlan||[],live=rows.filter(r=>r.actual),sum=(a,f)=>a.reduce((t,r)=>t+(Number(f(r))||0),0);
@@ -8898,9 +8906,11 @@ function renderMtd(d){
  text('mtdConv',fmt(cA,0));text('mtdConvPlan',cP?`${percent(cA/cP)} of ${fmt(cP,0)}`:'—');setProgress('mtdConvBar',cP?cA/cP:0);
  const ct=document.getElementById('mtdConvTick');if(ct){ct.style.display=cP?'':'none';if(cP)ct.style.left=Math.min(100,cE/cP*100)+'%'}
  const kA=sum(live,r=>r.actual.clicks),kP=sum(rows,r=>r.plan&&r.plan.clicks),kE=sum(live,r=>r.plan&&r.plan.clicks);
- const kRow=document.getElementById('mtdClicksRow');if(kRow)kRow.style.display=kP?'':'none';
- if(kP){const K=v=>v>=1e4?(v/1e3).toFixed(1)+'k':fmt(v,0);document.getElementById('mtdClicks').innerHTML=`Clicks <b>${K(kA)}</b> of ${K(kP)}`;
-   const e=document.getElementById('mtdClicksPct');e.textContent=`${Math.round(kA/kP*100)}%`;e.title=`${Math.round(kA/kP*100)}% of the month's clicks plan; ${Math.round(kE/kP*100)}% was planned by today`;e.className=kA>=kE?'up':'dn'}
+ // Clicks sit in the list with the other figures; ROAS is the line under them.
+ {const tile=document.getElementById('mtdClkTile');if(tile)tile.style.display=kP||kA?'':'none';
+  text('mtdClk',fmt(kA,0));text('mtdClkPlan',kP?`${percent(kA/kP)} of ${fmt(kP,0)}`:'—');setProgress('mtdClkBar',kP?kA/kP:0);
+  const kt=document.getElementById('mtdClkTick');if(kt){kt.style.display=kP?'':'none';if(kP)kt.style.left=Math.min(100,kE/kP*100)+'%'}
+  if(tile){tile.classList.remove('st-g','st-a','st-r');const pc=pace==null?1:pace||1,r=kP?(kA/kP)/pc:null;if(r!=null&&isFinite(r))tile.classList.add('st-'+(r>=.95?'g':r>=.8?'a':'r'))}}
  text('mtdDayBadge',day&&dim?`Day ${day} of ${dim}`:'');
  ['mtdSpendTick','mtdRevenueTick'].forEach(id=>{
    const t=document.getElementById(id);
@@ -8912,7 +8922,7 @@ function renderMtd(d){
   frame('mtdSpend',!isFinite(sr)?'':Math.abs(sr-1)<=.1?'g':sr>1.2||sr<.7?'r':'a');
   frame('mtdConv',cr==null||!isFinite(cr)?'':cr>=.95?'g':cr>=.8?'a':'r');
   frame('mtdRevenue',!isFinite(vr)?'':vr>=.95?'g':vr>=.8?'a':'r');
-  frame('mtdRoas',!Number(m.targetRoas)?'':roasAch>=1?'g':roasAch>=.85?'a':'r')}
+}
  const legend=document.getElementById('mtdTickLegend');
  if(legend){
    legend.style.display=pace==null?'none':'';
@@ -9185,7 +9195,7 @@ function renderWeekDetail(w,isLive,monthName){
  };
  const roasF=v=>fmt(v,2)+'x';
  const wkN=(String(w.week||'').match(/\d+/)||[''])[0];
- host.innerHTML=`<div class="wx-d-head">${wkN?wkRing(wkN,!has?0:isLive?wkExp:1,isLive):`<b>${esc(w.week||'')}</b>`}${range?`<span>${esc(range)}</span>`:''}${status}</div>
+ host.innerHTML=`<div class="wx-d-head">${wkN?`<span class="wly-wk wx-wk">W${wkN}</span>`:`<b>${esc(w.week||'')}</b>`}${range?`<span>${esc(range)}</span>`:''}${status}</div>
    <div class="wx-grid">
      ${metric('Spend',Number(w.actualSpend)||0,planSpend,v=>money(v),isLive)}
      ${metric('Revenue',Number(w.actualValue)||0,planValue,v=>money(v),isLive)}
@@ -10594,8 +10604,7 @@ function mxdCmpTypes(A,B,avg,an,bn){
 }
 // "Per day" sits inside the report (the white box under the filters), at the top right.
 let MX_PD=null;
-function mxPdPlace(){const b=document.getElementById('mxBody');MX_PD=MX_PD||document.querySelector('#monthsPanel .mx-pd');if(!b||!MX_PD||!b.firstElementChild)return;
- let row=b.querySelector(':scope>.mx-pdrow');if(!row){row=document.createElement('div');row.className='mx-pdrow';b.insertBefore(row,b.firstChild)}if(MX_PD.parentNode!==row)row.appendChild(MX_PD)}
+function mxPdPlace(){MX_PD=MX_PD||document.querySelector('#monthsPanel .mx-pd');const hd=document.querySelector('#monthsPanel .mx-card>.section-head');if(!hd||!MX_PD)return;if(MX_PD.parentNode!==hd)hd.appendChild(MX_PD)}
 window.addEventListener('load',()=>{const b=document.getElementById('mxBody');if(b)new MutationObserver(()=>mxPdPlace()).observe(b,{childList:true});mxPdPlace()});
 function mxArrow(delta,cls){return `<span class="mx-arrow ${cls}">${delta==null?'—':(delta>=0?'▲ ':'▼ ')+percent(Math.abs(delta))}</span>`}
 // All video campaigns (YouTube and in-stream) are one channel called "Video" everywhere.
@@ -10814,7 +10823,8 @@ function openMonthSelect(which){
  const cur=document.getElementById(MS_WHICH==='a'?'mxA':'mxB').value, other=document.getElementById(MS_WHICH==='a'?'mxB':'mxA').value;
  const keys=(DASH_DATA.history||[]).map(h=>h.month);
  card.dataset.mode='month'; card.dataset.sig='';
- card.innerHTML=pkHead(MS_WHICH==='a'?'Pick the month':'Compare it with')+`<div class="pk-body">${pkMonthGrid(keys,m=>m===cur,'pickMonthSelect',`${MS_WHICH==='a'?'Compared with':'Month'}: ${monthName(other,true)} (ringed)`,other)}</div>`;
+ const pres=monthPresets(DASH_DATA.history||[],document.getElementById('mxA').value);
+ card.innerHTML=pkHead(MS_WHICH==='a'?'Pick the month':'Compare it with')+(pres.length?`<div class="pk-pre"><small>Compare with</small>${pres.map(([l,m])=>`<button type="button" class="${m===document.getElementById('mxB').value?'on':''}" onclick="closePeriodPicker();pickPreset('${m}')">${esc(l)}</button>`).join('')}</div>`:'')+`<div class="pk-body">${pkMonthGrid(keys,m=>m===cur,'pickMonthSelect',`${MS_WHICH==='a'?'Compared with':'Month'}: ${monthName(other,true)} (ringed)`,other)}</div>`;
  requestAnimationFrame(()=>{ov.classList.add('open');const b=card.querySelector('.pk-body'),on=card.querySelector('.pk-m.on');if(b&&on)b.scrollTop=Math.max(0,on.offsetTop-b.offsetTop-120)});
 }
 function pickMonthSelect(m){
