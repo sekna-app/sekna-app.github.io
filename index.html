@@ -7220,7 +7220,8 @@ window.addEventListener('load',function(){
     .lvl-go.same{opacity:.5}.lvl-go:disabled{opacity:.6}
     @media (prefers-reduced-motion:reduce){.lvl,.lvl-md,.lvl-cv img,.lvl-seg i{transition:none}}
     /* v208 filters do not slide: the blue pill is on the tapped button straight away and only the gold shine plays */
-    html body .gsl-pill,html body .gslA>.gsl-pill,html body .fcP-pill,html body .dx-switch .gsl-pill{transition:none!important}
+    html body .gsl-pill,html body .gslA>.gsl-pill,html body .fcP-pill,html body .dx-switch .gsl-pill{transition:transform .17s cubic-bezier(.3,.9,.3,1),width .17s cubic-bezier(.3,.9,.3,1)!important}
+    /* v210 a very short, sharp move (0.17s) instead of no move */
 </style>
 </head>
 <body>
