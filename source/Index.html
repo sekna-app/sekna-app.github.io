@@ -7052,6 +7052,8 @@ window.addEventListener('load',function(){
     .lvl-go{width:100%;border:0;border-radius:14px;padding:12px;font:inherit;font-size:14px;font-weight:900;cursor:pointer;background:linear-gradient(135deg,#f7e3a3,#c99a45);color:#141b33;box-shadow:0 8px 18px rgba(201,154,69,.35);transition:opacity .2s}
     .lvl-go.same{opacity:.5}.lvl-go:disabled{opacity:.6}
     @media (prefers-reduced-motion:reduce){.lvl,.lvl-md,.lvl-cv img,.lvl-seg i{transition:none}}
+    /* v208 filters do not slide: the blue pill is on the tapped button straight away and only the gold shine plays */
+    html body .gsl-pill,html body .gslA>.gsl-pill,html body .fcP-pill,html body .dx-switch .gsl-pill{transition:none!important}
 </style>
 </head>
 <body>
@@ -10113,7 +10115,7 @@ function fcView(v){if(v==='forecast'&&FC_VIEW!=='forecast')FC_SHINE=1;FC_VIEW=v;
 function fcViewGo(v,btn){const g=btn&&btn.parentNode,i=['forecast','assume','years'].indexOf(v);
  if(!g||!motionOn()||v===FC_VIEW){fcView(v);return}
  g.style.setProperty('--i',i);g.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b===btn));const p=g.querySelector('.fcP-pill');if(p){p.classList.remove('shine');void p.offsetWidth;p.classList.add('shine')}
- setTimeout(()=>{if(v==='forecast')FC_SHINE=1;FC_VIEW=v;fcDraw();const n=document.querySelector('#labForecast .fcP-pill');if(n)n.classList.add('shine')},380)}
+ setTimeout(()=>{if(v==='forecast')FC_SHINE=1;FC_VIEW=v;fcDraw();const n=document.querySelector('#labForecast .fcP-pill');if(n)n.classList.add('shine')},0)}
 const FC_IC={okc:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.8"/>',warn:'<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.1"/>',alert:'<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',list:'<rect x="4" y="3.5" width="16" height="17" rx="3"/><path d="M8 9h8M8 13h8M8 17h5"/>',years:'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17M8 14h2M14 14h2M8 17h2"/>',
  weeks:'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 14h8"/>',channels:'<path d="M4 6h16M4 12h10M4 18h6"/><circle cx="18" cy="12" r="2"/><circle cx="14" cy="18" r="2"/>',source:'<path d="M5 4h14v4l-5 5v7l-4-2v-5L5 8z"/>',
  settings:'<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2L14.3 3h-4l-.3 2.6a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2l.3 2.7h4l.3-2.7a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z"/>'};
