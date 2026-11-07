@@ -7549,6 +7549,20 @@ window.addEventListener('load',function(){
       html body .dcA-ch>div>em{order:4;text-align:right}
       html body .dcA-ch>div>b{order:3}
     }
+    /* v229 quick figures: the blue-to-gold line is now the divider between the figures (no line on top); plan day Value box fills its column */
+    html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip:not(.st-qm)>.quick-metric:before{display:none!important}
+    html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip:not(.st-qm)>.quick-metric{border-left:0!important}
+    html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip:not(.st-qm)>.quick-metric+.quick-metric:after{content:""!important;display:block!important;position:absolute;left:0;top:6%;bottom:6%;width:1.5px;border-radius:2px;background:linear-gradient(180deg,#3d6bff,#203c8e 45%,#c99a45)!important;opacity:1!important}
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.quick-metrics-strip:not(.st-qm)>.quick-metric:before{display:none!important}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.quick-metrics-strip:not(.st-qm)>.quick-metric+.quick-metric{border-left:0!important}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.quick-metrics-strip:not(.st-qm)>.quick-metric+.quick-metric:after{content:""!important;display:block!important;position:absolute;left:0;top:4px;bottom:4px;width:1.5px;border-radius:2px;background:linear-gradient(180deg,#3d6bff,#203c8e 45%,#c99a45)!important}
+    }
+    @media (max-width:1099px){
+      html body #dxBody .dc-card.dcA .dcA-g{grid-template-columns:minmax(0,1.05fr) minmax(0,.8fr) minmax(0,1.15fr)!important}
+      html body #dxBody .dc-card.dcA .dcA-g>div{width:auto!important;max-width:none!important;justify-self:stretch!important;min-width:0}
+      html body #dxBody .dc-card.dcA .dcA-g>div b{white-space:nowrap}
+    }
 </style>
 </head>
 <body>
