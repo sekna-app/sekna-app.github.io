@@ -7740,8 +7740,8 @@ window.addEventListener('load',function(){
     .stq-h span{background:var(--t);color:var(--c);border-radius:12px;padding:6px 12px 6px 10px}
 
     /* v258 pull to refresh: coin, donation box and a refresh ring */
-    html body .ptr.ptr-ha{width:84px;height:84px;background:#fff;box-shadow:0 10px 26px rgba(20,30,70,.22)}
-    html body .ptr.ptr-ha svg{width:84px;height:84px;fill:none;stroke:none;animation:none!important;overflow:visible}
+    html body .ptr.ptr-ha{width:66px;height:66px;background:#fff;box-shadow:0 10px 26px rgba(20,30,70,.22)}
+    html body .ptr.ptr-ha svg{width:66px;height:66px;fill:none;stroke:none;animation:none!important;overflow:visible}
     .ptr-ha .pr-tr{fill:none;stroke:#f1ece2;stroke-width:3.5}
     .ptr-ha .pr-arc{fill:none;stroke:#c99a45;stroke-width:3.5;stroke-linecap:round;transform:rotate(-90deg);transform-origin:42px 42px}
     .ptr-ha .pr-ring{transform-origin:42px 42px}
@@ -7752,6 +7752,7 @@ window.addEventListener('load',function(){
     .ptr-ha.spin .pr-heart{opacity:1;animation:prBeat .8s .3s ease-in-out infinite;transition:opacity .2s .28s}
     .ptr-ha.spin .pr-ring{animation:prSpin 1s linear infinite}
     .ptr-ha.spin .pr-arc{stroke-dashoffset:60!important;transition:stroke-dashoffset .3s}
+    .ptr-ha .pr-mk{filter:brightness(0) invert(1)}
     @keyframes prSpin{to{transform:rotate(360deg)}}
     @keyframes prBeat{0%,100%{transform:scale(1)}40%{transform:scale(1.28) translateY(-2px)}}
     body.dark-mode .ptr.ptr-ha{background:#1d2330}body.dark-mode .ptr-ha .pr-tr{stroke:#2a313c}
@@ -10553,14 +10554,16 @@ function rxArm(body){
   <g class="pr-coin"><circle cx="42" cy="21" r="8" fill="#e2b874" stroke="#c99a45" stroke-width="1.6"/><text x="42" y="25" text-anchor="middle" font-size="10" font-weight="900" fill="#7a5410" font-family="Inter,system-ui,sans-serif">£</text></g>
   <g class="pr-heart"><path d="M42 40 c-7 -5 -8 -9 -6 -11 c2 -2 5 -1 6 1 c1 -2 4 -3 6 -1 c2 2 1 6 -6 11z" fill="#e0606c"/></g>
   <rect x="25" y="41" width="34" height="24" rx="6" fill="#6f29a6"/><rect x="35" y="39.5" width="14" height="3.4" rx="1.7" fill="#3a1263"/>
-  <g transform="translate(36 47)"><path d="M1.5 10 L5.5 4.5 M4 11.5 L9.5 4.5 M7.5 4.5 L10.5 1.5" stroke="#fff" stroke-width="2.4" stroke-linecap="round" fill="none"/><circle cx="10" cy="2" r="1.6" fill="#fff"/></g></svg>`;
- document.addEventListener('DOMContentLoaded',()=>document.body.appendChild(el));if(document.body)document.body.appendChild(el);
+  <image class="pr-mk" x="33" y="44" width="18" height="18"/></svg>`;
+ 
+ const mk=()=>{try{const i=el.querySelector('.pr-mk');if(i&&!i.getAttribute('href'))i.setAttribute('href',HA_BLUE_MARK)}catch(e){}};
+ document.addEventListener('DOMContentLoaded',()=>{document.body.appendChild(el);mk()});if(document.body)document.body.appendChild(el);
  const MAX=96,GO=70;let y0=null,dy=0,busy=false;
  const blocked=()=>document.querySelector('[id$="Overlay"].open,.lyx-sheet.open,.sk-drawer.open,.sk-sidebar.open,body.sidebar-open,.ls-sheet.open')||document.body.classList.contains('is-sharing');
  const set=(d,anim)=>{el.style.transition=anim?'transform .25s ease,opacity .25s ease':'none';el.style.opacity=d>4?Math.min(1,d/GO):0;
-   el.style.transform=`translate(-50%,${Math.min(d,MAX)-90}px)`;el.classList.toggle('ready',d>=GO);
+   el.style.transform=`translate(-50%,${Math.min(d,MAX)-74}px)`;el.classList.toggle('ready',d>=GO);
    if(!busy){const p=Math.min(1,d/GO);el.querySelector('.pr-arc').style.strokeDashoffset=232.5*(1-p);el.querySelector('.pr-coin').style.transform=`translateY(${p*8-6}px)`}};
- window.addEventListener('touchstart',e=>{if(busy||e.touches.length!==1||window.scrollY>0||blocked()){y0=null;return}y0=e.touches[0].clientY;dy=0},{passive:true});
+ window.addEventListener('touchstart',e=>{mk();if(busy||e.touches.length!==1||window.scrollY>0||blocked()){y0=null;return}y0=e.touches[0].clientY;dy=0},{passive:true});
  window.addEventListener('touchmove',e=>{if(y0==null)return;const d=e.touches[0].clientY-y0;if(d<=0||window.scrollY>0){if(dy)set(0,true);dy=0;return}
    dy=d*.5;set(dy,false);if(dy>8&&e.cancelable)e.preventDefault()},{passive:false});
  window.addEventListener('touchend',()=>{if(y0==null)return;y0=null;
