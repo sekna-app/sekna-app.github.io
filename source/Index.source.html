@@ -7596,6 +7596,9 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) body .topbar .btn.tb-refresh:hover svg{transform:rotate(90deg)}
       html.dk-on:not(.desktop-site-mode) body .topbar .btn.tb-refresh svg{transition:transform .3s}
     }
+
+    /* v262 computers: the refresh circle is 66px, centred over the page content */
+    @media (min-width:1100px){html body .ptr.ptr-ha,html body .ptr.ptr-ha svg{width:66px!important;height:66px!important}}
 </style>
 </head>
 <body>
@@ -10418,7 +10421,7 @@ function rxArm(body){
  const run=()=>{busy=true;el.classList.add('spin');set(GO,true);
    try{loadData({force:true});if(CURRENT_TAB==='lab'&&typeof fcLoad==='function')fcLoad(true)}catch(e){}
    setTimeout(()=>{set(0,true);setTimeout(()=>{busy=false;el.classList.remove('spin');set(0,false)},260)},1500)};
- window.haRefresh=()=>{mk();if(busy)return;el.classList.remove('spin');set(0,false);void el.offsetWidth;set(GO*.6,true);setTimeout(run,180)};
+ window.haRefresh=()=>{mk();if(busy)return;try{const r=(document.querySelector('.topbar')||document.body).getBoundingClientRect();el.style.left=(r.left+r.width/2)+'px'}catch(e){}el.classList.remove('spin');set(0,false);void el.offsetWidth;set(GO*.6,true);setTimeout(run,180)};
  if(!touch)return;
  window.addEventListener('touchstart',e=>{mk();if(busy||e.touches.length!==1||window.scrollY>0||blocked()){y0=null;return}y0=e.touches[0].clientY;dy=0},{passive:true});
  window.addEventListener('touchmove',e=>{if(y0==null)return;const d=e.touches[0].clientY-y0;if(d<=0||window.scrollY>0){if(dy)set(0,true);dy=0;return}
