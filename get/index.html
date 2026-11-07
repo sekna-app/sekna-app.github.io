@@ -392,6 +392,15 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
 @media (max-width:620px){.g3 .g3f{--w:230px}.g3 .pl3.b{bottom:30px!important}.g3 .pl3.a{left:auto;right:0;top:20px}.g3 .pl3.b{right:auto;left:0;bottom:90px}.g3 .tl3{grid-template-columns:1fr 1fr}}
 
 .dsh{display:inline-block;font-size:.55em;font-weight:700;vertical-align:.32em;margin:0 .22em;opacity:.85}
+
+/* iPhone guide: the phone's back (the real iPhone picture) on the reverse side; it turns round before the steps */
+.g3 .g3f{transform-style:preserve-3d;transition:transform 1.1s cubic-bezier(.6,0,.3,1);background:linear-gradient(145deg,#b9d2ee,#6f94c2 50%,#a3bfe0)!important}
+.g3 .g3f.back{transform:rotateY(calc(var(--gy) + 180deg)) rotateX(var(--gx))}
+.g3 .g3f .sc3{backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.bk3{position:absolute;inset:-1px;transform:rotateY(180deg) translateZ(1px);backface-visibility:hidden;-webkit-backface-visibility:hidden;background:url(/get/iphone-back.webp?v=1) center/100% 100% no-repeat;border-radius:inherit}
+.bk3:after{content:"";position:absolute;inset:0;border-radius:inherit;-webkit-mask:url(/get/iphone-back.webp?v=1) center/100% 100% no-repeat;mask:url(/get/iphone-back.webp?v=1) center/100% 100% no-repeat;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.7) 48%,transparent 61%);background-size:260% 100%;background-position:130% 0}
+.g3f.back .bk3:after{animation:bkSh 2.2s .4s ease-in-out both}
+@keyframes bkSh{to{background-position:-60% 0}}
 </style>
 </head>
 <body>
@@ -497,7 +506,7 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
         <p class="s">Add HEMERA to your Home Screen and allow notifications. Four taps in Safari, then it opens full screen from its own icon.</p>
       </div>
       <div class="g3s" id="g3s">
-        <div class="g3f ph3" id="g3f"><div class="sc3"><div class="isl3"></div><div class="stb3" id="g3sb"><span>9:41</span><span class="si3"></span></div>
+        <div class="g3f ph3" id="g3f"><div class="bk3" aria-hidden="true"></div><div class="sc3"><div class="isl3"></div><div class="stb3" id="g3sb"><span>9:41</span><span class="si3"></span></div>
           <div class="k3"><div class="app3"></div><div class="saf3"><div class="url3">🔒 sekna-app.web.app</div><div class="tb3"><span>‹</span><span>›</span><b>⇪</b><span>▭</span><span>⧉</span></div></div><i class="tap3" style="left:50%;top:94%"></i></div>
             <div class="k3"><div class="app3"></div><div class="dim3"></div><div class="sheet3"><div>Copy</div><div>Add Bookmark</div><div class="on">Add to Home Screen</div><div>Find on Page</div></div><i class="tap3" style="left:50%;top:84%"></i></div>
             <div class="k3"><div class="home3"><div class="grid3"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><span><i class="me"></i>HEMERA</span><i></i><i></i></div></div><i class="tap3" style="left:41%;top:41%"></i></div>
@@ -649,13 +658,15 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
     // Locked: three different alerts arrive, one after another.
     ns.innerHTML='';var L=N[round%N.length];round++;
     L.slice().reverse().forEach(function(x,k){later(function(){note(x)},700+k*900)});
-    later(function(){show(0)},700+3*900+3600);
+    later(cycle,700+3*900+3600);
   }
   for(var n=0;n<li.length;n++)(function(n){li[n].onclick=function(){show(n)}})(n);
   if(window.matchMedia&&matchMedia('(hover:hover)').matches){g.addEventListener('mousemove',function(e){var r=f.getBoundingClientRect(),dx=Math.max(-1,Math.min(1,(e.clientX-(r.left+r.width/2))/r.width)),dy=Math.max(-1,Math.min(1,(e.clientY-(r.top+r.height/2))/r.height));
     g.style.setProperty('--gy',(dx*12)+'deg');g.style.setProperty('--gx',(4-dy*6)+'deg')});
     g.addEventListener('mouseleave',function(){g.style.setProperty('--gy','0deg');g.style.setProperty('--gx','4deg')})}
-  var start=function(){show(0)};
+  // The iPhone shows its back (with a light passing over it), then turns to its face and plays the steps.
+  function cycle(){clear();f.classList.add('back');later(function(){f.classList.remove('back');later(function(){show(0)},1000)},2800)}
+  var start=cycle;
   if(!('IntersectionObserver' in window)){start();return}
   new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){start();o.disconnect()}})},{threshold:.3}).observe(g);
 })();
