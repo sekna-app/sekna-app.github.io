@@ -5,8 +5,7 @@ const { fsGet, fsSet, fsDelete, fsUpdate, fsAppend, fsList, fsSetList, batchGet,
 const { ACCESS, assertAccess, assertAdmin, assertPerm, assertOwner, storeRows, isAdminEmail } = require('./access');
 const notify = require('./notify');
 
-const SHEETS = { shares: 'SEKNA Shares', usage: 'SEKNA Usage', ideas: 'SEKNA Ideas', plans: 'SEKNA Plan History' };
-const IDEA_STATUSES = ['New', 'Reviewing', 'Planned', 'Done', 'Declined'];
+const SHEETS = { shares: 'SEKNA Shares', usage: 'SEKNA Usage', plans: 'SEKNA Plan History' };
 const TZ = 'Asia/Muscat';
 const WEB_PAGE_URL = 'https://sekna-app.web.app';
 const REPORT_MAX_BYTES = 15 * 1024 * 1024;
@@ -120,8 +119,10 @@ async function resetShares() {
   await fsSet(DOC.shareMonths, {});
 }
 
-/* ---------- ideas ---------- */
-const ideaOut = i => ({ id: i.id, time: isoLocal(i.t), email: i.email, name: i.name, title: i.title, text: i.text, status: i.status || 'New', reply: i.reply || '', updated: isoLocal(i.upd) });
+/* ---------- ideas (removed) ---------- */
+// The ideas box was taken out of HEMERA; its stored list is deleted the first time each server instance runs.
+let IDEAS_GONE = false;
+function purgeIdeas() { if (IDEAS_GONE) return; IDEAS_GONE = true; fsGet(DOC.ideas).then(d => d ? fsDelete(DOC.ideas) : null).catch(e => console.warn('Ideas purge: ' + e.message)); }
 
 /* ---------- the calls (same names and arguments as Code.gs) ---------- */
 /* ---------- celebrations (Plan History → Celebrate this month) ---------- */
@@ -291,20 +292,7 @@ const R = {
     return { ok: true };
   },
 
-  async submitIdea([token, title, text]) {
-    const a = await assertAccess(token);
-    title = String(title || '').trim().slice(0, 120);
-    text = String(text || '').trim().slice(0, 3000);
-    if (!text) throw new Error('Please write your idea first.');
-    const t = Date.now(), p = parts(t);
-    const id = 'IDEA-' + `${p.year}${p.month}${p.day}`.slice(2) + '-' + shortId();
-    await fsUpdate(DOC.ideas, doc => ({ items: ((doc && doc.items) || []).concat([{ id, t, email: a.email, name: a.name || '', title, text, status: 'New', reply: '', upd: t }]) }));
-    notify.send({ emails: [{ to: 'seknaapp@gmail.com', replyTo: a.email, subject: '💡 New idea from ' + (a.name || a.email), title: 'New idea from ' + esc(a.name || a.email),
-      html: (title ? '<p style="margin:0 0 8px;font-size:15px;font-weight:700">' + esc(title) + '</p>' : '') +
-        '<p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#4c5464;white-space:pre-wrap">' + esc(text) + '</p>',
-      button: { url: WEB_PAGE_URL, label: 'Open HEMERA' } }] }).catch(e => console.error('Idea email: ' + e.message));
-    return { ok: true, id };
-  },
+
   /** Exchange rates for the currency switch, from 1 pound (refreshed once a day at the time the admin picked). */
   async fxRates([token]) {
     await assertAccess(token);
@@ -393,48 +381,10 @@ const R = {
   },
   /** The notifications list (menu → Notifications). */
   async myNotifications([token]) {
+    purgeIdeas();
     const a = await assertPerm(token, 'notifs');
     return notify.inboxFor(a.email);
   },
-  async myIdeas([token]) {
-    const a = await assertAccess(token);
-    return (((await fsGet(DOC.ideas)) || {}).items || []).filter(i => norm(i.email) === norm(a.email)).map(ideaOut).reverse();
-  },
-  async adminIdeas([token]) { await assertAdmin(token); return (((await fsGet(DOC.ideas)) || {}).items || []).map(ideaOut).reverse(); },
-  async adminIdeaDelete([token, id]) {
-    await assertAdmin(token);
-    let found = false;
-    await fsUpdate(DOC.ideas, doc => {
-      const list = (doc && doc.items) || [];
-      const keep = list.filter(x => x.id !== String(id));
-      found = keep.length !== list.length;
-      return { items: keep };
-    });
-    if (!found) throw new Error('This idea no longer exists.');
-    return { ok: true };
-  },
-  async adminIdeaUpdate([token, id, status, reply]) {
-    await assertAdmin(token);
-    if (IDEA_STATUSES.indexOf(status) < 0) throw new Error('Unknown status.');
-    reply = String(reply || '').trim().slice(0, 2000);
-    let idea = null, changed = false;
-    await fsUpdate(DOC.ideas, doc => {
-      const list = (doc && doc.items) || [], i = list.find(x => x.id === String(id));
-      if (!i) throw new Error('This idea no longer exists.');
-      changed = i.status !== status || (i.reply || '') !== reply;
-      i.status = status; i.reply = reply; i.upd = Date.now(); idea = i;
-      return { items: list };
-    });
-    if (changed && idea.email) {
-      const label = { New: 'received', Reviewing: 'being reviewed', Planned: 'planned', Done: 'done ✅', Declined: 'not planned for now' }[status];
-      notify.send({ emails: [{ to: idea.email, replyTo: 'seknaapp@gmail.com', subject: 'Your HEMERA idea is ' + label, title: 'Hi ' + esc(idea.name || nameFromEmail(idea.email)) + ',',
-        html: '<p style="margin:0 0 10px;font-size:14px;line-height:1.6;color:#4c5464">Your idea' + (idea.title ? ' “' + esc(idea.title) + '”' : '') + ' is now <b>' + esc(label) + '</b>.</p>' +
-          (reply ? '<p style="margin:0 0 16px;font-size:14px;line-height:1.6;color:#1d2433;white-space:pre-wrap">' + esc(reply) + '</p>' : ''),
-        button: { url: WEB_PAGE_URL, label: 'Open HEMERA' } }] }).catch(e => console.error('Idea reply email: ' + e.message));
-    }
-    return { ok: true };
-  },
-
   /** Saves a closed month's plan and results from the sheet itself (the app's numbers are not trusted). */
   async adminSavePlanHistory([token, accountKey]) {
     const me = await assertPerm(token, 'lab');
@@ -736,7 +686,7 @@ async function adminRestMove([token]) {
   const tz = (await sheetMeta(ACCESS.SPREADSHEET_ID)).timeZone;
   const meta = await sheetMeta(ACCESS.SPREADSHEET_ID), has = n => meta.sheets.some(s => s.title === n);
   const read = async (name, range) => has(name) ? ((await batchGet(ACCESS.SPREADSHEET_ID, [a1(name, range)]))[0] || []) : [];
-  const counts = { shares: 0, usage: 0, ideas: 0, plans: 0 };
+  const counts = { shares: 0, usage: 0, plans: 0 };
   // Share counts, one list per month.
   const byMonth = {};
   (await read(SHEETS.shares, 'A2:E')).forEach(r => { const t = serialMs(r[0], tz); if (!t) return; (byMonth[monthOf(t)] = byMonth[monthOf(t)] || []).push({ t, email: norm(r[1]), name: String(r[2] || ''), kind: String(r[3] || ''), acc: String(r[4] || '') }); counts.shares++; });
@@ -749,10 +699,6 @@ async function adminRestMove([token]) {
   const days = {};
   for (const d of Object.keys(byDay)) { await fsSetList(DOC.usage(d), byDay[d]); days[d] = 1; }
   await fsSet(DOC.usageDays, days);
-  // Ideas.
-  const ideas = (await read(SHEETS.ideas, 'A2:I')).filter(r => r[0]).map(r => ({ id: String(r[0]), t: serialMs(r[1], tz), email: norm(r[2]), name: String(r[3] || ''),
-    title: String(r[4] || ''), text: String(r[5] || ''), status: String(r[6] || 'New'), reply: String(r[7] || ''), upd: serialMs(r[8], tz) }));
-  await fsSet(DOC.ideas, { items: ideas }); counts.ideas = ideas.length;
   // Plan history.
   const plans = {};
   (await read(SHEETS.plans, 'A2:E')).forEach(r => { try { const s = JSON.parse(String(r[4])); (plans[String(r[0])] = plans[String(r[0])] || []).push(s); counts.plans++; } catch (e) {} });

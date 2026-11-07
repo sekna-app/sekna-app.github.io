@@ -7270,6 +7270,14 @@ window.addEventListener('load',function(){
     html body .sk-row-icon.c-r{background:rgba(198,58,74,.1)!important;color:#c63a4a!important}
     html body .sk-row-icon.c-o{background:rgba(224,123,31,.12)!important;color:#d0701a!important}
     body.dark-mode .sk-row-icon{filter:brightness(1.35)}
+    /* v214 Top & Bottom 5: the winner (first of Top performers) is marked in gold */
+    html body .rx-row.g.first{border-color:#e2b874!important;background:linear-gradient(160deg,#fffaf0,#fdf1d8)!important;box-shadow:0 0 18px rgba(226,184,116,.38)!important}
+    html body .rx-row.g.first .rx-roas{color:#a56a06!important}
+    html body .rx-row.g.first .rx-bar span{background:linear-gradient(90deg,#f0cf8c,#c99a45)!important}
+    html body .rx-row.g.first .rx-icon{border-color:#e2b874!important}
+    html body .rx-row.g.first .rx-icon em{background:radial-gradient(circle at 35% 30%,#fff3cf,#e2b874 55%,#a67a2c)!important;color:#141b33!important}
+    body.dark-mode .rx-row.g.first{background:linear-gradient(160deg,#2a2210,#1f1a0c)!important;border-color:#e2b874!important}
+    body.dark-mode .rx-row.g.first .rx-roas{color:#f2d38f!important}
 </style>
 </head>
 <body>
@@ -7491,13 +7499,6 @@ window.addEventListener('load',function(){
   </section>
 </div>
 
-<div class="app-modal-overlay sk-page" id="ideasOverlay" onclick="closeIdeas(event)" data-share-ui>
-  <section class="app-modal sk-modal id-page" role="dialog" aria-modal="true" aria-labelledby="ideasTitle" onclick="event.stopPropagation()">
-    <div class="sk-modal-head"><div><div class="sk-kicker">FEEDBACK</div><h2 id="ideasTitle">Suggest an idea</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeIdeas()" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button></div>
-    <div id="ideasBody"></div>
-  </section>
-</div>
-
 <div class="app-modal-overlay sk-page" id="notifsOverlay" onclick="closeNotifs(event)" data-share-ui>
   <section class="app-modal sk-modal nf-page" role="dialog" aria-modal="true" aria-labelledby="nfTitle" onclick="event.stopPropagation()">
     <div class="sk-modal-head"><div><div class="sk-kicker">HEMERA</div><h2 id="nfTitle">Notifications</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeNotifs()" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
@@ -7539,7 +7540,6 @@ window.addEventListener('load',function(){
     <p class="ab3-text">Your central workspace for media planning, campaign monitoring, reporting and smart tools. Built to help our team manage clients, make faster data-driven decisions and create greater impact — together.</p>
     <div class="ab3-pills"><span>Media planning</span><span>Campaign monitoring</span><span>Reporting</span><span>Smart tools</span></div>
     <button type="button" class="ab3-idea ab3-tour" onclick="closeAbout();tourStart()"><span class="ab3-bulb">✨</span><span class="ab3-it"><b>Take the tour</b><small>A one-minute look at what HEMERA can do.</small></span><span class="ab3-go">›</span></button>
-    <button type="button" class="ab3-idea ab3-idea2" onclick="openIdeas()"><span class="ab3-bulb">💡</span><span class="ab3-it"><b>Have an idea for HEMERA?</b><small>Tell us what would make your day easier. Every idea is read.</small></span><span class="ab3-go">›</span></button>
     <div class="ab3-credit">Designed &amp; developed by <b>Ibrahim Amin</b></div>
     <div class="sk-version ab3-ver" id="aboutVer">HEMERA Dashboard</div>
   </section>
@@ -8523,7 +8523,7 @@ function bbShare(btn){
 
 
 function bbCloseAll(){
- const f=[()=>{closeTasks();closeTasks()},closeSettings,closeAbout,closeSoon,closeSidebar,closeAccountMenu,closeNotifs,closePeriodPicker,closeWhatsNew,closeAdmin,closePastYears,closeWly,closeUpdates,closeIdeas,()=>{if(typeof stxClose==='function')stxClose()}];
+ const f=[()=>{closeTasks();closeTasks()},closeSettings,closeAbout,closeSoon,closeSidebar,closeAccountMenu,closeNotifs,closePeriodPicker,closeWhatsNew,closeAdmin,closePastYears,closeWly,closeUpdates,()=>{if(typeof stxClose==='function')stxClose()}];
  f.forEach(x=>{try{x()}catch(e){}});
 }
 function bbGo(k){bbCloseAll();switchDashboardTab(k);window.scrollTo(0,0)}
@@ -10637,7 +10637,7 @@ function asMixHtml(d,ed){
  const tot=rows.reduce((t,r)=>t+(Number(val(r))||0),0),ok=tot===0||Math.abs(tot-100)<0.05;
  const cell=r=>{if(!labEdit())return `<b class="as-mv">${fmt(val(r),1)}%</b>`;const k=r.row+':mix',has=Object.prototype.hasOwnProperty.call(ed,k);
    return `<label class="as-mi${has?' ch':''}"><input type="number" inputmode="decimal" step="0.1" min="0" max="100" value="${val(r)}" onchange="asSet(${r.row},'mix',this.value)" aria-label="${esc(r.name)} manual mix"><em>%</em></label>`};
- return `<div class="fc-l">MANUAL MIX % <em>0 = auto</em></div><div class="fc-card">${rows.map(r=>`<div class="as-mx"><span>${esc(r.name)}</span>${(Number(val(r))||0)===0?'<small>auto</small>':''}${cell(r)}</div>`).join('')}
+ return `<div class="fc-l">MANUAL MIX % <em>0 = auto</em></div><div class="fc-card as-bl2">${rows.map(r=>`<div class="as-mx"><span>${esc(r.name)}</span>${(Number(val(r))||0)===0?'<small>auto</small>':''}${cell(r)}</div>`).join('')}
   <div class="as-mx tot"><span>Manual total</span><b class="${ok?'':'dn'}">${fmt(tot,1)}%</b></div></div>
   <div class="fc-foot">${tot===0?'All on auto: the sheet sets the mix from the last days.':ok?'The plan uses these shares.':'The shares should add up to 100% (or all be 0 for auto).'}</div>`;
 }
@@ -13285,13 +13285,13 @@ function renderAdmin(d){
  const annState=ann?(ann.showFrom&&ann.showFrom>isoDay(0)?'Scheduled':'Showing now'):'None yet';
  const act=(k,ic,bg,t,sub)=>`<button type="button" class="a2-act${ADMIN_TAB===k?' on':''}" onclick="adminTab('${k}')"><span style="background:${bg}">${ic}</span><b>${t}</b><small>${sub}</small></button>`;
  const inviteView=`<div class="a2-sheet"><b class="ad-h">➕ Invite someone</b><small class="ad-sub">They get an email with a link to sign in to HEMERA.</small><form class="ad-invite" style="margin-top:12px" onsubmit="adminInviteSubmit(event)"><input id="adminInviteEmail" type="email" inputmode="email" autocapitalize="off" placeholder="name@company.com" onfocus="setTimeout(()=>this.scrollIntoView({block:'center'}),300)"><button id="adminInviteBtn" type="submit">Send invite</button></form></div>`;
- const sheet=ADMIN_TAB==='invite'?inviteView:ADMIN_TAB==='message'?`<div class="a2-sheet">${adminMessageHtml()}</div>`:ADMIN_TAB==='app'?`<div class="a2-sheet">${adminMaintHtml()}</div>`:ADMIN_TAB==='activity'?`<div class="a2-sheet">${adminActivityHtml()}</div>`:ADMIN_TAB==='ideas'?`<div class="a2-sheet">${adminIdeasHtml()}</div>`:ADMIN_TAB==='server'?`<div class="a2-sheet">${adminServerHtml()}</div>`:ADMIN_TAB==='perms'?`<div class="a2-sheet">${adminPermsHtml()}</div>`:ADMIN_TAB==='reading'?`<div class="a2-sheet">${readWinHtml()}</div>`:'';
+ const sheet=ADMIN_TAB==='invite'?inviteView:ADMIN_TAB==='message'?`<div class="a2-sheet">${adminMessageHtml()}</div>`:ADMIN_TAB==='app'?`<div class="a2-sheet">${adminMaintHtml()}</div>`:ADMIN_TAB==='activity'?`<div class="a2-sheet">${adminActivityHtml()}</div>`:ADMIN_TAB==='server'?`<div class="a2-sheet">${adminServerHtml()}</div>`:ADMIN_TAB==='perms'?`<div class="a2-sheet">${adminPermsHtml()}</div>`:ADMIN_TAB==='reading'?`<div class="a2-sheet">${readWinHtml()}</div>`:'';
  const tabs=`<div class="a3-tabs">${[['overview','Overview'],['people','People'+(waiting.length?` · ${waiting.length}`:'')],['tools','Tools'],['server','Server']].map(([k,l])=>`<button type="button" class="${ADMIN_VIEW===k?'on':''}" onclick="adminView('${k}')">${l}</button>`).join('')}</div>`;
  const peopleView=`${waiting.length?`<div class="ad-lbl">Waiting for approval</div><div class="ad-card ad-pend">${waiting.map(person).join('')}</div>`:''}
    <div class="ad-lbl">People · ${team.length}</div><div class="ad-card">${team.map(person).join('')||'<div class="sk-admin-empty">No one has requested access yet.</div>'}</div>`;
  let body='';
  if(ADMIN_VIEW==='overview'){
-   if(!ADMIN_OV_LOADED){ADMIN_OV_LOADED=true;adminLoadExtra('activity');adminLoadExtra('ideas');if(!SRV_ADMIN.events)srvLoad()}
+   if(!ADMIN_OV_LOADED){ADMIN_OV_LOADED=true;adminLoadExtra('activity');if(!SRV_ADMIN.events)srvLoad()}
    const a=ADMIN_ACTIVITY, op=a&&!a.error&&a.opens;
    const mx=op?Math.max(1,...op.people.map(p=>p.n)):1;
    const opens=`<div class="a3-card"><div class="a3-ch"><small>OPENS THIS MONTH</small>${op?`<b>${op.total}</b>`:'<b>…</b>'}</div>
@@ -13300,7 +13300,6 @@ function renderAdmin(d){
    const feed=[];
    users.forEach(p=>{if(p.last)feed.push({at:p.last,ic:adIco('eye','#203c8e','#eef3ff'),t:`${esc(p.name)} opened HEMERA`})});
    waiting.forEach(p=>feed.push({at:Math.max(0,...p.devices.map(x=>x.lastSeenMs||0))||now,ic:adIco('user','#9a6a22','#fbf1e1'),t:`${esc(p.name)} asked for access`}));
-   if(Array.isArray(ADMIN_IDEAS))ADMIN_IDEAS.forEach(i=>{const at=Date.parse(i.time);if(at)feed.push({at,ic:adIco('bulb','#c28d3e','#fff6e0'),t:`New idea: ${esc(i.title||'Untitled')}`})});
    if(Array.isArray(SRV_ADMIN.events))SRV_ADMIN.events.forEach(e=>{if(e.at)feed.push({at:e.at,ic:adIco('server',/Backup/.test(e.server)?'#c43c50':'#0e8f5d',/Backup/.test(e.server)?'#fde8eb':'#e3f6ee'),t:/Backup/.test(e.server)?'Server moved to the backup':'Server back on Firebase'})});
    const cleared=+((ADMIN_APP_STATE||{}).recentClearedAt)||0;
    feed.sort((x,y)=>y.at-x.at);
@@ -13309,7 +13308,7 @@ function renderAdmin(d){
  }
  else if(ADMIN_VIEW==='people')body=peopleView;
  else if(ADMIN_VIEW==='server')body=`<div class="a2-sheet">${adminServerHtml()}</div>`;
- else body=`<div class="a2-acts">${act('app',m.on?'🔴':'🟢',m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message','📣','#e9eefc','Team message',annState)}${act('invite','➕','#fff3dc','Invite','Add someone')}${act('activity','📊','#e3f6ec','Activity','This month')}${act('ideas','💡','#fff3dc','Ideas',Array.isArray(ADMIN_IDEAS)?(ADMIN_IDEAS.filter(i=>i.status==='New').length+' new'):'From the team')}${act('reading','📄','#e3f6ec','Reading the sheets',RW.data&&RW.data.window?(RW.data.window.on?rw12(RW.data.window.from)+' – '+rw12(RW.data.window.to):'All day'):'When to read')}${ACCESS_PROFILE&&ACCESS_PROFILE.owner?act('perms','🔐','#e9eefc','Permissions','Who can use what'):''}</div>${ADMIN_TAB==='server'?'':sheet}`;
+ else body=`<div class="a2-acts">${act('app',m.on?'🔴':'🟢',m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message','📣','#e9eefc','Team message',annState)}${act('invite','➕','#fff3dc','Invite','Add someone')}${act('activity','📊','#e3f6ec','Activity','This month')}${act('reading','📄','#e3f6ec','Reading the sheets',RW.data&&RW.data.window?(RW.data.window.on?rw12(RW.data.window.from)+' – '+rw12(RW.data.window.to):'All day'):'When to read')}${ACCESS_PROFILE&&ACCESS_PROFILE.owner?act('perms','🔐','#e9eefc','Permissions','Who can use what'):''}</div>${ADMIN_TAB==='server'?'':sheet}`;
  adminBody(tabs+`<div class="a3-body">${body}</div>`);
  const hd=document.querySelector('#adminOverlay .sk-modal-head'),tb=document.querySelector('.a3-tabs');if(hd&&tb)tb.style.top=hd.offsetHeight+'px';
 }
@@ -16037,50 +16036,13 @@ function labSavePlan(){
 }
 
  
-let IDEAS={mine:null,busy:false,msg:''};
-const IDEA_LABEL={New:'Received',Reviewing:'Reviewing',Planned:'Planned',Done:'Done',Declined:'Not now'};
-function openIdeas(){
- const el=document.getElementById('ideasOverlay');if(el)el.classList.add('open');
- IDEAS.msg='';drawIdeas();
- serverCall('myIdeas',getAccessToken()).then(r=>{IDEAS.mine=r||[];drawIdeas()}).catch(()=>{IDEAS.mine=IDEAS.mine||[];drawIdeas()});
-}
-function closeIdeas(e){if(e&&e.target!==e.currentTarget)return;const el=document.getElementById('ideasOverlay');if(el)el.classList.remove('open')}
-function drawIdeas(){
- const body=document.getElementById('ideasBody');if(!body)return;
- const t=document.getElementById('ideaTitle'),x=document.getElementById('ideaText');
- const keep=[t?t.value:'',x?x.value:''];
- const mine=IDEAS.mine;
- body.innerHTML=`<div class="id-card">
-  <input id="ideaTitle" class="id-in" maxlength="120" placeholder="Title (optional)">
-  <textarea id="ideaText" class="id-in" rows="5" maxlength="3000" placeholder="Your idea, or a problem you found…"></textarea>
-  ${IDEAS.msg?`<div class="mrp-msg">${IDEAS.msg}</div>`:''}
-  <button type="button" class="sk-primary-btn" onclick="sendIdea()" ${IDEAS.busy?'disabled':''}>${IDEAS.busy?'Sending…':'Send'}</button></div>
-  <div class="ad-lbl">Your ideas</div>
-  <div class="id-list">${mine===null?'<div class="sk-admin-empty">Loading…</div>':mine.length?mine.map(i=>`<div class="id-item"><div class="id-top"><b>${esc(i.title||i.text.slice(0,60))}</b><span class="id-st ${i.status}">${IDEA_LABEL[i.status]||esc(i.status)}</span></div>${i.title?`<p>${esc(i.text)}</p>`:''}${i.reply?`<div class="id-reply"><small>HEMERA admin</small>${esc(i.reply)}</div>`:''}<small class="id-when">${esc((i.time||'').slice(0,10))}</small></div>`).join(''):'<div class="sk-admin-empty">You have not sent any ideas yet.</div>'}</div>`;
- const t2=document.getElementById('ideaTitle'),x2=document.getElementById('ideaText');
- if(t2)t2.value=keep[0];if(x2)x2.value=keep[1];
-}
-function sendIdea(){
- const t=document.getElementById('ideaTitle'),x=document.getElementById('ideaText');
- const text=(x&&x.value||'').trim();
- if(!text){IDEAS.msg='Please write your idea first.';drawIdeas();return}
- IDEAS.busy=true;IDEAS.msg='';drawIdeas();
- serverCall('submitIdea',getAccessToken(),t?t.value:'',text).then(()=>{
-   IDEAS.busy=false;IDEAS.msg='✅ Thank you! The admin will look at it.';
-   const t2=document.getElementById('ideaTitle'),x2=document.getElementById('ideaText');if(t2)t2.value='';if(x2)x2.value='';
-   return serverCall('myIdeas',getAccessToken()).then(r=>{IDEAS.mine=r||[]});
- }).catch(err=>{IDEAS.busy=false;IDEAS.msg='⚠️ '+esc(errorText(err))}).then(drawIdeas);
-}
-
- 
-let ADMIN_ACTIVITY=null, ADMIN_IDEAS=null, ADMIN_ACT_VIEW='shares';
+let ADMIN_ACTIVITY=null, ADMIN_ACT_VIEW='shares';
 const SHARE_NAMES={daily:'Daily Performance',channel:'Channel Delivery',plan:'Media Plan',results:'Results',report:'Report',compare:'Month vs Month',ly:'Vs Last Year',terms:'Search Terms',termsperf:'Search Terms Performance',termsact:'ST Action',story:'Stories',budget:'Month budget'};
 function adminLoadExtra(k){
  if(k==='server')srvLoad();
  if(k==='reading'){rwLoad();if(!FXT.data)fxtLoad()}
  if(k==='perms'&&!PERM.data&&!PERM.busy){PERM.busy=true;serverCall('adminPerms',getAccessToken()).then(r=>{PERM.busy=false;PERM.data=r;PERM.edit={};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{PERM.busy=false;PERM.data={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
  if(k==='activity'&&!ADMIN_ACTIVITY)serverCall('adminActivity',getAccessToken()).then(r=>{ADMIN_ACTIVITY=r;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{ADMIN_ACTIVITY={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)});
- if(k==='ideas'&&!ADMIN_IDEAS)serverCall('adminIdeas',getAccessToken()).then(r=>{ADMIN_IDEAS=r||[];if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{ADMIN_IDEAS={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)});
 }
 function actView(v){ADMIN_ACT_VIEW=v;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 
@@ -16315,7 +16277,7 @@ function srvAccessHtml(){
 
 function srvRestLoad(){serverCall('adminRestMoveStatus',getAccessToken()).then(r=>{SRV_ADMIN.rest=r||{mode:'appsscript'};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{SRV_ADMIN.rest={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
 async function srvRestMove(btn){
- if(!await askSekna({title:'Move the rest?',text:'Usage and share counts, ideas, plan history and the new-day notifications move to the HEMERA server. Notifications carry on from where they are, with no repeats. Do it once.',ok:'Move now',tone:'info',icon:'mail'}))return;
+ if(!await askSekna({title:'Move the rest?',text:'Usage and share counts, plan history and the new-day notifications move to the HEMERA server. Notifications carry on from where they are, with no repeats. Do it once.',ok:'Move now',tone:'info',icon:'mail'}))return;
  if(btn){btn.disabled=true;btn.textContent='Moving…'}
  try{const r=await serverCall('adminRestMove',getAccessToken());SRV_ADMIN.rest=Object.assign({},SRV_ADMIN.rest||{},{mode:'firebase',at:Date.now(),counts:r});try{localStorage.setItem('sekna_rest_fb','1')}catch(e){}showSettingsToast('Moved')}
  catch(err){if(btn){btn.disabled=false;btn.textContent='Move the rest now'}tellSekna(errorText(err))}
@@ -16326,7 +16288,7 @@ function srvRestHtml(){
  if(!t)return '<small>Loading…</small>';
  if(t.error)return `<small>${esc(t.error)}</small>`;
  const via=`<div class="srv-grid"><span>Emails go out by<b>${esc(t.mail||'—')}</b></span><span>Notifications go out by<b>${esc(t.push||'—')}</b></span></div>`;
- if(t.mode==='firebase'){const c=t.counts||{};return `<div class="srv-res"><div class="ok">✅ On the HEMERA server since ${esc(srvAgo(t.at))}<code>${fmt(c.shares||0)} shares · ${fmt(c.usage||0)} app opens and times · ${fmt(c.ideas||0)} ideas · ${fmt(c.plans||0)} saved months</code></div></div>${via}`}
+ if(t.mode==='firebase'){const c=t.counts||{};return `<div class="srv-res"><div class="ok">✅ On the HEMERA server since ${esc(srvAgo(t.at))}<code>${fmt(c.shares||0)} shares · ${fmt(c.usage||0)} app opens and times · ${fmt(c.plans||0)} saved months</code></div></div>${via}`}
  return `<small>Still on Apps Script.</small><button type="button" class="srv-btn" onclick="srvRestMove(this)">Move the rest now</button>${via}`;
 }
 function srvTasksHtml(){
@@ -16387,7 +16349,7 @@ function adminServerHtml(){
   <div class="srv-box"><b>This month's cost</b><small>Limit $3 · at the limit Firebase stops and HEMERA keeps working on Apps Script.</small>${cost}</div>
   <div class="srv-box"><b>Firebase server</b><small>Europe (London)</small>${health}</div>
   ${(SRV_ADMIN.access||{}).mode==='firebase'?'':`<div class="srv-box"><b>Sign-in</b><small>Devices, approvals, invites, maintenance and the team message.</small>${srvAccessHtml()}</div>`}
-  ${(SRV_ADMIN.rest||{}).mode==='firebase'?'':`<div class="srv-box"><b>Everything else</b><small>Usage and shares, ideas, plan history, the monthly report and the new-day notifications.</small>${srvRestHtml()}</div>`}
+  ${(SRV_ADMIN.rest||{}).mode==='firebase'?'':`<div class="srv-box"><b>Everything else</b><small>Usage and shares, plan history, the monthly report and the new-day notifications.</small>${srvRestHtml()}</div>`}
   ${(SRV_ADMIN.tasks||{}).mode==='firebase'?'':`<div class="srv-box"><b>Team Tasks</b><small>Tasks, days off, backups, positions and avatars.</small>${srvTasksHtml()}</div>`}
   <div class="srv-box"><b>Same numbers?</b><small>Reads ${esc(CURRENT_ACCOUNT.toUpperCase())} on both servers and compares every figure.</small>
     <button type="button" class="srv-btn soft" onclick="srvParity()" ${SRV_ADMIN.busy||!fb?'disabled':''}>Compare with Apps Script</button>${parity}</div>
@@ -16442,50 +16404,6 @@ async function adminResetActivity(kind,btn){
  serverCall('adminResetActivity',getAccessToken(),kind).then(()=>{ADMIN_ACTIVITY=null;adminLoadExtra('activity');if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})
   .catch(err=>{if(btn)btn.disabled=false;tellSekna(errorText(err))});
 }
-
-let ADMIN_IDEA_F='all', ADMIN_IDEA_EDIT={};
-const IDEA_ORDER=['New','Reviewing','Planned','Done','Declined'];
-function adminIdeasHtml(){
- const L=ADMIN_IDEAS;
- if(!L)return '<b class="ad-h">💡 Ideas</b><div class="sk-admin-empty">Loading…</div>';
- if(L.error)return `<b class="ad-h">💡 Ideas</b><div class="sk-admin-empty">${esc(L.error)}</div>`;
- const n=s=>L.filter(i=>i.status===s).length;
- const chips=[['all','All',L.length],...IDEA_ORDER.map(s=>[s,IDEA_LABEL[s],n(s)])].filter(c=>c[0]==='all'||c[2])
-   .map(([k,l,c])=>`<button type="button" class="ai-f${ADMIN_IDEA_F===k?' on':''} ${k}" onclick="ADMIN_IDEA_F='${k}';renderAdmin(ADMIN_LAST)">${esc(l)}<em>${c}</em></button>`).join('');
- const list=L.filter(i=>ADMIN_IDEA_F==='all'||i.status===ADMIN_IDEA_F);
- const card=i=>{const id=esc(i.id), cur=ADMIN_IDEA_EDIT[i.id]||i.status, nm=i.name||String(i.email||'').split('@')[0];
-   return `<div class="ai-card st-${esc(i.status)}"><div class="ai-who"><span class="ai-av">${esc((nm.charAt(0)||'?').toUpperCase())}</span><div><b>${esc(nm)}</b><small>${esc(i.email)} · ${esc((i.time||'').slice(0,10))}</small></div>
-     <button type="button" class="ai-del" onclick="adminIdeaDelete('${id}',this)" aria-label="Delete idea" title="Delete"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></button></div>
-    <div class="ai-body"><b>${esc(i.title||'Idea')}</b><p>${esc(i.text)}</p></div>
-    <div class="ai-sts">${IDEA_ORDER.map(s=>`<button type="button" class="ai-s ${s}${cur===s?' on':''}" onclick="ADMIN_IDEA_EDIT['${id}']='${s}';adminIdeaPick('${id}','${s}')">${IDEA_LABEL[s]}</button>`).join('')}</div>
-    <div class="ai-rp"><textarea id="air-${id}" rows="2" placeholder="Reply to ${esc(nm)} (optional)">${esc(i.reply)}</textarea><button type="button" class="ai-save" onclick="adminIdeaSave('${id}',this)">Save</button></div></div>`};
- return `<b class="ad-h">💡 Ideas · ${L.length}</b><small class="ad-sub">Only you can see these. The sender gets an email when you change the status or reply.</small>
-  ${L.length?`<div class="ai-fs">${chips}</div>${list.map(card).join('')||'<div class="sk-admin-empty">Nothing here.</div>'}`:'<div class="sk-admin-empty">No ideas yet.</div>'}`;
-}
-function adminIdeaPick(id,s){
- const c=document.getElementById('air-'+id);const card=c&&c.closest('.ai-card');if(!card)return;
- card.querySelectorAll('.ai-s').forEach(b=>b.classList.toggle('on',b.classList.contains(s)));
-}
-function adminIdeaSave(id,btn){
- const rp=document.getElementById('air-'+id), i=(ADMIN_IDEAS||[]).find(x=>x.id===id); if(!i)return;
- const st=ADMIN_IDEA_EDIT[id]||i.status;
- if(btn){btn.disabled=true;btn.textContent='Saving…'}
- serverCall('adminIdeaUpdate',getAccessToken(),id,st,rp.value).then(()=>{
-   i.status=st;i.reply=rp.value;delete ADMIN_IDEA_EDIT[id];showSettingsToast('Saved');
-   if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
- }).catch(err=>{if(btn){btn.disabled=false;btn.textContent='Save'}tellSekna(errorText(err))});
-}
-async function adminIdeaDelete(id,btn){
- const i=(ADMIN_IDEAS||[]).find(x=>x.id===id); if(!i)return;
- if(!await askSekna({title:'Delete this idea?',text:`“${i.title||'Idea'}” from ${i.name||i.email} is removed for good. The sender is not told.`,ok:'Delete'}))return;
- if(btn)btn.disabled=true;
- serverCall('adminIdeaDelete',getAccessToken(),id).then(()=>{
-   ADMIN_IDEAS=(ADMIN_IDEAS||[]).filter(x=>x.id!==id);delete ADMIN_IDEA_EDIT[id];
-   if(ADMIN_IDEA_F!=='all'&&!ADMIN_IDEAS.some(x=>x.status===ADMIN_IDEA_F))ADMIN_IDEA_F='all';
-   showSettingsToast('Idea deleted');if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
- }).catch(err=>{if(btn)btn.disabled=false;tellSekna(errorText(err))});
-}
-
 window.SEKNA_READY=true;
 </script>
 <div id="seknaFileEnd" hidden></div>
