@@ -7542,6 +7542,36 @@ window.addEventListener('load',function(){
     /* v255 Search Terms: no Read buttons (pull down refreshes); a gap after "Sort" */
     html body .st-rd{display:none!important}
     html body .st-sort>span{margin-right:10px!important;padding-right:2px}
+
+    /* v256 Team settings: a title with an arrow that opens / closes the card */
+    html body .tp-head{display:flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
+    html body .tp-head .tp-chev{width:15px;height:15px;margin-left:auto;margin-right:4px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+    html body .tp-head.open .tp-chev{transform:rotate(180deg)}
+    html body #tpCard.tp-shut{display:none!important}
+    /* v256 Default currency: the line under the title in full, the two account switches side by side below */
+    html body .sk-row:has(#accCurBox){flex-wrap:wrap;row-gap:10px}
+    html body #accCurBox{flex:1 0 100%;flex-direction:row!important;align-items:center!important;justify-content:flex-start;gap:14px;padding-left:52px}
+
+    /* v256 Reports Studio · By campaign type: each type card in a light blue frame instead of grey */
+    html body .sbx-t{border-color:#c9d8ff!important;background:#fbfcff}
+    html body .sbx-t.open{border-color:#3d6bff!important}
+    body.dark-mode .sbx-t{border-color:#2c4fb8!important;background:#151a22}
+
+    /* v256 phones: the Last 10 nights picture shows whole (moon, stars and mosque) above the text */
+    @media (max-width:1099px){
+      html body .ss-art.ss-a-last10 .ss-img{height:auto!important;aspect-ratio:760/448;background-size:100% auto!important;background-position:center top!important;-webkit-mask-image:linear-gradient(to bottom,#000 80%,transparent)!important;mask-image:linear-gradient(to bottom,#000 80%,transparent)!important}
+      html body .ss-art.ss-a-last10 .ss-ln{margin-bottom:calc((100vw - 32px) * .59 - 52px)!important}
+    }
+
+    /* v256 ST Performance share picture: totals strip and one white table per list */
+    .stq-tot{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 14px}.stq-tot div{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:14px;text-align:center;color:#fff}
+    .stq-tot small{display:block;font-size:13px;font-weight:900;letter-spacing:.12em;color:#c9d4f5}.stq-tot b{font-size:32px;font-weight:900}
+    .stq-sec{background:#fff;border-radius:20px;padding:16px 20px;margin-bottom:12px;color:#1d2433}
+    .stq-h{display:flex;justify-content:space-between;align-items:center;font-size:18px;font-weight:900;margin-bottom:6px}.stq-h span{display:flex;align-items:center;gap:9px}.stq-h i{width:12px;height:12px;border-radius:4px;display:inline-block}.stq-h em{font-style:normal;font-size:14px;color:#8a93ad;font-weight:800}
+    .stq-t{width:100%;table-layout:fixed;border-collapse:collapse;font-size:16px;font-weight:700}.stq-t th{font-size:12px;letter-spacing:.08em;color:#8a93ad;font-weight:900;text-align:right;padding:6px 8px}.stq-t th:first-child,.stq-t td:first-child{text-align:left}
+    .stq-t td{padding:8px;border-top:1px solid #eef0f5;text-align:right;font-variant-numeric:tabular-nums}.stq-t td:first-child{max-width:420px;word-break:break-word}.stq-t td.g{color:#13894f;font-weight:900}
+    .stq-t th:first-child{width:40%}
+    .stq-none{font-size:15px;color:#8a93ad;font-weight:800;padding:6px 0}
 </style>
 </head>
 <body>
@@ -7748,7 +7778,7 @@ window.addEventListener('load',function(){
       <input type="hidden" id="notificationSoundSetting" value="default">
     </div>
 
-    <div class="sk-group-title" id="tpTitle">Team settings <span class="tp-lock" id="tpLockNote"></span></div>
+    <div class="sk-group-title tp-head" id="tpTitle" role="button" tabindex="0" onclick="tpFold()">Team settings <span class="tp-lock" id="tpLockNote"></span><svg class="tp-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></div>
     <div class="sk-card tp-card" id="tpCard">
       <div class="sk-row" style="cursor:default"><span class="sk-row-icon c-gr"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M14.6 9.2c-.5-.8-1.5-1.2-2.6-1.2-1.5 0-2.6.8-2.6 1.9 0 2.5 5.4 1.3 5.4 4 0 1.1-1.2 2-2.8 2-1.2 0-2.2-.5-2.7-1.3M12 6.5V8M12 16v1.5"/></svg></span><span class="sk-row-text"><b>Default currency</b><small>Each account opens in its own currency.</small></span><span class="ac-box" id="accCurBox"></span></div>
       <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon c-r"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg></span><span class="sk-row-text"><b>Spend alert</b><small>A note when the day's spend passes its plan by this much. <a href="#" class="sa-demo" onclick="spendAlertCheck(DASH_DATA,true);return false">Show me</a></small></span></div>
@@ -8433,9 +8463,12 @@ function syncNativeSettings(){
 function openSettings(){
  closeSidebar();syncSettingsControls();renderProfileCard();settingsUser();drawAccCur();drawSpendAlertOpts();drawRoasAlertOpts();
  // v173 Team settings are for the owner only
- ['tpTitle','tpCard'].forEach(id=>{const x=document.getElementById(id);if(x)x.hidden=!mrOwner()});
+ ['tpTitle','tpCard'].forEach(id=>{const x=document.getElementById(id);if(x)x.hidden=!mrOwner()});tpFoldSet();
  const el=document.getElementById('settingsOverlay');if(el)el.classList.add('open');
 }
+// v256 Team settings fold away under their title; the arrow opens them (remembered on this device).
+function tpFoldSet(){let o=false;try{o=localStorage.getItem('sekna_tp_open')==='1'}catch(e){}document.getElementById('tpTitle')?.classList.toggle('open',o);document.getElementById('tpCard')?.classList.toggle('tp-shut',!o)}
+function tpFold(){let o=false;try{o=localStorage.getItem('sekna_tp_open')==='1'}catch(e){}try{localStorage.setItem('sekna_tp_open',o?'0':'1')}catch(e){}tpFoldSet()}
 // Settings header: who is signed in, and the versions at the bottom.
 function settingsUser(){
  const app=appVersion();text('stVer','HEMERA Dashboard '+DASHBOARD_RELEASE_CLIENT.version+(app?' · App '+app:''));
@@ -9019,7 +9052,7 @@ function setSpendAlert(v){if(!mrOwner())return;prefsSave({alert:v})}
 // Everyone sees the team settings; the owner changes them, the rest see a small lock.
 function tpLock(){const own=mrOwner(),c=document.getElementById('tpCard'),n=document.getElementById('tpLockNote');if(c)c.classList.toggle('locked',!own);
  if(n)n.innerHTML=own?'':'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Set by the admin'}
-function drawSpendAlertOpts(){const b=document.getElementById('spendAlertOpts');if(!b)return;const cur=spendAlertPct();const lk=!mrOwner();b.innerHTML=[0,110,120,130,150].map(v=>`<button type="button" class="${cur===v?'on':''}"${lk?' disabled':''} onclick="setSpendAlert(${v})">${v?v+'%':'Off'}</button>`).join('')}
+function drawSpendAlertOpts(){const b=document.getElementById('spendAlertOpts');if(!b)return;const cur=spendAlertPct();const lk=!mrOwner();b.innerHTML=[0,120,130,150].map(v=>`<button type="button" class="${cur===v?'on':''}"${lk?' disabled':''} onclick="setSpendAlert(${v})">${v?v+'%':'Off'}</button>`).join('')}
 function spendAlertCheck(d,force){
  const pct=spendAlertPct(),x=d&&d.latest;if(!x||!x.targetSpend||x.spendAchievement==null)return;
  if(!force&&(!pct||x.spendAchievement*100<pct))return;
@@ -11968,7 +12001,22 @@ function stpAnimate(body,d){
 }
 // The WhatsApp image is square (1080×1080), "two columns": the match type split on the left,
 // the four main blocks on the right with their top 3 terms each.
+// v256 the ST Performance picture (tall): spend, value and ROAS on top, then a white table per list with every term.
 function termsPerfShareHtml(){
+ const d=(STP[CURRENT_ACCOUNT]||{}).data;if(!d||d.missing)return rsHead('ST Performance')+'<div class="rs-t"><b>No report yet</b></div>'+SHARE_FOOT;
+ const by=id=>(d.sections||[]).find(x=>x.id===id),col=(sec,re)=>sec.head.findIndex(h=>re.test(String(h||'').toLowerCase().trim()));
+ const sum=(sec,j)=>j<0?0:sec.rows.reduce((t,r)=>t+(Number(r[j])||0),0);
+ const m6=by('6');let tot='';
+ if(m6&&m6.rows.length){const sp=sum(m6,col(m6,/^cost/)),vv=sum(m6,col(m6,/value/));
+  tot=`<div class="stq-tot"><div><small>SPEND</small><b>${esc(money(sp,2))}</b></div><div><small>VALUE</small><b>${esc(money(vv,2))}</b></div><div><small>ROAS</small><b>${sp?fmt(vv/sp,2):'0.00'}x</b></div></div>`}
+ const sec=id=>{const x=by(id);if(!x)return '';const S=STP_S[id];
+  const C=[['CLK',col(x,/^clicks?$/),v=>fmt(v,0)],['IMPR',col(x,/^impr/),v=>fmt(v,0)],['COST',col(x,/^cost/),v=>money(v,2)],['CONV',col(x,/^conv(ersions|\.)?$/),v=>fmt(v,0)],['VALUE',col(x,/value/),v=>money(v,2)]].filter(c=>c[1]>=0);
+  const rows=x.rows.map(r=>`<tr><td><bdi${stAr(r[0])}>${esc(r[0])}</bdi></td>${C.map(c=>{const v=Number(r[c[1]])||0;return `<td${c[0]==='VALUE'&&v>0?' class="g"':''}>${esc(c[2](v))}</td>`}).join('')}</tr>`).join('');
+  return `<div class="stq-sec"><div class="stq-h"><span><i style="background:${S[2]}"></i>${esc(id)} · ${esc(S[0])} · ${esc(S[1])}</span><em>${x.rows.length} term${x.rows.length===1?'':'s'}</em></div>
+   ${x.rows.length?`<table class="stq-t"><tr><th>TERM</th>${C.map(c=>`<th>${c[0]}</th>`).join('')}</tr>${rows}</table>`:'<div class="stq-none">Nothing today</div>'}</div>`};
+ return `${rsHead('ST Performance'+(d.run?' · '+d.run.slice(0,10):''))}${tot}${['1a','1b','2','3'].map(sec).join('')}${SHARE_FOOT}`;
+}
+function termsPerfShareHtmlOld(){
  const d=(STP[CURRENT_ACCOUNT]||{}).data;if(!d||d.missing)return rsHead('ST Performance')+'<div class="rs-t"><b>No report yet</b></div>'+SHARE_FOOT;
  const K=v=>Math.abs(v)>=1000?money(v/1000,2)+'K':money(v,2),by=id=>(d.sections||[]).find(x=>x.id===id);
  const col=(sec,re)=>sec.head.findIndex(h=>re.test(String(h||'').toLowerCase()));
@@ -14732,7 +14780,7 @@ const SHARE_KINDS={
  compare:{html:()=>compareShareHtml(),cls:'rp-narrow',name:'Month-vs-Month'},
  ly:{html:()=>lyShareHtml(),cls:'rp-narrow',name:'Vs-Last-Year'},
  terms:{html:()=>termsShareHtml(),cls:'rp-narrow',name:'Search-Terms'},
- termsperf:{html:()=>termsPerfShareHtml(),cls:'rp-narrow rp-sq',name:'Search-Terms-Performance'},
+ termsperf:{html:()=>termsPerfShareHtml(),cls:'rp-narrow',name:'Search-Terms-Performance'},
  termsact:{html:()=>actShareHtml(),cls:'rp-act',name:'ST-Action'}
 };
 function captureChannelReport(){mvSettle();return captureReport(channelReportHtml(),'rp-narrow')}
@@ -14978,7 +15026,7 @@ function tkTeamHtml(){
  return people.map((p,i)=>{
    const ts=pick(p.email), cov=cover(p.email), covN=cov.reduce((a,x)=>a+x.ts.length,0), n=ts.filter(t=>t.done&&t.done[w]).length, open=(TK.data.quick||[]).filter(q=>q.email===p.email&&!(q.done&&q.done.at)).length;
    const pct=ts.length?n/ts.length:0;
-   const isOpen=(TK.tOpen||{})[p.email]!==undefined?TK.tOpen[p.email]:p.email===me, sn=ts.reduce((a,t)=>a+((t.data&&t.data.snaps)||[]).length,0);
+   const isOpen=(TK.tOpen||{})[p.email]!==undefined?TK.tOpen[p.email]:false, sn=ts.reduce((a,t)=>a+((t.data&&t.data.snaps)||[]).length,0);
    const accs=['usa','ar'].filter(a=>ts.some(t=>tkAccs(t.data).includes(a)));
    return `<div class="tk-person tk-card${isOpen?' open':''}" style="--i:${i}"><button type="button" class="tk-ph" onclick="tkTOpen('${esc(p.email)}')">${tkAv(p)}<div class="tk-pn"><b>${esc(p.name)}</b>
        <div class="tk-sumc">${tkOffToday(p.email)?`<span class="tk-tag off">🌴 Off today${tkOffToday(p.email).data.backup?' · backup '+esc(tkPerson(tkOffToday(p.email).data.backup).name.split(' ')[0]):''}</span>`:''}<span class="tk-tag">${ts.length} task${ts.length===1?'':'s'}</span>${covN?`<span class="tk-tag cov">↪ +${covN} from ${cov.map(x=>esc(x.q.name.split(' ')[0])).join(', ')}</span>`:''}${sn?`<span class="tk-tag snap">${TK_CAM}${sn}</span>`:''}${tkAccTxt(accs)}${open?`<span class="tk-tag q">⚡ ${open}</span>`:''}</div></div>
@@ -15171,7 +15219,7 @@ function tkLeaveForm(f,sc,top,still){
 }
 function tkLvDay(i){tkFormRead();const a=TK.form.data.weekdays=TK.form.data.weekdays||[],k=a.indexOf(i);if(k>=0)a.splice(k,1);else a.push(i);a.sort();tkForm(false,true)}
 function tkLvSet(k,v){tkFormRead();TK.form.data[k]=v;if(k==='backup'&&v===TK.form.email)TK.form.data.backup='';tkForm(false,true)}
-function tkTOpen(e){TK.tOpen=TK.tOpen||{};const me=tkMe(),cur=TK.tOpen[e]!==undefined?TK.tOpen[e]:e===me;TK.tOpen[e]=!cur;tkRender()}
+function tkTOpen(e){TK.tOpen=TK.tOpen||{};const me=tkMe(),cur=!!TK.tOpen[e];TK.tOpen[e]=!cur;tkRender()}
 function tkMineHtml(){
  const w=TK.week, me=tkMe(), ts=tkTasksFor(me,w), n=ts.filter(t=>t.done&&t.done[w]).length;
  const q=((TK.data&&TK.data.quick)||[]).filter(x=>x.email===me&&!(x.done&&x.done.at));
