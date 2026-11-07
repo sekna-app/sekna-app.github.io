@@ -7320,6 +7320,60 @@ window.addEventListener('load',function(){
     /* v219 Leave tile: "Leave open" on its own line and the Change button under it (it covered the text on the desktop) */
     html body .lc-st>div small{display:block}
     html body .lc-st .lc-ch{display:inline-block;margin:6px auto 0;position:static!important}
+    /* v220 desktop: Month at a Glance as four cards in a row */
+    .sx-ftile.sx-left{display:none}
+    html.dk-on:not(.desktop-site-mode) .sx-month{display:grid!important;grid-template-columns:1.5fr 1fr 1fr 1fr!important;gap:10px!important;align-items:stretch}
+    html.dk-on:not(.desktop-site-mode) .sx-month .sx-ftiles{display:contents!important}
+    html.dk-on:not(.desktop-site-mode) .sx-month .sx-ftile{display:flex!important;flex-direction:column;justify-content:center;margin:0!important;min-height:0!important;padding:14px 16px!important}
+    html.dk-on:not(.desktop-site-mode) .sx-month .sx-ftile>b{font-size:22px!important}
+    html.dk-on:not(.desktop-site-mode) .sx-ftile.sx-left .sx-hs b.up{color:#13804f}html.dk-on:not(.desktop-site-mode) .sx-ftile.sx-left .sx-hs b.down{color:#c63a4a}
+    html.dk-on:not(.desktop-site-mode) .sx-month .sx-hero{padding:14px 16px!important;min-height:0!important;margin:0!important}
+    html.dk-on:not(.desktop-site-mode) .sx-month .sx-hero .g1-gap{display:none!important}
+    html.dk-on:not(.desktop-site-mode) .sx-month .sx-hero .sx-hv{font-size:28px!important}
+    html.dk-on:not(.desktop-site-mode) .sx-month .sx-hero .g1-tg b{font-size:18px!important}
+    html.dk-on:not(.desktop-site-mode) .sx-month .sx-hero .sx-fcap{margin-top:6px!important;font-size:10.5px!important}
+    /* v220 desktop: Days as slim rows (navy date on the left, numbers in a line); tap a day for its campaign types */
+    html.dk-on:not(.desktop-site-mode) #dxBody .dc-list{display:flex!important;flex-direction:column!important;gap:6px!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dc-card.dcH{display:grid!important;grid-template-columns:210px minmax(0,1fr)!important;align-items:stretch;padding:0!important;border-radius:12px!important;overflow:hidden;min-height:0!important;height:auto!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dc-card.dcH>.dcH-h{display:grid!important;grid-template-columns:1fr auto;grid-template-areas:"d r" "h l";align-content:center;gap:1px 8px;padding:7px 12px!important;margin:0!important;border-radius:0!important;min-height:0!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dcH-h>b{grid-area:d;font-size:13px!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dcH-h>span{grid-area:h;font-size:10.5px!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dcH-h>i{grid-area:r;font-size:10.5px!important;padding:2px 7px!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dcH-h>em{grid-area:l;justify-self:end;font-size:9.5px!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dc-card.dcH>.dc-main{display:grid!important;grid-template-columns:minmax(0,1fr) 220px!important;align-items:center;column-gap:16px;padding:6px 14px!important;margin:0!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dcA-g{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:8px!important;margin:0!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dcA-g>div{display:flex!important;align-items:baseline;gap:8px;background:none!important;padding:4px 0!important;border:0!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dcA-g>div b{font-size:15px!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dc-mix{margin:0!important;height:7px!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dc-card.dcH .dc-more{grid-column:1/-1;margin-top:6px}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dc-card.dcH:not(.open) .dc-more{display:none!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dc-card.dcH.open .dcA-ch{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))!important;gap:6px 18px!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dc-card.dcH.latest{box-shadow:0 0 0 1.5px #e2b874,0 6px 16px rgba(201,154,69,.18)!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dc-card.dcH.latest>.dcH-h{background:linear-gradient(135deg,#f7e3a3,#c99a45)!important;color:#141b33!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dc-card.dcH.latest>.dcH-h *{color:#141b33!important}
+    /* Results rows: each figure is its actual number and a coloured cell with the % of plan, like the sheet */
+    html.dk-on:not(.desktop-site-mode) #dxBody .dc-card.dcH.dcR>.dc-main{grid-template-columns:minmax(0,1fr)!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dcR-g{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:26px!important;margin:0!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dcR-k{display:flex!important;align-items:center;justify-content:space-between;gap:8px;background:none!important;border:0!important;padding:3px 0!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dcR-k small{order:0;min-width:42px}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dcR-k span{order:1;flex:1 1 auto;min-width:80px;overflow:visible!important;font-size:15px!important;font-weight:900!important;color:#141b33!important;text-align:left;display:block!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dcR-k b{order:2;font-size:12px!important;border-radius:7px;padding:3px 8px;min-width:54px;text-align:center}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dcR-k.good b{background:#d9f3e5}html.dk-on:not(.desktop-site-mode) #dxBody .dcR-k.watch b{background:#fbecc8}html.dk-on:not(.desktop-site-mode) #dxBody .dcR-k.bad b{background:#fbdde1}
+    body.dark-mode #dxBody .dcR-k span{color:#fff!important}
+    /* v220 desktop: November Performance, plan achievement as a navy strip on top, the figures as three columns under it */
+    html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+    html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec .ox-hero{grid-column:1/-1!important;grid-row:2!important;display:grid!important;grid-template-columns:auto repeat(3,minmax(0,1fr));align-items:center;column-gap:28px;padding:14px 22px!important;height:auto!important;margin:0 0 10px!important}
+    html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec .ox-hero>.ox-lbl{grid-column:1;grid-row:1}
+    html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec .ox-hero .ox-score{grid-column:1;grid-row:2;font-size:38px!important}
+    html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec .ox-hero .ox-day{position:static!important;grid-column:1;grid-row:3;justify-self:start;margin-top:4px}
+    html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec .ox-hero .ox-accbar{display:none!important}
+    html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec .ox-hero .ox-legs{grid-column:2/5;grid-row:1/4;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:24px;margin:0!important}
+    html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec .ox-hero .ox-legs b{font-size:20px!important}
+    html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec .ox-tiles.oxL{grid-column:1/-1!important;grid-row:3!important;flex-direction:row!important;gap:0!important;padding:4px 6px!important}
+    html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec .ox-tiles.oxL>.ox-tile{flex:1 1 0;min-width:0;border-top:0!important;padding:12px 14px!important}
+    html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec .ox-tiles.oxL>.ox-tile+.ox-tile{border-left:1px solid #f1f3f8!important}
+    html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec #mtdClicksRow.mc{grid-column:1!important;grid-row:4!important;margin-top:10px!important}
+    html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec #mtdClkRow.mc{grid-column:2!important;grid-row:4!important;margin-top:10px!important}
 </style>
 </head>
 <body>
@@ -7860,6 +7914,7 @@ window.addEventListener('load',function(){
       <div class="sx-ftiles">
         <div class="sx-ftile"><span class="sx-lbl">Value</span><b id="mValue">—</b><span class="sx-hs" id="mValueNote">—</span><div class="sx-thin green"><span id="mValueBar"></span></div></div>
         <div class="sx-ftile"><span class="sx-lbl">ROAS</span><b id="mRoas">—</b><span class="sx-hs" id="mRoasNote">—</span><div class="sx-thin gold"><span id="mRoasBar"></span></div></div>
+        <div class="sx-ftile sx-left"><span class="sx-lbl">Left to spend</span><b id="mLeft2">—</b><span class="sx-hs" id="mGap2">—</span></div>
       </div>
     </div>
 </article></section>
@@ -11937,6 +11992,9 @@ function renderMonthForecast(x,m,d){
  text('mGapL',gap>=0?'Ahead of pace':'Behind pace');
  const ge=document.getElementById('mGap');if(ge){ge.textContent=pace?(gap>=0?'+':'−')+money(Math.abs(gap)):'—';ge.className=gap>=0?'up':'down'}
  text('mLeft',planSpend?money(Math.max(planSpend-spend,0)):'—');
+ 
+ text('mLeft2',planSpend?money(Math.max(planSpend-spend,0)):'—');
+ {const g2=document.getElementById('mGap2');if(g2)g2.innerHTML=pace?`${gap>=0?'Ahead of pace':'Behind pace'} <b class="${gap>=0?'up':'down'}">${gap>=0?'+':'−'}${esc(money(Math.abs(gap)))}</b>`:'—'}
  setProgress('mSpendBar',planSpend?spend/planSpend:0);
  const proj=document.getElementById('mSpendProj');
  if(proj){
