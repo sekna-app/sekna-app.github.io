@@ -16220,7 +16220,7 @@ function drawMonthlyReport(){
    <button type="button" class="mr3-go" onclick="mrBuild()" ${MR.busy?'disabled':''}>${MR.pages?'Rebuild PDF':'Build PDF'}</button>
    ${running?`<p class="mr3-st">Day ${live} of ${days.length} · month in progress</p>`:`<p class="mr3-st">The month is complete · ${days.length} days.</p>`}</div>
    <div class="mr3-in"><small>INSIDE THE REPORT</small>${['Results vs the plan','Week by week','Every campaign type','Last year, same days','Your notes for the team'].map((t,i)=>`<span><u>${String(i+1).padStart(2,'0')}</u>${t}</span>`).join('')}</div></div>
-  <details class="mr-notes"${MR.notes?' open':''}><summary>Notes for the team (optional)</summary><textarea id="mrNotes" class="mrp-notes" rows="3" placeholder="e.g. Gaza Emergency appeal launched on the 9th" oninput="MR.notes=this.value">${esc(MR.notes)}</textarea></details>
+  ${ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin?`<details class="mr-notes"${MR.notes?' open':''}><summary>Notes for the team (optional)</summary><textarea id="mrNotes" class="mrp-notes" rows="3" placeholder="e.g. Gaza Emergency appeal launched on the 9th" oninput="MR.notes=this.value">${esc(MR.notes)}</textarea></details>`:''}
   ${MR.busy?`<div class="mrp-busy"><span class="lab-spin dark"></span>${esc(MR.busy)}</div>`:''}
   ${MR.msg?`<div class="mrp-msg">${MR.msg}</div>`:''}
   ${MR.pages?`<div class="mrp-thumbs">${MR.pages.map((s,i)=>`<img src="${s}" alt="Page ${i+1}">`).join('')}</div>
