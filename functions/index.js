@@ -283,7 +283,10 @@ function errorText(err) {
 
 async function appsScriptCall(fn, args) {
   const res = await fetch(APPS_SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'call', fn, args }), redirect: 'follow' });
-  const j = await res.json();
+  const txt = await res.text();
+  let j = null;
+  // A Google page instead of data: the script stopped (an error or time out) or its deployment is old.
+  try { j = JSON.parse(txt); } catch (e) { const t = (txt.match(/<title>([^<]*)<\/title>/i) || [])[1]; throw new Error('Apps Script sent a page, not data' + (t ? ' (' + t + ')' : '') + '. Its code may be old or it ran out of time.'); }
   if (!j || !j.ok) throw new Error((j && j.error) || 'Apps Script did not answer.');
   return j.result;
 }
