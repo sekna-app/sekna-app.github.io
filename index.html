@@ -7724,11 +7724,6 @@ window.addEventListener('load',function(){
     html body .sbx-t.open{border-color:#3d6bff!important}
     body.dark-mode .sbx-t{border-color:#2c4fb8!important;background:#151a22}
 
-    /* v256 phones: the Last 10 nights picture shows whole (moon, stars and mosque) above the text */
-    @media (max-width:1099px){
-      html body .ss-art.ss-a-last10 .ss-img{height:auto!important;aspect-ratio:760/448;background-size:100% auto!important;background-position:center top!important;-webkit-mask-image:linear-gradient(to bottom,#000 80%,transparent)!important;mask-image:linear-gradient(to bottom,#000 80%,transparent)!important}
-      html body .ss-art.ss-a-last10 .ss-ln{margin-bottom:calc((100vw - 32px) * .59 - 52px)!important}
-    }
 
     /* v256 ST Performance share picture: totals strip and one white table per list */
     .stq-tot{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0 14px}.stq-tot div{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:14px;text-align:center;color:#fff}
@@ -7739,6 +7734,10 @@ window.addEventListener('load',function(){
     .stq-t td{padding:8px;border-top:1px solid #eef0f5;text-align:right;font-variant-numeric:tabular-nums}.stq-t td:first-child{max-width:420px;word-break:break-word}.stq-t td.g{color:#13894f;font-weight:900}
     .stq-t th:first-child{width:40%}
     .stq-none{font-size:15px;color:#8a93ad;font-weight:800;padding:6px 0}
+
+    /* v257 ST Performance picture: each list framed in its own colour, the title on a soft tint of it */
+    .stq-sec{border:3px solid var(--c)}
+    .stq-h span{background:var(--t);color:var(--c);border-radius:12px;padding:6px 12px 6px 10px}
 </style>
 </head>
 <body>
@@ -12155,7 +12154,7 @@ function termsPerfShareHtml(){
  const sec=id=>{const x=by(id);if(!x)return '';const S=STP_S[id];
   const C=[['CLK',col(x,/^clicks?$/),v=>fmt(v,0)],['IMPR',col(x,/^impr/),v=>fmt(v,0)],['COST',col(x,/^cost/),v=>money(v,2)],['CONV',col(x,/^conv(ersions|\.)?$/),v=>fmt(v,0)],['VALUE',col(x,/value/),v=>money(v,2)]].filter(c=>c[1]>=0);
   const rows=x.rows.map(r=>`<tr><td><bdi${stAr(r[0])}>${esc(r[0])}</bdi></td>${C.map(c=>{const v=Number(r[c[1]])||0;return `<td${c[0]==='VALUE'&&v>0?' class="g"':''}>${esc(c[2](v))}</td>`}).join('')}</tr>`).join('');
-  return `<div class="stq-sec"><div class="stq-h"><span><i style="background:${S[2]}"></i>${esc(id)} · ${esc(S[0])} · ${esc(S[1])}</span><em>${x.rows.length} term${x.rows.length===1?'':'s'}</em></div>
+  return `<div class="stq-sec" style="--c:${S[2]};--t:rgba(${[1,3,5].map(i=>parseInt(S[2].slice(i,i+2),16)).join(',')},.12)"><div class="stq-h"><span><i style="background:${S[2]}"></i>${esc(id)} · ${esc(S[0])} · ${esc(S[1])}</span><em>${x.rows.length} term${x.rows.length===1?'':'s'}</em></div>
    ${x.rows.length?`<table class="stq-t"><tr><th>TERM</th>${C.map(c=>`<th>${c[0]}</th>`).join('')}</tr>${rows}</table>`:'<div class="stq-none">Nothing today</div>'}</div>`};
  return `${rsHead('ST Performance'+(d.run?' · '+d.run.slice(0,10):''))}${tot}${['1a','1b','2','3'].map(sec).join('')}${SHARE_FOOT}`;
 }
