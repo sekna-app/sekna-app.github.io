@@ -7573,8 +7573,8 @@ window.addEventListener('load',function(){
     .stq-h span{background:var(--t);color:var(--c);border-radius:12px;padding:6px 12px 6px 10px}
 
     /* v258 pull to refresh: coin, donation box and a refresh ring */
-    html body .ptr.ptr-ha{width:66px;height:66px;background:#fff;box-shadow:0 10px 26px rgba(20,30,70,.22)}
-    html body .ptr.ptr-ha svg{width:66px;height:66px;fill:none;stroke:none;animation:none!important;overflow:visible}
+    html body .ptr.ptr-ha{width:60px;height:60px;background:#fff;box-shadow:0 10px 26px rgba(20,30,70,.22)}
+    html body .ptr.ptr-ha svg{width:60px;height:60px;fill:none;stroke:none;animation:none!important;overflow:visible}
     .ptr-ha .pr-tr{fill:none;stroke:#f1ece2;stroke-width:3.5}
     .ptr-ha .pr-arc{fill:none;stroke:#c99a45;stroke-width:3.5;stroke-linecap:round;transform:rotate(-90deg);transform-origin:42px 42px}
     .ptr-ha .pr-ring{transform-origin:42px 42px}
@@ -10394,7 +10394,7 @@ function rxArm(body){
  const MAX=96,GO=70;let y0=null,dy=0,busy=false;
  const blocked=()=>document.querySelector('[id$="Overlay"].open,.lyx-sheet.open,.sk-drawer.open,.sk-sidebar.open,body.sidebar-open,.ls-sheet.open')||document.body.classList.contains('is-sharing');
  const set=(d,anim)=>{el.style.transition=anim?'transform .25s ease,opacity .25s ease':'none';el.style.opacity=d>4?Math.min(1,d/GO):0;
-   el.style.transform=`translate(-50%,${Math.min(d,MAX)-74}px)`;el.classList.toggle('ready',d>=GO);
+   el.style.transform=`translate(-50%,${Math.min(d,MAX)-68}px)`;el.classList.toggle('ready',d>=GO);
    if(!busy){const p=Math.min(1,d/GO);el.querySelector('.pr-arc').style.strokeDashoffset=232.5*(1-p);el.querySelector('.pr-coin').style.transform=`translateY(${p*8-6}px)`}};
  window.addEventListener('touchstart',e=>{mk();if(busy||e.touches.length!==1||window.scrollY>0||blocked()){y0=null;return}y0=e.touches[0].clientY;dy=0},{passive:true});
  window.addEventListener('touchmove',e=>{if(y0==null)return;const d=e.touches[0].clientY-y0;if(d<=0||window.scrollY>0){if(dy)set(0,true);dy=0;return}
