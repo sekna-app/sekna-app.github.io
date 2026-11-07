@@ -7135,6 +7135,16 @@ window.addEventListener('load',function(){
     .rx-tot-g span{display:flex;align-items:baseline;gap:5px;white-space:nowrap;min-width:0}.rx-tot-g span+span{border-left:1px solid rgba(255,255,255,.14);padding-left:9px}
     .rx-tot-g small{font-size:9.5px;font-weight:800;color:#c9d3f5}.rx-tot.w .rx-tot-g small{color:#ffd0d6}
     .rx-tot-g b{font-size:13px;font-weight:900;font-variant-numeric:tabular-nums}
+    /* v217 total in one slim row (Spend · Conv. · Value · ROAS in gold); flip button a little higher, kinds a little lower */
+    html body .rx-tot{padding:9px 12px}
+    html body .rx-tot-g{grid-template-columns:1.15fr .8fr 1.2fr .9fr;margin:0;padding:0;border:0}
+    html body .rx-tot-g span{flex-direction:column;align-items:flex-start;gap:0}
+    html body .rx-tot-g span+span{padding-left:8px}
+    html body .rx-tot-g small{font-size:9px;letter-spacing:.06em;text-transform:uppercase}
+    html body .rx-tot-g b{font-size:13.5px}
+    html body .rx-tot-g .ro b{color:#f2d38f}html body .rx-tot.w .rx-tot-g .ro b{color:#fff}
+    html body .rx-flip{margin:4px 0 0}
+    html body .rx-sticky .rx-cats{margin-top:12px!important}
 </style>
 </head>
 <body>
@@ -11318,7 +11328,8 @@ function renderRanks(d){
  document.documentElement.style.setProperty('--rx-top',(rankTopOffset()/zm-1)+'px');
  if(!bw){cats.innerHTML='';text('rxSub','Not linked yet');body.innerHTML='<div class="dx-empty">The Best &amp; Worst tab is not linked for this account yet.</div>';return}
  RANK_DAY=bw.day||'';
- text('rxSub',`${shortDate(bw.day)} · last closed day · ranked by ${bw.rankBy}`);
+ // v217 short subtitle: the day and what the list is sorted by
+ {const rb=String(bw.rankBy||'').trim(),k=rb.toLowerCase(),sh=/conv/.test(k)?'Conv.':/value|revenue/.test(k)?'Value':/roas/.test(k)?'ROAS':rb;text('rxSub',`${shortDate(bw.day)} · by ${sh}`)}
  document.querySelector('.rx-card').classList.toggle('rx-duo',rxDuo());
  if(rxDuo())return renderRanksDuo(bw,body,cats);
  document.querySelector('.rx-card').dataset.side=RANK_SIDE;
@@ -11697,7 +11708,7 @@ function rxTotal(b,worst){
  if(!b.total)return '';
  const t=b.total;
  // v216 a slim navy strip (red for the bottom 5): the label and the ROAS in gold on one line, the three numbers under it
- return `<div class="rx-tot ${worst?'w':'g'}"><div class="rx-tot-h"><small>TOTAL · ${worst?'BOTTOM':'TOP'} ${b.rows.length}</small><b>${fmt(t.roas,2)}x <em>ROAS</em></b></div><div class="rx-tot-g"><span><small>Spend</small><b>${money(t.spend)}</b></span><span><small>Conv.</small><b>${fmt(t.conversions,0)}</b></span><span><small>Value</small><b>${money(t.value)}</b></span></div></div>`;
+ return `<div class="rx-tot ${worst?'w':'g'}" aria-label="Total of the ${worst?'bottom':'top'} ${b.rows.length}"><div class="rx-tot-g"><span><small>Spend</small><b>${money(t.spend)}</b></span><span><small>Conv.</small><b>${fmt(t.conversions,0)}</b></span><span><small>Value</small><b>${money(t.value)}</b></span><span class="ro"><small>ROAS</small><b>${fmt(t.roas,2)}x</b></span></div></div>`;
  return `<div class="rx-sum ${worst?'w':'g'}"><div class="rx-sum-head"><div><small>${worst?'Total · bottom':'Total · top'} ${b.rows.length}</small><b>${worst?'Combined weak spots':'Combined winners'}</b></div><span class="rx-sum-roas">${fmt(t.roas,2)}x<small>ROAS</small></span></div>
   <div class="rx-sum-grid"><div><small>Spend</small><b>${money(t.spend)}</b></div><div><small>Conv.</small><b>${fmt(t.conversions,0)}</b></div><div><small>Value</small><b>${money(t.value)}</b></div></div></div>`;
 }
