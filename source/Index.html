@@ -13982,6 +13982,9 @@ function shareClone(sel){
  });
  return c.outerHTML;
 }
+
+function achTxt(t){const m=String(t||'').match(/([\d.,]+)%\s*(above|below)/i);if(!m)return t;const v=parseFloat(m[1].replace(/,/g,''));if(!isFinite(v))return t;
+ const r=Math.round((m[2].toLowerCase()==='above'?100+v:100-v)*10)/10;return `${r}% of target`}
 function shareReportHtml(){
  const d=DASH_DATA||{},x=d.latest||{},a=accountMeta(d);
  const year=String(x.date||'').slice(0,4);
@@ -13990,7 +13993,7 @@ function shareReportHtml(){
  const sekna=document.querySelector('.sk-drawer-logo')?.src||'';
  const kpis=[['Daily Spend','kSpend','tSpend','dSpend'],['Conversions','kConv','tConv','dConv'],['Conversion Value','kValue','tValue','dValue'],['ROAS','kRoas','tRoas','dRoas']].map(([n,v,t,dl])=>{
    const de=document.getElementById(dl);const cls=de?(de.classList.contains('good')?'good':de.classList.contains('bad')?'bad':'watch'):'watch';
-   return `<div class="rp-k"><span>${esc(n)}</span><b>${esc(shareText(v))}</b><small>Target ${esc(shareText(t))}</small><em class="${cls}">${esc(shareText(dl))}</em></div>`;
+   return `<div class="rp-k"><span>${esc(n)}</span><b>${esc(shareText(v))}</b><small>Target ${esc(shareText(t))}</small><em class="${cls}">${esc(achTxt(shareText(dl)))}</em></div>`;
  }).join('');
  const quick=shareClone('.quick-metrics-strip');
  
