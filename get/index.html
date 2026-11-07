@@ -98,7 +98,10 @@ p.l{font-size:18px;color:var(--sub);margin:0 0 26px;max-width:480px}
 .arr svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 .dots{display:flex;gap:7px;margin-top:12px}
 .dots i{width:7px;height:7px;border-radius:99px;background:rgba(255,255,255,.25);transition:width .35s ease,background .35s ease}
-.dots i.on{width:22px;background:var(--gold)}
+.dots i.on{width:46px;background:rgba(255,255,255,.18);position:relative;overflow:hidden}
+.dots i u{position:absolute;inset:0;border-radius:99px;background:linear-gradient(90deg,#f2d38f,var(--gold));transform-origin:left;transform:scaleX(0);animation:dfill var(--hd,6s) linear forwards}
+@keyframes dfill{to{transform:scaleX(1)}}
+.dots small{margin-left:6px;font-size:11px;font-weight:800;color:rgba(255,255,255,.7);font-variant-numeric:tabular-nums;min-width:22px}
 @media (prefers-reduced-motion:reduce){.scr img{animation:none}.tilt,.floor{animation:none}.tilt{transform:rotateX(-6deg)}}
 @media (max-width:900px){
   .hgrid{grid-template-columns:1fr;grid-template-areas:"ht" "stage" "ha";grid-template-rows:auto;min-height:0;padding-top:20px}
@@ -575,7 +578,11 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   function show(anim){
     var r=radius(), k=((cur%N)+N)%N;
     ring.style.transform='translateZ('+(-r)+'px) rotateY('+(-cur*step)+'deg)';
-    for(var i=0;i<N;i++){var d=Math.min(Math.abs(i-k),N-Math.abs(i-k));phones[i].className='rp'+(d===0?' front':d===1?' side':d>1?' far':'');dl[i].className=i===k?'on':''}
+    for(var i=0;i<N;i++){var d=Math.min(Math.abs(i-k),N-Math.abs(i-k));phones[i].className='rp'+(d===0?' front':d===1?' side':d>1?' far':'');dl[i].className=i===k?'on':'';dl[i].innerHTML=''}
+    // the front phone's dot stretches and fills gold for as long as that phone shows; the seconds left beside it
+    var hd=hold();dots.style.setProperty('--hd',hd+'ms');dl[k].innerHTML='<u></u>';
+    clearInterval(window.__dt);var left=Math.ceil(hd/1000),sm=dots.querySelector('small');if(!sm){sm=document.createElement('small');dots.appendChild(sm)}sm.textContent=left+'s';
+    window.__dt=setInterval(function(){left=Math.max(0,left-1);sm.textContent=left+'s'},1000);
     capT.textContent=S[k][1];capS.textContent=S[k][2];capD.textContent=S[k][3];
     if(anim){[cap,capD].forEach(function(e){e.classList.remove('swap');void e.offsetWidth;e.classList.add('swap')})}
     // The screen starts once the ring has turned; a two-screen phone switches halfway.
