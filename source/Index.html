@@ -7157,17 +7157,17 @@ window.addEventListener('load',function(){
     /* v219 Leave tile: "Leave open" on its own line and the Change button under it (it covered the text on the desktop) */
     html body .lc-st>div small{display:block}
     html body .lc-st .lc-ch{display:inline-block;margin:6px auto 0;position:static!important}
-    /* v220 desktop: Month at a Glance as four cards in a row */
-    html.dk-on:not(.desktop-site-mode) .sx-month{display:grid!important;grid-template-columns:1.5fr 1fr 1fr 1fr!important;gap:10px!important;align-items:stretch}
-    html.dk-on:not(.desktop-site-mode) .sx-month .sx-ftiles{display:contents!important}
-    html.dk-on:not(.desktop-site-mode) .sx-month .sx-ftile{display:flex!important;flex-direction:column;justify-content:center;margin:0!important;min-height:0!important;padding:14px 16px!important}
-    html.dk-on:not(.desktop-site-mode) .sx-month .sx-ftile>b{font-size:22px!important}
+    /* v220 desktop: Month at a Glance as four cards in a row (v244: not in the share image, which keeps its own look) */
+    html.dk-on:not(.desktop-site-mode) .sx-month:not(.rp-report .sx-month){display:grid!important;grid-template-columns:1.5fr 1fr 1fr 1fr!important;gap:10px!important;align-items:stretch}
+    html.dk-on:not(.desktop-site-mode) .sx-month:not(.rp-report .sx-month) .sx-ftiles{display:contents!important}
+    html.dk-on:not(.desktop-site-mode) .sx-month:not(.rp-report .sx-month) .sx-ftile{display:flex!important;flex-direction:column;justify-content:center;margin:0!important;min-height:0!important;padding:14px 16px!important}
+    html.dk-on:not(.desktop-site-mode) .sx-month:not(.rp-report .sx-month) .sx-ftile>b{font-size:22px!important}
     html.dk-on:not(.desktop-site-mode) .sx-ftile.sx-left .sx-hs b.up{color:#13804f}html.dk-on:not(.desktop-site-mode) .sx-ftile.sx-left .sx-hs b.down{color:#c63a4a}
-    html.dk-on:not(.desktop-site-mode) .sx-month .sx-hero{padding:14px 16px!important;min-height:0!important;margin:0!important}
-    html.dk-on:not(.desktop-site-mode) .sx-month .sx-hero .g1-gap{display:none!important}
-    html.dk-on:not(.desktop-site-mode) .sx-month .sx-hero .sx-hv{font-size:28px!important}
-    html.dk-on:not(.desktop-site-mode) .sx-month .sx-hero .g1-tg b{font-size:18px!important}
-    html.dk-on:not(.desktop-site-mode) .sx-month .sx-hero .sx-fcap{margin-top:6px!important;font-size:10.5px!important}
+    html.dk-on:not(.desktop-site-mode) .sx-month:not(.rp-report .sx-month) .sx-hero{padding:14px 16px!important;min-height:0!important;margin:0!important}
+    html.dk-on:not(.desktop-site-mode) .sx-month:not(.rp-report .sx-month) .sx-hero .g1-gap{display:none!important}
+    html.dk-on:not(.desktop-site-mode) .sx-month:not(.rp-report .sx-month) .sx-hero .sx-hv{font-size:28px!important}
+    html.dk-on:not(.desktop-site-mode) .sx-month:not(.rp-report .sx-month) .sx-hero .g1-tg b{font-size:18px!important}
+    html.dk-on:not(.desktop-site-mode) .sx-month:not(.rp-report .sx-month) .sx-hero .sx-fcap{margin-top:6px!important;font-size:10.5px!important}
     /* v220 desktop: Days as slim rows (navy date on the left, numbers in a line); tap a day for its campaign types */
     html.dk-on:not(.desktop-site-mode) #dxBody .dc-list{display:flex!important;flex-direction:column!important;gap:6px!important}
     html.dk-on:not(.desktop-site-mode) #dxBody .dc-card.dcH{display:grid!important;grid-template-columns:210px minmax(0,1fr)!important;align-items:stretch;padding:0!important;border-radius:12px!important;overflow:hidden;min-height:0!important;height:auto!important}
