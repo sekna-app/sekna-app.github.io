@@ -71,6 +71,7 @@ function localParts(tz, ms) {
   return { day: `${p.year}-${p.month}-${p.day}`, min: +p.hour * 60 + +p.minute };
 }
 function inReadWindow(w, now) {
+  if (w && w.never) return false;
   if (!w || !w.on) return true;
   const f = toMin(w.from), t = toMin(w.to);
   if (f == null || t == null) return true;
@@ -78,6 +79,15 @@ function inReadWindow(w, now) {
   new Intl.DateTimeFormat('en-GB', { timeZone: w.tz || 'Africa/Cairo', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date(now || Date.now())).forEach(x => { p[x.type] = x.value; });
   const m = +p.hour * 60 + +p.minute;
   return f <= t ? m >= f && m <= t : m >= f || m <= t; // a window can go past midnight
+}
+// v263 snapshots: each group of sheets has its own read time. 'media' uses the main window (from/to);
+// 'terms' (AI Max + ST Performance) and 'camp' keep their own times in w.groups; the Action log ('manual')
+// is read only when someone refreshes its page.
+const kindGroup = kind => (kind === 'terms' || kind === 'stdaily') ? 'terms' : kind === 'actlog' ? 'manual' : 'media';
+function groupWin(w, g) {
+  if (!w || g === 'media') return w;
+  if (g === 'manual') return Object.assign({}, w, { on: true, from: '00:00', to: '00:00', never: true });
+  return Object.assign({}, w, ((w.groups || {})[g]) || {});
 }
 const snapDoc = (kind, key) => 'server/snap-' + kind + '-' + key;
 async function saveSnap(kind, key, value) {
@@ -100,7 +110,7 @@ async function sheetData(kind, key, force) {
   const ttl = kind === 'dash' ? DASH_CACHE_MS : MONTHS_CACHE_MS;
   const build = () => (kind === 'dash' ? buildDashboardData(key) : kind === 'forecast' ? buildForecast(key) : kind === 'assume' ? buildAssumptions(key) : kind === 'vsly' ? buildVsLy(key) : kind === 'terms' ? buildSearchTerms(key) : kind === 'stdaily' ? buildSearchTermsDaily(key) : kind === 'actlog' ? buildActionLog(key) : getMonthCompareData(key)).then(v => { if (kind === 'dash') sheetReads++; saveSnap(kind, key, v); return v; });
   const ck = kind + ':' + key;
-  if (force || inReadWindow(await readWindow())) return cached(ck, ttl, !!force, build);
+  if (force || inReadWindow(groupWin(await readWindow(), kindGroup(kind)))) return cached(ck, ttl, !!force, build);
   const hit = cache[ck];
   if (hit && hit.value) return hit.value;
   if (hit && hit.pending) return hit.pending;
@@ -199,7 +209,8 @@ const CALLS = {
     WARM_ACCOUNTS.forEach(k => { const h = cache['dash:' + k]; if (h && h.at) last[k] = h.at; });
     const log = (await fsGet(READ_LOG).catch(() => null)) || { days: {}, month: {} };
     const lp = localParts(w.tz, now), mk = lp.day.slice(0, 7);
-    const days = Object.keys(log.days || {}).sort().reverse().slice(0, 3).map(d => ({ day: d, usa: (log.days[d].usa || {}).at || 0, ar: (log.days[d].ar || {}).at || 0, alerted: log.days[d].alerted || 0 }));
+    const days = Object.keys(log.days || {}).sort().reverse().slice(0, 3).map(d => ({ day: d, usa: (log.days[d].usa || {}).at || 0, ar: (log.days[d].ar || {}).at || 0, alerted: log.days[d].alerted || 0,
+      tusa: (log.days[d].t_usa || {}).at || 0, tar: (log.days[d].t_ar || {}).at || 0 }));
     // If it read all day: every 2 minutes, both accounts, for the days of this month so far.
     const allDay = 720 * WARM_ACCOUNTS.length * +lp.day.slice(8, 10);
     return { window: w, open: inReadWindow(w, now), last, today: lp.day, days, reads: (log.month || {})[mk] || 0, allDay };
@@ -209,8 +220,10 @@ const CALLS = {
     const c = args[1] || {};
     const tz = ['Africa/Cairo', 'Asia/Muscat', 'Europe/London', 'Asia/Dubai', 'Asia/Riyadh'].indexOf(c.tz) >= 0 ? c.tz : 'Africa/Cairo';
     if (c.on && (toMin(c.from) == null || toMin(c.to) == null)) throw new Error('Pick a start and an end time.');
+    const groups = {};
+    ['terms', 'camp'].forEach(g => { const x = (c.groups || {})[g]; if (x && toMin(x.from) != null && toMin(x.to) != null) groups[g] = { from: String(x.from), to: String(x.to) }; });
     const v = { on: !!c.on, from: String(c.from || READ_DEFAULT.from), to: String(c.to || READ_DEFAULT.to), tz,
-      stopOnData: c.stopOnData !== false, alert: c.alert !== false, by: me.email, at: Date.now() };
+      stopOnData: c.stopOnData !== false, alert: c.alert !== false, groups, by: me.email, at: Date.now() };
     await fsSet(READ_DOC, v);
     readCache = { at: Date.now(), v };
     return { window: v, open: inReadWindow(v) };
@@ -391,7 +404,7 @@ exports.api = onRequest({
           if (!got && (date >= yesterday || date !== dayLog.base[key])) {
             dayLog[key] = { at: (cache['dash:' + key] || {}).at || now, date }; logChanged = true;
             // The Media Plan Lab (Forecast and Assumptions tabs) and the month vs last year tables are read again with the new day.
-            for (const kind of ['forecast', 'assume', 'vsly', 'terms', 'stdaily', 'actlog']) { try { await sheetData(kind, key, true); } catch (e) { console.error('Lab read ' + kind + ' ' + key + ': ' + errorText(e)); } }
+            for (const kind of (w.on ? ['forecast', 'assume', 'vsly'] : ['forecast', 'assume', 'vsly', 'terms', 'stdaily'])) { try { await sheetData(kind, key, true); } catch (e) { console.error('Lab read ' + kind + ' ' + key + ': ' + errorText(e)); } }
           }
         }
       }
@@ -401,6 +414,18 @@ exports.api = onRequest({
         if (key === 'usa') { stats.errors++; stats.lastError = errorText(e); stats.lastErrorAt = Date.now(); }
       }
       if (open && done.indexOf(key) >= 0) try { await sheetData('months', key, false); } catch (e) {}
+    }
+    // v263 Search terms in their own window: read until today's report run is in, then stop for the day.
+    const tw = groupWin(w, 'terms');
+    if (w.on && inReadWindow(tw, now)) for (const key of WARM_ACCOUNTS) {
+      const tk = 't_' + key;
+      if (dayLog[tk] && w.stopOnData !== false) continue;
+      try {
+        const d = await sheetData('terms', key, true);
+        try { await sheetData('stdaily', key, true); } catch (e) { console.error('ST daily ' + key + ': ' + errorText(e)); }
+        const run = String((d && d.run) || '').slice(0, 10);
+        if (!dayLog[tk] && run && run >= yesterday) { dayLog[tk] = { at: now, run }; logChanged = true; }
+      } catch (e) { console.error('Terms read ' + key + ': ' + errorText(e)); }
     }
     // This month's reads, and the alert when the window is over and a sheet has no new day.
     if (sheetReads) { const mk = today.slice(0, 7); log.month[mk] = (log.month[mk] || 0) + sheetReads; sheetReads = 0; logChanged = true; }

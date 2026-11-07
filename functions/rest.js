@@ -88,8 +88,17 @@ async function moved() {
 }
 
 /* ---------- share counts ---------- */
-async function shareStats(month) {
-  const rows = await fsList(DOC.shares(month));
+// A from–to range of days (YYYY-MM-DD), up to 92 days; null when it is not a valid range.
+function dayRange(r) {
+  if (!r || !/^\d{4}-\d{2}-\d{2}$/.test(r.from || '') || !/^\d{4}-\d{2}-\d{2}$/.test(r.to || '')) return null;
+  const from = r.from <= r.to ? r.from : r.to, to = r.from <= r.to ? r.to : r.from;
+  if ((Date.parse(to) - Date.parse(from)) / 864e5 > 92) return null;
+  return { from, to };
+}
+function monthsOf(r) { const out = []; let m = r.from.slice(0, 7); while (m <= r.to.slice(0, 7)) { out.push(m); const y = +m.slice(0, 4), n = +m.slice(5, 7); m = n === 12 ? (y + 1) + '-01' : y + '-' + String(n + 1).padStart(2, '0'); } return out; }
+async function shareStats(month, range) {
+  const rows = range ? (await Promise.all(monthsOf(range).map(m => fsList(DOC.shares(m))))).reduce((a, l) => a.concat(l), []).filter(r => { const d = dayOf(r.t); return d >= range.from && d <= range.to; })
+    : await fsList(DOC.shares(month));
   const people = {}, kinds = {}, days = {};
   // Each person's pages, accounts, days and last share, for the details under their card.
   const mem = await require('./tasks').members().catch(() => ({}));
@@ -263,10 +272,11 @@ const R = {
     if (!days[d]) await fsUpdate(DOC.usageDays, o => { o = o || {}; if (o[d]) return undefined; o[d] = 1; return o; });
     return { ok: true };
   },
-  async adminActivity([token, monthKey]) {
+  // v263 an optional from–to range of days (today, the last 7 days, one day…) instead of the whole month
+  async adminActivity([token, monthKey, rangeIn]) {
     await assertAdmin(token);
-    const month = monthOk(monthKey);
-    const days = Object.keys((await fsGet(DOC.usageDays)) || {}).filter(d => d.slice(0, 7) === month);
+    const month = monthOk(monthKey), range = dayRange(rangeIn);
+    const days = Object.keys((await fsGet(DOC.usageDays)) || {}).filter(d => range ? d >= range.from && d <= range.to : d.slice(0, 7) === month);
     const lists = await Promise.all(days.map(d => fsList(DOC.usage(d))));
     const opens = {}, time = {};
     let openTotal = 0, timeTotal = 0;
@@ -275,7 +285,7 @@ const R = {
       if (r.kind === 'open') { (opens[email] = opens[email] || { email, name, n: 0 }).n++; openTotal++; }
       else if (r.kind === 'time') { const s = Number(r.sec) || 0; (time[email] = time[email] || { email, name, sec: 0 }).sec += s; timeTotal += s; }
     }));
-    return { month, shares: await shareStats(month),
+    return { month, range, shares: await shareStats(month, range),
       opens: { total: openTotal, people: Object.keys(opens).map(k => opens[k]).sort((a, b) => b.n - a.n) },
       time: { total: timeTotal, people: Object.keys(time).map(k => time[k]).sort((a, b) => b.sec - a.sec) } };
   },

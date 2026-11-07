@@ -7599,6 +7599,36 @@ window.addEventListener('load',function(){
 
     /* v262 computers: the refresh circle is 66px, centred over the page content */
     @media (min-width:1100px){html body .ptr.ptr-ha,html body .ptr.ptr-ha svg{width:66px!important;height:66px!important}}
+
+    /* v263 Admin: line icons instead of emoji; Activity period pills */
+    .aic{width:1.05em;height:1.05em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.16em;margin-right:6px;flex:none;display:inline-block}
+    .adot{display:inline-block;width:9px;height:9px;border-radius:50%;vertical-align:middle;box-shadow:0 0 0 3px rgba(0,0,0,.04)}
+    .ad-h{display:flex;align-items:center;flex-wrap:wrap}
+    .a2-act span .aic{width:20px;height:20px;margin:0}
+    .act-rg{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 12px;width:100%}
+    .act-rg>button,.act-rg>label{all:unset;cursor:pointer;font-size:12px;font-weight:800;color:#4b5263;background:#f2f4f9;border-radius:99px;padding:6px 12px;display:inline-flex;align-items:center;position:relative}
+    .act-rg>.on{background:linear-gradient(135deg,#2c4fb8,#1b2f78);color:#fff}
+    .act-rg>label input{position:absolute;inset:0;opacity:0;cursor:pointer}
+    .act-rg .aic{margin-right:5px}
+    .shl-n b .aic{color:#c99a45;margin:0 0 0 5px}
+    .act-seg .aic{margin-right:5px}
+
+    /* v263 Reading the sheets: snapshot cards (tap to pick, then set a time) */
+    .rw-sns{display:grid;gap:8px}
+    .rw-sn{all:unset;cursor:pointer;display:grid;grid-template-columns:38px 1fr auto;gap:10px;align-items:center;padding:10px 12px;border-radius:16px;border:1.5px solid #e6e9f2;background:#fff;position:relative;box-sizing:border-box;transition:border-color .2s,box-shadow .2s}
+    .rw-sn>i{width:38px;height:38px;border-radius:12px;background:var(--b);color:var(--c);display:grid;place-items:center}.rw-sn>i .aic{width:19px;height:19px;margin:0}
+    .rw-sn b{display:flex;align-items:center;gap:6px;font-size:13.5px;color:#1d2433}.rw-sn b em{font-style:normal;font-size:9.5px;font-weight:900;color:#6f29a6;background:#f3eafa;border-radius:99px;padding:2px 7px}
+    .rw-sn small{display:block;font-size:11px;color:#8a93ad;font-weight:700;margin-top:2px}
+    .rw-tc{text-align:right;font-size:13px;font-weight:900;color:var(--c);white-space:nowrap}.rw-tc small{margin:0;font-size:10.5px}.rw-tc u{display:flex;justify-content:flex-end;align-items:center;text-decoration:none;font-size:10px;color:#13894f;font-weight:900;margin-top:2px}.rw-tc u .aic{margin-right:2px}
+    .rw-sn>s{position:absolute;top:-7px;right:-7px;width:20px;height:20px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;transform:scale(0);transition:transform .25s cubic-bezier(.3,1.6,.5,1)}.rw-sn>s .aic{width:12px;height:12px;margin:0;stroke-width:3}
+    .rw-sn.on{border-color:var(--c);box-shadow:0 6px 18px rgba(32,60,142,.12)}.rw-sn.on>s{transform:scale(1)}
+    .rw-pk{margin-top:10px;border-radius:16px;padding:12px;background:linear-gradient(135deg,#f6f8ff,#fffaf0);border:1.5px dashed #c9d8ff;animation:skRise .3s cubic-bezier(.2,.75,.25,1) both}
+    .rw-pk>b{display:flex;align-items:center;font-size:13px;color:#203c8e;margin-bottom:8px}
+    .rw-ap{all:unset;cursor:pointer;display:block;width:100%;box-sizing:border-box;text-align:center;margin-top:10px;border-radius:12px;padding:10px;font-weight:900;font-size:13px;color:#fff;background:linear-gradient(135deg,#2c4fb8,#1b2f78)}
+    .rw-st>span .aic{width:20px;height:20px;margin:0}.rw-mode .aic{margin-right:6px}.rw-tzs i .aic{margin:0}.rw-fxb>i .aic{margin:0}
+    .rw-lr b .aic{margin-right:3px;width:12px;height:12px}
+    .mrp-msg .aic{margin-right:6px}
+    body.dark-mode .rw-sn{background:#151a22;border-color:#2a313c}body.dark-mode .rw-sn b{color:#fff}body.dark-mode .rw-pk{background:#151a22;border-color:#2c4fb8}
 </style>
 </head>
 <body>
@@ -13656,6 +13686,18 @@ async function clearRecent(){
 function adminGo(k){ADMIN_VIEW='tools';ADMIN_TAB=k;adminLoadExtra(k);if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 const AD_IC={eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
  bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.7.7 1 1.5 1 2.5h6c0-1 .3-1.8 1-2.5A6 6 0 0 0 12 3z"/>',server:'<rect x="4" y="4" width="16" height="7" rx="2"/><rect x="4" y="13" width="16" height="7" rx="2"/><path d="M8 7.5h.01M8 16.5h.01"/>'};
+
+const AI_IC={chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',share:'<path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M12 3v12M7 8l5-5 5 5"/>',phone:'<rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18h2"/>',
+ clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',medal:'<circle cx="12" cy="15" r="5"/><path d="M8.5 3h7l-2 7h-3z"/>',undo:'<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',cal:'<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/>',
+ power:'<path d="M12 3v8"/><path d="M6.3 6.8a8 8 0 1 0 11.4 0"/>',mega:'<path d="M3 11v3h3l7 4V7L6 11z"/><path d="M17 9a4 4 0 0 1 0 6"/>',userplus:'<circle cx="10" cy="8" r="4"/><path d="M3 21a7 7 0 0 1 14 0M19 8v6M16 11h6"/>',
+ sheet:'<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/>',
+ check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',warn:'<path d="M12 3l9.5 17h-19z"/><path d="M12 10v4M12 17.5v.01"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',wait:'<path d="M7 3h10M7 21h10M8 3c0 5 8 5 8 9s-8 4-8 9M16 3c0 5-8 5-8 9"/>',
+ refresh:'<path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/>',alarm:'<circle cx="12" cy="13" r="7"/><path d="M12 10v3l2 2M5 4L2 7M19 4l3 3"/>',globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',
+ cash:'<rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 9.5v5M18 9.5v5"/>',swap:'<path d="M4 8h14l-3-3M20 16H6l3 3"/>',server:'<rect x="4" y="4" width="16" height="7" rx="2"/><rect x="4" y="13" width="16" height="7" rx="2"/><path d="M8 7.5h.01M8 16.5h.01"/>',
+ eye:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/>',ban:'<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>',
+ trend:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',search:'<circle cx="11" cy="11" r="6.5"/><path d="M16 16l5 5"/>',moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>'};
+const aI=k=>`<svg class="aic" viewBox="0 0 24 24" aria-hidden="true">${AI_IC[k]||''}</svg>`;
+const aDot=c=>`<i class="adot" style="background:${c}"></i>`;
 const adIco=(k,c,bg)=>`<span class="a3-ic" style="background:${bg};color:${c}"><svg viewBox="0 0 24 24" aria-hidden="true">${AD_IC[k]}</svg></span>`;
 
 function adminTab(k){ADMIN_TAB=ADMIN_TAB===k?'':k;if(ADMIN_TAB)adminLoadExtra(ADMIN_TAB);if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
@@ -13689,7 +13731,7 @@ function renderAdmin(d){
  const tile=(cls,ic,n,l)=>`<div class="a2-tile ${cls}"><i>${ic}</i><b>${n}</b><span>${l}</span></div>`;
  const annState=ann?(ann.showFrom&&ann.showFrom>isoDay(0)?'Scheduled':'Showing now'):'None yet';
  const act=(k,ic,bg,t,sub)=>`<button type="button" class="a2-act${ADMIN_TAB===k?' on':''}" onclick="adminTab('${k}')"><span style="background:${bg}">${ic}</span><b>${t}</b><small>${sub}</small></button>`;
- const inviteView=`<div class="a2-sheet"><b class="ad-h">➕ Invite someone</b><small class="ad-sub">They get an email with a link to sign in to HEMERA.</small><form class="ad-invite" style="margin-top:12px" onsubmit="adminInviteSubmit(event)"><input id="adminInviteEmail" type="email" inputmode="email" autocapitalize="off" placeholder="name@company.com" onfocus="setTimeout(()=>this.scrollIntoView({block:'center'}),300)"><button id="adminInviteBtn" type="submit">Send invite</button></form></div>`;
+ const inviteView=`<div class="a2-sheet"><b class="ad-h">${aI('userplus')}Invite someone</b><small class="ad-sub">They get a sign-in link by email.</small><form class="ad-invite" style="margin-top:12px" onsubmit="adminInviteSubmit(event)"><input id="adminInviteEmail" type="email" inputmode="email" autocapitalize="off" placeholder="name@company.com" onfocus="setTimeout(()=>this.scrollIntoView({block:'center'}),300)"><button id="adminInviteBtn" type="submit">Send invite</button></form></div>`;
  const sheet=ADMIN_TAB==='invite'?inviteView:ADMIN_TAB==='message'?`<div class="a2-sheet">${adminMessageHtml()}</div>`:ADMIN_TAB==='app'?`<div class="a2-sheet">${adminMaintHtml()}</div>`:ADMIN_TAB==='activity'?`<div class="a2-sheet">${adminActivityHtml()}</div>`:ADMIN_TAB==='server'?`<div class="a2-sheet">${adminServerHtml()}</div>`:ADMIN_TAB==='perms'?`<div class="a2-sheet">${adminPermsHtml()}</div>`:ADMIN_TAB==='reading'?`<div class="a2-sheet">${readWinHtml()}</div>`:'';
  const tabs=`<div class="a3-tabs">${[['overview','Overview'],['people','People'+(waiting.length?` · ${waiting.length}`:'')],['tools','Tools'],['server','Server']].map(([k,l])=>`<button type="button" class="${ADMIN_VIEW===k?'on':''}" onclick="adminView('${k}')">${l}</button>`).join('')}</div>`;
  const peopleView=`${waiting.length?`<div class="ad-lbl">Waiting for approval</div><div class="ad-card ad-pend">${waiting.map(person).join('')}</div>`:''}
@@ -13713,7 +13755,7 @@ function renderAdmin(d){
  }
  else if(ADMIN_VIEW==='people')body=peopleView;
  else if(ADMIN_VIEW==='server')body=`<div class="a2-sheet">${adminServerHtml()}</div>`;
- else body=`<div class="a2-acts">${act('app',m.on?'🔴':'🟢',m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message','📣','#e9eefc','Team message',annState)}${act('invite','➕','#fff3dc','Invite','Add someone')}${act('activity','📊','#e3f6ec','Activity','This month')}${act('reading','📄','#e3f6ec','Reading the sheets',RW.data&&RW.data.window?(RW.data.window.on?rw12(RW.data.window.from)+' – '+rw12(RW.data.window.to):'All day'):'When to read')}${ACCESS_PROFILE&&ACCESS_PROFILE.owner?act('perms','🔐','#e9eefc','Permissions','Who can use what'):''}</div>${ADMIN_TAB==='server'?'':sheet}`;
+ else body=`<div class="a2-acts">${act('app',`<i style="font-style:normal;display:grid;color:${m.on?'#c63a4a':'#13894f'}">${aI('power')}</i>`,m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message',`<i style="font-style:normal;display:grid;color:#203c8e">${aI('mega')}</i>`,'#e9eefc','Team message',annState)}${act('invite',`<i style="font-style:normal;display:grid;color:#a56a06">${aI('userplus')}</i>`,'#fff3dc','Invite','Add someone')}${act('activity',`<i style="font-style:normal;display:grid;color:#13894f">${aI('chart')}</i>`,'#e3f6ec','Activity','Who uses what')}${act('reading',`<i style="font-style:normal;display:grid;color:#13894f">${aI('sheet')}</i>`,'#e3f6ec','Reading the sheets',RW.data&&RW.data.window?(RW.data.window.on?rw12(RW.data.window.from)+' – '+rw12(RW.data.window.to):'All day'):'When to read')}${ACCESS_PROFILE&&ACCESS_PROFILE.owner?act('perms',`<i style="font-style:normal;display:grid;color:#203c8e">${aI('lock')}</i>`,'#e9eefc','Permissions','Who can use what'):''}</div>${ADMIN_TAB==='server'?'':sheet}`;
  adminBody(tabs+`<div class="a3-body">${body}</div>`);
  const hd=document.querySelector('#adminOverlay .sk-modal-head'),tb=document.querySelector('.a3-tabs');if(hd&&tb)tb.style.top=hd.offsetHeight+'px';
 }
@@ -13725,7 +13767,7 @@ function personActions(p){
  const has=s=>p.devices.some(r=>r.status===s);
  let out='';
  
- if((has('Pending')||has('Invited'))&&ACCESS_PROFILE&&ACCESS_PROFILE.owner)out+=`<button class="sk-mini-btn ghost" type="button" onclick="adminGoPerms('${esc(p.email)}')" title="Set what they can use" aria-label="Set what they can use">🔐</button>`;
+ if((has('Pending')||has('Invited'))&&ACCESS_PROFILE&&ACCESS_PROFILE.owner)out+=`<button class="sk-mini-btn ghost" type="button" onclick="adminGoPerms('${esc(p.email)}')" title="Set what they can use" aria-label="Set what they can use">${aI('lock')}</button>`;
  if(has('Pending'))out+=b('approve','Approve')+b('deny','Deny','danger');
  if(has('Approved'))out+=b('revoke','Revoke','danger');
  if(!has('Approved')&&!has('Pending')&&(has('Revoked')||has('Denied')))out+=b('restore','Restore','ghost');
@@ -13890,9 +13932,9 @@ function adminMaintHtml(){
  const m=((ADMIN_APP_STATE||{}).maintenance)||{};
  return `<div class="a2-maint ${m.on?'maint':''}">
    <div class="sk-app-top"><span class="sk-app-dot"></span><b>${m.on?'Maintenance mode is on':'HEMERA is live'}</b></div>
-   <p>${m.on?'The team sees an “update in progress” screen and no data notifications are sent. Admins still see the dashboard.':'Turn this on while you update the media plan at the start of a month. The team will not see data or get notifications until you turn it off.'}</p>
+   <p>${m.on?'The team sees “update in progress” and gets no alerts. Admins still see everything.':'Turn on during an update. The team sees no data or alerts until you turn it off.'}</p>
    ${m.on?`${m.reason?`<div class="sk-app-reason">Reason shown: ${esc(m.reason)}</div>`:''}<button class="ad-btn" type="button" onclick="adminMaintenance(false,this)">Turn off maintenance</button>`
-     :`<textarea id="adminMaintReason" rows="2" maxlength="300" placeholder="Reason (optional) — e.g. Updating the October media plan"></textarea><button class="ad-btn danger" type="button" onclick="adminMaintenance(true,this)">Turn on maintenance</button>`}
+     :`<textarea id="adminMaintReason" rows="2" maxlength="300" placeholder="Reason (optional)"></textarea><button class="ad-btn danger" type="button" onclick="adminMaintenance(true,this)">Turn on maintenance</button>`}
  </div>`;
 }
 let ADMIN_MSG_WHEN='now';
@@ -13913,14 +13955,14 @@ function adminMessageHtml(){
  ADMIN_MSG_WHEN='now';
  return `${a?`<div class="sk-app-card msg a2-cur"><div class="sk-app-top"><span class="sk-app-dot"></span><b>${esc(a.title||'Message from HEMERA')}</b><span class="sk-app-tag">${msgState}</span></div><p>${esc(a.message)}</p><button class="ad-btn ghost" type="button" onclick="adminClearMessage(this)">Remove message</button></div>`:''}
   <form class="ad-msg" onsubmit="adminPublishMessage(event)">
-   <b class="ad-h">📣 ${a?'Replace the message':'Team message'}</b><small class="ad-sub">Each person sees it once, the next time they open HEMERA.</small>
-   <input id="adminMsgTitle" type="text" maxlength="80" placeholder="Title (optional) — e.g. Happy Eid!">
-   <textarea id="adminMsgText" rows="3" maxlength="1000" placeholder="Message for the team. Write {name} to greet each person by name."></textarea>
+   <b class="ad-h">${aI('mega')}${a?'Replace the message':'Team message'}</b><small class="ad-sub">Shown once to each person.</small>
+   <input id="adminMsgTitle" type="text" maxlength="80" placeholder="Title (optional)">
+   <textarea id="adminMsgText" rows="3" maxlength="1000" placeholder="e.g. Something new is in HEMERA"></textarea>
    <div class="ad-lbl in">Show</div>
    <div class="ad-when"><button type="button" data-k="now" class="on" onclick="adminMsgWhen('now')">Now</button><button type="button" data-k="tomorrow" onclick="adminMsgWhen('tomorrow')">Tomorrow</button><button type="button" data-k="pick" onclick="adminMsgWhen('pick')">Pick a date</button></div>
    <input id="adminMsgPick" class="ad-date" type="date" lang="en" dir="ltr" min="${today}" hidden onchange="document.getElementById('adminMsgDate').value=this.value">
    <input id="adminMsgDate" type="hidden" value="">
-   <label class="ad-switch"><span>🔔 Also send a phone notification</span><input id="adminMsgPush" type="checkbox" checked><i></i></label>
+   <label class="ad-switch"><span>${aI('bell')}Also send a phone notification</span><input id="adminMsgPush" type="checkbox" checked><i></i></label>
    <button class="ad-btn wide" id="adminMsgBtn" type="submit">${a?'Replace message':'Publish message'}</button>
   </form>`;
 }
@@ -16479,6 +16521,16 @@ function adminLoadExtra(k){
 }
 function actView(v){ADMIN_ACT_VIEW=v;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 
+let ADMIN_ACT_RANGE='month',ADMIN_ACT_DAY='',ADMIN_ACT_R=null,ADMIN_ACT_RBUSY=false;
+function actRange(){const d=o=>isoDay(o);switch(ADMIN_ACT_RANGE){case 'today':return {from:d(0),to:d(0)};case 'yday':return {from:d(-1),to:d(-1)};
+ case '7':return {from:d(-6),to:d(0)};case '30':return {from:d(-29),to:d(0)};case 'day':return ADMIN_ACT_DAY?{from:ADMIN_ACT_DAY,to:ADMIN_ACT_DAY}:null;default:return null}}
+function actRangeGo(k,v){ADMIN_ACT_RANGE=k;if(k==='day'&&v)ADMIN_ACT_DAY=v;ADMIN_ACT_R=null;const r=actRange();
+ if(r){ADMIN_ACT_RBUSY=true;serverCall('adminActivity',getAccessToken(),'',r).then(x=>{ADMIN_ACT_RBUSY=false;ADMIN_ACT_R=x;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{ADMIN_ACT_RBUSY=false;ADMIN_ACT_R={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
+ if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
+ if(k==='day'&&!v)setTimeout(()=>{const i=document.getElementById('actDay');try{i&&i.showPicker&&i.showPicker()}catch(e){}},60)}
+function actRangeLbl(){const r=actRange();if(!r||ADMIN_ACT_RANGE==='month')return 'this month';if(ADMIN_ACT_RANGE==='today')return 'today';if(ADMIN_ACT_RANGE==='yday')return 'yesterday';
+ if(r.from===r.to)return 'on '+new Date(r.from+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'});return 'in the last '+ADMIN_ACT_RANGE+' days'}
+
  
 let PERM={data:null,busy:false,edit:{},saving:false,grp:'mp',who:''};
 
@@ -16536,7 +16588,7 @@ function permFlip(email,k){
 function adminPermsHtml(){
  const d=PERM.data;
  if(!d)return '<div class="dx-empty"><span class="lab-spin dark"></span>Loading…</div>';
- if(d.error)return `<div class="mrp-msg">⚠️ ${esc(d.error)}</div>`;
+ if(d.error)return `<div class="mrp-msg">${aI('warn')}${esc(d.error)}</div>`;
  const n=Object.keys(PERM.edit).length, grp=PERM_GROUPS.find(g=>g[0]===PERM.grp)||PERM_GROUPS[0], cols=grp[2];
  const wait=p=>p.status==='Pending'||p.status==='Invited';
  const all=(d.people||[]).slice().sort((a,b)=>((+!!b.owner)-(+!!a.owner))||((+wait(b))-(+wait(a)))||roleTier(b.role)-roleTier(a.role)||String(a.name).localeCompare(String(b.name)));
@@ -16544,18 +16596,18 @@ function adminPermsHtml(){
  const ppl=PERM.who?all.filter(p=>p.email===PERM.who):all;
  const isBlk=p=>{const e=PERM.edit[p.email];return e&&'blocked' in e?e.blocked:!!(p.perms&&p.perms.blocked)};
  const one=PERM.who&&ppl[0]&&!ppl[0].owner?ppl[0]:null;
- const blockRow=one?`<div class="pm-blk${isBlk(one)?' on':''}"><div><b>${isBlk(one)?'🚫 Blocked':'Block this account'}</b><small>${isBlk(one)?'They only see an error message (Error 503). Nothing else works.':'Their whole app shows an error message instead of HEMERA.'}</small>${isBlk(one)&&one.tries&&one.tries.n?`<div class="pm-tries"><b>Tried to open ${one.tries.n} time${one.tries.n>1?'s':''}</b><span>${(one.tries.list||[]).slice(0,5).map(t=>esc(localWhenFull(t))).join(' · ')}</span></div>`:isBlk(one)&&one.perms&&one.perms.blocked?'<div class="pm-tries"><span>No tries yet.</span></div>':''}</div><button type="button" onclick="permBlock('${esc(one.email)}')">${isBlk(one)?'Unblock':'🚫 Block'}</button></div>
-   <button type="button" class="pm-va" onclick="permViewAs('${esc(one.email)}')">👁 View as ${esc(String(one.name||one.email).split(' ')[0])}<small>See HEMERA the way they do${Object.keys(PERM.edit[one.email]||{}).length?', with your unsaved changes':''}</small></button>`:'';
- const who=`<div class="pm-who"><button type="button" class="${PERM.who?'':'on'}" onclick="permWho('')"><span class="pm-all">👥</span>Everyone</button>${all.filter(p=>!p.owner).map(p=>`<button type="button" class="${PERM.who===p.email?'on':''}" onclick="permWho('${esc(p.email)}')">${onDot(`<span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span>`,adminSeen(p.email))}<span class="pm-wn">${esc(String(p.name||p.email).split(' ')[0])}</span>${PERM.edit[p.email]?'<i></i>':''}${wait(p)?`<em class="pm-wt">${p.status==='Invited'?'INVITED':'WAITING'}</em>`:''}</button>`).join('')}</div>`;
+ const blockRow=one?`<div class="pm-blk${isBlk(one)?' on':''}"><div><b>${isBlk(one)?aI('ban')+'Blocked':'Block this account'}</b><small>${isBlk(one)?'They only see an error message (Error 503). Nothing else works.':'Their whole app shows an error message instead of HEMERA.'}</small>${isBlk(one)&&one.tries&&one.tries.n?`<div class="pm-tries"><b>Tried to open ${one.tries.n} time${one.tries.n>1?'s':''}</b><span>${(one.tries.list||[]).slice(0,5).map(t=>esc(localWhenFull(t))).join(' · ')}</span></div>`:isBlk(one)&&one.perms&&one.perms.blocked?'<div class="pm-tries"><span>No tries yet.</span></div>':''}</div><button type="button" onclick="permBlock('${esc(one.email)}')">${isBlk(one)?'Unblock':aI('ban')+'Block'}</button></div>
+   <button type="button" class="pm-va" onclick="permViewAs('${esc(one.email)}')">${aI('eye')}View as ${esc(String(one.name||one.email).split(' ')[0])}<small>See HEMERA the way they do${Object.keys(PERM.edit[one.email]||{}).length?', with your unsaved changes':''}</small></button>`:'';
+ const who=`<div class="pm-who"><button type="button" class="${PERM.who?'':'on'}" onclick="permWho('')"><span class="pm-all">${aI('users')}</span>Everyone</button>${all.filter(p=>!p.owner).map(p=>`<button type="button" class="${PERM.who===p.email?'on':''}" onclick="permWho('${esc(p.email)}')">${onDot(`<span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span>`,adminSeen(p.email))}<span class="pm-wn">${esc(String(p.name||p.email).split(' ')[0])}</span>${PERM.edit[p.email]?'<i></i>':''}${wait(p)?`<em class="pm-wt">${p.status==='Invited'?'INVITED':'WAITING'}</em>`:''}</button>`).join('')}</div>`;
  const rows=ppl.map(p=>`<div class="pm-r${p.owner?' own':''}"><div class="pm-p">${onDot(`<span class="pm-av">${personAv(memberOf(p.email).avatar,p.name)}</span>`,adminSeen(p.email))}<div><b>${esc(String(p.name||p.email).split(' ')[0])}</b><small>${p.owner?'ADMIN':isBlk(p)?'<em class="pm-wt pm-bk">BLOCKED</em>':wait(p)?`<em class="pm-wt">${p.status==='Invited'?'INVITED':'WAITING'}</em>`:esc(roleLabel(p.role||'')).toUpperCase()||'NO TITLE'}</small></div></div>
-   ${cols.map(([k,l])=>`<button type="button" class="pm-sw${permVal(p,k)===true?' on':permVal(p,k)==='lock'?' lock':permVal(p,k)==='view'?' view':''}${p.owner?' lk':''}${PERM.edit[p.email]&&k in PERM.edit[p.email]?' ch':''}" ${p.owner?'disabled':`onclick="permFlip('${esc(p.email)}','${k}')"`} aria-label="${esc(l)} for ${esc(p.name)}" aria-pressed="${permVal(p,k)===true}">${permVal(p,k)==='lock'?'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>':permVal(p,k)==='view'?'👁':''}</button>`).join('')}</div>`).join('');
+   ${cols.map(([k,l])=>`<button type="button" class="pm-sw${permVal(p,k)===true?' on':permVal(p,k)==='lock'?' lock':permVal(p,k)==='view'?' view':''}${p.owner?' lk':''}${PERM.edit[p.email]&&k in PERM.edit[p.email]?' ch':''}" ${p.owner?'disabled':`onclick="permFlip('${esc(p.email)}','${k}')"`} aria-label="${esc(l)} for ${esc(p.name)}" aria-pressed="${permVal(p,k)===true}">${permVal(p,k)==='lock'?'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>':permVal(p,k)==='view'?aI('eye'):''}</button>`).join('')}</div>`).join('');
  const chips=PERM_GROUPS.map(([k,l])=>`<button type="button" class="${k===grp[0]?'on':''}" onclick="permGroup('${k}')">${k==='share'?PERM_WA:''}${l}</button>`).join('');
  const hint=grp[0]==='share'?'Locked: the WhatsApp button shows with a lock. Hidden: no share buttons at all.':grp[0]==='tt'?'Set days off: can add and change leave. Team Leave: can see the page.':'Locked: in their menu with a lock, but it doesn\'t open. Hidden: not in their menu.';
- return `<b class="ad-h">🔐 Permissions</b><small class="ad-sub">Pick a part of the menu, then tap to set each page for each person. People waiting for approval are here too, so you can set their access first.</small>
+ return `<b class="ad-h">${aI('lock')}Permissions</b><small class="ad-sub">Pick a menu part, then set each page per person.</small>
    <div class="pm-leg"><span><i class="pm-sw on"></i>Shown</span><span><i class="pm-sw lock"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></i>Locked</span><span><i class="pm-sw"></i>Hidden</span></div>
    ${who}${blockRow}<div class="pm-chips">${chips}</div>
    <div class="pm-t" style="--n:${cols.length}"><div class="pm-r pm-h"><span>PERSON</span>${cols.map(([k,l])=>`<span>${l}</span>`).join('')}</div>${rows||'<div class="sk-admin-empty">No one approved yet.</div>'}</div>
-   <small class="pm-note">${hint} 🔒 Your row is always on. A change works within a minute.</small>
+   <small class="pm-note">${hint} Your row is always on. Changes apply within a minute.</small>
    <button type="button" class="pm-save" onclick="adminPermsSave(this)" ${n&&!PERM.saving?'':'disabled'}>${PERM.saving?'Saving…':n?`Save changes (${n} ${n===1?'person':'people'})`:'No changes'}</button>`;
 }
 async function adminPermsSave(btn){
@@ -16569,12 +16621,12 @@ async function adminPermsSave(btn){
 const SRV_ADMIN={status:null,events:null,parity:null,busy:''};
 function serverNow(){
  const s=window.SEKNA_SERVER, fb=window.SEKNA_FB;
- if(!s||!fb)return {icon:'⚪',bg:'#f2f4f9',short:'Apps Script',cls:'idle',title:'Apps Script',text:'This copy of HEMERA talks to Apps Script only.'};
+ if(!s||!fb)return {icon:aDot('#b8bfcd'),bg:'#f2f4f9',short:'Apps Script',cls:'idle',title:'Apps Script',text:'This copy uses Apps Script only.'};
  const since=s.since?` since ${new Date(s.since).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}`:'';
- if(s.mode==='backup')return {icon:'🟠',bg:'#fff1df',short:'Backup',cls:'backup',title:'Backup: Apps Script'+since,text:'Firebase did not answer: '+(s.reason||'unknown reason')+'. HEMERA tries Firebase again in 5 minutes.'};
- if(s.mode==='firebase')return {icon:'🟢',bg:'#e3f6ec',short:'Firebase',cls:'',title:'Firebase'+since,text:'Data comes from the HEMERA server'+(s.ms?` · last answer in ${(s.ms/1000).toFixed(1)} s`:'')+'.'};
- return fb.wanted()?{icon:'🟢',bg:'#e3f6ec',short:'Firebase',cls:'',title:'Firebase',text:'Firebase answers the next data refresh.'}
-   :{icon:'⚪',bg:'#f2f4f9',short:'Apps Script',cls:'idle',title:'Apps Script',text:'Firebase is not switched on for everyone yet. You can try it on this device below.'};
+ if(s.mode==='backup')return {icon:aDot('#f08a4b'),bg:'#fff1df',short:'Backup',cls:'backup',title:'Backup: Apps Script'+since,text:'Firebase did not answer ('+(s.reason||'unknown')+'). Retrying in 5 minutes.'};
+ if(s.mode==='firebase')return {icon:aDot('#22c47c'),bg:'#e3f6ec',short:'Firebase',cls:'',title:'Firebase'+since,text:'HEMERA server'+(s.ms?` · ${(s.ms/1000).toFixed(1)} s`:'')};
+ return fb.wanted()?{icon:aDot('#22c47c'),bg:'#e3f6ec',short:'Firebase',cls:'',title:'Firebase',text:'Used from the next refresh.'}
+   :{icon:aDot('#b8bfcd'),bg:'#f2f4f9',short:'Apps Script',cls:'idle',title:'Apps Script',text:'Firebase is off. Try it on this device below.'};
 }
  
 let RW={data:null,busy:false,edit:null,msg:''};
@@ -16585,44 +16637,61 @@ function rwSet(k,v){RW.edit=Object.assign({},rwCur(),{[k]:v});RW.msg='';if(ADMIN
 function rw12(hm){const m=String(hm||'').match(/^(\d{1,2}):(\d{2})$/);if(!m)return hm||'';const h=+m[1];return `${h%12||12}:${m[2]} ${h<12?'AM':'PM'}`}
 async function rwSave(btn){
  const c=rwCur();btn.disabled=true;btn.textContent='Saving…';
- try{const r=await serverCall('adminReadWindowSet',getAccessToken(),c);RW.data=Object.assign({},RW.data,r);RW.edit=null;RW.msg='✅ Saved';}
- catch(err){RW.msg='⚠️ '+esc(errorText(err))}
+ try{const r=await serverCall('adminReadWindowSet',getAccessToken(),c);RW.data=Object.assign({},RW.data,r);RW.edit=null;RW.msg=aI('check')+'Saved';}
+ catch(err){RW.msg=aI('warn')+esc(errorText(err))}
  if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
 }
 
-const RW_FLAG={'Asia/Muscat':'🇴🇲','Africa/Cairo':'🇪🇬','Europe/London':'🇬🇧','Asia/Dubai':'🇦🇪','Asia/Riyadh':'🇸🇦'};
+
 function rwNow(tz){try{return new Date().toLocaleTimeString('en-US',{timeZone:tz,hour:'numeric',minute:'2-digit'})}catch(e){return ''}}
 function rwAt(ms){return ms?new Date(ms).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}):''}
+const RW_SNAPS=[
+ {k:'media',n:'Media plan',p:'Daily · Days · Month · Lab · Top & Bottom 5',ic:'trend',c:'#203c8e',bg:'#e9eefc'},
+ {k:'terms',n:'Search terms',p:'AI Max · ST Performance. Action log on refresh',ic:'search',c:'#13894f',bg:'#e3f6ec'},
+ {k:'camp',n:'Campaign performance',p:'Evening read',ic:'moon',c:'#6f29a6',bg:'#f3eafa',soon:true,def:{from:'21:00',to:'21:20'}}];
+function rwSnapWin(c,k){if(k==='media')return {from:c.from,to:c.to};const g=(c.groups||{})[k];return g||(RW_SNAPS.find(x=>x.k===k).def)||{from:c.from,to:c.to}}
+function rwPick(k){RW.pick=RW.pick||[];const i=RW.pick.indexOf(k);i>=0?RW.pick.splice(i,1):RW.pick.push(k);if(RW.pick.length===1){const w=rwSnapWin(rwCur(),RW.pick[0]);RW.pt={from:w.from,to:w.to}}if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+function rwPt(k,v){RW.pt=Object.assign({},RW.pt||{},{[k]:v})}
+function rwApply(){const pt=RW.pt||{};if(!pt.from||!pt.to)return;let c=Object.assign({},rwCur());c.groups=Object.assign({},c.groups||{});
+ (RW.pick||[]).forEach(k=>{if(k==='media'){c.from=pt.from;c.to=pt.to}else c.groups[k]={from:pt.from,to:pt.to}});
+ RW.edit=c;RW.pick=[];RW.msg='';if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function rwStatus(d,c){
- if(!c.on)return {cls:'all',ic:'🔄',t:'Reading all day',s:'Every 2 minutes, both sheets'};
+ if(!c.on)return {cls:'all',ic:'refresh',t:'Reading all day',s:'Every 2 minutes'};
  const t=(d.days||[]).find(x=>x.day===d.today)||{}, u=t.usa, a=t.ar;
- if(u&&a)return {cls:'ok',ic:'✅',t:"Today's data is in",s:`USA ${rwAt(u)} · AR ${rwAt(a)}${c.stopOnData!==false?' · stopped reading':''}`};
- if(d.open)return {cls:'run',ic:'⏳',t:'Reading now',s:`${u?'USA in at '+rwAt(u):'Waiting for USA'} · ${a?'AR in at '+rwAt(a):'waiting for AR'}`};
- if(t.alerted||(u||a))return {cls:'bad',ic:'⚠️',t:'Data didn\'t come today',s:`${u?'USA ✓':'USA ✗'} · ${a?'AR ✓':'AR ✗'} · press Refresh in the app to try again`};
- return {cls:'wait',ic:'🕐',t:'Waiting for today\'s data',s:`Reads from ${rw12(c.from)} ${(RW_TZ.find(x=>x[0]===c.tz)||RW_TZ[0])[1]} time`};
+ if(u&&a)return {cls:'ok',ic:'check',t:"Today's data is in",s:`USA ${rwAt(u)} · AR ${rwAt(a)}`};
+ if(d.open)return {cls:'run',ic:'wait',t:'Reading now',s:`USA ${u?rwAt(u):'waiting'} · AR ${a?rwAt(a):'waiting'}`};
+ if(t.alerted||(u||a))return {cls:'bad',ic:'warn',t:"Data didn't come today",s:`USA ${u?'in':'missing'} · AR ${a?'in':'missing'} · Refresh to retry`};
+ return {cls:'wait',ic:'clock',t:"Waiting for today's data",s:`From ${rw12(c.from)} ${(RW_TZ.find(x=>x[0]===c.tz)||RW_TZ[0])[1]}`};
 }
 function readWinHtml(){
  if(!RW.data&&!RW.busy)rwLoad();
- const d=RW.data||{}, c=rwCur(), ch=!!RW.edit;
- if(d.error)return `<div class="rw"><b class="ad-h">📄 Reading the sheets</b><div class="mrp-msg">⚠️ ${esc(d.error)}</div></div>`;
+ const d=RW.data||{}, c=rwCur(), ch=!!RW.edit, pick=RW.pick||[];
+ if(d.error)return `<div class="rw"><b class="ad-h">${aI('sheet')}Reading the sheets</b><div class="mrp-msg">${aI('warn')}${esc(d.error)}</div></div>`;
  const st=rwStatus(d,c), sw=(k,on)=>`<button type="button" class="rw-sw${on?' on':''}" onclick="rwSet('${k}',${!on})" aria-pressed="${on}"></button>`;
  const used=d.allDay?Math.max(0,Math.min(100,(d.reads||0)/d.allDay*100)):0, saved=100-used;
  const level=used<5?['LOW USE','ok']:used<30?['MEDIUM USE','mid']:['HIGH USE','hi'];
+ const td=(d.days||[]).find(x=>x.day===d.today)||{};
  const day=x=>{const dt=new Date(x.day+'T12:00:00Z'),lbl=x.day===d.today?'Today':dt.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',timeZone:'UTC'});
-   const v=ms=>ms?`<b class="ok">✓ ${esc(rwAt(ms))}</b>`:`<b class="no">✗ no data</b>`;
+   const v=ms=>ms?`<b class="ok">${aI('check')}${esc(rwAt(ms))}</b>`:`<b class="no">${aI('x')}none</b>`;
    return `<div class="rw-lr"><span>${esc(lbl)}</span><span>USA ${v(x.usa)}</span><span>AR ${v(x.ar)}</span></div>`};
- return `<div class="rw"><b class="ad-h">📄 Reading the sheets</b>
-   <div class="rw-st ${st.cls}"><span>${st.ic}</span><div><b>${esc(st.t)}</b><small>${esc(st.s)}</small></div></div>
-   <div class="rw-mode"><button type="button" class="${c.on?'on':''}" onclick="rwSet('on',true)">⏰ Only at set times</button><button type="button" class="${c.on?'':'on'}" onclick="rwSet('on',false)">🔄 All day</button></div>
-   ${c.on?`<div class="rw-l">WHEN</div><div class="rw-tm"><label><small>FROM</small><input type="time" value="${esc(c.from)}" onchange="rwSet('from',this.value)"></label><em>→</em><label><small>TO</small><input type="time" value="${esc(c.to)}" onchange="rwSet('to',this.value)"></label></div>
-   <div class="rw-l">WHOSE TIME</div><div class="rw-tzs">${RW_TZ.map(([k,l])=>`<button type="button" class="${k===c.tz?'on':''}" onclick="rwSet('tz','${k}')"><i>${RW_FLAG[k]||'🌍'}</i><b>${l}</b><small>${esc(rwNow(k))}</small></button>`).join('')}</div>
-   <div class="rw-l">OPTIONS</div><div class="rw-opts"><div class="rw-o"><div><b>Stop when the data is in</b><small>No more reads after the new day arrives</small></div>${sw('stopOnData',c.stopOnData!==false)}</div>
-     <div class="rw-o"><div><b>Alert me if it doesn't come</b><small>A notification at ${esc(rw12(c.to))} if there's no new day</small></div>${sw('alert',c.alert!==false)}</div></div>`:''}
-   <div class="rw-l">THIS MONTH</div><div class="rw-use"><span class="rw-g" style="--p:${Math.max(used,1.5).toFixed(1)}"><i>${used<1&&used>0?'<1':Math.round(used)}%</i></span><div><b>${fmt(d.reads||0,0)} sheet reads</b><small>All day would be about ${fmt(d.allDay||0,0)} · we saved ${saved>=99.95?'100':fmt(saved,1)}%</small><span class="rw-tag ${level[1]}">${level[0]}</span></div></div>
+ const snap=x=>{const w=rwSnapWin(c,x.k),on=pick.includes(x.k),done=x.k==='media'?(td.usa&&td.ar):x.k==='terms'?(td.tusa&&td.tar):0;
+   return `<button type="button" class="rw-sn${on?' on':''}" onclick="rwPick('${x.k}')" style="--c:${x.c};--b:${x.bg}"><i>${aI(x.ic)}</i><span><b>${x.n}${x.soon?'<em>Soon</em>':''}</b><small>${x.p}</small></span>
+     <span class="rw-tc">${c.on?`${esc(rw12(w.from))}<small>to ${esc(rw12(w.to))}</small>`:'All day'}${done?`<u>${aI('check')}today</u>`:''}</span><s>${aI('check')}</s></button>`};
+ const bar=pick.length&&c.on?`<div class="rw-pk"><b>${aI('clock')}Read ${pick.length===1?esc(RW_SNAPS.find(x=>x.k===pick[0]).n):pick.length+' snapshots'}</b>
+   <div class="rw-tm"><label><small>FROM</small><input type="time" value="${esc((RW.pt||{}).from||'')}" onchange="rwPt('from',this.value)"></label><em>→</em><label><small>TO</small><input type="time" value="${esc((RW.pt||{}).to||'')}" onchange="rwPt('to',this.value)"></label></div>
+   <button type="button" class="rw-ap" onclick="rwApply()">Set time</button></div>`:'';
+ return `<div class="rw"><b class="ad-h">${aI('sheet')}Reading the sheets</b>
+   <div class="rw-st ${st.cls}"><span>${aI(st.ic)}</span><div><b>${esc(st.t)}</b><small>${esc(st.s)}</small></div></div>
+   <div class="rw-mode"><button type="button" class="${c.on?'on':''}" onclick="rwSet('on',true)">${aI('alarm')}Set times</button><button type="button" class="${c.on?'':'on'}" onclick="rwSet('on',false)">${aI('refresh')}All day</button></div>
+   <div class="rw-l">SNAPSHOTS${c.on?' · TAP TO SET A TIME':''}</div><div class="rw-sns">${RW_SNAPS.map(snap).join('')}</div>${bar}
+   ${c.on?`<div class="rw-l">WHOSE TIME</div><div class="rw-tzs">${RW_TZ.map(([k,l])=>`<button type="button" class="${k===c.tz?'on':''}" onclick="rwSet('tz','${k}')"><i>${aI('globe')}</i><b>${l}</b><small>${esc(rwNow(k))}</small></button>`).join('')}</div>
+   <div class="rw-l">OPTIONS</div><div class="rw-opts"><div class="rw-o"><div><b>Stop when the data is in</b><small>No reads after the new day</small></div>${sw('stopOnData',c.stopOnData!==false)}</div>
+     <div class="rw-o"><div><b>Alert if it doesn't come</b><small>At ${esc(rw12(c.to))}</small></div>${sw('alert',c.alert!==false)}</div></div>`:''}
+   <div class="rw-l">THIS MONTH</div><div class="rw-use"><span class="rw-g" style="--p:${Math.max(used,1.5).toFixed(1)}"><i>${used<1&&used>0?'<1':Math.round(used)}%</i></span><div><b>${fmt(d.reads||0,0)} sheet reads</b><small>Saved ${saved>=99.95?'100':fmt(saved,1)}% vs all day</small><span class="rw-tag ${level[1]}">${level[0]}</span></div></div>
    ${(d.days||[]).length?`<div class="rw-l">LAST 3 DAYS</div><div class="rw-log">${d.days.slice(0,3).map(day).join('')}</div>`:''}
    ${RW.msg?`<div class="mrp-msg">${RW.msg}</div>`:''}
    <button type="button" class="pm-save" onclick="rwSave(this)" ${ch?'':'disabled'}>${ch?'Save':'No changes'}</button>
-   <button type="button" class="rw-fxb${FXT.open?' on':''}" onclick="fxtToggle()"><i>💱</i><span><b>Exchange rate</b><small>${FXT.data&&FXT.data.refresh?'Updates daily at '+esc(rw12(FXT.data.refresh.time))+' '+esc((RW_TZ.find(x=>x[0]===FXT.data.refresh.tz)||RW_TZ[0])[1]):'When the currency updates'}</small></span><em>${FXT.open?'▴':'▾'}</em></button>
+   <button type="button" class="rw-fxb${FXT.open?' on':''}" onclick="fxtToggle()"><i>${aI('cash')}</i><span><b>Exchange rate</b><small>${FXT.data&&FXT.data.refresh?'Daily at '+esc(rw12(FXT.data.refresh.time))+' '+esc((RW_TZ.find(x=>x[0]===FXT.data.refresh.tz)||RW_TZ[0])[1]):'When it updates'}</small></span><em>${FXT.open?'▴':'▾'}</em></button>
    ${FXT.open?fxTimeHtml():''}</div>`;
 }
  
@@ -16633,21 +16702,21 @@ function fxtCur(){return FXT.edit||((FXT.data&&FXT.data.refresh)||{time:'12:00',
 function fxtSet(k,v){FXT.edit=Object.assign({},fxtCur(),{[k]:v});FXT.msg='';if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 async function fxtSave(btn){
  const c=fxtCur();btn.disabled=true;btn.textContent='Saving…';
- try{FXT.data=await serverCall('adminFxTimeSet',getAccessToken(),c);FXT.edit=null;FXT.msg='✅ Saved';if(FX)FX.refresh=FXT.data.refresh;fxLoad(true).catch(()=>{})}
- catch(err){FXT.msg='⚠️ '+esc(errorText(err))}
+ try{FXT.data=await serverCall('adminFxTimeSet',getAccessToken(),c);FXT.edit=null;FXT.msg=aI('check')+'Saved';if(FX)FX.refresh=FXT.data.refresh;fxLoad(true).catch(()=>{})}
+ catch(err){FXT.msg=aI('warn')+esc(errorText(err))}
  if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
 }
 function fxTimeHtml(){
  if(!FXT.data&&!FXT.busy)fxtLoad();
  const d=FXT.data||{}, c=fxtCur(), ch=!!FXT.edit;
- if(d.error)return `<div class="rw-fx"><div class="mrp-msg">⚠️ ${esc(d.error)}</div></div>`;
+ if(d.error)return `<div class="rw-fx"><div class="mrp-msg">${aI('warn')}${esc(d.error)}</div></div>`;
  const zone=(RW_TZ.find(x=>x[0]===c.tz)||RW_TZ[0])[1], usd=d.rates&&d.rates.USD;
  const when=ms=>ms?new Date(ms).toLocaleString('en-US',{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'—';
  return `<div class="rw-fx">
-   <div class="rw-st ok"><span>💷</span><div><b>${usd?`£1 = $${fmt(usd,4)}`:'No rate yet'}</b><small>${d.at?'Updated '+esc(when(d.at)):'Loading…'}${d.next&&!ch?' · next '+esc(when(d.next)):''}</small></div></div>
+   <div class="rw-st ok"><span>${aI('cash')}</span><div><b>${usd?`£1 = $${fmt(usd,4)}`:'No rate yet'}</b><small>${d.at?'Updated '+esc(when(d.at)):'Loading…'}${d.next&&!ch?' · next '+esc(when(d.next)):''}</small></div></div>
    <div class="rw-l">UPDATE EVERY DAY AT</div><div class="rw-tm" style="grid-template-columns:1fr"><label><small>TIME</small><input type="time" value="${esc(c.time)}" onchange="fxtSet('time',this.value)"></label></div>
-   <div class="rw-l">WHOSE TIME</div><div class="rw-tzs">${RW_TZ.map(([k,l])=>`<button type="button" class="${k===c.tz?'on':''}" onclick="fxtSet('tz','${k}')"><i>${RW_FLAG[k]||'🌍'}</i><b>${l}</b><small>${esc(rwNow(k))}</small></button>`).join('')}</div>
-   <small class="ad-sub" style="display:block;margin:10px 0 4px">The server fetches the new rate once a day at ${esc(rw12(c.time))} ${esc(zone)} time. Everyone sees the same rate.</small>
+   <div class="rw-l">WHOSE TIME</div><div class="rw-tzs">${RW_TZ.map(([k,l])=>`<button type="button" class="${k===c.tz?'on':''}" onclick="fxtSet('tz','${k}')"><i>${aI('globe')}</i><b>${l}</b><small>${esc(rwNow(k))}</small></button>`).join('')}</div>
+   <small class="ad-sub" style="display:block;margin:10px 0 4px">Updated daily at ${esc(rw12(c.time))} ${esc(zone)}. Same rate for everyone.</small>
    ${FXT.msg?`<div class="mrp-msg">${FXT.msg}</div>`:''}
    <button type="button" class="pm-save" onclick="fxtSave(this)" ${ch?'':'disabled'}>${ch?'Save':'No changes'}</button></div>`;
 }
@@ -16704,7 +16773,7 @@ function srvAccessHtml(){
  const t=SRV_ADMIN.access;
  if(!t)return '<small>Loading…</small>';
  if(t.error)return `<small>${esc(t.error)}</small>`;
- if(t.mode==='firebase'){const c=t.counts||{};return `<div class="srv-res"><div class="ok">✅ On the HEMERA server since ${esc(srvAgo(t.at))}<code>${fmt(c.rows||0)} devices · ${fmt(c.approved||0)} approved · ${fmt(c.people||0)} people</code></div></div>`}
+ if(t.mode==='firebase'){const c=t.counts||{};return `<div class="srv-res"><div class="ok">${aI('check')}On the HEMERA server since ${esc(srvAgo(t.at))}<code>${fmt(c.rows||0)} devices · ${fmt(c.approved||0)} approved · ${fmt(c.people||0)} people</code></div></div>`}
  return `<small>Still on the Apps Script sheet.</small><button type="button" class="srv-btn" onclick="srvAccessMove(this)">Move sign-in now</button>`;
 }
 
@@ -16721,14 +16790,14 @@ function srvRestHtml(){
  if(!t)return '<small>Loading…</small>';
  if(t.error)return `<small>${esc(t.error)}</small>`;
  const via=`<div class="srv-grid"><span>Emails go out by<b>${esc(t.mail||'—')}</b></span><span>Notifications go out by<b>${esc(t.push||'—')}</b></span></div>`;
- if(t.mode==='firebase'){const c=t.counts||{};return `<div class="srv-res"><div class="ok">✅ On the HEMERA server since ${esc(srvAgo(t.at))}<code>${fmt(c.shares||0)} shares · ${fmt(c.usage||0)} app opens and times · ${fmt(c.plans||0)} saved months</code></div></div>${via}`}
+ if(t.mode==='firebase'){const c=t.counts||{};return `<div class="srv-res"><div class="ok">${aI('check')}On the HEMERA server since ${esc(srvAgo(t.at))}<code>${fmt(c.shares||0)} shares · ${fmt(c.usage||0)} app opens and times · ${fmt(c.plans||0)} saved months</code></div></div>${via}`}
  return `<small>Still on Apps Script.</small><button type="button" class="srv-btn" onclick="srvRestMove(this)">Move the rest now</button>${via}`;
 }
 function srvTasksHtml(){
  const t=SRV_ADMIN.tasks;
  if(!t)return '<small>Loading…</small>';
  if(t.error)return `<small>${esc(t.error)}</small>`;
- if(t.mode==='firebase'){const c=t.counts||{};return `<div class="srv-res"><div class="ok">✅ On the HEMERA server since ${esc(srvAgo(t.at))}<code>${fmt(c.weekly||0)} weekly tasks · ${fmt(c.quick||0)} quick requests · ${fmt(c.leave||0)} days off · ${fmt(c.members||0)} positions</code></div></div>`}
+ if(t.mode==='firebase'){const c=t.counts||{};return `<div class="srv-res"><div class="ok">${aI('check')}On the HEMERA server since ${esc(srvAgo(t.at))}<code>${fmt(c.weekly||0)} weekly tasks · ${fmt(c.quick||0)} quick requests · ${fmt(c.leave||0)} days off · ${fmt(c.members||0)} positions</code></div></div>`}
  return `<small>Still on the Apps Script sheet.</small><button type="button" class="srv-btn" onclick="srvTasksMove(this)">Move Team Tasks now</button>`;
 }
 function srvRetry(){if(window.SEKNA_FB){SEKNA_FB.retry();loadData({force:true,silent:true})}}
@@ -16751,7 +16820,7 @@ function adminServerHtml(){
  if(st&&st.error)cost=`<small>${esc(st.error)}</small>`;
  else if(st){
    const b=st.billing;
-   if(!b)cost=`<small>${st.billingError?esc(st.billingError):'Google has not reported a cost yet. It reports a few times a day, a few hours late.'}</small>`;
+   if(!b)cost=`<small>${st.billingError?esc(st.billingError):'No cost reported yet.'}</small>`;
    else{
      const pct=b.budget?Math.min(100,b.cost/b.budget*100):0;
      cost=`<div class="srv-cost"><b>$${fmt(b.cost,2)}</b><span>of $${fmt(b.budget,2)} this month</span></div>
@@ -16764,70 +16833,72 @@ function adminServerHtml(){
    ${Object.keys(st.warmErrors||{}).map(k=>`<small style="display:block;margin-top:6px;font-size:11.5px;color:#b26a00;font-weight:700">${esc(k.toUpperCase())} sheet could not be read (${esc(srvAgo(st.warmErrors[k].at))}): ${esc(st.warmErrors[k].error)}</small>`).join('')}`:'';
  const names={getDashboardData:'Dashboard',getMonthCompareData:'Month history'};
  let parity='';
- if(SRV_ADMIN.busy==='parity')parity='<div class="srv-res"><div>Comparing… this reads every tab twice, so it can take up to a minute.</div></div>';
+ if(SRV_ADMIN.busy==='parity')parity='<div class="srv-res"><div>Comparing… up to a minute.</div></div>';
  else if(pr&&pr.error)parity=`<div class="srv-res"><div class="no">${esc(pr.error)}</div></div>`;
  else if(pr)parity=`<div class="srv-res">${Object.keys(pr.results||{}).map(k=>{
    const r=pr.results[k], t=`Firebase ${r.firebaseMs!=null?(r.firebaseMs/1000).toFixed(1)+' s':'—'} · Apps Script ${r.appsScriptMs!=null?(r.appsScriptMs/1000).toFixed(1)+' s':'—'}`;
-   if(r.firebaseError||r.appsScriptError)return `<div class="no">✖ ${names[k]||k}: ${esc(r.firebaseError?'Firebase — '+r.firebaseError:'Apps Script — '+r.appsScriptError)}</div>`;
-   return r.same?`<div class="ok">✅ ${names[k]||k}: the same numbers<code>${t}</code></div>`
-     :`<div class="no">⚠️ ${names[k]||k}: ${r.differences.length}${r.differences.length>=40?'+':''} differences<code>${r.differences.slice(0,8).map(d=>`${esc(d.path)}: ${esc(JSON.stringify(d.firebase))} vs ${esc(JSON.stringify(d.appsScript))}`).join('<br>')}</code></div>`;
+   if(r.firebaseError||r.appsScriptError)return `<div class="no">${aI('x')}${names[k]||k}: ${esc(r.firebaseError?'Firebase — '+r.firebaseError:'Apps Script — '+r.appsScriptError)}</div>`;
+   return r.same?`<div class="ok">${aI('check')}${names[k]||k}: same numbers<code>${t}</code></div>`
+     :`<div class="no">${aI('warn')}${names[k]||k}: ${r.differences.length}${r.differences.length>=40?'+':''} differences<code>${r.differences.slice(0,8).map(d=>`${esc(d.path)}: ${esc(JSON.stringify(d.firebase))} vs ${esc(JSON.stringify(d.appsScript))}`).join('<br>')}</code></div>`;
  }).join('')}</div>`;
  let log='<small>Loading…</small>';
  if(ev&&ev.error)log=`<small>${esc(ev.error)}</small>`;
- else if(ev)log=ev.length?`<div class="srv-log">${ev.slice(0,12).map(e=>`<div><span>${/Backup/.test(e.server)?'🟠':'🟢'}</span><span>${esc(/Backup/.test(e.server)?'Moved to the backup':'Back on Firebase')}${e.reason?` — ${esc(e.reason)}`:''}<small>${esc(srvAgo(e.at))} · ${esc(e.name||e.email)}</small></span></div>`).join('')}</div>`
-   :'<small>No switches yet. Each time a device moves to the backup or back, it shows here, and you get an email.</small>';
- return `<b class="ad-h">🖥️ Server</b><small class="ad-sub">The data comes from Firebase. If Firebase stops, HEMERA moves to Apps Script by itself.</small>
+ else if(ev)log=ev.length?`<div class="srv-log">${ev.slice(0,12).map(e=>`<div><span>${aDot(/Backup/.test(e.server)?'#f08a4b':'#22c47c')}</span><span>${esc(/Backup/.test(e.server)?'Moved to the backup':'Back on Firebase')}${e.reason?` — ${esc(e.reason)}`:''}<small>${esc(srvAgo(e.at))} · ${esc(e.name||e.email)}</small></span></div>`).join('')}</div>`
+   :'<small>No switches yet.</small>';
+ return `<b class="ad-h">${aI('server')}Server</b><small class="ad-sub">Firebase first, Apps Script as backup.</small>
   <div class="srv-now ${n.cls}"><i>${n.icon}</i><span><b>${esc(n.title)}</b><small>${esc(n.text)}</small></span></div>
   ${n.cls==='backup'?'<button type="button" class="srv-btn" onclick="srvRetry()">Try Firebase again</button>':''}
-  <div class="srv-box"><b>This month's cost</b><small>Limit $3 · at the limit Firebase stops and HEMERA keeps working on Apps Script.</small>${cost}</div>
+  <div class="srv-box"><b>This month's cost</b><small>Limit $3, then Apps Script takes over.</small>${cost}</div>
   <div class="srv-box"><b>Firebase server</b><small>Europe (London)</small>${health}</div>
-  ${(SRV_ADMIN.access||{}).mode==='firebase'?'':`<div class="srv-box"><b>Sign-in</b><small>Devices, approvals, invites, maintenance and the team message.</small>${srvAccessHtml()}</div>`}
-  ${(SRV_ADMIN.rest||{}).mode==='firebase'?'':`<div class="srv-box"><b>Everything else</b><small>Usage and shares, plan history, the monthly report and the new-day notifications.</small>${srvRestHtml()}</div>`}
-  ${(SRV_ADMIN.tasks||{}).mode==='firebase'?'':`<div class="srv-box"><b>Team Tasks</b><small>Tasks, days off, backups, positions and avatars.</small>${srvTasksHtml()}</div>`}
-  <div class="srv-box"><b>Same numbers?</b><small>Reads ${esc(CURRENT_ACCOUNT.toUpperCase())} on both servers and compares every figure.</small>
+  ${(SRV_ADMIN.access||{}).mode==='firebase'?'':`<div class="srv-box"><b>Sign-in</b><small>Devices, approvals, invites, messages.</small>${srvAccessHtml()}</div>`}
+  ${(SRV_ADMIN.rest||{}).mode==='firebase'?'':`<div class="srv-box"><b>Everything else</b><small>Usage, shares, plan history, reports, alerts.</small>${srvRestHtml()}</div>`}
+  ${(SRV_ADMIN.tasks||{}).mode==='firebase'?'':`<div class="srv-box"><b>Team Tasks</b><small>Tasks, leave, backups, positions.</small>${srvTasksHtml()}</div>`}
+  <div class="srv-box"><b>Same numbers?</b><small>Compares ${esc(CURRENT_ACCOUNT.toUpperCase())} on both servers.</small>
     <button type="button" class="srv-btn soft" onclick="srvParity()" ${SRV_ADMIN.busy||!fb?'disabled':''}>Compare with Apps Script</button>${parity}</div>
-  ${fb?`<div class="srv-box"><b>This device</b><small>For testing: which server this phone or computer uses. It goes back to Automatic after one hour.</small><div class="act-seg">${seg('auto','Automatic')}${seg('firebase','Firebase')}${seg('appsscript','Apps Script')}</div></div>`:''}
-  <div class="srv-box"><b>Switch log</b><small>From every device in the team.</small>${log}
-    ${Array.isArray(ev)&&ev.length?'<button type="button" class="sh-reset" onclick="srvClearLog(this)">↺ Clear log</button>':''}</div>`;
+  ${fb?`<div class="srv-box"><b>This device</b><small>For testing. Back to Automatic after 1 hour.</small><div class="act-seg">${seg('auto','Automatic')}${seg('firebase','Firebase')}${seg('appsscript','Apps Script')}</div></div>`:''}
+  <div class="srv-box"><b>Switch log</b><small>All team devices.</small>${log}
+    ${Array.isArray(ev)&&ev.length?'<button type="button" class="sh-reset" onclick="srvClearLog(this)">'+aI('undo')+'Clear log</button>':''}</div>`;
 }
 window.addEventListener('sekna-server',()=>{if(ADMIN_TAB==='server'&&ADMIN_LAST)renderAdmin(ADMIN_LAST)});
 function hoursText(sec){sec=Math.round(sec||0);const h=Math.floor(sec/3600),m=Math.round(sec%3600/60);return h?`${h}h ${m}m`:`${m}m`}
 function adminActivityHtml(){
- const a=ADMIN_ACTIVITY, head='<b class="ad-h">📊 Activity</b>';
+ const rg=ADMIN_ACT_RANGE!=='month'&&actRange(), per=actRangeLbl();
+ const pills=`<div class="act-rg">${[['month','Month'],['today','Today'],['yday','Yesterday'],['7','7 days'],['30','30 days']].map(([k,l])=>`<button type="button" class="${ADMIN_ACT_RANGE===k?'on':''}" onclick="actRangeGo('${k}')">${l}</button>`).join('')}<label class="${ADMIN_ACT_RANGE==='day'?'on':''}">${aI('cal')}<span>${ADMIN_ACT_RANGE==='day'&&ADMIN_ACT_DAY?esc(new Date(ADMIN_ACT_DAY+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'})):'Day'}</span><input id="actDay" type="date" max="${isoDay(0)}" value="${esc(ADMIN_ACT_DAY)}" onchange="actRangeGo('day',this.value)"></label></div>`;
+ const a=rg?(ADMIN_ACT_R||(ADMIN_ACT_RBUSY?null:null)):ADMIN_ACTIVITY, head=`<b class="ad-h">${aI('chart')}Activity</b>${pills}`;
  if(!a)return head+'<div class="sk-admin-empty">Loading…</div>';
  if(a.error)return head+`<div class="sk-admin-empty">${esc(a.error)}</div>`;
  const v=ADMIN_ACT_VIEW, seg=(k,l)=>`<button type="button" class="${v===k?'on':''}" onclick="actView('${k}')">${l}</button>`;
- const bars=(list,val,txt)=>{const mx=Math.max(1,...list.map(val));return list.length?`<div class="sh-bars">${list.map(p=>`<div class="sh-row"><span>${esc(p.name)}</span><i><u style="width:${(val(p)/mx*100).toFixed(1)}%"></u></i><b>${txt(p)}</b></div>`).join('')}</div>`:'<div class="sk-admin-empty">Nothing yet this month.</div>'};
- const reset=(k,l)=>`<button type="button" class="sh-reset" onclick="adminResetActivity('${k}',this)">↺ Reset ${l} to zero</button>`;
+ const bars=(list,val,txt)=>{const mx=Math.max(1,...list.map(val));return list.length?`<div class="sh-bars">${list.map(p=>`<div class="sh-row"><span>${esc(p.name)}</span><i><u style="width:${(val(p)/mx*100).toFixed(1)}%"></u></i><b>${txt(p)}</b></div>`).join('')}</div>`:`<div class="sk-admin-empty">Nothing ${per}.</div>`};
+ const reset=(k,l)=>rg?'':`<button type="button" class="sh-reset" onclick="adminResetActivity('${k}',this)">${aI('undo')}Reset ${l}</button>`;
  let body='';
  if(v==='shares'){const s=a.shares;
-   body=`<small class="ad-sub">Each time someone prepares a WhatsApp image. WhatsApp does not tell us if it was then sent. Tap a person for details.</small>
-   <div class="sh-total"><b>${s.total}</b><span>image${s.total===1?'':'s'} this month</span></div>${shLeaderboard(s)}
+   body=`<small class="ad-sub">WhatsApp images prepared. Tap a person for details.</small>
+   <div class="sh-total"><b>${s.total}</b><span>image${s.total===1?'':'s'} ${per}</span></div>${shLeaderboard(s)}
    ${s.kinds.length?`<div class="sh-kinds">${s.kinds.map(k=>`<span>${esc(SHARE_NAMES[k.kind]||k.kind)} <b>${k.n}</b></span>`).join('')}</div>`:''}${reset('shares','share counts')}`;
  }else if(v==='opens'){const o=a.opens;
-   body=`<small class="ad-sub">Each time someone opens HEMERA, or comes back to it after 30 minutes away.</small>
-   <div class="sh-total"><b>${o.total}</b><span>open${o.total===1?'':'s'} this month</span></div>${bars(o.people,p=>p.n,p=>p.n)}${reset('opens','app opens')}`;
+   body=`<small class="ad-sub">Opens, and returns after 30 minutes away.</small>
+   <div class="sh-total"><b>${o.total}</b><span>open${o.total===1?'':'s'} ${per}</span></div>${bars(o.people,p=>p.n,p=>p.n)}${reset('opens','app opens')}`;
  }else{const t=a.time;
-   body=`<small class="ad-sub">Time with HEMERA open on the screen, added up for the month.</small>
-   <div class="sh-total"><b>${hoursText(t.total)}</b><span>in HEMERA this month</span></div>${bars(t.people,p=>p.sec,p=>hoursText(p.sec))}${reset('time','time in the app')}`;
+   body=`<small class="ad-sub">Time with HEMERA open on screen.</small>
+   <div class="sh-total"><b>${hoursText(t.total)}</b><span>in HEMERA ${per}</span></div>${bars(t.people,p=>p.sec,p=>hoursText(p.sec))}${reset('time','time in the app')}`;
  }
- return `${head}<div class="act-seg">${seg('shares','💬 Shares')}${seg('opens','📱 Opens')}${seg('time','⏱️ Time')}</div>${body}`;
+ return `${head}<div class="act-seg">${seg('shares',aI('share')+'Shares')}${seg('opens',aI('phone')+'Opens')}${seg('time',aI('clock')+'Time')}</div>${body}`;
 }
 
 
 let ADMIN_SH_OPEN='';
 function shOpen(e){ADMIN_SH_OPEN=ADMIN_SH_OPEN===e?'':e;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function shLeaderboard(s){
- if(!s.people.length)return '<div class="sk-admin-empty">No shares yet this month.</div>';
+ if(!s.people.length)return '<div class="sk-admin-empty">No shares yet.</div>';
  const nm=k=>SHARE_NAMES[k]||k, top=p=>Object.entries(p.kinds||{}).sort((a,b)=>b[1]-a[1]);
- const dim=new Date(+s.month.slice(0,4),+s.month.slice(5,7),0).getDate();
+ const dim=new Date(+s.month.slice(0,4),+s.month.slice(5,7),0).getDate();const rgd=ADMIN_ACT_RANGE!=='month';
  return `<div class="shl">${s.people.map((p,i)=>{const open=ADMIN_SH_OPEN===p.email,tk=top(p),mx=Math.max(1,...Object.values(p.days||{}));
    return `<div class="shl-p${open?' open':''}" onclick="shOpen('${esc(p.email)}')"><div class="shl-h"><span class="shl-r">${i+1}</span><span class="shl-av">${personAv(p.avatar,p.name)}</span>
-    <div class="shl-n"><b>${esc(p.name)}${i===0?' 🏅':''}</b><small>${p.role?esc(roleLabel(p.role))+' · ':''}${esc(tk.slice(0,2).map(([k,n])=>nm(k)+' ×'+n).join(' · '))}</small></div><span class="shl-v">${p.n}</span></div>
+    <div class="shl-n"><b>${esc(p.name)}${i===0?aI('medal'):''}</b><small>${p.role?esc(roleLabel(p.role))+' · ':''}${esc(tk.slice(0,2).map(([k,n])=>nm(k)+' ×'+n).join(' · '))}</small></div><span class="shl-v">${p.n}</span></div>
     ${open?`<div class="shl-d"><div class="shl-k">${tk.map(([k,n])=>`<span>${esc(nm(k))} <b>${n}</b></span>`).join('')}</div>
      ${Object.keys(p.accs||{}).length?`<div class="shl-a">${Object.entries(p.accs).map(([k,n])=>`<span>${esc(String(k).toUpperCase())} <b>${n}</b></span>`).join('')}</div>`:''}
-     <div class="shl-days">${Array.from({length:dim},(_,d)=>{const k=s.month+'-'+String(d+1).padStart(2,'0'),n=(p.days||{})[k]||0;return `<i title="${d+1}"><u style="height:${n?Math.max(14,n/mx*100):0}%"></u></i>`}).join('')}</div>
-     <div class="shl-dl"><span>1</span><span>${dim}</span></div>
+     ${rgd?'':`<div class="shl-days">${Array.from({length:dim},(_,d)=>{const k=s.month+'-'+String(d+1).padStart(2,'0'),n=(p.days||{})[k]||0;return `<i title="${d+1}"><u style="height:${n?Math.max(14,n/mx*100):0}%"></u></i>`}).join('')}</div>
+     <div class="shl-dl"><span>1</span><span>${dim}</span></div>`}
      ${p.last?`<small class="shl-last">Last shared ${esc(timeAgo(p.last,Date.now()))}</small>`:''}</div>`:''}</div>`}).join('')}</div>`;
 }
 async function adminResetActivity(kind,btn){
