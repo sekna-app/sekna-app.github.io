@@ -7498,6 +7498,18 @@ window.addEventListener('load',function(){
 
     /* v248 the blue scan light runs under the bottom bar, not over it */
     html body #shScan{z-index:59!important}
+
+    /* v249 a closed week colours its % by result: green on plan, amber close, red behind */
+    html body .weekly-performance .wx-grid.wx-done .wx-m .wx-m-top b.up{color:#7ff0bf!important}
+    html body .weekly-performance .wx-grid.wx-done .wx-m .wx-m-top b.mid{color:#ffc76a!important}
+    html body .weekly-performance .wx-grid.wx-done .wx-m .wx-m-top b.down{color:#ffa3ad!important}
+    /* v249 phones: ROAS and Clicks sit in one slim card, two rows with the blue-to-gold line between */
+    @media (max-width:1099px){
+      html body #mtdClicksRow.mc:has(+#mtdClkRow:not([hidden])){border-radius:18px 18px 0 0!important;border-bottom:0!important;box-shadow:none!important;padding:8px 10px 7px 14px!important}
+      html body #mtdClicksRow.mc+#mtdClkRow.mc:not([hidden]){position:relative;margin-top:0!important;border-radius:0 0 18px 18px!important;border-top:0!important;padding:7px 10px 8px 14px!important}
+      html body #mtdClicksRow.mc+#mtdClkRow.mc:not([hidden])::before{content:"";position:absolute;left:14px;right:14px;top:0;height:2px;border-radius:2px;background:linear-gradient(90deg,#3d6bff,#c99a45)}
+      html body #mtdClicksRow.mc em,html body #mtdClkRow.mc em{padding:3px 9px!important;font-size:11.5px}
+    }
 </style>
 </head>
 <body>
@@ -9925,7 +9937,7 @@ function renderWeekDetail(w,isLive,monthName){
  const roasF=v=>fmt(v,2)+'x';
  const wkN=(String(w.week||'').match(/\d+/)||[''])[0];
  host.innerHTML=`<div class="wx-d-head">${wkN?`<span class="wly-wk wx-wk">W${wkN}</span>`:`<b>${esc(w.week||'')}</b>`}${range?`<span>${esc(range)}</span>`:''}${status}</div>
-   <div class="wx-grid">
+   <div class="wx-grid${has&&!isLive?' wx-done':''}">
      ${metric('Spend',Number(w.actualSpend)||0,planSpend,v=>money(v),isLive)}
      ${metric('Revenue',Number(w.actualValue)||0,planValue,v=>money(v),isLive)}
      ${metric('Conv.',Number(w.actualConversions)||0,planConv,v=>fmt(v,0),isLive)}
