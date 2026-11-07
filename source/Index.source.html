@@ -7205,8 +7205,53 @@ window.addEventListener('load',function(){
     html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec .ox-tiles.oxL{grid-column:1/-1!important;grid-row:3!important;flex-direction:row!important;gap:0!important;padding:4px 6px!important}
     html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec .ox-tiles.oxL>.ox-tile{flex:1 1 0;min-width:0;border-top:0!important;padding:12px 14px!important}
     html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec .ox-tiles.oxL>.ox-tile+.ox-tile{border-left:1px solid #f1f3f8!important}
-    html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec #mtdClicksRow.mc{grid-column:1!important;grid-row:4!important;margin-top:10px!important}
-    html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec #mtdClkRow.mc{grid-column:2!important;grid-row:4!important;margin-top:10px!important}
+    html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec #mtdClicksRow.mc{grid-column:2!important;grid-row:4!important;margin-top:10px!important}
+    html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec #mtdClkRow.mc{grid-column:1!important;grid-row:4!important;margin-top:10px!important}
+    /* v221 desktop Daily: the four main cards across the full width, Clicks · CTR · CPA · CVR as one navy strip under them */
+    html.dk-on:not(.desktop-site-mode) #overviewPanel>.grid.kpis{grid-column:1/-1!important;grid-row:1!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important}
+    html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm){grid-column:1/-1!important;grid-row:2!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;padding:12px 6px!important;border-radius:16px!important;border:0!important;background:radial-gradient(120% 200% at 0 0,#2c4fb8,#203c8e 55%,#132457)!important;box-shadow:0 10px 22px rgba(20,40,110,.2)!important;margin:0!important}
+    html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm)>.quick-metric{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:0 10px!important;padding:2px 18px!important;margin:0!important;background:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;min-height:0!important}
+    html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm)>.quick-metric+.quick-metric{border-left:1px solid rgba(255,255,255,.14)!important}
+    html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm)>.quick-metric:before,html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm)>.quick-metric:after{display:none!important}
+    html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm) .quick-icon{display:none!important}
+    html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm) .quick-copy{display:flex!important;flex-direction:column!important;gap:1px!important;margin:0!important}
+    html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm) .quick-name{font-size:10px!important;font-weight:900!important;letter-spacing:.08em!important;text-transform:uppercase!important;color:#c9d3f5!important}
+    html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm) .quick-value{font-size:22px!important;font-weight:900!important;color:#fff!important;margin:0!important}
+    html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm) .kx-c{font-size:11px!important;font-weight:800!important;color:#c9d3f5!important;margin:0!important;position:static!important}
+    html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm) .kx-c b{color:#c9d3f5!important}
+    html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm) .kx-r{position:static!important;font-size:13px!important;font-weight:900!important;border-radius:99px;padding:3px 10px;background:rgba(255,255,255,.1)}
+    html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm) .kx-r:empty{display:none}
+    html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm) .kx-r small{display:none}
+    html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm) .kx-r.up{color:#7fe0b0!important;background:rgba(57,226,154,.18)}
+    html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm) .kx-r.mid{color:#f2d38f!important;background:rgba(242,211,143,.18)}
+    html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm) .kx-r.dn{color:#ff9aa6!important;background:rgba(255,154,166,.18)}
+    /* v221 Channel Delivery: the planned spend for each type, soft, after the % */
+    .cdt-pl{font-style:normal;font-weight:700;color:#8a93ad}
+    /* v221 Search Terms: room between the kinds and Sort */
+    html body .st-bar{gap:12px 18px!important}html body .st-sort{margin-left:auto}
+    /* v221 Results rows: the % right after the number */
+    html.dk-on:not(.desktop-site-mode) #dxBody .dcR-k{justify-content:flex-start!important}
+    html.dk-on:not(.desktop-site-mode) #dxBody .dcR-k span{flex:0 0 auto!important;min-width:0!important}
+    html.dk-on:not(.desktop-site-mode) #overviewPanel>.yoy{grid-row:3!important}
+    html.dk-on:not(.desktop-site-mode) #overviewPanel>.top-projects{grid-row:3!important}
+    /* v221 Top 3 Projects on a narrow desktop column: the name above the Winner chip and ROAS, never squeezed letter by letter */
+    html.dk-on:not(.desktop-site-mode) .top-projects .sx-ltop{flex-wrap:wrap!important;row-gap:4px}
+    html.dk-on:not(.desktop-site-mode) .top-projects .sx-ltop>:first-child{flex:1 0 100%!important;min-width:0;overflow-wrap:anywhere}
+    /* v221 desktop Lab: the Forecast parts (Weeks, Channels, ...) centred like Assumptions with a gold underline, the open part in a light blue frame */
+    html.dk-on:not(.desktop-site-mode) #labForecast .fc:has(.fc-hero)>.fc-folds{justify-content:center!important;border-bottom:1px solid #e3e7f0!important}
+    html.dk-on:not(.desktop-site-mode) #labForecast .fc-folds>.fc-acc.open{border-bottom-color:transparent!important;position:relative}
+    html.dk-on:not(.desktop-site-mode) #labForecast .fc-folds>.fc-acc.open:after{content:"";position:absolute;left:14%;right:14%;bottom:-1px;height:3px;border-radius:3px;background:linear-gradient(90deg,#f0cf8c,#c99a45);box-shadow:0 0 8px rgba(226,184,116,.55)}
+    html.dk-on:not(.desktop-site-mode) #labForecast .fc-folds>.fc-acc.open b{color:#141b33!important}
+    html.dk-on:not(.desktop-site-mode) #labForecast .fc-folds>.fc-accb{max-width:860px;margin:14px auto 4px!important;padding:14px 18px!important;border:1px solid #c9d8ff!important;border-radius:16px!important;background:#fff!important}
+    body.dark-mode #labForecast .fc-folds>.fc-accb{border-color:#2c3f78!important;background:#151a22!important}
+    /* v221 desktop Lab: Forecast · Assumptions · Years always the same compact sliding switch, top right */
+    html.dk-on:not(.desktop-site-mode) #labForecast .fc{position:relative}
+    html.dk-on:not(.desktop-site-mode) #labForecast .fc>.fc-top.fcP{position:absolute!important;right:16px;top:16px;width:360px!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:0!important;background:#eef1f7!important;border:0!important;border-radius:14px!important;padding:4px!important;margin:0!important;z-index:2}
+    html.dk-on:not(.desktop-site-mode) #labForecast .fc>.fc-top.fcP button{flex:none!important;width:auto!important;height:34px!important;padding:0 8px!important;font-size:12.5px!important;border:0!important;border-radius:11px!important;background:none!important;box-shadow:none!important;color:#6b7385!important}
+    html.dk-on:not(.desktop-site-mode) #labForecast .fc>.fc-top.fcP button.on{color:#fff!important;background:none!important;border:0!important}
+    html.dk-on:not(.desktop-site-mode) #labForecast .fc>.fc-top.fcP .fcP-pill{display:block!important;top:4px!important;bottom:4px!important;left:4px!important;width:calc((100% - 8px)/3)!important}
+    html.dk-on:not(.desktop-site-mode) #labForecast .fc:has(.as-seg)>*:not(.fc-hd):not(.fc-top){max-width:none}
+    html.dk-on:not(.desktop-site-mode) #labForecast .fc>.fc-hd{min-height:52px}
 </style>
 </head>
 <body>
@@ -9645,7 +9690,7 @@ function renderChannels(rows){
   host.innerHTML=`<div class="cdt-h"><span>#</span><span>Type</span><span>Spend · of plan</span><span>Clicks</span><span>Conv.</span><span>Value</span><span>ROAS</span></div>`+sorted.map((r,i)=>{
    const roas=Number(r.roas)||0,ach=Number(r.spendAchievement)||0,k=Math.min(Math.max(CHANNEL_ORDER.indexOf(isVideoChannel(r.channel)?'Video (YouTube)':r.channel),0),4);
    return `<div class="cdt-r" style="--c:${C[k]}"><u>${i+1}</u><div class="n"><span class="channel-icon ${channelIconClass(r.channel)}">${channelIconSvg(r.channel)}</span><b>${esc(chName(r.channel))}</b>${i===0?'<em>👑 Best</em>':''}</div>
-    <div class="s"><b>${money(r.actualSpend)}</b><div class="bar"><i style="width:${Math.min(ach*100,100).toFixed(1)}%"></i></div><small class="${ach>1.15?'over':''}">${percent(ach)} of plan</small></div>
+    <div class="s"><b>${money(r.actualSpend)}</b><div class="bar"><i style="width:${Math.min(ach*100,100).toFixed(1)}%"></i></div><small class="${ach>1.15?'over':''}">${percent(ach)} of plan${Number(r.planSpend)?` <em class="cdt-pl">· plan ${money(r.planSpend)}</em>`:''}</small></div>
     <span>${fmt(r.clicks,0)}</span><span>${fmt(r.conversions,0)}</span><span><b>${money(r.actualValue)}</b></span><span class="ro ${i===0||roas>=1?'up':'dn'}">${fmt(roas,2)}x</span></div>`}).join('');
   return;
  }
