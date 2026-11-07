@@ -549,7 +549,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
          [['ss-ramadan','ss-eidadha','ss-arafah','ss-thanksgiving'],'Seasons Calendar','Hijri and US seasons','Ramadan, Eid, Dhul Hijjah, Ashura and the US giving days, each with its countdown and last year’s numbers.'],
          [['studio','compare'],'Reports Studio','One month, or two side by side','Build a report for any month, or compare two months point by point and see which one wins.'],
          [['ranks','stperf'],'Top & Bottom 5 · Search Terms','Winners, and the search terms report','The best and the weakest projects and campaigns, then the search terms that convert, waste or need a look.'],
-         [['tasks','backup','leave'],'Team Tasks & Leave','The week board, backups and leave','Every person’s tasks for the week, ticked as they go. When someone is off, their backup takes over. Leave can be frozen for a busy season and opened again.']];
+         [['tasks','backup','leave','leave-frozen'],'Team Tasks & Leave','The week board, backups and leave','Every person’s tasks for the week, ticked as they go. When someone is off, their backup takes over. Leave can be frozen for a busy season and opened again.']];
   var N=S.length, step=360/N, cur=0, timer=null, LAYER=2400, SCROLL=4200;
   var ring=document.getElementById('ring'), stage=document.getElementById('stage'), dots=document.getElementById('dots');
   var capT=document.getElementById('capT'), capS=document.getElementById('capS'), capD=document.getElementById('capD'), cap=capT.parentNode;
@@ -569,7 +569,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
     for(var j=0;j<ls.length;j++)ls[j].classList.toggle('on',j===k);
     var img=ls[k].querySelector('img'), box=ph.querySelector('.scn');
     var go=function(){var dy=img.clientHeight-box.clientHeight;img.className='';void img.offsetWidth;
-      img.style.setProperty('--dur',dur(img)+'ms');img.style.setProperty('--dy',(-Math.max(0,dy))+'px');if(dy>30)img.className='sc'};
+      img.style.setProperty('--dur',dur(img)+'ms');img.style.setProperty('--dy',(-Math.max(0,dy))+'px');if(dy>30&&!/\/(tasks)\.webp/.test(img.src))img.className='sc'};
     if(img.complete)go();else img.onload=go;
   }
   function show(anim){
