@@ -7600,14 +7600,20 @@ window.addEventListener('load',function(){
     .rs-sh td:first-child{font-weight:900}.rs-sh td i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:9px;vertical-align:0}
     .rs-sh td span{display:inline-block;border-radius:99px;padding:3px 10px;font-weight:900}.rs-sh td span.good{background:#e3f6ec;color:#13804f}.rs-sh td span.bad{background:#fdeaec;color:#c63a4a}
     .rs-sh tr.T td{background:#f6f8fc;font-weight:900;border-bottom:0}.rs-sh tr.T td span{background:#e8edfb;color:#203c8e}
-    /* v237 Results month card on phones: Spend as the first tile (2 x 2), chips centred; a By campaign type button in an opened day */
+    /* v238 Results month card on phones: the same size and look as the Media Plan card */
     .mt-sp{display:none!important}
     @media (max-width:1099px){
-      html body #app #dxBody .mt3 .mt-grid{grid-template-columns:1fr 1fr!important}
-      html body #app #dxBody .mt3 .mt-t.mt-sp{display:flex!important}
-      html body #app #dxBody .mt3 .mt-t{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;padding:10px 8px!important;gap:4px!important}
-      html body #app #dxBody .mt3 .mt-t *{text-align:center!important}
-      html body #app #dxBody .mt3 .mt-t .mt-chip{justify-self:auto!important;align-self:center!important;margin:2px auto 0!important}
+      html body #app #dxBody .mt3 .mt-top{display:flex!important;align-items:baseline;gap:6px;margin-bottom:6px!important}
+      html body #app #dxBody .mt3 .mt-top>div:first-child{display:flex;align-items:baseline;gap:8px}
+      html body #app #dxBody .mt3 .mt-top b{font-size:11px!important;font-weight:800;opacity:.85}
+      html body #app #dxBody .mt3 .mt-hero{margin:4px 0 0!important}
+      html body #app #dxBody .mt3 .mt-hero i{font-size:11.5px!important}
+      html body #app #dxBody .mt3 .mt3-chip{font-size:10.5px!important;padding:2px 8px!important}
+      html body #app #dxBody .mt3 .mt-grid{grid-template-columns:1fr 1fr!important;gap:8px!important;margin-top:10px!important}
+      html body #app #dxBody .mt3 .mt-t{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;grid-template-areas:"l c" "v v"!important;align-items:center!important;column-gap:6px!important;row-gap:1px!important;padding:9px 11px!important;border-radius:12px!important;min-height:0!important;text-align:left!important;background:rgba(255,255,255,.1)!important}
+      html body #app #dxBody .mt3 .mt-t small{grid-area:l;font-size:10.5px!important;text-align:left!important;color:#c9d3f5!important;white-space:nowrap}
+      html body #app #dxBody .mt3 .mt-t b{grid-area:v;font-size:16px!important;line-height:1.25!important;margin:0!important;text-align:left!important}
+      html body #app #dxBody .mt3 .mt-t .mt-chip{grid-area:c;font-size:9px!important;padding:1px 6px!important;margin:0!important;justify-self:end!important}
     }
     .dx-tybtn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:10px;border:1.5px solid #c9d8ff;background:#f6f8ff;color:#203c8e;border-radius:12px;padding:9px;font:inherit;font-size:12.5px;font-weight:900;cursor:pointer}
     .dx-tybtn i{font-style:normal;transition:transform .2s}.dx-tybtn.on i{transform:rotate(180deg)}
@@ -10533,7 +10539,7 @@ function resultsHero(days,T){
  return `<div class="mt mt3"><div class="mt-top"><div><small>Month to date</small><b>${a.days} of ${days.length} days</b></div><div class="mt-days"><span style="width:${(days.length?a.days/days.length*100:0).toFixed(1)}%"></span></div></div>
   <div class="mt-hero"><div><small>Spend</small><b>${money(a.spend)}</b><i>month plan ${money(p.spend)}</i>${sR!=null?`<span class="mt3-chip ${cls(sR,true)}">${Math.round(sR*100)}% of the month plan</span>`:''}</div>
    <div class="mt-ring ${cls(sR,true)}"><svg viewBox="0 0 72 72"><circle r="${R}" cx="36" cy="36" class="t"/><circle r="${R}" cx="36" cy="36" class="f" stroke-dasharray="${(f*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 36 36)"/></svg><b>${sR!=null?Math.round(sR*100)+'%':'—'}</b></div></div>
-  <div class="mt-grid">${tile('Spend',money(a.spend),sR,`${pct(a.spend,p.spend)} of plan`,cls(sR,true)).replace('class="mt-t"','class="mt-t mt-sp"')}${tile('Conversions',fmt(a.conversions,0),cR,`${pct(a.conversions,p.conversions)} of plan`,cls(cR))}${tile('Value',money(a.value),vR,`${pct(a.value,p.value)} of plan`,cls(vR))}${tile('ROAS',fmt(a.roas,2)+'x',rR,`target ${fmt(tR,2)}x`,rR==null?'':rR>=1?'good':'bad')}</div>
+  <div class="mt-grid">${tile('Spend',money(a.spend),sR,`${pct(a.spend,p.spend)} of plan`,cls(sR,true)).replace('class="mt-t"','class="mt-t mt-sp"')}${tile('Conv.',fmt(a.conversions,0),cR,`${pct(a.conversions,p.conversions)} of plan`,cls(cR))}${tile('Value',money(a.value),vR,`${pct(a.value,p.value)} of plan`,cls(vR))}${tile('ROAS',fmt(a.roas,2)+'x',rR,`target ${fmt(tR,2)}x`,rR==null?'':rR>=1?'good':'bad')}</div>
   ${mix.length?`<div class="mt-mix ph3-bar">${mix.map(m=>`<span class="m${m.k}" style="flex:${m.s/tot}"></span>`).join('')}</div><div class="mt-legend">${mix.map(m=>`<span><i class="m${m.k}"></i>${PLAN_MIX_LABELS[m.k]} ${Math.round(m.s/tot*100)}%</span>`).join('')}</div>`:''}</div>`;
 }
  
