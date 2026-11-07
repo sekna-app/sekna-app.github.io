@@ -7467,6 +7467,14 @@ window.addEventListener('load',function(){
     .mxt-btn i{font-style:normal;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.15);display:grid;place-items:center;font-size:11px;transition:transform .3s}
     .mxt-btn.on i{transform:rotate(180deg)}
     .mxt-fold{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s cubic-bezier(.3,.9,.3,1)}.mxt-fold>div{overflow:hidden;min-height:0}.mxt-fold.on{grid-template-rows:1fr}
+    /* v242 campaigns story: the cards come in one after another like the other stories, the gold card shines once */
+    .stx-face:not(.old) .stx-cp>*{animation:stxCpIn .45s cubic-bezier(.2,.8,.2,1) both}
+    .stx-face:not(.old) .stx-cp>*:nth-child(2){animation-delay:.06s}.stx-face:not(.old) .stx-cp>*:nth-child(3){animation-delay:.16s}.stx-face:not(.old) .stx-cp>*:nth-child(4){animation-delay:.28s}.stx-face:not(.old) .stx-cp>*:nth-child(5){animation-delay:.4s}.stx-face:not(.old) .stx-cp>*:nth-child(6){animation-delay:.55s}
+    .stx-cpc.g{position:relative;overflow:hidden}
+    .stx-face:not(.old) .stx-cpc.g:after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.6) 50%,transparent 65%);transform:translateX(-120%);animation:stxCpSh 1s .7s ease forwards;pointer-events:none}
+    @keyframes stxCpIn{from{opacity:0;transform:translateY(18px) scale(.97)}}
+    @keyframes stxCpSh{to{transform:translateX(120%)}}
+    @media (prefers-reduced-motion:reduce){.stx-face .stx-cp>*,.stx-face .stx-cpc.g:after{animation:none}}
 </style>
 </head>
 <body>
