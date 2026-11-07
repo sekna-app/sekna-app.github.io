@@ -12516,6 +12516,8 @@ async function shareWhatsApp(tab,btn,curOk){
  const summary=withMentions(getShareSummary(tab));
  try{
    const kind=SHARE_KINDS[shareKind(tab)];
+   // v236 the report image needs the daily data (clicks, CTR, campaign types): wait for it if it is not in yet
+   if(tab==='months'){try{await ensureMonthExtras()}catch(e){}}
    mvSettle();
    const html=kind.html();
    if(!html)throw new Error('Nothing to share on this page yet');
