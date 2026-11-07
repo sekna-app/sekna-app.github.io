@@ -7150,11 +7150,14 @@ window.addEventListener('load',function(){
     html body .rx-main{min-width:0!important;overflow:hidden}
     html body .rx-name,html body .rx-det,html body .rx-det span,html body .rx-det b{overflow-wrap:anywhere;word-break:break-word;min-width:0}
     html body .rx-top{min-width:0}html body .rx-top .rx-roas{flex:none}
+    /* v222 everything from v219 on is for the desktop only (dk-on is also set on phones) */
+    .sx-ftile.sx-left{display:none}
+    .cdt-pl{display:none}
+    @media (min-width:1100px){
     /* v219 Leave tile: "Leave open" on its own line and the Change button under it (it covered the text on the desktop) */
     html body .lc-st>div small{display:block}
     html body .lc-st .lc-ch{display:inline-block;margin:6px auto 0;position:static!important}
     /* v220 desktop: Month at a Glance as four cards in a row */
-    .sx-ftile.sx-left{display:none}
     html.dk-on:not(.desktop-site-mode) .sx-month{display:grid!important;grid-template-columns:1.5fr 1fr 1fr 1fr!important;gap:10px!important;align-items:stretch}
     html.dk-on:not(.desktop-site-mode) .sx-month .sx-ftiles{display:contents!important}
     html.dk-on:not(.desktop-site-mode) .sx-month .sx-ftile{display:flex!important;flex-direction:column;justify-content:center;margin:0!important;min-height:0!important;padding:14px 16px!important}
@@ -7226,7 +7229,7 @@ window.addEventListener('load',function(){
     html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm) .kx-r.mid{color:#f2d38f!important;background:rgba(242,211,143,.18)}
     html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm) .kx-r.dn{color:#ff9aa6!important;background:rgba(255,154,166,.18)}
     /* v221 Channel Delivery: the planned spend for each type, soft, after the % */
-    .cdt-pl{font-style:normal;font-weight:700;color:#8a93ad}
+    .cdt-pl{display:inline!important;font-style:normal;font-weight:700;color:#8a93ad}
     /* v221 Search Terms: room between the kinds and Sort */
     html body .st-bar{gap:12px 18px!important}html body .st-sort{margin-left:auto}
     /* v221 Results rows: the % right after the number */
@@ -7252,6 +7255,7 @@ window.addEventListener('load',function(){
     html.dk-on:not(.desktop-site-mode) #labForecast .fc>.fc-top.fcP .fcP-pill{display:block!important;top:4px!important;bottom:4px!important;left:4px!important;width:calc((100% - 8px)/3)!important}
     html.dk-on:not(.desktop-site-mode) #labForecast .fc:has(.as-seg)>*:not(.fc-hd):not(.fc-top){max-width:none}
     html.dk-on:not(.desktop-site-mode) #labForecast .fc>.fc-hd{min-height:52px}
+    }
 </style>
 </head>
 <body>
