@@ -11587,7 +11587,8 @@ function renderRanksDuo(bw,body,cats){
  const list=RANK_CATS.map(([k,l])=>{const b=blk(k),n=b?b.rows.length:0;return `<button type="button" class="rx-cat rx3-cat${k===RANK_CAT?' on':''}${n?'':' off'}" data-cat="${k}" onclick="setRankCat('${k}')"${b?'':' disabled'}>${esc(l)}<em>${n}</em></button>`}).join('');
  const b=blk(RANK_CAT), title=(RANK_TITLES[side]||{})[RANK_CAT]||(b&&b.title)||'', icon=RANK_ICONS[RANK_CAT]||RANK_ICONS.campaigns;
  const kind=(RANK_CATS.find(c=>c[0]===RANK_CAT)||['',''])[1].replace(/s$/,'').toUpperCase();
- const head=`<div class="rx3-h"><b>${esc(title)}</b>${b&&b.rankNote?`<span>${esc(b.rankNote)}</span>`:''}${b&&b.minSpend?`<span>Spent ${money(b.minSpend)}+</span>`:''}</div>`;
+ // v231 desktop: the same title as phones (side line, WINNING / LOSING MONEY above)
+ const head=`<div class="rx-head rx-h3 ${worst?'w':'g'}"><small>${worst?'LOSING MONEY':'WINNING'}</small><b>${esc(title)}${b&&b.rankNote?` <span>${esc(b.rankNote)}</span>`:''}${b&&b.minSpend?` <span>${money(b.minSpend)}+ spent</span>`:''}</b></div>`;
  let table;
  if(!b||!b.rows.length)table=`<div class="rx-ok">👌 Nothing ${worst?'needs action':'to show'} here${b&&b.minSpend?` — no item spent ${money(b.minSpend)} or more`:''}.</div>`;
  else{
