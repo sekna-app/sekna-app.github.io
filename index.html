@@ -7563,6 +7563,18 @@ window.addEventListener('load',function(){
       html body #dxBody .dc-card.dcA .dcA-g>div{width:auto!important;max-width:none!important;justify-self:stretch!important;min-width:0}
       html body #dxBody .dc-card.dcA .dcA-g>div b{white-space:nowrap}
     }
+    /* v230 Top & Bottom 5 list titles: a side line (blue to gold / red) with a small word above */
+    html body .rx-head.rx-h3{display:block;position:relative;padding-left:12px;margin:8px 0 10px}
+    html body .rx-h3:before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:4px;border-radius:4px}
+    html body .rx-h3.g:before{background:linear-gradient(180deg,#3d6bff,#c99a45)}html body .rx-h3.w:before{background:linear-gradient(180deg,#e5606e,#7d1726)}
+    html body .rx-h3 small{display:block;font-size:9.5px;font-weight:900;letter-spacing:.12em}
+    html body .rx-h3.g small{color:#b0812e}html body .rx-h3.w small{color:#c63a4a}
+    html body .rx-h3 b{display:block;font-size:16px;line-height:1.3}
+    html body .rx-h3 b span{font-size:10.5px;color:#7b84a0;font-weight:800;margin-left:4px;white-space:nowrap}
+    body.dark-mode .rx-h3 b{color:#fff}
+    /* v230 the blue-to-gold dividers a little stronger */
+    html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip:not(.st-qm)>.quick-metric+.quick-metric:after{width:2.5px!important;top:0!important;bottom:0!important}
+    @media (min-width:1100px){html.dk-on:not(.desktop-site-mode) body #overviewPanel>.quick-metrics-strip:not(.st-qm)>.quick-metric+.quick-metric:after{width:2.5px!important;top:0!important;bottom:0!important}}
 </style>
 </head>
 <body>
@@ -11752,7 +11764,8 @@ function renderRanks(d){
  body.innerHTML=blocks.map(b=>{
    const worst=RANK_SIDE==='worst';
    const title=(RANK_TITLES[RANK_SIDE]||{})[b.key]||b.title;
-   const head=`<div class="rx-head"><b>${esc(title)}</b>${b.rankNote?`<span class="sx-chip">${esc(b.rankNote)}</span>`:''}${b.minSpend?`<span class="sx-chip">Spent ${money(b.minSpend)}+</span>`:''}</div>`;
+   
+   const head=`<div class="rx-head rx-h3 ${worst?'w':'g'}"><small>${worst?'LOSING MONEY':'WINNING'}</small><b>${esc(title)}${b.rankNote?` <span>${esc(b.rankNote)}</span>`:''}${b.minSpend?` <span>${money(b.minSpend)}+ spent</span>`:''}</b></div>`;
    const inner=b.rows.length?rankCardSec(b,worst):`<div class="rx-ok">👌 Nothing ${worst?'needs action':'to show'} here${b.minSpend?` — no item spent ${money(b.minSpend)} or more`:''}.</div>`;
    return `<section class="rx-sec" id="rx-sec-${b.key}" data-cat="${b.key}">${head}${inner}</section>`;
  }).join('');
