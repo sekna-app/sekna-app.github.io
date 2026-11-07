@@ -7507,6 +7507,48 @@ window.addEventListener('load',function(){
       html body .phx-tw{margin:0!important;padding:0 2px}
       html body .phx-t th:first-child,html body .phx-t td:first-child{padding-left:2px!important}
     }
+    /* v228 month card: the steps on a timeline; finished things in gold instead of green (phone and desktop) */
+    .lc2-tl{position:relative;margin-top:12px;padding-left:4px}
+    .lc2-tl:before{content:"";position:absolute;left:18px;top:24px;bottom:24px;width:2px;background:#e3e7f0}
+    html body .lc2-tl .lc2-r{border-top:0!important;margin-top:0!important;padding:8px 0!important;position:relative}
+    html body .lc2-tl .lc2-n{position:relative;z-index:1;box-shadow:0 0 0 4px #fff}
+    html body .lc2-r.on .lc2-n{background:#203c8e;color:#fff;box-shadow:0 0 0 4px #e8edfb}
+    html body .lc2-r.done{opacity:1}
+    html body .lc2-r.done .lc2-n{background:radial-gradient(circle at 35% 30%,#fff3cf,#e2b874 55%,#a67a2c);color:#141b33;font-size:14px}
+    html body .lc2-r.done small{color:#a56a06!important;font-weight:800}
+    html body .lc2-bar.ok i{background:linear-gradient(90deg,#c99a45,#f0cf8c)!important}
+    html body .lc2-h em.ok{background:#fdf1d8!important;color:#a56a06!important}
+    body.dark-mode .lc2-tl:before{background:#2a313c}body.dark-mode .lc2-tl .lc2-n{box-shadow:0 0 0 4px #151a22}
+    /* v228 Daily quick figures (phone and desktop): white strip, a blue-to-gold line on top of each figure like the big cards */
+    html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip:not(.st-qm){background:#fff!important;border:1px solid #edf0f6!important;box-shadow:0 6px 16px rgba(20,30,70,.06)!important;overflow:hidden}
+    html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip:not(.st-qm)>.quick-metric{position:relative;border-left-color:#edf0f6!important}
+    html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip:not(.st-qm)>.quick-metric:before{content:""!important;display:block!important;position:absolute;left:6px;right:6px;top:-13px;height:3px;border-radius:0 0 3px 3px;background:linear-gradient(90deg,#203c8e,#3d6bff 45%,#c99a45)!important;opacity:1!important}
+    html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-name{color:#7b84a0!important}
+    html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-value{color:#141b33!important}
+    html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-c,html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-c b{color:#8a93ad!important}
+    html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-icon,html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-icon svg{color:#7b84a0!important;stroke:#7b84a0!important}
+    html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r:not(:empty):before{color:#8a93ad!important}
+    html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r.up{color:#13804f!important}
+    html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r.mid{color:#a56a06!important}
+    html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip:not(.st-qm) .kx-r.dn{color:#c63a4a!important}
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm)>.quick-metric+.quick-metric{border-left:1px solid #edf0f6!important}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.quick-metrics-strip:not(.st-qm){background:#fff!important;box-shadow:0 6px 16px rgba(20,30,70,.06)!important;border:1px solid #edf0f6!important;overflow:hidden!important}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.quick-metrics-strip:not(.st-qm)>.quick-metric+.quick-metric{border-left:1px solid #edf0f6!important}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.quick-metrics-strip:not(.st-qm) .quick-name{color:#7b84a0!important}html.dk-on:not(.desktop-site-mode) body #overviewPanel>.quick-metrics-strip:not(.st-qm) .quick-value{color:#141b33!important}html.dk-on:not(.desktop-site-mode) body #overviewPanel>.quick-metrics-strip:not(.st-qm) .kx-c,html.dk-on:not(.desktop-site-mode) body #overviewPanel>.quick-metrics-strip:not(.st-qm) .kx-c b{color:#8a93ad!important}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.quick-metrics-strip:not(.st-qm) .kx-r.up{color:#13804f!important;background:#e3f6ec!important}html.dk-on:not(.desktop-site-mode) body #overviewPanel>.quick-metrics-strip:not(.st-qm) .kx-r.mid{color:#a56a06!important;background:#fdf1d8!important}html.dk-on:not(.desktop-site-mode) body #overviewPanel>.quick-metrics-strip:not(.st-qm) .kx-r.dn{color:#c63a4a!important;background:#fdeaec!important}
+      html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm)>.quick-metric:before{display:block!important;top:-13px;left:10px;right:10px}
+      html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm) .kx-r.up{background:#e3f6ec!important}
+      html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm) .kx-r.mid{background:#fdf1d8!important}
+      html.dk-on:not(.desktop-site-mode) #overviewPanel>.quick-metrics-strip:not(.st-qm) .kx-r.dn{background:#fdeaec!important}
+    }
+    body.dark-mode #overviewPanel .quick-metrics-strip:not(.st-qm){background:#151a22!important;border-color:#2a313c!important}body.dark-mode #overviewPanel .quick-metrics-strip:not(.st-qm) .quick-value{color:#fff!important}
+    /* v228 phones: in an opened plan day, each type's spend first, then its share */
+    @media (max-width:1099px){
+      html body .dcA-ch>div{grid-template-columns:10px minmax(0,1fr) auto 44px!important}
+      html body .dcA-ch>div>em{order:4;text-align:right}
+      html body .dcA-ch>div>b{order:3}
+    }
 </style>
 </head>
 <body>
@@ -16270,13 +16312,15 @@ function drawLabSave(){
  const days=(DASH_DATA&&DASH_DATA.dayPlan)||[], label=days[0]?monthName(days[0].date.slice(0,7),true):'This month';
  const live=days.filter(x=>x.actual).length, n=days.length, done=n>0&&live>=n, closeOpen=done||tkToday().d<=10;
  const pct=n?Math.round(live/n*100):0;
- const row=(k,on,title,sub,btn)=>`<div class="lc2-r${on?' on':' off'}"><span class="lc2-n">${k}</span><div><b>${title}</b><small>${sub}</small></div>${on?btn:''}</div>`;
+ 
+ const mk=days[0]?days[0].date.slice(0,7):'',saved=!!(mk&&(PH.list||[]).some(h=>h.month===mk));
+ const row=(k,on,title,sub,btn,isDone)=>`<div class="lc2-r${isDone?' done':on?' on':' off'}"><span class="lc2-n">${isDone?'✓':k}</span><div><b>${title}</b><small>${isDone?'Done':sub}</small></div>${on&&!isDone?btn:''}</div>`;
  host.innerHTML=`<div class="lc2"><div class="lc2-h"><b>${esc(label)}</b><em class="${done?'ok':''}">${done?'✓ ':''}${live} of ${n} days</em></div>
   <div class="lc2-bar${done?' ok':''}"><i style="width:${pct}%"></i></div>
   <small class="lc2-note">${done?'Do step 1, then step 2.':closeOpen?'Close last month if it is complete. Plan History opens when this month is complete.':'The month-end steps open when every day is in. You get a notification.'}</small>
-  ${row(1,done,'Save to Plan History','Keeps the month’s plan and what we achieved',`<button type="button" class="lc2-b g" onclick="labSavePlan()" ${LAB_SAVE.busy?'disabled':''}>${LAB_SAVE.busy?'<span class="lab-spin"></span>':'Save'}</button>`)}
+  <div class="lc2-tl">${row(1,done,'Save to Plan History','Keeps the month’s plan and what we achieved',`<button type="button" class="lc2-b g" onclick="labSavePlan()" ${LAB_SAVE.busy?'disabled':''}>${LAB_SAVE.busy?'<span class="lab-spin"></span>':'Save'}</button>`,saved)}
   ${LAB_SAVE.msg?`<div class="mrp-msg lc2-msg">${LAB_SAVE.msg}</div>`:''}
-  ${row(2,closeOpen,'Close the month','Moves the finished month into the history',`<button type="button" class="lc2-b" onclick="loadLab()" ${LAB_CHECKING||LAB_BUSY?'disabled':''}>${LAB_CHECKING?'<span class="lab-spin"></span>':'Check'}</button>`)}</div>`;
+  ${row(2,closeOpen,'Close the month','Moves the finished month into the history',`<button type="button" class="lc2-b" onclick="loadLab()" ${LAB_CHECKING||LAB_BUSY?'disabled':''}>${LAB_CHECKING?'<span class="lab-spin"></span>':'Check'}</button>`)}</div></div>`;
 }
 function labSavePlan(){
  if(!labEdit())return;
