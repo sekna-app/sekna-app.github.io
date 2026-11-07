@@ -9,6 +9,7 @@
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Changa:wght@500;600;700&family=Inter:wght@800&family=Herr+Von+Muellerhoff&family=Space+Grotesk:wght@500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Changa:wght@500;600;700&family=Inter:wght@800&family=Herr+Von+Muellerhoff&family=Space+Grotesk:wght@500&display=swap" rel="stylesheet"></noscript>
   <script>
+let FCP_ANIM=Date.now();
 
 window.SEKNA_ERRORS=[];
 window.addEventListener('error',function(e){
@@ -7698,6 +7699,12 @@ window.addEventListener('load',function(){
     html body .rp-report .rp-ct .ch-ico.pmax{background:#fbf3e3!important;color:#b0812e!important;border:1px solid #f1dfb8!important}
     html body .rp-report .rp-ct .ch-ico.dg{background:#e3f5fb!important;color:#1d9cc8!important;border:1px solid #c4e8f4!important}
     html body .rp-report .rp-ct .ch-ico.video{background:#fdecee!important;color:#e0606c!important;border:1px solid #f8cfd4!important}
+
+    /* v254 Lab: the Forecast / Assumptions / Years switch fades in softly when the Lab opens */
+    html body .fc-top.fcP.fcP-in>button{animation:fcpIn .6s ease both}
+    html body .fc-top.fcP.fcP-in>button:nth-of-type(2){animation-delay:.1s}html body .fc-top.fcP.fcP-in>button:nth-of-type(3){animation-delay:.2s}
+    html body .fc-top.fcP.fcP-in>.fcP-pill{animation:fcpIn .6s ease both}
+    @keyframes fcpIn{from{opacity:0}}
 </style>
 </head>
 <body>
@@ -9050,6 +9057,7 @@ function bbDraw(){
  b.innerHTML=tab('overview','Daily')+tab('days','Days')+`<button type="button" class="bb-fab${bbNoShare()?' no':''}" onclick="bbShare(this)" aria-label="Share this page on WhatsApp"><span>${ic('wa')}</span><small>Share</small></button>`+tab('channel','Month')+tab('lab','Lab');
 }
 function switchDashboardTab(tab){
+ if(tab==='lab'&&CURRENT_TAB!=='lab')FCP_ANIM=Date.now();
  if(tab==='lab'&&CURRENT_TAB!=='lab')FC_SHINE=1;
  {const o=document.getElementById('tasksOverlay');if(o&&o.classList.contains('open')){if(TK.form)tkSheetClose();closeTasks()}}
  {const n=document.getElementById('notifsOverlay');if(n&&n.classList.contains('open'))closeNotifs()}
@@ -10820,11 +10828,12 @@ function fcDraw0(){
  const months=(d&&d.months)||[], ro=!labEdit();
  const dd=months.length&&!ro?`<label class="fc-dd${c.moving?' busy':''}"><span>📅</span><select onchange="fcMonth(this.value)" ${c.moving?'disabled':''}>${months.map(m=>`<option value="${esc(String(m.v))}" ${String(m.v)===String(d.monthRaw)?'selected':''}>${esc(m.t)}</option>`).join('')}</select><em>▾</em></label>`:(d&&d.month?`<span class="fc-dd"><span>📅</span>${esc(d.month)}</span>`:'');
  lmpDraw();
+ const fcpA=Date.now()-FCP_ANIM<1500;
  const head=`<div class="fc-hd"><div><small>MEDIA PLAN LAB</small><b>${isAs?'Assumptions':isYr?'Same month':'Forecast'}</b></div></div>
-  <div class="fc-top fcP" style="--i:${Math.max(0,['forecast','assume','years'].indexOf(FC_VIEW))}"><span class="fcP-pill"></span>${[['forecast','chart','Forecast'],['assume','list','Assumptions'],['years','years','Years']].map(([k,i,l])=>`<button type="button" class="${FC_VIEW===k?'on':''}" onclick="fcViewGo('${k}',this)">${l}</button>`).join('')}</div>
+  <div class="fc-top fcP${fcpA?' fcP-in':''}" style="--i:${Math.max(0,['forecast','assume','years'].indexOf(FC_VIEW))}"><span class="fcP-pill"></span>${[['forecast','chart','Forecast'],['assume','list','Assumptions'],['years','years','Years']].map(([k,i,l])=>`<button type="button" class="${FC_VIEW===k?'on':''}" onclick="fcViewGo('${k}',this)">${l}</button>`).join('')}</div>
   ${ro?'<div class="fc-vo">👁 <span><b>View only</b>You can look at everything here. Ask the admin to let you make changes.</span></div>':''}
   ${c.moving?`<div class="fc-note"><span class="lab-spin dark"></span>Changing the month to ${esc(c.moving)} in the sheet…</div>`:''}`;
- const foot=`<button type="button" class="pk-ghost fc-rd" onclick="${isAs?'asLoad(true)':'fcLoad(true)'}" ${busy?'disabled':''}>${busy?'<span class="lab-spin dark"></span>Reading…':'↻ Read '+(isAs?'Assumptions':'the month tab')+' now'}</button>${d&&d.at&&!isAs?`<div class="fc-foot" style="text-align:center">Read ${esc(new Date(d.at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}))} · ${esc(d.tab||'')}</div>`:''}`;
+ const foot=`${d&&d.at&&!isAs?`<div class="fc-foot" style="text-align:center">Read ${esc(new Date(d.at).toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}))} · ${esc(d.tab||'')}</div>`:''}`;
  if(!d){box.innerHTML=`<div class="lab-box fc">${head}<div class="fc-note">${c.err?'⚠️ '+esc(c.err):'<span class="lab-spin dark"></span>Reading the month tab…'}</div>${foot}</div>`;return}
  if(d.missing){box.innerHTML=`<div class="lab-box fc">${head}<div class="fc-note">No forecast tab is linked for ${esc(CURRENT_ACCOUNT.toUpperCase())} yet.</div></div>`;return}
  if(isAs){box.innerHTML=`<div class="lab-box fc">${head}${asHtml()}${foot}</div>`;return}
@@ -11075,7 +11084,7 @@ function asHtml(){
    const isNew=d.index==='NEW', hjs=d.hijri||[], i=Math.min(c.hj||0,Math.max(0,hjs.length-1)), h=hjs[i]||{};
    const mon=String(d.month||'').split(' ')[0];
    const tbl=(rows,days)=>`<div class="as-t"><div class="as-tr hd"><span></span><span>Spend</span><span>Value</span><span>Conv</span></div>${rows.map(r=>`<div class="as-tr${r.spend>=1.2?' hi':''}"><span>${esc(r.name)}${days&&r.days?` <small>${esc(r.days)}</small>`:''}</span>${num(r,'spend',r.spend)}${num(r,'value',r.value)}${num(r,'conv',r.conv)}</div>`).join('')}</div>`;
-   body=`<div class="as-ix ${isNew?'new':''}"><span>${isNew?'🌙':'📘'}</span><div><b>${isNew?'NEW index':'OLD index'}${d.indexLabel?' '+esc(d.indexLabel.replace(/^.*?(NEW|OLD)\s*index\s*/i,'')):''}</b><small>${isNew?mon+' has '+d.ramadanDays+' days of Ramadan, so the NEW index (3 Ramadans) is used':'No Ramadan in '+esc(mon)+', so the OLD index is used'}</small></div></div>
+   body=`<div class="as-ix ${isNew?'new':''}"><div><b>${isNew?'NEW index':'OLD index'}${d.indexLabel?' '+esc(d.indexLabel.replace(/^.*?(NEW|OLD)\s*index\s*/i,'')):''}</b><small>${isNew?mon+' has '+d.ramadanDays+' days of Ramadan, so the NEW index (3 Ramadans) is used':'No Ramadan in '+esc(mon)+', so the OLD index is used'}</small></div></div>
    <div class="fc-l">HIJRI MONTH</div><div class="as-chip">${hjs.map((x,j)=>`<button type="button" class="${j===i?'on':''}" onclick="asHj(${j})" aria-label="${esc(x.name||HIJRI_NAMES[x.num-1]||'')}, ${x.days} days">${esc(x.name||HIJRI_NAMES[x.num-1]||'')}<i>${x.days}</i></button>`).join('')}</div>
    ${h.num?`<div class="fc-card as-bl2" style="margin-top:8px"><div class="as-hjh"><b>${esc(h.name||HIJRI_NAMES[h.num-1]||'')}</b><span>${esc(mon.slice(0,3))} ${h.from}–${h.to}</span></div>
      <div class="as-3">${['spend','value','conv'].map(k=>`<label><small>${k==='conv'?'Conv':k[0].toUpperCase()+k.slice(1)}</small>${num(h,k,h[k])}</label>`).join('')}</div>
