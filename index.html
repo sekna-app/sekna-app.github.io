@@ -7312,6 +7312,11 @@ window.addEventListener('load',function(){
     html body .rx-tot-g .ro b{color:#f2d38f}html body .rx-tot.w .rx-tot-g .ro b{color:#fff}
     html body .rx-flip{margin:4px 0 0}
     html body .rx-sticky .rx-cats{margin-top:12px!important}
+    /* v218 Top & Bottom 5: long names (ad groups, campaigns) wrap inside the card instead of pushing it out */
+    html body .rx-row,html body .rx-list{max-width:100%;min-width:0}
+    html body .rx-main{min-width:0!important;overflow:hidden}
+    html body .rx-name,html body .rx-det,html body .rx-det span,html body .rx-det b{overflow-wrap:anywhere;word-break:break-word;min-width:0}
+    html body .rx-top{min-width:0}html body .rx-top .rx-roas{flex:none}
 </style>
 </head>
 <body>
