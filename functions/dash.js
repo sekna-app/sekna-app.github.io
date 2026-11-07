@@ -714,8 +714,8 @@ async function rerankCampaigns_(book, bw) {
   const items = Object.keys(byName).map(k => byName[k]).filter(o => o.spend > 0);
   if (!items.length) return;
   items.forEach(o => { o.roas = safeDiv_(o.value, o.spend); });
-  // The day's top 3 campaigns by conversion value (the daily story).
-  bw.topValue = items.filter(o => o.value > 0).sort((a, b) => b.value - a.value).slice(0, 3)
+  // The day's top 3 campaigns by conversion value among those that paid back (ROAS 1x or more) — the daily story.
+  bw.topValue = items.filter(o => o.value > 0 && o.value >= o.spend).sort((a, b) => b.value - a.value).slice(0, 3)
     .map(o => ({ name: o.name, spend: o.spend, conversions: o.conversions, value: o.value, roas: o.roas }));
   const minSpend = Math.ceil(Math.max(50, daySpend * 0.02));
   const best = items.filter(o => o.spend >= minSpend && o.conversions >= 2).sort((a, b) => b.roas - a.roas).slice(0, 5);

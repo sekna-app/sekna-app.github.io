@@ -9209,7 +9209,7 @@ function stxStories(d,k){
  else if(top.length)out.push({t:'top',bg:'linear-gradient(160deg,#22c47c,#0e7a4a)',k:'🏆 TOP CAMPAIGN TYPES',big:CHANNEL_SHORT[top[0].channel]||top[0].channel,p:`${fmt(top[0].roas,2)}x ROAS`,
    top:top.map(c=>({n:CHANNEL_SHORT[c.channel]||c.channel,r:c.roas,v:c.value}))});
  
- {const tv=d.bestWorst&&d.bestWorst.topValue;if(tv&&tv.length)out.push({t:'camps',k:'TODAY · BY VALUE',bg:'linear-gradient(170deg,#0e1a46,#14286e 60%,#1a3290)',list:tv})}
+ {const tv=((d.bestWorst&&d.bestWorst.topValue)||[]).filter(c=>(c.value||0)>=(c.spend||0)&&c.value>0);if(tv.length)out.push({t:'camps',k:'TODAY · WINNING CAMPAIGNS',bg:'linear-gradient(170deg,#0e1a46,#14286e 60%,#1a3290)',list:tv})}
  const th=stxThanks(d);if(th)out.unshift({t:'thanks',k:'THANK YOU TEAM',bg:'radial-gradient(circle at 50% 30%,#3456c4,#1c3384 60%,#0f1d4a)',month:th.name,score:th.score});
  const pa=Number(x.dayNumber)>=20?planAccuracy(d):null;if(pa&&pa.score!=null)out.push({t:'ring',k:'PLAN ACCURACY · MONTH SO FAR',v:pa.score,c:pa.score>=.9?'#22c47c':pa.score>=.8?'#e2b874':'#ff8f8f',big:pc(pa.score),sub:'of the full plan',p:'Spend 40%\nValue 40%\nConversions 20%'});
  
@@ -9412,7 +9412,7 @@ function stxShow(){
   :s.t==='streak'?stxStreakHtml(s)
   :s.t==='spend'?stxSpendHtml(s)
   :s.t==='bars'?`<div class="stx-k">${esc(s.k)}</div><b class="stx-big">${esc(s.big)}</b>${s.bars.map(b=>`<div class="stx-bar"><div><span>${esc(b.n)}</span><b>${b.v==null?'—':Math.round(b.v*100)+'%'}</b></div><i><u style="width:${Math.max(0,Math.min(1,b.v||0))*100}%;background:${b.c}"></u></i><small>${esc(b.p)}</small></div>`).join('')}`
-  :s.t==='camps'?`<div class="stx-cp"><div class="stx-k">${esc(s.k)}</div><b class="stx-cph">Top ${s.list.length} campaign${s.list.length===1?'':'s'}</b>${s.list.map((c,i)=>`<div class="stx-cpc${i?'':' g'}"><div class="t"><span>#${i+1}</span><span>Spend ${money(c.spend)} · ${fmt(c.conversions,0)} conv.</span></div><b>${esc(stxCampName(c.name))}</b><div class="v"><strong>${money(c.value)}</strong><span>${fmt(c.roas,2)}x ROAS</span></div></div>`).join('')}<div class="stx-cpf">Together ${money(s.list.reduce((a,c)=>a+(c.value||0),0))} of value</div></div>`
+  :s.t==='camps'?`<div class="stx-cp"><div class="stx-k">${esc(s.k)}</div><b class="stx-cph">Top ${s.list.length} that paid back</b>${s.list.map((c,i)=>`<div class="stx-cpc${i?'':' g'}"><div class="t"><span>#${i+1}</span><span>Spend ${money(c.spend)} · ${fmt(c.conversions,0)} conv.</span></div><b>${esc(stxCampName(c.name))}</b><div class="v"><strong>${money(c.value)}</strong><span>${fmt(c.roas,2)}x ROAS</span></div></div>`).join('')}<div class="stx-cpf">Only campaigns with ROAS 1x or more · together ${money(s.list.reduce((a,c)=>a+(c.value||0),0))}</div></div>`
   :s.t==='top'?`<div class="stx-k">${esc(s.k)}</div><div class="stx-md">${s.top.map((c,i)=>`<div><span>${['🥇','🥈','🥉'][i]}</span><p><b>${esc(c.n)}</b><i><u style="width:${Math.round(c.r/s.top[0].r*100)}%"></u></i><small>${money(c.v)} of value</small></p><em>${fmt(c.r,2)}x</em></div>`).join('')}</div>`
   :s.t==='ring'?`<div class="stx-k">${esc(s.k)}</div>${ring}<p class="stx-p">${esc(s.p)}</p>`
   :s.t==='card'?`<div class="stx-card"><div class="e">${s.e}</div><small>${esc(s.k)}</small><b>${esc(s.big)}</b><p>${esc(s.p)}</p></div>`
