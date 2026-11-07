@@ -7425,6 +7425,14 @@ window.addEventListener('load',function(){
     .stx-cpc .v{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.stx-cpc .v strong{font-size:25px;font-weight:900;font-variant-numeric:tabular-nums}
     .stx-cpc .v span{font-size:11.5px;font-weight:900;border-radius:99px;padding:3px 9px;background:rgba(255,255,255,.18);white-space:nowrap}.stx-cpc.g .v span{background:#141b33;color:#f2d38f}
     .stx-cpf{text-align:center;font-size:12px;font-weight:700;opacity:.75;margin-top:6px;color:#fff}
+    /* v235 report image: channels as a sheet */
+    .rs-sh table{width:100%;border-collapse:collapse;font-size:15px;font-variant-numeric:tabular-nums}
+    .rs-sh th{font-size:11px;font-weight:900;letter-spacing:.08em;color:#7b84a0;text-transform:uppercase;text-align:right;padding:10px 12px;border-bottom:1.5px solid #e6e9f2}
+    .rs-sh td{padding:12px;text-align:right;font-weight:800;color:#141b33;border-bottom:1px solid #f0f2f7}
+    .rs-sh th:first-child,.rs-sh td:first-child{text-align:left}
+    .rs-sh td:first-child{font-weight:900}.rs-sh td i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:9px;vertical-align:0}
+    .rs-sh td span{display:inline-block;border-radius:99px;padding:3px 10px;font-weight:900}.rs-sh td span.good{background:#e3f6ec;color:#13804f}.rs-sh td span.bad{background:#fdeaec;color:#c63a4a}
+    .rs-sh tr.T td{background:#f6f8fc;font-weight:900;border-bottom:0}.rs-sh tr.T td span{background:#e8edfb;color:#203c8e}
 </style>
 </head>
 <body>
@@ -14063,8 +14071,16 @@ function oneMonthShareHtml(){
  return `<div class="r2-top">${rsHead('Report · '+short2(L.title)+mxTypeTag())}<div class="r2-when">${esc(S.partial?`${S.days} days so far`:L.sub)}${c.avg?' · per day':''}</div></div>
   <div class="r2-tiles">${tile('value','v')}${tile('spend','s')}${tile('conversions','c')}${tile('roas','r')}</div>
   ${rest.length?`<div class="r2-mini">${rest.map(r=>`<div><small>${esc(r.m.k==='aov'?'Avg. gift':r.m.l)}</small><b>${r.m.f(r.v,c.avg)}</b></div>`).join('')}</div>`:''}
-  ${list.length?`<div class="r2-sec">${rsT('By channel','spend · ROAS')}${rsChannelBars(list,all)}</div>`:''}
+  ${list.length?`<div class="r2-sec">${rsT('By campaign type','green ROAS = above the month')}${rsChannelSheet(list,all,c.avg)}</div>`:''}
   ${SHARE_FOOT}`;
+}
+
+function rsChannelSheet(list,all,avg){
+ const tot=list.reduce((a,c)=>a+c.spend,0)||1,T={spend:0,clicks:0,conversions:0,value:0};list.forEach(c=>{T.spend+=c.spend;T.clicks+=c.clicks||0;T.conversions+=c.conversions||0;T.value+=c.value||0});
+ const n=v=>fmt(v,avg?1:0),cpa=c=>c.conversions?money(c.spend/c.conversions,2):'—';
+ return `<div class="rp-box rs-sh"><table><tr><th>Type</th><th>Spend</th><th>Share</th><th>Clicks</th><th>Conv.</th><th>Value</th><th>CPA</th><th>ROAS</th></tr>
+  ${list.map(c=>`<tr><td><i class="m${c.k}"></i>${esc(c.short)}</td><td>${money(c.spend)}</td><td>${Math.round(c.spend/tot*100)}%</td><td>${n(c.clicks||0)}</td><td>${n(c.conversions||0)}</td><td>${money(c.value)}</td><td>${cpa(c)}</td><td><span class="${c.roas!=null&&c.roas>=all?'good':'bad'}">${c.roas!=null?fmt(c.roas,2)+'x':'—'}</span></td></tr>`).join('')}
+  <tr class="T"><td>Total</td><td>${money(T.spend)}</td><td>100%</td><td>${n(T.clicks)}</td><td>${n(T.conversions)}</td><td>${money(T.value)}</td><td>${cpa(T)}</td><td><span>${T.spend?fmt(T.value/T.spend,2)+'x':'—'}</span></td></tr></table></div>`;
 }
 function compareShareHtml(){
  const c=rsMonthCtx();
@@ -14568,12 +14584,27 @@ async function captureReport(html,extraClass){
  document.body.appendChild(host);
  try{
    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+   
+   [host,...host.querySelectorAll('*')].forEach(el=>{const cs=getComputedStyle(el),bad=v=>/color\(|color-mix/.test(v||''),set=(k,v)=>el.style.setProperty(k,v,'important');
+     if(bad(cs.boxShadow))set('box-shadow','none');if(bad(cs.backgroundColor))set('background-color','transparent');if(bad(cs.backgroundImage))set('background-image','none');
+     if(bad(cs.color))set('color','inherit');if(bad(cs.borderTopColor+cs.borderRightColor+cs.borderBottomColor+cs.borderLeftColor))set('border-color','transparent');
+     if(bad(cs.outlineColor))set('outline-color','transparent');if(bad(cs.textDecorationColor))set('text-decoration-color','currentColor')});
    return await h2c(host,{backgroundColor:'#152a66',scale:2,useCORS:true,allowTaint:true,logging:false,scrollX:0,scrollY:0,
      windowWidth:1800,windowHeight:1600,
      onclone:doc=>{
        doc.body.classList.remove('dark-mode','desktop-site-mode','is-sharing');
        doc.documentElement.classList.remove('desktop-site-mode');
        const r=doc.querySelector('.rp-report');if(r){r.style.left='0';r.style.top='0';}
+       
+       
+       if(r){const W=doc.defaultView;[r,...r.querySelectorAll('*')].forEach(el=>{const cs=W.getComputedStyle(el);
+         if(/color\(|color-mix/.test(cs.boxShadow))el.style.boxShadow='none';
+         if(/color\(|color-mix/.test(cs.backgroundColor))el.style.backgroundColor='transparent';
+         if(/color\(|color-mix/.test(cs.backgroundImage))el.style.backgroundImage='none';
+         if(/color\(|color-mix/.test(cs.color))el.style.color='inherit';
+         if(/color\(|color-mix/.test(cs.borderTopColor+cs.borderBottomColor+cs.borderLeftColor+cs.borderRightColor))el.style.borderColor='transparent';
+         if(/color\(|color-mix/.test(cs.outlineColor))el.style.outlineColor='transparent';
+         if(/color\(|color-mix/.test(cs.textDecorationColor))el.style.textDecorationColor='currentColor';})}
      }});
  }finally{host.remove()}
 }
