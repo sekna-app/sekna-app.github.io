@@ -7538,6 +7538,10 @@ window.addEventListener('load',function(){
     html body .fc-top.fcP.fcP-in>button:nth-of-type(2){animation-delay:.1s}html body .fc-top.fcP.fcP-in>button:nth-of-type(3){animation-delay:.2s}
     html body .fc-top.fcP.fcP-in>.fcP-pill{animation:fcpIn .6s ease both}
     @keyframes fcpIn{from{opacity:0}}
+
+    /* v255 Search Terms: no Read buttons (pull down refreshes); a gap after "Sort" */
+    html body .st-rd{display:none!important}
+    html body .st-sort>span{margin-right:10px!important;padding-right:2px}
 </style>
 </head>
 <body>
@@ -11815,7 +11819,7 @@ function renderTerms(part){
  if(!d){body.innerHTML=shell(`<div class="vly-wait">${c.err?'⚠️ '+esc(c.err)+' · <a href="#" onclick="stLoad(true);renderTerms();return false">Try again</a>':'<span class="lab-spin dark"></span> Reading the AI Max sheet…'}</div>`);return}
  if(d.missing||!(d.terms||[]).length){body.innerHTML=shell(`<div class="dx-empty">${d.missing?`The AI Max sheet of ${esc(CURRENT_ACCOUNT.toUpperCase())} is not linked or has no search terms yet.`:'No search terms with spend in this snapshot.'}</div>`);return}
  const sm=stSum(d),T=sm.T;
- const keys=['x','n','f','g'].filter(k=>sm.cnt[k]);
+ const keys=['g','f','n','x'].filter(k=>sm.cnt[k]);
  if(ST_F!=='all'&&!sm.cnt[ST_F])ST_F='all';
  const chips=`<div class="st-chips"><button type="button" class="${ST_F==='all'?'on':''}" style="--c:#1d2433" onclick="stFilter('all')"><i></i>All <b>${T.length}</b></button>${keys.map(k=>`<button type="button" class="${ST_F===k?'on':''}" style="--c:${ST_K[k].c};--b:${ST_K[k].b}" onclick="stFilter('${k}')"><i></i>${ST_K[k].l} <b>${sm.cnt[k]}</b></button>`).join('')}</div>`;
  const sorts=`<div class="st-sort"><span>Sort</span>${[['cost','Cost'],['clicks','Clicks'],['impr','Impr.'],['conv','Conv.'],['value','Value']].map(([k,l])=>`<button type="button" class="${ST_SORT===k?'on':''}" onclick="stSort('${k}')">${l}${ST_SORT===k?' ↓':''}</button>`).join('')}</div>`;
@@ -11970,10 +11974,10 @@ function termsPerfShareText(){
  const conv=[by('1a'),by('1b')].filter(Boolean),nConv=conv.reduce((t,x)=>t+x.rows.length,0),val=conv.reduce((t,x)=>t+sum(x,/conv\.? ?value/),0);
  const s1b=by('1b'),s2=by('2'),s3=by('3');
  const L=[`📌 ST ${a.shortLabel||CURRENT_ACCOUNT.toUpperCase()} — Performance 📊`,''];
- if(conv.length)L.push(`✅ Converting: ${nConv} · ${K(val)} Value`);
- if(s1b&&s1b.rows.length)L.push(`➕ New Terms: ${s1b.rows.length}`);
- if(s2&&s2.rows.length)L.push(`🚫 No Conv.: ${s2.rows.length} · ${K(sum(s2,/^cost/))} Spend`);
- if(s3&&s3.rows.length)L.push(`👀 High Impr.: ${s3.rows.length}`);
+ 
+ const m6=by('6');if(m6&&m6.rows.length){const sp=sum(m6,/^cost/),vv=sum(m6,/value/);L.push(`💰 Spend: ${K(sp)} · 💎 Value: ${K(vv)}`,`📈 ROAS: ${sp?fmt(vv/sp,2):'0.00'}x`,'')}
+ if(conv.length)L.push(`✅ Converting: ${K(val)} Value`);
+ if(s2&&s2.rows.length)L.push(`🚫 No Conv.: ${K(sum(s2,/^cost/))} Spend`);
  return L.join('\n');
 }
  
@@ -12097,7 +12101,7 @@ function termsShareText(){
 }
 function termsShareHtml(){
  const c=ST[CURRENT_ACCOUNT]||{},d=c.data;if(!d||d.missing)return rsHead('Search Terms · AI Max')+'<div class="rs-t"><b>No AI Max data yet</b></div>'+SHARE_FOOT;
- const sm=stSum(d),T=sm.T.slice().sort((a,b)=>b.cost-a.cost),keys=['x','n','f','g'].filter(k=>sm.cnt[k]);
+ const sm=stSum(d),T=sm.T.slice().sort((a,b)=>(b.value||0)-(a.value||0)||b.cost-a.cost),keys=['x','n','f','g'].filter(k=>sm.cnt[k]);
  const ring=stRing(sm,190,26,`<text x="95" y="92" text-anchor="middle" font-size="28" font-weight="900" fill="#fff">${esc(money(sm.cost,2))}</text><text x="95" y="116" text-anchor="middle" font-size="14" font-weight="800" fill="#9fb0dd">${T.length} TERMS</text>`,true);
  const tiles=keys.map(k=>`<div class="sts-tl" style="--c:${ST_K[k].c}"><small>${ST_K[k].l.toUpperCase()} · ${sm.cnt[k]}</small><b>${esc(money(sm.by[k],2))}</b><em>${stPct(sm,k)}%</em></div>`).join('');
  return `${rsHead('Search Terms · AI Max'+(d.run?' · '+d.run:''))}
