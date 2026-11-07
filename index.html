@@ -7796,6 +7796,24 @@ window.addEventListener('load',function(){
     .rw-lr b .aic{margin-right:3px;width:12px;height:12px}
     .mrp-msg .aic{margin-right:6px}
     body.dark-mode .rw-sn{background:#151a22;border-color:#2a313c}body.dark-mode .rw-sn b{color:#fff}body.dark-mode .rw-pk{background:#151a22;border-color:#2c4fb8}
+
+    /* v264 Activity day picker: a small month calendar, one day or a range */
+    .act-cal{border:1.5px solid #e3e7f0;border-radius:16px;padding:10px;margin:-4px 0 12px;background:#fff;animation:skRise .25s cubic-bezier(.2,.75,.25,1) both}
+    .act-ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}.act-ch b{font-size:13px;color:#1d2433}
+    .act-ch button{all:unset;cursor:pointer;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#f2f4f9;font-weight:900;color:#203c8e}.act-ch button:disabled{opacity:.3;cursor:default}
+    .act-wd,.act-gd{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}.act-wd span{font-size:10px;font-weight:900;color:#8a93ad;padding:3px 0}
+    .act-gd button{all:unset;cursor:pointer;height:32px;border-radius:9px;font-size:12.5px;font-weight:800;color:#1d2433;display:grid;place-items:center}
+    .act-gd button.t{box-shadow:inset 0 0 0 1.5px #c99a45}.act-gd button.in{background:#eaf0ff;color:#203c8e}.act-gd button.e{background:linear-gradient(135deg,#2c4fb8,#1b2f78);color:#fff}
+    .act-gd button:disabled{color:#c9cfdc;cursor:default}
+    .act-cf{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid #eef0f5}.act-cf small{font-size:11.5px;font-weight:800;color:#4b5263}
+    .act-cf button{all:unset;cursor:pointer;font-size:12.5px;font-weight:900;color:#fff;background:linear-gradient(135deg,#2c4fb8,#1b2f78);border-radius:99px;padding:7px 16px}.act-cf button:disabled{opacity:.4;cursor:default}
+    body.dark-mode .act-cal{background:#151a22;border-color:#2a313c}body.dark-mode .act-gd button,body.dark-mode .act-ch b{color:#e7ebf3}
+
+    .act-idle>div{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid #eef0f5}.act-idle>div:first-child{border:0}
+    .act-idle .sk-person-avatar{width:34px;height:34px}.act-idle b{font-size:13px;color:#1d2433}.act-idle b small{display:block;font-size:11px;color:#8a93ad;font-weight:700}
+    .act-idle em{font-style:normal;font-size:11.5px;font-weight:900;border-radius:99px;padding:3px 10px;background:#eef1f7;color:#4b5263}.act-idle em.a{background:#fff3dc;color:#a56a06}.act-idle em.r{background:#fdeaec;color:#c63a4a}
+
+    html body #adminOverlay .act-seg{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))}html body #adminOverlay .act-seg button{padding-left:4px!important;padding-right:4px!important;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -16689,14 +16707,29 @@ function adminLoadExtra(k){
 function actView(v){ADMIN_ACT_VIEW=v;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 
 let ADMIN_ACT_RANGE='month',ADMIN_ACT_DAY='',ADMIN_ACT_R=null,ADMIN_ACT_RBUSY=false;
-function actRange(){const d=o=>isoDay(o);switch(ADMIN_ACT_RANGE){case 'today':return {from:d(0),to:d(0)};case 'yday':return {from:d(-1),to:d(-1)};
- case '7':return {from:d(-6),to:d(0)};case '30':return {from:d(-29),to:d(0)};case 'day':return ADMIN_ACT_DAY?{from:ADMIN_ACT_DAY,to:ADMIN_ACT_DAY}:null;default:return null}}
-function actRangeGo(k,v){ADMIN_ACT_RANGE=k;if(k==='day'&&v)ADMIN_ACT_DAY=v;ADMIN_ACT_R=null;const r=actRange();
+
+let ACT_CAL={open:false,m:'',a:'',b:''};
+function actRange(){if(ADMIN_ACT_RANGE!=='days'||!ACT_CAL.a)return null;const b=ACT_CAL.b||ACT_CAL.a;return ACT_CAL.a<=b?{from:ACT_CAL.a,to:b}:{from:b,to:ACT_CAL.a}}
+function actLoadRange(){ADMIN_ACT_R=null;const r=actRange();
  if(r){ADMIN_ACT_RBUSY=true;serverCall('adminActivity',getAccessToken(),'',r).then(x=>{ADMIN_ACT_RBUSY=false;ADMIN_ACT_R=x;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{ADMIN_ACT_RBUSY=false;ADMIN_ACT_R={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
- if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
- if(k==='day'&&!v)setTimeout(()=>{const i=document.getElementById('actDay');try{i&&i.showPicker&&i.showPicker()}catch(e){}},60)}
-function actRangeLbl(){const r=actRange();if(!r||ADMIN_ACT_RANGE==='month')return 'this month';if(ADMIN_ACT_RANGE==='today')return 'today';if(ADMIN_ACT_RANGE==='yday')return 'yesterday';
- if(r.from===r.to)return 'on '+new Date(r.from+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'});return 'in the last '+ADMIN_ACT_RANGE+' days'}
+ if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+function actRangeGo(k){if(k==='month'){ADMIN_ACT_RANGE='month';ACT_CAL.open=false;actLoadRange();return}
+ ACT_CAL.open=!ACT_CAL.open;if(!ACT_CAL.m)ACT_CAL.m=isoDay(0).slice(0,7);if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+function actCalNav(d){const y=+ACT_CAL.m.slice(0,4),m=+ACT_CAL.m.slice(5,7)+d,dt=new Date(y,m-1,1);ACT_CAL.m=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0');if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+function actCalPick(k){if(!ACT_CAL.a||ACT_CAL.b){ACT_CAL.a=k;ACT_CAL.b=''}else ACT_CAL.b=k;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+function actCalApply(){if(!ACT_CAL.a)return;ADMIN_ACT_RANGE='days';ACT_CAL.open=false;actLoadRange()}
+function actFmtD(k){return new Date(k+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'})}
+function actRangeLbl(){const r=actRange();if(!r)return 'this month';return r.from===r.to?'on '+actFmtD(r.from):actFmtD(r.from)+' – '+actFmtD(r.to)}
+function actCalHtml(){
+ const y=+ACT_CAL.m.slice(0,4),m=+ACT_CAL.m.slice(5,7),first=new Date(y,m-1,1),dim=new Date(y,m,0).getDate(),lead=(first.getDay()+6)%7,today=isoDay(0);
+ const lo=ACT_CAL.a&&ACT_CAL.b?(ACT_CAL.a<ACT_CAL.b?ACT_CAL.a:ACT_CAL.b):ACT_CAL.a, hi=ACT_CAL.a&&ACT_CAL.b?(ACT_CAL.a<ACT_CAL.b?ACT_CAL.b:ACT_CAL.a):ACT_CAL.a;
+ let cells='';for(let i=0;i<lead;i++)cells+='<i></i>';
+ for(let d=1;d<=dim;d++){const k=ACT_CAL.m+'-'+String(d).padStart(2,'0'),fut=k>today,cls=(k===lo||k===hi)?'e':(lo&&hi&&k>lo&&k<hi)?'in':'';
+   cells+=`<button type="button" class="${cls}${k===today?' t':''}" ${fut?'disabled':`onclick="actCalPick('${k}')"`}>${d}</button>`}
+ const lbl=ACT_CAL.a?(ACT_CAL.b&&ACT_CAL.b!==ACT_CAL.a?actFmtD(lo)+' – '+actFmtD(hi):actFmtD(ACT_CAL.a)):'Tap a day, or two for a range';
+ return `<div class="act-cal"><div class="act-ch"><button type="button" onclick="actCalNav(-1)">‹</button><b>${first.toLocaleDateString('en-GB',{month:'long',year:'numeric'})}</b><button type="button" onclick="actCalNav(1)" ${ACT_CAL.m>=today.slice(0,7)?'disabled':''}>›</button></div>
+  <div class="act-wd">${['M','T','W','T','F','S','S'].map(x=>`<span>${x}</span>`).join('')}</div><div class="act-gd">${cells}</div>
+  <div class="act-cf"><small>${lbl}</small><button type="button" onclick="actCalApply()" ${ACT_CAL.a?'':'disabled'}>Show</button></div></div>`}
 
  
 let PERM={data:null,busy:false,edit:{},saving:false,grp:'mp',who:''};
@@ -17029,8 +17062,8 @@ function adminServerHtml(){
 window.addEventListener('sekna-server',()=>{if(ADMIN_TAB==='server'&&ADMIN_LAST)renderAdmin(ADMIN_LAST)});
 function hoursText(sec){sec=Math.round(sec||0);const h=Math.floor(sec/3600),m=Math.round(sec%3600/60);return h?`${h}h ${m}m`:`${m}m`}
 function adminActivityHtml(){
- const rg=ADMIN_ACT_RANGE!=='month'&&actRange(), per=actRangeLbl();
- const pills=`<div class="act-rg">${[['month','Month'],['today','Today'],['yday','Yesterday'],['7','7 days'],['30','30 days']].map(([k,l])=>`<button type="button" class="${ADMIN_ACT_RANGE===k?'on':''}" onclick="actRangeGo('${k}')">${l}</button>`).join('')}<label class="${ADMIN_ACT_RANGE==='day'?'on':''}">${aI('cal')}<span>${ADMIN_ACT_RANGE==='day'&&ADMIN_ACT_DAY?esc(new Date(ADMIN_ACT_DAY+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'})):'Day'}</span><input id="actDay" type="date" max="${isoDay(0)}" value="${esc(ADMIN_ACT_DAY)}" onchange="actRangeGo('day',this.value)"></label></div>`;
+ const rg=ADMIN_ACT_RANGE!=='month'&&actRange(), per=rg&&rg.from!==rg.to?actRangeLbl():actRangeLbl();
+ const pills=`<div class="act-rg"><button type="button" class="${ADMIN_ACT_RANGE==='month'?'on':''}" onclick="actRangeGo('month')">This month</button><button type="button" class="${ADMIN_ACT_RANGE==='days'||ACT_CAL.open?'on':''}" onclick="actRangeGo('days')">${aI('cal')}${ADMIN_ACT_RANGE==='days'?esc(actRangeLbl()):'Days'}</button></div>${ACT_CAL.open?actCalHtml():''}`;
  const a=rg?(ADMIN_ACT_R||(ADMIN_ACT_RBUSY?null:null)):ADMIN_ACTIVITY, head=`<b class="ad-h">${aI('chart')}Activity</b>${pills}`;
  if(!a)return head+'<div class="sk-admin-empty">Loading…</div>';
  if(a.error)return head+`<div class="sk-admin-empty">${esc(a.error)}</div>`;
@@ -17038,7 +17071,13 @@ function adminActivityHtml(){
  const bars=(list,val,txt)=>{const mx=Math.max(1,...list.map(val));return list.length?`<div class="sh-bars">${list.map(p=>`<div class="sh-row"><span>${esc(p.name)}</span><i><u style="width:${(val(p)/mx*100).toFixed(1)}%"></u></i><b>${txt(p)}</b></div>`).join('')}</div>`:`<div class="sk-admin-empty">Nothing ${per}.</div>`};
  const reset=(k,l)=>rg?'':`<button type="button" class="sh-reset" onclick="adminResetActivity('${k}',this)">${aI('undo')}Reset ${l}</button>`;
  let body='';
- if(v==='shares'){const s=a.shares;
+ if(v==='idle'){
+   
+   const now=Date.now(),by={};((ADMIN_LAST&&ADMIN_LAST.rows)||[]).forEach(r=>{if(r.status!=='Approved')return;const p=by[r.email]=by[r.email]||{email:r.email,name:r.name,last:0};p.last=Math.max(p.last,r.lastSeenMs||0)});
+   const L=Object.values(by).map(p=>Object.assign(p,{d:p.last?Math.floor((now-p.last)/864e5):999})).filter(p=>p.d>=1).sort((x,y)=>y.d-x.d);
+   body=`<small class="ad-sub">Approved people who have not opened HEMERA for a day or more.</small>
+   ${L.length?`<div class="act-idle">${L.map(p=>`<div><span class="sk-person-avatar has-emb">${personAv(memberOf(p.email).avatar,p.name)}</span><b>${esc(p.name)}<small>${p.last?'Last open '+esc(timeAgo(p.last,now)):'Never opened'}</small></b><em class="${p.d>=7?'r':p.d>=3?'a':''}">${p.d>=999?'Never':p.d+' day'+(p.d===1?'':'s')}</em></div>`).join('')}</div>`:'<div class="sk-admin-empty">Everyone opened HEMERA today.</div>'}`;
+ }else if(v==='shares'){const s=a.shares;
    body=`<small class="ad-sub">WhatsApp images prepared. Tap a person for details.</small>
    <div class="sh-total"><b>${s.total}</b><span>image${s.total===1?'':'s'} ${per}</span></div>${shLeaderboard(s)}
    ${s.kinds.length?`<div class="sh-kinds">${s.kinds.map(k=>`<span>${esc(SHARE_NAMES[k.kind]||k.kind)} <b>${k.n}</b></span>`).join('')}</div>`:''}${reset('shares','share counts')}`;
@@ -17049,7 +17088,7 @@ function adminActivityHtml(){
    body=`<small class="ad-sub">Time with HEMERA open on screen.</small>
    <div class="sh-total"><b>${hoursText(t.total)}</b><span>in HEMERA ${per}</span></div>${bars(t.people,p=>p.sec,p=>hoursText(p.sec))}${reset('time','time in the app')}`;
  }
- return `${head}<div class="act-seg">${seg('shares',aI('share')+'Shares')}${seg('opens',aI('phone')+'Opens')}${seg('time',aI('clock')+'Time')}</div>${body}`;
+ return `${head}<div class="act-seg">${seg('shares',aI('share')+'Shares')}${seg('opens',aI('phone')+'Opens')}${seg('time',aI('clock')+'Time')}${seg('idle',aI('moon')+'Away')}</div>${body}`;
 }
 
 
