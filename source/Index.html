@@ -7433,6 +7433,23 @@ window.addEventListener('load',function(){
     .rs-sh td:first-child{font-weight:900}.rs-sh td i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:9px;vertical-align:0}
     .rs-sh td span{display:inline-block;border-radius:99px;padding:3px 10px;font-weight:900}.rs-sh td span.good{background:#e3f6ec;color:#13804f}.rs-sh td span.bad{background:#fdeaec;color:#c63a4a}
     .rs-sh tr.T td{background:#f6f8fc;font-weight:900;border-bottom:0}.rs-sh tr.T td span{background:#e8edfb;color:#203c8e}
+    /* v237 Results month card on phones: Spend as the first tile (2 x 2), chips centred; a By campaign type button in an opened day */
+    .mt-sp{display:none!important}
+    @media (max-width:1099px){
+      html body #app #dxBody .mt3 .mt-grid{grid-template-columns:1fr 1fr!important}
+      html body #app #dxBody .mt3 .mt-t.mt-sp{display:flex!important}
+      html body #app #dxBody .mt3 .mt-t{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;padding:10px 8px!important;gap:4px!important}
+      html body #app #dxBody .mt3 .mt-t *{text-align:center!important}
+      html body #app #dxBody .mt3 .mt-t .mt-chip{justify-self:auto!important;align-self:center!important;margin:2px auto 0!important}
+    }
+    .dx-tybtn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:10px;border:1.5px solid #c9d8ff;background:#f6f8ff;color:#203c8e;border-radius:12px;padding:9px;font:inherit;font-size:12.5px;font-weight:900;cursor:pointer}
+    .dx-tybtn i{font-style:normal;transition:transform .2s}.dx-tybtn.on i{transform:rotate(180deg)}
+    .dx-ty{margin-top:8px}.dx-tyw{font-size:12px;font-weight:700;color:#8a93ad;text-align:center;padding:8px}
+    .dx-tyt{width:100%;border-collapse:collapse;font-size:12px;font-variant-numeric:tabular-nums}
+    .dx-tyt th{font-size:9.5px;font-weight:900;letter-spacing:.06em;color:#7b84a0;text-transform:uppercase;text-align:right;padding:5px 4px;border-bottom:1px solid #edf0f6}
+    .dx-tyt td{text-align:right;padding:6px 4px;font-weight:800;color:#141b33;border-bottom:1px solid #f3f5f9;white-space:nowrap}
+    .dx-tyt th:first-child,.dx-tyt td:first-child{text-align:left}.dx-tyt td i{display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:6px}
+    body.dark-mode .dx-tybtn{background:#18203a;border-color:#2c3a6b;color:#9fb6ff}body.dark-mode .dx-tyt td{color:#fff;border-color:#232a36}
 </style>
 </head>
 <body>
@@ -10269,6 +10286,18 @@ function dxResultSheet(x){
  const rows=[['Spend',money(a.spend),money(p.spend),a.spendAchievement,0],['Clicks',fmt(a.clicks,0),fmt(p.clicks,0),q(a.clicks,p.clicks),0],['Conv.',fmt(a.conversions,0),fmt(p.conversions,0),a.convAchievement,0],['Value',money(a.value),money(p.value),a.valueAchievement,0],['ROAS',fmt(a.roas,2)+'x',fmt(p.roas,2)+'x',q(a.roas,p.roas),0],['CPA',money(a.cpa,2),money(cpaP,2),q(a.cpa,cpaP),1],['CVR',percent(a.cvr),percent(p.cvr),q(a.cvr,p.cvr),0]];
  return `<table class="dk-sheet dk-only dk-rsh"><tr><th></th><th>Actual · % of plan</th><th>Plan</th></tr>${rows.map(r=>`<tr><td>${r[0]}</td><td><b>${r[1]}</b>${cell(r[3],r[4])}</td><td class="dk-pl">${r[2]}</td></tr>`).join('')}</table>`;
 }
+
+async function dxTypes(dk,btn){
+ const box=btn.nextElementSibling;if(!box)return;
+ if(!box.hidden){box.hidden=true;btn.classList.remove('on');return}
+ box.hidden=false;btn.classList.add('on');box.innerHTML='<div class="dx-tyw"><span class="lab-spin dark"></span> Loading…</div>';
+ let ex=null;try{ex=await ensureMonthExtras()}catch(e){}
+ const P=ex&&dayParts(dk,ex);
+ if(!P||!P.channels||!Object.keys(P.channels).length){box.innerHTML='<div class="dx-tyw">No campaign type numbers for this day yet.</div>';return}
+ const ch=mergeVideo(P.channels),names=CHANNEL_ORDER.slice();Object.keys(ch).forEach(n=>{if(!names.includes(n))names.push(n)});
+ const rows=names.map((n,i)=>ch[n]?{n,k:Math.min(i,4),c:ch[n]}:null).filter(r=>r&&(r.c.spend||r.c.value));
+ box.innerHTML=`<table class="dx-tyt"><tr><th>Type</th><th>Cost</th><th>Clicks</th><th>Conv.</th><th>Value</th></tr>${rows.map(r=>`<tr><td><i class="m${r.k}"></i>${esc(CHANNEL_SHORT[r.n]||r.n)}</td><td>${money(r.c.spend)}</td><td>${fmt(r.c.clicks||0,0)}</td><td>${fmt(r.c.conversions||0,0)}</td><td>${money(r.c.value)}</td></tr>`).join('')}</table>`;
+}
 function dxResultMore(x){
  const a=x.actual;
  
@@ -10302,7 +10331,7 @@ function daysCards(days,latest,T){
    const box=(l,act,r,cls)=>`<div class="dcR-k ${cls}"><small>${l}</small><b>${r==null||!isFinite(r)?'—':Math.round(r*100)+'%'}</b><span>${act}</span></div>`;
    return `<div class="dc-card dcA dcH dcR${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" data-rx="1" onclick="toggleDay('${x.date}')">${rxBadge(x.date)}${hdr}<div class="dc-main">
      <div class="dcR-g">${box('Spend',money(a.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${(()=>{const r=p.clicks?a.clicks/p.clicks:null;return box('Clicks',fmt(a.clicks,0),r,achClass(r)).replace('class="dcR-k','class="dk-only dcR-k')})()}${box('Conv.',fmt(a.conversions,0),a.convAchievement,achClass(a.convAchievement))}${box('Value',money(a.value),a.valueAchievement,achClass(a.valueAchievement))}</div>
-     <div class="dc-more"><table class="dcR-tb"><tr><th></th><th>Actual</th><th>Plan</th><th>%</th></tr>${rr('Spend',money(a.spend),money(p.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${rr('Conv.',fmt(a.conversions,0),fmt(p.conversions,0),a.convAchievement,achClass(a.convAchievement))}${rr('Value',money(a.value),money(p.value),a.valueAchievement,achClass(a.valueAchievement))}${rr('ROAS',fmt(a.roas,2)+'x',fmt(p.roas,2)+'x',roR,achClass(roR))}${p.clicks?rr('Clicks',fmt(a.clicks,0),fmt(p.clicks,0),a.clicks/p.clicks,achClass(a.clicks/p.clicks)):''}</table>${dxResultMore(x)}${dxResultSheet(x)}</div></div></div>`;
+     <div class="dc-more"><table class="dcR-tb"><tr><th></th><th>Actual</th><th>Plan</th><th>%</th></tr>${rr('Spend',money(a.spend),money(p.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${rr('Conv.',fmt(a.conversions,0),fmt(p.conversions,0),a.convAchievement,achClass(a.convAchievement))}${rr('Value',money(a.value),money(p.value),a.valueAchievement,achClass(a.valueAchievement))}${rr('ROAS',fmt(a.roas,2)+'x',fmt(p.roas,2)+'x',roR,achClass(roR))}${p.clicks?rr('Clicks',fmt(a.clicks,0),fmt(p.clicks,0),a.clicks/p.clicks,achClass(a.clicks/p.clicks)):''}</table>${dxResultMore(x)}${dxResultSheet(x)}<button type="button" class="dx-tybtn" onclick="event.stopPropagation();dxTypes('${x.date}',this)">By campaign type <i>▾</i></button><div class="dx-ty" hidden></div></div></div></div>`;
  }).join('');
  return (plan?planHero(days,T):resultsHero(days,T))+`<div class="dc-list">${cards}</div>`+(plan?`<div class="dc-legend">${PLAN_MIX_LABELS.map((l,k)=>`<span><i class="m${k}"></i>${l}</span>`).join('')}</div>`:'')+`<div class="dx-note">Tap a day to see more.</div>`;
 }
@@ -10337,7 +10366,7 @@ function resultsHero(days,T){
  return `<div class="mt mt3"><div class="mt-top"><div><small>Month to date</small><b>${a.days} of ${days.length} days</b></div><div class="mt-days"><span style="width:${(days.length?a.days/days.length*100:0).toFixed(1)}%"></span></div></div>
   <div class="mt-hero"><div><small>Spend</small><b>${money(a.spend)}</b><i>month plan ${money(p.spend)}</i>${sR!=null?`<span class="mt3-chip ${cls(sR,true)}">${Math.round(sR*100)}% of the month plan</span>`:''}</div>
    <div class="mt-ring ${cls(sR,true)}"><svg viewBox="0 0 72 72"><circle r="${R}" cx="36" cy="36" class="t"/><circle r="${R}" cx="36" cy="36" class="f" stroke-dasharray="${(f*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 36 36)"/></svg><b>${sR!=null?Math.round(sR*100)+'%':'—'}</b></div></div>
-  <div class="mt-grid">${tile('Conversions',fmt(a.conversions,0),cR,`${pct(a.conversions,p.conversions)} of plan`,cls(cR))}${tile('Value',money(a.value),vR,`${pct(a.value,p.value)} of plan`,cls(vR))}${tile('ROAS',fmt(a.roas,2)+'x',rR,`target ${fmt(tR,2)}x`,rR==null?'':rR>=1?'good':'bad')}</div>
+  <div class="mt-grid">${tile('Spend',money(a.spend),sR,`${pct(a.spend,p.spend)} of plan`,cls(sR,true)).replace('class="mt-t"','class="mt-t mt-sp"')}${tile('Conversions',fmt(a.conversions,0),cR,`${pct(a.conversions,p.conversions)} of plan`,cls(cR))}${tile('Value',money(a.value),vR,`${pct(a.value,p.value)} of plan`,cls(vR))}${tile('ROAS',fmt(a.roas,2)+'x',rR,`target ${fmt(tR,2)}x`,rR==null?'':rR>=1?'good':'bad')}</div>
   ${mix.length?`<div class="mt-mix ph3-bar">${mix.map(m=>`<span class="m${m.k}" style="flex:${m.s/tot}"></span>`).join('')}</div><div class="mt-legend">${mix.map(m=>`<span><i class="m${m.k}"></i>${PLAN_MIX_LABELS[m.k]} ${Math.round(m.s/tot*100)}%</span>`).join('')}</div>`:''}</div>`;
 }
  
