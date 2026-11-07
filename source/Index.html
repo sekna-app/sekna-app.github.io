@@ -7072,6 +7072,37 @@ window.addEventListener('load',function(){
     @media (max-width:1099px){html:not(.desktop-site-mode) #monthsPanel .mx-ctl{margin-left:-18px!important;margin-right:-18px!important;padding-left:14px!important;padding-right:14px!important;border-radius:18px 18px 0 0}}
     html body #monthsPanel .mx-mode{background:#e2e5ed!important}
     body.dark-mode #monthsPanel .mx-mode{background:#1a1f29!important}
+    /* v213 picks: gold dot on the month icons; Forecast folds open row by row; Hijri months as pills with a day bubble; settings as a slim list with coloured icons on see-through tiles */
+    #channelPanel .oxL .ox-ic{position:relative}
+    #channelPanel .oxL .ox-ic:after{content:"";position:absolute;top:-2px;right:-2px;width:8px;height:8px;border-radius:50%;background:#e2b874;box-shadow:0 0 0 2px #fff;animation:oxDot .4s cubic-bezier(.3,1.6,.5,1) both}
+    #channelPanel .oxL .ox-tile:nth-child(2) .ox-ic:after{animation-delay:.12s}#channelPanel .oxL .ox-tile:nth-child(3) .ox-ic:after{animation-delay:.24s}
+    body.dark-mode #channelPanel .oxL .ox-ic:after{box-shadow:0 0 0 2px #151a22}
+    @keyframes oxDot{from{transform:scale(0)}}
+    html body .fc-accb{animation:none!important}
+    html body .fc-accb>*{animation:fcRow .18s cubic-bezier(.2,.9,.3,1) both}
+    html body .fc-accb>*:nth-child(2){animation-delay:.04s}html body .fc-accb>*:nth-child(3){animation-delay:.08s}html body .fc-accb>*:nth-child(4){animation-delay:.12s}html body .fc-accb>*:nth-child(n+5){animation-delay:.16s}
+    html body .fc-accb .fc-wk,html body .fc-accb .as-tr{animation:fcRow .18s cubic-bezier(.2,.9,.3,1) both}
+    html body .fc-accb .fc-wk:nth-child(2),html body .fc-accb .as-tr:nth-child(2){animation-delay:.04s}html body .fc-accb .fc-wk:nth-child(3),html body .fc-accb .as-tr:nth-child(3){animation-delay:.08s}html body .fc-accb .fc-wk:nth-child(n+4),html body .fc-accb .as-tr:nth-child(n+4){animation-delay:.12s}
+    html body .fc-accb .fc-bar i{animation:fcGrow .35s .08s cubic-bezier(.2,.9,.3,1) both;transform-origin:left}
+    @keyframes fcRow{from{opacity:0;transform:translateX(-10px)}}
+    @keyframes fcGrow{from{transform:scaleX(0)}}
+    html body .as-chip{display:flex;gap:8px;flex-wrap:wrap;background:none!important;border:0!important;padding:0!important}
+    html body .as-chip button{display:inline-flex!important;align-items:center;gap:8px;border-radius:99px!important;padding:6px 6px 6px 13px!important;font-size:12.5px!important;font-weight:900!important;color:#4f5869!important;border:1.5px solid #e1e6f0!important;background:#fff!important;box-shadow:none!important;transition:border-color .2s,color .2s}
+    html body .as-chip button i{font-style:normal;min-width:24px;height:24px;border-radius:99px;display:grid;place-items:center;font-size:11px;font-weight:900;background:#eef1f7;color:#4f5869;padding:0 6px}
+    html body .as-chip button.on{border-color:#3d6bff!important;color:#203c8e!important;box-shadow:0 4px 12px rgba(61,107,255,.15)!important}
+    html body .as-chip button.on i{background:linear-gradient(135deg,#f7e3a3,#c99a45);color:#141b33}
+    html body .as-chip button:after,html body .as-chip button:before{display:none!important}
+    body.dark-mode .as-chip button{background:#151a22!important;border-color:#2a313c!important;color:#c3cad8!important}body.dark-mode .as-chip button i{background:#232a36;color:#c3cad8}body.dark-mode .as-chip button.on{color:#9fb6ff!important;border-color:#3d6bff!important}
+    html body .sk-row{padding:10px 14px}
+    html body .sk-row-icon{width:30px;height:30px;flex:0 0 30px;border-radius:9px;background:rgba(61,107,255,.1)!important;color:#3d6bff!important}
+    html body .sk-row-icon svg{width:17px;height:17px}
+    html body .sk-row-icon.c-p{background:rgba(106,79,224,.1)!important;color:#6a4fe0!important}
+    html body .sk-row-icon.c-t{background:rgba(29,156,200,.1)!important;color:#1d9cc8!important}
+    html body .sk-row-icon.c-g{background:rgba(201,154,69,.13)!important;color:#b0812e!important}
+    html body .sk-row-icon.c-gr{background:rgba(19,128,79,.1)!important;color:#13804f!important}
+    html body .sk-row-icon.c-r{background:rgba(198,58,74,.1)!important;color:#c63a4a!important}
+    html body .sk-row-icon.c-o{background:rgba(224,123,31,.12)!important;color:#d0701a!important}
+    body.dark-mode .sk-row-icon{filter:brightness(1.35)}
 </style>
 </head>
 <body>
@@ -7258,16 +7289,16 @@ window.addEventListener('load',function(){
 
     <div class="sk-group-title">Appearance</div>
     <div class="sk-card">
-      <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></span><span class="sk-row-text"><b>Dark mode</b><small>Use a darker theme across the dashboard.</small></span><span class="switch"><input id="darkModeToggle" type="checkbox" onchange="saveDashboardSettings()"><span></span></span></label>
-      <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></svg></span><span class="sk-row-text"><b>Swipe between pages</b><small>Swipe left or right to move to the next page.</small></span><span class="switch"><input id="swipeToggle" type="checkbox" onchange="setSwipe(this.checked)"><span></span></span></label>
-      <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg></span><span class="sk-row-text"><b>Animations</b><small>Charts and numbers move in. Turn off for a calmer or faster screen.</small></span><span class="switch"><input id="motionToggle" type="checkbox" onchange="setMotion(this.checked)"><span></span></span></label>
+      <label class="sk-row"><span class="sk-row-icon c-p"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></span><span class="sk-row-text"><b>Dark mode</b><small>Use a darker theme across the dashboard.</small></span><span class="switch"><input id="darkModeToggle" type="checkbox" onchange="saveDashboardSettings()"><span></span></span></label>
+      <label class="sk-row"><span class="sk-row-icon c-b"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/></svg></span><span class="sk-row-text"><b>Swipe between pages</b><small>Swipe left or right to move to the next page.</small></span><span class="switch"><input id="swipeToggle" type="checkbox" onchange="setSwipe(this.checked)"><span></span></span></label>
+      <label class="sk-row"><span class="sk-row-icon c-t"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg></span><span class="sk-row-text"><b>Animations</b><small>Charts and numbers move in. Turn off for a calmer or faster screen.</small></span><span class="switch"><input id="motionToggle" type="checkbox" onchange="setMotion(this.checked)"><span></span></span></label>
     </div>
 
     <div class="sk-group-title">Notifications</div>
     <div class="sk-card">
 
-      <label class="sk-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="sk-row-text"><b>Push notifications</b><small id="notificationsHelp">Media-plan update alerts in the HEMERA app.</small></span><span class="switch"><input id="notificationsToggle" type="checkbox" onchange="onNotificationsToggle(this)"><span></span></span></label>
-      <div class="sk-row sk-row--stack sk-sound-row"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="sk-row-text"><b>Notification sound</b><small>Tap a sound to select it and hear a preview.</small></span></div>
+      <label class="sk-row"><span class="sk-row-icon c-g"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></span><span class="sk-row-text"><b>Push notifications</b><small id="notificationsHelp">Media-plan update alerts in the HEMERA app.</small></span><span class="switch"><input id="notificationsToggle" type="checkbox" onchange="onNotificationsToggle(this)"><span></span></span></label>
+      <div class="sk-row sk-row--stack sk-sound-row"><span class="sk-row-icon c-g"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><span class="sk-row-text"><b>Notification sound</b><small>Tap a sound to select it and hear a preview.</small></span></div>
       <div class="sk-sounds" role="radiogroup" aria-label="Notification sound">
         <button class="sk-sound" type="button" role="radio" data-sound="default" onclick="selectSound('default')"><span class="sk-sound-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span class="sk-sound-name">Default</span><svg class="sk-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
         <button class="sk-sound" type="button" role="radio" data-sound="human_appeal" onclick="selectSound('human_appeal')"><span class="sk-sound-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span class="sk-sound-name">Human Appeal Chime</span><svg class="sk-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
@@ -7279,12 +7310,12 @@ window.addEventListener('load',function(){
 
     <div class="sk-group-title" id="tpTitle">Team settings <span class="tp-lock" id="tpLockNote"></span></div>
     <div class="sk-card tp-card" id="tpCard">
-      <div class="sk-row" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M14.6 9.2c-.5-.8-1.5-1.2-2.6-1.2-1.5 0-2.6.8-2.6 1.9 0 2.5 5.4 1.3 5.4 4 0 1.1-1.2 2-2.8 2-1.2 0-2.2-.5-2.7-1.3M12 6.5V8M12 16v1.5"/></svg></span><span class="sk-row-text"><b>Default currency</b><small>Each account opens in its own currency.</small></span><span class="ac-box" id="accCurBox"></span></div>
-      <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg></span><span class="sk-row-text"><b>Spend alert</b><small>A note when the day's spend passes its plan by this much. <a href="#" class="sa-demo" onclick="spendAlertCheck(DASH_DATA,true);return false">Show me</a></small></span></div>
+      <div class="sk-row" style="cursor:default"><span class="sk-row-icon c-gr"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M14.6 9.2c-.5-.8-1.5-1.2-2.6-1.2-1.5 0-2.6.8-2.6 1.9 0 2.5 5.4 1.3 5.4 4 0 1.1-1.2 2-2.8 2-1.2 0-2.2-.5-2.7-1.3M12 6.5V8M12 16v1.5"/></svg></span><span class="sk-row-text"><b>Default currency</b><small>Each account opens in its own currency.</small></span><span class="ac-box" id="accCurBox"></span></div>
+      <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon c-r"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg></span><span class="sk-row-text"><b>Spend alert</b><small>A note when the day's spend passes its plan by this much. <a href="#" class="sa-demo" onclick="spendAlertCheck(DASH_DATA,true);return false">Show me</a></small></span></div>
       <div class="sa-opts" id="spendAlertOpts"></div>
-      <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l6 6 4-4 8 8"/><path d="M21 11v5h-5"/></svg></span><span class="sk-row-text"><b>ROAS drop alert</b><small>A note when the day's ROAS falls this much below its 7-day average. <a href="#" class="sa-demo" onclick="roasDropCheck(DASH_DATA,true);return false">Show me</a></small></span></div>
+      <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon c-o"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l6 6 4-4 8 8"/><path d="M21 11v5h-5"/></svg></span><span class="sk-row-text"><b>ROAS drop alert</b><small>A note when the day's ROAS falls this much below its 7-day average. <a href="#" class="sa-demo" onclick="roasDropCheck(DASH_DATA,true);return false">Show me</a></small></span></div>
       <div class="sa-opts" id="roasAlertOpts"></div>
-      <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span><span class="sk-row-text"><b>Season reminders</b><small>A push to the team 14 and 3 days before Ramadan, the Eids, Dhul Hijjah, Giving Tuesday and the other seasons.</small></span></div>
+      <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon c-p"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span><span class="sk-row-text"><b>Season reminders</b><small>A push to the team 14 and 3 days before Ramadan, the Eids, Dhul Hijjah, Giving Tuesday and the other seasons.</small></span></div>
       <div class="sa-opts" id="seasonAlertOpts"></div>
     </div>
 
@@ -7646,13 +7677,13 @@ window.addEventListener('load',function(){
         <b class="ox-score" id="planAccuracyScore">—</b>
         <div class="ox-accbar">
           <div class="ox-seg" style="flex:40"><span id="accuracySpendBar" class="spend"></span></div>
-          <div class="ox-seg" style="flex:40"><span id="accuracyRevenueBar" class="revenue"></span></div>
           <div class="ox-seg" style="flex:20"><span id="accuracyRoasBar" class="roas"></span></div>
+          <div class="ox-seg" style="flex:40"><span id="accuracyRevenueBar" class="revenue"></span></div>
         </div>
         <div class="ox-legs">
           <div class="ox-leg"><i class="spend"></i><span>Spend plan <em>40%</em></span><b id="accuracySpend">—</b><div class="ox-lbar"><span id="accuracySpendLeg" class="spend"></span></div></div>
-          <div class="ox-leg"><i class="revenue"></i><span>Revenue target <em>40%</em></span><b id="accuracyRevenue">—</b><div class="ox-lbar"><span id="accuracyRevenueLeg" class="revenue"></span></div></div>
           <div class="ox-leg"><i class="roas"></i><span>Conversions <em>20%</em></span><b id="accuracyRoas">—</b><div class="ox-lbar"><span id="accuracyRoasLeg" class="roas"></span></div></div>
+          <div class="ox-leg"><i class="revenue"></i><span>Revenue target <em>40%</em></span><b id="accuracyRevenue">—</b><div class="ox-lbar"><span id="accuracyRevenueLeg" class="revenue"></span></div></div>
         </div>
       </div>
 
@@ -10364,11 +10395,11 @@ function yrHtml(d){
  const tbl=`<div class="as-t yr-t"><div class="as-tr hd"><span></span><span>ROAS</span><span>Conv</span><span>CPA</span><span>Hijri</span></div>${rows.map(r=>`<div class="as-tr${r.plan?' pl':''}"><span>${r.y}${r.plan?' plan':''}</span><span>${r.roas!=null?fmt(r.roas,2)+'x':'—'}</span><span>${fmt(r.conv,0)}</span><span>${cpa(r)}</span><span>${esc(r.hj||'—')}</span></div>`).join('')}</div>`;
  const ly=hist[hist.length-1], pct=(a,b)=>a&&b?Math.round((a/b-1)*100):null, sg=v=>v==null?'—':(v>0?'+':v<0?'−':'')+Math.abs(v)+'%';
  const ds=ly?pct(p.spend,ly.cost):null, dr=ly?pct(p.rev,ly.value):null, soFar=wt.actSpend?`${esc(key.slice(0,4))} so far ${money(wt.actSpend)} spent${wt.actRev?' · '+money(wt.actRev)+' revenue · '+fmt(wt.actRev/wt.actSpend,2)+'x':''}`:'';
- return `<div class="fc-card yr-c"><div class="fc-l" style="margin:2px 0 22px">${esc(name.toUpperCase())} · SPEND & REVENUE</div>
+ return `<div class="fc-card yr-c as-bl2"><div class="fc-l" style="margin:2px 0 22px">${esc(name.toUpperCase())} · SPEND & REVENUE</div>
    ${hist.length?'':'<div class="fc-foot" style="margin:-12px 0 12px">No '+esc(name)+' in the History tab yet.</div>'}
    <div class="yr-ch">${bars}</div><div class="yr-x">${xl}</div>
    <div class="yr-lg"><span><i style="background:#9fb3ea"></i>Spend</span><span><i style="background:#203c8e"></i>Revenue</span><span><i style="background:#13894f"></i>Plan</span></div></div>
-  <div class="fc-card" style="margin-top:8px">${tbl}</div>
+  <div class="fc-card as-bl2" style="margin-top:8px">${tbl}</div>
   ${ly?`<div class="fc-rec ${dr!=null&&dr<0?'warm':''}"><span class="fc-ri">${fcIc('chart')}</span><div><b>Plan vs ${esc(name.slice(0,3))} ${ly.month.slice(0,4)}: ${sg(ds)} spend, ${sg(dr)} revenue</b><small>ROAS ${fmt(p.roas,2)}x vs ${fmt(ly.roas||(ly.cost?ly.value/ly.cost:0),2)}x${soFar?' · '+soFar:''}</small></div></div>`:soFar?`<div class="fc-foot">${soFar}</div>`:''}`;
 }
  
@@ -10421,8 +10452,8 @@ function asHtml(){
    const mon=String(d.month||'').split(' ')[0];
    const tbl=(rows,days)=>`<div class="as-t"><div class="as-tr hd"><span></span><span>Spend</span><span>Value</span><span>Conv</span></div>${rows.map(r=>`<div class="as-tr${r.spend>=1.2?' hi':''}"><span>${esc(r.name)}${days&&r.days?` <small>${esc(r.days)}</small>`:''}</span>${num(r,'spend',r.spend)}${num(r,'value',r.value)}${num(r,'conv',r.conv)}</div>`).join('')}</div>`;
    body=`<div class="as-ix ${isNew?'new':''}"><span>${isNew?'🌙':'📘'}</span><div><b>${isNew?'NEW index':'OLD index'}${d.indexLabel?' '+esc(d.indexLabel.replace(/^.*?(NEW|OLD)\s*index\s*/i,'')):''}</b><small>${isNew?mon+' has '+d.ramadanDays+' days of Ramadan, so the NEW index (3 Ramadans) is used':'No Ramadan in '+esc(mon)+', so the OLD index is used'}</small></div></div>
-   <div class="fc-l">HIJRI MONTH</div><div class="as-chip">${hjs.map((x,j)=>`<button type="button" class="${j===i?'on':''}" onclick="asHj(${j})">${esc(x.name||HIJRI_NAMES[x.num-1]||'')} · ${x.days} days</button>`).join('')}</div>
-   ${h.num?`<div class="fc-card" style="margin-top:8px"><div class="as-hjh"><b>${esc(h.name||HIJRI_NAMES[h.num-1]||'')}</b><span>${esc(mon.slice(0,3))} ${h.from}–${h.to}</span></div>
+   <div class="fc-l">HIJRI MONTH</div><div class="as-chip">${hjs.map((x,j)=>`<button type="button" class="${j===i?'on':''}" onclick="asHj(${j})" aria-label="${esc(x.name||HIJRI_NAMES[x.num-1]||'')}, ${x.days} days">${esc(x.name||HIJRI_NAMES[x.num-1]||'')}<i>${x.days}</i></button>`).join('')}</div>
+   ${h.num?`<div class="fc-card as-bl2" style="margin-top:8px"><div class="as-hjh"><b>${esc(h.name||HIJRI_NAMES[h.num-1]||'')}</b><span>${esc(mon.slice(0,3))} ${h.from}–${h.to}</span></div>
      <div class="as-3">${['spend','value','conv'].map(k=>`<label><small>${k==='conv'?'Conv':k[0].toUpperCase()+k.slice(1)}</small>${num(h,k,h[k])}</label>`).join('')}</div>
      <div class="as-kv"><span>Whole month value · spend</span><b>${x2(h.effValue)} · ${x2(h.effSpend)}</b></div><div class="as-kv"><span>ROAS idx</span><b class="${h.roasIdx>=1?'up':'dn'}">${x2(h.roasIdx)}</b></div></div>`:''}
    <div class="fc-l">WEEKDAY <em>Spend · Value · Conv</em></div><div class="fc-card as-bl2">${tbl(d.weekday||[])}</div>
