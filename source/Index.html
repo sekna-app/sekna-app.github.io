@@ -7460,6 +7460,13 @@ window.addEventListener('load',function(){
     html body .vly-c.b{background:linear-gradient(160deg,#0b1d4f,#1d6fd6)!important;box-shadow:0 12px 22px rgba(29,111,214,.3)!important}
     html body .phx-t td:nth-child(2){color:#8a93ad!important;font-weight:700!important}
     body.dark-mode .phx-t td:nth-child(2){color:#9aa4c2!important}
+    /* v241 Month vs Month: campaign types folded behind a slim navy button */
+    .mxt-btn{display:flex;align-items:center;gap:8px;width:100%;margin:12px 0 4px;border:0;border-radius:11px;padding:7px 8px 7px 13px;font:inherit;cursor:pointer;color:#fff;background:linear-gradient(135deg,#2c4fb8,#1b2f78);box-shadow:0 6px 14px rgba(27,47,120,.2)}
+    .mxt-btn b{flex:1;text-align:left;font-size:12.5px;font-weight:900}
+    .mxt-btn small{font-size:10.5px;font-weight:900;color:#f2d38f;background:rgba(255,255,255,.12);border-radius:99px;padding:2px 8px}
+    .mxt-btn i{font-style:normal;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.15);display:grid;place-items:center;font-size:11px;transition:transform .3s}
+    .mxt-btn.on i{transform:rotate(180deg)}
+    .mxt-fold{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s cubic-bezier(.3,.9,.3,1)}.mxt-fold>div{overflow:hidden;min-height:0}.mxt-fold.on{grid-template-rows:1fr}
 </style>
 </head>
 <body>
@@ -11330,6 +11337,7 @@ function mxdScore(rows,A,B,avg,ha,hb){
 }
 
 function mxShortName(x,an,bn){const p=String(x).split(' '),same=String(an).split(' ')[0]===String(bn).split(' ')[0];return p[0]+(same&&p[1]?' '+p[1].slice(-2):'')}
+let MXT_OPEN=false;
 function mxdCmpTypes(A,B,avg,an,bn){
  const head=`<div class="mx-sub rl-sub">By campaign type<span>${esc(an)} · ${esc(bn)}</span></div>`;
  if((!A.channels||!B.channels)&&extraState()!=='ok')return head+extraWaitHtml('the campaign types');
@@ -11339,12 +11347,13 @@ function mxdCmpTypes(A,B,avg,an,bn){
  const cell=(l,x,y,w,f)=>`<div class="v"><small>${l}</small><b class="${w==='a'?'w':w?'l':''}">${f(x)}</b><b class="${w==='b'?'w':w?'l':''}">${f(y)}</b></div>`;
  
  const sa=mxShortName(an,an,bn),sb=mxShortName(bn,an,bn),r2=v=>v==null?'—':fmt(v,2)+'x';
- return head+`<div class="mxt">${names.map((n,i)=>{
+ 
+ return `<button type="button" class="mxt-btn${MXT_OPEN?' on':''}" onclick="MXT_OPEN=!MXT_OPEN;this.classList.toggle('on',MXT_OPEN);this.nextElementSibling.classList.toggle('on',MXT_OPEN)" aria-expanded="${MXT_OPEN}"><b>By campaign type</b><small>${names.length} type${names.length===1?'':'s'}</small><i>▾</i></button><div class="mxt-fold${MXT_OPEN?' on':''}"><div><div class="mxt">${names.map((n,i)=>{
    const a=la.find(x=>x.n===n)||zero,b=lb.find(x=>x.n===n)||zero,k=(la.find(x=>x.n===n)||lb.find(x=>x.n===n)).k;
    const rv=cmp(a.value,b.value,true),ro=cmp(a.roas,b.roas,true),co=cmp(a.conversions,b.conversions,true),p=w=>(rv===w?3:0)+(ro===w?3:0)+(co===w?2:0),w=p('a')===p('b')?'':p('a')>p('b')?'a':'b';
    const row=(l,x,y,win,f)=>`<tr><td>${l}</td><td class="${win==='a'?'w':win?'l':''}">${f(x)}</td><td class="${win==='b'?'w':win?'l':''}">${f(y)}</td></tr>`;
    return `<div class="mxt-c"><div class="mxt-h"><span class="mxt-n"><i style="background:${MXD_C[k]||MXD_C[5]}"></i>${chIco(n)}<b>${esc(CHANNEL_SHORT[n]||chName(n))}</b></span><small>${w?`better in <em class="${w}">${esc(w==='a'?sa:sb)}</em>`:'even'}</small></div>
-    <table><tr><th></th><th>${esc(sa)}</th><th>${esc(sb)}</th></tr>${row('Spend',a.spend,b.spend,'',v=>money(v))}${row('Conv.',a.conversions,b.conversions,co,v=>fmt(v,avg?1:0))}${row('Revenue',a.value,b.value,rv,v=>money(v))}${row('ROAS',a.roas,b.roas,ro,r2)}</table></div>`}).join('')}</div>`;
+    <table><tr><th></th><th>${esc(sa)}</th><th>${esc(sb)}</th></tr>${row('Spend',a.spend,b.spend,'',v=>money(v))}${row('Conv.',a.conversions,b.conversions,co,v=>fmt(v,avg?1:0))}${row('Revenue',a.value,b.value,rv,v=>money(v))}${row('ROAS',a.roas,b.roas,ro,r2)}</table></div>`}).join('')}</div></div></div>`;
 }
 
 let MX_PD=null;
