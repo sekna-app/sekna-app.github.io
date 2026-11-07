@@ -7486,6 +7486,15 @@ window.addEventListener('load',function(){
     html body .rp-report .ctd .ctd-gr{background:var(--s)!important}
     html body .rp-report .ctd::before{background:var(--c)!important}
     html body .rp-report .ctd .ctd-rk{color:var(--c)!important;background:var(--s)!important}
+
+    /* v246 vs Last year: day tiles come in row by row; day sheet date on one line, numbers centred under THIS YEAR / LAST YEAR */
+    html body .lyx-cal2 .lyx-c{animation:lyxRow .4s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--r,0)*.08s)}
+    @media(min-width:900px){html body .lyx-cal2 .lyx-c{animation-delay:calc(var(--r7,0)*.08s)}}
+    @keyframes lyxRow{from{opacity:0;transform:translateY(12px)}}
+    html body .lyx-det2 .lyx-lyd{font-size:12.5px;font-weight:800;color:#6b7385;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:2px 0 4px}
+    html body .lyx-det2 .lyx-dr{grid-template-columns:1fr 70px 70px 68px!important}
+    html body .lyx-det2 .lyx-dr b{text-align:center!important}
+    body.dark-mode .lyx-det2 .lyx-lyd{color:#a7afbf}
 </style>
 </head>
 <body>
@@ -10169,7 +10178,7 @@ function lyDays(days){
    const rows=[['Value',a.value,l.value,v=>money(v),1],['Spend',a.spend,l.spend,v=>money(v),0],['ROAS',a.spend?a.value/a.spend:null,l.spend?l.value/l.spend:null,v=>v==null?'—':fmt(v,2)+'x',1],
      ['Conversions',a.conversions,l.conversions,v=>fmt(v,0),1],['Clicks',a.clicks,l.extra?l.extra.clicks:null,v=>v==null?'—':fmt(v,0),1],
      ['Avg. donation',a.conversions?a.value/a.conversions:null,l.conversions?l.value/l.conversions:null,v=>v==null?'—':money(v,2),1]];
-   return `<div class="lyx-det"><div class="lyx-dr hd"><span>Last year: ${esc(shortDay(r.k).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'}))}</span><b>This year</b><b>Last year</b><span></span></div>
+   return `<div class="lyx-det lyx-det2"><div class="lyx-lyd">Last year: ${esc(shortDay(r.k).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'}))}</div><div class="lyx-dr hd"><span></span><b>This year</b><b>Last year</b><span></span></div>
     ${rows.map(([t,x,y,f,g])=>{const d=x!=null&&y?x/y-1:null,c=!g||d==null||Math.abs(d)<.005?'neutral':d>0?'good':'bad';return `<div class="lyx-dr"><span>${t}</span><b>${f(x)}</b><b class="m">${f(y)}</b>${mxArrow(d,c)}</div>`}).join('')}</div>`};
  const head=r=>{const x=r.x,d=r.a&&r.l&&r.l.value?r.a.value/r.l.value-1:null;
    return `${d!=null?`<span class="lyx-dl ${r.w?'up':'dn'}">${lyChip(d)}</span>`:''}<div class="lyx-d"><b>${x.dayNumber}</b>${esc(String(x.dayName||'').slice(0,3))} · ${esc(x.hijri||'')}</div>
@@ -10178,7 +10187,7 @@ function lyDays(days){
  
  LYX_SHEETS=R.map(r=>r.a&&r.l?`<div class="lyx-t ${r.w?'w':'l'}">${head(r)}${det(r)}</div>`:'');
  const tiles=R.map((r,i)=>{const d=r.a&&r.l&&r.l.value?r.a.value/r.l.value-1:null;
-   return `<div class="lyx-c ${!r.a?'f':!r.l?'n':r.w?'w':'l'}"${r.a&&r.l?` onclick="lyxOpen(${i})"`:''}><b>${r.x.dayNumber}</b>${r.a?`<span>${mpK(r.a.value)}</span><small>${d!=null?`${d>=0?'▲':'▼'} ${Math.round(Math.abs(d)*100)}% · LY ${mpK(r.l.value)}`:'no data last year'}</small>`:`<small>to beat</small><span class="ly">${r.l?mpK(r.l.value):'—'}</span>`}</div>`}).join('');
+   return `<div class="lyx-c ${!r.a?'f':!r.l?'n':r.w?'w':'l'}" style="--r:${Math.floor(i/4)};--r7:${Math.floor(i/7)}"${r.a&&r.l?` onclick="lyxOpen(${i})"`:''}><b>${r.x.dayNumber}</b>${r.a?`<span>${mpK(r.a.value)}</span><small>${d!=null?`${d>=0?'▲':'▼'} ${Math.round(Math.abs(d)*100)}% · LY ${mpK(r.l.value)}`:'no data last year'}</small>`:`<small>to beat</small><span class="ly">${r.l?mpK(r.l.value):'—'}</span>`}</div>`}).join('');
  return sum+`<div class="lyx-tip">Tap a day to see its details</div><div class="lyx-cal2">${tiles}</div>`;
 }
  
