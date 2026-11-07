@@ -544,12 +544,12 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
 (function(){
   var S=[[['home'],'Daily Performance','Today against target','Today against target: spend, conversions, value and ROAS, each with its own plan line.'],
          [['types','yoy'],'By Campaign Type','Search, PMax, Demand Gen, Video','Each campaign type for the day, ranked by ROAS, with spend against its plan, then the same day last year.'],
-         [['results'],'Day by Day','Results against the plan','Every day of the month against the plan, and the month so far against the full month’s plan.'],
+         [['plan','results'],'Day by Day','The media plan and the results','The plan for every day of the month, then each day’s results against it and the month so far.'],
          [['years'],'Same Hijri day','This day in every past year','How the same Hijri date did last year and every year before, side by side.'],
          [['ss-ramadan','ss-eidadha','ss-arafah','ss-thanksgiving'],'Seasons Calendar','Hijri and US seasons','Ramadan, Eid, Dhul Hijjah, Ashura and the US giving days, each with its countdown and last year’s numbers.'],
          [['studio','compare'],'Reports Studio','One month, or two side by side','Build a report for any month, or compare two months point by point and see which one wins.'],
-         [['ranks'],'Top & Bottom 5','Projects, campaigns, keywords','The best and the weakest projects, campaigns and keywords at a glance.'],
-         [['tasks','backup'],'Team Tasks & Leave','The week board, and today’s backup','Every person’s tasks for the week, ticked as they go. When someone is off, their backup gets a notice and takes over that day’s tasks.']];
+         [['ranks','stperf'],'Top & Bottom 5 · Search Terms','Winners, and the search terms report','The best and the weakest projects and campaigns, then the search terms that convert, waste or need a look.'],
+         [['tasks','backup','leave'],'Team Tasks & Leave','The week board, backups and leave','Every person’s tasks for the week, ticked as they go. When someone is off, their backup takes over. Leave can be frozen for a busy season and opened again.']];
   var N=S.length, step=360/N, cur=0, timer=null, LAYER=2400, SCROLL=4200;
   var ring=document.getElementById('ring'), stage=document.getElementById('stage'), dots=document.getElementById('dots');
   var capT=document.getElementById('capT'), capS=document.getElementById('capS'), capD=document.getElementById('capD'), cap=capT.parentNode;
