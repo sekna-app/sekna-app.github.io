@@ -7647,6 +7647,25 @@ window.addEventListener('load',function(){
     .act-idle em{font-style:normal;font-size:11.5px;font-weight:900;border-radius:99px;padding:3px 10px;background:#eef1f7;color:#4b5263}.act-idle em.a{background:#fff3dc;color:#a56a06}.act-idle em.r{background:#fdeaec;color:#c63a4a}
 
     html body #adminOverlay .act-seg{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))}html body #adminOverlay .act-seg button{padding-left:4px!important;padding-right:4px!important;white-space:nowrap}
+
+    /* v265 Reading the sheets: snapshots in a list that opens, ticks after the first pick, time set outside */
+    .rw-tz2{display:grid!important;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.rw-tz2 button i{font-style:normal;font-size:18px}
+    .rw-acc{border:1.5px solid #e3e7f0;border-radius:16px;overflow:hidden;background:#fff;margin-top:4px}
+    .rw-ah{all:unset;cursor:pointer;display:flex;align-items:center;gap:8px;width:100%;box-sizing:border-box;padding:12px 14px;font-size:14px;color:#1d2433}.rw-ah>.aic{margin:0;color:#203c8e}
+    .rw-dots{display:flex;gap:4px;margin-left:2px}.rw-dots i{width:8px;height:8px;border-radius:50%}
+    .rw-cv{margin:0 0 0 auto!important;transition:transform .3s cubic-bezier(.2,.8,.2,1)}.rw-acc.op .rw-cv{transform:rotate(180deg)}
+    .rw-ab{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s cubic-bezier(.2,.8,.2,1)}.rw-acc.op .rw-ab{grid-template-rows:1fr}.rw-ab>div{overflow:hidden;min-height:0;padding:0 8px}
+    .rw-fl{display:flex;gap:5px;flex-wrap:wrap;padding:2px 6px 8px}.rw-fl button{all:unset;cursor:pointer;font-size:11.5px;font-weight:800;border-radius:99px;padding:5px 11px;background:#f2f4f9;color:#4b5263}.rw-fl button.on{background:#203c8e;color:#fff}
+    .rw-more{font-size:11px;font-weight:900;color:#203c8e;padding:0 8px 4px}
+    .rw-rows{padding-bottom:8px}
+    .rw-r{all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;padding:9px 8px;border-radius:12px;transition:background .2s}.rw-r:hover{background:#f7f8fc}.rw-r.on{background:#f3f6ff}
+    .rw-r>s{width:20px;height:20px;border-radius:6px;border:1.8px solid #c9d0e0;display:grid;place-items:center;color:transparent;flex:none;transition:.2s}.rw-r>s .aic{width:12px;height:12px;margin:0;stroke-width:3}.rw-r.on>s{background:#3d6bff;border-color:#3d6bff;color:#fff}
+    .rw-r>i{width:34px;height:34px;border-radius:11px;background:var(--b);color:var(--c);display:grid;place-items:center;flex:none}.rw-r>i .aic{margin:0;width:17px;height:17px}
+    .rw-r>span:not(.rw-tc){flex:1;min-width:0}.rw-r b{display:flex;align-items:center;gap:6px;font-size:13px;color:#1d2433}.rw-r b em{font-style:normal;font-size:9px;font-weight:900;color:#6f29a6;background:#f3eafa;border-radius:99px;padding:1px 6px}
+    .rw-r small{display:block;font-size:10.5px;color:#8a93ad;font-weight:700}
+    body.dark-mode .rw-acc{background:#151a22;border-color:#2a313c}body.dark-mode .rw-ah,body.dark-mode .rw-r b{color:#e7ebf3}body.dark-mode .rw-r.on{background:#1d2433}
+
+    html body .rw-tz2>button{width:100%!important;min-width:0!important;max-width:none!important;flex:none!important;box-sizing:border-box}
 </style>
 </head>
 <body>
@@ -16663,14 +16682,18 @@ function serverNow(){
 }
  
 let RW={data:null,busy:false,edit:null,msg:''};
-const RW_TZ=[['Asia/Muscat','Muscat'],['Africa/Cairo','Cairo'],['Europe/London','London'],['Asia/Dubai','Dubai'],['Asia/Riyadh','Riyadh']];
+const RW_TZ=[['Asia/Muscat','Muscat'],['Africa/Cairo','Egypt']];
+const RW_FLAG={'Asia/Muscat':'🇴🇲','Africa/Cairo':'🇪🇬'};
 function rwLoad(){if(RW.busy)return;RW.busy=true;serverCall('adminReadWindow',getAccessToken()).then(r=>{RW.busy=false;RW.data=r;RW.edit=null;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{RW.busy=false;RW.data={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
 function rwCur(){return RW.edit||((RW.data&&RW.data.window)||{on:true,from:'12:50',to:'13:10',tz:'Asia/Muscat',stopOnData:true,alert:true})}
 function rwSet(k,v){RW.edit=Object.assign({},rwCur(),{[k]:v});RW.msg='';if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function rw12(hm){const m=String(hm||'').match(/^(\d{1,2}):(\d{2})$/);if(!m)return hm||'';const h=+m[1];return `${h%12||12}:${m[2]} ${h<12?'AM':'PM'}`}
 async function rwSave(btn){
  const c=rwCur();btn.disabled=true;btn.textContent='Saving…';
- try{const r=await serverCall('adminReadWindowSet',getAccessToken(),c);RW.data=Object.assign({},RW.data,r);RW.edit=null;RW.msg=aI('check')+'Saved';}
+ try{if(RW.edit){const r=await serverCall('adminReadWindowSet',getAccessToken(),c);RW.data=Object.assign({},RW.data,r);RW.edit=null}
+   
+   if(FXT.edit){FXT.data=await serverCall('adminFxTimeSet',getAccessToken(),Object.assign({},fxtCur(),{tz:c.tz}));FXT.edit=null;if(typeof FX!=='undefined'&&FX)FX.refresh=FXT.data.refresh}
+   RW.msg=aI('check')+'Saved';}
  catch(err){RW.msg=aI('warn')+esc(errorText(err))}
  if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
 }
@@ -16681,13 +16704,18 @@ function rwAt(ms){return ms?new Date(ms).toLocaleTimeString('en-US',{hour:'numer
 const RW_SNAPS=[
  {k:'media',n:'Media plan',p:'Daily · Days · Month · Lab · Top & Bottom 5',ic:'trend',c:'#203c8e',bg:'#e9eefc'},
  {k:'terms',n:'Search terms',p:'AI Max · ST Performance. Action log on refresh',ic:'search',c:'#13894f',bg:'#e3f6ec'},
- {k:'camp',n:'Campaign performance',p:'Evening read',ic:'moon',c:'#6f29a6',bg:'#f3eafa',soon:true,def:{from:'21:00',to:'21:20'}}];
-function rwSnapWin(c,k){if(k==='media')return {from:c.from,to:c.to};const g=(c.groups||{})[k];return g||(RW_SNAPS.find(x=>x.k===k).def)||{from:c.from,to:c.to}}
+ {k:'fx',n:'Exchange rate',p:'£ to $ for the day',ic:'cash',c:'#a56a06',bg:'#fff3dc',one:true},
+ {k:'camp',n:'Campaign performance',p:'Coming soon',ic:'moon',c:'#6f29a6',bg:'#f3eafa',soon:true,def:{from:'21:00',to:'21:20'}}];
+const RW_FL=[['all','All'],['morning','Morning'],['day','Midday'],['evening','Evening']];
+function rwWhen(hm){const h=+String(hm||'0').split(':')[0];return h<11?'morning':h<17?'day':'evening'}
+function rwOpen(){RW.open=!RW.open;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+function rwFl(k){RW.fl=k;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+function rwSnapWin(c,k){if(k==='fx'){const t=fxtCur().time;return {from:t,to:t}}if(k==='media')return {from:c.from,to:c.to};const g=(c.groups||{})[k];return g||(RW_SNAPS.find(x=>x.k===k).def)||{from:c.from,to:c.to}}
 function rwPick(k){RW.pick=RW.pick||[];const i=RW.pick.indexOf(k);i>=0?RW.pick.splice(i,1):RW.pick.push(k);if(RW.pick.length===1){const w=rwSnapWin(rwCur(),RW.pick[0]);RW.pt={from:w.from,to:w.to}}if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function rwPt(k,v){RW.pt=Object.assign({},RW.pt||{},{[k]:v})}
 function rwApply(){const pt=RW.pt||{};if(!pt.from||!pt.to)return;let c=Object.assign({},rwCur());c.groups=Object.assign({},c.groups||{});
- (RW.pick||[]).forEach(k=>{if(k==='media'){c.from=pt.from;c.to=pt.to}else c.groups[k]={from:pt.from,to:pt.to}});
- RW.edit=c;RW.pick=[];RW.msg='';if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+ let rw=false;(RW.pick||[]).forEach(k=>{if(k==='fx'){FXT.edit=Object.assign({},fxtCur(),{time:pt.from})}else{rw=true;if(k==='media'){c.from=pt.from;c.to=pt.to}else c.groups[k]={from:pt.from,to:pt.to}}});
+ if(rw)RW.edit=c;RW.pick=[];RW.msg='';if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function rwStatus(d,c){
  if(!c.on)return {cls:'all',ic:'refresh',t:'Reading all day',s:'Every 2 minutes'};
  const t=(d.days||[]).find(x=>x.day===d.today)||{}, u=t.usa, a=t.ar;
@@ -16697,8 +16725,8 @@ function rwStatus(d,c){
  return {cls:'wait',ic:'clock',t:"Waiting for today's data",s:`From ${rw12(c.from)} ${(RW_TZ.find(x=>x[0]===c.tz)||RW_TZ[0])[1]}`};
 }
 function readWinHtml(){
- if(!RW.data&&!RW.busy)rwLoad();
- const d=RW.data||{}, c=rwCur(), ch=!!RW.edit, pick=RW.pick||[];
+ if(!RW.data&&!RW.busy)rwLoad();if(!FXT.data&&!FXT.busy)fxtLoad();
+ const d=RW.data||{}, c=rwCur(), ch=!!RW.edit||!!FXT.edit, pick=RW.pick||[], fl=RW.fl||'all';
  if(d.error)return `<div class="rw"><b class="ad-h">${aI('sheet')}Reading the sheets</b><div class="mrp-msg">${aI('warn')}${esc(d.error)}</div></div>`;
  const st=rwStatus(d,c), sw=(k,on)=>`<button type="button" class="rw-sw${on?' on':''}" onclick="rwSet('${k}',${!on})" aria-pressed="${on}"></button>`;
  const used=d.allDay?Math.max(0,Math.min(100,(d.reads||0)/d.allDay*100)):0, saved=100-used;
@@ -16707,25 +16735,32 @@ function readWinHtml(){
  const day=x=>{const dt=new Date(x.day+'T12:00:00Z'),lbl=x.day===d.today?'Today':dt.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',timeZone:'UTC'});
    const v=ms=>ms?`<b class="ok">${aI('check')}${esc(rwAt(ms))}</b>`:`<b class="no">${aI('x')}none</b>`;
    return `<div class="rw-lr"><span>${esc(lbl)}</span><span>USA ${v(x.usa)}</span><span>AR ${v(x.ar)}</span></div>`};
- const snap=x=>{const w=rwSnapWin(c,x.k),on=pick.includes(x.k),done=x.k==='media'?(td.usa&&td.ar):x.k==='terms'?(td.tusa&&td.tar):0;
-   return `<button type="button" class="rw-sn${on?' on':''}" onclick="rwPick('${x.k}')" style="--c:${x.c};--b:${x.bg}"><i>${aI(x.ic)}</i><span><b>${x.n}${x.soon?'<em>Soon</em>':''}</b><small>${x.p}</small></span>
-     <span class="rw-tc">${c.on?`${esc(rw12(w.from))}<small>to ${esc(rw12(w.to))}</small>`:'All day'}${done?`<u>${aI('check')}today</u>`:''}</span><s>${aI('check')}</s></button>`};
- const bar=pick.length&&c.on?`<div class="rw-pk"><b>${aI('clock')}Read ${pick.length===1?esc(RW_SNAPS.find(x=>x.k===pick[0]).n):pick.length+' snapshots'}</b>
-   <div class="rw-tm"><label><small>FROM</small><input type="time" value="${esc((RW.pt||{}).from||'')}" onchange="rwPt('from',this.value)"></label><em>→</em><label><small>TO</small><input type="time" value="${esc((RW.pt||{}).to||'')}" onchange="rwPt('to',this.value)"></label></div>
+ 
+ 
+ const multi=pick.length>0, list=RW_SNAPS.filter(x=>fl==='all'||rwWhen(rwSnapWin(c,x.k).from)===fl);
+ const snap=x=>{const w=rwSnapWin(c,x.k),on=pick.includes(x.k),done=x.k==='media'?(td.usa&&td.ar):x.k==='terms'?(td.tusa&&td.tar):0,allDay=!c.on&&x.k!=='fx';
+   return `<button type="button" class="rw-r${on?' on':''}" onclick="rwPick('${x.k}')" style="--c:${x.c};--b:${x.bg}">${multi?`<s>${aI('check')}</s>`:''}<i>${aI(x.ic)}</i><span><b>${x.n}${x.soon?'<em>Soon</em>':''}</b><small>${x.p}</small></span>
+     <span class="rw-tc">${allDay?'All day':esc(rw12(w.from))}<small>${allDay?'':x.one?'daily':'to '+esc(rw12(w.to))}</small>${done?`<u>${aI('check')}today</u>`:''}</span></button>`};
+ const one=pick.length===1&&RW_SNAPS.find(x=>x.k===pick[0]), fxOnly=pick.length&&pick.every(k=>k==='fx');
+ const bar=pick.length?`<div class="rw-pk"><b>${aI('clock')}Read ${one?esc(one.n):pick.length+' snapshots'} at</b>
+   <div class="rw-tm"${fxOnly?' style="grid-template-columns:1fr"':''}><label><small>${fxOnly?'TIME':'FROM'}</small><input type="time" value="${esc((RW.pt||{}).from||'')}" onchange="rwPt('from',this.value)"></label>${fxOnly?'':`<em>→</em><label><small>TO</small><input type="time" value="${esc((RW.pt||{}).to||'')}" onchange="rwPt('to',this.value)"></label>`}</div>
    <button type="button" class="rw-ap" onclick="rwApply()">Set time</button></div>`:'';
+ const acc=`<div class="rw-acc${RW.open?' op':''}"><button type="button" class="rw-ah" onclick="rwOpen()">${aI('sheet')}<b>Snapshots</b><span class="rw-dots">${RW_SNAPS.map(x=>`<i style="background:${x.c}"></i>`).join('')}</span><svg class="aic rw-cv" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+   <div class="rw-ab"><div><div class="rw-fl">${RW_FL.map(([k,l])=>`<button type="button" class="${fl===k?'on':''}" onclick="rwFl('${k}')">${l}</button>`).join('')}</div>
+   ${multi?'<div class="rw-more">Select more</div>':''}<div class="rw-rows">${list.map(snap).join('')||'<div class="sk-admin-empty">Nothing at this time of day.</div>'}</div></div></div></div>`;
  return `<div class="rw"><b class="ad-h">${aI('sheet')}Reading the sheets</b>
    <div class="rw-st ${st.cls}"><span>${aI(st.ic)}</span><div><b>${esc(st.t)}</b><small>${esc(st.s)}</small></div></div>
    <div class="rw-mode"><button type="button" class="${c.on?'on':''}" onclick="rwSet('on',true)">${aI('alarm')}Set times</button><button type="button" class="${c.on?'':'on'}" onclick="rwSet('on',false)">${aI('refresh')}All day</button></div>
-   <div class="rw-l">SNAPSHOTS${c.on?' · TAP TO SET A TIME':''}</div><div class="rw-sns">${RW_SNAPS.map(snap).join('')}</div>${bar}
-   ${c.on?`<div class="rw-l">WHOSE TIME</div><div class="rw-tzs">${RW_TZ.map(([k,l])=>`<button type="button" class="${k===c.tz?'on':''}" onclick="rwSet('tz','${k}')"><i>${aI('globe')}</i><b>${l}</b><small>${esc(rwNow(k))}</small></button>`).join('')}</div>
+   <div class="rw-tzs rw-tz2">${RW_TZ.map(([k,l])=>`<button type="button" class="${k===c.tz?'on':''}" onclick="rwSet('tz','${k}')"><i>${RW_FLAG[k]}</i><b>${l}</b><small>${esc(rwNow(k))}</small></button>`).join('')}</div>
+   ${acc}${bar}
+   ${c.on?`
    <div class="rw-l">OPTIONS</div><div class="rw-opts"><div class="rw-o"><div><b>Stop when the data is in</b><small>No reads after the new day</small></div>${sw('stopOnData',c.stopOnData!==false)}</div>
      <div class="rw-o"><div><b>Alert if it doesn't come</b><small>At ${esc(rw12(c.to))}</small></div>${sw('alert',c.alert!==false)}</div></div>`:''}
    <div class="rw-l">THIS MONTH</div><div class="rw-use"><span class="rw-g" style="--p:${Math.max(used,1.5).toFixed(1)}"><i>${used<1&&used>0?'<1':Math.round(used)}%</i></span><div><b>${fmt(d.reads||0,0)} sheet reads</b><small>Saved ${saved>=99.95?'100':fmt(saved,1)}% vs all day</small><span class="rw-tag ${level[1]}">${level[0]}</span></div></div>
    ${(d.days||[]).length?`<div class="rw-l">LAST 3 DAYS</div><div class="rw-log">${d.days.slice(0,3).map(day).join('')}</div>`:''}
    ${RW.msg?`<div class="mrp-msg">${RW.msg}</div>`:''}
    <button type="button" class="pm-save" onclick="rwSave(this)" ${ch?'':'disabled'}>${ch?'Save':'No changes'}</button>
-   <button type="button" class="rw-fxb${FXT.open?' on':''}" onclick="fxtToggle()"><i>${aI('cash')}</i><span><b>Exchange rate</b><small>${FXT.data&&FXT.data.refresh?'Daily at '+esc(rw12(FXT.data.refresh.time))+' '+esc((RW_TZ.find(x=>x[0]===FXT.data.refresh.tz)||RW_TZ[0])[1]):'When it updates'}</small></span><em>${FXT.open?'▴':'▾'}</em></button>
-   ${FXT.open?fxTimeHtml():''}</div>`;
+   </div>`;
 }
  
 let FXT={data:null,busy:false,edit:null,msg:'',open:false};
