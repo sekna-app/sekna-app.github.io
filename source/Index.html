@@ -7505,14 +7505,20 @@ window.addEventListener('load',function(){
     html body .weekly-performance .wx-grid.wx-done .wx-m .wx-m-top b.down{color:#ffa3ad!important}
     /* v249/v250 phones and desktop: ROAS and Clicks sit in one slim card, two rows with the blue-to-gold line between */
     @media (min-width:1100px){
-      html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec #mtdClicksRow.mc{grid-column:1/-1!important;grid-row:4!important}
-      html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec #mtdClkRow.mc:not([hidden]){grid-column:1/-1!important;grid-row:5!important;margin-top:0!important}
     }
-    @media (min-width:0px){
+    @media (max-width:1099px){
       html body #mtdClicksRow.mc:has(+#mtdClkRow:not([hidden])){border-radius:18px 18px 0 0!important;border-bottom:0!important;box-shadow:none!important;padding:8px 10px 7px 14px!important}
       html body #mtdClicksRow.mc+#mtdClkRow.mc:not([hidden]){position:relative;margin-top:0!important;border-radius:0 0 18px 18px!important;border-top:0!important;padding:7px 10px 8px 14px!important}
       html body #mtdClicksRow.mc+#mtdClkRow.mc:not([hidden])::before{content:"";position:absolute;left:14px;right:14px;top:0;height:2px;border-radius:2px;background:linear-gradient(90deg,#3d6bff,#c99a45)}
       html body #mtdClicksRow.mc em,html body #mtdClkRow.mc em{padding:3px 9px!important;font-size:11.5px}
+    }
+
+    /* v251 desktop: Clicks then ROAS in one slim card on one row, split by a blue-to-gold line */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec #mtdClkRow.mc:not([hidden]){grid-column:1!important;grid-row:4!important;margin-top:10px!important;border-radius:999px 0 0 999px!important;border-right:0!important;box-shadow:none!important;padding:8px 18px 8px 14px!important}
+      html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec #mtdClicksRow.mc:has(+#mtdClkRow:not([hidden])){grid-column:2!important;grid-row:4!important;margin-top:10px!important;position:relative;border-radius:0 999px 999px 0!important;border-left:0!important;box-shadow:none!important;padding:8px 10px 8px 18px!important}
+      html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec #mtdClicksRow.mc:has(+#mtdClkRow:not([hidden]))::before{content:"";position:absolute;left:0;top:7px;bottom:7px;width:2px;border-radius:2px;background:linear-gradient(180deg,#3d6bff,#c99a45)}
+      html.dk-on:not(.desktop-site-mode) #channelPanel>.mtd-exec{column-gap:0!important}
     }
 </style>
 </head>
