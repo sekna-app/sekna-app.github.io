@@ -7833,6 +7833,12 @@ window.addEventListener('load',function(){
     body.dark-mode .rw-acc{background:#151a22;border-color:#2a313c}body.dark-mode .rw-ah,body.dark-mode .rw-r b{color:#e7ebf3}body.dark-mode .rw-r.on{background:#1d2433}
 
     html body .rw-tz2>button{width:100%!important;min-width:0!important;max-width:none!important;flex:none!important;box-sizing:border-box}
+
+    /* v266 Activity calendar as a centred card over a blurred screen */
+    .act-ov{position:fixed;inset:0;z-index:100001;display:grid;place-items:center;padding:16px;background:rgba(14,22,52,.28);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);opacity:0;transition:opacity .22s ease}
+    .act-ov.on{opacity:1}
+    .act-ovc{width:100%;max-width:340px;transform:scale(.94);transition:transform .25s cubic-bezier(.2,.8,.2,1)}.act-ov.on .act-ovc{transform:none}
+    .act-ov .act-cal{margin:0;padding:14px;border-radius:20px;box-shadow:0 24px 60px rgba(14,22,52,.3);animation:none;border:0}
 </style>
 </head>
 <body>
@@ -13806,6 +13812,7 @@ function openAdmin(){
 }
 function closeAdmin(event){
  if(event&&event.target!==event.currentTarget)return;
+ try{if(ACT_CAL.open){ACT_CAL.open=false;actCalSync()}}catch(e){}
  const el=document.getElementById('adminOverlay');if(el)el.classList.remove('open');
 }
 function adminBody(html){const b=document.getElementById('adminBody');if(b)b.innerHTML=html}
@@ -16736,7 +16743,12 @@ function actRangeGo(k){if(k==='month'){ADMIN_ACT_RANGE='month';ACT_CAL.open=fals
  ACT_CAL.open=!ACT_CAL.open;if(!ACT_CAL.m)ACT_CAL.m=isoDay(0).slice(0,7);if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function actCalNav(d){const y=+ACT_CAL.m.slice(0,4),m=+ACT_CAL.m.slice(5,7)+d,dt=new Date(y,m-1,1);ACT_CAL.m=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0');if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function actCalPick(k){if(!ACT_CAL.a||ACT_CAL.b){ACT_CAL.a=k;ACT_CAL.b=''}else ACT_CAL.b=k;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
-function actCalApply(){if(!ACT_CAL.a)return;ADMIN_ACT_RANGE='days';ACT_CAL.open=false;actLoadRange()}
+function actCalApply(){if(!ACT_CAL.a)return;ADMIN_ACT_RANGE='days';ACT_CAL.open=false;actCalSync();actLoadRange()}
+
+function actCalSync(){let o=document.getElementById('actCalOv');
+ if(!ACT_CAL.open||ADMIN_TAB!=='activity'){if(o){o.classList.remove('on');setTimeout(()=>{if(!ACT_CAL.open)o.remove()},220)}return}
+ if(!o){o=document.createElement('div');o.id='actCalOv';o.className='act-ov';o.onclick=e=>{if(e.target===o){ACT_CAL.open=false;actCalSync();if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}};document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('on'))}
+ o.innerHTML=`<div class="act-ovc">${actCalHtml()}</div>`}
 function actFmtD(k){return new Date(k+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'})}
 function actRangeLbl(){const r=actRange();if(!r)return 'this month';return r.from===r.to?'on '+actFmtD(r.from):actFmtD(r.from)+' – '+actFmtD(r.to)}
 function actCalHtml(){
@@ -17098,7 +17110,7 @@ window.addEventListener('sekna-server',()=>{if(ADMIN_TAB==='server'&&ADMIN_LAST)
 function hoursText(sec){sec=Math.round(sec||0);const h=Math.floor(sec/3600),m=Math.round(sec%3600/60);return h?`${h}h ${m}m`:`${m}m`}
 function adminActivityHtml(){
  const rg=ADMIN_ACT_RANGE!=='month'&&actRange(), per=rg&&rg.from!==rg.to?actRangeLbl():actRangeLbl();
- const pills=`<div class="act-rg"><button type="button" class="${ADMIN_ACT_RANGE==='month'?'on':''}" onclick="actRangeGo('month')">This month</button><button type="button" class="${ADMIN_ACT_RANGE==='days'||ACT_CAL.open?'on':''}" onclick="actRangeGo('days')">${aI('cal')}${ADMIN_ACT_RANGE==='days'?esc(actRangeLbl()):'Days'}</button></div>${ACT_CAL.open?actCalHtml():''}`;
+ const pills=`<div class="act-rg"><button type="button" class="${ADMIN_ACT_RANGE==='month'?'on':''}" onclick="actRangeGo('month')">This month</button><button type="button" class="${ADMIN_ACT_RANGE==='days'||ACT_CAL.open?'on':''}" onclick="actRangeGo('days')">${aI('cal')}${ADMIN_ACT_RANGE==='days'?esc(actRangeLbl()):'Days'}</button></div>`;setTimeout(actCalSync,0);
  const a=rg?(ADMIN_ACT_R||(ADMIN_ACT_RBUSY?null:null)):ADMIN_ACTIVITY, head=`<b class="ad-h">${aI('chart')}Activity</b>${pills}`;
  if(!a)return head+'<div class="sk-admin-empty">Loading…</div>';
  if(a.error)return head+`<div class="sk-admin-empty">${esc(a.error)}</div>`;
