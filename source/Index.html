@@ -7321,6 +7321,25 @@ window.addEventListener('load',function(){
     html.dk-on:not(.desktop-site-mode) #overviewPanel>.top-projects .sx-lmeta{flex-wrap:wrap!important;gap:0 10px!important;font-size:11px!important}
     html.dk-on:not(.desktop-site-mode) #overviewPanel>.top-projects .sx-stale,html.dk-on:not(.desktop-site-mode) #overviewPanel>.top-projects .sx-lmain>small{font-size:10px!important;margin:2px 0 0!important}
     }
+    /* v227 phones only: plan day Value boxed and labelled like Spend and Conv.; thin grey lines between Clicks · CPA · CVR · Avg. gift;
+       Results CPA · CTR · CVR in three even columns; Plan History plan numbers short */
+    .ph-short{display:none}
+    @media (max-width:1099px){
+      html body #dxBody .dc-card.dcA .dcA-g{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+      html body #dxBody .dc-card.dcA .dcA-g>div:last-child{position:static!important;inset:auto!important;transform:none!important;width:auto!important;text-align:left!important}
+      html body #dxBody .dc-card.dcA .dcA-g>div:last-child small{display:block!important}
+      html body #dxBody .dc-card.dcA .dcA-g>div:last-child{display:block!important;align-self:stretch!important;margin:0!important}
+      html body #dxBody .dc-card.dcA .dcA-g>div:last-child b{display:block!important;font-size:17px!important;line-height:1.2!important}
+      html body #dxBody .dc-card.dcA .dcA-g>div b{font-size:17px!important}
+      html body .dcA-s4{gap:0!important}
+      html body .dcA-s4>div+div{border-left:1px solid #e3e7f0}
+      body.dark-mode .dcA-s4>div+div{border-left-color:#2a313c}
+      html body .dx-stats.dx-g3b{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:0!important;text-align:center}
+      html body .dx-g3b>span+span{border-left:1px solid #e3e7f0}
+      .ph-full{display:none}.ph-short{display:inline}
+      html body .phx-tw{margin:0!important;padding:0 2px}
+      html body .phx-t th:first-child,html body .phx-t td:first-child{padding-left:2px!important}
+    }
 </style>
 </head>
 <body>
@@ -10152,7 +10171,8 @@ function dxResultSheet(x){
 function dxResultMore(x){
  const a=x.actual;
  
- return `<div class="dx-stats dx-g3"><span><small>CPA</small><b>${money(a.cpa,2)}</b></span><span><small>CVR</small><b>${percent(a.cvr)}</b></span><span><small>Clicks</small><b>${fmt(a.clicks,0)} <em class="dx-ach ${achClass(a.clicksAchievement)}">${percent(a.clicksAchievement)}</em></b></span><span><small>CTR</small><b>${percent(a.ctr)}</b></span></div>`;
+ 
+ return `<div class="dx-stats dx-g3 dx-g3b"><span><small>CPA</small><b>${money(a.cpa,2)}</b></span><span><small>CTR</small><b>${percent(a.ctr)}</b></span><span><small>CVR</small><b>${percent(a.cvr)}</b></span></div>`;
 }
  
 function daysCards(days,latest,T){
@@ -10181,7 +10201,7 @@ function daysCards(days,latest,T){
    const box=(l,act,r,cls)=>`<div class="dcR-k ${cls}"><small>${l}</small><b>${r==null||!isFinite(r)?'—':Math.round(r*100)+'%'}</b><span>${act}</span></div>`;
    return `<div class="dc-card dcA dcH dcR${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" data-rx="1" onclick="toggleDay('${x.date}')">${rxBadge(x.date)}${hdr}<div class="dc-main">
      <div class="dcR-g">${box('Spend',money(a.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${(()=>{const r=p.clicks?a.clicks/p.clicks:null;return box('Clicks',fmt(a.clicks,0),r,achClass(r)).replace('class="dcR-k','class="dk-only dcR-k')})()}${box('Conv.',fmt(a.conversions,0),a.convAchievement,achClass(a.convAchievement))}${box('Value',money(a.value),a.valueAchievement,achClass(a.valueAchievement))}</div>
-     <div class="dc-more"><table class="dcR-tb"><tr><th></th><th>Actual</th><th>Plan</th><th>%</th></tr>${rr('Spend',money(a.spend),money(p.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${rr('Conv.',fmt(a.conversions,0),fmt(p.conversions,0),a.convAchievement,achClass(a.convAchievement))}${rr('Value',money(a.value),money(p.value),a.valueAchievement,achClass(a.valueAchievement))}${rr('ROAS',fmt(a.roas,2)+'x',fmt(p.roas,2)+'x',roR,achClass(roR))}</table>${dxResultMore(x)}${dxResultSheet(x)}</div></div></div>`;
+     <div class="dc-more"><table class="dcR-tb"><tr><th></th><th>Actual</th><th>Plan</th><th>%</th></tr>${rr('Spend',money(a.spend),money(p.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${rr('Conv.',fmt(a.conversions,0),fmt(p.conversions,0),a.convAchievement,achClass(a.convAchievement))}${rr('Value',money(a.value),money(p.value),a.valueAchievement,achClass(a.valueAchievement))}${rr('ROAS',fmt(a.roas,2)+'x',fmt(p.roas,2)+'x',roR,achClass(roR))}${p.clicks?rr('Clicks',fmt(a.clicks,0),fmt(p.clicks,0),a.clicks/p.clicks,achClass(a.clicks/p.clicks)):''}</table>${dxResultMore(x)}${dxResultSheet(x)}</div></div></div>`;
  }).join('');
  return (plan?planHero(days,T):resultsHero(days,T))+`<div class="dc-list">${cards}</div>`+(plan?`<div class="dc-legend">${PLAN_MIX_LABELS.map((l,k)=>`<span><i class="m${k}"></i>${l}</span>`).join('')}</div>`:'')+`<div class="dx-note">Tap a day to see more.</div>`;
 }
@@ -15989,7 +16009,7 @@ function drawPlanHistory(){
  const libOf=k=>(PH.lib||[]).find(r=>r.month===k);
  body.innerHTML=tabs+`<div class="phx-list">${PH.list.map(s=>{
    const {p,all}=phAcc(s), a=s.actual, open=PH.open===s.month, mon=s.month.slice(0,4)+'-'+s.month.slice(5,7);
-   const line=(l,av,pv,f,spend)=>{const r=pv?av/pv:null;return `<div class="phs-li"><div class="phs-t"><span>${l}</span><b>${f(av)}</b></div><div class="phs-q">Plan ${f(pv)}<i><u style="width:${r!=null?Math.min(100,r*100).toFixed(1):0}%"></u></i><em class="${tone(r,spend)}">${r!=null?mpPct(r):'—'}</em></div></div>`};
+   const line=(l,av,pv,f,spend)=>{const r=pv?av/pv:null;return `<div class="phs-li"><div class="phs-t"><span>${l}</span><b>${f(av)}</b></div><div class="phs-q">Plan <span class="ph-full">${f(pv)}</span><span class="ph-short">${f===money||String(f(pv)).match(/^[^0-9-]?[\d,]{6,}/)?mpK(pv):f(pv)}</span><i><u style="width:${r!=null?Math.min(100,r*100).toFixed(1):0}%"></u></i><em class="${tone(r,spend)}">${r!=null?mpPct(r):'—'}</em></div></div>`};
    const roasR=p.roas?a.roas/p.roas:null;
    const ch=(s.channels||[]).map(c=>Object.assign({},c,{n:chName(c.channel)})).sort((x,y)=>(y.roas||0)-(x.roas||0)).map(c=>`<tr><td class="mp-n">${chIco(c.channel)}${esc(CHANNEL_SHORT[c.channel]||c.n)}</td><td>${mpK(c.planSpend)}</td><td>${mpK(c.spend)}</td><td>${c.planSpend?`<b class="phx-op ${phOpCls(c.spend/c.planSpend)}">${mpPct(c.spend/c.planSpend)}</b>`:'—'}</td><td>${mpK(c.value)}</td><td>${c.roas!=null?fmt(c.roas,2)+'x':'—'}</td></tr>`).join('');
    const saved=s.savedAt?new Date(s.savedAt).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}):'';
