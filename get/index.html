@@ -455,21 +455,25 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
  .g3 .tl3{margin:0 auto 8px}
 }
 
-/* Golden sparkler line: one even, symmetric wave from the top of the page to the download button at the end,
-   drawn by scroll; a sparkler burns at its head (sparks on a fixed canvas, so it stays light on long pages) */
+/* Golden sparkler line: one even, symmetric, tight wave from the top of the page to the end, drawn by scroll;
+   a sparkler burns at its head. No CSS filters (they repaint the whole page each frame): the glow is soft stacked strokes. */
 .gl{position:absolute;left:0;top:0;width:100%;z-index:0;pointer-events:none;overflow:hidden}
 .gl svg{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}
-.gl .glw{filter:blur(10px)}
-.gl path{fill:none;stroke-linecap:round;stroke-linejoin:round}
-.gl .halo{stroke:#F3D79F;stroke-opacity:.3;stroke-width:20}
-.gl .core{stroke:url(#glG);stroke-opacity:.9;stroke-width:5;filter:blur(.6px)}
+.gl path{fill:none;stroke-linecap:round;stroke-linejoin:round;will-change:stroke-dashoffset}
+.gl .h1{stroke:#F3D79F;stroke-opacity:.05;stroke-width:44}
+.gl .h2{stroke:#F3D79F;stroke-opacity:.08;stroke-width:26}
+.gl .h3{stroke:#F3D79F;stroke-opacity:.14;stroke-width:13}
+.gl .core{stroke:url(#glG);stroke-opacity:.95;stroke-width:4.5}
 #glC{position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
 .wrap{z-index:1}
-@media (max-width:620px){.gl .glw{filter:blur(8px)}.gl .halo{stroke-width:14;stroke-opacity:.22}.gl .core{stroke-width:4;stroke-opacity:.6}}
+@media (max-width:620px){.gl .h1{stroke-width:30}.gl .h2{stroke-width:18}.gl .h3{stroke-width:9}.gl .core{stroke-width:3.6;stroke-opacity:.6}}
+/* iPhone guide, desktop: the two notes stay inside the card and off the headline; more blur behind them */
+.g3 .pl3{-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);background:rgba(18,30,78,.72)}
+@media (min-width:981px){.g3 .pl3.a{left:auto;right:6px;top:2px}.g3 .pl3.b{right:auto;left:6px;bottom:60px}}
 </style>
 </head>
 <body>
-<div class="gl" id="gl" aria-hidden="true"><svg class="glw" id="glW"><path class="halo"/></svg><svg id="glS"><defs><linearGradient id="glG" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1000"><stop offset="0" stop-color="#F3D79F"/><stop offset=".5" stop-color="#E2B874"/><stop offset="1" stop-color="#c89434"/></linearGradient></defs><path class="core"/></svg></div><canvas id="glC" aria-hidden="true"></canvas>
+<div class="gl" id="gl" aria-hidden="true"><svg id="glS"><defs><linearGradient id="glG" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1000"><stop offset="0" stop-color="#F3D79F"/><stop offset=".5" stop-color="#E2B874"/><stop offset="1" stop-color="#c89434"/></linearGradient></defs><path class="h1"/><path class="h2"/><path class="h3"/><path class="core"/></svg></div><canvas id="glC" aria-hidden="true"></canvas>
 <div class="wrap">
   <div class="nav"><img src="/get/logo-white.webp?v=20" alt="HEMERA"></div>
   <div class="hgrid">
@@ -746,25 +750,26 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
 // spacing each time), ending at the centre over the last section. Scroll draws it (stroke-dashoffset);
 // a sparkler burns at the head, throwing more sparks while you scroll. Reduced motion: the full line, no sparks.
 (function(){
-  var box=document.getElementById('gl'),sw=document.getElementById('glW'),ss=document.getElementById('glS'),cv=document.getElementById('glC');if(!box||!cv)return;
-  var halo=sw.querySelector('path'),core=ss.querySelector('.core'),gg=document.getElementById('glG'),cx=cv.getContext('2d');
+  var box=document.getElementById('gl'),ss=document.getElementById('glS'),cv=document.getElementById('glC');if(!box||!cv)return;
+  var ps=[].slice.call(ss.querySelectorAll('path')),core=ss.querySelector('.core'),LUT=[],gg=document.getElementById('glG'),cx=cv.getContext('2d');
   var still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   var W=0,H=0,L=0,shown=0,t0=performance.now(),last=t0,parts=[],raf=0,dpr=1,small=false,lastH=0;
   function f(n){return n.toFixed(1)}
   function build(){
     W=document.documentElement.clientWidth;H=Math.max(document.documentElement.scrollHeight,document.body.scrollHeight);lastH=H;
     small=W<=620;box.style.height=H+'px';
-    var top=90,bot=H-140,n=Math.max(3,Math.round((bot-top)/(small?620:720))),step=(bot-top)/n,lx=W*(small?.1:.12),rx=W-lx,k=step*.5;
+    var top=90,bot=H-140,n=Math.max(4,Math.round((bot-top)/(small?340:420))),step=(bot-top)/n,amp=Math.min(small?W*.3:W*.2,small?130:260),lx=W/2-amp,rx=W/2+amp,k=step*.5;
     var d='M '+f(W/2)+' '+f(top),px=W/2,py=top;
     for(var i=1;i<=n;i++){var x=i===n?W/2:(i%2?lx:rx),y=top+step*i;
       d+=' C '+f(px)+' '+f(py+k)+', '+f(x)+' '+f(y-k)+', '+f(x)+' '+f(y);px=x;py=y}
-    [sw,ss].forEach(function(s){s.setAttribute('viewBox','0 0 '+W+' '+H);s.setAttribute('preserveAspectRatio','none')});
+    ss.setAttribute('viewBox','0 0 '+W+' '+H);ss.setAttribute('preserveAspectRatio','none');
     gg.setAttribute('y2',H);
-    halo.setAttribute('d',d);core.setAttribute('d',d);
+    ps.forEach(function(p){p.setAttribute('d',d)});
     L=core.getTotalLength();
-    [halo,core].forEach(function(p){p.style.strokeDasharray=L+' '+L});
+    ps.forEach(function(p){p.style.strokeDasharray=L+' '+L});
+    LUT=[];for(var j=0;j<=1200;j++){var q=core.getPointAtLength(L*j/1200);LUT.push(q.x,q.y)}
     dpr=Math.min(2,window.devicePixelRatio||1);cv.width=innerWidth*dpr;cv.height=innerHeight*dpr;cx.setTransform(dpr,0,0,dpr,0,0);
-    if(still){shown=1;[halo,core].forEach(function(p){p.style.strokeDashoffset=0})}
+    if(still){shown=1;ps.forEach(function(p){p.style.strokeDashoffset=0})}
   }
   function spawn(x,y,k,sp){for(var i=0;i<k;i++){var a=Math.random()*Math.PI*2,v=sp*(.4+Math.random());
     parts.push({x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:420+Math.random()*320,t:0,c:Math.random()<.5?'#fff3d6':'#E2B874',r:1+Math.random()*1.1})}}
@@ -774,9 +779,9 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
     var sy=window.scrollY||0,vh=innerHeight;
     var intro=Math.min(1,(now-t0)/1400),e=1-Math.pow(1-intro,3);
     var goal=Math.min(1,(sy+vh*.62)/H)*e;
-    shown+=(goal-shown)*.14;if(Math.abs(goal-shown)<.0003)shown=goal;
-    var off=L*(1-shown);halo.style.strokeDashoffset=off;core.style.strokeDashoffset=off;
-    var tip=core.getPointAtLength(L*shown),moving=Math.abs(goal-shown)>.0006,ty=tip.y-sy;
+    shown+=(goal-shown)*Math.min(1,dt/16*.3);if(Math.abs(goal-shown)<.0002)shown=goal;
+    var off=(L*(1-shown)).toFixed(1);if(off!==window.__glOff){window.__glOff=off;for(var m=0;m<ps.length;m++)ps[m].style.strokeDashoffset=off}
+    var ii=Math.round(shown*1200)*2,tip={x:LUT[ii],y:LUT[ii+1]},moving=Math.abs(goal-shown)>.0006,ty=tip.y-sy;
     if(shown>.002&&shown<.999&&ty>-40&&ty<vh+40)spawn(tip.x,ty,small?(moving?5:2):(moving?9:3),moving?3.2:1.7);
     cx.clearRect(0,0,innerWidth,vh);
     cx.globalCompositeOperation='lighter';
