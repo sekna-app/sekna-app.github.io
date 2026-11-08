@@ -17375,7 +17375,7 @@ function scardEd(k,dev,f,v){const ph=dev==='phone',fk=ph?'p':'d';SAL.cardEd=SAL.
  const L=f==='r'?(SCARD_LOOK[k]||[70,30,100,100]).slice():scardLook(k,ph),i={x:0,y:1,z:2,o:3}[f],lim=[[0,100],[0,100],[100,300],[10,100]];
  if(i!=null)L[i]=Math.max(lim[i][0],Math.min(lim[i][1],L[i]+v));
  SAL.cardEd[k][fk]=L;SAL.cardEdDirty=true;
- document.querySelectorAll(`.scd[data-k="${k}"]`).forEach(el=>{const isPh=el.classList.contains('ph')||(el.closest('#scdHome')&&window.innerWidth<1100);if(isPh===ph)el.setAttribute('style',scardStyle(k,ph))});
+ document.querySelectorAll(`.scd[data-k="${k}"]`).forEach(el=>{const isPh=!!(el.classList.contains('ph')||(el.closest('#scdHome')&&window.innerWidth<1100));if(isPh===ph)el.setAttribute('style',scardStyle(k,ph))});
  const s=document.getElementById('scpSave');if(s)s.disabled=false;scardEdShow(k,dev)}
 function scardEdSave(){if(SAL.cardEdBusy||!SAL.cardEd)return;SAL.cardEdBusy=true;const s=document.getElementById('scpSave');if(s){s.disabled=true;s.textContent='Saving…'}
  const all=JSON.parse(JSON.stringify((APP_PREFS||{}).card||{}));Object.keys(all).forEach(k=>{if(!all[k].d&&!all[k].p)delete all[k]});
