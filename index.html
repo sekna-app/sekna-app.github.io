@@ -8267,6 +8267,26 @@ window.addEventListener('load',function(){
     .nfc-img{border-radius:0;max-height:52vh;object-fit:contain;background:#0c1d5c}
     .nfc-b{padding:16px 18px 18px}.nfc-b small{font-size:11px}.nfc-b h3{font-size:18px;margin:4px 0 6px}.nfc-b p{font-size:13.5px;line-height:1.55}
     .nfc-a{margin-top:14px}.nfc-a button{padding:10px;font-size:13.5px}
+
+    /* v301 Admin season alerts: loading screens */
+    .sal-sp{display:grid;grid-template-columns:92px minmax(0,1fr);gap:12px;padding:12px 0;border-top:1px solid #eef1f6;align-items:start}.sal-sp:first-child{border-top:0}
+    .sal-sp.desk{grid-template-columns:150px minmax(0,1fr)}
+    .sal-spi{position:relative;border:0;padding:0;border-radius:12px;overflow:hidden;cursor:pointer;background:#0c1d5c}.sal-spi img{display:block;width:100%;aspect-ratio:9/16;object-fit:cover;object-position:top}
+    .sal-sp.desk .sal-spi img{aspect-ratio:16/9}
+    .sal-spi span{position:absolute;left:6px;bottom:6px;font-size:10px;font-weight:900;color:#fff;background:rgba(10,20,60,.6);border-radius:99px;padding:2px 8px}
+    .sal-lb{color:#9a6a12!important;font-weight:900!important;letter-spacing:.06em;margin-top:2px}
+    .spv-ov{position:fixed;inset:0;z-index:100002;background:rgba(6,12,36,.75);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px}
+    .spv{position:relative;overflow:hidden;background:linear-gradient(180deg,#0e1e66,#0a1748);box-shadow:0 30px 80px rgba(0,0,0,.5)}
+    .spv.phone{width:min(300px,70vw);aspect-ratio:9/19.5;border-radius:34px;border:8px solid #111827}
+    .spv.desk{width:min(860px,92vw);aspect-ratio:16/10;border-radius:14px;border:6px solid #111827}
+    .spv-bg{position:absolute;left:0;right:0;top:0;background-size:cover;background-position:top center}
+    .spv.phone .spv-bg{bottom:0}.spv.desk .spv-bg{height:52%;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
+    .spv-c{position:absolute;left:0;right:0;top:46%;display:flex;flex-direction:column;align-items:center;gap:8px}.spv.desk .spv-c{top:50%;gap:6px}.spv.desk .spv-c img{width:24%}.spv.desk .spv-l{bottom:4%}
+    .spv-c img{width:46%;max-width:200px;height:auto;display:block}.spv-c em{font-style:normal;font-size:9px;letter-spacing:.3em;color:#c9d3f5;font-weight:800}
+    .spv-c u{display:block;width:46%;max-width:200px;height:4px;border-radius:9px;background:rgba(255,255,255,.18);overflow:hidden}.spv-c u b{display:block;height:100%;width:70%;background:linear-gradient(90deg,#f2d38f,#c89434)}
+    .spv-c small{font-size:9px;letter-spacing:.25em;color:#8a98c8;font-weight:900}
+    .spv-l{position:absolute;left:0;right:0;bottom:5%;text-align:center;font-size:10px;font-weight:900;letter-spacing:.14em;color:#e2b874}
+    .spv-x{border:0;border-radius:12px;padding:10px 22px;font:inherit;font-weight:900;background:#fff;color:#141b33;cursor:pointer}
 </style>
 </head>
 <body>
@@ -17268,6 +17288,15 @@ function salNote(b,t,ok){let n=b.nextElementSibling;if(!n||!n.classList.contains
 function salTest(b,kind,key){if(b.dataset.busy)return;b.dataset.busy=1;const t=b.textContent;b.textContent='Sending…';
  serverCall(kind==='greet'?'adminSeasonTestGreeting':'adminSeasonTestEmail',getAccessToken(),key).then(r=>{const ok=/^sent/.test((r&&r.email)||'');b.textContent=ok?'Sent ✓':'Email failed';b.classList.add(ok?'ok':'bad');salNote(b,'Push '+(r&&r.push?'✓':'✗')+' · Email: '+((r&&r.email)||'?'),ok);showSettingsToast('Push '+(r&&r.push?'✓':'✗')+' · Email: '+((r&&r.email)||'?'))})
  .catch(e=>{b.textContent='Not sent';b.classList.add('bad');salNote(b,errorText(e),false);showSettingsToast(errorText(e))}).finally(()=>setTimeout(()=>{b.textContent=t;b.classList.remove('ok','bad');delete b.dataset.busy},4000))}
+const SPL_DAYS={ramadan:'All of Ramadan (from the 21st: Last 10 nights)',last10:'21–30 Ramadan',eidfitr:'1–3 Shawwal',dhulhijjah:'1–8 Dhul Hijjah',arafah:'9 Dhul Hijjah',eidadha:'10–13 Dhul Hijjah',ashura:'9–10 Muharram',thanksgiving:'Thanksgiving day',givingtuesday:'Giving Tuesday',yearend:'26–31 December'};
+const SPL_TXT={ramadan:'RAMADAN MUBARAK',last10:'THE LAST 10 NIGHTS',eidfitr:'EID MUBARAK',dhulhijjah:'THE BEST 10 DAYS',arafah:'THE DAY OF ARAFAH',eidadha:'EID AL-ADHA MUBARAK',ashura:'ASHURA',thanksgiving:'HAPPY THANKSGIVING',givingtuesday:'GIVING TUESDAY',yearend:'YEAR-END GIVING'};
+ 
+function salSplash(k){
+ document.querySelector('.spv-ov')?.remove();
+ const dev=SAL.dev||'phone',ov=document.createElement('div');ov.className='spv-ov';ov.setAttribute('data-share-ui','');
+ ov.innerHTML=`<div class="spv ${dev}"><i class="spv-bg" style="background-image:url('icons/splash/${k}${dev==='desk'?'-d':''}.webp?v=1')"></i><div class="spv-c"><img src="${esc((document.querySelector('.sk-drawer-logo')||{}).src||'')}" alt="HEMERA"><em>— DAY BY DAY —</em><u><b></b></u><small>LOADING</small></div><span class="spv-l">${SPL_TXT[k]}</span></div><button type="button" class="spv-x" onclick="this.parentElement.remove()">Close</button>`;
+ ov.addEventListener('click',e=>{if(e.target===ov)ov.remove()});document.body.appendChild(ov);
+}
 function salHtml(){
  if(SAL.err&&!SAL.data)return `<div class="sk-admin-empty">${esc(SAL.err)}</div>`;
  if(!SAL.data)return '<div class="sk-admin-empty">Loading…</div>';
@@ -17284,10 +17313,12 @@ function salHtml(){
  let rows='';
  if(view==='remind')rows=keys.map(k=>{const n=nx[k]||{},send=n.at?new Date(Date.parse(n.at+'T00:00:00Z')-L[k]*864e5).toISOString().slice(0,10):'';
    return `<div class="sal-r sal-ri"><img src="${esc('https:\/\/sekna-app.web.app/icons/seasons/'+k+'.jpg?v=4')}" alt="" loading="lazy"><div class="sal-t"><b>${SAL_NAMES[k]} ${tag(k)}</b>${inN(send)}<small>${n.at?'Alert '+short(send)+' · starts '+short(n.at):''}</small><button type="button" class="sal-test" onclick="salTest(this,'remind','${k}')">Send me a test</button></div><div class="sal-n"><button type="button" onclick="salStep('${k}',-1)" aria-label="Fewer days">−</button><span><b>${L[k]}</b>${L[k]===1?' day':' days'}</span><button type="button" onclick="salStep('${k}',1)" aria-label="More days">+</button></div></div>`}).join('');
+ else if(view==='splash')rows=keys.filter(k=>SPL_DAYS[k]).map(k=>{const n=nx[k]||{},dev=SAL.dev||'phone';
+   return `<div class="sal-sp ${dev}"><button type="button" class="sal-spi" onclick="salSplash('${k}')" aria-label="Preview"><img src="icons/splash/${k}${dev==='desk'?'-d':''}.webp?v=1" alt="" loading="lazy"><span>Preview</span></button><div class="sal-t"><b>${SAL_NAMES[k]} ${tag(k)}</b>${inN(n.at)}<small>${SPL_DAYS[k]}</small><small class="sal-lb">“${SPL_TXT[k]}”</small></div></div>`}).join('');
  else rows=keys.map(k=>{const n=nx[k]||{},g=(SAL.data.greet||{})[k]||['',''];
    return `<div class="sal-gr"><img src="${esc((SAL.data.greetImg||'')+k+'.jpg'+(SAL.data.imgV||''))}" alt="" loading="lazy"><div class="sal-t"><b>${esc(g[0])}</b>${inN(n.at)}<small>${SAL_NAMES[k]} ${tag(k)}${n.at?' · sends '+short(n.at):''}</small><p>${esc(g[1])}</p><button type="button" class="sal-test" onclick="salTest(this,'greet','${k}')">Send me a test</button></div></div>`}).join('');
- return `<div class="sal-h"><b>Season alerts</b><small>${view==='remind'?'A push and an email to the team this many days before each season starts, at 9:00 Muscat.':'A push and an email with the season\'s picture on its first day, at 9:00 Muscat.'} Tests go to you only.</small></div>`
-  +seg('view',view,[['remind','Reminders'],['greet','Greetings']])+seg('grp',grp,[['all','All'],['hijri','Hijri'],['us','US']])
+ return `<div class="sal-h"><b>Season alerts</b><small>${view==='remind'?'A push and an email to the team this many days before each season starts, at 9:00 Muscat. Tests go to you only.':view==='greet'?'A push and an email with the season\'s picture on its first day, at 9:00 Muscat. Tests go to you only.':'The loading screen wears the season\'s picture and words on its days, then goes back to normal. Tap a picture to see it full size.'}</small></div>`
+  +seg('view',view,[['remind','Reminders'],['greet','Greetings'],['splash','Loading screen']])+(view==='splash'?seg('dev',SAL.dev||'phone',[['phone','Phone'],['desk','Desktop']]):'')+seg('grp',grp,[['all','All'],['hijri','Hijri'],['us','US']])
   +`<div class="sal-list">${rows}</div>`
   +(view==='remind'?`<div class="sal-act"><button type="button" class="sal-save" ${dirty&&!SAL.busy?'':'disabled'} onclick="salSave()">${SAL.busy?'Saving…':'Save'}</button>${SAL.err?`<small class="sal-err">${esc(SAL.err)}</small>`:''}</div>`:'');
 }
