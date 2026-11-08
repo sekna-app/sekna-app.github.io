@@ -275,8 +275,7 @@ const R = {
     const me = await assertAdmin(token);
     const k = String(key || ''), g = SEASON_GREET[k];
     if (!g) throw new Error('No greeting for this season.');
-    const nx = nextSeason(k, dayOf(Date.now()));
-    const m = greetingEmail(k, nx ? await greetingRows(k, nx.at) : null, 'DECEMBER LAST YEAR');
+    const m = greetingEmail(k);
     const p = await notify.send({ pushes: [{ email: me.email, title: g[0], body: g[1], image: GREET_IMG + k + '.jpg', eventType: 'greeting' }] }).catch(() => null);
     const mail = await testMail({ to: me.email, subject: '[Test ' + new Date().toISOString().slice(11, 16) + '] ' + m.subject, rawHtml: m.html, title: m.title, html: m.inner });
     return { ok: true, to: me.email, title: g[0], push: !!(p && (p.pushes || p.relayed)), email: mail };
@@ -784,7 +783,7 @@ async function pushChecks(latestByAccount, daysByAccount) {
             .catch(e => console.error('Season greeting: ' + e.message));
           // The same greeting as an email to every approved person.
           if (g) try {
-            const m = greetingEmail(k, await greetingRows(k, s.at), 'DECEMBER LAST YEAR'), people = await approvedPeople();
+            const m = greetingEmail(k), people = await approvedPeople();
             await notify.send({ emails: people.map(p => ({ to: p.email, subject: m.subject, rawHtml: m.html, title: m.title, html: m.inner })) });
           } catch (e) { console.error('Greeting email: ' + e.message); }
           sent[key] = Date.now(); if (g) out.season = (out.season || []).concat(key);
