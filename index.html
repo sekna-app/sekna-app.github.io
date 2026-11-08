@@ -7913,6 +7913,29 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcR .dc-more .dx-ty .dx-tyt{width:100%;margin:0!important}
       html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcR .dc-more .dx-ty .dx-tyt th{background:#f7f8fc;padding:8px 10px!important}html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcR .dc-more .dx-ty .dx-tyt td{padding:7px 10px!important}
     }
+
+    .dk-of{display:none;font-style:normal}
+    /* v273 desktop: "of plan" beside the % on the Results month card; upcoming days look like the Media Plan rows;
+       the vs Last year card slimmer like the other two */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body #dxBody .mt.mt3 .dk-of{display:inline}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcR .dc-more .dx-ty .dx-tyt tr.dx-fill td{color:transparent}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcR .dc-more{align-items:stretch!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming{display:grid!important;grid-template-columns:170px minmax(0,1fr)!important;align-items:center;background:#fff!important;border:1px solid #e6e9f2!important;border-left:4px solid #e2cf9f!important;border-radius:12px!important;padding:0!important;min-height:0!important;box-shadow:none!important;opacity:.9}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming>.dc-date{background:none!important;box-shadow:none!important;color:#203c8e!important;display:flex!important;flex-direction:row!important;align-items:baseline;gap:6px;padding:8px 12px!important;width:auto!important;height:auto!important;border-radius:0!important;margin:0!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming>.dc-date:after{display:none!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming>.dc-date b{font-size:15px!important;color:#203c8e!important}html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming>.dc-date span{font-size:12px!important;color:#203c8e!important;text-transform:capitalize}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming>.dc-main{display:flex!important;align-items:center;gap:14px;padding:8px 14px!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming .dc-hij{font-size:11px!important;color:#8a93ad!important;margin:0!important}html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming .dc-up{font-size:12.5px!important;color:#8a93ad!important;margin:0!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .lyx-sum.lyv{padding:14px 20px!important;min-height:0!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .lyx-sum.lyv .lyv2{padding:0!important}
+      html.dk-on:not(.desktop-site-mode) body #app #dxBody .lyx-sum.lyv .lyv2-row{align-self:center!important;margin:0!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .lyx-sum.lyv .lyv-big{font-size:30px!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .lyx-sum.lyv .lyv-sub{margin:2px 0 6px!important;font-size:11.5px!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .lyx-sum.lyv .lyv2-bar{margin:3px 0!important;font-size:11.5px!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .lyx-sum.lyv .lyv2-row>div{padding:8px 14px!important;min-height:0!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .lyx-sum.lyv .lyv2-row b{font-size:22px!important}
+    }
 </style>
 </head>
 <body>
@@ -10779,7 +10802,9 @@ async function dxTypes(dk,btn){
  if(!P||!P.channels||!Object.keys(P.channels).length){box.innerHTML='<div class="dx-tyw">No campaign type numbers for this day yet.</div>';return}
  const ch=mergeVideo(P.channels),names=CHANNEL_ORDER.slice();Object.keys(ch).forEach(n=>{if(!names.includes(n))names.push(n)});
  const rows=names.map((n,i)=>ch[n]?{n,k:Math.min(i,4),c:ch[n]}:null).filter(r=>r&&(r.c.spend||r.c.value));
- box.innerHTML=`<table class="dx-tyt"><tr><th>Type</th><th>Cost</th><th>Clicks</th><th>Conv.</th><th>Value</th></tr>${rows.map(r=>`<tr><td><i class="m${r.k}"></i>${esc(CHANNEL_SHORT[r.n]||r.n)}</td><td>${money(r.c.spend)}</td><td>${fmt(r.c.clicks||0,0)}</td><td>${fmt(r.c.conversions||0,0)}</td><td>${money(r.c.value)}</td></tr>`).join('')}</table>`;
+ box.innerHTML=`<table class="dx-tyt"><tr><th>Type</th><th>Cost</th><th>Clicks</th><th>Conv.</th><th>Value</th></tr>${rows.map(r=>`<tr><td><i class="m${r.k}"></i>${esc(CHANNEL_SHORT[r.n]||r.n)}</td><td>${money(r.c.spend)}</td><td>${fmt(r.c.clicks||0,0)}</td><td>${fmt(r.c.conversions||0,0)}</td><td>${money(r.c.value)}</td></tr>`).join('')}</table>${matchMedia('(min-width:1100px)').matches?'':''}`;
+ 
+ if(matchMedia('(min-width:1100px)').matches&&rows.length<7){const t=box.querySelector('table');t.insertAdjacentHTML('beforeend',Array.from({length:7-rows.length},()=>'<tr class="dx-fill"><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>').join(''))}
 }
 function dxResultMore(x){
  const a=x.actual;
@@ -10844,7 +10869,7 @@ function resultsHero(days,T){
  const idx=n=>{const k=['Search Brand','Search Non-Brand','Performance Max','Demand Gen','Video (YouTube)'].indexOf(n);return k<0?4:k};
  const mix=ch.map(c=>({k:idx(c.channel),s:Number(c.actualSpend)||0})).filter(m=>m.s>0);
  const tot=mix.reduce((x,m)=>x+m.s,0)||1;
- const tile=(l,v,r,sub,c)=>`<div class="mt-t"><small>${l}</small><b>${v}</b><span class="mt-chip ${c}">${sub}</span></div>`;
+ const tile=(l,v,r,sub,c)=>`<div class="mt-t"><small>${l}</small><b>${v}</b><span class="mt-chip ${c}">${sub}${/%$/.test(sub)?'<i class="dk-of"> of plan</i>':''}</span></div>`;
  
  return `<div class="mt mt3"><div class="mt-top"><div><small>Month to date</small><b>${a.days} of ${days.length} days</b></div><div class="mt-days"><span style="width:${(days.length?a.days/days.length*100:0).toFixed(1)}%"></span></div></div>
   <div class="mt-hero"><div><small>Spend</small><b>${money(a.spend)}</b><i>month plan ${money(p.spend)}</i>${sR!=null?`<span class="mt3-chip ${cls(sR,true)}">${Math.round(sR*100)}% of the month plan</span>`:''}</div>
