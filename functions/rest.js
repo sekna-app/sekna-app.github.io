@@ -614,23 +614,24 @@ function seasonEmailHtml(s, k, rows) {
   const h = hijriParts(s.at), hijri = SEASONS_H.some(x => x.k === k) ? ' · ' + h.day + ' ' + HIJRI_MONTHS[h.month - 1] + ' ' + h.year : '';
   // Short numbers so the four columns fit a phone: £3,701 · $494.9k · $2.91M
   const money = (v, sym) => sym + (v >= 1e6 ? (v / 1e6).toFixed(2) + 'M' : v >= 1e4 ? (v / 1e3).toFixed(v >= 1e5 ? 0 : 1) + 'k' : Math.round(v).toLocaleString('en-GB'));
-  const td = 'padding:9px 6px;border-top:1px solid #eef1f6;';
-  const body = rows.length ? rows.map(r => {
+    // Three columns only, so it fits any phone: the account on its own line, its numbers under it, the best day as one line.
+  const c3 = 'padding:4px 6px 8px;text-align:center;width:33%;font-size:13.5px;';
+  const body = rows.length ? rows.map((r, i) => {
     const t = r.t, roas = t.spend ? t.value / t.spend : 0;
-    let out = '<tr><td style="' + td + 'font-weight:700;white-space:nowrap"><img src="https://sekna-app.web.app/icons/ha-brand.png" width="16" height="16" alt="" style="display:inline-block;vertical-align:-3px;margin-right:6px;border:0">' + e(r.label) + '</td><td style="' + td + 'text-align:right">' + money(t.spend, r.sym) + '</td><td style="' + td + 'text-align:right">' + money(t.value, r.sym) +
-      '</td><td style="' + td + 'text-align:right;color:' + (roas >= 1 ? '#13804f' : '#c63a4a') + ';font-weight:800">' + roas.toFixed(2) + 'x</td></tr>';
+    let out = '<tr><td colspan="3" style="padding:10px 6px 2px;' + (i ? 'border-top:1px solid #eef1f6;' : '') + 'font-weight:800;font-size:13.5px">' + e(r.label) + '</td></tr>' +
+      '<tr><td style="' + c3 + '">' + money(t.spend, r.sym) + '</td><td style="' + c3 + '">' + money(t.value, r.sym) + '</td><td style="' + c3 + 'color:' + (roas >= 1 ? '#13804f' : '#c63a4a') + ';font-weight:800">' + roas.toFixed(2) + 'x</td></tr>';
     if (t.best) {
-      const br = t.best.spend ? t.best.value / t.best.spend : 0, bd = new Date(t.best.dk + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }).replace(' ', '\u00a0');
-      out += '<tr style="color:#5b6478;font-size:12px"><td style="padding:2px 6px 9px 28px;white-space:nowrap">Best · ' + e(bd) + '</td><td style="padding:2px 6px 9px;text-align:right">' + money(t.best.spend, r.sym) + '</td><td style="padding:2px 6px 9px;text-align:right">' + money(t.best.value, r.sym) + '</td><td style="padding:2px 6px 9px;text-align:right">' + br.toFixed(2) + 'x</td></tr>';
+      const br = t.best.spend ? t.best.value / t.best.spend : 0, bd = new Date(t.best.dk + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+      out += '<tr><td colspan="3" style="padding:0 6px 10px;color:#5b6478;font-size:12px">Best day ' + e(bd) + ': ' + money(t.best.spend, r.sym) + ' spend · ' + money(t.best.value, r.sym) + ' value · ' + br.toFixed(2) + 'x</td></tr>';
     }
     return out;
-  }).join('') : '<tr><td colspan="4" style="' + td + 'color:#8a92a0">No numbers for this season last year.</td></tr>';
+  }).join('') : '<tr><td colspan="3" style="padding:10px 6px;color:#8a92a0">No numbers for this season last year.</td></tr>';
   const btn = (href, label, primary) => '<a href="' + href + '" style="display:inline-block;padding:12px 22px;margin:4px 8px 0 0;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;' +
     (primary ? 'background:#203C8E;color:#ffffff' : 'background:#eef1f7;color:#1d2433') + '">' + label + '</a>';
   const title = s.e + ' ' + e(s.name) + ' starts in ' + s.left + ' days' + (s.acc ? ' · USA' : '');
   const info = '<div style="display:inline-block;background:#fdf3dc;color:#9a6a12;font-size:11px;font-weight:800;letter-spacing:.08em;border-radius:99px;padding:4px 10px">' + s.left + ' DAYS TO GO</div>';
   const rest = '<p style="margin:0 0 16px;color:#5b6478;font-size:14px">Starts <b style="color:#1d2433">' + e(dLabel) + '</b>' + e(hijri) + '. Time to check the plan and the budgets.</p>' +
-    '<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;table-layout:fixed;width:100%;font-size:12.5px;margin-bottom:16px"><tr style="background:#f4f6fb;color:#8a92a0;font-size:10px;letter-spacing:.04em"><td style="padding:8px 6px;width:36%">LAST YEAR</td><td style="padding:8px 6px;text-align:right;width:22%">SPEND</td><td style="padding:8px 6px;text-align:right;width:22%">VALUE</td><td style="padding:8px 6px;text-align:right;width:20%">ROAS</td></tr>' + body + '</table>' +
+    '<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;table-layout:fixed;width:100%;font-size:12.5px;margin-bottom:16px"><tr><td colspan="3" style="padding:0 0 6px;color:#8a92a0;font-size:10.5px;font-weight:700;letter-spacing:.08em">SAME SEASON LAST YEAR</td></tr><tr style="background:#f4f6fb;color:#8a92a0;font-size:10px;letter-spacing:.04em"><td style="padding:7px 6px;text-align:center;width:33%">SPEND</td><td style="padding:7px 6px;text-align:center;width:33%">VALUE</td><td style="padding:7px 6px;text-align:center;width:33%">ROAS</td></tr>' + body + '</table>' +
     btn('https://sekna-app.web.app/', 'Open Seasons Calendar', true);
   const img = '<img src="' + SEASON_IMG + k + '.jpg" width="480" alt="' + e(s.name) + '" style="display:block;width:100%;max-width:480px;height:auto;border:0">';
   const full = '<div style="background:#f4f6fb;padding:28px 12px;font-family:Arial,Helvetica,sans-serif;color:#1d2433"><div style="max-width:480px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6eaf4">' +
