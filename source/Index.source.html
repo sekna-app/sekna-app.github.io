@@ -7823,7 +7823,6 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-accb .fc-ph{display:none!important}
       html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-acc.open:after{display:none!important}
       html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-accb>*{margin-left:0!important;max-width:none!important}
-      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-wk{grid-template-columns:90px minmax(0,420px) 60px!important;justify-content:start;column-gap:16px!important}
       html.dk-on:not(.desktop-site-mode) body .as-side{display:grid;grid-template-columns:230px minmax(0,1fr);column-gap:18px;align-items:start}
       html.dk-on:not(.desktop-site-mode) body .as-side>.as-seg{display:flex!important;flex-direction:column;gap:4px;background:none!important;padding:0!important}
       html.dk-on:not(.desktop-site-mode) body .as-side>.as-seg button{text-align:left;border-radius:12px!important;padding:10px 12px!important;background:none!important;box-shadow:none!important;color:#4b5263!important;width:auto!important}
@@ -7858,6 +7857,20 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) body #dxBody .dcU-g small{font-size:9.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#b3b9c8}
       html.dk-on:not(.desktop-site-mode) body #dxBody .dcU-g span{font-size:15px;font-weight:900;color:#a2a9b8}
       html.dk-on:not(.desktop-site-mode) body #dxBody .dcU-g>div:after{content:"plan";font-size:10.5px;font-weight:800;color:#b3b9c8;background:#f0f2f6;border-radius:7px;padding:3px 8px}
+    }
+
+    /* v281 desktop Forecast sections: the open section fills the space beside the list, top-aligned, with clear rows:
+       the amount and the plan above the bar, the % big on the right */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-accb{max-width:none!important;width:100%;box-sizing:border-box;margin:0!important;align-self:start;padding:6px 18px!important;border:1px solid #e3e9f8!important;border-radius:16px!important;background:#fff!important}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-accb>*{max-width:none!important;margin-left:0!important;margin-right:0!important}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-accb .fc-wk{grid-template-columns:110px minmax(0,1fr) 70px!important;column-gap:18px!important;padding:11px 0!important}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-accb .fc-wk>div:first-child{font-size:13.5px;font-weight:900;color:#1d2433}html.dk-on:not(.desktop-site-mode) body #labForecast .fc-accb .fc-wk>div:first-child small{font-size:11px}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-accb .fc-wk>div:nth-child(2){display:flex;flex-direction:column;gap:6px}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-accb .fc-wk .fc-wkt{order:-1;justify-content:flex-start!important;gap:8px;margin:0!important;font-size:12px!important}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-accb .fc-wk .fc-wkt span:first-child{font-size:15px;font-weight:900;color:#1d2433}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-accb .fc-wk .fc-bar{height:8px!important}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-accb .fc-wk>div:last-child,html.dk-on:not(.desktop-site-mode) body #labForecast .fc-accb .fc-wk>b,html.dk-on:not(.desktop-site-mode) body #labForecast .fc-accb .fc-wk>span:last-child{font-size:16px!important;text-align:right}
     }
 </style>
 </head>
