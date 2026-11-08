@@ -642,6 +642,8 @@ function seasonEmailHtml(s, k, rows) {
   return { full, title, inner };
 }
 async function seasonEmail(s) {
+  // Year-end: a gift emoji with "giving" in the subject is what spam filters catch, so the email says it plainly.
+  if (/^yearend-/.test(s.id)) s = Object.assign({}, s, { name: 'Year-end season', e: '📅' });
   const k = s.id.replace(/-\d+$/, ''), from = seasonLastYear(k, s.at), len = SEASON_LEN[k] || 1;
   const accs = s.acc ? [['usa', 'USA', '$']] : [['usa', 'USA', '$'], ['ar', 'AR', '£']];
   const rows = [];
