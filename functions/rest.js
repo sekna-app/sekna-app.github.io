@@ -701,7 +701,8 @@ function greetingEmail(k, rows, head) {
     '<div style="padding:22px 24px"><h2 style="margin:0 0 8px;font-size:22px;color:#1d2433">' + e(g[0]) + '</h2>' + text + '</div>' +
     '<div style="padding:14px 24px;background:#f8f9fc;color:#8a92a0;font-size:11px">HEMERA • Day by day.</div></div></div>';
   const inner = '<img src="' + img + '" width="432" alt="" style="display:block;width:100%;height:auto;border:0;border-radius:12px;margin:0 0 14px">' + text;
-  return { subject: g[0], title: e(g[0]), html: full, inner };
+  // Spam filters drop mail from a gmail.com sender that talks about tax in the subject, so that one gets a plain subject.
+  return { subject: k === 'tax' ? 'Welcome December · HEMERA' : g[0], title: e(g[0]), html: full, inner };
 }
 /** Rows for a greeting email: only the tax season (1 Dec) shows last December's USA numbers. */
 async function greetingRows(k, at) {
@@ -713,6 +714,7 @@ async function greetingRows(k, at) {
 async function seasonEmail(s) {
   // Year-end: a gift emoji with "giving" in the subject is what spam filters catch, so the email says it plainly.
   if (/^yearend-/.test(s.id)) s = Object.assign({}, s, { name: 'Year-end season', e: '📅' });
+  if (/^tax-/.test(s.id)) s = Object.assign({}, s, { name: 'December planning', e: '📅' });
   const k = s.id.replace(/-\d+$/, ''), from = seasonLastYear(k, s.at), len = SEASON_LEN[k] || 1;
   const accs = s.acc ? [['usa', 'USA', '$']] : [['usa', 'USA', '$'], ['ar', 'AR', '£']];
   const rows = [];
