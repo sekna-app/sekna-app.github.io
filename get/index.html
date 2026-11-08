@@ -411,6 +411,16 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
 .g3 .tl3 li.done{opacity:.22;filter:blur(.4px)}
 .g3 .tl3 em{display:none!important}
 @media (max-width:520px){.g3 .tl3 li b{font-size:15px}.g3 .tl3 li small{font-size:12px}}
+
+/* v3 the iPhone starts on its back, floating; then it turns to its face in 3D (lifts toward you, tilts, settles) */
+.g3 .g3f.back{transition:none!important;animation:bkIdle 3s ease-in-out infinite}
+.g3 .g3f.turn{transition:none!important;animation:turn3d 1.45s cubic-bezier(.45,0,.2,1) both}
+@keyframes bkIdle{0%,100%{transform:rotateY(180deg) rotateX(4deg) translateY(0)}50%{transform:rotateY(198deg) rotateX(9deg) translateY(-8px)}}
+@keyframes turn3d{0%{transform:rotateY(180deg) rotateX(4deg) translateZ(0) scale(1)}
+ 35%{transform:rotateY(120deg) rotateX(16deg) rotateZ(-4deg) translateZ(90px) scale(1.08)}
+ 70%{transform:rotateY(25deg) rotateX(8deg) rotateZ(2deg) translateZ(40px) scale(1.04)}
+ 100%{transform:rotateY(var(--gy,0deg)) rotateX(var(--gx,4deg)) translateZ(0) scale(1)}}
+.g3 .g3s{perspective:900px}
 </style>
 </head>
 <body>
@@ -516,7 +526,7 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
         <p class="s">Add HEMERA to your Home Screen and allow notifications. Four taps in Safari, then it opens full screen from its own icon.</p>
       </div>
       <div class="g3s" id="g3s">
-        <div class="g3f ph3" id="g3f"><div class="bk3" aria-hidden="true"></div><div class="sc3"><div class="isl3"></div><div class="stb3" id="g3sb"><span>9:41</span><span class="si3"></span></div>
+        <div class="g3f ph3 back" id="g3f"><div class="bk3" aria-hidden="true"></div><div class="sc3"><div class="isl3"></div><div class="stb3" id="g3sb"><span>9:41</span><span class="si3"></span></div>
           <div class="k3"><div class="app3"></div><div class="saf3"><div class="url3">🔒 sekna-app.web.app</div><div class="tb3"><span>‹</span><span>›</span><b>⇪</b><span>▭</span><span>⧉</span></div></div><i class="tap3" style="left:50%;top:94%"></i></div>
             <div class="k3"><div class="app3"></div><div class="dim3"></div><div class="sheet3"><div>Copy</div><div>Add Bookmark</div><div class="on">Add to Home Screen</div><div>Find on Page</div></div><i class="tap3" style="left:50%;top:84%"></i></div>
             <div class="k3"><div class="home3"><div class="grid3"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><span><i class="me"></i>HEMERA</span><i></i><i></i></div></div><i class="tap3" style="left:41%;top:41%"></i></div>
@@ -676,7 +686,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
     g.style.setProperty('--gy',(dx*12)+'deg');g.style.setProperty('--gx',(4-dy*6)+'deg')});
     g.addEventListener('mouseleave',function(){g.style.setProperty('--gy','0deg');g.style.setProperty('--gx','4deg')})}
   // The iPhone shows its back (with a light passing over it), then turns to its face and plays the steps.
-  function cycle(){clear();f.classList.add('back');later(function(){f.classList.remove('back');later(function(){show(0)},1000)},2800)}
+  function cycle(){clear();f.classList.remove('turn');f.classList.add('back');later(function(){f.classList.remove('back');void f.offsetWidth;f.classList.add('turn');later(function(){f.classList.remove('turn')},1500);later(function(){show(0)},450)},3000)}
   var start=cycle;
   if(!('IntersectionObserver' in window)){start();return}
   new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){start();o.disconnect()}})},{threshold:.3}).observe(g);
