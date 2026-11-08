@@ -8145,7 +8145,12 @@ window.addEventListener('load',function(){
     .scp-bar b{font-size:14px;margin-right:4px}.scp-bar .sal-seg{margin:0;background:rgba(255,255,255,.12)}.scp-bar .sal-seg button{color:#dfe6fb}.scp-bar .sal-seg button.on{background:#fff;color:#203c8e}
     .scp-bar .spv-x{padding:8px 16px}
     .scp-st{flex:1;min-height:0;width:100%;display:flex;align-items:flex-start;justify-content:center;overflow:hidden}
-    .scp-st{align-items:center}.scp-cd{flex:none;transform-origin:center center}.scp-cd .scd{box-shadow:0 30px 70px rgba(0,0,0,.45)}
+    .scp-st{align-items:center}.scp-ed{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;max-width:760px;padding:10px;border-radius:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16)}
+    .scp-ed .g{display:inline-flex;align-items:center;gap:4px;padding:3px;border-radius:12px;background:rgba(255,255,255,.1)}.scp-ed em{font-style:normal;font-size:11px;font-weight:900;color:#c9d3f5;padding:0 4px}
+    .scp-ed button{border:0;border-radius:9px;min-width:38px;padding:8px 10px;font:inherit;font-size:13px;font-weight:900;background:#fff;color:#203c8e;cursor:pointer}.scp-ed button:active{transform:scale(.95)}
+    .scp-ed .rs{background:transparent;color:#c9d3f5;border:1px solid rgba(255,255,255,.25)}.scp-ed .sv{background:linear-gradient(135deg,#f3d79f,#d9a448);color:#2b1d05;padding:8px 22px}.scp-ed .sv[disabled]{opacity:.45}
+    .scp-ed .v{flex-basis:100%;text-align:center;font-size:11px;font-weight:800;color:#c9d3f5}
+.scp-cd{flex:none;transform-origin:center center}.scp-cd .scd{box-shadow:0 30px 70px rgba(0,0,0,.45)}
     .sal-pv{align-self:flex-start;border:0;border-radius:10px;padding:7px 14px;font:inherit;font-size:12px;font-weight:900;background:#203c8e;color:#fff;cursor:pointer}
 </style>
 </head>
@@ -17210,21 +17215,40 @@ const SCARD_ICON={moon:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.
  heart:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',cal:'<rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3v4M15.5 3v4"/>',
  gift:'<rect x="4" y="10" width="16" height="10" rx="1.5"/><path d="M3 7h18v3H3zM12 7v13M12 7C10 3 6.5 4 7.5 6.5M12 7c2-4 5.5-3 4.5-.5"/>'};
 const SCARD_US=['thanksgiving','givingtuesday','tax','yearend'];
-function scardStyle(k){const [x,y,z,o]=SCARD_LOOK[k]||[70,30,100,100];return `background-image:url('icons/splash/${k}-d.webp?v=1');background-size:${z}% auto;background-position:${x}% ${y}%;--sh:${o/100}`}
-function scardHtml(k,sub,pct,ph){const d=SCARD_DEF[k];if(!d)return '';
- return `<div class="scd${ph?' ph':''}" data-k="${k}" style="${scardStyle(k)}">${SCARD_US.includes(k)?'<span class="us">USA</span>':''}<span class="t">${esc(d[0])}<svg class="scd-ic" viewBox="0 0 24 24" aria-hidden="true">${SCARD_ICON[d[1]]}</svg></span><small>${esc(sub)}</small><i><u style="width:${Math.max(3,Math.min(100,pct))}%"></u></i></div>`}
+/* the look in use: an edit open in the preview, then what was saved for everyone, then the code */
+function scardLook(k,ph){const e=(SAL.cardEd||{})[k]||{},sv=((APP_PREFS||{}).card||{})[k]||{},f=ph?'p':'d';return (e[f]||sv[f]||SCARD_LOOK[k]||[70,30,100,100]).slice()}
+function scardStyle(k,ph){const [x,y,z,o]=scardLook(k,ph);return `background-image:url('icons/splash/${k}-d.webp?v=1');background-size:${z}% auto;background-position:${x}% ${y}%;--sh:${o/100}`}
+function scardHtml(k,sub,pct,ph,lookPh){const d=SCARD_DEF[k];if(!d)return '';
+ return `<div class="scd${ph?' ph':''}" data-k="${k}" style="${scardStyle(k,ph||lookPh)}">${SCARD_US.includes(k)?'<span class="us">USA</span>':''}<span class="t">${esc(d[0])}<svg class="scd-ic" viewBox="0 0 24 24" aria-hidden="true">${SCARD_ICON[d[1]]}</svg></span><small>${esc(sub)}</small><i><u style="width:${Math.max(3,Math.min(100,pct))}%"></u></i></div>`}
 function scardRows(keys){return keys.filter(k=>SCARD_DEF[k]).map(k=>{const d=SCARD_DEF[k];
  return `<div class="sal-cd"><b>${SAL_NAMES[k]}</b><span class="sal-lb2">Desktop</span>${scardHtml(k,d[2],d[3])}<span class="sal-lb2">Phone</span>${scardHtml(k,d[2],d[3],1)}<button type="button" class="sal-pv" onclick="scardPreview('${k}')">Preview</button></div>`}).join('')}
-/* the season's card on its own, at its real phone or desktop size */
+/* the season's card on its own, at its real phone or desktop size, with buttons to move and size its picture (phone and desktop each keep their own) */
 function scardPreview(k,dev){document.querySelector('.scp-ov')?.remove();dev=dev||(window.innerWidth>=1100?'desk':'phone');
- const d=SCARD_DEF[k];if(!d)return;const W=dev==='desk'?1040:358;
+ const d=SCARD_DEF[k];if(!d)return;const W=dev==='desk'?1040:358,b=(f,v,l,t)=>`<button type="button" onclick="scardEd('${k}','${dev}','${f}',${v})" aria-label="${t}">${l}</button>`;
  const ov=document.createElement('div');ov.className='scp-ov';ov.setAttribute('data-share-ui','');
- ov.innerHTML=`<div class="scp-bar"><b>${esc(SAL_NAMES[k]||k)}</b><div class="sal-seg"><button type="button" class="${dev==='phone'?'on':''}" onclick="scardPreview('${k}','phone')">Phone</button><button type="button" class="${dev==='desk'?'on':''}" onclick="scardPreview('${k}','desk')">Desktop</button></div><button type="button" class="spv-x" onclick="this.closest('.scp-ov').remove()">Close</button></div><div class="scp-st"><div class="scp-cd" style="width:${W}px">${scardHtml(k,d[2],d[3],dev==='phone')}</div></div>`;
+ ov.innerHTML=`<div class="scp-bar"><b>${esc(SAL_NAMES[k]||k)}</b><div class="sal-seg"><button type="button" class="${dev==='phone'?'on':''}" onclick="scardPreview('${k}','phone')">Phone</button><button type="button" class="${dev==='desk'?'on':''}" onclick="scardPreview('${k}','desk')">Desktop</button></div><button type="button" class="spv-x" onclick="this.closest('.scp-ov').remove()">Close</button></div>
+  <div class="scp-st"><div class="scp-cd" style="width:${W}px">${scardHtml(k,d[2],d[3],dev==='phone')}</div></div>
+  <div class="scp-ed"><span class="g">${b('x',-5,'◀','Picture left')}${b('x',5,'▶','Picture right')}</span><span class="g">${b('y',-5,'▲','Picture up')}${b('y',5,'▼','Picture down')}</span>
+   <span class="g"><em>Size</em>${b('z',-10,'−','Smaller')}${b('z',10,'+','Bigger')}</span><span class="g"><em>Opacity</em>${b('o',10,'−','Picture darker')}${b('o',-10,'+','Picture clearer')}</span>
+   <button type="button" class="rs" onclick="scardEd('${k}','${dev}','r',0)">Reset</button><span class="v" id="scpV"></span>
+   <button type="button" class="sv" id="scpSave" onclick="scardEdSave()" ${SAL.cardEdDirty?'':'disabled'}>${SAL.cardEdBusy?'Saving…':'Save'}</button></div>`;
  document.body.appendChild(ov);
  const st=ov.querySelector('.scp-st'),cd=ov.querySelector('.scp-cd');
  const fit=()=>{const sc=Math.min((st.clientWidth-24)/W,1);cd.style.transform=`scale(${sc})`;cd.style.marginBottom=(cd.offsetHeight*(sc-1))+'px'};
- fit();addEventListener('resize',fit);ov.addEventListener('click',e=>{if(e.target===ov||e.target===st)ov.remove()})}
-/* v307 the season card above the Daily cards, on the season's days (US seasons on the USA account only) */
+ fit();addEventListener('resize',fit);ov.addEventListener('click',e=>{if(e.target===ov||e.target===st)ov.remove()});scardEdShow(k,dev)}
+function scardEdShow(k,dev){const v=document.getElementById('scpV');if(!v)return;const [x,y,z,o]=scardLook(k,dev==='phone');v.textContent=`Left ${x}% · Top ${y}% · Size ${z}% · Opacity ${110-o}%`}
+function scardEd(k,dev,f,v){const ph=dev==='phone',fk=ph?'p':'d';SAL.cardEd=SAL.cardEd||{};SAL.cardEd[k]=SAL.cardEd[k]||{};
+ const L=f==='r'?(SCARD_LOOK[k]||[70,30,100,100]).slice():scardLook(k,ph),i={x:0,y:1,z:2,o:3}[f],lim=[[0,100],[0,100],[100,300],[10,100]];
+ if(i!=null)L[i]=Math.max(lim[i][0],Math.min(lim[i][1],L[i]+v));
+ SAL.cardEd[k][fk]=L;SAL.cardEdDirty=true;
+ document.querySelectorAll(`.scd[data-k="${k}"]`).forEach(el=>{const isPh=el.classList.contains('ph')||(el.closest('#scdHome')&&window.innerWidth<1100);if(isPh===ph)el.setAttribute('style',scardStyle(k,ph))});
+ const s=document.getElementById('scpSave');if(s)s.disabled=false;scardEdShow(k,dev)}
+function scardEdSave(){if(SAL.cardEdBusy||!SAL.cardEd)return;SAL.cardEdBusy=true;const s=document.getElementById('scpSave');if(s){s.disabled=true;s.textContent='Saving…'}
+ const all=JSON.parse(JSON.stringify((APP_PREFS||{}).card||{}));Object.keys(all).forEach(k=>{if(!all[k].d&&!all[k].p)delete all[k]});
+ Object.keys(SAL.cardEd).forEach(k=>{all[k]=Object.assign({},all[k]||{},SAL.cardEd[k])});
+ serverCall('appPrefsSet',getAccessToken(),{card:all}).then(p=>{SAL.cardEdBusy=false;SAL.cardEdDirty=false;if(p&&p.cur){APP_PREFS=p;storeSet('sekna_app_prefs',JSON.stringify(p))}SAL.cardEd={};
+  if(s)s.textContent='Saved ✓';showSettingsToast('Season card saved');if(ADMIN_LAST)renderAdmin(ADMIN_LAST);try{scardHome()}catch(e){}})
+ .catch(e=>{SAL.cardEdBusy=false;if(s){s.disabled=false;s.textContent='Save'}showSettingsToast(errorText(e))})}
 function scardToday(){
  const now=new Date(),h={};try{new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',timeZone:'Asia/Muscat'}).formatToParts(now).forEach(x=>{h[x.type]=parseInt(x.value,10)})}catch(e){}
  const m=h.month,d=h.day,hAt=n=>{const p={};new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',timeZone:'Asia/Muscat'}).formatToParts(new Date(now.getTime()+n*864e5)).forEach(x=>{p[x.type]=parseInt(x.value,10)});return p};
@@ -17247,7 +17271,7 @@ function scardToday(){
 function scardHome(){const g=document.querySelector('#overviewPanel>.grid.kpis');if(!g)return;let el=document.getElementById('scdHome');
  const t=(()=>{try{return scardToday()}catch(e){return null}})();
  if(!t){if(el)el.remove();return}
- const html=scardHtml(t.k,t.sub,t.p);if(el&&el.dataset.v===html)return;
+ const html=scardHtml(t.k,t.sub,t.p,0,window.innerWidth<1100);if(el&&el.dataset.v===html)return;
  if(!el){el=document.createElement('div');el.id='scdHome';g.insertBefore(el,g.firstChild)}el.dataset.v=html;el.innerHTML=html}
 function salHtml(){
  if(SAL.err&&!SAL.data)return `<div class="sk-admin-empty">${esc(SAL.err)}</div>`;

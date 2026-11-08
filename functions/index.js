@@ -203,7 +203,9 @@ const CALLS = {
     // Season cards the owner tuned in Admin → Tools → Season alerts → Cards: picture position and size, emoji and title.
     if (c.card && typeof c.card === 'object') { const keep = {}, num = (v, lo, hi, d) => { const n = Math.round(Number(v)); return Number.isFinite(n) ? Math.max(lo, Math.min(hi, n)) : d; };
       Object.keys(c.card).forEach(k => { const v = c.card[k]; if (!/^[a-z0-9]{2,20}$/.test(k) || !v || typeof v !== 'object') return;
-        keep[k] = { x: num(v.x, 0, 100, 70), y: num(v.y, 0, 100, 30), z: num(v.z, 100, 300, 100), o: num(v.o, 10, 100, 100), e: String(v.e || '').slice(0, 8), t: String(v.t || '').replace(/[<>]/g, '').slice(0, 40) }; });
+        // d = desktop look, p = phone look: [x %, y %, size %, shade %]
+        const look = a => Array.isArray(a) && a.length === 4 ? [num(a[0], 0, 100, 0), num(a[1], 0, 100, 30), num(a[2], 100, 300, 100), num(a[3], 10, 100, 100)] : null;
+        const o = {}; if (look(v.d)) o.d = look(v.d); if (look(v.p)) o.p = look(v.p); if (o.d || o.p) keep[k] = o; });
       now.card = keep; }
     if (c.roas != null) { const r = Number(c.roas); if (![0, 30, 40, 50].includes(r)) throw new Error('Pick a ROAS drop level.'); now.roas = r; }
     now.by = me.email; now.at = Date.now();
