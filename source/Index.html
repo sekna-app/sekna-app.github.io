@@ -8139,15 +8139,13 @@ window.addEventListener('load',function(){
     .sal-ctl input.e{width:54px;text-align:center}.sal-ctl input.tt{width:190px}
     .sal-act:has(.sal-cdsave){position:sticky;bottom:calc(100px + env(safe-area-inset-bottom,0px));z-index:3;justify-content:flex-end}@media(min-width:1100px){.sal-act:has(.sal-cdsave){bottom:16px}}.sal-cdsave{box-shadow:0 8px 20px rgba(20,40,110,.3)}
     .sal-ctl .g{display:inline-flex;gap:4px;padding:3px;border-radius:12px;background:#f1f3f8}.sal-ctl .g button{border:0;background:#fff}
-    /* v308 season card: preview inside the app (the real Daily page in a phone or desktop frame) */
+    /* v310 season card preview: the card on its own at phone or desktop size */
     .scp-ov{position:fixed;inset:0;z-index:100002;background:rgba(6,12,36,.8);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;flex-direction:column;align-items:center;gap:12px;padding:14px 12px calc(14px + env(safe-area-inset-bottom,0px))}
     .scp-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;color:#fff;font-weight:900}
     .scp-bar b{font-size:14px;margin-right:4px}.scp-bar .sal-seg{margin:0;background:rgba(255,255,255,.12)}.scp-bar .sal-seg button{color:#dfe6fb}.scp-bar .sal-seg button.on{background:#fff;color:#203c8e}
     .scp-bar .spv-x{padding:8px 16px}
     .scp-st{flex:1;min-height:0;width:100%;display:flex;align-items:flex-start;justify-content:center;overflow:hidden}
-    .scp-fr{position:relative;flex:none;overflow:hidden;background:#eef1f7;box-shadow:0 30px 80px rgba(0,0,0,.5)}
-    .scp-fr.phone{border:8px solid #111827;border-radius:40px}.scp-fr.desk{border:6px solid #111827;border-radius:14px}
-    .scp-fr iframe{position:absolute;left:0;top:0;border:0;transform-origin:0 0;background:#eef1f7}
+    .scp-st{align-items:center}.scp-cd{flex:none;transform-origin:center center}.scp-cd .scd{box-shadow:0 30px 70px rgba(0,0,0,.45)}
     .sal-pv{align-self:flex-start;border:0;border-radius:10px;padding:7px 14px;font:inherit;font-size:12px;font-weight:900;background:#203c8e;color:#fff;cursor:pointer}
 </style>
 </head>
@@ -11257,7 +11255,6 @@ function nfOpen(id){
 function greetSeen(){try{return JSON.parse(storeGet('sekna_greet_seen')||'[]')}catch(e){return []}}
 function greetMarkSeen(id){const l=greetSeen();if(!l.includes(id)){l.push(id);storeSet('sekna_greet_seen',JSON.stringify(l.slice(-30)))}}
 function greetAutoShow(){
- if(/[?&]scp=/.test(location.search))return;
  if(!getAccessToken()||(typeof canDo==='function'&&!canDo('notifs')))return;
  serverCall('myNotifications',getAccessToken()).then(r=>{
    const list=Array.isArray(r)?r:[],seen=greetSeen();
@@ -17184,19 +17181,18 @@ function scardStyle(k){const [x,y,z,o]=SCARD_LOOK[k]||[70,30,100,100];return `ba
 function scardHtml(k,sub,pct,ph){const d=SCARD_DEF[k];if(!d)return '';
  return `<div class="scd${ph?' ph':''}" data-k="${k}" style="${scardStyle(k)}">${SCARD_US.includes(k)?'<span class="us">USA</span>':''}<span class="t">${esc(d[0])}<svg class="scd-ic" viewBox="0 0 24 24" aria-hidden="true">${SCARD_ICON[d[1]]}</svg></span><small>${esc(sub)}</small><i><u style="width:${Math.max(3,Math.min(100,pct))}%"></u></i></div>`}
 function scardRows(keys){return keys.filter(k=>SCARD_DEF[k]).map(k=>{const d=SCARD_DEF[k];
- return `<div class="sal-cd"><b>${SAL_NAMES[k]}</b><span class="sal-lb2">Desktop</span>${scardHtml(k,d[2],d[3])}<span class="sal-lb2">Phone</span>${scardHtml(k,d[2],d[3],1)}<button type="button" class="sal-pv" onclick="scardPreview('${k}')">Preview in the app</button></div>`}).join('')}
+ return `<div class="sal-cd"><b>${SAL_NAMES[k]}</b><span class="sal-lb2">Desktop</span>${scardHtml(k,d[2],d[3])}<span class="sal-lb2">Phone</span>${scardHtml(k,d[2],d[3],1)}<button type="button" class="sal-pv" onclick="scardPreview('${k}')">Preview</button></div>`}).join('')}
  
 function scardPreview(k,dev){document.querySelector('.scp-ov')?.remove();dev=dev||(window.innerWidth>=1100?'desk':'phone');
+ const d=SCARD_DEF[k];if(!d)return;const W=dev==='desk'?1040:358;
  const ov=document.createElement('div');ov.className='scp-ov';ov.setAttribute('data-share-ui','');
- const W=dev==='desk'?1440:390,H=dev==='desk'?900:844;
- ov.innerHTML=`<div class="scp-bar"><b>${esc(SAL_NAMES[k]||k)}</b><div class="sal-seg"><button type="button" class="${dev==='phone'?'on':''}" onclick="scardPreview('${k}','phone')">Phone</button><button type="button" class="${dev==='desk'?'on':''}" onclick="scardPreview('${k}','desk')">Desktop</button></div><button type="button" class="spv-x" onclick="this.closest('.scp-ov').remove()">Close</button></div><div class="scp-st"><div class="scp-fr ${dev}"><iframe title="Preview" src="${location.pathname}?scp=${k}"></iframe></div></div>`;
+ ov.innerHTML=`<div class="scp-bar"><b>${esc(SAL_NAMES[k]||k)}</b><div class="sal-seg"><button type="button" class="${dev==='phone'?'on':''}" onclick="scardPreview('${k}','phone')">Phone</button><button type="button" class="${dev==='desk'?'on':''}" onclick="scardPreview('${k}','desk')">Desktop</button></div><button type="button" class="spv-x" onclick="this.closest('.scp-ov').remove()">Close</button></div><div class="scp-st"><div class="scp-cd" style="width:${W}px">${scardHtml(k,d[2],d[3],dev==='phone')}</div></div>`;
  document.body.appendChild(ov);
- const st=ov.querySelector('.scp-st'),fr=ov.querySelector('.scp-fr'),ifr=fr.querySelector('iframe'),bw=dev==='desk'?12:16;
- const fit=()=>{const sc=Math.min((st.clientWidth-bw)/W,(st.clientHeight-bw)/H,1);ifr.style.width=W+'px';ifr.style.height=H+'px';ifr.style.transform=`scale(${sc})`;fr.style.width=Math.round(W*sc)+bw+'px';fr.style.height=Math.round(H*sc)+bw+'px'};
+ const st=ov.querySelector('.scp-st'),cd=ov.querySelector('.scp-cd');
+ const fit=()=>{const sc=Math.min((st.clientWidth-24)/W,1);cd.style.transform=`scale(${sc})`;cd.style.marginBottom=(cd.offsetHeight*(sc-1))+'px'};
  fit();addEventListener('resize',fit);ov.addEventListener('click',e=>{if(e.target===ov||e.target===st)ov.remove()})}
  
 function scardToday(){
- const pv=(()=>{try{return new URLSearchParams(location.search).get('scp')}catch(e){return ''}})();if(pv&&SCARD_DEF[pv])return {k:pv,sub:SCARD_DEF[pv][2],p:SCARD_DEF[pv][3]};
  const now=new Date(),h={};try{new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',timeZone:'Asia/Muscat'}).formatToParts(now).forEach(x=>{h[x.type]=parseInt(x.value,10)})}catch(e){}
  const m=h.month,d=h.day,hAt=n=>{const p={};new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',timeZone:'Asia/Muscat'}).formatToParts(new Date(now.getTime()+n*864e5)).forEach(x=>{p[x.type]=parseInt(x.value,10)});return p};
  const toEid=()=>{for(let n=1;n<=31;n++){const p=hAt(n);if(p.month===10&&p.day===1)return n}return 30-d+1};
@@ -17215,7 +17211,7 @@ function scardToday(){
  if(mo===12&&dd>=26){const n=32-dd;return {k:'yearend',sub:`Day ${dd-25} of 6 · ${n===1?'New year tomorrow':n+' days to the new year'}`,p:(dd-25)/6*100}}
  if(mo===12)return {k:'tax',sub:`Day ${dd} of 31 · ${31-dd===0?'Last day':pl(31-dd,'day')+' left'}`,p:dd/31*100};
  return null}
-function scardHome(){if(/[?&]scp=/.test(location.search)&&!window.__scpTab){window.__scpTab=1;try{switchDashboardTab('overview');scrollTo(0,0)}catch(e){}}const g=document.querySelector('#overviewPanel>.grid.kpis');if(!g)return;let el=document.getElementById('scdHome');
+function scardHome(){const g=document.querySelector('#overviewPanel>.grid.kpis');if(!g)return;let el=document.getElementById('scdHome');
  const t=(()=>{try{return scardToday()}catch(e){return null}})();
  if(!t){if(el)el.remove();return}
  const html=scardHtml(t.k,t.sub,t.p);if(el&&el.dataset.v===html)return;
