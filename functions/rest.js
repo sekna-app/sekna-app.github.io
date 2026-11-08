@@ -277,7 +277,7 @@ const R = {
     const k = String(key || ''), g = SEASON_GREET[k];
     if (!g) throw new Error('No greeting for this season.');
     const m = greetingEmail(k);
-    const p = await notify.send({ pushes: [{ email: me.email, title: g[0], body: g[1], image: GREET_IMG + k + '.jpg', eventType: 'greeting' }] }).catch(() => null);
+    const p = await notify.send({ pushes: [{ email: me.email, title: g[0], body: g[1], image: GREET_IMG + k + '.jpg' + IMG_V, eventType: 'greeting' }] }).catch(() => null);
     const mail = await testMail({ to: me.email, subject: '[Test ' + new Date().toISOString().slice(11, 16) + '] ' + m.subject, rawHtml: m.html, title: m.title, html: m.inner });
     return { ok: true, to: me.email, title: g[0], push: !!(p && (p.pushes || p.relayed)), email: mail };
   },
@@ -285,7 +285,7 @@ const R = {
   async adminSeasonLeads([token]) {
     await assertAdmin(token);
     const prefs = (await fsGet('server/app-prefs').catch(() => null)) || {}, leads = seasonLeads(prefs), today = dayOf(Date.now());
-    return { leads, defaults: SEASON_LEAD, greet: SEASON_GREET, greetImg: GREET_IMG, next: Object.keys(SEASON_LEAD).map(k => { const s = nextSeason(k, today); return s ? { k, name: s.name, at: s.at, left: s.left, sendOn: isoPlus(s.at, -leads[k]) } : { k }; }) };
+    return { leads, defaults: SEASON_LEAD, greet: SEASON_GREET, greetImg: GREET_IMG, imgV: IMG_V, next: Object.keys(SEASON_LEAD).map(k => { const s = nextSeason(k, today); return s ? { k, name: s.name, at: s.at, left: s.left, sendOn: isoPlus(s.at, -leads[k]) } : { k }; }) };
   },
   async adminSeasonLeadsSet([token, map]) {
     await assertAdmin(token);
@@ -619,7 +619,7 @@ const GREET_IMG = 'https://sekna-app.web.app/icons/greet/';
    (Hijri seasons: USA and AR; the US seasons: USA only), the totals and the best day. */
 const SEASON_LEN = { tax: 31, ramadan: 30, last10: 10, eidfitr: 3, dhulhijjah: 10, arafah: 1, eidadha: 4, ashura: 1, thanksgiving: 1, givingtuesday: 1, yearend: 6 };
 const SEASON_IMG = 'https://sekna-app.web.app/icons/seasons/';
-const IMG_V = '?v=3'; // bump when a picture changes (mail apps keep pictures by their address)
+const IMG_V = '?v=4'; // bump when a picture changes (mail apps keep pictures by their address)
 const HIJRI_MONTHS = ['Muharram', 'Safar', 'Rabi I', 'Rabi II', 'Jumada I', 'Jumada II', 'Rajab', 'Shaban', 'Ramadan', 'Shawwal', 'Dhul Qadah', 'Dhul Hijjah'];
 const HFMT = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { day: 'numeric', month: 'numeric', year: 'numeric', timeZone: 'UTC' });
 function hijriParts(dk) { const p = {}; HFMT.formatToParts(new Date(dk + 'T00:00:00Z')).forEach(x => { p[x.type] = parseInt(x.value, 10); }); return p; }
@@ -781,7 +781,7 @@ async function pushChecks(latestByAccount, daysByAccount) {
         if (s.left === 0) {
           // On the day: only seasons with a greeting picture.
           const g = SEASON_GREET[k];
-          if (g) await notify.send({ topics: [{ title: g[0], body: g[1], image: GREET_IMG + k + '.jpg', account: s.acc || 'usa', eventType: 'greeting' }] })
+          if (g) await notify.send({ topics: [{ title: g[0], body: g[1], image: GREET_IMG + k + '.jpg' + IMG_V, account: s.acc || 'usa', eventType: 'greeting' }] })
             .catch(e => console.error('Season greeting: ' + e.message));
           // The same greeting as an email to every approved person.
           if (g) try {

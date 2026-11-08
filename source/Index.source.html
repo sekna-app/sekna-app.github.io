@@ -11193,8 +11193,8 @@ const NF_GREET_KEY=[['Ramadan Mubarak','ramadan'],['Blessed Last 10','last10'],[
 const NF_GO={season:1,streak:1,spend_alert:1,roas_drop:1,tasks:1,app_update:1,celebrate:1,month_closed:1,new_day:1};
 const NF_SEASON_KEY=[['Thanksgiving','thanksgiving'],['Giving Tuesday','givingtuesday'],['Year-end','yearend'],['Tax season','tax'],['December planning','tax'],['Ramadan','ramadan'],['The last 10','last10'],['Last 10','last10'],['Eid al-Fitr','eidfitr'],['First 10 days','dhulhijjah'],['The Day of Arafah','arafah'],['Day of Arafah','arafah'],['Eid al-Adha','eidadha'],['Ashura','ashura']];
 function nfImage(x){if(x.image)return x.image;
- if(x.type==='season'){const t=String(x.title||'').replace(/^\S+\s/,'');const m=NF_SEASON_KEY.find(([n])=>t.startsWith(n));return m?'https://sekna-app.web.app/icons/seasons/'+m[1]+'.jpg?v=3':''}
- if(x.type!=='greeting')return '';const m=NF_GREET_KEY.find(([t])=>String(x.title||'').startsWith(t));return m?'https://sekna-app.web.app/icons/greet/'+m[1]+'.jpg':''}
+ if(x.type==='season'){const t=String(x.title||'').replace(/^\S+\s/,'');const m=NF_SEASON_KEY.find(([n])=>t.startsWith(n));return m?'https://sekna-app.web.app/icons/seasons/'+m[1]+'.jpg?v=4':''}
+ if(x.type!=='greeting')return '';const m=NF_GREET_KEY.find(([t])=>String(x.title||'').startsWith(t));return m?'https://sekna-app.web.app/icons/greet/'+m[1]+'.jpg?v=4':''}
 function nfOpen(id){
  const x=(NF.list||[]).find(n=>n.id===id);if(!x)return;
  if(x.type==='greeting')greetMarkSeen(x.id);
@@ -17140,9 +17140,9 @@ function salHtml(){
  const tag=k=>U.includes(k)?'<em class="sal-tag us">USA</em>':'<em class="sal-tag">USA · AR</em>';
  let rows='';
  if(view==='remind')rows=keys.map(k=>{const n=nx[k]||{},send=n.at?new Date(Date.parse(n.at+'T00:00:00Z')-L[k]*864e5).toISOString().slice(0,10):'';
-   return `<div class="sal-r sal-ri"><img src="${esc('https://sekna-app.web.app/icons/seasons/'+k+'.jpg?v=3')}" alt="" loading="lazy"><div class="sal-t"><b>${SAL_NAMES[k]} ${tag(k)}</b><small>${n.at?'Starts '+short(n.at)+' · alert '+short(send):''}</small><button type="button" class="sal-test" onclick="salTest(this,'remind','${k}')">Send me a test</button></div><div class="sal-n"><button type="button" onclick="salStep('${k}',-1)" aria-label="Fewer days">−</button><span><b>${L[k]}</b>${L[k]===1?' day':' days'}</span><button type="button" onclick="salStep('${k}',1)" aria-label="More days">+</button></div></div>`}).join('');
+   return `<div class="sal-r sal-ri"><img src="${esc('https://sekna-app.web.app/icons/seasons/'+k+'.jpg?v=4')}" alt="" loading="lazy"><div class="sal-t"><b>${SAL_NAMES[k]} ${tag(k)}</b><small>${n.at?'Starts '+short(n.at)+' · alert '+short(send):''}</small><button type="button" class="sal-test" onclick="salTest(this,'remind','${k}')">Send me a test</button></div><div class="sal-n"><button type="button" onclick="salStep('${k}',-1)" aria-label="Fewer days">−</button><span><b>${L[k]}</b>${L[k]===1?' day':' days'}</span><button type="button" onclick="salStep('${k}',1)" aria-label="More days">+</button></div></div>`}).join('');
  else rows=keys.map(k=>{const n=nx[k]||{},g=(SAL.data.greet||{})[k]||['',''];
-   return `<div class="sal-gr"><img src="${esc((SAL.data.greetImg||'')+k+'.jpg')}" alt="" loading="lazy"><div class="sal-t"><b>${esc(g[0])}</b><small>${SAL_NAMES[k]} ${tag(k)}${n.at?' · sends '+short(n.at):''}</small><p>${esc(g[1])}</p><button type="button" class="sal-test" onclick="salTest(this,'greet','${k}')">Send me a test</button></div></div>`}).join('');
+   return `<div class="sal-gr"><img src="${esc((SAL.data.greetImg||'')+k+'.jpg'+(SAL.data.imgV||''))}" alt="" loading="lazy"><div class="sal-t"><b>${esc(g[0])}</b><small>${SAL_NAMES[k]} ${tag(k)}${n.at?' · sends '+short(n.at):''}</small><p>${esc(g[1])}</p><button type="button" class="sal-test" onclick="salTest(this,'greet','${k}')">Send me a test</button></div></div>`}).join('');
  return `<div class="sal-h"><b>Season alerts</b><small>${view==='remind'?'A push and an email to the team this many days before each season starts, at 9:00 Muscat.':'A push and an email with the season\'s picture on its first day, at 9:00 Muscat.'} Tests go to you only.</small></div>`
   +seg('view',view,[['remind','Reminders'],['greet','Greetings']])+seg('grp',grp,[['all','All'],['hijri','Hijri'],['us','US']])
   +`<div class="sal-list">${rows}</div>`
