@@ -386,6 +386,8 @@ exports.api = onRequest({
     } catch (e) { console.error('Report file: ' + e.message); res.status(500).type('text/plain').send('The report could not load. Try again.'); }
     return;
   }
+  // Season card look (picture position/size/opacity, title): not private, read by the build to keep it in the code.
+  if (route === '/season-cards') { const p = (await fsGet(PREFS_DOC).catch(() => null)) || {}; res.json({ ok: true, card: p.card || {} }); return; }
   if (route === '/ping') { res.json({ ok: true, version: VERSION, mail: notify.mailReady() ? 'gmail' : 'apps-script' }); return; }
   if (route === '/warm') {
     // Called by keepWarm. At most once a minute; it only refreshes the shared data.
