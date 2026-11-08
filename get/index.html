@@ -516,6 +516,11 @@ html.lite .nav img{opacity:1!important}
 
 /* the two notes belong to the phone's face: hidden while it shows its back or is turning */
 .g3 .g3f.back~.pl3,.g3 .g3f.turn~.pl3{opacity:0!important;transform:translateY(10px) scale(.96)!important;transition:opacity .25s ease,transform .25s ease}
+
+/* steps line: one even segment from each icon to the next (none before 1 or after 5), on desktop and phone */
+.mpw-steps:before{display:none!important}
+.mpw-s:not(:last-child):after{content:"";position:absolute;top:27px;left:62px;width:calc(100% + 14px - 68px);height:2px;border-radius:2px;background:rgba(226,184,116,.55);z-index:-1}
+@media (max-width:1000px){.mpw-s:not(:last-child):after{top:62px;left:27px;width:2px;height:calc(100% + 18px - 68px)}}
 </style>
 </head>
 <body>
