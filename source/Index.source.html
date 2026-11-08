@@ -7846,6 +7846,19 @@ window.addEventListener('load',function(){
     html body table.rx3-t tr.rx3-tot td:first-child{border-radius:12px 0 0 12px}html body table.rx3-t tr.rx3-tot td:last-child{border-radius:0 12px 12px 0}
     html body table.rx3-t tr.rx3-tot .rx3-p{background:none!important;color:#f2d38f!important;font-size:15px!important;padding:0!important}
     html body table.rx3-t tr.rx3-tot.w td{background:#a32a3b!important}
+
+    .dcU-g{display:none}
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming{display:grid!important;grid-template-columns:170px minmax(0,1fr)!important;align-items:center}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming>.dc-date{justify-self:start}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming .dc-hij,html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming .dc-up{display:none!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming>.dc-main{display:block!important;padding:5px 14px!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dcU-g{display:grid;grid-template-columns:repeat(5,auto);justify-content:space-between;gap:0 14px;width:100%;box-sizing:border-box;padding-right:4px}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dcU-g>div{display:flex;align-items:center;gap:6px;white-space:nowrap}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dcU-g small{font-size:9.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#b3b9c8}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dcU-g span{font-size:15px;font-weight:900;color:#a2a9b8}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dcU-g>div:after{content:"plan";font-size:10.5px;font-weight:800;color:#b3b9c8;background:#f0f2f6;border-radius:7px;padding:3px 8px}
+    }
 </style>
 </head>
 <body>
@@ -10752,7 +10765,9 @@ function daysCards(days,latest,T){
       <div class="dc-mix">${p.channels.map((c,k)=>`<span class="m${k}" style="flex:${c.spend/tot}"></span>`).join('')}</div>
       <div class="dc-more">${dxPlanMore(p)}${dxPlanSheet(p)}</div></div></div>`;
    }
-   if(!a)return `<div class="dc-card upcoming">${head}<div class="dc-main">${hij}<div class="dc-up">Upcoming · plan ${money(p.spend)} · ${money(p.value)}</div></div></div>`;
+   // v280 desktop: an upcoming day shows its plan in the same columns as the days before it, in grey
+   const uG=`<div class="dcU-g">${[['Spend',money(p.spend)],['Clicks',fmt(p.clicks,0)],['Conv.',fmt(p.conversions,0)],['Value',money(p.value)],['ROAS',p.roas!=null?fmt(p.roas,2)+'x':'—']].map(([l,v])=>`<div><small>${l}</small><span>${v}</span></div>`).join('')}</div>`;
+   if(!a)return `<div class="dc-card upcoming">${head}<div class="dc-main">${hij}<div class="dc-up">Upcoming · plan ${money(p.spend)} · ${money(p.value)}</div>${uG}</div></div>`;
    // v191 one row per figure: what happened / the plan on one line, its % on the right, and a bar in the status colour
    // v193 inside: a plain table (actual, plan, coloured %), no bars
    const rr=(l,act,pl,r,cls)=>`<tr><td>${l}</td><td>${act}</td><td>${pl}</td><td class="dcR-p ${cls}">${r==null||!isFinite(r)?'—':Math.round(r*100)+'%'}</td></tr>`;
