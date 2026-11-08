@@ -8131,6 +8131,10 @@ window.addEventListener('load',function(){
     @media (min-width:1100px){html.dk-on:not(.desktop-site-mode) #seasonDeco img{height:66px;right:150px;bottom:4px}}
 
     .sal-dc{width:96px;height:72px;border-radius:12px;background:#f1f3f8;display:grid;place-items:center}.sal-dc img{max-height:62px;max-width:88px}.sal-dc small{font-size:10px;color:#8a93ad;font-weight:800;text-align:center}
+
+    .sal-dc{border:0;padding:0;cursor:pointer;position:relative}.sal-dc span{position:absolute;left:4px;bottom:4px;font-size:9.5px;font-weight:900;color:#fff;background:rgba(20,30,70,.7);border-radius:99px;padding:1px 7px}
+    .dcp-bar{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 12px);transform:translateX(-50%);z-index:100003;display:flex;align-items:center;gap:10px;padding:8px 8px 8px 16px;border-radius:99px;background:#0c1d5c;color:#fff;font-weight:900;font-size:13px;box-shadow:0 12px 30px rgba(10,20,60,.35);white-space:nowrap}
+    .dcp-bar button{border:0;border-radius:99px;padding:7px 14px;font:inherit;font-size:12.5px;font-weight:900;background:#f2d38f;color:#1c1405;cursor:pointer}
 </style>
 </head>
 <body>
@@ -17149,6 +17153,16 @@ function decoDraw(force){
  if(!w){w=document.createElement('div');w.id='seasonDeco';w.setAttribute('aria-hidden','true');g.appendChild(w)}
  const src='icons/deco/'+k+'.webp?v=2';if(w.dataset.k!==k){w.dataset.k=k;w.innerHTML=`<img src="${src}" alt="">`}
 }
+ 
+function salDecoPreview(k){
+ try{closeAdmin()}catch(e){}
+ switchDashboardTab('overview');setTimeout(()=>{decoDraw(k);const d=document.getElementById('seasonDeco');if(d)d.scrollIntoView({block:'center',behavior:'smooth'})},250);
+ document.querySelector('.dcp-bar')?.remove();
+ const b=document.createElement('div');b.className='dcp-bar';b.setAttribute('data-share-ui','');
+ b.innerHTML=`<span>Preview · ${esc(SAL_NAMES[k]||k)} page art</span><button type="button" onclick="salDecoPreviewEnd()">Back to Admin</button>`;
+ document.body.appendChild(b);
+}
+function salDecoPreviewEnd(){document.querySelector('.dcp-bar')?.remove();decoDraw();try{openAdmin();ADMIN_VIEW='tools';ADMIN_TAB='seasons';SAL.view='deco';if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}catch(e){}}
 function salDecoSet(k,off){const cur=Object.assign({},(APP_PREFS||{}).decoOff||{});if(off)cur[k]=true;else delete cur[k];
  APP_PREFS=Object.assign({},APP_PREFS||{},{decoOff:cur});storeSet('sekna_app_prefs',JSON.stringify(APP_PREFS));if(ADMIN_LAST)renderAdmin(ADMIN_LAST);try{decoDraw()}catch(e){}
  serverCall('appPrefsSet',getAccessToken(),{decoOff:cur}).then(p=>{if(p&&p.cur){APP_PREFS=p;storeSet('sekna_app_prefs',JSON.stringify(p))}showSettingsToast((SAL_NAMES[k]||k)+' page art '+(off?'off':'on')+' for everyone')}).catch(e=>showSettingsToast(errorText(e)))}
@@ -17178,7 +17192,7 @@ function salHtml(){
  if(view==='remind')rows=keys.map(k=>{const n=nx[k]||{},send=n.at?new Date(Date.parse(n.at+'T00:00:00Z')-L[k]*864e5).toISOString().slice(0,10):'';
    return `<div class="sal-r sal-ri"><img src="${esc('https:\/\/sekna-app.web.app/icons/seasons/'+k+'.jpg?v=4')}" alt="" loading="lazy"><div class="sal-t"><b>${SAL_NAMES[k]} ${tag(k)}</b>${inN(send)}<small>${n.at?'Alert '+short(send)+' · starts '+short(n.at):''}</small><button type="button" class="sal-test" onclick="salTest(this,'remind','${k}')">Send me a test</button></div><div class="sal-n"><button type="button" onclick="salStep('${k}',-1)" aria-label="Fewer days">−</button><span><b>${L[k]}</b>${L[k]===1?' day':' days'}</span><button type="button" onclick="salStep('${k}',1)" aria-label="More days">+</button></div></div>`}).join('');
  else if(view==='deco')rows=keys.map(k=>{const n=nx[k]||{},has=DECO_HAS[k],off=decoOff(k);
-   return `<div class="sal-gr"><div class="sal-dc">${has?`<img src="icons/deco/${k}.webp?v=2" alt="">`:'<small>No picture yet</small>'}</div><div class="sal-t"><b>${SAL_NAMES[k]} ${tag(k)}</b>${inN(n.at)}<small>${SPL_DAYS[k]||''}</small>${has?`<div class="sal-tg"><button type="button" class="${off?'':'on'}" onclick="salDecoSet('${k}',false)">On</button><button type="button" class="${off?'on off':''}" onclick="salDecoSet('${k}',true)">Off</button></div>`:''}</div></div>`}).join('');
+   return `<div class="sal-gr">${has?`<button type="button" class="sal-dc" onclick="salDecoPreview('${k}')" aria-label="Preview"><img src="icons/deco/${k}.webp?v=2" alt=""><span>Preview</span></button>`:'<div class="sal-dc"><small>No picture yet</small></div>'}<div class="sal-t"><b>${SAL_NAMES[k]} ${tag(k)}</b>${inN(n.at)}<small>${SPL_DAYS[k]||''}</small>${has?`<div class="sal-tg"><button type="button" class="${off?'':'on'}" onclick="salDecoSet('${k}',false)">On</button><button type="button" class="${off?'on off':''}" onclick="salDecoSet('${k}',true)">Off</button></div>`:''}</div></div>`}).join('');
  else if(view==='splash')rows=keys.filter(k=>SPL_DAYS[k]).map(k=>{const n=nx[k]||{},dev=SAL.dev||'phone';
    return `<div class="sal-sp ${dev}"><button type="button" class="sal-spi" onclick="salSplash('${k}')" aria-label="Preview"><img src="icons/splash/${k}${dev==='desk'?'-d':''}.webp?v=1" alt="" loading="lazy"><span>Preview</span></button><div class="sal-t"><b>${SAL_NAMES[k]} ${tag(k)}</b>${inN(n.at)}<small>${SPL_DAYS[k]}</small><small class="sal-lb">“${SPL_TXT[k]}”</small>${(()=>{const off=!!(((APP_PREFS||{}).splashOff||{})[k]);return `<div class="sal-tg"><button type="button" class="${off?'':'on'}" onclick="salSplashSet('${k}',false)">On</button><button type="button" class="${off?'on off':''}" onclick="salSplashSet('${k}',true)">Off</button></div>`})()}</div></div>`}).join('');
  else rows=keys.map(k=>{const n=nx[k]||{},g=(SAL.data.greet||{})[k]||['',''];
