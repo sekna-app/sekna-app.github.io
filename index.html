@@ -8114,6 +8114,31 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr .br{flex:1;max-width:320px;height:6px;border-radius:4px;background:#eef1f7;overflow:hidden}html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr .br u{display:block;height:100%;border-radius:4px}
       html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr .fcrv{font-size:12.5px;font-weight:900;margin-left:6px}html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr .fcrv.r{color:#c63a4a}html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr .fcrv.g{color:#13804f}
     }
+
+    /* v287 desktop: AI Max card slim with the spend as a gold-framed tile in the row of results; slim quick figures;
+       the Action card slimmer and shorter */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body .st-card.st-3c{display:grid!important;grid-template-columns:1.25fr 3fr;grid-template-areas:"k k" "t c";column-gap:8px;row-gap:6px;padding:10px 14px!important}
+      html.dk-on:not(.desktop-site-mode) body .st-3c>.st-k{grid-area:k}
+      html.dk-on:not(.desktop-site-mode) body .st-3c>.st3-tot{grid-area:t;margin:0!important;display:flex!important;flex-direction:column;justify-content:center;align-items:flex-start;border:1.5px solid rgba(242,211,143,.75);border-radius:12px;padding:6px 12px;background:rgba(255,255,255,.04)}
+      html.dk-on:not(.desktop-site-mode) body .st-3c>.st3-tot b{font-size:22px!important;color:#f2d38f!important}html.dk-on:not(.desktop-site-mode) body .st-3c>.st3-tot span{font-size:10.5px!important}
+      html.dk-on:not(.desktop-site-mode) body .st-3c>.st3-cols{grid-area:c;margin:0!important;gap:8px!important}
+      html.dk-on:not(.desktop-site-mode) body .st-3c>.st3-cols>div{padding:7px 8px 6px!important;display:flex;align-items:baseline;justify-content:center;gap:8px;flex-wrap:wrap}
+      html.dk-on:not(.desktop-site-mode) body .st-3c>.st3-cols em{font-size:17px!important}html.dk-on:not(.desktop-site-mode) body .st-3c>.st3-cols b{margin:0!important}html.dk-on:not(.desktop-site-mode) body .st-3c>.st3-cols small{width:100%;margin:0!important}
+      html.dk-on:not(.desktop-site-mode) body #app .quick-metrics-strip.st-qm>.quick-metric{padding:8px 14px!important;min-height:0!important;height:auto!important}
+      html.dk-on:not(.desktop-site-mode) body #app .quick-metrics-strip.st-qm .quick-icon{width:30px!important;height:30px!important}html.dk-on:not(.desktop-site-mode) body #app .quick-metrics-strip.st-qm .quick-icon svg{width:15px!important;height:15px!important}
+      html.dk-on:not(.desktop-site-mode) body #app .quick-metrics-strip.st-qm .quick-value{font-size:19px!important;margin:0!important}html.dk-on:not(.desktop-site-mode) body #app .quick-metrics-strip.st-qm .kx-c{font-size:10.5px!important;margin:0!important}
+      html.dk-on:not(.desktop-site-mode) body .quick-metrics-strip.st-qm .quick-icon{width:30px!important;height:30px!important}
+      html.dk-on:not(.desktop-site-mode) body .quick-metrics-strip.st-qm .quick-value{font-size:19px!important}html.dk-on:not(.desktop-site-mode) body .quick-metrics-strip.st-qm .quick-name{font-size:10px!important}
+      html.dk-on:not(.desktop-site-mode) body .sta-bl{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:16px;align-items:center;padding:10px 14px!important}
+      html.dk-on:not(.desktop-site-mode) body .sta-bl>.sta-bt{grid-template-columns:auto auto!important;gap:16px!important;align-items:center}
+      html.dk-on:not(.desktop-site-mode) body .sta-bl .sta-big{font-size:26px!important}
+      html.dk-on:not(.desktop-site-mode) body .sta-bl>.sta-pc{margin:0!important;gap:6px!important}
+      html.dk-on:not(.desktop-site-mode) body .sta-bl>.sta-pc>div{padding:5px 8px!important}
+      html.dk-on:not(.desktop-site-mode) body .sta-bl>.sta-lgc{grid-column:1/-1;margin-top:2px!important}
+      html.dk-on:not(.desktop-site-mode) body .sta-bl .sta-pl{display:flex!important;flex-wrap:nowrap;gap:6px;margin-top:4px!important;font-size:10px}html.dk-on:not(.desktop-site-mode) body .sta-bl .sta-pl b{font-size:12px!important}html.dk-on:not(.desktop-site-mode) body .sta-bl>.sta-pc{grid-template-columns:repeat(3,minmax(0,1fr))!important;overflow:hidden}html.dk-on:not(.desktop-site-mode) body .sta-bl .sta-pl span{white-space:nowrap}
+      html.dk-on:not(.desktop-site-mode) body .sta-bl .sta-bar{margin-top:4px!important}
+    }
 </style>
 </head>
 <body>
