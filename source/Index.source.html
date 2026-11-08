@@ -8057,6 +8057,17 @@ window.addEventListener('load',function(){
     /* v296 settings toast: above the bottom bar and the settings sheet, readable, and long enough to read */
     html body .settings-toast{z-index:100000!important;left:50%!important;right:auto!important;bottom:calc(96px + env(safe-area-inset-bottom,0px))!important;transform:translate(-50%,8px)!important;max-width:min(92vw,420px);font-size:12.5px!important;line-height:1.4;text-align:center;padding:10px 14px!important;border-radius:12px!important}
     html body .settings-toast.show{transform:translate(-50%,0)!important}
+
+    /* v297 Admin season alerts */
+    .sal-h b{display:block;font-size:15px;font-weight:900}.sal-h small{display:block;font-size:12px;color:#6b7385;font-weight:700;line-height:1.5;margin-top:3px}
+    .sal-g{margin:14px 0 4px;font-size:10.5px;font-weight:900;letter-spacing:.08em;color:#8a93ad}
+    .sal-r{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-top:1px solid #eef1f6}
+    .sal-t{min-width:0}.sal-t b{display:block;font-size:13.5px;font-weight:850}.sal-t small{display:block;font-size:11.5px;color:#8a93ad;font-weight:700}
+    .sal-n{display:flex;align-items:center;gap:6px;flex:none}.sal-n button{width:30px;height:30px;border-radius:9px;border:1.5px solid #e3e7f0;background:#fff;font:inherit;font-size:16px;font-weight:900;color:#203c8e;cursor:pointer}
+    .sal-n span{min-width:58px;text-align:center;font-size:12px;font-weight:800;color:#6b7385}.sal-n span b{font-size:15px;color:#141b33}
+    .sal-act{margin-top:12px;display:flex;align-items:center;gap:10px}.sal-save{border:0;border-radius:12px;background:#203c8e;color:#fff;font:inherit;font-weight:900;padding:10px 18px;cursor:pointer}.sal-save[disabled]{opacity:.45;cursor:default}.sal-err{color:#c63a4a;font-weight:800}
+    body.dark-mode .sal-r{border-color:#252a32}body.dark-mode .sal-n button{background:#1b212b;border-color:#2b323d;color:#9fb6ff}body.dark-mode .sal-n span b,body.dark-mode .sal-t b{color:#fff}
+    .ste-mode{flex:0 0 100%;display:flex;gap:6px;margin-bottom:2px}.ste-mode button.on{background:#203c8e!important;color:#fff!important;border-color:#203c8e!important}
 </style>
 </head>
 <body>
@@ -8270,7 +8281,7 @@ window.addEventListener('load',function(){
       <div class="sa-opts" id="spendAlertOpts"></div>
       <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon c-o"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l6 6 4-4 8 8"/><path d="M21 11v5h-5"/></svg></span><span class="sk-row-text"><b>ROAS drop alert</b><small>A note when the day's ROAS falls this much below its 7-day average. <a href="#" class="sa-demo" onclick="roasDropCheck(DASH_DATA,true);return false">Show me</a></small></span></div>
       <div class="sa-opts" id="roasAlertOpts"></div>
-      <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon c-p"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span><span class="sk-row-text"><b>Season reminders</b><small>A push and an email to the team 15 days before Ramadan, the Eids, Dhul Hijjah, Giving Tuesday and the other seasons.</small></span></div>
+      <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon c-p"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span><span class="sk-row-text"><b>Season reminders</b><small>A push and an email to the team before each season (days set in Admin → Tools → Season alerts), and a greeting on its first day.</small></span></div>
       <div class="sa-opts" id="seasonAlertOpts"></div>
       <div class="sa-opts ste-opts" id="seasonTestOpts" hidden></div>
     </div>
@@ -13353,8 +13364,10 @@ const CUR_LIST={GBP:{s:'£',name:'pounds'},USD:{s:'$',name:'dollars'}};
 let APP_PREFS=(()=>{try{const o=JSON.parse(storeGet('sekna_app_prefs')||'null');if(o&&o.cur)return o}catch(e){}return {cur:{usa:'USD',ar:'GBP'},alert:120,roas:40}})();
 let ACC_CUR=APP_PREFS.cur;
 const STE_SEASONS=[['ramadan','Ramadan'],['last10','Last 10 nights'],['eidfitr','Eid al-Fitr'],['dhulhijjah','Dhul Hijjah'],['arafah','Arafah'],['eidadha','Eid al-Adha'],['ashura','Ashura'],['thanksgiving','Thanksgiving'],['givingtuesday','Giving Tuesday'],['yearend','Year-end']];
-function drawSeasonTest(){const el=document.getElementById('seasonTestOpts');if(!el)return;el.hidden=!mrOwner();if(el.dataset.on)return;el.dataset.on=1;el.innerHTML='<small class="ste-h">Test email · pick a season</small>'+STE_SEASONS.map(([k,n])=>`<button type="button" onclick="seasonTestEmail(this,'${k}')">${n}</button>`).join('')}
-function seasonTestEmail(a,key){if(a.dataset.busy)return;a.dataset.busy=1;const t=a.dataset.t||(a.dataset.t=a.textContent);a.textContent='Sending…';const back=ms=>setTimeout(()=>{a.textContent=t;a.style.cssText='';delete a.dataset.busy},ms);serverCall('adminSeasonTestEmail',getAccessToken(),key||'').then(r=>{a.textContent='Sent ✓';a.style.cssText='border-color:#13804f;color:#13804f';showSettingsToast('Sent to '+((r&&r.to)||'you')+' · '+((r&&r.season)||'')+((r&&r.via)?' · via '+r.via:''));back(4000)}).catch(e=>{a.textContent='Not sent';a.style.cssText='border-color:#c63a4a;color:#c63a4a';showSettingsToast(errorText(e));back(6000)})}
+function drawSeasonTest(){const el=document.getElementById('seasonTestOpts');if(!el)return;el.hidden=!mrOwner();if(el.dataset.on)return;el.dataset.on=1;el.innerHTML='<small class="ste-h">Test · pick what, then a season</small><div class="ste-mode"><button type="button" class="on" data-m="email" onclick="steMode(this)">Email</button><button type="button" data-m="greet" onclick="steMode(this)">First-day greeting</button></div>'+STE_SEASONS.map(([k,n])=>`<button type="button" onclick="seasonTestEmail(this,'${k}')">${n}</button>`).join('')}
+let STE_MODE='email';
+function steMode(b){STE_MODE=b.dataset.m;b.parentElement.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b))}
+function seasonTestEmail(a,key){if(a.dataset.busy)return;a.dataset.busy=1;const t=a.dataset.t||(a.dataset.t=a.textContent);a.textContent='Sending…';const back=ms=>setTimeout(()=>{a.textContent=t;a.style.cssText='';delete a.dataset.busy},ms);serverCall(STE_MODE==='greet'?'adminSeasonTestGreeting':'adminSeasonTestEmail',getAccessToken(),key||'').then(r=>{a.textContent='Sent ✓';a.style.cssText='border-color:#13804f;color:#13804f';showSettingsToast(STE_MODE==='greet'?'Greeting sent to your devices · '+((r&&r.title)||''):'Sent to '+((r&&r.to)||'you')+' · '+((r&&r.season)||'')+((r&&r.via)?' · via '+r.via:''));back(4000)}).catch(e=>{a.textContent='Not sent';a.style.cssText='border-color:#c63a4a;color:#c63a4a';showSettingsToast(errorText(e));back(6000)})}
 function prefsLoad(){return serverCall('appPrefs',getAccessToken()).then(p=>{if(!p||!p.cur)return;APP_PREFS=p;ACC_CUR=p.cur;storeSet('sekna_app_prefs',JSON.stringify(p));accCurApply();drawAccCur();drawSpendAlertOpts();drawRoasAlertOpts()}).catch(()=>{})}
 function prefsSave(ch){if(!mrOwner())return;Object.assign(APP_PREFS,ch);storeSet('sekna_app_prefs',JSON.stringify(APP_PREFS));drawAccCur();drawSpendAlertOpts();drawRoasAlertOpts();
  serverCall('appPrefsSet',getAccessToken(),ch).then(p=>{if(p&&p.cur){APP_PREFS=p;ACC_CUR=p.cur;storeSet('sekna_app_prefs',JSON.stringify(p))}showSettingsToast('Saved for the whole team')}).catch(e=>showSettingsToast(errorText(e)))}
@@ -14261,7 +14274,7 @@ function renderAdmin(d){
  const annState=ann?(ann.showFrom&&ann.showFrom>isoDay(0)?'Scheduled':'Showing now'):'None yet';
  const act=(k,ic,bg,t,sub)=>`<button type="button" class="a2-act${ADMIN_TAB===k?' on':''}" onclick="adminTab('${k}')"><span style="background:${bg}">${ic}</span><b>${t}</b><small>${sub}</small></button>`;
  const inviteView=`<div class="a2-sheet"><b class="ad-h">${aI('userplus')}Invite someone</b><small class="ad-sub">They get a sign-in link by email.</small><form class="ad-invite" style="margin-top:12px" onsubmit="adminInviteSubmit(event)"><input id="adminInviteEmail" type="email" inputmode="email" autocapitalize="off" placeholder="name@company.com" onfocus="setTimeout(()=>this.scrollIntoView({block:'center'}),300)"><button id="adminInviteBtn" type="submit">Send invite</button></form></div>`;
- const sheet=ADMIN_TAB==='invite'?inviteView:ADMIN_TAB==='message'?`<div class="a2-sheet">${adminMessageHtml()}</div>`:ADMIN_TAB==='app'?`<div class="a2-sheet">${adminMaintHtml()}</div>`:ADMIN_TAB==='activity'?`<div class="a2-sheet">${adminActivityHtml()}</div>`:ADMIN_TAB==='server'?`<div class="a2-sheet">${adminServerHtml()}</div>`:ADMIN_TAB==='perms'?`<div class="a2-sheet">${adminPermsHtml()}</div>`:ADMIN_TAB==='reading'?`<div class="a2-sheet">${readWinHtml()}</div>`:'';
+ const sheet=ADMIN_TAB==='invite'?inviteView:ADMIN_TAB==='message'?`<div class="a2-sheet">${adminMessageHtml()}</div>`:ADMIN_TAB==='app'?`<div class="a2-sheet">${adminMaintHtml()}</div>`:ADMIN_TAB==='activity'?`<div class="a2-sheet">${adminActivityHtml()}</div>`:ADMIN_TAB==='server'?`<div class="a2-sheet">${adminServerHtml()}</div>`:ADMIN_TAB==='perms'?`<div class="a2-sheet">${adminPermsHtml()}</div>`:ADMIN_TAB==='reading'?`<div class="a2-sheet">${readWinHtml()}</div>`:ADMIN_TAB==='seasons'?`<div class="a2-sheet">${salHtml()}</div>`:'';
  const tabs=`<div class="a3-tabs">${[['overview','Overview'],['people','People'+(waiting.length?` · ${waiting.length}`:'')],['tools','Tools'],['server','Server']].map(([k,l])=>`<button type="button" class="${ADMIN_VIEW===k?'on':''}" onclick="adminView('${k}')">${l}</button>`).join('')}</div>`;
  const peopleView=`${waiting.length?`<div class="ad-lbl">Waiting for approval</div><div class="ad-card ad-pend">${waiting.map(person).join('')}</div>`:''}
    <div class="ad-lbl">People · ${team.length}</div><div class="ad-card">${team.map(person).join('')||'<div class="sk-admin-empty">No one has requested access yet.</div>'}</div>`;
@@ -14284,7 +14297,7 @@ function renderAdmin(d){
  }
  else if(ADMIN_VIEW==='people')body=peopleView;
  else if(ADMIN_VIEW==='server')body=`<div class="a2-sheet">${adminServerHtml()}</div>`;
- else body=`<div class="a2-acts">${act('app',`<i style="font-style:normal;display:grid;color:${m.on?'#c63a4a':'#13894f'}">${aI('power')}</i>`,m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message',`<i style="font-style:normal;display:grid;color:#203c8e">${aI('mega')}</i>`,'#e9eefc','Team message',annState)}${act('invite',`<i style="font-style:normal;display:grid;color:#a56a06">${aI('userplus')}</i>`,'#fff3dc','Invite','Add someone')}${act('activity',`<i style="font-style:normal;display:grid;color:#13894f">${aI('chart')}</i>`,'#e3f6ec','Activity','Who uses what')}${act('reading',`<i style="font-style:normal;display:grid;color:#13894f">${aI('sheet')}</i>`,'#e3f6ec','Reading the sheets',RW.data&&RW.data.window?(RW.data.window.on?rw12(RW.data.window.from)+' – '+rw12(RW.data.window.to):'All day'):'When to read')}${ACCESS_PROFILE&&ACCESS_PROFILE.owner?act('perms',`<i style="font-style:normal;display:grid;color:#203c8e">${aI('lock')}</i>`,'#e9eefc','Permissions','Who can use what'):''}</div>${ADMIN_TAB==='server'?'':sheet}`;
+ else body=`<div class="a2-acts">${act('app',`<i style="font-style:normal;display:grid;color:${m.on?'#c63a4a':'#13894f'}">${aI('power')}</i>`,m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message',`<i style="font-style:normal;display:grid;color:#203c8e">${aI('mega')}</i>`,'#e9eefc','Team message',annState)}${act('invite',`<i style="font-style:normal;display:grid;color:#a56a06">${aI('userplus')}</i>`,'#fff3dc','Invite','Add someone')}${act('activity',`<i style="font-style:normal;display:grid;color:#13894f">${aI('chart')}</i>`,'#e3f6ec','Activity','Who uses what')}${act('reading',`<i style="font-style:normal;display:grid;color:#13894f">${aI('sheet')}</i>`,'#e3f6ec','Reading the sheets',RW.data&&RW.data.window?(RW.data.window.on?rw12(RW.data.window.from)+' – '+rw12(RW.data.window.to):'All day'):'When to read')}${act('seasons',`<i style="font-style:normal;display:grid;color:#7a46d6">${aI('cal')}</i>`,'#f1eaff','Season alerts',SAL.data&&SAL.data.next?(()=>{const n=SAL.data.next.filter(x=>x.sendOn).sort((a,b)=>a.sendOn<b.sendOn?-1:1)[0];return n?'Next · '+salD(n.sendOn):'Days before each season'})():'Days before each season')}${ACCESS_PROFILE&&ACCESS_PROFILE.owner?act('perms',`<i style="font-style:normal;display:grid;color:#203c8e">${aI('lock')}</i>`,'#e9eefc','Permissions','Who can use what'):''}</div>${ADMIN_TAB==='server'?'':sheet}`;
  adminBody(tabs+`<div class="a3-body">${body}</div>`);
  const hd=document.querySelector('#adminOverlay .sk-modal-head'),tb=document.querySelector('.a3-tabs');if(hd&&tb)tb.style.top=hd.offsetHeight+'px';
 }
@@ -17046,7 +17059,26 @@ function labSavePlan(){
 /* ---------- v87: admin — WhatsApp shares and ideas ---------- */
 let ADMIN_ACTIVITY=null, ADMIN_ACT_VIEW='shares';
 const SHARE_NAMES={daily:'Daily Performance',channel:'Channel Delivery',plan:'Media Plan',results:'Results',report:'Report',compare:'Month vs Month',ly:'Vs Last Year',terms:'Search Terms',termsperf:'Search Terms Performance',termsact:'ST Action',story:'Stories',budget:'Month budget'};
+/* v297 Admin → Tools → Season alerts: how many days before each season the push and email go out, and when the next one is */
+const SAL={data:null,edit:{},busy:false,err:''};
+const SAL_NAMES={ramadan:'Ramadan',last10:'Last 10 nights',eidfitr:'Eid al-Fitr',dhulhijjah:'First 10 days of Dhul Hijjah',arafah:'Day of Arafah',eidadha:'Eid al-Adha',ashura:'Ashura',thanksgiving:'Thanksgiving',givingtuesday:'Giving Tuesday',yearend:'Year-end'};
+function salD(dk){return new Date(dk+'T00:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'})}
+function salLoad(){if(SAL.busy)return;SAL.busy=true;serverCall('adminSeasonLeads',getAccessToken()).then(r=>{SAL.busy=false;SAL.data=r;SAL.edit={};SAL.err='';if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(e=>{SAL.busy=false;SAL.err=errorText(e);if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
+function salStep(k,d){const L=Object.assign({},SAL.data.leads,SAL.edit);SAL.edit[k]=Math.max(1,Math.min(60,(+L[k]||1)+d));if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+function salSave(){if(SAL.busy)return;SAL.busy=true;const m=Object.assign({},SAL.data.leads,SAL.edit);if(ADMIN_LAST)renderAdmin(ADMIN_LAST);serverCall('adminSeasonLeadsSet',getAccessToken(),m).then(r=>{SAL.busy=false;SAL.data=r;SAL.edit={};if(ADMIN_LAST)renderAdmin(ADMIN_LAST);showSettingsToast('Season alerts saved')}).catch(e=>{SAL.busy=false;SAL.err=errorText(e);if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
+function salHtml(){
+ if(SAL.err&&!SAL.data)return `<div class="sk-admin-empty">${esc(SAL.err)}</div>`;
+ if(!SAL.data)return '<div class="sk-admin-empty">Loading…</div>';
+ const L=Object.assign({},SAL.data.leads,SAL.edit),dirty=Object.keys(SAL.edit).some(k=>SAL.edit[k]!==SAL.data.leads[k]);
+ const nx={};(SAL.data.next||[]).forEach(n=>nx[n.k]=n);
+ const grp=(t,keys)=>`<div class="sal-g">${t}</div>`+keys.map(k=>{const n=nx[k]||{},send=n.at?new Date(Date.parse(n.at+'T00:00:00Z')-L[k]*864e5).toISOString().slice(0,10):'';
+   return `<div class="sal-r"><div class="sal-t"><b>${SAL_NAMES[k]}</b><small>${n.at?'Starts '+salD(n.at).replace(/ \d{4}$/,'')+' · alert '+salD(send).replace(/ \d{4}$/,''):''}</small></div><div class="sal-n"><button type="button" onclick="salStep('${k}',-1)" aria-label="Fewer days">−</button><span><b>${L[k]}</b>${L[k]===1?' day':' days'}</span><button type="button" onclick="salStep('${k}',1)" aria-label="More days">+</button></div></div>`}).join('');
+ return `<div class="sal-h"><b>Season alerts</b><small>A push and an email to the team this many days before each season starts (9:00 Muscat). The greeting goes out on the first day.</small></div>`
+  +grp('HIJRI SEASONS · USA & AR',['ramadan','last10','eidfitr','dhulhijjah','arafah','eidadha','ashura'])+grp('US SEASONS · USA',['thanksgiving','givingtuesday','yearend'])
+  +`<div class="sal-act"><button type="button" class="sal-save" ${dirty&&!SAL.busy?'':'disabled'} onclick="salSave()">${SAL.busy?'Saving…':'Save'}</button>${SAL.err?`<small class="sal-err">${esc(SAL.err)}</small>`:''}</div>`;
+}
 function adminLoadExtra(k){
+ if(k==='seasons')salLoad();
  if(k==='server')srvLoad();
  if(k==='reading'){rwLoad();if(!FXT.data)fxtLoad()}
  if(k==='perms'&&!PERM.data&&!PERM.busy){PERM.busy=true;serverCall('adminPerms',getAccessToken()).then(r=>{PERM.busy=false;PERM.data=r;PERM.edit={};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(err=>{PERM.busy=false;PERM.data={error:errorText(err)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}

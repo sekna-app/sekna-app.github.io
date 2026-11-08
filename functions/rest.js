@@ -263,15 +263,34 @@ const R = {
   /** The next season's reminder email, sent only to the admin who asks (a test, with the real numbers). */
   async adminSeasonTestEmail([token, key]) {
     const me = await assertAdmin(token);
-    const today = dayOf(Date.now()), want = String(key || '');
-    let s = null;
-    for (let n = 1; n <= 400 && !s; n++) s = seasonsDue(isoPlus(today, n - 15)).filter(x => x.left === 15 && (!want || x.id.replace(/-\d+$/, '') === want))[0] || null;
+    const s = nextSeason(String(key || 'ramadan'), dayOf(Date.now()));
     if (!s) throw new Error('No season found in the next year.');
-    s.left = Math.round((Date.parse(s.at + 'T00:00:00Z') - Date.parse(today + 'T00:00:00Z')) / 864e5);
     const m = await seasonEmail(s);
     const r = await notify.send({ emails: [{ to: me.email, subject: '[Test ' + new Date().toISOString().slice(11, 16) + '] ' + m.subject, rawHtml: m.html, title: m.title, html: m.inner }] });
     if (!r || !(r.emails || r.relayed)) throw new Error('The email did not go out. Try again in a minute.');
     return { ok: true, to: me.email, season: s.name, at: s.at, via: r.emails ? 'Gmail' : 'Apps Script' };
+  },
+  /** The season's first-day greeting (title, text, picture) as a push to the admin only. */
+  async adminSeasonTestGreeting([token, key]) {
+    const me = await assertAdmin(token);
+    const k = String(key || ''), g = SEASON_GREET[k];
+    if (!g) throw new Error('No greeting for this season.');
+    const r = await notify.send({ pushes: [{ email: me.email, title: g[0], body: g[1], image: GREET_IMG + k + '.jpg', eventType: 'greeting' }] });
+    if (!r || !(r.pushes || r.relayed)) throw new Error('The notification did not go out. Is this device allowed to get notifications?');
+    return { ok: true, to: me.email, title: g[0] };
+  },
+  /** Days before each season for the reminder (Admin → Tools → Season alerts). */
+  async adminSeasonLeads([token]) {
+    await assertAdmin(token);
+    const prefs = (await fsGet('server/app-prefs').catch(() => null)) || {}, leads = seasonLeads(prefs), today = dayOf(Date.now());
+    return { leads, defaults: SEASON_LEAD, next: Object.keys(SEASON_LEAD).map(k => { const s = nextSeason(k, today); return s ? { k, name: s.name, at: s.at, left: s.left, sendOn: isoPlus(s.at, -leads[k]) } : { k }; }) };
+  },
+  async adminSeasonLeadsSet([token, map]) {
+    await assertAdmin(token);
+    const clean = {};
+    Object.keys(SEASON_LEAD).forEach(k => { const n = Math.round(+(map || {})[k]); if (n >= 1 && n <= 60) clean[k] = n; });
+    await fsUpdate('server/app-prefs', p => Object.assign({}, p || {}, { seasonLead: clean }));
+    return R.adminSeasonLeads([token]);
   },
   async adminShareStats([token, monthKey]) { await assertAdmin(token); return shareStats(monthOk(monthKey)); },
   async adminResetShares([token]) { await assertAdmin(token); await resetShares(); return { ok: true }; },
@@ -543,20 +562,39 @@ const SEASONS_H = [
   { k: 'ashura', m: 1, d: 10, name: 'Ashura', e: '🤲' }];
 const isoPlus = (dk, n) => new Date(Date.parse(dk + 'T00:00:00Z') + n * 864e5).toISOString().slice(0, 10);
 function nthDay(y, mo, wd, n) { const f = new Date(Date.UTC(y, mo - 1, 1)).getUTCDay(); return new Date(Date.UTC(y, mo - 1, 1 + (wd - f + 7) % 7 + (n - 1) * 7)).toISOString().slice(0, 10); }
-/** The seasons that start exactly 15 days after `today`, or on it (yyyy-mm-dd). */
-function seasonsDue(today) {
-  const out = [], fmt = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { day: 'numeric', month: 'numeric', year: 'numeric', timeZone: 'UTC' });
-  for (const left of [15, 0]) {
-    const dk = isoPlus(today, left), before = isoPlus(dk, -1);
-    const h = dk => { const p = {}; fmt.formatToParts(new Date(dk + 'T00:00:00Z')).forEach(x => { p[x.type] = parseInt(x.value, 10); }); return p; };
-    const a = h(dk), b = h(before);
-    // A Hijri season starts on the first day that reaches its Hijri date.
-    SEASONS_H.forEach(s => { if (a.month === s.m && a.day >= s.d && !(b.month === s.m && b.day >= s.d)) out.push({ id: s.k + '-' + a.year, name: s.name, e: s.e, left, acc: '', at: dk }); });
-    const y = +dk.slice(0, 4), tg = nthDay(y, 11, 4, 4);
-    [['thanksgiving', 'Thanksgiving', '🦃', tg], ['givingtuesday', 'Giving Tuesday', '💛', isoPlus(tg, 5)], ['yearend', 'Year-end giving', '🎁', y + '-12-26']]
-      .forEach(([k, name, e, at]) => { if (at === dk) out.push({ id: k + '-' + y, name, e, left, acc: 'usa', at: dk }); });
-  }
+/* How many days before each season the reminder goes out (Admin → Tools → Season alerts can change them). */
+const SEASON_LEAD = { ramadan: 14, last10: 5, eidfitr: 5, dhulhijjah: 15, arafah: 3, eidadha: 5, ashura: 15, thanksgiving: 14, givingtuesday: 14, yearend: 14 };
+function seasonLeads(prefs) {
+  const out = Object.assign({}, SEASON_LEAD), mine = (prefs && prefs.seasonLead) || {};
+  Object.keys(out).forEach(k => { const n = Math.round(+mine[k]); if (n >= 1 && n <= 60) out[k] = n; });
   return out;
+}
+/** The seasons whose first day is `dk` (yyyy-mm-dd). */
+function seasonsStarting(dk) {
+  const out = [], fmt = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { day: 'numeric', month: 'numeric', year: 'numeric', timeZone: 'UTC' });
+  const h = d => { const p = {}; fmt.formatToParts(new Date(d + 'T00:00:00Z')).forEach(x => { p[x.type] = parseInt(x.value, 10); }); return p; };
+  const a = h(dk), b = h(isoPlus(dk, -1));
+  // A Hijri season starts on the first day that reaches its Hijri date.
+  SEASONS_H.forEach(s => { if (a.month === s.m && a.day >= s.d && !(b.month === s.m && b.day >= s.d)) out.push({ id: s.k + '-' + a.year, name: s.name, e: s.e, acc: '', at: dk }); });
+  const y = +dk.slice(0, 4), tg = nthDay(y, 11, 4, 4);
+  [['thanksgiving', 'Thanksgiving', '🦃', tg], ['givingtuesday', 'Giving Tuesday', '💛', isoPlus(tg, 5)], ['yearend', 'Year-end giving', '🎁', y + '-12-26']]
+    .forEach(([k, name, e, at]) => { if (at === dk) out.push({ id: k + '-' + y, name, e, acc: 'usa', at: dk }); });
+  return out;
+}
+/** Today's reminders (each season its own number of days ahead) and today's first days (left 0). */
+function seasonsDue(today, leads) {
+  leads = leads || SEASON_LEAD;
+  const out = [], seen = {};
+  [0].concat(Object.values(leads)).forEach(left => {
+    if (seen[left]) return; seen[left] = 1;
+    seasonsStarting(isoPlus(today, left)).forEach(s => { const k = s.id.replace(/-\d+$/, ''); if (left === 0 || leads[k] === left) out.push(Object.assign(s, { left })); });
+  });
+  return out;
+}
+/** The next first day of one season, from tomorrow. */
+function nextSeason(k, today) {
+  for (let n = 1; n <= 400; n++) { const s = seasonsStarting(isoPlus(today, n)).find(x => x.id.replace(/-\d+$/, '') === k); if (s) return Object.assign(s, { left: n }); }
+  return null;
 }
 
 // v174 the season's greeting, sent on its first day with its picture (all ten seasons, pictures in icons/greet).
@@ -695,7 +733,7 @@ async function pushChecks(latestByAccount, daysByAccount) {
     const prefs = (await fsGet('server/app-prefs').catch(() => null)) || {};
     const sent = Object.assign({}, state.seasonSent || {});
     if (prefs.season !== false) {
-      for (const s of seasonsDue(today)) {
+      for (const s of seasonsDue(today, seasonLeads(prefs))) {
         const key = s.id + '-' + s.left;
         if (sent[key]) continue;
         const k = s.id.replace(/-\d+$/, '');
@@ -836,4 +874,4 @@ async function call(fn, args) {
 }
 const FNS = Object.keys(R).concat(['adminRestMove', 'adminRestMoveStatus']);
 
-module.exports = { reportFile, call, FNS, pushChecks, pushState, serverSwitchEmail, moved, fxRefreshIfDue, _season: { seasonLastYear, seasonTotals, seasonEmailHtml, seasonsDue } };
+module.exports = { reportFile, call, FNS, pushChecks, pushState, serverSwitchEmail, moved, fxRefreshIfDue, _season: { seasonLastYear, seasonTotals, seasonEmailHtml, seasonsDue, nextSeason, seasonLeads } };

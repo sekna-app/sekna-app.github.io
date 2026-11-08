@@ -76,7 +76,7 @@ async function fcm(message, validateOnly) {
 const highPriority = { android: { priority: 'HIGH', ttl: '86400s' }, webpush: { headers: { Urgency: 'high', TTL: '86400' } } };
 /** Data-only message to one person's own topic (their phones and browsers). */
 function userMessage(p) {
-  return Object.assign({ topic: userTopic(p.email), data: { title: String(p.title || 'HEMERA'), body: String(p.body || ''), eventType: String(p.eventType || 'tasks') } }, highPriority);
+  return Object.assign({ topic: userTopic(p.email), data: { title: String(p.title || 'HEMERA'), body: String(p.body || ''), eventType: String(p.eventType || 'tasks'), image: String(p.image || '') } }, highPriority);
 }
 /** Data-only message to everyone (the media plan topic), as sendFcmTopicMessage_ in Code.gs. */
 function topicMessage(t) {
