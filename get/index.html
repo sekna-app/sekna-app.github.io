@@ -513,6 +513,9 @@ h1 span.bxn,h2 span.bxn{background:none!important;-webkit-background-clip:border
 /* the light page for the Home Screen app window (iOS draws the canvas and effect layers wrongly there) */
 html.lite #glC,html.lite .lsun{display:none!important}
 html.lite .nav img{opacity:1!important}
+
+/* the two notes belong to the phone's face: hidden while it shows its back or is turning */
+.g3 .g3f.back~.pl3,.g3 .g3f.turn~.pl3{opacity:0!important;transform:translateY(10px) scale(.96)!important;transition:opacity .25s ease,transform .25s ease}
 </style>
 </head>
 <body>
