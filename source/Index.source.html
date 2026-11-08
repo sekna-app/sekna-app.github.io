@@ -7840,6 +7840,12 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming>.dc-main{padding:5px 14px!important;display:flex!important;align-items:center;gap:14px}
       html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming .dc-hij,html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming .dc-up{margin:0!important;font-size:12px!important}
     }
+
+    /* v279 desktop Top & Bottom 5: the total row as the phone's slim navy strip (red for the bottom 5), ROAS in gold */
+    html body table.rx3-t tr.rx3-tot td{background:#1b2f78!important;color:#fff!important;border:0!important;padding-top:9px!important;padding-bottom:9px!important;font-weight:900}
+    html body table.rx3-t tr.rx3-tot td:first-child{border-radius:12px 0 0 12px}html body table.rx3-t tr.rx3-tot td:last-child{border-radius:0 12px 12px 0}
+    html body table.rx3-t tr.rx3-tot .rx3-p{background:none!important;color:#f2d38f!important;font-size:15px!important;padding:0!important}
+    html body table.rx3-t tr.rx3-tot.w td{background:#a32a3b!important}
 </style>
 </head>
 <body>
@@ -12073,7 +12079,7 @@ function renderRanksDuo(bw,body,cats){
   const troas=t.roas!=null?t.roas:(t.spend?t.value/t.spend:0), lost=Math.max(0,(+t.spend||0)-(+t.value||0));
   table=`<table class="rx3-t"><colgroup><col><col class="a"><col class="b"><col class="a"><col class="c"></colgroup><tr><th>${esc(kind||'NAME')}</th><th>SPEND</th><th>CONV.</th><th>VALUE</th><th>ROAS</th></tr>
    ${b.rows.map((r,i)=>{const stale=RANK_CAT==='projects'&&offSeason(r.name,RANK_DAY),det=rxDetails(r);return `<tr class="rx3-r${stale?' stale':''}"><td><div class="rx3-who"><span class="rx-icon">${icon}<em>${r.rank||i+1}</em></span><div class="rx3-nm"><b title="${esc(r.name)}">${rxName(r.name)}</b>${stale?'<small>Redirected page · out of season</small>':''}${det?`<div class="rx-det">${det}</div>`:''}</div></div></td><td>${money(r.spend)}</td><td>${fmt(r.conversions,0)}</td><td>${money(r.value)}</td><td><div class="rx3-rs"><span class="rx3-p">${fmt(r.roas,2)}x</span><div class="rx3-bar"><i style="width:${rxBarW(b,r,worst)}%"></i></div></div></td></tr>`}).join('')}
-   <tr class="rx3-tot"><td>Total of the ${b.rows.length}${worst&&lost?` · lost ${money(lost)}`:''}</td><td>${money(t.spend)}</td><td>${fmt(t.conversions,0)}</td><td>${money(t.value)}</td><td><span class="rx3-p">${fmt(troas,2)}x</span></td></tr></table>`;
+   <tr class="rx3-tot${worst?' w':''}"><td>Total of the ${b.rows.length}${worst&&lost?` · lost ${money(lost)}`:''}</td><td>${money(t.spend)}</td><td>${fmt(t.conversions,0)}</td><td>${money(t.value)}</td><td><span class="rx3-p">${fmt(troas,2)}x</span></td></tr></table>`;
  }
  body.innerHTML=`<div class="rx3 ${worst?'w':'g'}"><nav class="rx3-cats">${list}</nav><div class="rx3-main">${head}${table}</div></div>`;
  revealOnScroll(body,'.rx3-r');
