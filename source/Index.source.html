@@ -8125,7 +8125,7 @@ window.addEventListener('load',function(){
     /* v305 season cards (Admin → Tools → Season alerts → Cards) */
     .scd{direction:ltr;position:relative;overflow:hidden;border-radius:18px;color:#fff;background-color:#0a1748;background-repeat:no-repeat;box-shadow:0 10px 24px rgba(20,40,110,.22);padding:16px 18px;font-family:Inter,system-ui,sans-serif}
     .scd::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,23,72,.95) 28%,rgba(10,23,72,.45) 62%,rgba(10,23,72,.08))}
-    .scd::before{opacity:var(--sh,1)}.scd .t,.scd small{text-shadow:0 1px 6px rgba(5,12,40,.6)}.scd>*{position:relative}.scd .t{display:block;font-weight:900;font-size:19px;letter-spacing:-.01em}.scd small{display:block;color:#d6def7;font-weight:700;font-size:12.5px;margin-top:3px}
+    .scd::before{opacity:var(--sh,1)}.scd .t{display:flex;align-items:center;gap:8px}.scd .scd-ic{width:1.05em;height:1.05em;flex:none;fill:none;stroke:#f2d38f;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 6px rgba(242,211,143,.55))}#scdHome{grid-column:1/-1;margin-bottom:12px}@media(min-width:1100px){#scdHome{margin-bottom:4px}}#scdHome .scd{box-shadow:0 10px 24px rgba(20,40,110,.18)}@media(max-width:1099px){#scdHome .scd{padding:13px 14px;border-radius:16px}#scdHome .scd .t{font-size:16px}#scdHome .scd small{font-size:11.5px}#scdHome .scd::before{background:linear-gradient(90deg,rgba(10,23,72,.94) 40%,rgba(10,23,72,.55) 75%,rgba(10,23,72,.25))}}.scd .t,.scd small{text-shadow:0 1px 6px rgba(5,12,40,.6)}.scd>*{position:relative}.scd .t{display:block;font-weight:900;font-size:19px;letter-spacing:-.01em}.scd small{display:block;color:#d6def7;font-weight:700;font-size:12.5px;margin-top:3px}
     .scd i{display:block;height:5px;width:200px;max-width:70%;border-radius:9px;background:rgba(255,255,255,.2);overflow:hidden;margin-top:9px}.scd i u{display:block;height:100%;background:linear-gradient(90deg,#f2d38f,#c89434)}
     .scd .us{position:absolute;top:12px;right:12px;font-size:10px;font-weight:900;letter-spacing:.08em;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);padding:2px 8px;border-radius:99px}
     .scd.ph{padding:13px 14px;border-radius:16px;max-width:360px}.scd.ph .t{font-size:16px}.scd.ph small{font-size:11.5px}.scd.ph::before{background:linear-gradient(90deg,rgba(10,23,72,.94) 40%,rgba(10,23,72,.55) 75%,rgba(10,23,72,.25))}
@@ -9994,6 +9994,7 @@ function render(d,opts){
  DASH_DATA=d; saveAccountCache(d); document.getElementById('app').classList.remove('loading');
  labNewDay(d);
  applyAccountBrand(d);
+ try{scardHome()}catch(e){}
  const x=d.latest,y=d.yoy,m=d.month;
  const roas=x.spend?x.value/x.spend:null;
  const planRoas=x.targetSpend?x.planValue/x.targetSpend:null;
@@ -17188,34 +17189,48 @@ function salSplash(k){
  ov.addEventListener('click',e=>{if(e.target===ov)ov.remove()});document.body.appendChild(ov);
 }
 /* v305 season cards: the card each season wears (picture from its loading screen). The owner tunes picture position/size, emoji and title here; Save keeps it for everyone. */
-const SCARD_DEF={ramadan:['Ramadan Kareem','🌙','Day 12 of 30 · 18 days to Eid',40],last10:['The Last 10 Nights','✨','Night 3 of 10 · 7 nights left',30],eidfitr:['Eid Mubarak','🎉','Eid al-Fitr · Day 1 of 3',33],
- dhulhijjah:['Dhul Hijjah','🕋','Day 4 of 10 · 5 days to Arafah',40],arafah:['The Day of Arafah','🕋','Today · Eid al-Adha tomorrow',90],eidadha:['Eid al-Adha Mubarak','🐑','Day 2 of 4',50],ashura:['Ashura','🤲','10 Muharram · today',100],
- thanksgiving:['Happy Thanksgiving','🦃','Giving Tuesday in 5 days',20],givingtuesday:['Giving Tuesday','💛','Today · Year-end giving in 28 days',100],tax:['December planning','📅','Day 8 of 31 · 23 days left',26],yearend:['Year-end Giving','🎁','Day 3 of 6 · 3 days to the new year',50]};
+const SCARD_DEF={ramadan:['Ramadan Kareem','moon','Day 12 of 30 · 18 days to Eid',40],last10:['The Last 10 Nights','spark','Night 3 of 10 · 7 nights left',30],eidfitr:['Eid Mubarak','lantern','Eid al-Fitr · Day 1 of 3',33],
+ dhulhijjah:['Dhul Hijjah','kaaba','Day 4 of 10 · 5 days to Arafah',40],arafah:['The Day of Arafah','mount','Today · Eid al-Adha tomorrow',90],eidadha:['Eid al-Adha Mubarak','mosque','Day 2 of 4',50],ashura:['Ashura','book','10 Muharram · today',100],
+ thanksgiving:['Happy Thanksgiving','leaf','Giving Tuesday in 5 days',20],givingtuesday:['Giving Tuesday','heart','Today · Year-end giving in 28 days',100],tax:['December planning','cal','Day 8 of 31 · 23 days left',26],yearend:['Year-end Giving','gift','Day 3 of 6 · 3 days to the new year',50]};
+/* The look the owner set in Admin (picture position x/y %, size z %, shade o %), kept in the code. */
+const SCARD_LOOK={thanksgiving:[0,20,130,80],givingtuesday:[0,25,160,70],tax:[5,15,160,50],yearend:[0,5,140,80],ramadan:[0,10,130,50],last10:[20,20,170,60],eidfitr:[0,35,160,80],dhulhijjah:[5,25,130,80],arafah:[0,10,140,100],eidadha:[0,25,160,70],ashura:[0,30,140,40]};
+const SCARD_ICON={moon:'<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',spark:'<path d="M11 3l1.8 4.7 4.7 1.8-4.7 1.8L11 16l-1.8-4.7L4.5 9.5l4.7-1.8z"/><path d="M18 14l.8 2.2 2.2.8-2.2.8L18 20l-.8-2.2-2.2-.8 2.2-.8z"/>',
+ lantern:'<path d="M12 2v2M9.5 4h5M8 8a4 3 0 0 1 8 0M7.5 8h9l-1 10h-7z M10 21h4M12 11v4"/>',kaaba:'<path d="M4 7l8-3 8 3v10l-8 3-8-3z"/><path d="M4 7l8 3 8-3M12 10v10M4 10.5l8 3 8-3"/>',
+ mount:'<circle cx="17" cy="6" r="2.2"/><path d="M2.5 20l6.5-10 4 6 2.5-3 6 7z"/>',mosque:'<path d="M5 20v-7a7 7 0 0 1 14 0v7M12 6V3M3 20h18M10 20v-3a2 2 0 0 1 4 0v3"/>',
+ book:'<path d="M3 5h6a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H3z"/><path d="M21 5h-6a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h7z"/>',leaf:'<path d="M5 19C5 10 11 5 20 4c-1 9-6 15-15 15z"/><path d="M5 19l8-8"/>',
+ heart:'<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',cal:'<rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3v4M15.5 3v4"/>',
+ gift:'<rect x="4" y="10" width="16" height="10" rx="1.5"/><path d="M3 7h18v3H3zM12 7v13M12 7C10 3 6.5 4 7.5 6.5M12 7c2-4 5.5-3 4.5-.5"/>'};
 const SCARD_US=['thanksgiving','givingtuesday','tax','yearend'];
-function scardCfg(k){const d=SCARD_DEF[k]||['','','',0],c=(SAL.card&&SAL.card[k])||((APP_PREFS||{}).card||{})[k]||{};
- return {x:c.x!=null?c.x:70,y:c.y!=null?c.y:30,z:c.z||100,o:c.o||100,e:c.e!=null&&c.e!==''?c.e:d[1],t:c.t||d[0]}}
-function scardStyle(k){const c=scardCfg(k);return `background-image:url('icons/splash/${k}-d.webp?v=1');background-size:${c.z}% auto;background-position:${c.x}% ${c.y}%;--sh:${c.o/100}`}
-function scardHtml(k,sub,pct,ph){const c=scardCfg(k);
- return `<div class="scd${ph?' ph':''}" data-k="${k}" style="${scardStyle(k)}">${SCARD_US.includes(k)?'<span class="us">USA</span>':''}<span class="t">${esc(c.t)} ${esc(c.e)}</span><small>${esc(sub)}</small><i><u style="width:${pct}%"></u></i></div>`}
-function scardRedraw(k){const c=scardCfg(k);document.querySelectorAll(`.scd[data-k="${k}"]`).forEach(el=>{el.setAttribute('style',scardStyle(k));const t=el.querySelector('.t');if(t)t.textContent=c.t+' '+c.e});
- const b=document.querySelector('.sal-cdsave');if(b)b.disabled=!SAL.cardDirty||SAL.cardBusy}
-function scardEdit(k,f,v){SAL.card=SAL.card||JSON.parse(JSON.stringify((APP_PREFS||{}).card||{}));const c=Object.assign(scardCfg(k),SAL.card[k]||{});
- if(f==='x')c.x=Math.max(0,Math.min(100,c.x+v));else if(f==='y')c.y=Math.max(0,Math.min(100,c.y+v));else if(f==='z')c.z=Math.max(100,Math.min(300,c.z+v));else if(f==='o')c.o=Math.max(10,Math.min(100,c.o-v));
- else if(f==='e')c.e=String(v).trim().slice(0,8);else if(f==='t')c.t=String(v).replace(/[<>]/g,'').trim().slice(0,40)||(SCARD_DEF[k]||[''])[0];
- else if(f==='reset'){delete SAL.card[k];SAL.cardDirty=true;if(ADMIN_LAST)renderAdmin(ADMIN_LAST);return}
- SAL.card[k]=c;SAL.cardDirty=true;scardRedraw(k)}
-function scardSave(){if(SAL.cardBusy||!SAL.card)return;SAL.cardBusy=true;scardRedraw('');
- serverCall('appPrefsSet',getAccessToken(),{card:SAL.card}).then(p=>{SAL.cardBusy=false;SAL.cardDirty=false;if(p&&p.cur){APP_PREFS=p;storeSet('sekna_app_prefs',JSON.stringify(p))}SAL.card=null;if(ADMIN_LAST)renderAdmin(ADMIN_LAST);showSettingsToast('Season cards saved for everyone')})
- .catch(e=>{SAL.cardBusy=false;scardRedraw('');showSettingsToast(errorText(e))})}
-function scardRows(keys){return keys.filter(k=>SCARD_DEF[k]).map(k=>{const d=SCARD_DEF[k],c=scardCfg(k);
- return `<div class="sal-cd"><b>${SAL_NAMES[k]}</b><span class="sal-lb2">Desktop</span>${scardHtml(k,d[2],d[3])}<span class="sal-lb2">Phone</span>${scardHtml(k,d[2],d[3],1)}
-  <div class="sal-ctl"><span class="g"><button type="button" onclick="scardEdit('${k}','x',-5)" aria-label="Picture left">◀</button><button type="button" onclick="scardEdit('${k}','x',5)" aria-label="Picture right">▶</button></span>
-  <span class="g"><button type="button" onclick="scardEdit('${k}','y',-5)" aria-label="Picture up">▲</button><button type="button" onclick="scardEdit('${k}','y',5)" aria-label="Picture down">▼</button></span>
-  <span class="g"><button type="button" onclick="scardEdit('${k}','z',-10)" aria-label="Smaller">−</button><button type="button" onclick="scardEdit('${k}','z',10)" aria-label="Bigger">+</button></span>
-  <span style="display:inline-flex;align-items:center;gap:5px"><label>Opacity</label><span class="g"><button type="button" onclick="scardEdit('${k}','o',-10)" aria-label="Picture less clear">−</button><button type="button" onclick="scardEdit('${k}','o',10)" aria-label="Picture clearer">+</button></span></span>
-  <label>Emoji <input class="e" value="${esc(c.e)}" maxlength="8" oninput="scardEdit('${k}','e',this.value)"></label>
-  <label>Title <input class="tt" value="${esc(c.t)}" maxlength="40" oninput="scardEdit('${k}','t',this.value)"></label>
-  <button type="button" class="sal-rs" onclick="scardEdit('${k}','reset')">Reset</button></div></div>`}).join('')}
+function scardStyle(k){const [x,y,z,o]=SCARD_LOOK[k]||[70,30,100,100];return `background-image:url('icons/splash/${k}-d.webp?v=1');background-size:${z}% auto;background-position:${x}% ${y}%;--sh:${o/100}`}
+function scardHtml(k,sub,pct,ph){const d=SCARD_DEF[k];if(!d)return '';
+ return `<div class="scd${ph?' ph':''}" data-k="${k}" style="${scardStyle(k)}">${SCARD_US.includes(k)?'<span class="us">USA</span>':''}<span class="t">${esc(d[0])}<svg class="scd-ic" viewBox="0 0 24 24" aria-hidden="true">${SCARD_ICON[d[1]]}</svg></span><small>${esc(sub)}</small><i><u style="width:${Math.max(3,Math.min(100,pct))}%"></u></i></div>`}
+function scardRows(keys){return keys.filter(k=>SCARD_DEF[k]).map(k=>{const d=SCARD_DEF[k];
+ return `<div class="sal-cd"><b>${SAL_NAMES[k]}</b><span class="sal-lb2">Desktop</span>${scardHtml(k,d[2],d[3])}<span class="sal-lb2">Phone</span>${scardHtml(k,d[2],d[3],1)}</div>`}).join('')}
+/* v307 the season card above the Daily cards, on the season's days (US seasons on the USA account only) */
+function scardToday(){
+ const now=new Date(),h={};try{new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',timeZone:'Asia/Muscat'}).formatToParts(now).forEach(x=>{h[x.type]=parseInt(x.value,10)})}catch(e){}
+ const m=h.month,d=h.day,hAt=n=>{const p={};new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'numeric',timeZone:'Asia/Muscat'}).formatToParts(new Date(now.getTime()+n*864e5)).forEach(x=>{p[x.type]=parseInt(x.value,10)});return p};
+ const toEid=()=>{for(let n=1;n<=31;n++){const p=hAt(n);if(p.month===10&&p.day===1)return n}return 30-d+1};
+ const pl=(n,w)=>n+' '+w+(n===1?'':'s');
+ if(m===9&&d<21){const n=toEid();return {k:'ramadan',sub:`Day ${d} of 30 · ${pl(n,'day')} to Eid`,p:d/30*100}}
+ if(m===9){const n=toEid();return {k:'last10',sub:`Night ${d-20} of 10 · ${n<=1?'Eid tomorrow':pl(n-1,'night')+' left'}`,p:(d-20)/10*100}}
+ if(m===10&&d<=3)return {k:'eidfitr',sub:`Eid al-Fitr · Day ${d} of 3`,p:d/3*100};
+ if(m===12&&d<=8)return {k:'dhulhijjah',sub:`Day ${d} of 10 · ${9-d===1?'Arafah tomorrow':(9-d)+' days to Arafah'}`,p:d/10*100};
+ if(m===12&&d===9)return {k:'arafah',sub:'Today · Eid al-Adha tomorrow',p:90};
+ if(m===12&&d<=13)return {k:'eidadha',sub:`Day ${d-9} of 4`,p:(d-9)/4*100};
+ if(m===1&&(d===9||d===10))return {k:'ashura',sub:d===10?'10 Muharram · today':'9 Muharram · Ashura tomorrow',p:d===10?100:50};
+ if(CURRENT_ACCOUNT!=='usa')return null;
+ const y=now.getFullYear(),mo=now.getMonth()+1,dd=now.getDate(),f=new Date(y,10,1).getDay(),tg=1+(4-f+7)%7+21,gt=new Date(y,10,tg+5),isGT=mo===gt.getMonth()+1&&dd===gt.getDate();
+ if(mo===11&&dd===tg)return {k:'thanksgiving',sub:'Giving Tuesday in 5 days',p:20};
+ if(isGT){const n=Math.round((new Date(y,11,26)-new Date(y,mo-1,dd))/864e5);return {k:'givingtuesday',sub:`Today · Year-end giving in ${pl(n,'day')}`,p:100}}
+ if(mo===12&&dd>=26){const n=32-dd;return {k:'yearend',sub:`Day ${dd-25} of 6 · ${n===1?'New year tomorrow':n+' days to the new year'}`,p:(dd-25)/6*100}}
+ if(mo===12)return {k:'tax',sub:`Day ${dd} of 31 · ${31-dd===0?'Last day':pl(31-dd,'day')+' left'}`,p:dd/31*100};
+ return null}
+function scardHome(){const g=document.querySelector('#overviewPanel>.grid.kpis');if(!g)return;let el=document.getElementById('scdHome');
+ const t=(()=>{try{return scardToday()}catch(e){return null}})();
+ if(!t){if(el)el.remove();return}
+ const html=scardHtml(t.k,t.sub,t.p);if(el&&el.dataset.v===html)return;
+ if(!el){el=document.createElement('div');el.id='scdHome';g.insertBefore(el,g.firstChild)}el.dataset.v=html;el.innerHTML=html}
 function salHtml(){
  if(SAL.err&&!SAL.data)return `<div class="sk-admin-empty">${esc(SAL.err)}</div>`;
  if(!SAL.data)return '<div class="sk-admin-empty">Loading…</div>';
@@ -17237,10 +17252,10 @@ function salHtml(){
  else if(view==='cards')rows=scardRows(keys);
  else rows=keys.map(k=>{const n=nx[k]||{},g=(SAL.data.greet||{})[k]||['',''];
    return `<div class="sal-gr"><img src="${esc((SAL.data.greetImg||'')+k+'.jpg'+(SAL.data.imgV||''))}" alt="" loading="lazy"><div class="sal-t"><b>${esc(g[0])}</b>${inN(n.at)}<small>${SAL_NAMES[k]} ${tag(k)}${n.at?' · sends '+short(n.at):''}</small><p>${esc(g[1])}</p><button type="button" class="sal-test" onclick="salTest(this,'greet','${k}')">Send me a test</button></div></div>`}).join('');
- return `<div class="sal-h"><b>Season alerts</b><small>${view==='remind'?'A push and an email to the team this many days before each season starts, at 9:00 Muscat. Tests go to you only.':view==='greet'?'A push and an email with the season\'s picture on its first day, at 9:00 Muscat. Tests go to you only.':view==='cards'?'The card each season wears. Move the picture, make it bigger or smaller, raise its opacity, change the emoji or title, then Save. Saved for everyone.':'The loading screen wears the season\'s picture and words on its days, then goes back to normal. Tap a picture to see it full size.'}</small></div>`
+ return `<div class="sal-h"><b>Season alerts</b><small>${view==='remind'?'A push and an email to the team this many days before each season starts, at 9:00 Muscat. Tests go to you only.':view==='greet'?'A push and an email with the season\'s picture on its first day, at 9:00 Muscat. Tests go to you only.':view==='cards'?'The card that sits above the Daily cards on each season\'s days. US seasons show on the USA account only.':'The loading screen wears the season\'s picture and words on its days, then goes back to normal. Tap a picture to see it full size.'}</small></div>`
   +seg('view',view,[['remind','Reminders'],['greet','Greetings'],['splash','Loading screen'],['cards','Cards']])+(view==='splash'?seg('dev',SAL.dev||'phone',[['phone','Phone'],['desk','Desktop']]):'')+seg('grp',grp,[['all','All'],['hijri','Hijri'],['us','US']])
   +`<div class="sal-list">${rows}</div>`
-  +(view==='cards'?`<div class="sal-act"><button type="button" class="sal-save sal-cdsave" ${SAL.cardDirty&&!SAL.cardBusy?'':'disabled'} onclick="scardSave()">${SAL.cardBusy?'Saving…':'Save'}</button></div>`:'')+(view==='remind'?`<div class="sal-act"><button type="button" class="sal-save" ${dirty&&!SAL.busy?'':'disabled'} onclick="salSave()">${SAL.busy?'Saving…':'Save'}</button>${SAL.err?`<small class="sal-err">${esc(SAL.err)}</small>`:''}</div>`:'');
+  +(view==='remind'?`<div class="sal-act"><button type="button" class="sal-save" ${dirty&&!SAL.busy?'':'disabled'} onclick="salSave()">${SAL.busy?'Saving…':'Save'}</button>${SAL.err?`<small class="sal-err">${esc(SAL.err)}</small>`:''}</div>`:'');
 }
 function adminLoadExtra(k){
  if(k==='seasons')salLoad();
