@@ -267,7 +267,7 @@ const R = {
     if (!s) throw new Error('No season found in the next year.');
     const m = await seasonEmail(s);
     const start = new Date(s.at + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
-    const p = await notify.send({ pushes: [{ email: me.email, title: s.e + ' ' + s.name + ' is in ' + s.left + ' days' + (s.acc ? ' · USA' : ''), body: 'Starts ' + start + '. Open to see last year\'s numbers.', eventType: 'season' }] }).catch(() => null);
+    const p = await notify.send({ pushes: [{ email: me.email, title: s.e + ' ' + s.name + ' is in ' + s.left + ' days' + (s.acc ? ' · USA' : ''), body: 'Starts ' + start + '. Open to see last year\'s numbers.', eventType: 'season', image: SEASON_IMG + s.id.replace(/-\d+$/, '') + '.jpg' + IMG_V }] }).catch(() => null);
     const mail = await testMail({ to: me.email, subject: '[Test ' + new Date().toISOString().slice(11, 16) + '] ' + m.subject, rawHtml: m.html, title: m.title, html: m.inner });
     return { ok: true, to: me.email, season: s.name, at: s.at, push: !!(p && (p.pushes || p.relayed)), email: mail };
   },
@@ -619,6 +619,7 @@ const GREET_IMG = 'https://sekna-app.web.app/icons/greet/';
    (Hijri seasons: USA and AR; the US seasons: USA only), the totals and the best day. */
 const SEASON_LEN = { tax: 31, ramadan: 30, last10: 10, eidfitr: 3, dhulhijjah: 10, arafah: 1, eidadha: 4, ashura: 1, thanksgiving: 1, givingtuesday: 1, yearend: 6 };
 const SEASON_IMG = 'https://sekna-app.web.app/icons/seasons/';
+const IMG_V = '?v=3'; // bump when a picture changes (mail apps keep pictures by their address)
 const HIJRI_MONTHS = ['Muharram', 'Safar', 'Rabi I', 'Rabi II', 'Jumada I', 'Jumada II', 'Rajab', 'Shaban', 'Ramadan', 'Shawwal', 'Dhul Qadah', 'Dhul Hijjah'];
 const HFMT = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { day: 'numeric', month: 'numeric', year: 'numeric', timeZone: 'UTC' });
 function hijriParts(dk) { const p = {}; HFMT.formatToParts(new Date(dk + 'T00:00:00Z')).forEach(x => { p[x.type] = parseInt(x.value, 10); }); return p; }
@@ -678,20 +679,20 @@ function seasonEmailHtml(s, k, rows) {
   const rest = '<p style="margin:0 0 16px;color:#5b6478;font-size:14px">Starts <b style="color:#1d2433">' + e(dLabel) + '</b>' + e(hijri) + '. Time to check the plan and the budgets.</p>' +
     lastYearTable(rows, 'LAST YEAR') +
     btn('https://sekna-app.web.app/', 'Open Seasons Calendar', true);
-  const img = '<img src="' + SEASON_IMG + k + '.jpg" width="480" alt="' + e(s.name) + '" style="display:block;width:100%;max-width:480px;height:auto;border:0">';
+  const img = '<img src="' + SEASON_IMG + k + '.jpg' + IMG_V + '" width="480" alt="' + e(s.name) + '" style="display:block;width:100%;max-width:480px;height:auto;border:0">';
   const full = '<div style="background:#f4f6fb;padding:28px 12px;font-family:Arial,Helvetica,sans-serif;color:#1d2433"><div style="max-width:480px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6eaf4">' +
     '<div style="background-color:#0c2266;background-image:linear-gradient(180deg,#2a4fb8 0%,#14317f 45%,#0a1e5a 80%,#06123c 100%);padding:20px 24px"><img src="https://sekna-app.web.app/icons/mail-logo.png?v=5" width="167" height="38" alt="HEMERA" style="display:block;border:0;width:167px;height:38px"></div>' +
     img + '<div style="padding:22px 24px">' + info + '<h2 style="margin:10px 0 4px;font-size:22px;color:#1d2433">' + title + '</h2>' + rest + '</div>' +
     '<div style="padding:14px 24px;background:#f8f9fc;color:#8a92a0;font-size:11px">HEMERA • Day by day. · Sent because season alerts are on.</div></div></div>';
   // For the Apps Script relay (it wraps title + html in its own frame): the picture and the rest inside it.
-  const inner = '<img src="' + SEASON_IMG + k + '.jpg" width="432" alt="' + e(s.name) + '" style="display:block;width:100%;height:auto;border:0;border-radius:12px;margin:0 0 14px">' + info + '<div style="height:10px"></div>' + rest;
+  const inner = '<img src="' + SEASON_IMG + k + '.jpg' + IMG_V + '" width="432" alt="' + e(s.name) + '" style="display:block;width:100%;height:auto;border:0;border-radius:12px;margin:0 0 14px">' + info + '<div style="height:10px"></div>' + rest;
   return { full, title, inner };
 }
 /** The first-day greeting as an email: the greeting picture, its title and text (the same as the push). */
 function greetingEmail(k, rows, head) {
   const g = SEASON_GREET[k];
   if (!g) return null;
-  const e = notify.esc, img = GREET_IMG + k + '.jpg';
+  const e = notify.esc, img = GREET_IMG + k + '.jpg' + IMG_V;
   const btn = '<a href="https://sekna-app.web.app/" style="display:inline-block;padding:12px 22px;margin:14px 0 0;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;background:#203C8E;color:#ffffff">Open HEMERA</a>';
   const text = '<p style="margin:0 0 14px;color:#3f475e;font-size:15px;line-height:1.6;white-space:pre-line">' + e(g[1]) + '</p>' + (rows ? lastYearTable(rows, head || 'LAST YEAR') : '') + btn;
   const full = '<div style="background:#f4f6fb;padding:28px 12px;font-family:Arial,Helvetica,sans-serif;color:#1d2433"><div style="max-width:480px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6eaf4">' +
@@ -792,7 +793,7 @@ async function pushChecks(latestByAccount, daysByAccount) {
         }
         const start = new Date(s.at + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
         await notify.send({ topics: [{ title: s.e + ' ' + s.name + ' is in ' + s.left + ' days' + (s.acc ? ' · USA' : ''), body: 'Starts ' + start + '. Open to see last year\'s numbers.',
-          account: s.acc || 'usa', eventType: 'season' }] }).catch(e => console.error('Season reminder: ' + e.message));
+          account: s.acc || 'usa', eventType: 'season', image: SEASON_IMG + k + '.jpg' + IMG_V }] }).catch(e => console.error('Season reminder: ' + e.message));
         // The same reminder as an email to every approved person.
         try {
           const m = await seasonEmail(s), people = await approvedPeople();
