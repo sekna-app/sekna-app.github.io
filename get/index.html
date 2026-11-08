@@ -441,6 +441,19 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
  .g3 .tl3{grid-area:l;margin:14px 0 6px;max-width:460px}
  .g3 .gnote{grid-area:n;text-align:left;align-self:start;margin-top:0}
 }
+
+/* phone UX: same order as desktop, tighter and even spacing; the side phones peek in less; a smaller iPhone in the guide */
+@media (max-width:520px){
+ .hgrid{padding-top:6px}
+ .ht h1{margin:12px 0 12px}
+ .stage{--r:168px;margin:6px 0 14px}
+ .scene{height:calc(var(--pw) * 2.164 + 34px)}
+ .cap{margin-top:-6px}.cap-d{margin-top:4px;min-height:0}
+ .g3 .g3f{--w:196px}
+ .g3 .g3s{padding:16px 0 18px}
+ .g3 .g3sh{width:210px}
+ .g3 .tl3{margin:0 auto 8px}
+}
 </style>
 </head>
 <body>
@@ -502,7 +515,7 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
       <div><div class="lap" id="lap"><div class="lid"><div class="lbar"><i></i><i></i><i></i><span>sekna-app.web.app</span></div><div class="scr" id="lapScr">
         <img class="on" src="/get/shots/desk-daily.webp?v=20" alt="Daily Performance on a laptop" loading="lazy">
         <img src="/get/shots/desk-month.webp?v=20" alt="Monthly Progress on a laptop" loading="lazy">
-        <img src="/get/shots/desk-seasons.webp?v=20" alt="Seasons Calendar on a laptop" loading="lazy">
+        <img src="/get/shots/desk-seasons.webp?v=21" alt="Seasons Calendar on a laptop" loading="lazy">
       </div></div><div class="base"></div><div class="lap-sh"></div></div>
       <div class="ltabs" id="lapTabs"><button type="button" class="on">Daily<em></em></button><button type="button">Monthly<em></em></button><button type="button">Seasons<em></em></button></div></div>
       <div class="txt">

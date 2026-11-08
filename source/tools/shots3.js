@@ -15,5 +15,8 @@ const fake=()=>{const split=[['Search Brand',.10,6.2],['Search Non-Brand',.6,2.4
  const d=await page(b,1440,900,1);await d.addStyleTag({content:'html,body{overflow-x:hidden!important}'});await d.evaluate(fake);
  for(const [n,t] of [['desk-daily','overview'],['desk-days','days'],['desk-month','channel'],['desk-studio','months'],['desk-seasons','seasons']]){
   await go(d,t=>{switchDashboardTab(t);if(t==='days')setDayView('plan');if(t==='months')setMonthMode('one')},t);await d.evaluate(()=>window.scrollTo(0,0));await d.waitForTimeout(500);
+  if(n==='desk-seasons'){ // a still screen: only Ramadan, the Eids and Thanksgiving, no scrolling
+   await d.evaluate(()=>{document.querySelectorAll('#seasonsPanel .ssd-row').forEach(r=>{const t=(r.querySelector('.n b')||r).textContent.trim();if(!/^(Thanksgiving|Ramadan|Eid al-Fitr|Eid al-Adha)/.test(t))r.style.display='none'});const c=document.querySelector('#seasonsPanel .ssd-r');if(c)c.innerHTML=c.innerHTML.replace(/10 seasons/,'4 seasons')});
+   await d.waitForTimeout(300);await d.screenshot({path:O+n+'.png'});continue}
   const H=await d.evaluate(()=>{const h=document.documentElement.scrollHeight;['dkRail','dkPanel'].forEach(i=>{const e=document.getElementById(i);if(e){e.style.position='absolute';e.style.bottom='auto';e.style.height=h+'px'}});return h});await d.waitForTimeout(200);await d.screenshot({path:O+n+'.png',fullPage:true,clip:{x:0,y:0,width:1440,height:H}});await d.evaluate(()=>['dkRail','dkPanel'].forEach(i=>{const e=document.getElementById(i);if(e){e.style.position='';e.style.bottom='';e.style.height=''}}))}
  await b.close()})();
