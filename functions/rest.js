@@ -275,7 +275,8 @@ const R = {
     const me = await assertAdmin(token);
     const k = String(key || ''), g = SEASON_GREET[k];
     if (!g) throw new Error('No greeting for this season.');
-    const m = greetingEmail(k);
+    const nx = nextSeason(k, dayOf(Date.now()));
+    const m = greetingEmail(k, nx ? await greetingRows(k, nx.at) : null, 'DECEMBER LAST YEAR');
     const r = await notify.send({ pushes: [{ email: me.email, title: g[0], body: g[1], image: GREET_IMG + k + '.jpg', eventType: 'greeting' }],
       emails: [{ to: me.email, subject: '[Test ' + new Date().toISOString().slice(11, 16) + '] ' + m.subject, rawHtml: m.html, title: m.title, html: m.inner }] });
     if (!r || !(r.pushes || r.emails || r.relayed)) throw new Error('The greeting did not go out. Try again in a minute.');
@@ -565,7 +566,7 @@ const SEASONS_H = [
 const isoPlus = (dk, n) => new Date(Date.parse(dk + 'T00:00:00Z') + n * 864e5).toISOString().slice(0, 10);
 function nthDay(y, mo, wd, n) { const f = new Date(Date.UTC(y, mo - 1, 1)).getUTCDay(); return new Date(Date.UTC(y, mo - 1, 1 + (wd - f + 7) % 7 + (n - 1) * 7)).toISOString().slice(0, 10); }
 /* How many days before each season the reminder goes out (Admin → Tools → Season alerts can change them). */
-const SEASON_LEAD = { ramadan: 14, last10: 5, eidfitr: 5, dhulhijjah: 15, arafah: 3, eidadha: 5, ashura: 15, thanksgiving: 14, givingtuesday: 14, yearend: 14 };
+const SEASON_LEAD = { tax: 15, ramadan: 14, last10: 5, eidfitr: 5, dhulhijjah: 15, arafah: 3, eidadha: 5, ashura: 15, thanksgiving: 14, givingtuesday: 14, yearend: 14 };
 function seasonLeads(prefs) {
   const out = Object.assign({}, SEASON_LEAD), mine = (prefs && prefs.seasonLead) || {};
   Object.keys(out).forEach(k => { const n = Math.round(+mine[k]); if (n >= 1 && n <= 60) out[k] = n; });
@@ -579,7 +580,7 @@ function seasonsStarting(dk) {
   // A Hijri season starts on the first day that reaches its Hijri date.
   SEASONS_H.forEach(s => { if (a.month === s.m && a.day >= s.d && !(b.month === s.m && b.day >= s.d)) out.push({ id: s.k + '-' + a.year, name: s.name, e: s.e, acc: '', at: dk }); });
   const y = +dk.slice(0, 4), tg = nthDay(y, 11, 4, 4);
-  [['thanksgiving', 'Thanksgiving', '🦃', tg], ['givingtuesday', 'Giving Tuesday', '💛', isoPlus(tg, 5)], ['yearend', 'Year-end giving', '🎁', y + '-12-26']]
+  [['thanksgiving', 'Thanksgiving', '🦃', tg], ['givingtuesday', 'Giving Tuesday', '💛', isoPlus(tg, 5)], ['yearend', 'Year-end giving', '🎁', y + '-12-26'], ['tax', 'Tax season', '🧾', y + '-12-01']]
     .forEach(([k, name, e, at]) => { if (at === dk) out.push({ id: k + '-' + y, name, e, acc: 'usa', at: dk }); });
   return out;
 }
@@ -610,13 +611,14 @@ const SEASON_GREET = {
   ashura: ['Blessed Day of Ashura 🤍', 'May Allah accept our fasting, forgive us, and bless our team\'s efforts to spread kindness and make a positive difference.'],
   thanksgiving: ['Happy Thanksgiving! 🧡', 'As we celebrate gratitude and generosity, may our team find success in every effort and help bring support and hope to more families in need.'],
   givingtuesday: ['Happy Giving Tuesday! 💙', 'Every contribution matters, and every effort brings us closer to our goals. Wishing our team success in creating meaningful change and transforming lives.'],
+  tax: ['Good morning, and welcome December! ☀️', 'A new month and a fresh start. Wishing everyone a productive and successful month.\n\nTax Season is approaching. Time to review the plans and budgets.'],
   yearend: ['Let\'s End the Year with Impact! ✨', 'May our team\'s hard work lead to meaningful achievements. May every effort we make leave a lasting legacy of hope, kindness, and generosity.']
 };
 const GREET_IMG = 'https://sekna-app.web.app/icons/greet/';
 
 /* v294 season email, 15 days ahead: the season's picture, then the same season last year per account
    (Hijri seasons: USA and AR; the US seasons: USA only), the totals and the best day. */
-const SEASON_LEN = { ramadan: 30, last10: 10, eidfitr: 3, dhulhijjah: 10, arafah: 1, eidadha: 4, ashura: 1, thanksgiving: 1, givingtuesday: 1, yearend: 6 };
+const SEASON_LEN = { tax: 31, ramadan: 30, last10: 10, eidfitr: 3, dhulhijjah: 10, arafah: 1, eidadha: 4, ashura: 1, thanksgiving: 1, givingtuesday: 1, yearend: 6 };
 const SEASON_IMG = 'https://sekna-app.web.app/icons/seasons/';
 const HIJRI_MONTHS = ['Muharram', 'Safar', 'Rabi I', 'Rabi II', 'Jumada I', 'Jumada II', 'Rajab', 'Shaban', 'Ramadan', 'Shawwal', 'Dhul Qadah', 'Dhul Hijjah'];
 const HFMT = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { day: 'numeric', month: 'numeric', year: 'numeric', timeZone: 'UTC' });
@@ -633,7 +635,7 @@ function seasonLastYear(k, at) {
     return null;
   }
   const y = +at.slice(0, 4) - 1, tg = nthDay(y, 11, 4, 4);
-  return k === 'thanksgiving' ? tg : k === 'givingtuesday' ? isoPlus(tg, 5) : k === 'yearend' ? y + '-12-26' : null;
+  return k === 'thanksgiving' ? tg : k === 'givingtuesday' ? isoPlus(tg, 5) : k === 'yearend' ? y + '-12-26' : k === 'tax' ? y + '-12-01' : null;
 }
 /** One account's totals and best day over [from, from + len). days[dk] = per channel [spend, impr, clicks, conv, value]. */
 function seasonTotals(days, from, len) {
@@ -648,10 +650,9 @@ function seasonTotals(days, from, len) {
   }
   return n ? { spend, value, conv, best } : null;
 }
-function seasonEmailHtml(s, k, rows) {
-  const e = notify.esc, start = new Date(s.at + 'T00:00:00Z');
-  const dLabel = start.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
-  const h = hijriParts(s.at), hijri = SEASONS_H.some(x => x.k === k) ? ' · ' + h.day + ' ' + HIJRI_MONTHS[h.month - 1] + ' ' + h.year : '';
+/** Last year's table for the season emails: per account the totals and the best day (short numbers so it fits a phone). */
+function lastYearTable(rows, head) {
+  const e = notify.esc;
   // Short numbers so the four columns fit a phone: £3,701 · $494.9k · $2.91M
   const money = (v, sym) => sym + (v >= 1e6 ? (v / 1e6).toFixed(2) + 'M' : v >= 1e4 ? (v / 1e3).toFixed(v >= 1e5 ? 0 : 1) + 'k' : Math.round(v).toLocaleString('en-GB'));
   const td = 'padding:9px 6px;border-top:1px solid #eef1f6;';
@@ -665,12 +666,18 @@ function seasonEmailHtml(s, k, rows) {
     }
     return out;
   }).join('') : '<tr><td colspan="4" style="' + td + 'color:#8a92a0">No numbers for this season last year.</td></tr>';
+  return '<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;table-layout:fixed;width:100%;font-size:12.5px;margin-bottom:16px"><tr style="background:#f4f6fb;color:#8a92a0;font-size:10px;letter-spacing:.04em"><td style="padding:8px 6px;width:36%">' + e(head) + '</td><td style="padding:8px 6px;text-align:right;width:22%">SPEND</td><td style="padding:8px 6px;text-align:right;width:22%">VALUE</td><td style="padding:8px 6px;text-align:right;width:20%">ROAS</td></tr>' + body + '</table>';
+}
+function seasonEmailHtml(s, k, rows) {
+  const e = notify.esc, start = new Date(s.at + 'T00:00:00Z');
+  const dLabel = start.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+  const h = hijriParts(s.at), hijri = SEASONS_H.some(x => x.k === k) ? ' · ' + h.day + ' ' + HIJRI_MONTHS[h.month - 1] + ' ' + h.year : '';
   const btn = (href, label, primary) => '<a href="' + href + '" style="display:inline-block;padding:12px 22px;margin:4px 8px 0 0;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;' +
     (primary ? 'background:#203C8E;color:#ffffff' : 'background:#eef1f7;color:#1d2433') + '">' + label + '</a>';
   const title = s.e + ' ' + e(s.name) + ' starts in ' + s.left + ' days' + (s.acc ? ' · USA' : '');
   const info = '<div style="display:inline-block;background:#fdf3dc;color:#9a6a12;font-size:11px;font-weight:800;letter-spacing:.08em;border-radius:99px;padding:4px 10px">' + s.left + ' DAYS TO GO</div>';
   const rest = '<p style="margin:0 0 16px;color:#5b6478;font-size:14px">Starts <b style="color:#1d2433">' + e(dLabel) + '</b>' + e(hijri) + '. Time to check the plan and the budgets.</p>' +
-    '<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;table-layout:fixed;width:100%;font-size:12.5px;margin-bottom:16px"><tr style="background:#f4f6fb;color:#8a92a0;font-size:10px;letter-spacing:.04em"><td style="padding:8px 6px;width:36%">LAST YEAR</td><td style="padding:8px 6px;text-align:right;width:22%">SPEND</td><td style="padding:8px 6px;text-align:right;width:22%">VALUE</td><td style="padding:8px 6px;text-align:right;width:20%">ROAS</td></tr>' + body + '</table>' +
+    lastYearTable(rows, 'LAST YEAR') +
     btn('https://sekna-app.web.app/', 'Open Seasons Calendar', true);
   const img = '<img src="' + SEASON_IMG + k + '.jpg" width="480" alt="' + e(s.name) + '" style="display:block;width:100%;max-width:480px;height:auto;border:0">';
   const full = '<div style="background:#f4f6fb;padding:28px 12px;font-family:Arial,Helvetica,sans-serif;color:#1d2433"><div style="max-width:480px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6eaf4">' +
@@ -682,12 +689,12 @@ function seasonEmailHtml(s, k, rows) {
   return { full, title, inner };
 }
 /** The first-day greeting as an email: the greeting picture, its title and text (the same as the push). */
-function greetingEmail(k) {
+function greetingEmail(k, rows, head) {
   const g = SEASON_GREET[k];
   if (!g) return null;
   const e = notify.esc, img = GREET_IMG + k + '.jpg';
   const btn = '<a href="https://sekna-app.web.app/" style="display:inline-block;padding:12px 22px;margin:14px 0 0;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;background:#203C8E;color:#ffffff">Open HEMERA</a>';
-  const text = '<p style="margin:0;color:#3f475e;font-size:15px;line-height:1.6">' + e(g[1]) + '</p>' + btn;
+  const text = '<p style="margin:0 0 14px;color:#3f475e;font-size:15px;line-height:1.6;white-space:pre-line">' + e(g[1]) + '</p>' + (rows ? lastYearTable(rows, head || 'LAST YEAR') : '') + btn;
   const full = '<div style="background:#f4f6fb;padding:28px 12px;font-family:Arial,Helvetica,sans-serif;color:#1d2433"><div style="max-width:480px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6eaf4">' +
     '<div style="background-color:#0c2266;background-image:linear-gradient(180deg,#2a4fb8 0%,#14317f 45%,#0a1e5a 80%,#06123c 100%);padding:20px 24px"><img src="https://sekna-app.web.app/icons/mail-logo.png?v=5" width="167" height="38" alt="HEMERA" style="display:block;border:0;width:167px;height:38px"></div>' +
     '<img src="' + img + '" width="480" alt="' + e(g[0]) + '" style="display:block;width:100%;max-width:480px;height:auto;border:0">' +
@@ -695,6 +702,13 @@ function greetingEmail(k) {
     '<div style="padding:14px 24px;background:#f8f9fc;color:#8a92a0;font-size:11px">HEMERA • Day by day.</div></div></div>';
   const inner = '<img src="' + img + '" width="432" alt="" style="display:block;width:100%;height:auto;border:0;border-radius:12px;margin:0 0 14px">' + text;
   return { subject: g[0], title: e(g[0]), html: full, inner };
+}
+/** Rows for a greeting email: only the tax season (1 Dec) shows last December's USA numbers. */
+async function greetingRows(k, at) {
+  if (k !== 'tax') return null;
+  const from = seasonLastYear(k, at);
+  try { const t = seasonTotals((await require('./dash').getMonthCompareData('usa')).days, from, SEASON_LEN.tax); return t ? [{ label: 'USA', sym: '$', t }] : []; }
+  catch (e) { console.error('Greeting rows: ' + e.message); return []; }
 }
 async function seasonEmail(s) {
   // Year-end: a gift emoji with "giving" in the subject is what spam filters catch, so the email says it plainly.
@@ -761,7 +775,7 @@ async function pushChecks(latestByAccount, daysByAccount) {
             .catch(e => console.error('Season greeting: ' + e.message));
           // The same greeting as an email to every approved person.
           if (g) try {
-            const m = greetingEmail(k), people = await approvedPeople();
+            const m = greetingEmail(k, await greetingRows(k, s.at), 'DECEMBER LAST YEAR'), people = await approvedPeople();
             await notify.send({ emails: people.map(p => ({ to: p.email, subject: m.subject, rawHtml: m.html, title: m.title, html: m.inner })) });
           } catch (e) { console.error('Greeting email: ' + e.message); }
           sent[key] = Date.now(); if (g) out.season = (out.season || []).concat(key);

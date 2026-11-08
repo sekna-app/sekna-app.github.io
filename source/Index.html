@@ -11172,7 +11172,7 @@ function openNotifs(){
 function closeNotifs(e){if(e&&e.target!==e.currentTarget)return;const o=document.getElementById('notifsOverlay');if(o)o.classList.remove('open');nfBadge();setTimeout(()=>{try{bbDraw()}catch(e){}},0)}
 
  
-const NF_GREET_KEY=[['Ramadan Mubarak','ramadan'],['Blessed Last 10','last10'],['Eid Mubarak','eidfitr'],['Blessed Days of Dhul','dhulhijjah'],['Blessed Day of Arafah','arafah'],['Eid al-Adha','eidadha'],['Blessed Day of Ashura','ashura'],['Happy Thanksgiving','thanksgiving'],['Happy Giving Tuesday','givingtuesday'],["Let's End the Year",'yearend']];
+const NF_GREET_KEY=[['Ramadan Mubarak','ramadan'],['Blessed Last 10','last10'],['Eid Mubarak','eidfitr'],['Blessed Days of Dhul','dhulhijjah'],['Blessed Day of Arafah','arafah'],['Eid al-Adha','eidadha'],['Blessed Day of Ashura','ashura'],['Happy Thanksgiving','thanksgiving'],['Happy Giving Tuesday','givingtuesday'],["Let's End the Year",'yearend'],['Good morning, and welcome December','tax']];
 const NF_GO={season:1,streak:1,spend_alert:1,roas_drop:1,tasks:1,app_update:1,celebrate:1,month_closed:1,new_day:1};
 function nfImage(x){if(x.image)return x.image;if(x.type!=='greeting')return '';const m=NF_GREET_KEY.find(([t])=>String(x.title||'').startsWith(t));return m?'https:\/\/sekna-app.web.app/icons/greet/'+m[1]+'.jpg':''}
 function nfOpen(id){
@@ -17061,7 +17061,7 @@ let ADMIN_ACTIVITY=null, ADMIN_ACT_VIEW='shares';
 const SHARE_NAMES={daily:'Daily Performance',channel:'Channel Delivery',plan:'Media Plan',results:'Results',report:'Report',compare:'Month vs Month',ly:'Vs Last Year',terms:'Search Terms',termsperf:'Search Terms Performance',termsact:'ST Action',story:'Stories',budget:'Month budget'};
  
 const SAL={data:null,edit:{},busy:false,err:''};
-const SAL_NAMES={ramadan:'Ramadan',last10:'Last 10 nights',eidfitr:'Eid al-Fitr',dhulhijjah:'First 10 days of Dhul Hijjah',arafah:'Day of Arafah',eidadha:'Eid al-Adha',ashura:'Ashura',thanksgiving:'Thanksgiving',givingtuesday:'Giving Tuesday',yearend:'Year-end'};
+const SAL_NAMES={ramadan:'Ramadan',last10:'Last 10 nights',eidfitr:'Eid al-Fitr',dhulhijjah:'First 10 days of Dhul Hijjah',arafah:'Day of Arafah',eidadha:'Eid al-Adha',ashura:'Ashura',thanksgiving:'Thanksgiving',givingtuesday:'Giving Tuesday',yearend:'Year-end',tax:'Tax season'};
 function salD(dk){return new Date(dk+'T00:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'})}
 function salLoad(){if(SAL.busy)return;SAL.busy=true;serverCall('adminSeasonLeads',getAccessToken()).then(r=>{SAL.busy=false;SAL.data=r;SAL.edit={};SAL.err='';if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(e=>{SAL.busy=false;SAL.err=errorText(e);if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
 function salStep(k,d){const L=Object.assign({},SAL.data.leads,SAL.edit);SAL.edit[k]=Math.max(1,Math.min(60,(+L[k]||1)+d));if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
@@ -17076,7 +17076,7 @@ function salHtml(){
  const view=SAL.view||'remind',grp=SAL.grp||'all';
  const L=Object.assign({},SAL.data.leads,SAL.edit),dirty=Object.keys(SAL.edit).some(k=>SAL.edit[k]!==SAL.data.leads[k]);
  const nx={};(SAL.data.next||[]).forEach(n=>nx[n.k]=n);
- const H=['ramadan','last10','eidfitr','dhulhijjah','arafah','eidadha','ashura'],U=['thanksgiving','givingtuesday','yearend'];
+ const H=['ramadan','last10','eidfitr','dhulhijjah','arafah','eidadha','ashura'],U=['thanksgiving','givingtuesday','tax','yearend'];
  const keys=(grp==='us'?U:grp==='hijri'?H:H.concat(U)).slice().sort((a,b)=>{const x=nx[a]||{},y=nx[b]||{};return (x.at||'9')<(y.at||'9')?-1:1});
  const short=dk=>salD(dk).replace(/ \d{4}$/,'');
  const seg=(k,v,opts)=>`<div class="sal-seg">${opts.map(([o,l])=>`<button type="button" class="${v===o?'on':''}" onclick="salSet('${k}','${o}')">${l}</button>`).join('')}</div>`;
