@@ -6521,8 +6521,8 @@ window.addEventListener('load',function(){
     }
     /* v179 top bar logo: a light sweeps across it now and then */
     .dk-lg{position:relative;display:block;line-height:0}
-    .dk-lg i{position:absolute;inset:0;-webkit-mask-size:100% 100%;mask-size:100% 100%;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.85) 50%,transparent 60%) no-repeat;background-size:250% 100%;background-position:150% 0;animation:dkLgShine 6s 1.5s ease-in-out infinite;pointer-events:none}
-    @keyframes dkLgShine{0%{background-position:150% 0}25%,100%{background-position:-50% 0}}
+    .dk-lg i{position:absolute;inset:0;-webkit-mask-size:100% 100%;mask-size:100% 100%;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.85) 50%,transparent 60%) no-repeat;background-size:250% 100%;background-position:150% 0;animation:dkLgShine 60s 1.5s ease-in-out infinite;pointer-events:none}
+    @keyframes dkLgShine{0%{background-position:150% 0}2.5%,100%{background-position:-50% 0}}
     .dk-brand img{height:26px!important}
     @media (prefers-reduced-motion:reduce){.dk-lg i{animation:none;display:none}}
     /* v179 Reports Studio desktop: a picked type keeps its coloured icon on a white circle */
@@ -7996,6 +7996,35 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) body #monthsPanel .mxd-cr .dk-chg{display:block!important;text-align:center!important}
       html.dk-on:not(.desktop-site-mode) body #monthsPanel .mxd-cr .dk-chg i{font-style:normal;font-size:11.5px;font-weight:900;border-radius:99px;padding:3px 10px}
       html.dk-on:not(.desktop-site-mode) body #monthsPanel .mxd-cr .dk-chg i.u{background:#e3f6ec;color:#13804f}html.dk-on:not(.desktop-site-mode) body #monthsPanel .mxd-cr .dk-chg i.d{background:#fbdde1;color:#c63a4a}html.dk-on:not(.desktop-site-mode) body #monthsPanel .mxd-cr .dk-chg i.n{background:#eef1f7;color:#6b7385}
+    }
+
+    /* v291 desktop Daily (pick 2): the four day cards inside one navy card, the day's achievement on the left */
+    .kd-hero{display:none}
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis{grid-template-columns:230px repeat(4,minmax(0,1fr))!important;gap:12px!important;padding:16px!important;border-radius:20px!important;background:linear-gradient(140deg,#203c8e,#2c4fb8)!important;box-shadow:0 14px 30px rgba(32,60,142,.22)!important}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis>.kd-hero{display:flex;flex-direction:column;justify-content:center;gap:6px;padding:4px 8px 4px 6px;color:#fff;font-family:inherit}
+      html.dk-on:not(.desktop-site-mode) body .kd-hero .kd-l{font-size:11px;font-weight:850;letter-spacing:.06em;text-transform:uppercase;color:#c9d3f5}
+      html.dk-on:not(.desktop-site-mode) body .kd-hero .kd-s{font-size:42px;font-weight:900;letter-spacing:-.02em;line-height:1.05;font-variant-numeric:tabular-nums}
+      html.dk-on:not(.desktop-site-mode) body .kd-hero .kd-bars{display:flex;gap:4px;height:9px;margin-top:4px}
+      html.dk-on:not(.desktop-site-mode) body .kd-hero .kd-bars>i{background:rgba(255,255,255,.16);border-radius:99px;overflow:hidden;min-width:0}
+      html.dk-on:not(.desktop-site-mode) body .kd-hero .kd-bars u{display:block;height:100%;border-radius:99px;transition:width .7s ease}
+      html.dk-on:not(.desktop-site-mode) body .kd-hero .s{background:#7c5cff}html.dk-on:not(.desktop-site-mode) body .kd-hero .c{background:#3aa0f0}html.dk-on:not(.desktop-site-mode) body .kd-hero .v{background:#1fb98a}
+      html.dk-on:not(.desktop-site-mode) body .kd-hero .kd-k{display:flex;gap:10px;font-size:10.5px;font-weight:800;color:#c9d3f5;margin-top:2px;white-space:nowrap}
+      html.dk-on:not(.desktop-site-mode) body .kd-hero .kd-k i{display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:4px}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis>.k4card{background:rgba(255,255,255,.09)!important;border:0!important;box-shadow:none!important;border-radius:14px!important;color:#fff!important;padding:12px 14px 10px!important}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis>.k4card:before,html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis>.k4card:after{display:none!important}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis .kpi-label{color:#c9d3f5!important}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis .kpi-value{color:#fff!important;font-size:24px!important}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis .k4-dot{display:none!important}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis .k4-spark{--k4c:#fff!important}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis .k4-spark .k4-t{stroke:rgba(255,255,255,.35)!important}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis .k4-spark .k4-a{opacity:.1!important}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis .k4-now{background:#fff!important;border-color:#2c4fb8!important}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis .k4-fb rect:first-child{fill:rgba(255,255,255,.16)}html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis .k4-fb rect+rect{fill:#fff}html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis .k4-fb line{stroke:#fff}html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis .k4-fb text{fill:#c9d3f5}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis .target,html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis .target:before{color:#c9d3f5!important}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis .k4-pct{color:#f2d38f!important}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis .k4-pct[data-st="good"]{color:#7ef0b9!important}
+      html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis .k4-pct[data-st="bad"]{color:#ff9aa6!important}
     }
 </style>
 </head>
@@ -9959,7 +9988,7 @@ function drawKpiSparks(d,ach){
    const svg=document.getElementById('s'+key),dot=document.getElementById('x'+key),pct=document.getElementById('q'+key),delta=document.getElementById('d'+key);
    const st=delta&&/good|bad|watch/.exec(delta.className);const c=KPI_STATUS[st?st[0]:'watch'];
    if(dot)dot.style.background=c;
-   if(pct){pct.textContent=ach[key]!=null&&isFinite(ach[key])?Math.round(ach[key]*100)+'%':'';pct.style.color=st&&st[0]==='good'?'#13804f':st&&st[0]==='bad'?'#c2382f':'#a8701c'}
+   if(pct){pct.textContent=ach[key]!=null&&isFinite(ach[key])?Math.round(ach[key]*100)+'%':'';pct.style.color=st&&st[0]==='good'?'#13804f':st&&st[0]==='bad'?'#c2382f':'#a8701c';pct.dataset.st=st?st[0]:'watch'}
    if(!svg)return;
    const a=days.map(x=>Number(x[f])||0),b=days.map(x=>Number(x[t])||0);
    // Under two days in the month (the 1st), no line yet: one bar from zero to past the target instead,
@@ -9987,6 +10016,18 @@ function drawKpiSparks(d,ach){
    let p=wrap.querySelector('.k4-now');if(!p){p=document.createElement('i');p.className='k4-now';wrap.appendChild(p)}
    p.style.background=c;p.style.left=(X(a.length-1)/150*100).toFixed(2)+'%';p.style.top=(Y(a[a.length-1])/46*100).toFixed(2)+'%';
  });
+ kdDayHero(ach);
+}
+/* v291 desktop Daily: the day's own plan achievement (same weights as the month card) as the first cell of the navy card */
+function kdDayHero(ach){
+ const g=document.querySelector('#overviewPanel>.grid.kpis');if(!g)return;
+ let h=g.querySelector('.kd-hero');
+ if(!h){h=document.createElement('div');h.className='kd-hero';h.innerHTML='<span class="kd-l">Day achievement</span><b class="kd-s">—</b><div class="kd-bars"><i style="flex:40"><u class="s"></u></i><i style="flex:20"><u class="c"></u></i><i style="flex:40"><u class="v"></u></i></div><div class="kd-k"><span><i class="s"></i>Spend 40%</span><span><i class="c"></i>Conv. 20%</span><span><i class="v"></i>Value 40%</span></div>';g.insertBefore(h,g.firstChild)}
+ const cl=v=>v==null||!isFinite(v)?null:Math.max(0,Math.min(1,v));
+ const sp=ach.Spend==null||!isFinite(ach.Spend)?null:cl(1-Math.abs(ach.Spend-1)),cv=cl(ach.Conv),va=cl(ach.Value);
+ const ok=sp!=null&&va!=null;
+ h.querySelector('.kd-s').textContent=ok?((sp*.4+(cv||0)*.2+va*.4)*100).toFixed(1)+'%':'—';
+ [['s',sp],['c',cv],['v',va]].forEach(([k,v])=>{const u=h.querySelector('.kd-bars u.'+k);if(u)u.style.width=((v||0)*100).toFixed(1)+'%'});
 }
 
 function kpi(valueId,targetId,deltaId,barId,value,target,achievement,isSpend){
