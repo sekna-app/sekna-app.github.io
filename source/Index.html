@@ -8026,6 +8026,27 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis .k4-pct[data-st="good"]{color:#7ef0b9!important}
       html.dk-on:not(.desktop-site-mode) body #overviewPanel>.grid.kpis .k4-pct[data-st="bad"]{color:#ff9aa6!important}
     }
+
+    /* v292 day accuracy: phone strip swaps CTR for it (last), Results header pill on desktop, a row inside the opened card on phone */
+    #overviewPanel .quick-metrics-strip .qacc{display:none}
+    @media (min-width:1100px){html.dk-on:not(.desktop-site-mode) body #overviewPanel>.quick-metrics-strip>.quick-metric.qacc{display:none!important}}
+    .dcH-acc,.dcR-acc{display:none}
+    @media (max-width:1099px){
+      html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip:not(.st-qm)>.quick-metric.ctr{display:none!important}
+      html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip:not(.st-qm)>.quick-metric.qacc{display:flex}
+      html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip .qacc .quick-icon{color:#203c8e}
+      html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip .qacc .quick-value.acc-good{color:#13804f!important}html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip .qacc .quick-value.acc-watch{color:#b9770e!important}html:not(.desktop-site-mode) body #overviewPanel .quick-metrics-strip .qacc .quick-value.acc-bad{color:#c63a4a!important}
+      html:not(.desktop-site-mode) body .dcR.open .dcR-acc{display:block;margin:2px 0 12px;padding:10px 12px;border-radius:12px;background:linear-gradient(140deg,#203c8e,#2c4fb8);color:#fff}
+      .dcR-acc .t{display:flex;justify-content:space-between;align-items:baseline}.dcR-acc small{font-size:10.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#c9d3f5}.dcR-acc .t b{font-size:20px;font-weight:900;color:#fff}
+      .dcR-acc .t b.good{color:#7ef0b9}.dcR-acc .t b.watch{color:#f2d38f}.dcR-acc .t b.bad{color:#ff9aa6}
+      .dcR-acc .br{display:flex;gap:3px;height:7px;margin-top:6px}.dcR-acc .br>i{background:rgba(255,255,255,.16);border-radius:99px;overflow:hidden;min-width:0}.dcR-acc .br u{display:block;height:100%;border-radius:99px}
+      .dcR-acc .s{background:#7c5cff}.dcR-acc .c{background:#3aa0f0}.dcR-acc .v{background:#1fb98a}
+      .dcR-acc .k{display:flex;gap:10px;margin-top:5px;font-size:10px;font-weight:800;color:#c9d3f5}.dcR-acc .k i{display:inline-block;width:7px;height:7px;border-radius:2px;margin-right:4px}
+    }
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dcR .dcH-acc{display:inline-block;font-style:normal;font-size:10.5px;font-weight:900;border-radius:99px;padding:1px 7px;margin-left:6px;vertical-align:2px;white-space:nowrap}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dcR .dcH-acc.good{background:#e3f6ec;color:#13804f}html.dk-on:not(.desktop-site-mode) body #dxBody .dcR .dcH-acc.watch{background:#fdf1dc;color:#9a6a12}html.dk-on:not(.desktop-site-mode) body #dxBody .dcR .dcH-acc.bad{background:#fbdde1;color:#c63a4a}
+    }
 </style>
 </head>
 <body>
@@ -8508,6 +8529,15 @@ window.addEventListener('load',function(){
         <span class="kx-c" id="topCVRPlan"></span>
       </div>
       <span class="kx-r" id="topCVRPct"></span>
+    </div>
+    <div class="quick-metric qacc">
+      <div class="quick-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><circle cx="12" cy="12" r="3.5"></circle></svg></div>
+      <div class="quick-copy">
+        <span class="quick-name">Accuracy</span>
+        <span class="quick-value" id="topAcc">—</span>
+        <span class="kx-c" id="topAccPlan"><i>of </i><b>day plan</b></span>
+      </div>
+      <span class="kx-r" id="topAccPct"></span>
     </div>
   </section>
 <section class="card section yoy">
@@ -10025,6 +10055,7 @@ function kdDayHero(ach){
  const cl=v=>v==null||!isFinite(v)?null:Math.max(0,Math.min(1,v));
  const sp=ach.Spend==null||!isFinite(ach.Spend)?null:cl(1-Math.abs(ach.Spend-1)),cv=cl(ach.Conv),va=cl(ach.Value);
  const ok=sp!=null&&va!=null;
+ const tA=document.getElementById('topAcc');if(tA){const sc=ok?sp*.4+(cv||0)*.2+va*.4:null;tA.textContent=sc==null?'—':(sc*100).toFixed(1)+'%';tA.className='quick-value '+(sc==null?'':sc>=.9?'acc-good':sc>=.7?'acc-watch':'acc-bad')}
  h.querySelector('.kd-s').textContent=ok?((sp*.4+(cv||0)*.2+va*.4)*100).toFixed(1)+'%':'—';
  [['s',sp],['c',cv],['v',va]].forEach(([k,v])=>{const u=h.querySelector('.kd-bars u.'+k);if(u)u.style.width=((v||0)*100).toFixed(1)+'%'});
 }
@@ -10915,6 +10946,13 @@ function dxResultMore(x){
  return `<div class="dx-stats dx-g3 dx-g3b"><span><small>CPA</small><b>${money(a.cpa,2)}</b></span><span><small>CTR</small><b>${percent(a.ctr)}</b></span><span><small>CVR</small><b>${percent(a.cvr)}</b></span></div>`;
 }
  
+function dayAccuracy(sa,ca,va){
+ const cl=v=>v==null||!isFinite(v)?null:Math.max(0,Math.min(1,v));
+ const sp=sa==null||!isFinite(sa)?null:cl(1-Math.abs(sa-1)),cv=cl(ca),v=cl(va);
+ if(sp==null||v==null)return null;
+ return {spend:sp,conv:cv||0,value:v,score:sp*.4+(cv||0)*.2+v*.4};
+}
+ 
 function daysCards(days,latest,T){
  const plan=DAY_VIEW==='plan';
  const bar=(v,cls)=>`<span class="dc-pb ${cls}"><em style="width:${Math.max(3,Math.min(100,(v||0)*100)).toFixed(0)}%"></em></span>`;
@@ -10941,9 +10979,14 @@ function daysCards(days,latest,T){
    const rr=(l,act,pl,r,cls)=>`<tr><td>${l}</td><td>${act}</td><td>${pl}</td><td class="dcR-p ${cls}">${r==null||!isFinite(r)?'—':Math.round(r*100)+'%'}</td></tr>`;
    const roR=a.roas!=null&&p.roas?a.roas/p.roas:null;
    const box=(l,act,r,cls)=>`<div class="dcR-k ${cls}"><small>${l}</small><b>${r==null||!isFinite(r)?'—':Math.round(r*100)+'%'}</b><span>${act}</span></div>`;
-   return `<div class="dc-card dcA dcH dcR${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" data-rx="1" onclick="toggleDay('${x.date}')">${rxBadge(x.date)}${hdr}<div class="dc-main">
+   const acc=dayAccuracy(a.spendAchievement,a.convAchievement,a.valueAchievement);
+   const accC=acc?(acc.score>=.9?'good':acc.score>=.7?'watch':'bad'):'';
+   const accTxt=acc?(acc.score*100).toFixed(1)+'%':'—';
+   const hdrR=acc?hdr.replace('</b>',` <em class="dcH-acc ${accC}" title="Day accuracy">${accTxt}</em></b>`):hdr;
+   const accRow=acc?`<div class="dcR-acc"><div class="t"><small>Day accuracy</small><b class="${accC}">${accTxt}</b></div><div class="br"><i style="flex:40"><u class="s" style="width:${(acc.spend*100).toFixed(0)}%"></u></i><i style="flex:20"><u class="c" style="width:${(acc.conv*100).toFixed(0)}%"></u></i><i style="flex:40"><u class="v" style="width:${(acc.value*100).toFixed(0)}%"></u></i></div><div class="k"><span><i class="s"></i>Spend 40%</span><span><i class="c"></i>Conv. 20%</span><span><i class="v"></i>Value 40%</span></div></div>`:'';
+   return `<div class="dc-card dcA dcH dcR${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" data-rx="1" onclick="toggleDay('${x.date}')">${rxBadge(x.date)}${hdrR}<div class="dc-main">
      <div class="dcR-g">${box('Spend',money(a.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${(()=>{const r=p.clicks?a.clicks/p.clicks:null;return box('Clicks',fmt(a.clicks,0),r,achClass(r)).replace('class="dcR-k','class="dk-only dcR-k')})()}${box('Conv.',fmt(a.conversions,0),a.convAchievement,achClass(a.convAchievement))}${box('ROAS',a.roas!=null?fmt(a.roas,2)+'x':'—',roR,achClass(roR)).replace('class="dcR-k','class="dk-only dcR-ro dcR-k')}${box('Value',money(a.value),a.valueAchievement,achClass(a.valueAchievement))}</div>
-     <div class="dc-more"><table class="dcR-tb"><tr><th></th><th>Actual</th><th>Plan</th><th>%</th></tr>${rr('Spend',money(a.spend),money(p.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${rr('Conv.',fmt(a.conversions,0),fmt(p.conversions,0),a.convAchievement,achClass(a.convAchievement))}${rr('Value',money(a.value),money(p.value),a.valueAchievement,achClass(a.valueAchievement))}${rr('ROAS',fmt(a.roas,2)+'x',fmt(p.roas,2)+'x',roR,achClass(roR))}${p.clicks?rr('Clicks',fmt(a.clicks,0),fmt(p.clicks,0),a.clicks/p.clicks,achClass(a.clicks/p.clicks)):''}</table>${dxResultMore(x)}${dxResultSheet(x)}<button type="button" class="dx-tybtn" onclick="event.stopPropagation();dxTypes('${x.date}',this)">By campaign type <i>▾</i></button><div class="dx-ty" hidden></div></div></div></div>`;
+     <div class="dc-more">${accRow}<table class="dcR-tb"><tr><th></th><th>Actual</th><th>Plan</th><th>%</th></tr>${rr('Spend',money(a.spend),money(p.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${rr('Conv.',fmt(a.conversions,0),fmt(p.conversions,0),a.convAchievement,achClass(a.convAchievement))}${rr('Value',money(a.value),money(p.value),a.valueAchievement,achClass(a.valueAchievement))}${rr('ROAS',fmt(a.roas,2)+'x',fmt(p.roas,2)+'x',roR,achClass(roR))}${p.clicks?rr('Clicks',fmt(a.clicks,0),fmt(p.clicks,0),a.clicks/p.clicks,achClass(a.clicks/p.clicks)):''}</table>${dxResultMore(x)}${dxResultSheet(x)}<button type="button" class="dx-tybtn" onclick="event.stopPropagation();dxTypes('${x.date}',this)">By campaign type <i>▾</i></button><div class="dx-ty" hidden></div></div></div></div>`;
  }).join('');
  return (plan?planHero(days,T):resultsHero(days,T))+`<div class="dc-list">${cards}</div>`+(plan?`<div class="dc-legend">${PLAN_MIX_LABELS.map((l,k)=>`<span><i class="m${k}"></i>${l}</span>`).join('')}</div>`:'')+`<div class="dx-note">Tap a day to see more.</div>`;
 }
