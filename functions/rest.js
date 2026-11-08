@@ -269,8 +269,9 @@ const R = {
     if (!s) throw new Error('No season found in the next year.');
     s.left = Math.round((Date.parse(s.at + 'T00:00:00Z') - Date.parse(today + 'T00:00:00Z')) / 864e5);
     const m = await seasonEmail(s);
-    await notify.sendMail({ to: me.email, subject: '[Test] ' + m.subject, rawHtml: m.html });
-    return { ok: true, to: me.email, season: s.name, at: s.at };
+    const r = await notify.send({ emails: [{ to: me.email, subject: '[Test] ' + m.subject, rawHtml: m.html, title: m.title, html: m.inner }] });
+    if (!r || !(r.emails || r.relayed)) throw new Error('The email did not go out. Try again in a minute.');
+    return { ok: true, to: me.email, season: s.name, at: s.at, via: r.emails ? 'Gmail' : 'Apps Script' };
   },
   async adminShareStats([token, monthKey]) { await assertAdmin(token); return shareStats(monthOk(monthKey)); },
   async adminResetShares([token]) { await assertAdmin(token); await resetShares(); return { ok: true }; },
@@ -625,15 +626,19 @@ function seasonEmailHtml(s, k, rows) {
   }).join('') : '<tr><td colspan="4" style="' + td + 'color:#8a92a0">No numbers for this season last year.</td></tr>';
   const btn = (href, label, primary) => '<a href="' + href + '" style="display:inline-block;padding:12px 22px;margin:4px 8px 0 0;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;' +
     (primary ? 'background:#203C8E;color:#ffffff' : 'background:#eef1f7;color:#1d2433') + '">' + label + '</a>';
-  return '<div style="background:#f4f6fb;padding:28px 12px;font-family:Arial,Helvetica,sans-serif;color:#1d2433"><div style="max-width:480px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6eaf4">' +
-    '<div style="background-color:#0c2266;background-image:linear-gradient(180deg,#2a4fb8 0%,#14317f 45%,#0a1e5a 80%,#06123c 100%);padding:20px 24px"><img src="https://sekna-app.web.app/icons/mail-logo.png?v=5" width="167" height="38" alt="HEMERA" style="display:block;border:0;width:167px;height:38px"></div>' +
-    '<img src="' + SEASON_IMG + k + '.jpg" width="480" alt="' + e(s.name) + '" style="display:block;width:100%;max-width:480px;height:auto;border:0">' +
-    '<div style="padding:22px 24px"><div style="display:inline-block;background:#fdf3dc;color:#9a6a12;font-size:11px;font-weight:800;letter-spacing:.08em;border-radius:99px;padding:4px 10px">' + s.left + ' DAYS TO GO</div>' +
-    '<h2 style="margin:10px 0 4px;font-size:22px;color:#1d2433">' + s.e + ' ' + e(s.name) + ' starts in ' + s.left + ' days' + (s.acc ? ' · USA' : '') + '</h2>' +
-    '<p style="margin:0 0 16px;color:#5b6478;font-size:14px">Starts <b style="color:#1d2433">' + e(dLabel) + '</b>' + e(hijri) + '. Time to check the plan and the budgets.</p>' +
+  const title = s.e + ' ' + e(s.name) + ' starts in ' + s.left + ' days' + (s.acc ? ' · USA' : '');
+  const info = '<div style="display:inline-block;background:#fdf3dc;color:#9a6a12;font-size:11px;font-weight:800;letter-spacing:.08em;border-radius:99px;padding:4px 10px">' + s.left + ' DAYS TO GO</div>';
+  const rest = '<p style="margin:0 0 16px;color:#5b6478;font-size:14px">Starts <b style="color:#1d2433">' + e(dLabel) + '</b>' + e(hijri) + '. Time to check the plan and the budgets.</p>' +
     '<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:13px;margin-bottom:16px"><tr style="background:#f4f6fb;color:#8a92a0;font-size:10.5px;letter-spacing:.06em"><td style="padding:8px 10px">LAST YEAR</td><td style="padding:8px 10px;text-align:right">SPEND</td><td style="padding:8px 10px;text-align:right">VALUE</td><td style="padding:8px 10px;text-align:right">ROAS</td></tr>' + body + '</table>' +
-    btn('https://sekna-app.web.app/', 'Open Seasons Calendar', true) + '</div>' +
+    btn('https://sekna-app.web.app/', 'Open Seasons Calendar', true);
+  const img = '<img src="' + SEASON_IMG + k + '.jpg" width="480" alt="' + e(s.name) + '" style="display:block;width:100%;max-width:480px;height:auto;border:0">';
+  const full = '<div style="background:#f4f6fb;padding:28px 12px;font-family:Arial,Helvetica,sans-serif;color:#1d2433"><div style="max-width:480px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6eaf4">' +
+    '<div style="background-color:#0c2266;background-image:linear-gradient(180deg,#2a4fb8 0%,#14317f 45%,#0a1e5a 80%,#06123c 100%);padding:20px 24px"><img src="https://sekna-app.web.app/icons/mail-logo.png?v=5" width="167" height="38" alt="HEMERA" style="display:block;border:0;width:167px;height:38px"></div>' +
+    img + '<div style="padding:22px 24px">' + info + '<h2 style="margin:10px 0 4px;font-size:22px;color:#1d2433">' + title + '</h2>' + rest + '</div>' +
     '<div style="padding:14px 24px;background:#f8f9fc;color:#8a92a0;font-size:11px">HEMERA • Day by day. · Sent because season alerts are on.</div></div></div>';
+  // For the Apps Script relay (it wraps title + html in its own frame): the picture and the rest inside it.
+  const inner = '<img src="' + SEASON_IMG + k + '.jpg" width="432" alt="' + e(s.name) + '" style="display:block;width:100%;height:auto;border:0;border-radius:12px;margin:0 0 14px">' + info + '<div style="height:10px"></div>' + rest;
+  return { full, title, inner };
 }
 async function seasonEmail(s) {
   const k = s.id.replace(/-\d+$/, ''), from = seasonLastYear(k, s.at), len = SEASON_LEN[k] || 1;
@@ -643,7 +648,8 @@ async function seasonEmail(s) {
     try { const t = seasonTotals((await require('./dash').getMonthCompareData(key)).days, from, len); if (t) rows.push({ label, sym, t }); }
     catch (e) { console.error('Season email ' + key + ': ' + e.message); }
   }
-  return { subject: s.e + ' ' + s.name + ' starts in ' + s.left + ' days' + (s.acc ? ' · USA' : ''), html: seasonEmailHtml(s, k, rows) };
+  const h = seasonEmailHtml(s, k, rows);
+  return { subject: s.e + ' ' + s.name + ' starts in ' + s.left + ' days' + (s.acc ? ' · USA' : ''), html: h.full, title: h.title, inner: h.inner };
 }
 
 async function pushChecks(latestByAccount, daysByAccount) {
@@ -704,7 +710,7 @@ async function pushChecks(latestByAccount, daysByAccount) {
         // The same reminder as an email to every approved person.
         try {
           const m = await seasonEmail(s), people = await approvedPeople();
-          await notify.send({ emails: people.map(p => ({ to: p.email, subject: m.subject, rawHtml: m.html })) });
+          await notify.send({ emails: people.map(p => ({ to: p.email, subject: m.subject, rawHtml: m.html, title: m.title, html: m.inner })) });
         } catch (e) { console.error('Season email: ' + e.message); }
         sent[key] = Date.now(); out.season = (out.season || []).concat(key);
       }

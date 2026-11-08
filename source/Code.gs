@@ -3740,7 +3740,7 @@ function relaySend(idToken, payload) {
     try {
       sendSeknaEmail_({ to: to, name: ACCESS.SENDER_NAME, replyTo: m.replyTo ? normalizeEmail_(m.replyTo) : undefined,
         subject: String(m.subject || 'HEMERA').slice(0, 200),
-        htmlBody: accessEmailHtml_(String(m.title || ''), String(m.html || '') +
+        htmlBody: m.rawHtml ? String(m.rawHtml) : accessEmailHtml_(String(m.title || ''), String(m.html || '') +
           (m.button && m.button.url ? emailButton_(String(m.button.url), String(m.button.label || 'Open HEMERA'), true) : '') +
           (Array.isArray(m.buttons) ? m.buttons.slice(0, 3).map(b => emailButton_(String(b.url || ''), String(b.label || 'Open'), !!b.primary)).join('') : '') +
           (m.footer ? '<p style="margin:18px 0 0;font-size:12px;color:#8a92a0">' + escapeHtml_(m.footer) + '</p>' : '')) });
