@@ -8256,6 +8256,9 @@ window.addEventListener('load',function(){
     body.dark-mode .sal-seg{background:#1b212b}body.dark-mode .sal-seg button.on{background:#232a36;color:#fff}body.dark-mode .sal-test{background:#1b212b;border-color:#2b323d;color:#9fb6ff}body.dark-mode .sal-gr{border-color:#252a32}body.dark-mode .sal-gr p{color:#aab3c5}
 
     .sal-note{display:block;margin-top:6px;font-size:11.5px;font-weight:800;color:#13804f;line-height:1.45;word-break:break-word}.sal-note.bad{color:#c63a4a}
+
+    .sal-ri{display:grid!important;grid-template-columns:72px minmax(0,1fr) auto;gap:10px;align-items:start}.sal-ri img{width:72px;height:54px;object-fit:cover;border-radius:10px;display:block}
+    @media (max-width:420px){.sal-ri{grid-template-columns:60px minmax(0,1fr)}.sal-ri img{width:60px;height:46px}.sal-ri .sal-n{grid-column:2;justify-self:start;margin-top:4px}}
 </style>
 </head>
 <body>
@@ -11346,12 +11349,26 @@ const NF_GO={season:1,streak:1,spend_alert:1,roas_drop:1,tasks:1,app_update:1,ce
 function nfImage(x){if(x.image)return x.image;if(x.type!=='greeting')return '';const m=NF_GREET_KEY.find(([t])=>String(x.title||'').startsWith(t));return m?'https:\/\/sekna-app.web.app/icons/greet/'+m[1]+'.jpg':''}
 function nfOpen(id){
  const x=(NF.list||[]).find(n=>n.id===id);if(!x)return;
+ if(x.type==='greeting')greetMarkSeen(x.id);
  document.querySelector('.nfc-ov')?.remove();
  const img=nfImage(x),when=new Date(x.at).toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'numeric',minute:'2-digit'});
  const ov=document.createElement('div');ov.className='nfc-ov';ov.setAttribute('data-share-ui','');
  ov.innerHTML=`<div class="nfc" role="dialog" aria-modal="true">${img?`<img class="nfc-img" src="${esc(img)}" alt="">`:''}<div class="nfc-b"><small>${esc(when)}${x.account?' · '+(x.account==='ar'?'AR':'USA'):''}</small><h3>${esc(x.title||'HEMERA')}</h3>${x.body?`<p>${esc(x.body)}</p>`:''}<div class="nfc-a">${NF_GO[x.type]?`<button type="button" class="go" onclick="nfGo('${esc(x.id)}')">Open</button>`:''}<button type="button" onclick="nfCardClose()">Close</button></div></div></div>`;
  ov.addEventListener('click',e=>{if(e.target===ov)nfCardClose()});
  document.body.appendChild(ov);requestAnimationFrame(()=>ov.classList.add('on'));
+}
+ 
+function greetSeen(){try{return JSON.parse(storeGet('sekna_greet_seen')||'[]')}catch(e){return []}}
+function greetMarkSeen(id){const l=greetSeen();if(!l.includes(id)){l.push(id);storeSet('sekna_greet_seen',JSON.stringify(l.slice(-30)))}}
+function greetAutoShow(){
+ if(!getAccessToken()||(typeof canDo==='function'&&!canDo('notifs')))return;
+ serverCall('myNotifications',getAccessToken()).then(r=>{
+   const list=Array.isArray(r)?r:[],seen=greetSeen();
+   const g=list.filter(x=>x.type==='greeting'&&Date.now()-x.at<24*3600e3&&!seen.includes(x.id)).sort((a,b)=>b.at-a.at)[0];
+   if(NF.list===null||!NF.list)NF.list=nfMerge(list);else if(g&&!NF.list.some(x=>x.id===g.id))NF.list=nfMerge(NF.list.concat([g]));
+   nfBadge();
+   if(g&&!document.querySelector('.nfc-ov'))nfOpen(g.id);
+ }).catch(()=>{});
 }
 function nfCardClose(){const o=document.querySelector('.nfc-ov');if(!o)return;o.classList.remove('on');setTimeout(()=>o.remove(),220)}
 function nfGo(id){
@@ -13926,7 +13943,7 @@ function fetchProfile(){
    if(p.isAdmin)setTimeout(()=>adminFetch().catch(()=>{}),4000);
    
    setTimeout(nfLoad,2500);
-   setTimeout(()=>{fxLoad().catch(()=>{});curDraw();prefsLoad()},3500);
+   setTimeout(()=>{fxLoad().catch(()=>{});curDraw();prefsLoad()},3500);setTimeout(greetAutoShow,4200);
    setTimeout(celCheck,4500);
    serverCall('teamStatus',token).then(t=>{
      if(!t||!ACCESS_PROFILE)return;
@@ -17247,13 +17264,14 @@ function salHtml(){
  const L=Object.assign({},SAL.data.leads,SAL.edit),dirty=Object.keys(SAL.edit).some(k=>SAL.edit[k]!==SAL.data.leads[k]);
  const nx={};(SAL.data.next||[]).forEach(n=>nx[n.k]=n);
  const H=['ramadan','last10','eidfitr','dhulhijjah','arafah','eidadha','ashura'],U=['thanksgiving','givingtuesday','tax','yearend'];
- const keys=(grp==='us'?U:grp==='hijri'?H:H.concat(U)).slice().sort((a,b)=>{const x=nx[a]||{},y=nx[b]||{};return (x.at||'9')<(y.at||'9')?-1:1});
+ const sendOf=k=>{const n=nx[k]||{};return n.at?(view==='remind'?new Date(Date.parse(n.at+'T00:00:00Z')-L[k]*864e5).toISOString().slice(0,10):n.at):'9'};
+ const keys=(grp==='us'?U:grp==='hijri'?H:H.concat(U)).slice().sort((a,b)=>sendOf(a)<sendOf(b)?-1:1);
  const short=dk=>salD(dk).replace(/ \d{4}$/,'');
  const seg=(k,v,opts)=>`<div class="sal-seg">${opts.map(([o,l])=>`<button type="button" class="${v===o?'on':''}" onclick="salSet('${k}','${o}')">${l}</button>`).join('')}</div>`;
  const tag=k=>U.includes(k)?'<em class="sal-tag us">USA</em>':'<em class="sal-tag">USA · AR</em>';
  let rows='';
  if(view==='remind')rows=keys.map(k=>{const n=nx[k]||{},send=n.at?new Date(Date.parse(n.at+'T00:00:00Z')-L[k]*864e5).toISOString().slice(0,10):'';
-   return `<div class="sal-r"><div class="sal-t"><b>${SAL_NAMES[k]} ${tag(k)}</b><small>${n.at?'Starts '+short(n.at)+' · alert '+short(send):''}</small><button type="button" class="sal-test" onclick="salTest(this,'remind','${k}')">Send me a test</button></div><div class="sal-n"><button type="button" onclick="salStep('${k}',-1)" aria-label="Fewer days">−</button><span><b>${L[k]}</b>${L[k]===1?' day':' days'}</span><button type="button" onclick="salStep('${k}',1)" aria-label="More days">+</button></div></div>`}).join('');
+   return `<div class="sal-r sal-ri"><img src="${esc('https:\/\/sekna-app.web.app/icons/seasons/'+k+'.jpg')}" alt="" loading="lazy"><div class="sal-t"><b>${SAL_NAMES[k]} ${tag(k)}</b><small>${n.at?'Starts '+short(n.at)+' · alert '+short(send):''}</small><button type="button" class="sal-test" onclick="salTest(this,'remind','${k}')">Send me a test</button></div><div class="sal-n"><button type="button" onclick="salStep('${k}',-1)" aria-label="Fewer days">−</button><span><b>${L[k]}</b>${L[k]===1?' day':' days'}</span><button type="button" onclick="salStep('${k}',1)" aria-label="More days">+</button></div></div>`}).join('');
  else rows=keys.map(k=>{const n=nx[k]||{},g=(SAL.data.greet||{})[k]||['',''];
    return `<div class="sal-gr"><img src="${esc((SAL.data.greetImg||'')+k+'.jpg')}" alt="" loading="lazy"><div class="sal-t"><b>${esc(g[0])}</b><small>${SAL_NAMES[k]} ${tag(k)}${n.at?' · sends '+short(n.at):''}</small><p>${esc(g[1])}</p><button type="button" class="sal-test" onclick="salTest(this,'greet','${k}')">Send me a test</button></div></div>`}).join('');
  return `<div class="sal-h"><b>Season alerts</b><small>${view==='remind'?'A push and an email to the team this many days before each season starts, at 9:00 Muscat.':'A push and an email with the season\'s picture on its first day, at 9:00 Muscat.'} Tests go to you only.</small></div>`
