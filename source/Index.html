@@ -7988,6 +7988,15 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) body #app .stp-mt:not(.sh) .stp-ms i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px}
       html.dk-on:not(.desktop-site-mode) body #app .stp-mt:not(.sh) .stp-ms b{margin-left:5px}html.dk-on:not(.desktop-site-mode) body #app .stp-mt:not(.sh) .stp-ms small{margin-left:5px;opacity:.75;font-size:11px}
     }
+
+    .mxd-cr .dk-chg{display:none}
+    /* v289 desktop Reports Studio compare (pick 1): the two months right beside the metric, the change between them in the free space */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body #monthsPanel .mxd-cr .h,html.dk-on:not(.desktop-site-mode) body #monthsPanel .mxd-cr .r{grid-template-columns:170px 130px 130px minmax(0,1fr) 80px!important}
+      html.dk-on:not(.desktop-site-mode) body #monthsPanel .mxd-cr .dk-chg{display:block!important;text-align:left!important;padding-left:14px}
+      html.dk-on:not(.desktop-site-mode) body #monthsPanel .mxd-cr .dk-chg i{font-style:normal;font-size:11.5px;font-weight:900;border-radius:99px;padding:3px 10px}
+      html.dk-on:not(.desktop-site-mode) body #monthsPanel .mxd-cr .dk-chg i.u{background:#e3f6ec;color:#13804f}html.dk-on:not(.desktop-site-mode) body #monthsPanel .mxd-cr .dk-chg i.d{background:#fbdde1;color:#c63a4a}html.dk-on:not(.desktop-site-mode) body #monthsPanel .mxd-cr .dk-chg i.n{background:#eef1f7;color:#6b7385}
+    }
 </style>
 </head>
 <body>
@@ -11898,9 +11907,9 @@ function mxdScore(rows,A,B,avg,ha,hb){
  const side=(h,n,me)=>`<div class="t ${me}${win===me?' win':''}"><small>${esc(h.hijri)}${h.partial?' · so far':''}${win===me?' · 👑 WINNER':''}</small><b>${esc(n)}</b></div>`;
  const board=`<div class="mxd-board">${side(ha,an,'a')}<div class="s"><b class="${win==='a'?'w':''}">${pa}</b><i>–</i><b class="${win==='b'?'w':''}">${pb}</b><small>OF ${pa+pb} POINTS${avg?' · PER DAY':''}</small></div>${side(hb,bn,'b')}</div>
   <div class="mxd-say"><p>${say}</p><span>Revenue &amp; ROAS ×3 · Conv. ×2 · others ×1</span></div>`;
- const tbl=`<div class="mxd-cr"><div class="h"><span>Metric</span><span>${esc(an)}</span><span>${esc(bn)}</span><span>Point</span></div>${rows.map(r=>{
+ const tbl=`<div class="mxd-cr"><div class="h"><span>Metric</span><span>${esc(an)}</span><span>${esc(bn)}</span><span class="dk-chg">${esc(an.split(' ')[0])} vs ${esc(bn.split(' ')[0])}</span><span>Point</span></div>${rows.map(r=>{
    const c=r.m.better==='none'||r.delta==null||Math.abs(r.delta)<.005?'neutral':(r.m.better==='high'?r.delta>0:r.delta<0)?'good':'bad';
-   return `<div class="r"><span>${esc(r.m.l)}${mxPts(r.m.k)>1?` <em>×${mxPts(r.m.k)}</em>`:''}</span><span class="${r.w==='a'?'w':r.w?'l':''}">${r.m.f(r.a,avg)}${r.w==='a'?' ✓':''}</span><span class="${r.w==='b'?'w':r.w?'l':''}">${r.m.f(r.b,avg)}${r.w==='b'?' ✓':''}</span><span class="p">${r.w?`${f1(r.w==='a'?an:bn)} +${mxPts(r.m.k)}`:'—'}</span></div>`}).join('')}</div>`;
+   return `<div class="r"><span>${esc(r.m.l)}${mxPts(r.m.k)>1?` <em>×${mxPts(r.m.k)}</em>`:''}</span><span class="${r.w==='a'?'w':r.w?'l':''}">${r.m.f(r.a,avg)}${r.w==='a'?' ✓':''}</span><span class="${r.w==='b'?'w':r.w?'l':''}">${r.m.f(r.b,avg)}${r.w==='b'?' ✓':''}</span><span class="dk-chg">${r.delta==null?'':`<i class="${c==='good'?'u':c==='bad'?'d':'n'}">${r.delta>=0?'▲':'▼'} ${Math.abs(Math.round(r.delta*100))}%</i>`}</span><span class="p">${r.w?`${f1(r.w==='a'?an:bn)} +${mxPts(r.m.k)}`:'—'}</span></div>`}).join('')}</div>`;
  return board+tbl+(extraState()==='ok'?'':extraWaitHtml('clicks, CTR, CPC and CVR'))+mxdCmpTypes(A,B,avg,an,bn);
 }
 
