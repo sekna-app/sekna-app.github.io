@@ -8078,6 +8078,14 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) body .as-side .fc-card.as-bl2{padding:6px 12px!important}
       html.dk-on:not(.desktop-site-mode) body .as-side .as-tr{padding:3px 0!important;min-height:0!important}
     }
+
+    .as-fill{display:none!important}
+    /* v284 desktop: week of month as long as weekday (empty rows); the Forecast open section framed light blue like the Assumptions cards */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body .as-side .as-fill{display:grid!important;min-height:40px}
+      html.dk-on:not(.desktop-site-mode) body .as-side .as-two>div{display:flex;flex-direction:column}html.dk-on:not(.desktop-site-mode) body .as-side .as-two .fc-card{flex:1}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-accb{border-color:#c9d8ff!important}
+    }
 </style>
 </head>
 <body>
@@ -11473,7 +11481,7 @@ function asHtml(){
      <div class="fc-foot">Worked out by the sheet from the last days, so it can't be changed here.</div>${asMixHtml(d,ed)}${asEcoTable(d,ed)}${asSaveBar(c,nEd)}`;
  }else if(AS.tab==='weeks'){
    const mx=Math.max(.01,...(d.weeks||[]).map(w=>w.weight||0));
-   body=`<div class="fc-l">WEEKLY DISTRIBUTION <em>Share of the budget</em></div><div class="fc-card">${(d.weeks||[]).map((w,wi)=>{const m=String(w.label).match(/(\d+)\s*[:\-–]\s*(\d+)\s*$/),nm=String(w.label).replace(/\s*\d+\s*[:\-–]\s*\d+\s*$/,'').replace(/^(First|Second|Third|Fourth|Fifth)\s+/i,'').replace(/[\s\-–]+$/,'');
+   body=`<div class="fc-l">WEEKLY DISTRIBUTION <em>Share of the budget</em></div><div class="fc-card as-bl2">${(d.weeks||[]).map((w,wi)=>{const m=String(w.label).match(/(\d+)\s*[:\-–]\s*(\d+)\s*$/),nm=String(w.label).replace(/\s*\d+\s*[:\-–]\s*\d+\s*$/,'').replace(/^(First|Second|Third|Fourth|Fifth)\s+/i,'').replace(/[\s\-–]+$/,'');
      const wn=(String(nm).match(/(\d+)/)||[])[1]||(/week/i.test(nm)?wi+1:'');return `<div class="fc-wk"><div>${wn?`<span class="wly-wk wx-wk fc-wkb" aria-label="Week ${wn}">W${wn}</span>`:esc(nm)}${(()=>{const n=w.days||(m?(+m[2])-(+m[1])+1:0);return n&&n!==7?`<small class="fc-dn">${n} days</small>`:''})()}</div><div class="fc-bar"><i class="n" style="width:${((w.weight||0)/mx*100).toFixed(1)}%"></i></div><div class="fc-pc navy">${pc(w.weight)}</div></div>`}).join('')}</div>
      <div class="fc-foot">The sum of the daily plan, so it can't be changed here.</div>`;
  }else{
@@ -11486,7 +11494,7 @@ function asHtml(){
      <div class="as-3">${['spend','value','conv'].map(k=>`<label><small>${k==='conv'?'Conv':k[0].toUpperCase()+k.slice(1)}</small>${num(h,k,h[k])}</label>`).join('')}</div>
      <div class="as-kv"><span>Whole month value · spend</span><b>${x2(h.effValue)} · ${x2(h.effSpend)}</b></div><div class="as-kv"><span>ROAS idx</span><b class="${h.roasIdx>=1?'up':'dn'}">${x2(h.roasIdx)}</b></div></div>`:''}
    <div class="as-two"><div><div class="fc-l">WEEKDAY <em>Spend · Value · Conv</em></div><div class="fc-card as-bl2">${tbl(d.weekday||[])}</div></div>
-   <div><div class="fc-l">WEEK OF MONTH</div><div class="fc-card as-bl2">${tbl(d.weekOfMonth||[],1)}</div></div></div>
+   <div><div class="fc-l">WEEK OF MONTH</div><div class="fc-card as-bl2">${tbl(d.weekOfMonth||[],1).replace(/<\/div>$/,'')+Array.from({length:Math.max(0,(d.weekday||[]).length-(d.weekOfMonth||[]).length)},()=>'<div class="as-tr as-fill"><span>&nbsp;</span><span></span><span></span><span></span></div>').join('')+'</div>'}</div></div></div>
    <div class="fc-l">SPECIAL DAYS IN ${esc(mon.toUpperCase())} <em>× a normal day</em></div><div class="fc-card">${(d.special||[]).length?`<div class="as-t"><div class="as-tr hd"><span></span><span>Spend</span><span>Value</span><span>Conv</span></div>${d.special.map(r=>`<div class="as-tr"><span>${esc(r.name)} <small>${esc(mon.slice(0,3))} ${r.inMonth[0]}${r.inMonth.length>1?'–'+r.inMonth[r.inMonth.length-1]:''}</small></span>${num(r,'spend',r.spend)}${num(r,'value',r.value)}${num(r,'conv',r.conv)}</div>`).join('')}</div>`:'<div class="fc-foot" style="text-align:center;margin:4px 0">No special days this month</div>'}</div>
    ${asSaveBar(c,nEd)}`;
  }
