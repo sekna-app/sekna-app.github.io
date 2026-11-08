@@ -8053,6 +8053,10 @@ window.addEventListener('load',function(){
 
     /* v295 season test emails: one chip per season */
     .ste-opts{flex-wrap:wrap}.ste-opts .ste-h{flex:0 0 100%;font-size:11px;font-weight:800;color:#8a93ad;margin-bottom:2px}
+
+    /* v296 settings toast: above the bottom bar and the settings sheet, readable, and long enough to read */
+    html body .settings-toast{z-index:100000!important;left:50%!important;right:auto!important;bottom:calc(96px + env(safe-area-inset-bottom,0px))!important;transform:translate(-50%,8px)!important;max-width:min(92vw,420px);font-size:12.5px!important;line-height:1.4;text-align:center;padding:10px 14px!important;border-radius:12px!important}
+    html body .settings-toast.show{transform:translate(-50%,0)!important}
 </style>
 </head>
 <body>
@@ -9040,7 +9044,7 @@ function closeAbout(event){if(event&&event.target!==event.currentTarget)return;c
 function showSettingsToast(message){
  const el=document.getElementById('settingsToast');if(!el)return;
  el.textContent=message;el.classList.add('show');
- clearTimeout(SETTINGS_TOAST_TIMER);SETTINGS_TOAST_TIMER=setTimeout(()=>el.classList.remove('show'),1800);
+ clearTimeout(SETTINGS_TOAST_TIMER);SETTINGS_TOAST_TIMER=setTimeout(()=>el.classList.remove('show'),Math.max(1800,Math.min(7000,String(message||'').length*70)));
 }
 
 
@@ -13325,7 +13329,7 @@ let APP_PREFS=(()=>{try{const o=JSON.parse(storeGet('sekna_app_prefs')||'null');
 let ACC_CUR=APP_PREFS.cur;
 const STE_SEASONS=[['ramadan','Ramadan'],['last10','Last 10 nights'],['eidfitr','Eid al-Fitr'],['dhulhijjah','Dhul Hijjah'],['arafah','Arafah'],['eidadha','Eid al-Adha'],['ashura','Ashura'],['thanksgiving','Thanksgiving'],['givingtuesday','Giving Tuesday'],['yearend','Year-end']];
 function drawSeasonTest(){const el=document.getElementById('seasonTestOpts');if(!el)return;el.hidden=!mrOwner();if(el.dataset.on)return;el.dataset.on=1;el.innerHTML='<small class="ste-h">Test email · pick a season</small>'+STE_SEASONS.map(([k,n])=>`<button type="button" onclick="seasonTestEmail(this,'${k}')">${n}</button>`).join('')}
-function seasonTestEmail(a,key){if(a.dataset.busy)return;a.dataset.busy=1;const t=a.textContent;a.textContent='Sending…';serverCall('adminSeasonTestEmail',getAccessToken(),key||'').then(r=>{showSettingsToast('Sent to '+((r&&r.to)||'you')+' · '+((r&&r.season)||'')+((r&&r.via)?' · via '+r.via:''))}).catch(e=>showSettingsToast(errorText(e))).finally(()=>{a.textContent=t;delete a.dataset.busy})}
+function seasonTestEmail(a,key){if(a.dataset.busy)return;a.dataset.busy=1;const t=a.dataset.t||(a.dataset.t=a.textContent);a.textContent='Sending…';const back=ms=>setTimeout(()=>{a.textContent=t;a.style.cssText='';delete a.dataset.busy},ms);serverCall('adminSeasonTestEmail',getAccessToken(),key||'').then(r=>{a.textContent='Sent ✓';a.style.cssText='border-color:#13804f;color:#13804f';showSettingsToast('Sent to '+((r&&r.to)||'you')+' · '+((r&&r.season)||'')+((r&&r.via)?' · via '+r.via:''));back(4000)}).catch(e=>{a.textContent='Not sent';a.style.cssText='border-color:#c63a4a;color:#c63a4a';showSettingsToast(errorText(e));back(6000)})}
 function prefsLoad(){return serverCall('appPrefs',getAccessToken()).then(p=>{if(!p||!p.cur)return;APP_PREFS=p;ACC_CUR=p.cur;storeSet('sekna_app_prefs',JSON.stringify(p));accCurApply();drawAccCur();drawSpendAlertOpts();drawRoasAlertOpts()}).catch(()=>{})}
 function prefsSave(ch){if(!mrOwner())return;Object.assign(APP_PREFS,ch);storeSet('sekna_app_prefs',JSON.stringify(APP_PREFS));drawAccCur();drawSpendAlertOpts();drawRoasAlertOpts();
  serverCall('appPrefsSet',getAccessToken(),ch).then(p=>{if(p&&p.cur){APP_PREFS=p;ACC_CUR=p.cur;storeSet('sekna_app_prefs',JSON.stringify(p))}showSettingsToast('Saved for the whole team')}).catch(e=>showSettingsToast(errorText(e)))}
