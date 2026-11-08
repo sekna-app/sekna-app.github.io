@@ -275,8 +275,10 @@ const R = {
     const me = await assertAdmin(token);
     const k = String(key || ''), g = SEASON_GREET[k];
     if (!g) throw new Error('No greeting for this season.');
-    const r = await notify.send({ pushes: [{ email: me.email, title: g[0], body: g[1], image: GREET_IMG + k + '.jpg', eventType: 'greeting' }] });
-    if (!r || !(r.pushes || r.relayed)) throw new Error('The notification did not go out. Is this device allowed to get notifications?');
+    const m = greetingEmail(k);
+    const r = await notify.send({ pushes: [{ email: me.email, title: g[0], body: g[1], image: GREET_IMG + k + '.jpg', eventType: 'greeting' }],
+      emails: [{ to: me.email, subject: '[Test ' + new Date().toISOString().slice(11, 16) + '] ' + m.subject, rawHtml: m.html, title: m.title, html: m.inner }] });
+    if (!r || !(r.pushes || r.emails || r.relayed)) throw new Error('The greeting did not go out. Try again in a minute.');
     return { ok: true, to: me.email, title: g[0] };
   },
   /** Days before each season for the reminder (Admin → Tools → Season alerts). */
@@ -679,6 +681,21 @@ function seasonEmailHtml(s, k, rows) {
   const inner = '<img src="' + SEASON_IMG + k + '.jpg" width="432" alt="' + e(s.name) + '" style="display:block;width:100%;height:auto;border:0;border-radius:12px;margin:0 0 14px">' + info + '<div style="height:10px"></div>' + rest;
   return { full, title, inner };
 }
+/** The first-day greeting as an email: the greeting picture, its title and text (the same as the push). */
+function greetingEmail(k) {
+  const g = SEASON_GREET[k];
+  if (!g) return null;
+  const e = notify.esc, img = GREET_IMG + k + '.jpg';
+  const btn = '<a href="https://sekna-app.web.app/" style="display:inline-block;padding:12px 22px;margin:14px 0 0;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;background:#203C8E;color:#ffffff">Open HEMERA</a>';
+  const text = '<p style="margin:0;color:#3f475e;font-size:15px;line-height:1.6">' + e(g[1]) + '</p>' + btn;
+  const full = '<div style="background:#f4f6fb;padding:28px 12px;font-family:Arial,Helvetica,sans-serif;color:#1d2433"><div style="max-width:480px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6eaf4">' +
+    '<div style="background-color:#0c2266;background-image:linear-gradient(180deg,#2a4fb8 0%,#14317f 45%,#0a1e5a 80%,#06123c 100%);padding:20px 24px"><img src="https://sekna-app.web.app/icons/mail-logo.png?v=5" width="167" height="38" alt="HEMERA" style="display:block;border:0;width:167px;height:38px"></div>' +
+    '<img src="' + img + '" width="480" alt="' + e(g[0]) + '" style="display:block;width:100%;max-width:480px;height:auto;border:0">' +
+    '<div style="padding:22px 24px"><h2 style="margin:0 0 8px;font-size:22px;color:#1d2433">' + e(g[0]) + '</h2>' + text + '</div>' +
+    '<div style="padding:14px 24px;background:#f8f9fc;color:#8a92a0;font-size:11px">HEMERA • Day by day.</div></div></div>';
+  const inner = '<img src="' + img + '" width="432" alt="" style="display:block;width:100%;height:auto;border:0;border-radius:12px;margin:0 0 14px">' + text;
+  return { subject: g[0], title: e(g[0]), html: full, inner };
+}
 async function seasonEmail(s) {
   // Year-end: a gift emoji with "giving" in the subject is what spam filters catch, so the email says it plainly.
   if (/^yearend-/.test(s.id)) s = Object.assign({}, s, { name: 'Year-end season', e: '📅' });
@@ -742,6 +759,11 @@ async function pushChecks(latestByAccount, daysByAccount) {
           const g = SEASON_GREET[k];
           if (g) await notify.send({ topics: [{ title: g[0], body: g[1], image: GREET_IMG + k + '.jpg', account: s.acc || 'usa', eventType: 'greeting' }] })
             .catch(e => console.error('Season greeting: ' + e.message));
+          // The same greeting as an email to every approved person.
+          if (g) try {
+            const m = greetingEmail(k), people = await approvedPeople();
+            await notify.send({ emails: people.map(p => ({ to: p.email, subject: m.subject, rawHtml: m.html, title: m.title, html: m.inner })) });
+          } catch (e) { console.error('Greeting email: ' + e.message); }
           sent[key] = Date.now(); if (g) out.season = (out.season || []).concat(key);
           continue;
         }
@@ -874,4 +896,4 @@ async function call(fn, args) {
 }
 const FNS = Object.keys(R).concat(['adminRestMove', 'adminRestMoveStatus']);
 
-module.exports = { reportFile, call, FNS, pushChecks, pushState, serverSwitchEmail, moved, fxRefreshIfDue, _season: { seasonLastYear, seasonTotals, seasonEmailHtml, seasonsDue, nextSeason, seasonLeads } };
+module.exports = { reportFile, call, FNS, pushChecks, pushState, serverSwitchEmail, moved, fxRefreshIfDue, _season: { greetingEmail, seasonLastYear, seasonTotals, seasonEmailHtml, seasonsDue, nextSeason, seasonLeads } };
