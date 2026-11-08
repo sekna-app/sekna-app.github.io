@@ -10,6 +10,7 @@
 <link rel="icon" href="/icons/favicon-64.png">
 <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script>/* opened from a Home Screen icon (standalone app window): a light page with no canvases or entrance effects */try{if((window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone)document.documentElement.classList.add("lite")}catch(e){}</script>
 <style>
 :root{--bg:#070f33;--line:rgba(255,255,255,.12);--sub:#a9b5db;--mute:#7683ad;--gold:#e2b874;--gold2:#f5d9a4;--green:#39e29a}
 *{box-sizing:border-box}
@@ -508,6 +509,10 @@ h1 span.bxn,h2 span.bxn{background:none!important;-webkit-background-clip:border
  .g3 .pl3,.pl3{background:rgba(18,30,78,.95)!important}
  .card{background:rgba(10,20,64,.94)!important}
 }
+
+/* the light page for the Home Screen app window (iOS draws the canvas and effect layers wrongly there) */
+html.lite #glC,html.lite .lsun{display:none!important}
+html.lite .nav img{opacity:1!important}
 </style>
 </head>
 <body>
@@ -787,7 +792,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
 // Cinematic 3D entrances: each part of the page waits until it scrolls into view, then its heading rises word by word,
 // its devices fly in turning in 3D, cards flip and a blue smoke rolls out under the devices (smoke on a fixed canvas).
 (function(){
-  var cv=document.getElementById('glC');if(!cv)return;var cx=cv.getContext('2d');
+  var cv=document.getElementById('glC');if(!cv||document.documentElement.classList.contains('lite'))return;var cx=cv.getContext('2d');
   var still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   var W=0,t0=performance.now(),last=t0,smoke=[],raf=0,dpr=1,small=false;
   // the parts the head sets off: the hero, then every section. [selector, kind]: dv device, hd heading, tx text, cd card, kk2 label
@@ -829,7 +834,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
 // Logo to stars (see .lsun). The dots are the logo's own pixels; each has a fixed place in the sky (seeded, the same every
 // visit). Progress p follows the scroll of the first screen; at p=0 the real logo shows, past it the dots take over.
 (function(){
-  var L=document.getElementById('lsun'),nav=document.querySelector('.nav img');if(!L||!nav)return;
+  var L=document.getElementById('lsun'),nav=document.querySelector('.nav img');if(!L||!nav||document.documentElement.classList.contains('lite'))return;
   if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
   var TXS=document.querySelectorAll('.ht,.ha,.cap,.cap-d,.lap,.txt,.ltabs,.mpw,.guide');
   var cv=L.querySelector('canvas'),c=cv.getContext('2d'),P=[],cur=0,raf,dpr=1,VW=0,VH=0,ready=false,seed=11;
