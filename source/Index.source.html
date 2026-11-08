@@ -17101,7 +17101,7 @@ function salStep(k,d){const L=Object.assign({},SAL.data.leads,SAL.edit);SAL.edit
 function salSave(){if(SAL.busy)return;SAL.busy=true;const m=Object.assign({},SAL.data.leads,SAL.edit);if(ADMIN_LAST)renderAdmin(ADMIN_LAST);serverCall('adminSeasonLeadsSet',getAccessToken(),m).then(r=>{SAL.busy=false;SAL.data=r;SAL.edit={};if(ADMIN_LAST)renderAdmin(ADMIN_LAST);showSettingsToast('Season alerts saved')}).catch(e=>{SAL.busy=false;SAL.err=errorText(e);if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
 function salSet(k,v){SAL[k]=v;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function salTest(b,kind,key){if(b.dataset.busy)return;b.dataset.busy=1;const t=b.textContent;b.textContent='Sending…';
- serverCall(kind==='greet'?'adminSeasonTestGreeting':'adminSeasonTestEmail',getAccessToken(),key).then(()=>{b.textContent='Sent ✓';b.classList.add('ok');showSettingsToast(kind==='greet'?'Greeting sent to you (push + email)':'Reminder email sent to you')})
+ serverCall(kind==='greet'?'adminSeasonTestGreeting':'adminSeasonTestEmail',getAccessToken(),key).then(r=>{const ok=/^sent/.test((r&&r.email)||'');b.textContent=ok?'Sent ✓':'Email failed';b.classList.add(ok?'ok':'bad');showSettingsToast((kind==='greet'?'Push '+(r&&r.push?'✓':'✗')+' · ':'')+'Email: '+((r&&r.email)||'?'))})
  .catch(e=>{b.textContent='Not sent';b.classList.add('bad');showSettingsToast(errorText(e))}).finally(()=>setTimeout(()=>{b.textContent=t;b.classList.remove('ok','bad');delete b.dataset.busy},4000))}
 function salHtml(){
  if(SAL.err&&!SAL.data)return `<div class="sk-admin-empty">${esc(SAL.err)}</div>`;

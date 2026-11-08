@@ -266,9 +266,9 @@ const R = {
     const s = nextSeason(String(key || 'ramadan'), dayOf(Date.now()));
     if (!s) throw new Error('No season found in the next year.');
     const m = await seasonEmail(s);
-    const r = await notify.send({ emails: [{ to: me.email, subject: '[Test ' + new Date().toISOString().slice(11, 16) + '] ' + m.subject, rawHtml: m.html, title: m.title, html: m.inner }] });
-    if (!r || !(r.emails || r.relayed)) throw new Error('The email did not go out. Try again in a minute.');
-    return { ok: true, to: me.email, season: s.name, at: s.at, via: r.emails ? 'Gmail' : 'Apps Script' };
+    const mail = await testMail({ to: me.email, subject: '[Test ' + new Date().toISOString().slice(11, 16) + '] ' + m.subject, rawHtml: m.html, title: m.title, html: m.inner });
+    if (!/^sent/.test(mail)) throw new Error('Email not sent: ' + mail);
+    return { ok: true, to: me.email, season: s.name, at: s.at, email: mail };
   },
   /** The season's first-day greeting (title, text, picture) as a push to the admin only. */
   async adminSeasonTestGreeting([token, key]) {
@@ -277,10 +277,9 @@ const R = {
     if (!g) throw new Error('No greeting for this season.');
     const nx = nextSeason(k, dayOf(Date.now()));
     const m = greetingEmail(k, nx ? await greetingRows(k, nx.at) : null, 'DECEMBER LAST YEAR');
-    const r = await notify.send({ pushes: [{ email: me.email, title: g[0], body: g[1], image: GREET_IMG + k + '.jpg', eventType: 'greeting' }],
-      emails: [{ to: me.email, subject: '[Test ' + new Date().toISOString().slice(11, 16) + '] ' + m.subject, rawHtml: m.html, title: m.title, html: m.inner }] });
-    if (!r || !(r.pushes || r.emails || r.relayed)) throw new Error('The greeting did not go out. Try again in a minute.');
-    return { ok: true, to: me.email, title: g[0] };
+    const p = await notify.send({ pushes: [{ email: me.email, title: g[0], body: g[1], image: GREET_IMG + k + '.jpg', eventType: 'greeting' }] }).catch(() => null);
+    const mail = await testMail({ to: me.email, subject: '[Test ' + new Date().toISOString().slice(11, 16) + '] ' + m.subject, rawHtml: m.html, title: m.title, html: m.inner });
+    return { ok: true, to: me.email, title: g[0], push: !!(p && (p.pushes || p.relayed)), email: mail };
   },
   /** Days before each season for the reminder (Admin → Tools → Season alerts). */
   async adminSeasonLeads([token]) {
@@ -710,6 +709,14 @@ async function greetingRows(k, at) {
   const from = seasonLastYear(k, at);
   try { const t = seasonTotals((await require('./dash').getMonthCompareData('usa')).days, from, SEASON_LEN.tax); return t ? [{ label: 'USA', sym: '$', t }] : []; }
   catch (e) { console.error('Greeting rows: ' + e.message); return []; }
+}
+/** A test email, reporting what happened: Gmail first (with its error if it fails), then the Apps Script relay. */
+async function testMail(m) {
+  let err = '';
+  if (notify.mailReady()) { try { await notify.sendMail(m); return 'sent via Gmail'; } catch (e) { err = e.message || String(e); } }
+  try { const r = await notify.send({ emails: [Object.assign({}, m, { rawHtml: undefined })] }); if (r && (r.emails || r.relayed)) return 'sent via Apps Script' + (err ? ' (Gmail: ' + err.slice(0, 80) + ')' : ''); }
+  catch (e) { err = (err ? err + ' / ' : '') + (e.message || String(e)); }
+  return 'failed' + (err ? ': ' + err.slice(0, 160) : '');
 }
 async function seasonEmail(s) {
   // Year-end: a gift emoji with "giving" in the subject is what spam filters catch, so the email says it plainly.
