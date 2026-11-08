@@ -22,6 +22,15 @@
         ]
       },
       {
+        "regex": "^/get/?(index\\.html)?$",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
         "source": "/sw.js",
         "headers": [
           {
