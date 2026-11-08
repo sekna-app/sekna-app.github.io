@@ -7734,6 +7734,18 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) body #dxBody .mt.mt3 .mt-grid>.mt-sp{border:1.5px solid rgba(242,211,143,.75)!important;background:rgba(255,255,255,.04)!important}
       html.dk-on:not(.desktop-site-mode) body #dxBody .mt.mt3 .mt-grid>.mt-sp small,html.dk-on:not(.desktop-site-mode) body #dxBody .mt.mt3 .mt-grid>.mt-sp b{color:#f2d38f!important}
     }
+
+    /* v272 desktop Results day opened (pick 1): two tables side by side, the figures against the plan and the campaign types */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcR .dc-more{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:start}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcR .dc-more>*{grid-column:auto}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcR .dc-more>.dcR-tb{display:none!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcR .dc-more .dk-rsh{max-width:none!important;margin:0!important;grid-column:1}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcR .dc-more .dx-tybtn{display:none!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcR .dc-more .dx-ty{grid-column:2;grid-row:1;margin:0!important;border:1px solid #eef0f5;border-radius:12px;overflow:hidden;background:#fff}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcR .dc-more .dx-ty .dx-tyt{width:100%;margin:0!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcR .dc-more .dx-ty .dx-tyt th{background:#f7f8fc;padding:8px 10px!important}html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcR .dc-more .dx-ty .dx-tyt td{padding:7px 10px!important}
+    }
 </style>
 </head>
 <body>
@@ -10339,6 +10351,8 @@ function setDayView(v){
 
 function toggleDay(date){
  DAY_OPEN=DAY_OPEN===date?'':date;
+ 
+ setTimeout(()=>{if(!matchMedia('(min-width:1100px)').matches)return;document.querySelectorAll('#dxBody .dc-card.dcR.open .dx-tybtn').forEach(b=>{const bx=b.nextElementSibling;if(bx&&bx.hidden)dxTypes(b.closest('.dc-card').dataset.date,b)})},30);
  
  const cs=[...document.querySelectorAll('#dxBody .dc-card[data-date]')],me=cs.find(c=>c.dataset.date===DAY_OPEN),y=me&&matchMedia('(min-width:760px)').matches?me.offsetTop:null;
  cs.forEach(c=>c.classList.toggle('open',!!me&&(c===me||y!=null&&Math.abs(c.offsetTop-y)<4)));
