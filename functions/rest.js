@@ -269,7 +269,7 @@ const R = {
     if (!s) throw new Error('No season found in the next year.');
     s.left = Math.round((Date.parse(s.at + 'T00:00:00Z') - Date.parse(today + 'T00:00:00Z')) / 864e5);
     const m = await seasonEmail(s);
-    const r = await notify.send({ emails: [{ to: me.email, subject: '[Test] ' + m.subject, rawHtml: m.html, title: m.title, html: m.inner }] });
+    const r = await notify.send({ emails: [{ to: me.email, subject: '[Test ' + new Date().toISOString().slice(11, 16) + '] ' + m.subject, rawHtml: m.html, title: m.title, html: m.inner }] });
     if (!r || !(r.emails || r.relayed)) throw new Error('The email did not go out. Try again in a minute.');
     return { ok: true, to: me.email, season: s.name, at: s.at, via: r.emails ? 'Gmail' : 'Apps Script' };
   },
