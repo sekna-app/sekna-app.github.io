@@ -7889,6 +7889,28 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) body .as-side>.as-seg button{flex:none!important;border-radius:99px!important;padding:7px 15px!important;background:#f2f4f9!important}
       html.dk-on:not(.desktop-site-mode) body .as-side>.as-seg button.on{background:#203c8e!important;color:#fff!important;box-shadow:none!important}
     }
+
+    .as-tbl{display:none}
+    /* v283 desktop Assumptions, simpler: channels as one table (manual mix in it), weekday and week of month side by side,
+       plain number cells instead of boxes */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body .as-side .as-body:has(.as-tbl)>*:not(.as-tbl):not(.mrp-msg):not(.fc-act){display:none!important}
+      html.dk-on:not(.desktop-site-mode) body .as-side .as-tbl{display:block}
+      html.dk-on:not(.desktop-site-mode) body .as-side .as-tbl table{width:100%;border-collapse:collapse;font-size:13px;font-weight:800;color:#1d2433}
+      html.dk-on:not(.desktop-site-mode) body .as-side .as-tbl th{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#8a93ad;text-align:right;padding:8px 10px;border-bottom:1px solid #eef0f5}
+      html.dk-on:not(.desktop-site-mode) body .as-side .as-tbl td{text-align:right;padding:9px 10px;border-bottom:1px solid #f3f5f9;white-space:nowrap}
+      html.dk-on:not(.desktop-site-mode) body .as-side .as-tbl th:first-child,html.dk-on:not(.desktop-site-mode) body .as-side .as-tbl td:first-child{text-align:left}
+      html.dk-on:not(.desktop-site-mode) body .as-side .as-tbl td:first-child i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:8px}
+      html.dk-on:not(.desktop-site-mode) body .as-side .as-tbl .as-sb{display:inline-block;width:70px;height:6px;border-radius:4px;background:#eef1f7;margin-right:8px;vertical-align:middle;overflow:hidden}html.dk-on:not(.desktop-site-mode) body .as-side .as-tbl .as-sb u{display:block;height:100%;border-radius:4px}
+      html.dk-on:not(.desktop-site-mode) body .as-side .as-tbl tr.tot td{border-bottom:0;color:#203c8e;font-weight:900}
+      html.dk-on:not(.desktop-site-mode) body .as-side .as-tin{display:inline-flex;align-items:center;gap:4px;background:#f6f8fc;border-radius:8px;padding:3px 8px}html.dk-on:not(.desktop-site-mode) body .as-side .as-tin input{width:46px;border:0;background:none;font:inherit;font-weight:900;text-align:right}html.dk-on:not(.desktop-site-mode) body .as-side .as-tin em{font-style:normal;font-size:10.5px;color:#8a93ad}
+      html.dk-on:not(.desktop-site-mode) body .as-side .as-tin.ch{box-shadow:inset 0 0 0 1.5px #3d6bff}
+      html.dk-on:not(.desktop-site-mode) body .as-side .as-two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+      html.dk-on:not(.desktop-site-mode) body .as-side .as-in{border:0!important;background:#f6f8fc!important;height:30px!important;border-radius:8px!important;box-shadow:none!important}
+      html.dk-on:not(.desktop-site-mode) body .as-side .as-in.ch{box-shadow:inset 0 0 0 1.5px #3d6bff!important}
+      html.dk-on:not(.desktop-site-mode) body .as-side .fc-card.as-bl2{padding:6px 12px!important}
+      html.dk-on:not(.desktop-site-mode) body .as-side .as-tr{padding:3px 0!important;min-height:0!important}
+    }
 </style>
 </head>
 <body>
@@ -11281,7 +11303,7 @@ function asHtml(){
    body=`<div class="fc-l">CHANNEL ECONOMICS <em>last ${(((FC[CURRENT_ACCOUNT]||{}).data||{}).settings||{}).window||60} days</em></div><div class="fc-card as-ecos">${(d.economics||[]).map(r=>`<div class="as-eco k${ecoK(r.name)}"><div><b>${esc(r.name)}</b><em>${pc(r.mix)}</em></div>
      <div class="as-chips"><span>CPC<b>${mo(r.cpc,2)}</b></span><span>CVR<b>${pc(r.cvr)}</b></span><span>AOV<b>${mo(r.aov)}</b></span><span>ROAS<b>${r.roas!=null?fmt(r.roas,1)+'x':'—'}</b></span><span>CPA<b>${mo(r.cpa)}</b></span></div><div class="as-mb"><i style="width:${((r.mix||0)/ecoMx*100).toFixed(1)}%"></i></div></div>`).join('')}
      ${bl?`<div class="as-bl">Blended · ROAS <b>${bl.roas!=null?fmt(bl.roas,1)+'x':'—'}</b> · CPA <b>${mo(bl.cpa)}</b></div>`:''}</div>
-     <div class="fc-foot">Worked out by the sheet from the last days, so it can't be changed here.</div>${asMixHtml(d,ed)}${asSaveBar(c,nEd)}`;
+     <div class="fc-foot">Worked out by the sheet from the last days, so it can't be changed here.</div>${asMixHtml(d,ed)}${asEcoTable(d,ed)}${asSaveBar(c,nEd)}`;
  }else if(AS.tab==='weeks'){
    const mx=Math.max(.01,...(d.weeks||[]).map(w=>w.weight||0));
    body=`<div class="fc-l">WEEKLY DISTRIBUTION <em>Share of the budget</em></div><div class="fc-card">${(d.weeks||[]).map((w,wi)=>{const m=String(w.label).match(/(\d+)\s*[:\-–]\s*(\d+)\s*$/),nm=String(w.label).replace(/\s*\d+\s*[:\-–]\s*\d+\s*$/,'').replace(/^(First|Second|Third|Fourth|Fifth)\s+/i,'').replace(/[\s\-–]+$/,'');
@@ -11296,12 +11318,27 @@ function asHtml(){
    ${h.num?`<div class="fc-card as-bl2" style="margin-top:8px"><div class="as-hjh"><b>${esc(h.name||HIJRI_NAMES[h.num-1]||'')}</b><span>${esc(mon.slice(0,3))} ${h.from}–${h.to}</span></div>
      <div class="as-3">${['spend','value','conv'].map(k=>`<label><small>${k==='conv'?'Conv':k[0].toUpperCase()+k.slice(1)}</small>${num(h,k,h[k])}</label>`).join('')}</div>
      <div class="as-kv"><span>Whole month value · spend</span><b>${x2(h.effValue)} · ${x2(h.effSpend)}</b></div><div class="as-kv"><span>ROAS idx</span><b class="${h.roasIdx>=1?'up':'dn'}">${x2(h.roasIdx)}</b></div></div>`:''}
-   <div class="fc-l">WEEKDAY <em>Spend · Value · Conv</em></div><div class="fc-card as-bl2">${tbl(d.weekday||[])}</div>
-   <div class="fc-l">WEEK OF MONTH</div><div class="fc-card as-bl2">${tbl(d.weekOfMonth||[],1)}</div>
+   <div class="as-two"><div><div class="fc-l">WEEKDAY <em>Spend · Value · Conv</em></div><div class="fc-card as-bl2">${tbl(d.weekday||[])}</div></div>
+   <div><div class="fc-l">WEEK OF MONTH</div><div class="fc-card as-bl2">${tbl(d.weekOfMonth||[],1)}</div></div></div>
    <div class="fc-l">SPECIAL DAYS IN ${esc(mon.toUpperCase())} <em>× a normal day</em></div><div class="fc-card">${(d.special||[]).length?`<div class="as-t"><div class="as-tr hd"><span></span><span>Spend</span><span>Value</span><span>Conv</span></div>${d.special.map(r=>`<div class="as-tr"><span>${esc(r.name)} <small>${esc(mon.slice(0,3))} ${r.inMonth[0]}${r.inMonth.length>1?'–'+r.inMonth[r.inMonth.length-1]:''}</small></span>${num(r,'spend',r.spend)}${num(r,'value',r.value)}${num(r,'conv',r.conv)}</div>`).join('')}</div>`:'<div class="fc-foot" style="text-align:center;margin:4px 0">No special days this month</div>'}</div>
    ${asSaveBar(c,nEd)}`;
  }
  return `<div class="as-side">${tabs}<div class="as-body">${body}</div></div>`;
+}
+
+function asEcoTable(d,ed){
+ const E=d.economics||[];if(!E.length)return '';
+ const pc=v=>v==null?'—':fmt(v*100,1)+'%', mo=(v,dd)=>v==null?'—':cs()+fmt(cx(v),dd||0);
+ const mx=Math.max(.01,...E.map(r=>r.mix||0)),k=n=>{const i=CHANNEL_ORDER.indexOf(n);return i<0?(/video|youtube/i.test(n)?4:0):Math.min(i,4)};
+ const M=d.manualMix||[],mm=n=>M.find(r=>String(r.name).toLowerCase()===String(n).toLowerCase());
+ const mix=r=>{if(!r)return '<td>—</td>';const key=r.row+':mix',has=Object.prototype.hasOwnProperty.call(ed,key),v=has?ed[key]:(r.share==null?0:Math.round(r.share*1000)/10);
+   if(!labEdit())return `<td>${Number(v)?fmt(v,1)+'%':'auto'}</td>`;
+   return `<td><label class="as-tin${has?' ch':''}"><input type="number" inputmode="decimal" step="0.1" min="0" max="100" value="${v}" onchange="asSet(${r.row},'mix',this.value)" aria-label="${esc(r.name)} manual mix"><em>${Number(v)?'%':'auto'}</em></label></td>`};
+ const bl=d.blended;
+ return `<div class="as-tbl"><table><tr><th>Channel</th><th>Share</th><th>CPC</th><th>CVR</th><th>AOV</th><th>ROAS</th><th>CPA</th><th>Manual mix</th></tr>
+  ${E.map(r=>`<tr><td><i class="m${k(r.name)}"></i>${esc(CHANNEL_SHORT[r.name]||r.name)}</td><td><span class="as-sb"><u class="m${k(r.name)}" style="width:${((r.mix||0)/mx*100).toFixed(0)}%"></u></span>${pc(r.mix)}</td><td>${mo(r.cpc,2)}</td><td>${pc(r.cvr)}</td><td>${mo(r.aov)}</td><td><b>${r.roas!=null?fmt(r.roas,1)+'x':'—'}</b></td><td>${mo(r.cpa)}</td>${mix(mm(r.name))}</tr>`).join('')}
+  ${bl?`<tr class="tot"><td>Blended</td><td></td><td></td><td></td><td></td><td><b>${bl.roas!=null?fmt(bl.roas,1)+'x':'—'}</b></td><td>${mo(bl.cpa)}</td><td></td></tr>`:''}</table>
+  <div class="fc-foot">Share, CPC, CVR, AOV, ROAS and CPA come from the last days and can't be changed here. Manual mix: 0 = auto.</div></div>`;
 }
 
 function asMixHtml(d,ed){
