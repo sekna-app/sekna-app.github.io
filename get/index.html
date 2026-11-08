@@ -401,6 +401,16 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
 .bk3:after{content:"";position:absolute;inset:0;border-radius:inherit;-webkit-mask:url(/get/iphone-back.webp?v=1) center/100% 100% no-repeat;mask:url(/get/iphone-back.webp?v=1) center/100% 100% no-repeat;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.7) 48%,transparent 61%);background-size:260% 100%;background-position:130% 0}
 .g3f.back .bk3:after{animation:bkSh 2.2s .4s ease-in-out both}
 @keyframes bkSh{to{background-position:-60% 0}}
+
+/* v2 steps as a one-line reel: the current step sits in the middle in clear type; the one done slides up and fades; the next waits below */
+.g3 .tl3{display:block!important;position:relative;height:156px;overflow:hidden;max-width:520px;margin:4px auto 12px;-webkit-mask:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);mask:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent)}
+.g3 .tl3 li{position:absolute!important;left:0;right:0;top:52px;height:52px;display:flex!important;align-items:center;gap:12px;padding:0 16px!important;border:0!important;background:none!important;border-radius:0!important;
+  transform:translateY(calc((var(--i) - var(--k,0)) * 52px))!important;opacity:.35;transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .5s,filter .5s;white-space:nowrap}
+.g3 .tl3 li b{display:inline!important;margin:0!important;font-size:17px}.g3 .tl3 li small{display:inline!important;font-size:13px;overflow:hidden;text-overflow:ellipsis}
+.g3 .tl3 li.on{opacity:1}.g3 .tl3 li.on b{color:#fff}
+.g3 .tl3 li.done{opacity:.22;filter:blur(.4px)}
+.g3 .tl3 em{display:none!important}
+@media (max-width:520px){.g3 .tl3 li b{font-size:15px}.g3 .tl3 li small{font-size:12px}}
 </style>
 </head>
 <body>
@@ -519,10 +529,10 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
         <div class="g3sh"></div>
       </div>
       <ol class="tl3" id="g3l">
-        <li><span class="n3">1</span><b>Share</b><small>at the bottom of Safari</small><em></em></li>
-        <li><span class="n3">2</span><b>Add to Home</b><small>then tap Add</small><em></em></li>
-        <li><span class="n3">3</span><b>Open</b><small>from the new icon</small><em></em></li>
-        <li><span class="n3">4</span><b>Allow</b><small>the notifications</small><em></em></li>
+        <li style="--i:0"><span class="n3">1</span><b>Share</b><small>at the bottom of Safari</small><em></em></li>
+        <li style="--i:1"><span class="n3">2</span><b>Add to Home</b><small>then tap Add</small><em></em></li>
+        <li style="--i:2"><span class="n3">3</span><b>Open</b><small>from the new icon</small><em></em></li>
+        <li style="--i:3"><span class="n3">4</span><b>Allow</b><small>the notifications</small><em></em></li>
       </ol>
       <div class="gnote">Needs iOS 16.4 or newer. Always open HEMERA from the Home Screen icon.</div>
     </div>
@@ -652,6 +662,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
     for(var n=0;n<ks.length;n++)ks[n].classList.toggle('on',n===i);
     for(var n=0;n<li.length;n++){li[n].classList.remove('on');li[n].classList.toggle('done',i===4||n<i)}
     if(i<4){void li[i].offsetWidth;li[i].classList.add('on')}
+    li[0].parentNode.style.setProperty('--k',Math.min(i,3));
     sb.classList.toggle('w',i===2||i===4);
     pa.classList.toggle('show',i>=2);pb.classList.toggle('show',i===4);
     if(i<4){later(function(){show(i+1)},D);return}
