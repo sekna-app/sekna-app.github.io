@@ -611,7 +611,7 @@ const SEASON_GREET = {
   ashura: ['Blessed Day of Ashura 🤍', 'May Allah accept our fasting, forgive us, and bless our team\'s efforts to spread kindness and make a positive difference.'],
   thanksgiving: ['Happy Thanksgiving! 🧡', 'As we celebrate gratitude and generosity, may our team find success in every effort and help bring support and hope to more families in need.'],
   givingtuesday: ['Happy Giving Tuesday! 💙', 'Every contribution matters, and every effort brings us closer to our goals. Wishing our team success in creating meaningful change and transforming lives.'],
-  tax: ['Good morning, and welcome December! ☀️', 'A new month and a fresh start. Wishing everyone a productive and successful month.\n\nTax Season is approaching. Time to review the plans and budgets.'],
+  tax: ['Good morning, and welcome December! ☀️', 'A new month and a fresh start. Wishing everyone a productive and successful month.'],
   yearend: ['Let\'s End the Year with Impact! ✨', 'May our team\'s hard work lead to meaningful achievements. May every effort we make leave a lasting legacy of hope, kindness, and generosity.']
 };
 const GREET_IMG = 'https://sekna-app.web.app/icons/greet/';
