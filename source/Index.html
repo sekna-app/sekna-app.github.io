@@ -7972,6 +7972,22 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) body .sta-bl .sta-pl{display:flex!important;flex-wrap:nowrap;gap:6px;margin-top:4px!important;font-size:10px}html.dk-on:not(.desktop-site-mode) body .sta-bl .sta-pl b{font-size:12px!important}html.dk-on:not(.desktop-site-mode) body .sta-bl>.sta-pc{grid-template-columns:repeat(3,minmax(0,1fr))!important;overflow:hidden}html.dk-on:not(.desktop-site-mode) body .sta-bl .sta-pl span{white-space:nowrap}
       html.dk-on:not(.desktop-site-mode) body .sta-bl .sta-bar{margin-top:4px!important}
     }
+
+    .stp-ms{display:none}
+    /* v288 desktop ST Performance (pick 1 for the top card): a slim navy strip, total, value and ROAS on one line,
+       the match type bar, and the match types in one line under it; the lists below keep their look */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body #app .stp-mt:not(.sh){padding:10px 16px!important}
+      html.dk-on:not(.desktop-site-mode) body #app .stp-mt:not(.sh) .stp-mk{display:none!important}
+      html.dk-on:not(.desktop-site-mode) body #app .stp-mt:not(.sh) .stp-mh{display:flex!important;align-items:baseline;gap:14px;margin:0!important}
+      html.dk-on:not(.desktop-site-mode) body #app .stp-mt:not(.sh) .stp-mh b{font-size:24px!important}
+      html.dk-on:not(.desktop-site-mode) body #app .stp-mt:not(.sh) .stp-mh small{margin-left:auto;font-size:13px!important;font-weight:900;color:#f2d38f!important}
+      html.dk-on:not(.desktop-site-mode) body #app .stp-mt:not(.sh) .stp-mb{margin:8px 0!important;height:7px!important}
+      html.dk-on:not(.desktop-site-mode) body #app .stp-mt:not(.sh) .stp-mx{display:none!important}
+      html.dk-on:not(.desktop-site-mode) body #app .stp-mt:not(.sh) .stp-ms{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:12px;font-weight:800;color:#fff}
+      html.dk-on:not(.desktop-site-mode) body #app .stp-mt:not(.sh) .stp-ms i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px}
+      html.dk-on:not(.desktop-site-mode) body #app .stp-mt:not(.sh) .stp-ms b{margin-left:5px}html.dk-on:not(.desktop-site-mode) body #app .stp-mt:not(.sh) .stp-ms small{margin-left:5px;opacity:.75;font-size:11px}
+    }
 </style>
 </head>
 <body>
@@ -12377,6 +12393,7 @@ function stpMatchCard(d,share){
  return `<div class="stp-mt${share?' sh':''}"><div class="stp-mk"><svg viewBox="0 0 24 24" aria-hidden="true">${STP_IC.h}</svg>MATCH TYPE · SPEND SPLIT</div>
  <div class="stp-mh"><b>${esc(money(T,2))}</b><small>${esc(money(V,2))} value · ${T?fmt(V/T,2):'0.00'}x ROAS</small></div>
  <div class="stp-mb">${R.filter(r=>r.c>0).map(r=>`<i style="flex:${r.c};background:${r.col}"></i>`).join('')}</div>
+ ${share?'':`<div class="stp-ms">${R.map(r=>`<span><i style="background:${r.col}"></i>${esc(String(r.n).replace(/ match/i,''))}<b>${esc(money(r.c,2))}</b><small>${T?Math.round(r.c/T*100):0}% · ${fmt(r.cv,0)} conv · ${esc(money(r.v,0))}</small></span>`).join('')}</div>`}
  <div class="stp-mx"><div class="stp-mrs">${R.map(r=>`<div class="stp-mr"><i style="background:${r.col}"></i><div><b>${esc(r.n)}</b><small>${fmt(r.k,0)} clicks · ${fmt(r.cv,0)} conv.</small></div><span class="c">${esc(money(r.c,2))}</span><span class="v">${esc(money(r.v,2))}</span></div>`).join('')}</div>${share?'':stpDonut(R,T,V)}</div></div>`;
 }
 
