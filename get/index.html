@@ -454,9 +454,21 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
  .g3 .g3sh{width:210px}
  .g3 .tl3{margin:0 auto 8px}
 }
+
+/* Golden energy path: one smooth Bezier curve behind the hero, drawn by scroll (sharp core + soft glow) */
+.gl{position:absolute;left:0;top:0;width:100%;z-index:0;pointer-events:none;overflow:hidden;contain:strict}
+.gl svg{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;transform:translate3d(0,0,0);will-change:transform}
+.gl .glw{filter:blur(18px);opacity:1}
+.gl path{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.gl .core{stroke:#E2B874;stroke-opacity:.95;stroke-width:3}
+.gl .halo{stroke:#F3D79F;stroke-opacity:.25;stroke-width:22}
+.gl .pulse{stroke:#fff3d6;stroke-width:3;stroke-opacity:0}
+.wrap{z-index:1}
+@media (max-width:620px){.gl .glw{filter:blur(12px)}.gl .halo{stroke-width:14;stroke-opacity:.2}.gl .core{stroke-width:2.4;stroke-opacity:.75}}
 </style>
 </head>
 <body>
+<div class="gl" id="gl" aria-hidden="true"><svg class="glw" id="glW"><path class="halo"/></svg><svg id="glS"><path class="core"/><path class="pulse"/></svg></div>
 <div class="wrap">
   <div class="nav"><img src="/get/logo-white.webp?v=20" alt="HEMERA"></div>
   <div class="hgrid">
@@ -726,6 +738,58 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
 // How the media plan works: the five steps rise in one after another.
 (function(){var m=document.getElementById('mpw');if(!m)return;if(!('IntersectionObserver' in window)){m.classList.add('in');return}
   new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){m.classList.add('in');o.disconnect()}})},{threshold:.2}).observe(m)})();
+</script>
+
+<script>
+// Golden energy path. The path is rebuilt from the hero's size (wide S on desktop, one or two bends on phones);
+// scroll position draws it left to right (stroke-dashoffset) with a gentle parallax, and a slow light pulse
+// travels along the drawn part. Reduced motion: the full curve, still.
+(function(){
+  var box=document.getElementById('gl'),sw=document.getElementById('glW'),ss=document.getElementById('glS');if(!box)return;
+  var halo=sw.querySelector('path'),core=ss.querySelector('.core'),pulse=ss.querySelector('.pulse');
+  var still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var W=0,H=0,L=0,hero=0,shown=0,target=0,intro=0,t0=performance.now(),raf=0;
+  function f(n){return n.toFixed(1)}
+  function build(){
+    var hg=document.querySelector('.hgrid');hero=hg?hg.getBoundingClientRect().bottom+window.scrollY:window.innerHeight;
+    W=document.documentElement.clientWidth;H=Math.round(hero+80);box.style.height=H+'px';
+    var d;
+    if(W>620){ // start 0%,12% · shallow dip · rise behind the text · broad S round the phones · end 100%,78%
+      d='M 0 '+f(.12*H)+' C '+f(.12*W)+' '+f(.16*H)+', '+f(.22*W)+' '+f(.34*H)+', '+f(.36*W)+' '+f(.30*H)
+       +' C '+f(.48*W)+' '+f(.26*H)+', '+f(.52*W)+' '+f(.10*H)+', '+f(.64*W)+' '+f(.20*H)
+       +' C '+f(.76*W)+' '+f(.30*H)+', '+f(.70*W)+' '+f(.62*H)+', '+f(.84*W)+' '+f(.70*H)
+       +' C '+f(.92*W)+' '+f(.75*H)+', '+f(.97*W)+' '+f(.79*H)+', '+f(W)+' '+f(.78*H);
+    }else{ // phones: two soft bends
+      d='M 0 '+f(.12*H)+' C '+f(.45*W)+' '+f(.10*H)+', '+f(.30*W)+' '+f(.55*H)+', '+f(.65*W)+' '+f(.55*H)
+       +' C '+f(.85*W)+' '+f(.55*H)+', '+f(.95*W)+' '+f(.70*H)+', '+f(W)+' '+f(.78*H);
+    }
+    [sw,ss].forEach(function(s){s.setAttribute('viewBox','0 0 '+W+' '+H);s.setAttribute('preserveAspectRatio','none')});
+    [halo,core,pulse].forEach(function(p){p.setAttribute('d',d)});
+    L=core.getTotalLength();
+    [halo,core].forEach(function(p){p.style.strokeDasharray=L+' '+L});
+    pulse.style.strokeDasharray='90 '+(L*2);
+    paint(true);
+  }
+  function goal(){var y=window.scrollY||0;return Math.min(1,.3+y/Math.max(1,hero*.75))}
+  function paint(force){
+    var now=performance.now();
+    if(still){shown=1}else{
+      intro=Math.min(1,(now-t0)/1600);var e=1-Math.pow(1-intro,3);
+      target=goal()*e;shown+= (target-shown)*.2;if(Math.abs(target-shown)<.0005)shown=target;
+    }
+    var off=L*(1-shown);halo.style.strokeDashoffset=off;core.style.strokeDashoffset=off;
+    var y=still?0:(window.scrollY||0)*.18,tr='translate3d(0,'+f(y)+'px,0)';sw.style.transform=tr;ss.style.transform=tr;
+    if(!still&&shown>.05){var k=((now-t0)/9000)%1,pos=L*shown*k;pulse.style.strokeDashoffset=f(-pos);pulse.style.strokeOpacity=(Math.sin(Math.PI*k)*.85).toFixed(3)}
+    else pulse.style.strokeOpacity=0;
+  }
+  function loop(){paint();raf=requestAnimationFrame(loop)}
+  var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(build,120)},{passive:true});
+  if(document.readyState==='complete')build();else window.addEventListener('load',build);
+  build();
+  if(!still)raf=requestAnimationFrame(loop);
+  // pause when the hero is far off screen
+  document.addEventListener('visibilitychange',function(){if(document.hidden){cancelAnimationFrame(raf)}else if(!still){raf=requestAnimationFrame(loop)}});
+})();
 </script>
 </body>
 </html>
