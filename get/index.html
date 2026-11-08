@@ -799,7 +799,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   var still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   var W=0,t0=performance.now(),last=t0,smoke=[],raf=0,dpr=1,small=false;
   // the parts the head sets off: the hero, then every section. [selector, kind]: dv device, hd heading, tx text, cd card, kk2 label
-  var GR=[{el:document.querySelector('.hgrid'),q:[['.ht .kick','kk2'],['.ht h1','hd'],['.ht p.l','tx'],['.stage','fd'],['.ha','tx']]}];
+  var GR=[{el:document.querySelector('.hgrid'),q:[['.ht .kick','kk2'],['.ht h1','hd'],['.ht p.l','tx'],['.ha','tx']]}];
   [].forEach.call(document.querySelectorAll('section.sec'),function(sc){GR.push({el:sc,q:[['.lapgrid>div:first-child','dv'],['.ltabs','tx'],['.txt h2','hd'],['.txt .s','tx'],['.mpw-h .kk','kk2'],['.mpw-h h2','hd'],['.mpw-h p','tx'],['.mpw-s','cd'],['.mpw-t','tx'],['.g3x .kk','kk2'],['.g3x h2','hd'],['.g3x p','tx'],['.g3s','dv'],['.tl3','tx'],['.gnote','tx']]})});
   function words(h){var w=0,walk=function(n){[].slice.call(n.childNodes).forEach(function(c){
       if(c.nodeType===3){var f=document.createDocumentFragment();c.textContent.split(/(\s+)/).forEach(function(t){if(!t)return;if(/^\s+$/.test(t)){f.appendChild(document.createTextNode(t));return}
