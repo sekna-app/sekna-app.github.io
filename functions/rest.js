@@ -617,6 +617,7 @@ const GREET_IMG = 'https://sekna-app.web.app/icons/greet/';
 
 /* v294 season email, 15 days ahead: the season's picture, then the same season last year per account
    (Hijri seasons: USA and AR; the US seasons: USA only), the totals and the best day. */
+const SEASON_NAMES = { ramadan: 'Ramadan', last10: 'Last 10 nights', eidfitr: 'Eid al-Fitr', dhulhijjah: 'First 10 days of Dhul Hijjah', arafah: 'Day of Arafah', eidadha: 'Eid al-Adha', ashura: 'Ashura', thanksgiving: 'Thanksgiving', givingtuesday: 'Giving Tuesday', yearend: 'Year-end', tax: 'Tax season' };
 const SEASON_LEN = { tax: 31, ramadan: 30, last10: 10, eidfitr: 3, dhulhijjah: 10, arafah: 1, eidadha: 4, ashura: 1, thanksgiving: 1, givingtuesday: 1, yearend: 6 };
 const SEASON_IMG = 'https://sekna-app.web.app/icons/seasons/';
 const IMG_V = '?v=4'; // bump when a picture changes (mail apps keep pictures by their address)
@@ -778,27 +779,38 @@ async function pushChecks(latestByAccount, daysByAccount) {
         const key = s.id + '-' + s.left;
         if (sent[key]) continue;
         const k = s.id.replace(/-\d+$/, '');
+        // What went out, so the admins can see the server did its job (a push to them after each send).
+        let pushOk = false, mails = 0, people = [];
+        try { people = await approvedPeople(); } catch (e) { console.error('Season people: ' + e.message); }
+        const countMails = r => (r ? (r.emails || 0) + (r.relayed || 0) : 0);
         if (s.left === 0) {
           // On the day: only seasons with a greeting picture.
           const g = SEASON_GREET[k];
-          if (g) await notify.send({ topics: [{ title: g[0], body: g[1], image: GREET_IMG + k + '.jpg' + IMG_V, account: s.acc || 'usa', eventType: 'greeting' }] })
-            .catch(e => console.error('Season greeting: ' + e.message));
+          if (!g) { sent[key] = Date.now(); continue; }
+          try { const r = await notify.send({ topics: [{ title: g[0], body: g[1], image: GREET_IMG + k + '.jpg' + IMG_V, account: s.acc || 'usa', eventType: 'greeting' }] }); pushOk = !!(r && (r.topics || r.relayed)); }
+          catch (e) { console.error('Season greeting: ' + e.message); }
           // The same greeting as an email to every approved person.
-          if (g) try {
-            const m = greetingEmail(k), people = await approvedPeople();
-            await notify.send({ emails: people.map(p => ({ to: p.email, subject: m.subject, rawHtml: m.html, title: m.title, html: m.inner })) });
+          try {
+            const m = greetingEmail(k);
+            mails = countMails(await notify.send({ emails: people.map(p => ({ to: p.email, subject: m.subject, rawHtml: m.html, title: m.title, html: m.inner })) }));
           } catch (e) { console.error('Greeting email: ' + e.message); }
-          sent[key] = Date.now(); if (g) out.season = (out.season || []).concat(key);
-          continue;
+        } else {
+          const start = new Date(s.at + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+          try { const r = await notify.send({ topics: [{ title: s.e + ' ' + s.name + ' is in ' + s.left + ' days' + (s.acc ? ' · USA' : ''), body: 'Starts ' + start + '. Open to see last year\'s numbers.',
+            account: s.acc || 'usa', eventType: 'season', image: SEASON_IMG + k + '.jpg' + IMG_V }] }); pushOk = !!(r && (r.topics || r.relayed)); }
+          catch (e) { console.error('Season reminder: ' + e.message); }
+          // The same reminder as an email to every approved person.
+          try {
+            const m = await seasonEmail(s);
+            mails = countMails(await notify.send({ emails: people.map(p => ({ to: p.email, subject: m.subject, rawHtml: m.html, title: m.title, html: m.inner })) }));
+          } catch (e) { console.error('Season email: ' + e.message); }
         }
-        const start = new Date(s.at + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
-        await notify.send({ topics: [{ title: s.e + ' ' + s.name + ' is in ' + s.left + ' days' + (s.acc ? ' · USA' : ''), body: 'Starts ' + start + '. Open to see last year\'s numbers.',
-          account: s.acc || 'usa', eventType: 'season', image: SEASON_IMG + k + '.jpg' + IMG_V }] }).catch(e => console.error('Season reminder: ' + e.message));
-        // The same reminder as an email to every approved person.
+        const what = (s.left === 0 ? 'Greeting' : 'Reminder') + ' · ' + (SEASON_NAMES[k] || s.name);
+        const okAll = pushOk && mails >= people.length;
         try {
-          const m = await seasonEmail(s), people = await approvedPeople();
-          await notify.send({ emails: people.map(p => ({ to: p.email, subject: m.subject, rawHtml: m.html, title: m.title, html: m.inner })) });
-        } catch (e) { console.error('Season email: ' + e.message); }
+          await notify.send({ pushes: ACCESS.ADMIN_EMAILS.map(email => ({ email, title: (okAll ? '✅ ' : '⚠️ ') + what + ' sent',
+            body: 'Emails: ' + mails + ' of ' + people.length + ' · Notification to the team: ' + (pushOk ? 'sent' : 'NOT sent') + (okAll ? '.' : '. Check Admin → Server.'), eventType: 'send_report' })) });
+        } catch (e) { console.error('Send report: ' + e.message); }
         sent[key] = Date.now(); out.season = (out.season || []).concat(key);
       }
     }

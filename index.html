@@ -8259,6 +8259,8 @@ window.addEventListener('load',function(){
 
     .sal-ri{display:grid!important;grid-template-columns:72px minmax(0,1fr) auto;gap:10px;align-items:start}.sal-ri img{width:72px;height:54px;object-fit:cover;border-radius:10px;display:block}
     @media (max-width:420px){.sal-ri{grid-template-columns:60px minmax(0,1fr)}.sal-ri img{width:60px;height:46px}.sal-ri .sal-n{grid-column:2;justify-self:start;margin-top:4px}}
+
+    .sal-in{display:inline-block;margin:3px 0 2px;font-size:11px;font-weight:900;color:#203c8e;background:#e9eefc;border-radius:99px;padding:2px 9px}.sal-in.soon{color:#9a6a12;background:#fdf1dc}
 </style>
 </head>
 <body>
@@ -17270,13 +17272,14 @@ function salHtml(){
  const sendOf=k=>{const n=nx[k]||{};return n.at?(view==='remind'?new Date(Date.parse(n.at+'T00:00:00Z')-L[k]*864e5).toISOString().slice(0,10):n.at):'9'};
  const keys=(grp==='us'?U:grp==='hijri'?H:H.concat(U)).slice().sort((a,b)=>sendOf(a)<sendOf(b)?-1:1);
  const short=dk=>salD(dk).replace(/ \d{4}$/,'');
+ const inN=dk=>{if(!dk)return '';const t=new Date();const d=Math.round((Date.parse(dk+'T00:00:00Z')-Date.UTC(t.getFullYear(),t.getMonth(),t.getDate()))/864e5);return `<span class="sal-in${d<=7?' soon':''}">${d<=0?'Today':d===1?'Tomorrow':'In '+d+' days'}</span>`};
  const seg=(k,v,opts)=>`<div class="sal-seg">${opts.map(([o,l])=>`<button type="button" class="${v===o?'on':''}" onclick="salSet('${k}','${o}')">${l}</button>`).join('')}</div>`;
  const tag=k=>U.includes(k)?'<em class="sal-tag us">USA</em>':'<em class="sal-tag">USA · AR</em>';
  let rows='';
  if(view==='remind')rows=keys.map(k=>{const n=nx[k]||{},send=n.at?new Date(Date.parse(n.at+'T00:00:00Z')-L[k]*864e5).toISOString().slice(0,10):'';
-   return `<div class="sal-r sal-ri"><img src="${esc('https:\/\/sekna-app.web.app/icons/seasons/'+k+'.jpg?v=4')}" alt="" loading="lazy"><div class="sal-t"><b>${SAL_NAMES[k]} ${tag(k)}</b><small>${n.at?'Starts '+short(n.at)+' · alert '+short(send):''}</small><button type="button" class="sal-test" onclick="salTest(this,'remind','${k}')">Send me a test</button></div><div class="sal-n"><button type="button" onclick="salStep('${k}',-1)" aria-label="Fewer days">−</button><span><b>${L[k]}</b>${L[k]===1?' day':' days'}</span><button type="button" onclick="salStep('${k}',1)" aria-label="More days">+</button></div></div>`}).join('');
+   return `<div class="sal-r sal-ri"><img src="${esc('https:\/\/sekna-app.web.app/icons/seasons/'+k+'.jpg?v=4')}" alt="" loading="lazy"><div class="sal-t"><b>${SAL_NAMES[k]} ${tag(k)}</b>${inN(send)}<small>${n.at?'Alert '+short(send)+' · starts '+short(n.at):''}</small><button type="button" class="sal-test" onclick="salTest(this,'remind','${k}')">Send me a test</button></div><div class="sal-n"><button type="button" onclick="salStep('${k}',-1)" aria-label="Fewer days">−</button><span><b>${L[k]}</b>${L[k]===1?' day':' days'}</span><button type="button" onclick="salStep('${k}',1)" aria-label="More days">+</button></div></div>`}).join('');
  else rows=keys.map(k=>{const n=nx[k]||{},g=(SAL.data.greet||{})[k]||['',''];
-   return `<div class="sal-gr"><img src="${esc((SAL.data.greetImg||'')+k+'.jpg'+(SAL.data.imgV||''))}" alt="" loading="lazy"><div class="sal-t"><b>${esc(g[0])}</b><small>${SAL_NAMES[k]} ${tag(k)}${n.at?' · sends '+short(n.at):''}</small><p>${esc(g[1])}</p><button type="button" class="sal-test" onclick="salTest(this,'greet','${k}')">Send me a test</button></div></div>`}).join('');
+   return `<div class="sal-gr"><img src="${esc((SAL.data.greetImg||'')+k+'.jpg'+(SAL.data.imgV||''))}" alt="" loading="lazy"><div class="sal-t"><b>${esc(g[0])}</b>${inN(n.at)}<small>${SAL_NAMES[k]} ${tag(k)}${n.at?' · sends '+short(n.at):''}</small><p>${esc(g[1])}</p><button type="button" class="sal-test" onclick="salTest(this,'greet','${k}')">Send me a test</button></div></div>`}).join('');
  return `<div class="sal-h"><b>Season alerts</b><small>${view==='remind'?'A push and an email to the team this many days before each season starts, at 9:00 Muscat.':'A push and an email with the season\'s picture on its first day, at 9:00 Muscat.'} Tests go to you only.</small></div>`
   +seg('view',view,[['remind','Reminders'],['greet','Greetings']])+seg('grp',grp,[['all','All'],['hijri','Hijri'],['us','US']])
   +`<div class="sal-list">${rows}</div>`
