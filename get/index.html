@@ -421,6 +421,26 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
  70%{transform:rotateY(25deg) rotateX(8deg) rotateZ(2deg) translateZ(40px) scale(1.04)}
  100%{transform:rotateY(var(--gy,0deg)) rotateX(var(--gx,4deg)) translateZ(0) scale(1)}}
 .g3 .g3s{perspective:900px}
+
+/* desktop UX: hero text further from the phones and a little lower, the phones and their caption higher;
+   the iPhone guide as two columns, a smaller phone beside its text */
+@media (min-width:981px){
+ .hgrid{column-gap:90px;grid-template-columns:1fr 1fr;padding-top:8px}
+ .ht{padding-top:34px}
+ .stage{align-self:start;margin-top:-18px}
+ .scene{height:calc(var(--pw) * 2.164 + 40px)}
+ .cap{margin-top:-10px}.cap-d{margin-top:6px}
+ .g3{display:grid;grid-template-columns:380px minmax(0,1fr);grid-template-areas:"s ." "s x" "s l" "s n" "s .";grid-template-rows:1fr auto auto auto 1fr;column-gap:56px;align-items:center;text-align:left;padding-left:40px!important;padding-right:48px!important}
+ .g3 .g3x{grid-area:x;max-width:none;margin:0}
+ .g3 .g3x .kk{justify-content:flex-start}
+ .g3 .g3x p.s{margin-left:0;margin-right:0}
+ .g3 .g3s{grid-area:s;padding:18px 0 22px}
+ .g3 .g3f{--w:236px}
+ .g3 .g3sh{width:250px}
+ .g3 .pl3.a{left:calc(50% + 70px);top:70px}.g3 .pl3.b{right:calc(50% + 70px);bottom:90px}
+ .g3 .tl3{grid-area:l;margin:14px 0 6px;max-width:460px}
+ .g3 .gnote{grid-area:n;text-align:left;align-self:start;margin-top:0}
+}
 </style>
 </head>
 <body>
@@ -482,11 +502,9 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
       <div><div class="lap" id="lap"><div class="lid"><div class="lbar"><i></i><i></i><i></i><span>sekna-app.web.app</span></div><div class="scr" id="lapScr">
         <img class="on" src="/get/shots/desk-daily.webp?v=20" alt="Daily Performance on a laptop" loading="lazy">
         <img src="/get/shots/desk-month.webp?v=20" alt="Monthly Progress on a laptop" loading="lazy">
-        <img src="/get/shots/desk-days.webp?v=20" alt="Day by Day on a laptop" loading="lazy">
-        <img src="/get/shots/desk-studio.webp?v=20" alt="Reports Studio on a laptop" loading="lazy">
         <img src="/get/shots/desk-seasons.webp?v=20" alt="Seasons Calendar on a laptop" loading="lazy">
       </div></div><div class="base"></div><div class="lap-sh"></div></div>
-      <div class="ltabs" id="lapTabs"><button type="button" class="on">Daily<em></em></button><button type="button">Monthly<em></em></button><button type="button">Day by Day<em></em></button><button type="button">Reports Studio<em></em></button><button type="button">Seasons<em></em></button></div></div>
+      <div class="ltabs" id="lapTabs"><button type="button" class="on">Daily<em></em></button><button type="button">Monthly<em></em></button><button type="button">Seasons<em></em></button></div></div>
       <div class="txt">
         <h2>What is HEMERA?</h2>
         <p class="s">HEMERA turns the media plan into a live dashboard. Every day it shows spend, conversions, conversion value and ROAS against the daily target, split by campaign type, with the projects and keywords behind them.</p>
