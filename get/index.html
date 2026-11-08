@@ -460,14 +460,15 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
 .gl{position:absolute;left:0;top:0;width:100%;z-index:0;pointer-events:none;overflow:hidden}
 .gl svg{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible}
 .gl path{fill:none;stroke-linecap:round;stroke-linejoin:round;will-change:stroke-dashoffset}
-.gl .h1{stroke:#E2B874;stroke-opacity:.035;stroke-width:52}
-.gl .h2{stroke:#E2B874;stroke-opacity:.05;stroke-width:32}
-.gl .h3{stroke:#E2B874;stroke-opacity:.09;stroke-width:16}
-.gl .core{stroke:url(#glG);stroke-opacity:.55;stroke-width:4}
-.gl .h4{stroke:#E2B874;stroke-opacity:.12;stroke-width:8}
+.gl .h1{stroke:#E2B874;stroke-opacity:.022;stroke-width:52}
+.gl .h2{stroke:#E2B874;stroke-opacity:.032;stroke-width:32}
+.gl .h3{stroke:#E2B874;stroke-opacity:.055;stroke-width:16}
+.gl .core{stroke:url(#glG);stroke-opacity:.36;stroke-width:3.6}
+.gl g.sub{opacity:.75}.gl g.sub .core{stroke-width:2.6}
+.gl .h4{stroke:#E2B874;stroke-opacity:.075;stroke-width:8}
 #glC{position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
 .wrap{z-index:1}
-@media (max-width:620px){.gl .h1{stroke-width:30}.gl .h2{stroke-width:18}.gl .h3{stroke-width:9}.gl .h4{stroke-width:6}.gl .core{stroke-width:3.2;stroke-opacity:.45}}
+@media (max-width:620px){.gl .h1{stroke-width:30}.gl .h2{stroke-width:18}.gl .h3{stroke-width:9}.gl .h4{stroke-width:6}.gl .core{stroke-width:2.8;stroke-opacity:.3}}
 /* iPhone guide, desktop: the two notes stay inside the card and off the headline; more blur behind them */
 .g3 .pl3{-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);background:rgba(18,30,78,.72)}
 @media (min-width:981px){.g3 .pl3.a{left:auto;right:6px;top:2px}.g3 .pl3.b{right:auto;left:6px;bottom:60px}}
@@ -488,7 +489,7 @@ h1 span.bxn,h2 span.bxn{background:none!important;-webkit-background-clip:border
 </style>
 </head>
 <body>
-<div class="gl" id="gl" aria-hidden="true"><svg id="glS"><defs><linearGradient id="glG" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1000"><stop offset="0" stop-color="#F3D79F"/><stop offset=".5" stop-color="#E2B874"/><stop offset="1" stop-color="#c89434"/></linearGradient></defs><path class="h1"/><path class="h2"/><path class="h3"/><path class="h4"/><path class="core"/></svg></div><canvas id="glC" aria-hidden="true"></canvas>
+<div class="gl" id="gl" aria-hidden="true"><svg id="glS"><defs><linearGradient id="glG" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1000"><stop offset="0" stop-color="#F3D79F"/><stop offset=".5" stop-color="#E2B874"/><stop offset="1" stop-color="#c89434"/></linearGradient></defs></svg></div><canvas id="glC" aria-hidden="true"></canvas>
 <div class="wrap">
   <div class="nav"><img src="/get/logo-white.webp?v=20" alt="HEMERA"></div>
   <div class="hgrid">
@@ -766,7 +767,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
 // a sparkler burns at the head, throwing more sparks while you scroll. Reduced motion: the full line, no sparks.
 (function(){
   var box=document.getElementById('gl'),ss=document.getElementById('glS'),cv=document.getElementById('glC');if(!box||!cv)return;
-  var ps=[].slice.call(ss.querySelectorAll('path')),core=ss.querySelector('.core'),LUT=[],gg=document.getElementById('glG'),cx=cv.getContext('2d');
+  var LN=[],ps=[],core=null,LUT=[],gg=document.getElementById('glG'),cx=cv.getContext('2d');
   var still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   var W=0,H=0,L=0,shown=0,t0=performance.now(),last=t0,parts=[],smoke=[],raf=0,dpr=1,small=false,lastH=0;
   // the parts the head sets off: the hero, then every section. [selector, kind]: dv device, hd heading, tx text, cd card, kk2 label
@@ -788,18 +789,29 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   function build(){
     W=document.documentElement.clientWidth;H=Math.max(document.documentElement.scrollHeight,document.body.scrollHeight);lastH=H;
     small=W<=620;box.style.height=H+'px';
-    var top=-30,bot=H-140,n=Math.max(4,Math.round((bot-top)/(small?340:420))),step=(bot-top)/n,amp=Math.min(small?W*.3:W*.2,small?130:260),lx=W/2-amp,rx=W/2+amp,k=step*.5;
-    var d='M '+f(W/2)+' '+f(top),px=W/2,py=top;/* from the very top edge */
-    for(var i=1;i<=n;i++){var x=i===n?W/2:(i%2?lx:rx),y=top+step*i;
-      d+=' C '+f(px)+' '+f(py+k)+', '+f(x)+' '+f(y-k)+', '+f(x)+' '+f(y);px=x;py=y}
+    // several gold lines: the first is the even, symmetric one (it sets the sections off); the others wander at random
+    // (seeded, so the same shapes every visit) and start a little later
+    var seed=7;function rnd(){seed=(seed*16807)%2147483647;return (seed-1)/2147483646}
+    var nL=small?3:4,old=ss.querySelectorAll('g');[].forEach.call(old,function(g){g.remove()});LN=[];
+    for(var li=0;li<nL;li++){
+      var top=-30,bot=H-(li?60:140),d,px,py,k,x,y,i;
+      if(li===0){var n=Math.max(4,Math.round((bot-top)/(small?340:420))),step=(bot-top)/n,amp=Math.min(small?W*.3:W*.2,small?130:260),lx=W/2-amp,rx=W/2+amp;k=step*.5;
+        d='M '+f(W/2)+' '+f(top);px=W/2;py=top;
+        for(i=1;i<=n;i++){x=i===n?W/2:(i%2?lx:rx);y=top+step*i;d+=' C '+f(px)+' '+f(py+k)+', '+f(x)+' '+f(y-k)+', '+f(x)+' '+f(y);px=x;py=y}}
+      else{px=W*(.1+rnd()*.8);py=top;d='M '+f(px)+' '+f(py);var side=rnd()<.5?-1:1;
+        while(py<bot){var st=(small?260:320)+rnd()*(small?260:380);y=Math.min(bot,py+st);side=-side;x=Math.max(W*.04,Math.min(W*.96,W/2+side*(W*(.12+rnd()*.36))));k=(y-py)*(.35+rnd()*.25);
+          d+=' C '+f(px)+' '+f(py+k)+', '+f(x)+' '+f(y-k)+', '+f(x)+' '+f(y);px=x;py=y}}
+      var g=document.createElementNS('http://www.w3.org/2000/svg','g');if(li)g.setAttribute('class','sub');
+      var lp=['h1','h2','h3','h4','core'].map(function(c){var e=document.createElementNS('http://www.w3.org/2000/svg','path');e.setAttribute('class',c);e.setAttribute('d',d);g.appendChild(e);return e});
+      ss.appendChild(g);
+      var cr=lp[4],Lx=cr.getTotalLength(),lut=[];lp.forEach(function(e){e.style.strokeDasharray=Lx+' '+Lx;e.style.strokeDashoffset=Lx});
+      for(var j=0;j<=1200;j++){var q=cr.getPointAtLength(Lx*j/1200);lut.push(q.x,q.y)}
+      LN.push({ps:lp,L:Lx,lut:lut,lag:li?.04+rnd()*.1:0,sp:li?.85+rnd()*.3:1,shown:0,off:''})}
     ss.setAttribute('viewBox','0 0 '+W+' '+H);ss.setAttribute('preserveAspectRatio','none');
     gg.setAttribute('y2',H);
-    ps.forEach(function(p){p.setAttribute('d',d)});
-    L=core.getTotalLength();
-    ps.forEach(function(p){p.style.strokeDasharray=L+' '+L});
-    LUT=[];for(var j=0;j<=1200;j++){var q=core.getPointAtLength(L*j/1200);LUT.push(q.x,q.y)}
+    ps=LN[0].ps;core=LN[0].ps[4];L=LN[0].L;LUT=LN[0].lut;
     dpr=Math.min(2,window.devicePixelRatio||1);cv.width=innerWidth*dpr;cv.height=innerHeight*dpr;cx.setTransform(dpr,0,0,dpr,0,0);
-    if(still){shown=1;ps.forEach(function(p){p.style.strokeDashoffset=0})}
+    if(still){shown=1;LN.forEach(function(l){l.ps.forEach(function(p){p.style.strokeDashoffset=0})})}
   }
   function spawn(x,y,k,sp){for(var i=0;i<k;i++){var a=Math.random()*Math.PI*2,v=sp*(.4+Math.random());
     parts.push({x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:420+Math.random()*320,t:0,c:Math.random()<.5?'#f6e2b8':'#E2B874',r:1+Math.random()*1.1})}}
@@ -813,6 +825,9 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
     var off=(L*(1-shown)).toFixed(1);if(off!==window.__glOff){window.__glOff=off;for(var m=0;m<ps.length;m++)ps[m].style.strokeDashoffset=off}
     var ii=Math.round(shown*1200)*2,tip={x:LUT[ii],y:LUT[ii+1]},moving=Math.abs(goal-shown)>.0006,ty=tip.y-sy;
     if(shown>.002&&shown<.999&&ty>-40&&ty<vh+40)spawn(tip.x,ty,small?(moving?5:2):(moving?9:3),moving?3.2:1.7);
+    for(var lj=1;lj<LN.length;lj++){var ln=LN[lj],gl2=Math.max(0,Math.min(1,(goal-ln.lag)*ln.sp));ln.shown+=(gl2-ln.shown)*Math.min(1,dt/16*.25);
+      var o2=(ln.L*(1-ln.shown)).toFixed(1);if(o2!==ln.off){ln.off=o2;for(var mm=0;mm<5;mm++)ln.ps[mm].style.strokeDashoffset=o2}
+      if(ln.shown>.002&&ln.shown<.999){var i2=Math.round(ln.shown*1200)*2,x2=ln.lut[i2],y2=ln.lut[i2+1]-sy;if(y2>-40&&y2<vh+40&&Math.random()<.6)spawn(x2,y2,small?1:(moving?3:1),moving?2.2:1.2)}}
     for(var gi=0;gi<GR.length;gi++){var G=GR[gi];if(!G.el||G.done)continue;var rc=G.el.getBoundingClientRect(),gy=rc.top+sy;
       if(gi===0?now-t0>250:(tip.y>=gy+90||rc.top<vh*.35)){G.done=true;G.el.classList.add('bx-in');(G.it||[]).forEach(function(it){setTimeout(function(){it[0].classList.remove('bx','dv','tx','cd','kk2');it[0].style.removeProperty('--d')},(it[1]+1.9)*1000)});
         var bxX=gi===0?W*.3:tip.x,bxY=gi===0?rc.top+rc.height*.35:ty;if(!still)storm(bxX,bxY,G)}}
