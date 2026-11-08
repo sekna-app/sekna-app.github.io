@@ -7769,6 +7769,24 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) body #dxBody .lyx-sum.lyv .lyv2-row>div{padding:8px 14px!important;min-height:0!important}
       html.dk-on:not(.desktop-site-mode) body #dxBody .lyx-sum.lyv .lyv2-row b{font-size:22px!important}
     }
+
+    /* v274 desktop: the Budget card as tall as Weekly Performance beside it; the bank card fills it */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body #channelPanel #vcSection{align-self:stretch!important;height:auto!important;display:flex!important;flex-direction:column;margin-top:0!important;margin-bottom:0!important}
+      html.dk-on:not(.desktop-site-mode) body #channelPanel #vcSection>#mtdVarianceCard{flex:1 1 auto;display:flex!important;flex-direction:column;justify-content:space-between;min-height:0}
+    }
+
+    /* v275 desktop only: vs 2025 page, slimmer bars in a shorter chart (numbers sit close to the labels), and a shorter year card */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body .wly-bars{height:150px!important;gap:28px!important;padding-top:16px!important;justify-content:center}
+      html.dk-on:not(.desktop-site-mode) body .wly-g{flex:0 1 150px!important;justify-content:center;gap:6px!important}
+      html.dk-on:not(.desktop-site-mode) body .wly-col{flex:0 0 38px!important;width:38px!important}
+      html.dk-on:not(.desktop-site-mode) body .wly-col i{border-radius:7px 7px 0 0!important}
+      html.dk-on:not(.desktop-site-mode) body .wly-col b{font-size:11px!important;margin-bottom:3px!important}
+      html.dk-on:not(.desktop-site-mode) body .vly-btn{padding:8px 12px 6px!important;margin-top:8px!important}
+      html.dk-on:not(.desktop-site-mode) body .vly-btn .vly-y{font-size:18px!important}
+      html.dk-on:not(.desktop-site-mode) body .vly-tot{padding-top:6px!important;padding-bottom:6px!important}
+    }
 </style>
 </head>
 <body>
