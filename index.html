@@ -8039,6 +8039,23 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) body #labForecast .fc-accb .fc-wk .fc-bar{height:8px!important}
       html.dk-on:not(.desktop-site-mode) body #labForecast .fc-accb .fc-wk>div:last-child,html.dk-on:not(.desktop-site-mode) body #labForecast .fc-accb .fc-wk>b,html.dk-on:not(.desktop-site-mode) body #labForecast .fc-accb .fc-wk>span:last-child{font-size:16px!important;text-align:right}
     }
+
+    /* v282 desktop (pick 1 · pills and close rows): the Forecast sections and the Assumptions sections as navy pills on top,
+       the open section full width under them */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc:has(.fc-hero)>.fc-folds{display:flex!important;flex-wrap:wrap;align-items:center;gap:6px!important;column-gap:6px!important}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-acc{flex:none!important;width:auto!important;margin:0!important;padding:7px 15px!important;border-radius:99px!important;background:#f2f4f9!important;box-shadow:none!important;gap:6px}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-acc small{display:none!important}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-acc b{font-size:12.5px!important;color:#4b5263!important}html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-acc i{color:#4b5263}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-acc.open{background:#203c8e!important;box-shadow:none!important}html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-acc.open b,html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-acc.open i{color:#fff!important}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc:has(.fc-hero)>.fc-folds{justify-content:flex-start!important}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-acc.open i svg,html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-acc.open i *{stroke:#fff!important;color:#fff!important}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-accb{order:10!important;flex-basis:100%!important;grid-column:auto!important;grid-row:auto!important;margin-top:6px!important}
+      html.dk-on:not(.desktop-site-mode) body .as-side{display:block!important}
+      html.dk-on:not(.desktop-site-mode) body .as-side>.as-seg{flex-direction:row!important;gap:6px!important;margin-bottom:10px!important}
+      html.dk-on:not(.desktop-site-mode) body .as-side>.as-seg button{flex:none!important;border-radius:99px!important;padding:7px 15px!important;background:#f2f4f9!important}
+      html.dk-on:not(.desktop-site-mode) body .as-side>.as-seg button.on{background:#203c8e!important;color:#fff!important;box-shadow:none!important}
+    }
 </style>
 </head>
 <body>
