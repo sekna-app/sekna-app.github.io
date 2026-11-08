@@ -7795,13 +7795,50 @@ window.addEventListener('load',function(){
        the Latest tag sits in the middle of the date block */
     @media (min-width:1100px){
       html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcH.fut{grid-template-columns:62px minmax(0,1fr)!important;border-left:0!important}
-      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcH.fut{min-height:66px!important;background:#fafbfc!important}
-      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcH.fut>.dc-date{min-height:66px!important;padding:8px 0!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcH.fut{background:#fafbfc!important}
       html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcH.fut>.dc-main{padding-left:18px!important}
       html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcH.fut>.dcH-h{display:none!important}
       html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcH.fut>.dc-date{display:grid!important}
       html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcH.latest>.dcH-h{grid-template-columns:1fr auto!important;grid-template-areas:"d l" "h l"!important;align-items:center}
       html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcH.latest>.dcH-h>em{align-self:center!important;justify-self:end}
+    }
+
+    .fc-r3>.dk-pill{display:none}
+    /* v278 desktop: Forecast plan as one slim capsule (pick 3) with every figure as a pill; the four sections as a list on the side (pick 2),
+       the same side list for Assumptions; future days in Media Plan line up with the other rows and are slim like Results upcoming days */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc:has(.fc-hero)>.fc-hero{grid-column:1/-1!important;grid-row:3!important;display:flex!important;align-items:center;gap:14px;border-radius:99px!important;padding:9px 12px 9px 24px!important;background:linear-gradient(135deg,#1b2f78,#2c4fb8)!important}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-hero>small{display:none!important}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-hero>.fc-big{font-size:28px!important;margin:0!important;line-height:1.1}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-hero>.fc-hs{margin:0!important;font-size:11.5px!important;white-space:nowrap}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-hero>.fc-r3{margin-left:auto!important;display:flex!important;flex-wrap:wrap;gap:6px!important;justify-content:flex-end}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-hero>.fc-r3>div{display:flex!important;align-items:baseline;gap:4px;background:rgba(255,255,255,.12)!important;border-radius:99px!important;padding:5px 12px!important;min-height:0!important;border:0!important;white-space:nowrap}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-hero>.fc-r3>div b{font-size:13px!important;color:#f2d38f!important}html.dk-on:not(.desktop-site-mode) body #labForecast .fc-hero>.fc-r3>div span{font-size:11.5px!important;opacity:.9;margin:0!important;position:static!important}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc:has(.fc-hero)>.fc-kv{display:none!important}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc:has(.fc-hero)>.fc-folds{display:grid!important;grid-template-columns:230px minmax(0,1fr);column-gap:18px;align-items:start;border-bottom:0!important;margin-top:14px}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-acc{grid-column:1;border:0!important;border-radius:12px!important;padding:10px 12px!important;margin:0 0 4px!important;display:flex!important;align-items:center;text-align:left}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-acc small{display:block!important;font-size:11px!important;color:#8a93ad!important;white-space:normal;margin-top:1px}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-acc.open{background:#eef2fd!important;box-shadow:inset 3px 0 0 #203c8e!important}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-accb{grid-column:2;grid-row:1/span 4;order:0!important;padding:4px 0 6px!important}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-accb .fc-ph{display:none!important}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-acc.open:after{display:none!important}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-folds>.fc-accb>*{margin-left:0!important;max-width:none!important}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fc-wk{grid-template-columns:90px minmax(0,420px) 60px!important;justify-content:start;column-gap:16px!important}
+      html.dk-on:not(.desktop-site-mode) body .as-side{display:grid;grid-template-columns:230px minmax(0,1fr);column-gap:18px;align-items:start}
+      html.dk-on:not(.desktop-site-mode) body .as-side>.as-seg{display:flex!important;flex-direction:column;gap:4px;background:none!important;padding:0!important}
+      html.dk-on:not(.desktop-site-mode) body .as-side>.as-seg button{text-align:left;border-radius:12px!important;padding:10px 12px!important;background:none!important;box-shadow:none!important;color:#4b5263!important;width:auto!important}
+      html.dk-on:not(.desktop-site-mode) body .as-side>.as-seg button.on:after{display:none!important}
+      html.dk-on:not(.desktop-site-mode) body .as-side>.as-seg{border:0!important}
+      html.dk-on:not(.desktop-site-mode) body .as-side>.as-seg button.on{background:#eef2fd!important;color:#203c8e!important;box-shadow:inset 3px 0 0 #203c8e!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcH.fut{grid-template-columns:210px minmax(0,1fr)!important;min-height:0!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcH.fut>.dc-date{min-height:0!important;width:56px!important;padding:4px 0!important;justify-self:start}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcH.fut>.dc-main{padding-left:14px!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcH.fut>.dc-date b,html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming>.dc-date b{font-size:17px!important;line-height:1.05}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcH.fut>.dc-date span,html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming>.dc-date span{font-size:9px!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming{min-height:0!important;padding:0!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming>.dc-date{min-height:0!important;padding:4px 0!important;width:56px!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming>.dc-main{padding:5px 14px!important;display:flex!important;align-items:center;gap:14px}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming .dc-hij,html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.upcoming .dc-up{margin:0!important;font-size:12px!important}
     }
 </style>
 </head>
@@ -11001,7 +11038,7 @@ function fcDraw0(){
  const fold=(k,ic,t,sum,body)=>`<button type="button" class="fc-acc${FC_OPEN===k?' open':''}" onclick="fcFold('${k}')"><i>${ic}</i><span><b>${t}</b><small>${sum}</small></span><em>${FC_OPEN===k?'⌄':'›'}</em></button>${FC_OPEN===k?`<div class="fc-accb"><div class="fc-ph"><b>${ic} ${t}</b><small>${sum}</small></div>${body}</div>`:''}`;
  box.innerHTML=`<div class="lab-box fc">${head}
   <div class="fc-hero"><small>${esc(String(mon).toUpperCase())} PLAN</small><div class="fc-big">${money(p.spend)}</div><div class="fc-hs">budget → ${money(p.rev)} revenue</div>
-   <div class="fc-r3"><div><b>${p.roas!=null?fmt(p.roas,2)+'x':'—'}</b><span>ROAS</span></div><div><b>${fmt(p.conv,0)}</b><span>Conv</span></div><div><b>${fmt(p.clicks,0)}</b><span>Clicks</span></div></div></div>
+   <div class="fc-r3"><div><b>${p.roas!=null?fmt(p.roas,2)+'x':'—'}</b><span>ROAS</span></div><div><b>${fmt(p.conv,0)}</b><span>Conv</span></div><div><b>${fmt(p.clicks,0)}</b><span>Clicks</span></div><div class="dk-pill"><b>${p.cpc!=null?cs()+fmt(cx(p.cpc),2):'—'}</b><span>CPC</span></div><div class="dk-pill"><b>${money(p.aov)}</b><span>Avg gift</span></div><div class="dk-pill"><b>${p.cvr!=null?fmt(p.cvr*100,1)+'%':'—'}</b><span>CVR</span></div><div class="dk-pill"><b>${fcPct(wt.acc)}</b><span>Spent</span></div></div></div>
   <div class="fc-kv"><div><b>${p.cpc!=null?cs()+fmt(cx(p.cpc),2):'—'}</b><span>CPC</span></div><div><b>${money(p.aov)}</b><span>Avg gift</span></div><div><b>${p.cvr!=null?fmt(p.cvr*100,1)+'%':'—'}</b><span>CVR</span></div><div><b>${fcPct(wt.acc)}</b><span>Spent</span></div></div>
   ${ro?'':`<label class="bd-nt"><small>Note for the picture <em>(optional)</em></small><textarea rows="2" maxlength="160" placeholder="e.g. We raised PMax for the season." oninput="budNoteSet(this.value)">${esc(budNote())}</textarea></label>`}
   <div class="fc-folds">
@@ -11233,7 +11270,7 @@ function asHtml(){
    <div class="fc-l">SPECIAL DAYS IN ${esc(mon.toUpperCase())} <em>× a normal day</em></div><div class="fc-card">${(d.special||[]).length?`<div class="as-t"><div class="as-tr hd"><span></span><span>Spend</span><span>Value</span><span>Conv</span></div>${d.special.map(r=>`<div class="as-tr"><span>${esc(r.name)} <small>${esc(mon.slice(0,3))} ${r.inMonth[0]}${r.inMonth.length>1?'–'+r.inMonth[r.inMonth.length-1]:''}</small></span>${num(r,'spend',r.spend)}${num(r,'value',r.value)}${num(r,'conv',r.conv)}</div>`).join('')}</div>`:'<div class="fc-foot" style="text-align:center;margin:4px 0">No special days this month</div>'}</div>
    ${asSaveBar(c,nEd)}`;
  }
- return tabs+body;
+ return `<div class="as-side">${tabs}<div class="as-body">${body}</div></div>`;
 }
 // Manual Mix % (Assumptions I9:J15): a share per channel, 0 = the sheet works it out; the total should be 0% or 100%.
 function asMixHtml(d,ed){
