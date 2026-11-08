@@ -9756,7 +9756,7 @@ function stxDropHtml(s,acc,ago){
 }
 function stxSeasonHtml(o){
  const s=o.s,n=o.n;
- return `<div class="stx-ssn"><i class="ss-img" style="background-image:url('icons/seasons/${s.key}.webp?v=6')"></i><div class="stx-k">${esc(o.k)} · IN ${n} DAY${n===1?'':'S'}</div><b>${esc(s.name)}</b><p>${esc(SS_ART[s.key])}</p>
+ return `<div class="stx-ssn"><i class="ss-img" style="background-image:url('icons/seasons/${s.key}.webp?v=7')"></i><div class="stx-k">${esc(o.k)} · IN ${n} DAY${n===1?'':'S'}</div><b>${esc(s.name)}</b><p>${esc(SS_ART[s.key])}</p>
   <div class="ss-cd ss-cd3"><span><em>${SS_IC.cal}</em><strong>${n}</strong>day${n===1?'':'s'}</span><span><em>${SS_IC.flag}</em><strong>${esc(ssD(s.from))}</strong>starts</span>${s.type==='h'?`<span><em>${SS_IC.moon}</em><strong>${s.hy}</strong>Hijri year</span>`:`<span><em>${SS_IC.moon}</em><strong>${s.len}</strong>day${s.len>1?'s':''} long</span>`}</div>
   <button type="button" class="ssr-o stx-sso" onclick="stxClose();ssRemOpen('sekna_ssrem_${s.id}','${s.id}')">Open</button></div>`;
 }
@@ -15152,7 +15152,7 @@ function ssShareHtml(s){
  const accRow=ak==='all'?`<h4>BY ACCOUNT</h4><div class="ssp-acc">${[['usa','🇺🇸 USA'],['ar','AR']].map(([a,l])=>{const v=d.acc[a];return `<div><span>${l}<i>${ro(v)}</i></span><small>Spent</small><b>${money(v.spend)}</b><small>Raised ${money(v.value)}</small></div>`}).join('')}</div>`:'';
  const rows=Object.keys(d.ch).map(k=>[k,d.ch[k]]).filter(([,v])=>v.spend||v.value).sort((a,b)=>b[1].spend-a[1].spend)
   .map(([k,v])=>`<tr><td><i style="background:${SSP_C[k]||'#8a93ad'}"></i>${esc(k.replace('Video (YouTube)','YouTube'))}</td><td>${money(v.spend)}</td><td>${fmt(v.conv)}</td><td>${money(v.value)}</td><td>${ro(v)}</td></tr>`).join('');
- const html=`<div class="ssp-ph" style="background-image:url('icons/seasons/${s.key}.webp?v=6')"><i class="ssp-sh"></i>
+ const html=`<div class="ssp-ph" style="background-image:url('icons/seasons/${s.key}.webp?v=7')"><i class="ssp-sh"></i>
    <div class="ssp-top"><img src="${SEKNA_WHITE_LOGO}" alt="HEMERA"><em>${esc(tag)}</em></div>
    <div class="ssp-nm"><small>${s.type==='h'?'HIJRI':'US'} SEASON</small><b>${esc(s.name)}</b><span>Last year · ${esc(when)} · ${esc(SS_ACC[ak].who)}</span></div></div>
   <div class="ssp-bd">
@@ -15255,7 +15255,7 @@ function ssRemind(){
  const t=ssToday(),s=ssList().find(x=>x.from>t&&ssDays(t,x.from)<=15&&SS_ART[x.key]);if(!s)return;
  const k='sekna_ssrem_'+s.id;if(storeGet(k))return;
  const n=ssDays(t,s.from),o=document.createElement('div');o.id='ssRem';o.className='ssr-ov';o.setAttribute('data-share-ui','');
- o.innerHTML=`<div class="ss-hero ss-art ss-a-${s.key} ssr" role="dialog" aria-label="${esc(s.name)} reminder"><i class="ss-img" style="background-image:url('icons/seasons/${s.key}.webp?v=6')"></i><button type="button" class="ssr-x" aria-label="Close" onclick="ssRemClose('${k}')">✕</button><span class="ss-wm">HEMERA</span><i class="ss-ln"></i><small>REMINDER · IN ${n} DAY${n===1?'':'S'}</small><b>${esc(s.name)}</b><p class="ss-tag">${esc(SS_ART[s.key])}</p>
+ o.innerHTML=`<div class="ss-hero ss-art ss-a-${s.key} ssr" role="dialog" aria-label="${esc(s.name)} reminder"><i class="ss-img" style="background-image:url('icons/seasons/${s.key}.webp?v=7')"></i><button type="button" class="ssr-x" aria-label="Close" onclick="ssRemClose('${k}')">✕</button><span class="ss-wm">HEMERA</span><i class="ss-ln"></i><small>REMINDER · IN ${n} DAY${n===1?'':'S'}</small><b>${esc(s.name)}</b><p class="ss-tag">${esc(SS_ART[s.key])}</p>
   <div class="ss-cd ss-cd3"><span><em>${SS_IC.cal}</em><strong>${n}</strong>day${n===1?'':'s'}</span><span><em>${SS_IC.flag}</em><strong>${esc(ssD(s.from))}</strong>starts</span>${s.type==='h'?`<span><em>${SS_IC.moon}</em><strong>${s.hy}</strong>Hijri year</span>`:`<span><em>${SS_IC.moon}</em><strong>${s.len}</strong>day${s.len>1?'s':''} long</span>`}</div>
   <div class="ssr-b"><button type="button" class="ssr-l" onclick="ssRemClose('${k}')">Later</button><button type="button" class="ssr-o" onclick="ssRemOpen('${k}','${s.id}')">Open</button></div></div>`;
  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('on'));
@@ -15279,7 +15279,7 @@ function renderSeasons(){
    const th=ssTheme(big.key);
    const art=SS_ART[big.key];
    const nav=heroList.length>1?`<div class="ss-nav"><button type="button" aria-label="Earlier season" ${SS.hi<=0?'disabled':''} onclick="ssHero(-1)">‹</button><span>${SS.hi+1} / ${heroList.length}</span><button type="button" aria-label="Next season" ${SS.hi>=heroList.length-1?'disabled':''} onclick="ssHero(1)">›</button></div>`:'';
-   hero=art?`<div class="ss-hero ss-art ss-a-${big.key}">${nav}<i class="ss-img" style="background-image:url('icons/seasons/${big.key}.webp?v=6')"></i><span class="ss-wm">HEMERA</span><i class="ss-ln"></i><small>${live?'ON NOW':SS.hi?'COMING UP':'NEXT SEASON'} · ${big.type==='h'?'HIJRI':'US'}</small><b>${esc(big.name)}</b><p class="ss-tag">${esc(art)}</p>
+   hero=art?`<div class="ss-hero ss-art ss-a-${big.key}">${nav}<i class="ss-img" style="background-image:url('icons/seasons/${big.key}.webp?v=7')"></i><span class="ss-wm">HEMERA</span><i class="ss-ln"></i><small>${live?'ON NOW':SS.hi?'COMING UP':'NEXT SEASON'} · ${big.type==='h'?'HIJRI':'US'}</small><b>${esc(big.name)}</b><p class="ss-tag">${esc(art)}</p>
      <div class="ss-cd ss-cd3">${live?`<span><em>${SS_IC.cal}</em><strong>${ssDays(big.from,t)+1}</strong>of ${big.len} days</span><span><em>${SS_IC.flag}</em><strong>${esc(ssD(big.to))}</strong>ends</span>`:`<span><em>${SS_IC.cal}</em><strong>${n}</strong>day${n===1?'':'s'}</span><span><em>${SS_IC.flag}</em><strong>${esc(ssD(big.from))}</strong>starts</span>`}${big.type==='h'?`<span><em>${SS_IC.moon}</em><strong>${big.hy}</strong>Hijri year</span>`:`<span><em>${SS_IC.moon}</em><strong>${big.len}</strong>day${big.len>1?'s':''} long</span>`}</div>
      ${p?`<div class="ss-rd">Team ready · ${pct}% (${p.done} of ${p.n} prep task${p.n>1?'s':''})</div><div class="ss-bar"><i style="width:${pct}%"></i></div>`:''}
      <div class="ss-hd">${ssDetail(big,all)}</div></div>`:`<div class="ss-hero${th?' th-'+th:''}">${th?ssDeco(th):''}<small>${live?'ON NOW':'NEXT BIG SEASON'} · HIJRI</small><b>${esc(big.name)}</b>
@@ -15292,7 +15292,7 @@ function renderSeasons(){
  if(mxWide()){
    
    const tile=s=>{const n=ssDays(t,s.from),live=s.from<=t&&t<=s.to,art=SS_ART[s.key],d=new Date(s.from+'T00:00:00Z');
-     return `<button type="button" class="ssd-row${big&&s.id===big.id?' on':''}" onclick="ssHeroPick('${s.id}')"><span class="dt"><b>${d.getUTCDate()}</b><small>${d.toLocaleDateString('en-GB',{month:'short',timeZone:'UTC'}).toUpperCase()}</small></span><i class="th"${art?` style="background-image:url('icons/seasons/${s.key}.webp?v=6')"`:''}></i><span class="n"><b>${esc(s.name)}</b><small>${s.len} day${s.len===1?'':'s'} · ${live?'on now':'in '+n+' day'+(n===1?'':'s')}</small></span><em class="${s.type==='h'?'h':''}">${s.type==='h'?'Hijri':'US'}</em></button>`};
+     return `<button type="button" class="ssd-row${big&&s.id===big.id?' on':''}" onclick="ssHeroPick('${s.id}')"><span class="dt"><b>${d.getUTCDate()}</b><small>${d.toLocaleDateString('en-GB',{month:'short',timeZone:'UTC'}).toUpperCase()}</small></span><i class="th"${art?` style="background-image:url('icons/seasons/${s.key}.webp?v=7')"`:''}></i><span class="n"><b>${esc(s.name)}</b><small>${s.len} day${s.len===1?'':'s'} · ${live?'on now':'in '+n+' day'+(n===1?'':'s')}</small></span><em class="${s.type==='h'?'h':''}">${s.type==='h'?'Hijri':'US'}</em></button>`};
    el.innerHTML=`<div class="ssd"><div class="ssd-l">${hero}</div><div class="ssd-r"><div class="ssd-tools">${fsH}<span>${list.length} seasons · next 12 months</span></div>
     <div class="ssd-lbl">COMING UP · TAP ONE TO OPEN IT</div><div class="ssd-list">${show.map(tile).join('')}</div>
     ${list.length>show.length?`<button type="button" class="ss-more" onclick="SS.more=true;renderSeasons()">Show ${list.length-show.length} more ›</button>`:''}</div></div>
