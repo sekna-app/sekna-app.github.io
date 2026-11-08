@@ -476,19 +476,15 @@ html.bx-on .bx-in .bx{opacity:1;transform:none;clip-path:inset(0 0 0 0)}
 html.bx-on .bx-in .bx.hd .bxw{opacity:1;transform:none}
 h1 span.bxn,h2 span.bxn{background:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;color:inherit!important;-webkit-text-fill-color:currentColor}
 
-/* The logo melts into its own light: on scroll it leaves the top bar, rises to the centre behind the page, grows,
-   blurs and fades into a gold sun whose rays turn slowly; scrolling back gathers the light into the logo again. */
-.lsun{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-.lsun i,.lsun b{position:absolute;left:50%;top:42%;border-radius:50%;opacity:0;will-change:transform,opacity}
-.lsun b{width:420px;height:420px;margin:-210px 0 0 -210px;background:radial-gradient(circle,rgba(242,211,143,.42),rgba(226,184,116,.12) 40%,transparent 70%)}
-.lsun i{width:640px;height:640px;margin:-320px 0 0 -320px;background:repeating-conic-gradient(from 0deg,rgba(242,211,143,.16) 0 4deg,transparent 4deg 18deg);-webkit-mask:radial-gradient(circle,#000 8%,transparent 66%);mask:radial-gradient(circle,#000 8%,transparent 66%)}
-.lsun img{position:absolute;left:0;top:0;transform-origin:0 0;opacity:0;will-change:transform,opacity,filter}
-@media (max-width:620px){.lsun b{width:300px;height:300px;margin:-150px 0 0 -150px}.lsun i{width:440px;height:440px;margin:-220px 0 0 -220px}}
+/* The logo turns to stars: on scroll its own pixels break into gold and white dust that spreads over the background
+   and twinkles like a night sky; scrolling back gathers the dust into the logo again. */
+.lsun{position:fixed;inset:0;z-index:0;pointer-events:none}
+.lsun canvas{position:absolute;inset:0;width:100%;height:100%}
 @media (prefers-reduced-motion:reduce){.lsun{display:none}}
 </style>
 </head>
 <body>
-<canvas id="glC" aria-hidden="true"></canvas><div class="lsun" id="lsun" aria-hidden="true"><b></b><i></i><img src="/get/logo-white.webp?v=20" alt=""></div>
+<canvas id="glC" aria-hidden="true"></canvas><div class="lsun" id="lsun" aria-hidden="true"><canvas></canvas></div>
 <div class="wrap">
   <div class="nav"><img src="/get/logo-white.webp?v=20" alt="HEMERA"></div>
   <div class="hgrid">
@@ -803,26 +799,36 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
 </script>
 
 <script>
-// Logo into light (see .lsun): the top-bar logo hands over to a copy behind the page that travels to the centre.
+// Logo to stars (see .lsun). The dots are the logo's own pixels; each has a fixed place in the sky (seeded, the same every
+// visit). Progress p follows the scroll of the first screen; at p=0 the real logo shows, past it the dots take over.
 (function(){
   var L=document.getElementById('lsun'),nav=document.querySelector('.nav img');if(!L||!nav)return;
   if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-  var sun=L.querySelector('b'),ray=L.querySelector('i'),im=L.querySelector('img'),cur=0,raf;
+  var cv=L.querySelector('canvas'),c=cv.getContext('2d'),P=[],cur=0,raf,dpr=1,VW=0,VH=0,ready=false,seed=11;
+  function rnd(){seed=(seed*16807)%2147483647;return (seed-1)/2147483646}
   function ease(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2}
+  function size(){dpr=Math.min(2,window.devicePixelRatio||1);VW=innerWidth;VH=innerHeight;cv.width=VW*dpr;cv.height=VH*dpr;c.setTransform(dpr,0,0,dpr,0,0)}
+  var im=new Image();im.onload=function(){
+    var r=nav.getBoundingClientRect(),w=Math.max(60,Math.round(r.width||148)),h=Math.round(w*202/880),k=document.createElement('canvas');k.width=w;k.height=h;
+    var t=k.getContext('2d');t.drawImage(im,0,0,w,h);var d;try{d=t.getImageData(0,0,w,h).data}catch(e){return}
+    var st=w>120?2:1.5;for(var y=0;y<h;y+=st)for(var x=0;x<w;x+=st){var i=(Math.floor(y)*w+Math.floor(x))*4;if(d[i+3]>140){
+      var gold=d[i]>200&&d[i+2]<170;P.push({hx:x/w,hy:y/h,tx:.04+rnd()*.92,ty:.06+rnd()*.88,c:gold?'242,211,143':'236,241,255',r:.6+rnd()*1.2,ph:rnd()*6.28,dl:rnd()*.25})}}
+    ready=true};
+  im.src=nav.currentSrc||nav.src;
   function frame(now){
     raf=requestAnimationFrame(frame);
-    var y=window.scrollY||0,vh=innerHeight,vw=document.documentElement.clientWidth,target=Math.min(1,y/(vh*.7));
-    cur+=(target-cur)*.12;if(Math.abs(target-cur)<.0005)cur=target;var p=ease(cur);
-    var r=nav.getBoundingClientRect(),h0=r.height||34,w0=r.width||h0*880/202;
-    nav.style.opacity=p>.005?0:1;
-    var s=1+p*(vw<=620?1.4:2.2),x=r.left+(vw/2-w0*s/2-r.left)*p,yy=r.top+(vh*.42-h0*s/2-r.top)*p;
-    im.style.width=w0+'px';
-    im.style.transform='translate3d('+x.toFixed(1)+'px,'+yy.toFixed(1)+'px,0) scale('+s.toFixed(3)+')';
-    im.style.opacity=p>.005?(1-p*.97).toFixed(3):0;
-    im.style.filter='blur('+(p*3).toFixed(1)+'px) drop-shadow(0 0 '+(6+p*30).toFixed(0)+'px rgba(242,211,143,.9))';
-    sun.style.opacity=(p*.75).toFixed(3);
-    ray.style.opacity=(p*.6).toFixed(3);ray.style.transform='rotate('+((now/120)%360).toFixed(1)+'deg) scale('+(.6+p*.6).toFixed(3)+')';
+    var y=window.scrollY||0,target=Math.min(1,y/(VH*.7));cur+=(target-cur)*.1;if(Math.abs(target-cur)<.0005)cur=target;var p=ease(cur);
+    nav.style.opacity=ready&&p>.004?0:1;
+    c.clearRect(0,0,VW,VH);if(!ready||p<=.004)return;
+    var r=nav.getBoundingClientRect(),w=r.width,h=r.height;
+    c.globalCompositeOperation='lighter';
+    for(var j=0;j<P.length;j++){var q=P[j],e=Math.max(0,Math.min(1,(p-q.dl*.5)/(1-q.dl*.5))),tw=.55+.45*Math.sin(now/420+q.ph);
+      var hx=r.left+q.hx*w,hy=r.top+q.hy*h,tx=q.tx*VW,ty=q.ty*VH;
+      var px=hx+(tx-hx)*e+Math.sin(now/1300+q.ph)*7*e,py=hy+(ty-hy)*e+Math.cos(now/1500+q.ph)*7*e;
+      var a=(1-e*.45)*(e>.92?tw:1)*.9;c.fillStyle='rgba('+q.c+','+a.toFixed(3)+')';c.beginPath();c.arc(px,py,q.r*(1+e*.7),0,7);c.fill()}
+    c.globalCompositeOperation='source-over';
   }
+  var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(size,120)},{passive:true});size();
   raf=requestAnimationFrame(frame);
   document.addEventListener('visibilitychange',function(){cancelAnimationFrame(raf);if(!document.hidden)raf=requestAnimationFrame(frame)});
 })();
