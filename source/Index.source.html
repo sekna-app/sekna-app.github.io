@@ -7698,6 +7698,28 @@ window.addEventListener('load',function(){
 
     /* v269 desktop: an opened day keeps its date at the top of the date column */
     @media (min-width:1100px){html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcH.open>.dcH-h{align-content:start!important;padding-top:12px!important}}
+
+    /* v270 desktop Media Plan (pick 3): a shorter month card with Spend as a gold-framed card in the row of figures;
+       each day row white with a gold line on the left, and ROAS after Value in dark gold */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body #dxBody .ph2.ph3{display:grid!important;grid-template-columns:1.3fr 4fr;grid-template-areas:"t t" "s l" "b b" "g g";column-gap:8px;row-gap:8px;padding:12px 14px!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .ph3 .ph2-top{grid-area:t;margin:0!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .ph3 .ph3-sp{grid-area:s;margin:0!important;border:1.5px solid rgba(242,211,143,.75);border-radius:12px;background:rgba(255,255,255,.04);padding:8px 12px!important;display:flex;flex-direction:column;justify-content:center}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .ph3 .ph3-sp small{color:#f2d38f!important;font-size:10px!important;font-weight:900}html.dk-on:not(.desktop-site-mode) body #dxBody .ph3 .ph3-sp b{color:#f2d38f!important;font-size:24px!important;line-height:1.1}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .ph3 .ph3-list{grid-area:l;display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:8px!important;margin:0!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .ph3 .ph3-list>div{padding:8px 10px!important;min-height:0!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .ph3 .ph3-bar{grid-area:b;margin:2px 0 0!important}html.dk-on:not(.desktop-site-mode) body #dxBody .ph3 .ph-legend{grid-area:g;margin:0!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcA.dcH{border-left:4px solid #c99a45!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcA.dcH>.dcH-h{background:#fff!important;color:#141b33!important;box-shadow:none!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcA.dcH>.dcH-h>b{color:#203c8e!important}html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcA.dcH>.dcH-h>span{color:#8a93ad!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcA.dcH>.dcH-h>i{display:none!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcA.dcH.latest>.dcH-h{background:linear-gradient(135deg,#fdf6e3,#f7e3a3)!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dcA-g{grid-template-columns:repeat(5,auto)!important;justify-content:space-between!important;column-gap:18px!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dcA-g>div{white-space:nowrap}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dcA-g>.dcA-ro b{color:#a56a06!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dcA-g>.dcA-ro{order:1;margin-left:22px!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dcA-g>.dcA-ro small{display:inline-block!important;position:static!important;visibility:visible!important;opacity:1!important}
+    }
 </style>
 </head>
 <body>
@@ -10596,7 +10618,7 @@ function daysCards(days,latest,T){
    if(plan){
      const tot=p.spend||1;
      return `<div class="dc-card dcA dcH${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" onclick="toggleDay('${x.date}')">${hdr}<div class="dc-main">
-      <div class="dc-grid dcA-g"><div><small>Spend</small><b>${money(p.spend)}</b></div><div class="dk-only"><small>Clicks</small><b>${fmt(p.clicks,0)}</b></div><div><small>Conv.</small><b>${fmt(p.conversions,0)}</b></div><div><small>Value</small><b>${money(p.value)}</b></div></div>
+      <div class="dc-grid dcA-g"><div><small>Spend</small><b>${money(p.spend)}</b></div><div class="dk-only"><small>Clicks</small><b>${fmt(p.clicks,0)}</b></div><div><small>Conv.</small><b>${fmt(p.conversions,0)}</b></div><div class="dk-only dcA-ro"><small>ROAS</small><b>${p.roas!=null?fmt(p.roas,2)+'x':'—'}</b></div><div><small>Value</small><b>${money(p.value)}</b></div></div>
       <div class="dc-mix">${p.channels.map((c,k)=>`<span class="m${k}" style="flex:${c.spend/tot}"></span>`).join('')}</div>
       <div class="dc-more">${dxPlanMore(p)}${dxPlanSheet(p)}</div></div></div>`;
    }
