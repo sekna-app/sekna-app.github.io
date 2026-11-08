@@ -472,12 +472,19 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
 .g3 .pl3{-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);background:rgba(18,30,78,.72)}
 @media (min-width:981px){.g3 .pl3.a{left:auto;right:6px;top:2px}.g3 .pl3.b{right:auto;left:6px;bottom:60px}}
 
-/* Spark storm, tied to the gold line: each part waits hidden until the line's burning head reaches it, then
-   fireworks and a smoke ring go off at the head and the part pops in (elastic), its heading flashing gold. */
-html.bx-on .bx{opacity:0;transform:scale(.2) translateY(70px) rotate(-6deg);transition:transform 1s cubic-bezier(.3,1.55,.4,1) var(--d,0s),opacity .4s ease var(--d,0s);will-change:transform,opacity}
-html.bx-on .bx-in .bx{opacity:1;transform:none}
-html.bx-on .bx-in .bxh{animation:bxGlow 1.8s ease calc(var(--d,0s) + .5s) both}
-@keyframes bxGlow{0%{text-shadow:0 0 0 rgba(242,211,143,0)}35%{text-shadow:0 0 22px rgba(242,211,143,.9),0 0 46px rgba(226,184,116,.45)}100%{text-shadow:0 0 0 rgba(242,211,143,0)}}
+/* Cinematic 3D, tied to the gold line: each part waits until the line's burning head reaches it. Then headings rise word by
+   word as if turning up from below, devices fly in from far away turning in 3D, step cards flip one after another,
+   lines of text slide in, and a heavy blue smoke rolls out under the devices. */
+html.bx-on .bx{opacity:0;transition:transform 1.4s cubic-bezier(.16,1,.3,1) var(--d,0s),opacity .9s ease var(--d,0s),clip-path .9s ease var(--d,0s);will-change:transform,opacity}
+html.bx-on .bx.dv{transform:perspective(1100px) translate3d(0,40px,-620px) rotateY(52deg) rotateX(22deg)}
+html.bx-on .bx.tx{transform:translate3d(-34px,0,0)}
+html.bx-on .bx.cd{transform:perspective(900px) rotateY(90deg);transition-duration:.8s,.5s}
+html.bx-on .bx.kk2{clip-path:inset(0 100% 0 0);opacity:1}
+html.bx-on .bx.hd{opacity:1;transform:none;perspective:900px}
+html.bx-on .bx.hd .bxw{display:inline-block;opacity:0;transform:translateY(90%) rotateX(-85deg);transform-origin:50% 100%;transition:transform .9s cubic-bezier(.2,.9,.2,1),opacity .6s ease}
+html.bx-on .bx-in .bx{opacity:1;transform:none;clip-path:inset(0 0 0 0)}
+html.bx-on .bx-in .bx.hd .bxw{opacity:1;transform:none}
+h1 span.bxn,h2 span.bxn{background:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;color:inherit!important;-webkit-text-fill-color:currentColor}
 </style>
 </head>
 <body>
@@ -762,16 +769,21 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   var ps=[].slice.call(ss.querySelectorAll('path')),core=ss.querySelector('.core'),LUT=[],gg=document.getElementById('glG'),cx=cv.getContext('2d');
   var still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   var W=0,H=0,L=0,shown=0,t0=performance.now(),last=t0,parts=[],smoke=[],raf=0,dpr=1,small=false,lastH=0;
-  // the parts the head sets off: the hero, then every section
-  var GR=[{el:document.querySelector('.hgrid'),q:['.ht .kick','.ht h1','.ht p.l','.stage','.ha']}];
-  [].forEach.call(document.querySelectorAll('section.sec'),function(sc){GR.push({el:sc,q:['.lapgrid>div:first-child','.ltabs','.txt h2','.txt .s','.mpw-h','.mpw-steps','.mpw-t','.g3x','.g3s','.tl3','.gnote']})});
+  // the parts the head sets off: the hero, then every section. [selector, kind]: dv device, hd heading, tx text, cd card, kk2 label
+  var GR=[{el:document.querySelector('.hgrid'),q:[['.ht .kick','kk2'],['.ht h1','hd'],['.ht p.l','tx'],['.stage','dv'],['.ha','tx']]}];
+  [].forEach.call(document.querySelectorAll('section.sec'),function(sc){GR.push({el:sc,q:[['.lapgrid>div:first-child','dv'],['.ltabs','tx'],['.txt h2','hd'],['.txt .s','tx'],['.mpw-h .kk','kk2'],['.mpw-h h2','hd'],['.mpw-h p','tx'],['.mpw-s','cd'],['.mpw-t','tx'],['.g3x .kk','kk2'],['.g3x h2','hd'],['.g3x p','tx'],['.g3s','dv'],['.tl3','tx'],['.gnote','tx']]})});
+  function words(h){var w=0,walk=function(n){[].slice.call(n.childNodes).forEach(function(c){
+      if(c.nodeType===3){var f=document.createDocumentFragment();c.textContent.split(/(\s+)/).forEach(function(t){if(!t)return;if(/^\s+$/.test(t)){f.appendChild(document.createTextNode(t));return}
+        var sp=document.createElement('span');sp.className='bxw bxn';sp.textContent=t;sp.style.transitionDelay='calc(var(--d,0s) + '+(w++*.07).toFixed(2)+'s)';f.appendChild(sp)});n.replaceChild(f,c)}
+      else if(c.nodeType===1&&c.tagName!=='BR'){if(/^(SPAN|EM|B)$/.test(c.tagName)&&!c.children.length){c.classList.add('bxw');c.style.transitionDelay='calc(var(--d,0s) + '+(w++*.07).toFixed(2)+'s)'}else walk(c)}})};walk(h)}
   if(!still){document.documentElement.classList.add('bx-on');
-    GR.forEach(function(g){if(!g.el)return;var k=0;g.q.forEach(function(q){[].forEach.call(g.el.querySelectorAll(q),function(e){e.classList.add('bx');e.style.setProperty('--d',(k++*.11).toFixed(2)+'s');if(/^H[12]$/.test(e.tagName))e.classList.add('bxh');[].forEach.call(e.querySelectorAll('h1,h2'),function(h){h.classList.add('bxh')})})})})}
-  function storm(x,y){ // fireworks + a smoke ring at the head
-    var n=small?55:110;for(var i=0;i<n;i++){var a=Math.random()*Math.PI*2,v=2.2+Math.random()*(small?4:5.5);
-      parts.push({x:x,y:y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:700+Math.random()*700,t:0,c:Math.random()<.5?'#fff3d6':(Math.random()<.5?'#E2B874':'#f2d38f'),r:1.2+Math.random()*1.4,big:1})}
-    var m=small?14:24;for(var j=0;j<m;j++){var b=j/m*Math.PI*2,u=1.1+Math.random()*.8;
-      smoke.push({x:x,y:y,vx:Math.cos(b)*u,vy:Math.sin(b)*u*.75-.15,r:18+Math.random()*16,g:.45+Math.random()*.35,l:1800+Math.random()*1400,t:0,c:Math.random()<.6?'226,184,116':'170,185,235'})}}
+    GR.forEach(function(g){if(!g.el)return;var k=0;g.q.forEach(function(q){[].forEach.call(g.el.querySelectorAll(q[0]),function(e){e.classList.add('bx',q[1]);var dd=k++*(q[1]==='cd'?.14:.1);e.style.setProperty('--d',dd.toFixed(2)+'s');(g.it=g.it||[]).push([e,dd]);if(q[1]==='hd')words(e);if(q[1]==='dv')(g.dv=g.dv||[]).push(e)})})})}
+  var SPR={};function sprite(c){if(SPR[c])return SPR[c];var k=document.createElement('canvas');k.width=k.height=128;var t=k.getContext('2d'),g=t.createRadialGradient(64,64,0,64,64,64);
+    g.addColorStop(0,'rgba('+c+',1)');g.addColorStop(.45,'rgba('+c+',.45)');g.addColorStop(1,'rgba('+c+',0)');t.fillStyle=g;t.fillRect(0,0,128,128);return SPR[c]=k}
+  function storm(x,y,G){ // heavy blue smoke rolling out under each device, a touch of gold
+    var at=(G&&G.dv&&G.dv.length)?G.dv.map(function(e){var r=e.getBoundingClientRect();return [r.left+r.width/2,r.bottom-20]}):[[x,y]];
+    at.forEach(function(pt){var m=small?14:26;for(var j=0;j<m;j++){var b=(Math.random()-.5)*Math.PI,u=.6+Math.random()*1.4,side=Math.random()<.5?-1:1;
+      smoke.push({x:pt[0]+(Math.random()-.5)*80,y:pt[1]+Math.random()*30,vx:side*u*(.6+Math.random()),vy:-Math.random()*.35,r:30+Math.random()*30,g:.5+Math.random()*.45,l:2600+Math.random()*1800,t:0,c:Math.random()<.78?'120,145,225':'226,184,116'})}})}
   function f(n){return n.toFixed(1)}
   function build(){
     W=document.documentElement.clientWidth;H=Math.max(document.documentElement.scrollHeight,document.body.scrollHeight);lastH=H;
@@ -802,14 +814,14 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
     var ii=Math.round(shown*1200)*2,tip={x:LUT[ii],y:LUT[ii+1]},moving=Math.abs(goal-shown)>.0006,ty=tip.y-sy;
     if(shown>.002&&shown<.999&&ty>-40&&ty<vh+40)spawn(tip.x,ty,small?(moving?5:2):(moving?9:3),moving?3.2:1.7);
     for(var gi=0;gi<GR.length;gi++){var G=GR[gi];if(!G.el||G.done)continue;var rc=G.el.getBoundingClientRect(),gy=rc.top+sy;
-      if(gi===0?now-t0>250:(tip.y>=gy+90||rc.top<vh*.35)){G.done=true;G.el.classList.add('bx-in');
-        var bxX=gi===0?W*.3:tip.x,bxY=gi===0?rc.top+rc.height*.35:ty;if(!still&&bxY>-60&&bxY<vh+60)storm(bxX,bxY)}}
+      if(gi===0?now-t0>250:(tip.y>=gy+90||rc.top<vh*.35)){G.done=true;G.el.classList.add('bx-in');(G.it||[]).forEach(function(it){setTimeout(function(){it[0].classList.remove('bx','dv','tx','cd','kk2');it[0].style.removeProperty('--d')},(it[1]+1.9)*1000)});
+        var bxX=gi===0?W*.3:tip.x,bxY=gi===0?rc.top+rc.height*.35:ty;if(!still)storm(bxX,bxY,G)}}
     cx.clearRect(0,0,innerWidth,vh);
     var dy0=window.__glSy==null?0:sy-window.__glSy;
     smoke=smoke.filter(function(p){return (p.t+=dt)<p.l});
     for(var si=0;si<smoke.length;si++){var q=smoke[si];q.y-=dy0;q.x+=q.vx*dt/16;q.y+=q.vy*dt/16;q.vx*=.982;q.vy=q.vy*.982-.004*dt/16;q.r+=q.g*dt/16;
-      var qa=Math.sin(Math.PI*q.t/q.l)*.2,sg=cx.createRadialGradient(q.x,q.y,0,q.x,q.y,q.r);sg.addColorStop(0,'rgba('+q.c+','+qa.toFixed(3)+')');sg.addColorStop(1,'rgba('+q.c+',0)');
-      cx.fillStyle=sg;cx.beginPath();cx.arc(q.x,q.y,q.r,0,7);cx.fill()}
+      cx.globalAlpha=Math.sin(Math.PI*q.t/q.l)*.24;cx.drawImage(sprite(q.c),q.x-q.r,q.y-q.r,q.r*2,q.r*2)}
+    cx.globalAlpha=1;
     cx.globalCompositeOperation='lighter';
     if(shown>.002&&shown<.999){var R=12*(1+.15*Math.sin(now/90)),g=cx.createRadialGradient(tip.x,ty,0,tip.x,ty,R*1.4);
       g.addColorStop(0,'rgba(255,244,220,.75)');g.addColorStop(.35,'rgba(243,215,159,.45)');g.addColorStop(1,'rgba(226,184,116,0)');
