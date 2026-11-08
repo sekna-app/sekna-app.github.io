@@ -7863,8 +7863,6 @@ window.addEventListener('load',function(){
     }
     @keyframes slvSh{0%{background-position:130% 0}55%,100%{background-position:-60% 0}}
 
-    /* v269 desktop: an opened day keeps its date at the top of the date column */
-    @media (min-width:1100px){html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcH.open>.dcH-h{align-content:start!important;padding-top:12px!important}}
 
     /* v270 desktop Media Plan (pick 3): a shorter month card with Spend as a gold-framed card in the row of figures;
        each day row white with a gold line on the left, and ROAS after Value in dark gold */
@@ -7886,6 +7884,22 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) body #dxBody .dcA-g>.dcA-ro b{color:#a56a06!important}
       html.dk-on:not(.desktop-site-mode) body #dxBody .dcA-g>.dcA-ro{order:1;margin-left:22px!important}
       html.dk-on:not(.desktop-site-mode) body #dxBody .dcA-g>.dcA-ro small{display:inline-block!important;position:static!important;visibility:visible!important;opacity:1!important}
+    }
+
+    /* v271 desktop Results like Media Plan: ROAS after Value in each row; the month card without the big Spend on top,
+       its four figures in one row with Spend gold-framed */
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dc-card.dcR.dcH{grid-template-columns:170px minmax(0,1fr)!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dcR-g{grid-template-columns:repeat(5,auto)!important;justify-content:space-between!important;gap:0 22px!important;width:100%}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dcR-g>.dcR-k{justify-content:flex-start!important;gap:6px!important;white-space:nowrap}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dcR-g>.dcR-k span{min-width:0!important;flex:none!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .dcR-g>.dcR-ro{order:1}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .mt.mt3 .mt-hero{display:none!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .mt.mt3{padding:12px 14px!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .mt.mt3 .mt-grid{display:grid!important;grid-template-columns:1.3fr repeat(3,1fr)!important;gap:8px!important;margin-top:8px!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .mt.mt3 .mt-grid>.mt-t{padding:8px 12px!important;min-height:0!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .mt.mt3 .mt-grid>.mt-sp{border:1.5px solid rgba(242,211,143,.75)!important;background:rgba(255,255,255,.04)!important}
+      html.dk-on:not(.desktop-site-mode) body #dxBody .mt.mt3 .mt-grid>.mt-sp small,html.dk-on:not(.desktop-site-mode) body #dxBody .mt.mt3 .mt-grid>.mt-sp b{color:#f2d38f!important}
     }
 </style>
 </head>
@@ -10785,7 +10799,7 @@ function daysCards(days,latest,T){
    const roR=a.roas!=null&&p.roas?a.roas/p.roas:null;
    const box=(l,act,r,cls)=>`<div class="dcR-k ${cls}"><small>${l}</small><b>${r==null||!isFinite(r)?'—':Math.round(r*100)+'%'}</b><span>${act}</span></div>`;
    return `<div class="dc-card dcA dcH dcR${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" data-rx="1" onclick="toggleDay('${x.date}')">${rxBadge(x.date)}${hdr}<div class="dc-main">
-     <div class="dcR-g">${box('Spend',money(a.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${(()=>{const r=p.clicks?a.clicks/p.clicks:null;return box('Clicks',fmt(a.clicks,0),r,achClass(r)).replace('class="dcR-k','class="dk-only dcR-k')})()}${box('Conv.',fmt(a.conversions,0),a.convAchievement,achClass(a.convAchievement))}${box('Value',money(a.value),a.valueAchievement,achClass(a.valueAchievement))}</div>
+     <div class="dcR-g">${box('Spend',money(a.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${(()=>{const r=p.clicks?a.clicks/p.clicks:null;return box('Clicks',fmt(a.clicks,0),r,achClass(r)).replace('class="dcR-k','class="dk-only dcR-k')})()}${box('Conv.',fmt(a.conversions,0),a.convAchievement,achClass(a.convAchievement))}${box('ROAS',a.roas!=null?fmt(a.roas,2)+'x':'—',roR,achClass(roR)).replace('class="dcR-k','class="dk-only dcR-ro dcR-k')}${box('Value',money(a.value),a.valueAchievement,achClass(a.valueAchievement))}</div>
      <div class="dc-more"><table class="dcR-tb"><tr><th></th><th>Actual</th><th>Plan</th><th>%</th></tr>${rr('Spend',money(a.spend),money(p.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${rr('Conv.',fmt(a.conversions,0),fmt(p.conversions,0),a.convAchievement,achClass(a.convAchievement))}${rr('Value',money(a.value),money(p.value),a.valueAchievement,achClass(a.valueAchievement))}${rr('ROAS',fmt(a.roas,2)+'x',fmt(p.roas,2)+'x',roR,achClass(roR))}${p.clicks?rr('Clicks',fmt(a.clicks,0),fmt(p.clicks,0),a.clicks/p.clicks,achClass(a.clicks/p.clicks)):''}</table>${dxResultMore(x)}${dxResultSheet(x)}<button type="button" class="dx-tybtn" onclick="event.stopPropagation();dxTypes('${x.date}',this)">By campaign type <i>▾</i></button><div class="dx-ty" hidden></div></div></div></div>`;
  }).join('');
  return (plan?planHero(days,T):resultsHero(days,T))+`<div class="dc-list">${cards}</div>`+(plan?`<div class="dc-legend">${PLAN_MIX_LABELS.map((l,k)=>`<span><i class="m${k}"></i>${l}</span>`).join('')}</div>`:'')+`<div class="dx-note">Tap a day to see more.</div>`;
