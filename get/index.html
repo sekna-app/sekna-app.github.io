@@ -500,6 +500,14 @@ h1 span.bxn,h2 span.bxn{background:none!important;-webkit-background-clip:border
 @keyframes flip2{0%{transform:scaleX(1)}48%{transform:scaleX(.03) scaleY(1.03)}52%{transform:scaleX(.03) scaleY(1.03)}100%{transform:scaleX(1)}}
 @keyframes bkOut{0%,49%{opacity:1}50%,100%{opacity:0}}
 @keyframes scIn{0%,49%{opacity:0}50%,100%{opacity:1}}
+
+/* Phones and tablets: no frosted glass. iOS Safari draws a backdrop-filter that sits near 3D or animated layers as a
+   big blurred copy of the page in the wrong place (a lavender streaky panel at the screen edge); solid fills instead. */
+@media (max-width:980px){
+ *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+ .g3 .pl3,.pl3{background:rgba(18,30,78,.95)!important}
+ .card{background:rgba(10,20,64,.94)!important}
+}
 </style>
 </head>
 <body>
