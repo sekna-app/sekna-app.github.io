@@ -8262,7 +8262,7 @@ window.addEventListener('load',function(){
       <div class="sa-opts" id="spendAlertOpts"></div>
       <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon c-o"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l6 6 4-4 8 8"/><path d="M21 11v5h-5"/></svg></span><span class="sk-row-text"><b>ROAS drop alert</b><small>A note when the day's ROAS falls this much below its 7-day average. <a href="#" class="sa-demo" onclick="roasDropCheck(DASH_DATA,true);return false">Show me</a></small></span></div>
       <div class="sa-opts" id="roasAlertOpts"></div>
-      <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon c-p"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span><span class="sk-row-text"><b>Season reminders</b><small>A push to the team 14 and 3 days before Ramadan, the Eids, Dhul Hijjah, Giving Tuesday and the other seasons.</small></span></div>
+      <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon c-p"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span><span class="sk-row-text"><b>Season reminders</b><small>A push and an email to the team 15 days before Ramadan, the Eids, Dhul Hijjah, Giving Tuesday and the other seasons. <a href="#" class="sa-demo" onclick="seasonTestEmail(this);return false">Send me a test email</a></small></span></div>
       <div class="sa-opts" id="seasonAlertOpts"></div>
     </div>
 
@@ -13319,6 +13319,7 @@ const CUR_LIST={GBP:{s:'£',name:'pounds'},USD:{s:'$',name:'dollars'}};
 
 let APP_PREFS=(()=>{try{const o=JSON.parse(storeGet('sekna_app_prefs')||'null');if(o&&o.cur)return o}catch(e){}return {cur:{usa:'USD',ar:'GBP'},alert:120,roas:40}})();
 let ACC_CUR=APP_PREFS.cur;
+function seasonTestEmail(a){if(a.dataset.busy)return;a.dataset.busy=1;const t=a.textContent;a.textContent='Sending…';serverCall('adminSeasonTestEmail',getAccessToken()).then(r=>{showSettingsToast('Sent to '+((r&&r.to)||'you')+' · '+((r&&r.season)||''))}).catch(e=>showSettingsToast(errorText(e))).finally(()=>{a.textContent=t;delete a.dataset.busy})}
 function prefsLoad(){return serverCall('appPrefs',getAccessToken()).then(p=>{if(!p||!p.cur)return;APP_PREFS=p;ACC_CUR=p.cur;storeSet('sekna_app_prefs',JSON.stringify(p));accCurApply();drawAccCur();drawSpendAlertOpts();drawRoasAlertOpts()}).catch(()=>{})}
 function prefsSave(ch){if(!mrOwner())return;Object.assign(APP_PREFS,ch);storeSet('sekna_app_prefs',JSON.stringify(APP_PREFS));drawAccCur();drawSpendAlertOpts();drawRoasAlertOpts();
  serverCall('appPrefsSet',getAccessToken(),ch).then(p=>{if(p&&p.cur){APP_PREFS=p;ACC_CUR=p.cur;storeSet('sekna_app_prefs',JSON.stringify(p))}showSettingsToast('Saved for the whole team')}).catch(e=>showSettingsToast(errorText(e)))}
