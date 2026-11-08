@@ -530,7 +530,7 @@ const SEASONS_H = [
   { k: 'ashura', m: 1, d: 10, name: 'Ashura', e: '🤲' }];
 const isoPlus = (dk, n) => new Date(Date.parse(dk + 'T00:00:00Z') + n * 864e5).toISOString().slice(0, 10);
 function nthDay(y, mo, wd, n) { const f = new Date(Date.UTC(y, mo - 1, 1)).getUTCDay(); return new Date(Date.UTC(y, mo - 1, 1 + (wd - f + 7) % 7 + (n - 1) * 7)).toISOString().slice(0, 10); }
-/** The seasons that start exactly 15 days after `today` (yyyy-mm-dd). */
+/** The seasons that start exactly 15 days after `today`, or on it (yyyy-mm-dd). */
 function seasonsDue(today) {
   const out = [], fmt = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { day: 'numeric', month: 'numeric', year: 'numeric', timeZone: 'UTC' });
   for (const left of [15, 0]) {
@@ -560,6 +560,79 @@ const SEASON_GREET = {
   yearend: ['Let\'s End the Year with Impact! ✨', 'May our team\'s hard work lead to meaningful achievements. May every effort we make leave a lasting legacy of hope, kindness, and generosity.']
 };
 const GREET_IMG = 'https://sekna-app.web.app/icons/greet/';
+
+/* v294 season email, 15 days ahead: the season's picture, then the same season last year per account
+   (Hijri seasons: USA and AR; the US seasons: USA only), the totals and the best day. */
+const SEASON_LEN = { ramadan: 30, last10: 10, eidfitr: 3, dhulhijjah: 10, arafah: 1, eidadha: 4, ashura: 1, thanksgiving: 1, givingtuesday: 1, yearend: 6 };
+const SEASON_IMG = 'https://sekna-app.web.app/icons/seasons/';
+const HIJRI_MONTHS = ['Muharram', 'Safar', 'Rabi I', 'Rabi II', 'Jumada I', 'Jumada II', 'Rajab', 'Shaban', 'Ramadan', 'Shawwal', 'Dhul Qadah', 'Dhul Hijjah'];
+const HFMT = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { day: 'numeric', month: 'numeric', year: 'numeric', timeZone: 'UTC' });
+function hijriParts(dk) { const p = {}; HFMT.formatToParts(new Date(dk + 'T00:00:00Z')).forEach(x => { p[x.type] = parseInt(x.value, 10); }); return p; }
+/** Where the same season started a year earlier. */
+function seasonLastYear(k, at) {
+  const def = SEASONS_H.find(x => x.k === k);
+  if (def) {
+    const y = hijriParts(at).year - 1;
+    for (let n = 400; n >= 300; n--) {
+      const dk = isoPlus(at, -n), h = hijriParts(dk), b = hijriParts(isoPlus(dk, -1));
+      if (h.year === y && h.month === def.m && h.day >= def.d && !(b.month === def.m && b.day >= def.d)) return dk;
+    }
+    return null;
+  }
+  const y = +at.slice(0, 4) - 1, tg = nthDay(y, 11, 4, 4);
+  return k === 'thanksgiving' ? tg : k === 'givingtuesday' ? isoPlus(tg, 5) : k === 'yearend' ? y + '-12-26' : null;
+}
+/** One account's totals and best day over [from, from + len). days[dk] = per channel [spend, impr, clicks, conv, value]. */
+function seasonTotals(days, from, len) {
+  let spend = 0, value = 0, conv = 0, n = 0, best = null;
+  for (let i = 0; i < len; i++) {
+    const dk = isoPlus(from, i), a = (days || {})[dk];
+    if (!a) continue;
+    let ds = 0, dv = 0, dc = 0;
+    for (let c = 0; c + 4 < a.length; c += 5) { ds += +a[c] || 0; dc += +a[c + 3] || 0; dv += +a[c + 4] || 0; }
+    spend += ds; value += dv; conv += dc; n++;
+    if (len > 1 && ds > 0 && (!best || dv > best.value)) best = { dk, spend: ds, value: dv };
+  }
+  return n ? { spend, value, conv, best } : null;
+}
+function seasonEmailHtml(s, k, rows) {
+  const e = notify.esc, start = new Date(s.at + 'T00:00:00Z');
+  const dLabel = start.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+  const h = hijriParts(s.at), hijri = SEASONS_H.some(x => x.k === k) ? ' · ' + h.day + ' ' + HIJRI_MONTHS[h.month - 1] + ' ' + h.year : '';
+  const money = (v, sym) => sym + (v >= 1e6 ? (v / 1e6).toFixed(2) + 'M' : Math.round(v).toLocaleString('en-GB'));
+  const td = 'padding:9px 10px;border-top:1px solid #eef1f6;';
+  const body = rows.length ? rows.map(r => {
+    const t = r.t, roas = t.spend ? t.value / t.spend : 0;
+    let out = '<tr><td style="' + td + 'font-weight:700">' + e(r.label) + '</td><td style="' + td + 'text-align:right">' + money(t.spend, r.sym) + '</td><td style="' + td + 'text-align:right">' + money(t.value, r.sym) +
+      '</td><td style="' + td + 'text-align:right;color:' + (roas >= 1 ? '#13804f' : '#c63a4a') + ';font-weight:800">' + roas.toFixed(2) + 'x</td></tr>';
+    if (t.best) {
+      const br = t.best.spend ? t.best.value / t.best.spend : 0, bd = new Date(t.best.dk + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+      out += '<tr style="color:#5b6478;font-size:12px"><td style="padding:2px 10px 9px 22px">Best day · ' + e(bd) + '</td><td style="padding:2px 10px 9px;text-align:right">' + money(t.best.spend, r.sym) + '</td><td style="padding:2px 10px 9px;text-align:right">' + money(t.best.value, r.sym) + '</td><td style="padding:2px 10px 9px;text-align:right">' + br.toFixed(2) + 'x</td></tr>';
+    }
+    return out;
+  }).join('') : '<tr><td colspan="4" style="' + td + 'color:#8a92a0">No numbers for this season last year.</td></tr>';
+  const btn = (href, label, primary) => '<a href="' + href + '" style="display:inline-block;padding:12px 22px;margin:4px 8px 0 0;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;' +
+    (primary ? 'background:#203C8E;color:#ffffff' : 'background:#eef1f7;color:#1d2433') + '">' + label + '</a>';
+  return '<div style="background:#f4f6fb;padding:28px 12px;font-family:Arial,Helvetica,sans-serif;color:#1d2433"><div style="max-width:480px;margin:0 auto;background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6eaf4">' +
+    '<div style="background-color:#0c2266;background-image:linear-gradient(180deg,#2a4fb8 0%,#14317f 45%,#0a1e5a 80%,#06123c 100%);padding:20px 24px"><img src="https://sekna-app.web.app/icons/mail-logo.png?v=5" width="167" height="38" alt="HEMERA" style="display:block;border:0;width:167px;height:38px"></div>' +
+    '<img src="' + SEASON_IMG + k + '.jpg" width="480" alt="' + e(s.name) + '" style="display:block;width:100%;max-width:480px;height:auto;border:0">' +
+    '<div style="padding:22px 24px"><div style="display:inline-block;background:#fdf3dc;color:#9a6a12;font-size:11px;font-weight:800;letter-spacing:.08em;border-radius:99px;padding:4px 10px">' + s.left + ' DAYS TO GO</div>' +
+    '<h2 style="margin:10px 0 4px;font-size:22px;color:#1d2433">' + s.e + ' ' + e(s.name) + ' starts in ' + s.left + ' days' + (s.acc ? ' · USA' : '') + '</h2>' +
+    '<p style="margin:0 0 16px;color:#5b6478;font-size:14px">Starts <b style="color:#1d2433">' + e(dLabel) + '</b>' + e(hijri) + '. Time to check the plan and the budgets.</p>' +
+    '<table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:13px;margin-bottom:16px"><tr style="background:#f4f6fb;color:#8a92a0;font-size:10.5px;letter-spacing:.06em"><td style="padding:8px 10px">LAST YEAR</td><td style="padding:8px 10px;text-align:right">SPEND</td><td style="padding:8px 10px;text-align:right">VALUE</td><td style="padding:8px 10px;text-align:right">ROAS</td></tr>' + body + '</table>' +
+    btn('https://sekna-app.web.app/', 'Open Seasons Calendar', true) + '</div>' +
+    '<div style="padding:14px 24px;background:#f8f9fc;color:#8a92a0;font-size:11px">HEMERA • Day by day. · Sent because season alerts are on.</div></div></div>';
+}
+async function seasonEmail(s) {
+  const k = s.id.replace(/-\d+$/, ''), from = seasonLastYear(k, s.at), len = SEASON_LEN[k] || 1;
+  const accs = s.acc ? [['usa', 'Human Appeal USA', '$']] : [['usa', 'Human Appeal USA', '$'], ['ar', 'Human Appeal AR', '£']];
+  const rows = [];
+  if (from) for (const [key, label, sym] of accs) {
+    try { const t = seasonTotals((await require('./dash').getMonthCompareData(key)).days, from, len); if (t) rows.push({ label, sym, t }); }
+    catch (e) { console.error('Season email ' + key + ': ' + e.message); }
+  }
+  return { subject: s.e + ' ' + s.name + ' starts in ' + s.left + ' days' + (s.acc ? ' · USA' : ''), html: seasonEmailHtml(s, k, rows) };
+}
 
 async function pushChecks(latestByAccount, daysByAccount) {
   if (!(await moved())) return { skipped: true };
@@ -594,7 +667,7 @@ async function pushChecks(latestByAccount, daysByAccount) {
       }
     } catch (e) { console.warn('Release check: ' + e.message); }
   }
-  // Season reminders: from 9:00 (Muscat), once per season and step (14 and 3 days ahead), to the whole team.
+  // Season reminders: from 9:00 (Muscat), once per season, 15 days ahead (a push and an email) and a greeting on the day.
   const nowP = parts(Date.now());
   if (!maintenance && +nowP.hour >= 9 && state.seasonDay !== today) {
     save.seasonDay = today;
@@ -616,6 +689,11 @@ async function pushChecks(latestByAccount, daysByAccount) {
         const start = new Date(s.at + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
         await notify.send({ topics: [{ title: s.e + ' ' + s.name + ' is in ' + s.left + ' days' + (s.acc ? ' · USA' : ''), body: 'Starts ' + start + '. Open to see last year\'s numbers.',
           account: s.acc || 'usa', eventType: 'season' }] }).catch(e => console.error('Season reminder: ' + e.message));
+        // The same reminder as an email to every approved person.
+        try {
+          const m = await seasonEmail(s), people = await approvedPeople();
+          await notify.send({ emails: people.map(p => ({ to: p.email, subject: m.subject, rawHtml: m.html })) });
+        } catch (e) { console.error('Season email: ' + e.message); }
         sent[key] = Date.now(); out.season = (out.season || []).concat(key);
       }
     }
@@ -737,4 +815,4 @@ async function call(fn, args) {
 }
 const FNS = Object.keys(R).concat(['adminRestMove', 'adminRestMoveStatus']);
 
-module.exports = { reportFile, call, FNS, pushChecks, pushState, serverSwitchEmail, moved, fxRefreshIfDue };
+module.exports = { reportFile, call, FNS, pushChecks, pushState, serverSwitchEmail, moved, fxRefreshIfDue, _season: { seasonLastYear, seasonTotals, seasonEmailHtml, seasonsDue } };
