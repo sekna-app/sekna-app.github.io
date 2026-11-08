@@ -789,24 +789,26 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   function build(){
     W=document.documentElement.clientWidth;H=Math.max(document.documentElement.scrollHeight,document.body.scrollHeight);lastH=H;
     small=W<=620;box.style.height=H+'px';
-    // several gold lines: the first is the even, symmetric one (it sets the sections off); the others wander at random
-    // (seeded, so the same shapes every visit) and start a little later
-    var seed=7;function rnd(){seed=(seed*16807)%2147483647;return (seed-1)/2147483646}
+    // a braid of gold lines with one rule: they all meet at the centre of every part of the page (the knots), and between
+    // two knots each line swings out to its own side by its own share of the gap, then comes back. The sides alternate
+    // from line to line and from gap to gap, so they cross like a plait; the swing grows with the gap, so every curve stays smooth.
     var nL=small?3:4,old=ss.querySelectorAll('g');[].forEach.call(old,function(g){g.remove()});LN=[];
+    var cxm=W/2,ys=[-30],hg=document.querySelector('.hgrid');
+    if(hg){var hr=hg.getBoundingClientRect();ys.push(hr.top+window.scrollY+hr.height*.5)}
+    [].forEach.call(document.querySelectorAll('section.sec'),function(sc){var r=sc.getBoundingClientRect();ys.push(r.top+window.scrollY+r.height*.5)});
+    ys.push(H-60);ys=ys.filter(function(v,i,a){return i===0||v>a[i-1]+120});
+    var gmax=0;for(var t=1;t<ys.length;t++)gmax=Math.max(gmax,ys[t]-ys[t-1]);
+    var R=[.62,.44,.27,.12],cap=(small?W*.44:W*.36)/(gmax*.75);
     for(var li=0;li<nL;li++){
-      var top=-30,bot=H-(li?60:140),d,px,py,k,x,y,i;
-      if(li===0){var n=Math.max(4,Math.round((bot-top)/(small?340:420))),step=(bot-top)/n,amp=Math.min(small?W*.3:W*.2,small?130:260),lx=W/2-amp,rx=W/2+amp;k=step*.5;
-        d='M '+f(W/2)+' '+f(top);px=W/2;py=top;
-        for(i=1;i<=n;i++){x=i===n?W/2:(i%2?lx:rx);y=top+step*i;d+=' C '+f(px)+' '+f(py+k)+', '+f(x)+' '+f(y-k)+', '+f(x)+' '+f(y);px=x;py=y}}
-      else{px=W*(.1+rnd()*.8);py=top;d='M '+f(px)+' '+f(py);var side=rnd()<.5?-1:1;
-        while(py<bot){var st=(small?260:320)+rnd()*(small?260:380);y=Math.min(bot,py+st);side=-side;x=Math.max(W*.04,Math.min(W*.96,W/2+side*(W*(.12+rnd()*.36))));k=(y-py)*(.35+rnd()*.25);
-          d+=' C '+f(px)+' '+f(py+k)+', '+f(x)+' '+f(y-k)+', '+f(x)+' '+f(y);px=x;py=y}}
+      var rr=Math.min(R[li],cap),sd=li%2?-1:1,d='M '+f(cxm)+' '+f(ys[0]);
+      for(var sg=1;sg<ys.length;sg++){var y0=ys[sg-1],y1=ys[sg],h=y1-y0,a=rr*h*(sd*(sg%2?1:-1)),k=1.333*a;
+        d+=' C '+f(cxm+k)+' '+f(y0+h/3)+', '+f(cxm+k)+' '+f(y1-h/3)+', '+f(cxm)+' '+f(y1)}
       var g=document.createElementNS('http://www.w3.org/2000/svg','g');if(li)g.setAttribute('class','sub');
       var lp=['h1','h2','h3','h4','core'].map(function(c){var e=document.createElementNS('http://www.w3.org/2000/svg','path');e.setAttribute('class',c);e.setAttribute('d',d);g.appendChild(e);return e});
       ss.appendChild(g);
       var cr=lp[4],Lx=cr.getTotalLength(),lut=[];lp.forEach(function(e){e.style.strokeDasharray=Lx+' '+Lx;e.style.strokeDashoffset=Lx});
       for(var j=0;j<=1200;j++){var q=cr.getPointAtLength(Lx*j/1200);lut.push(q.x,q.y)}
-      LN.push({ps:lp,L:Lx,lut:lut,lag:li?.04+rnd()*.1:0,sp:li?.85+rnd()*.3:1,shown:0,off:''})}
+      LN.push({ps:lp,L:Lx,lut:lut,lag:li*.006,sp:1,shown:0,off:''})}
     ss.setAttribute('viewBox','0 0 '+W+' '+H);ss.setAttribute('preserveAspectRatio','none');
     gg.setAttribute('y2',H);
     ps=LN[0].ps;core=LN[0].ps[4];L=LN[0].L;LUT=LN[0].lut;
