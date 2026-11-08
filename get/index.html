@@ -466,7 +466,8 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
    word as if turning up from below, devices fly in from far away turning in 3D, step cards flip one after another,
    lines of text slide in, and a heavy blue smoke rolls out under the devices. */
 html.bx-on .bx{opacity:0;transition:transform 1.4s cubic-bezier(.16,1,.3,1) var(--d,0s),opacity .9s ease var(--d,0s),clip-path .9s ease var(--d,0s);will-change:transform,opacity}
-html.bx-on .bx.dv{transform:perspective(1100px) translate3d(0,40px,-620px) rotateY(52deg) rotateX(22deg)}
+html.bx-on .bx.dv{transform:translate3d(0,60px,0) scale(.8)}
+html.bx-on .bx.fd{transform:none;transition-duration:.9s,.9s}
 html.bx-on .bx.tx{transform:translate3d(-34px,0,0)}
 html.bx-on .bx.cd{transform:perspective(900px) rotateY(90deg);transition-duration:.8s,.5s}
 html.bx-on .bx.kk2{clip-path:inset(0 100% 0 0);opacity:1}
@@ -764,7 +765,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   var still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
   var W=0,t0=performance.now(),last=t0,smoke=[],raf=0,dpr=1,small=false;
   // the parts the head sets off: the hero, then every section. [selector, kind]: dv device, hd heading, tx text, cd card, kk2 label
-  var GR=[{el:document.querySelector('.hgrid'),q:[['.ht .kick','kk2'],['.ht h1','hd'],['.ht p.l','tx'],['.stage','dv'],['.ha','tx']]}];
+  var GR=[{el:document.querySelector('.hgrid'),q:[['.ht .kick','kk2'],['.ht h1','hd'],['.ht p.l','tx'],['.stage','fd'],['.ha','tx']]}];
   [].forEach.call(document.querySelectorAll('section.sec'),function(sc){GR.push({el:sc,q:[['.lapgrid>div:first-child','dv'],['.ltabs','tx'],['.txt h2','hd'],['.txt .s','tx'],['.mpw-h .kk','kk2'],['.mpw-h h2','hd'],['.mpw-h p','tx'],['.mpw-s','cd'],['.mpw-t','tx'],['.g3x .kk','kk2'],['.g3x h2','hd'],['.g3x p','tx'],['.g3s','dv'],['.tl3','tx'],['.gnote','tx']]})});
   function words(h){var w=0,walk=function(n){[].slice.call(n.childNodes).forEach(function(c){
       if(c.nodeType===3){var f=document.createDocumentFragment();c.textContent.split(/(\s+)/).forEach(function(t){if(!t)return;if(/^\s+$/.test(t)){f.appendChild(document.createTextNode(t));return}
@@ -783,7 +784,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
     raf=requestAnimationFrame(frame);
     var dt=Math.min(50,now-last);last=now;var sy=window.scrollY||0,vh=innerHeight;
     for(var gi=0;gi<GR.length;gi++){var G=GR[gi];if(!G.el||G.done)continue;var rc=G.el.getBoundingClientRect();
-      if(gi===0?now-t0>250:rc.top<vh*.72){G.done=true;G.el.classList.add('bx-in');(G.it||[]).forEach(function(it){setTimeout(function(){it[0].classList.remove('bx','dv','tx','cd','kk2');it[0].style.removeProperty('--d')},(it[1]+1.9)*1000)});storm(W/2,rc.top+rc.height*.5,G)}}
+      if(gi===0?now-t0>250:rc.top<vh*.72){G.done=true;G.el.classList.add('bx-in');(G.it||[]).forEach(function(it){setTimeout(function(){it[0].classList.remove('bx','dv','tx','cd','kk2','fd');it[0].style.removeProperty('--d')},(it[1]+1.9)*1000)});if(gi)storm(W/2,rc.top+rc.height*.5,G)}}
     cx.clearRect(0,0,innerWidth,vh);if(!smoke.length)return;
     var dy0=window.__glSy==null?0:sy-window.__glSy;window.__glSy=sy;
     smoke=smoke.filter(function(p){return (p.t+=dt)<p.l});
@@ -804,6 +805,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
 (function(){
   var L=document.getElementById('lsun'),nav=document.querySelector('.nav img');if(!L||!nav)return;
   if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var TXS=document.querySelectorAll('.ht,.ha,.cap,.cap-d,.lap,.txt,.ltabs,.mpw,.guide');
   var cv=L.querySelector('canvas'),c=cv.getContext('2d'),P=[],cur=0,raf,dpr=1,VW=0,VH=0,ready=false,seed=11;
   function rnd(){seed=(seed*16807)%2147483647;return (seed-1)/2147483646}
   function ease(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2}
@@ -821,11 +823,14 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
     nav.style.opacity=ready&&p>.004?0:1;
     c.clearRect(0,0,VW,VH);if(!ready||p<=.004)return;
     var r=nav.getBoundingClientRect(),w=r.width,h=r.height;
+    // where there is text (or a card full of it), the stars almost disappear so they never get in the way of reading
+    var TX=[];if(TXS)for(var ti=0;ti<TXS.length;ti++){var b=TXS[ti].getBoundingClientRect();if(b.bottom>-20&&b.top<VH+20)TX.push(b)}
     c.globalCompositeOperation='lighter';
     for(var j=0;j<P.length;j++){var q=P[j],e=Math.max(0,Math.min(1,(p-q.dl*.5)/(1-q.dl*.5))),tw=.55+.45*Math.sin(now/420+q.ph);
       var hx=r.left+q.hx*w,hy=r.top+q.hy*h,tx=q.tx*VW,ty=q.ty*VH;
       var px=hx+(tx-hx)*e+Math.sin(now/1300+q.ph)*7*e,py=hy+(ty-hy)*e+Math.cos(now/1500+q.ph)*7*e;
-      var a=(1-e*.45)*(e>.92?tw:1)*.9;c.fillStyle='rgba('+q.c+','+a.toFixed(3)+')';c.beginPath();c.arc(px,py,q.r*(1+e*.7),0,7);c.fill()}
+      var a=(1-e*.45)*(e>.92?tw:1)*.75;
+      if(e>.5)for(var tk=0;tk<TX.length;tk++){var bb=TX[tk];if(px>bb.left-8&&px<bb.right+8&&py>bb.top-8&&py<bb.bottom+8){a*=.12;break}}c.fillStyle='rgba('+q.c+','+a.toFixed(3)+')';c.beginPath();c.arc(px,py,q.r*(1+e*.7),0,7);c.fill()}
     c.globalCompositeOperation='source-over';
   }
   var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(size,120)},{passive:true});size();
