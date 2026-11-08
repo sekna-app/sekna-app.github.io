@@ -8103,6 +8103,17 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) body #labForecast .fct td.r{color:#c63a4a}html.dk-on:not(.desktop-site-mode) body #labForecast .fct td.g{color:#13804f}
       html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fc-card{padding:4px 12px!important}
     }
+
+    @media (min-width:1100px){
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr{display:flex;align-items:center;gap:14px;padding:9px 0;border-top:1px solid #f1f3f8;font-size:13px;font-weight:800;color:#1d2433}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr:first-child{border-top:0}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr .nm{width:140px;flex:none}html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr .nm small{color:#8a93ad;font-size:11px;margin-left:6px}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr .nm i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:8px}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr .v{width:190px;flex:none}html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr .v b{font-size:14px}html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr .v small{color:#8a93ad;font-size:11.5px;margin-left:5px}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr .p{width:76px;flex:none;font-size:14px;font-weight:900}html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr .p small{font-size:10px;color:#8a93ad}html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr .p.r{color:#c63a4a}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr .br{flex:1;max-width:320px;height:6px;border-radius:4px;background:#eef1f7;overflow:hidden}html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr .br u{display:block;height:100%;border-radius:4px}
+      html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr .fcrv{font-size:12.5px;font-weight:900;margin-left:6px}html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr .fcrv.r{color:#c63a4a}html.dk-on:not(.desktop-site-mode) body #labForecast .fct .fr .fcrv.g{color:#13804f}
+    }
 </style>
 </head>
 <body>
@@ -11274,10 +11285,12 @@ function fcDraw0(){
    return `<div class="fc-ch"><span><i class="fc-dot" style="background:${CHC[x.name.toLowerCase()]||'#d33b4f'}"></i>${esc(x.name)}</span><span>${money(x.budget)} · ${fcPct(x.mix)}</span><div class="fc-bar"><i class="${over?'r':sa!=null&&sa<.7?'a':''}" style="width:${Math.min(100,(sa||0)*100).toFixed(1)}%"></i></div>
    <small><span class="${over?'r':''}">Spent ${fcPct(sa)}${over?' ⚠':''}</span><span class="${ra!=null&&ra<.7?'r':''}">Revenue ${fcPct(ra)}${ra>=1?' ✓':''}</span></small></div>`}).join('');
  
- const wkT=(d.weeks||[]).length?`<div class="fct"><div class="fc-l">WEEKS <em>spent against the plan</em></div><div class="fc-card as-bl2"><table><tr><th>Week</th><th>Days</th><th>Spent</th><th>Plan</th><th></th><th>%</th></tr>${(d.weeks||[]).map(w=>{const {m,live,nm}=wkInfo(w),a=w.acc,wn=(String(nm).match(/(\d+)/)||[])[1]||'',pc=live?'navy':a==null?'mut':a>1.15||a<.7?'a':'g';
-   return `<tr><td><span class="wly-wk wx-wk fc-wkb">W${wn}</span></td><td>${m?(+m[1])+'–'+(+m[2]):''}</td><td><b>${w.actSpend?money(w.actSpend):'—'}</b></td><td>${money(w.planSpend)}</td><td class="bar"><span class="as-sb"><u class="${live||a==null?'m0':a>1.15||a<.7?'m3':'m2'}" style="width:${Math.min(100,(a||0)*100).toFixed(0)}%"></u></span></td><td class="fc-pc ${pc}"><b>${fcPct(a)}</b>${live?' <small>so far</small>':''}</td></tr>`}).join('')}</table></div></div>`:'';
- const chT=chList.length?`<div class="fct"><div class="fc-l">CHANNELS <em>budget and what is spent</em></div><div class="fc-card as-bl2"><table><tr><th>Channel</th><th>Budget</th><th>Share</th><th></th><th>Spent</th><th>Revenue</th></tr>${chList.map(x=>{const r=ach(x.name),sa=r.spendAch,ra=r.revAch,over=sa>1.15;
-   return `<tr><td><i style="background:${CHC[x.name.toLowerCase()]||'#d33b4f'}"></i>${esc(CHANNEL_SHORT[x.name]||x.name)}</td><td><b>${money(x.budget)}</b></td><td>${fcPct(x.mix)}</td><td class="bar"><span class="as-sb"><u class="${over?'m4':sa!=null&&sa<.7?'m3':'m0'}" style="width:${Math.min(100,(sa||0)*100).toFixed(0)}%"></u></span></td><td class="${over?'r':''}">${fcPct(sa)}</td><td class="${ra!=null&&ra<.7?'r':ra>=1?'g':''}">${fcPct(ra)}</td></tr>`}).join('')}</table></div></div>`:'';
+ 
+ const bc=(live,a)=>live||a==null?'#203c8e':a>1.15||a<.7?'#c99a45':'#22c47c';
+ const wkT=(d.weeks||[]).length?`<div class="fct"><div class="fc-l">WEEKS <em>spent of plan</em></div><div class="fc-card as-bl2">${(d.weeks||[]).map(w=>{const {m,live,nm}=wkInfo(w),a=w.acc,pc=live?'navy':a==null?'mut':a>1.15||a<.7?'a':'g';
+   return `<div class="fr"><div class="nm">${esc(nm)}<small>${m?(+m[1])+'–'+(+m[2]):''}</small></div><div class="v"><b>${w.actSpend?money(w.actSpend):'—'}</b><small>of ${money(w.planSpend)}</small></div><div class="p fc-pc ${pc}">${fcPct(a)}${live?'<small> so far</small>':''}</div><div class="br"><u style="width:${Math.min(100,(a||0)*100).toFixed(0)}%;background:${bc(live,a)}"></u></div></div>`}).join('')}</div></div>`:'';
+ const chT=chList.length?`<div class="fct"><div class="fc-l">CHANNELS <em>budget and spent</em></div><div class="fc-card as-bl2">${chList.map(x=>{const r=ach(x.name),sa=r.spendAch,ra=r.revAch,over=sa>1.15,col=CHC[x.name.toLowerCase()]||'#d33b4f';
+   return `<div class="fr"><div class="nm"><i style="background:${col}"></i>${esc(CHANNEL_SHORT[x.name]||x.name)}</div><div class="v"><b>${money(x.budget)}</b><small>· ${fcPct(x.mix)}</small></div><div class="p${over?' r':''}">${fcPct(sa)}</div><div class="br"><u style="width:${Math.min(100,(sa||0)*100).toFixed(0)}%;background:${col}"></u></div><div class="fcrv ${ra!=null&&ra<.7?'r':ra>=1?'g':''}">rev ${fcPct(ra)}</div></div>`}).join('')}</div></div>`:'';
  const rc=/^❌/.test(e.rec)?'bad':/^⚠/.test(e.rec)?'warm':'';
  const src=(t,x)=>`<div><small>${t}</small><b>${money(x.cost)}</b><span>${esc((String(x.label||'').match(/\(([^)]*)\)/)||['',String(x.label||'')])[1])}<br>${fcK(x.value)} revenue · ${x.cpc!=null?cs()+fmt(cx(x.cpc),2):'—'} CPC</span></div>`;
  const ed=c.edit||{}, nEd=Object.keys(ed).length;
