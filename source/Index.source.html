@@ -8122,15 +8122,6 @@ window.addEventListener('load',function(){
     .spv-x{border:0;border-radius:12px;padding:10px 22px;font:inherit;font-weight:900;background:#fff;color:#141b33;cursor:pointer}
 
     .sal-tg{display:inline-flex;gap:4px;margin-top:8px;padding:3px;border-radius:10px;background:#f1f3f8}.sal-tg button{border:0;border-radius:8px;padding:5px 14px;font:inherit;font-size:12px;font-weight:900;background:none;color:#5b6478;cursor:pointer}.sal-tg button.on{background:#203c8e;color:#fff}.sal-tg button.on.off{background:#c63a4a}
-
-    /* v304 season art above the Daily cards (right side, in the free space) */
-    #overviewPanel>.grid.kpis{position:relative}
-    #seasonDeco{position:absolute!important;right:0;top:0;width:0;height:0;z-index:2;pointer-events:none;padding:0!important;margin:0!important;border:0!important;background:none!important}
-    #seasonDeco img{position:absolute;right:6px;bottom:2px;height:62px;width:auto;max-width:none;filter:drop-shadow(0 4px 10px rgba(194,141,62,.25));animation:decoIn .8s ease both}
-    @keyframes decoIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-    @media (min-width:1100px){html.dk-on:not(.desktop-site-mode) #seasonDeco img{height:66px;right:150px;bottom:4px}}
-
-    .sal-dc{width:96px;height:72px;border-radius:12px;background:#f1f3f8;display:grid;place-items:center}.sal-dc img{max-height:62px;max-width:88px}.sal-dc small{font-size:10px;color:#8a93ad;font-weight:800;text-align:center}
 </style>
 </head>
 <body>
@@ -8155,7 +8146,7 @@ window.addEventListener('load',function(){
    if(mo===11&&dd===tg)k='thanksgiving';else if((mo===11&&dd===tg+5)||(mo===12&&dd===tg+5-30))k='givingtuesday';else if(mo===12&&dd>=26)k='yearend'}
   // December is the tax season month: its picture on every day another season does not take
   if(!k&&(now.getMonth()+1)===12)k='tax';
-  window.SEASON_TODAY=k;sksSeason(k)}catch(e){}
+  sksSeason(k)}catch(e){}
  // v177 no season today: "Reveal" with the new logo — the word is uncovered left to right, the gold line
  // draws out from the middle, DAY BY DAY opens out, and a thin gold bar fills at the bottom.
  if(!s.classList.contains('sks-art'))try{s.classList.add('sks-rv');
@@ -10133,7 +10124,6 @@ function drawKpiSparks(d,ach){
    p.style.background=c;p.style.left=(X(a.length-1)/150*100).toFixed(2)+'%';p.style.top=(Y(a[a.length-1])/46*100).toFixed(2)+'%';
  });
  kdDayHero(ach);
- try{decoDraw()}catch(e){}
 }
 /* v291 desktop Daily: the day's own plan achievement (same weights as the month card) as the first cell of the navy card */
 function kdDayHero(ach){
@@ -17171,20 +17161,6 @@ function salTest(b,kind,key){if(b.dataset.busy)return;b.dataset.busy=1;const t=b
 const SPL_DAYS={ramadan:'All of Ramadan (from the 21st: Last 10 nights)',last10:'21–30 Ramadan',eidfitr:'1–3 Shawwal',dhulhijjah:'1–8 Dhul Hijjah',arafah:'9 Dhul Hijjah',eidadha:'10–13 Dhul Hijjah',ashura:'9–10 Muharram',thanksgiving:'Thanksgiving day',givingtuesday:'Giving Tuesday',yearend:'26–31 December',tax:'All of December, except Giving Tuesday and 26–31 (Year-end)'};
 const SPL_TXT={ramadan:'RAMADAN MUBARAK',last10:'THE LAST 10 NIGHTS',eidfitr:'EID MUBARAK',dhulhijjah:'THE BEST 10 DAYS',arafah:'THE DAY OF ARAFAH',eidadha:'EID AL-ADHA MUBARAK',ashura:'ASHURA',thanksgiving:'HAPPY THANKSGIVING',givingtuesday:'GIVING TUESDAY',yearend:'YEAR-END GIVING',tax:'TAX SEASON'};
 /* full-size preview of a season's loading screen, as a phone or a desktop */
-/* v304 season art on Daily Performance: a small transparent picture in the free space above the cards, on the season's days */
-const DECO_HAS={ramadan:1,last10:1,eidfitr:1};
-function decoKey(){const k=window.SEASON_TODAY||'';return DECO_HAS[k]?k:''}
-function decoOff(k){return !!(((APP_PREFS||{}).decoOff||{})[k])}
-function decoDraw(force){
- const g=document.querySelector('#overviewPanel>.grid.kpis');if(!g)return;
- let w=document.getElementById('seasonDeco');const k=force||decoKey();
- if(!k||(!force&&decoOff(k))){if(w)w.remove();return}
- if(!w){w=document.createElement('div');w.id='seasonDeco';w.setAttribute('aria-hidden','true');g.appendChild(w)}
- const src='icons/deco/'+k+'.webp?v=2';if(w.dataset.k!==k){w.dataset.k=k;w.innerHTML=`<img src="${src}" alt="">`}
-}
-function salDecoSet(k,off){const cur=Object.assign({},(APP_PREFS||{}).decoOff||{});if(off)cur[k]=true;else delete cur[k];
- APP_PREFS=Object.assign({},APP_PREFS||{},{decoOff:cur});storeSet('sekna_app_prefs',JSON.stringify(APP_PREFS));if(ADMIN_LAST)renderAdmin(ADMIN_LAST);try{decoDraw()}catch(e){}
- serverCall('appPrefsSet',getAccessToken(),{decoOff:cur}).then(p=>{if(p&&p.cur){APP_PREFS=p;storeSet('sekna_app_prefs',JSON.stringify(p))}showSettingsToast((SAL_NAMES[k]||k)+' page art '+(off?'off':'on')+' for everyone')}).catch(e=>showSettingsToast(errorText(e)))}
 function salSplashSet(k,off){const cur=Object.assign({},(APP_PREFS||{}).splashOff||{});if(off)cur[k]=true;else delete cur[k];
  APP_PREFS=Object.assign({},APP_PREFS||{},{splashOff:cur});storeSet('sekna_app_prefs',JSON.stringify(APP_PREFS));if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
  serverCall('appPrefsSet',getAccessToken(),{splashOff:cur}).then(p=>{if(p&&p.cur){APP_PREFS=p;storeSet('sekna_app_prefs',JSON.stringify(p))}showSettingsToast((SAL_NAMES[k]||k)+' loading screen '+(off?'off':'on')+' for everyone')}).catch(e=>showSettingsToast(errorText(e)))}
@@ -17210,14 +17186,12 @@ function salHtml(){
  let rows='';
  if(view==='remind')rows=keys.map(k=>{const n=nx[k]||{},send=n.at?new Date(Date.parse(n.at+'T00:00:00Z')-L[k]*864e5).toISOString().slice(0,10):'';
    return `<div class="sal-r sal-ri"><img src="${esc('https://sekna-app.web.app/icons/seasons/'+k+'.jpg?v=4')}" alt="" loading="lazy"><div class="sal-t"><b>${SAL_NAMES[k]} ${tag(k)}</b>${inN(send)}<small>${n.at?'Alert '+short(send)+' · starts '+short(n.at):''}</small><button type="button" class="sal-test" onclick="salTest(this,'remind','${k}')">Send me a test</button></div><div class="sal-n"><button type="button" onclick="salStep('${k}',-1)" aria-label="Fewer days">−</button><span><b>${L[k]}</b>${L[k]===1?' day':' days'}</span><button type="button" onclick="salStep('${k}',1)" aria-label="More days">+</button></div></div>`}).join('');
- else if(view==='deco')rows=keys.map(k=>{const n=nx[k]||{},has=DECO_HAS[k],off=decoOff(k);
-   return `<div class="sal-gr"><div class="sal-dc">${has?`<img src="icons/deco/${k}.webp?v=2" alt="">`:'<small>No picture yet</small>'}</div><div class="sal-t"><b>${SAL_NAMES[k]} ${tag(k)}</b>${inN(n.at)}<small>${SPL_DAYS[k]||''}</small>${has?`<div class="sal-tg"><button type="button" class="${off?'':'on'}" onclick="salDecoSet('${k}',false)">On</button><button type="button" class="${off?'on off':''}" onclick="salDecoSet('${k}',true)">Off</button></div>`:''}</div></div>`}).join('');
  else if(view==='splash')rows=keys.filter(k=>SPL_DAYS[k]).map(k=>{const n=nx[k]||{},dev=SAL.dev||'phone';
    return `<div class="sal-sp ${dev}"><button type="button" class="sal-spi" onclick="salSplash('${k}')" aria-label="Preview"><img src="icons/splash/${k}${dev==='desk'?'-d':''}.webp?v=1" alt="" loading="lazy"><span>Preview</span></button><div class="sal-t"><b>${SAL_NAMES[k]} ${tag(k)}</b>${inN(n.at)}<small>${SPL_DAYS[k]}</small><small class="sal-lb">“${SPL_TXT[k]}”</small>${(()=>{const off=!!(((APP_PREFS||{}).splashOff||{})[k]);return `<div class="sal-tg"><button type="button" class="${off?'':'on'}" onclick="salSplashSet('${k}',false)">On</button><button type="button" class="${off?'on off':''}" onclick="salSplashSet('${k}',true)">Off</button></div>`})()}</div></div>`}).join('');
  else rows=keys.map(k=>{const n=nx[k]||{},g=(SAL.data.greet||{})[k]||['',''];
    return `<div class="sal-gr"><img src="${esc((SAL.data.greetImg||'')+k+'.jpg'+(SAL.data.imgV||''))}" alt="" loading="lazy"><div class="sal-t"><b>${esc(g[0])}</b>${inN(n.at)}<small>${SAL_NAMES[k]} ${tag(k)}${n.at?' · sends '+short(n.at):''}</small><p>${esc(g[1])}</p><button type="button" class="sal-test" onclick="salTest(this,'greet','${k}')">Send me a test</button></div></div>`}).join('');
- return `<div class="sal-h"><b>Season alerts</b><small>${view==='remind'?'A push and an email to the team this many days before each season starts, at 9:00 Muscat. Tests go to you only.':view==='greet'?'A push and an email with the season\'s picture on its first day, at 9:00 Muscat. Tests go to you only.':view==='deco'?'A small picture above the Daily cards on the season\'s days (phone and desktop).':'The loading screen wears the season\'s picture and words on its days, then goes back to normal. Tap a picture to see it full size.'}</small></div>`
-  +seg('view',view,[['remind','Reminders'],['greet','Greetings'],['splash','Loading'],['deco','Page art']])+(view==='splash'?seg('dev',SAL.dev||'phone',[['phone','Phone'],['desk','Desktop']]):'')+seg('grp',grp,[['all','All'],['hijri','Hijri'],['us','US']])
+ return `<div class="sal-h"><b>Season alerts</b><small>${view==='remind'?'A push and an email to the team this many days before each season starts, at 9:00 Muscat. Tests go to you only.':view==='greet'?'A push and an email with the season\'s picture on its first day, at 9:00 Muscat. Tests go to you only.':'The loading screen wears the season\'s picture and words on its days, then goes back to normal. Tap a picture to see it full size.'}</small></div>`
+  +seg('view',view,[['remind','Reminders'],['greet','Greetings'],['splash','Loading screen']])+(view==='splash'?seg('dev',SAL.dev||'phone',[['phone','Phone'],['desk','Desktop']]):'')+seg('grp',grp,[['all','All'],['hijri','Hijri'],['us','US']])
   +`<div class="sal-list">${rows}</div>`
   +(view==='remind'?`<div class="sal-act"><button type="button" class="sal-save" ${dirty&&!SAL.busy?'':'disabled'} onclick="salSave()">${SAL.busy?'Saving…':'Save'}</button>${SAL.err?`<small class="sal-err">${esc(SAL.err)}</small>`:''}</div>`:'');
 }
