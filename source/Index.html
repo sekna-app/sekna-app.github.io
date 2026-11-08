@@ -8134,7 +8134,7 @@ window.addEventListener('load',function(){
 (function(){
  var s=document.getElementById('skSplash');if(!s)return;
  
- window.sksSeason=function(k){var L={ramadan:'RAMADAN MUBARAK',last10:'THE LAST 10 NIGHTS',eidfitr:'EID MUBARAK',dhulhijjah:'THE BEST 10 DAYS',arafah:'THE DAY OF ARAFAH',eidadha:'EID AL-ADHA MUBARAK',ashura:'ASHURA',thanksgiving:'HAPPY THANKSGIVING',givingtuesday:'GIVING TUESDAY',yearend:'YEAR-END GIVING'};
+ window.sksSeason=function(k){var L={ramadan:'RAMADAN MUBARAK',last10:'THE LAST 10 NIGHTS',eidfitr:'EID MUBARAK',dhulhijjah:'THE BEST 10 DAYS',arafah:'THE DAY OF ARAFAH',eidadha:'EID AL-ADHA MUBARAK',ashura:'ASHURA',thanksgiving:'HAPPY THANKSGIVING',givingtuesday:'GIVING TUESDAY',yearend:'YEAR-END GIVING',tax:'TAX SEASON'};
   if(!k||!L[k])return;try{var P=JSON.parse(localStorage.getItem('sekna_app_prefs')||'{}');if(P&&P.splashOff&&P.splashOff[k])return}catch(e){}var b=s.querySelector('.sks-sbg');if(!b){b=document.createElement('i');b.className='sks-sbg';s.insertBefore(b,s.firstChild)}
   var mob=window.matchMedia&&matchMedia('(max-width:899px)').matches;b.classList.add('sks-m');s.classList.add('sks-art');
   b.style.backgroundImage="url('icons/splash/"+k+(mob?"":"-d")+".webp?v=1')";var t=s.querySelector('.sks-sl');if(!t){t=document.createElement('div');t.className='sks-sl';s.appendChild(t)}t.textContent=L[k]};
@@ -8143,6 +8143,8 @@ window.addEventListener('load',function(){
   if(m===9)k=d>=21?'last10':'ramadan';else if(m===10&&d<=3)k='eidfitr';else if(m===12&&d<=8)k='dhulhijjah';else if(m===12&&d===9)k='arafah';else if(m===12&&d<=13)k='eidadha';else if(m===1&&(d===9||d===10))k='ashura';
   if(!k){var y=now.getFullYear(),mo=now.getMonth()+1,dd=now.getDate(),f=new Date(y,10,1).getDay(),tg=1+(4-f+7)%7+21;
    if(mo===11&&dd===tg)k='thanksgiving';else if((mo===11&&dd===tg+5)||(mo===12&&dd===tg+5-30))k='givingtuesday';else if(mo===12&&dd>=26)k='yearend'}
+  
+  if(!k&&(now.getMonth()+1)===12)k='tax';
   sksSeason(k)}catch(e){}
  
  
@@ -17123,8 +17125,8 @@ function salNote(b,t,ok){let n=b.nextElementSibling;if(!n||!n.classList.contains
 function salTest(b,kind,key){if(b.dataset.busy)return;b.dataset.busy=1;const t=b.textContent;b.textContent='Sending…';
  serverCall(kind==='greet'?'adminSeasonTestGreeting':'adminSeasonTestEmail',getAccessToken(),key).then(r=>{const ok=/^sent/.test((r&&r.email)||'');b.textContent=ok?'Sent ✓':'Email failed';b.classList.add(ok?'ok':'bad');salNote(b,'Push '+(r&&r.push?'✓':'✗')+' · Email: '+((r&&r.email)||'?'),ok);showSettingsToast('Push '+(r&&r.push?'✓':'✗')+' · Email: '+((r&&r.email)||'?'))})
  .catch(e=>{b.textContent='Not sent';b.classList.add('bad');salNote(b,errorText(e),false);showSettingsToast(errorText(e))}).finally(()=>setTimeout(()=>{b.textContent=t;b.classList.remove('ok','bad');delete b.dataset.busy},4000))}
-const SPL_DAYS={ramadan:'All of Ramadan (from the 21st: Last 10 nights)',last10:'21–30 Ramadan',eidfitr:'1–3 Shawwal',dhulhijjah:'1–8 Dhul Hijjah',arafah:'9 Dhul Hijjah',eidadha:'10–13 Dhul Hijjah',ashura:'9–10 Muharram',thanksgiving:'Thanksgiving day',givingtuesday:'Giving Tuesday',yearend:'26–31 December'};
-const SPL_TXT={ramadan:'RAMADAN MUBARAK',last10:'THE LAST 10 NIGHTS',eidfitr:'EID MUBARAK',dhulhijjah:'THE BEST 10 DAYS',arafah:'THE DAY OF ARAFAH',eidadha:'EID AL-ADHA MUBARAK',ashura:'ASHURA',thanksgiving:'HAPPY THANKSGIVING',givingtuesday:'GIVING TUESDAY',yearend:'YEAR-END GIVING'};
+const SPL_DAYS={ramadan:'All of Ramadan (from the 21st: Last 10 nights)',last10:'21–30 Ramadan',eidfitr:'1–3 Shawwal',dhulhijjah:'1–8 Dhul Hijjah',arafah:'9 Dhul Hijjah',eidadha:'10–13 Dhul Hijjah',ashura:'9–10 Muharram',thanksgiving:'Thanksgiving day',givingtuesday:'Giving Tuesday',yearend:'26–31 December',tax:'All of December, except Giving Tuesday and 26–31 (Year-end)'};
+const SPL_TXT={ramadan:'RAMADAN MUBARAK',last10:'THE LAST 10 NIGHTS',eidfitr:'EID MUBARAK',dhulhijjah:'THE BEST 10 DAYS',arafah:'THE DAY OF ARAFAH',eidadha:'EID AL-ADHA MUBARAK',ashura:'ASHURA',thanksgiving:'HAPPY THANKSGIVING',givingtuesday:'GIVING TUESDAY',yearend:'YEAR-END GIVING',tax:'TAX SEASON'};
  
 function salSplashSet(k,off){const cur=Object.assign({},(APP_PREFS||{}).splashOff||{});if(off)cur[k]=true;else delete cur[k];
  APP_PREFS=Object.assign({},APP_PREFS||{},{splashOff:cur});storeSet('sekna_app_prefs',JSON.stringify(APP_PREFS));if(ADMIN_LAST)renderAdmin(ADMIN_LAST);
