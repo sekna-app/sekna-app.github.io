@@ -198,6 +198,8 @@ const CALLS = {
     if (c.cur) now.cur = { usa: cur(c.cur.usa) || now.cur.usa, ar: cur(c.cur.ar) || now.cur.ar };
     if (c.alert != null) { const a = Number(c.alert); if (![0, 110, 120, 130, 150].includes(a)) throw new Error('Pick an alert level.'); now.alert = a; }
     if (c.season != null) now.season = c.season !== false;
+    // Season loading screens the owner switched off: { thanksgiving: true, ... }
+    if (c.splashOff && typeof c.splashOff === 'object') { const keep = {}; Object.keys(c.splashOff).forEach(k => { if (/^[a-z0-9]{2,20}$/.test(k) && c.splashOff[k]) keep[k] = true; }); now.splashOff = keep; }
     if (c.roas != null) { const r = Number(c.roas); if (![0, 30, 40, 50].includes(r)) throw new Error('Pick a ROAS drop level.'); now.roas = r; }
     now.by = me.email; now.at = Date.now();
     await fsSet(PREFS_DOC, now);
