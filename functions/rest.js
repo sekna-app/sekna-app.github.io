@@ -616,11 +616,11 @@ function seasonEmailHtml(s, k, rows) {
   const td = 'padding:9px 10px;border-top:1px solid #eef1f6;';
   const body = rows.length ? rows.map(r => {
     const t = r.t, roas = t.spend ? t.value / t.spend : 0;
-    let out = '<tr><td style="' + td + 'font-weight:700">' + e(r.label) + '</td><td style="' + td + 'text-align:right">' + money(t.spend, r.sym) + '</td><td style="' + td + 'text-align:right">' + money(t.value, r.sym) +
+    let out = '<tr><td style="' + td + 'font-weight:700;white-space:nowrap"><img src="https://sekna-app.web.app/icons/ha-brand.png" width="16" height="16" alt="" style="display:inline-block;vertical-align:-3px;margin-right:6px;border:0">' + e(r.label) + '</td><td style="' + td + 'text-align:right">' + money(t.spend, r.sym) + '</td><td style="' + td + 'text-align:right">' + money(t.value, r.sym) +
       '</td><td style="' + td + 'text-align:right;color:' + (roas >= 1 ? '#13804f' : '#c63a4a') + ';font-weight:800">' + roas.toFixed(2) + 'x</td></tr>';
     if (t.best) {
-      const br = t.best.spend ? t.best.value / t.best.spend : 0, bd = new Date(t.best.dk + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
-      out += '<tr style="color:#5b6478;font-size:12px"><td style="padding:2px 10px 9px 22px">Best day · ' + e(bd) + '</td><td style="padding:2px 10px 9px;text-align:right">' + money(t.best.spend, r.sym) + '</td><td style="padding:2px 10px 9px;text-align:right">' + money(t.best.value, r.sym) + '</td><td style="padding:2px 10px 9px;text-align:right">' + br.toFixed(2) + 'x</td></tr>';
+      const br = t.best.spend ? t.best.value / t.best.spend : 0, bd = new Date(t.best.dk + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' }).replace(' ', '\u00a0');
+      out += '<tr style="color:#5b6478;font-size:12px"><td style="padding:2px 10px 9px 32px;white-space:nowrap">Best · ' + e(bd) + '</td><td style="padding:2px 10px 9px;text-align:right">' + money(t.best.spend, r.sym) + '</td><td style="padding:2px 10px 9px;text-align:right">' + money(t.best.value, r.sym) + '</td><td style="padding:2px 10px 9px;text-align:right">' + br.toFixed(2) + 'x</td></tr>';
     }
     return out;
   }).join('') : '<tr><td colspan="4" style="' + td + 'color:#8a92a0">No numbers for this season last year.</td></tr>';
@@ -642,7 +642,7 @@ function seasonEmailHtml(s, k, rows) {
 }
 async function seasonEmail(s) {
   const k = s.id.replace(/-\d+$/, ''), from = seasonLastYear(k, s.at), len = SEASON_LEN[k] || 1;
-  const accs = s.acc ? [['usa', 'Human Appeal USA', '$']] : [['usa', 'Human Appeal USA', '$'], ['ar', 'Human Appeal AR', '£']];
+  const accs = s.acc ? [['usa', 'USA', '$']] : [['usa', 'USA', '$'], ['ar', 'AR', '£']];
   const rows = [];
   if (from) for (const [key, label, sym] of accs) {
     try { const t = seasonTotals((await require('./dash').getMonthCompareData(key)).days, from, len); if (t) rows.push({ label, sym, t }); }
