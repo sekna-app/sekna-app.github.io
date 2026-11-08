@@ -8292,7 +8292,7 @@ window.addEventListener('load',function(){
     /* v305 season cards (Admin → Tools → Season alerts → Cards) */
     .scd{direction:ltr;position:relative;overflow:hidden;border-radius:18px;color:#fff;background-color:#0a1748;background-repeat:no-repeat;box-shadow:0 10px 24px rgba(20,40,110,.22);padding:16px 18px;font-family:Inter,system-ui,sans-serif}
     .scd::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,23,72,.95) 28%,rgba(10,23,72,.45) 62%,rgba(10,23,72,.08))}
-    .scd>*{position:relative}.scd .t{display:block;font-weight:900;font-size:19px;letter-spacing:-.01em}.scd small{display:block;color:#d6def7;font-weight:700;font-size:12.5px;margin-top:3px}
+    .scd::before{opacity:var(--sh,1)}.scd .t,.scd small{text-shadow:0 1px 6px rgba(5,12,40,.6)}.scd>*{position:relative}.scd .t{display:block;font-weight:900;font-size:19px;letter-spacing:-.01em}.scd small{display:block;color:#d6def7;font-weight:700;font-size:12.5px;margin-top:3px}
     .scd i{display:block;height:5px;width:200px;max-width:70%;border-radius:9px;background:rgba(255,255,255,.2);overflow:hidden;margin-top:9px}.scd i u{display:block;height:100%;background:linear-gradient(90deg,#f2d38f,#c89434)}
     .scd .us{position:absolute;top:12px;right:12px;font-size:10px;font-weight:900;letter-spacing:.08em;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.25);padding:2px 8px;border-radius:99px}
     .scd.ph{padding:13px 14px;border-radius:16px;max-width:360px}.scd.ph .t{font-size:16px}.scd.ph small{font-size:11.5px}.scd.ph::before{background:linear-gradient(90deg,rgba(10,23,72,.94) 40%,rgba(10,23,72,.55) 75%,rgba(10,23,72,.25))}
@@ -17327,14 +17327,14 @@ const SCARD_DEF={ramadan:['Ramadan Kareem','🌙','Day 12 of 30 · 18 days to Ei
  thanksgiving:['Happy Thanksgiving','🦃','Giving Tuesday in 5 days',20],givingtuesday:['Giving Tuesday','💛','Today · Year-end giving in 28 days',100],tax:['December planning','📅','Day 8 of 31 · 23 days left',26],yearend:['Year-end Giving','🎁','Day 3 of 6 · 3 days to the new year',50]};
 const SCARD_US=['thanksgiving','givingtuesday','tax','yearend'];
 function scardCfg(k){const d=SCARD_DEF[k]||['','','',0],c=(SAL.card&&SAL.card[k])||((APP_PREFS||{}).card||{})[k]||{};
- return {x:c.x!=null?c.x:70,y:c.y!=null?c.y:30,z:c.z||100,e:c.e!=null&&c.e!==''?c.e:d[1],t:c.t||d[0]}}
-function scardStyle(k){const c=scardCfg(k);return `background-image:url('icons/splash/${k}-d.webp?v=1');background-size:${c.z}% auto;background-position:${c.x}% ${c.y}%`}
+ return {x:c.x!=null?c.x:70,y:c.y!=null?c.y:30,z:c.z||100,o:c.o||100,e:c.e!=null&&c.e!==''?c.e:d[1],t:c.t||d[0]}}
+function scardStyle(k){const c=scardCfg(k);return `background-image:url('icons/splash/${k}-d.webp?v=1');background-size:${c.z}% auto;background-position:${c.x}% ${c.y}%;--sh:${c.o/100}`}
 function scardHtml(k,sub,pct,ph){const c=scardCfg(k);
  return `<div class="scd${ph?' ph':''}" data-k="${k}" style="${scardStyle(k)}">${SCARD_US.includes(k)?'<span class="us">USA</span>':''}<span class="t">${esc(c.t)} ${esc(c.e)}</span><small>${esc(sub)}</small><i><u style="width:${pct}%"></u></i></div>`}
 function scardRedraw(k){const c=scardCfg(k);document.querySelectorAll(`.scd[data-k="${k}"]`).forEach(el=>{el.setAttribute('style',scardStyle(k));const t=el.querySelector('.t');if(t)t.textContent=c.t+' '+c.e});
  const b=document.querySelector('.sal-cdsave');if(b)b.disabled=!SAL.cardDirty||SAL.cardBusy}
 function scardEdit(k,f,v){SAL.card=SAL.card||JSON.parse(JSON.stringify((APP_PREFS||{}).card||{}));const c=Object.assign(scardCfg(k),SAL.card[k]||{});
- if(f==='x')c.x=Math.max(0,Math.min(100,c.x+v));else if(f==='y')c.y=Math.max(0,Math.min(100,c.y+v));else if(f==='z')c.z=Math.max(100,Math.min(300,c.z+v));
+ if(f==='x')c.x=Math.max(0,Math.min(100,c.x+v));else if(f==='y')c.y=Math.max(0,Math.min(100,c.y+v));else if(f==='z')c.z=Math.max(100,Math.min(300,c.z+v));else if(f==='o')c.o=Math.max(10,Math.min(100,c.o-v));
  else if(f==='e')c.e=String(v).trim().slice(0,8);else if(f==='t')c.t=String(v).replace(/[<>]/g,'').trim().slice(0,40)||(SCARD_DEF[k]||[''])[0];
  else if(f==='reset'){delete SAL.card[k];SAL.cardDirty=true;if(ADMIN_LAST)renderAdmin(ADMIN_LAST);return}
  SAL.card[k]=c;SAL.cardDirty=true;scardRedraw(k)}
@@ -17346,6 +17346,7 @@ function scardRows(keys){return keys.filter(k=>SCARD_DEF[k]).map(k=>{const d=SCA
   <div class="sal-ctl"><span class="g"><button type="button" onclick="scardEdit('${k}','x',-5)" aria-label="Picture left">◀</button><button type="button" onclick="scardEdit('${k}','x',5)" aria-label="Picture right">▶</button></span>
   <span class="g"><button type="button" onclick="scardEdit('${k}','y',-5)" aria-label="Picture up">▲</button><button type="button" onclick="scardEdit('${k}','y',5)" aria-label="Picture down">▼</button></span>
   <span class="g"><button type="button" onclick="scardEdit('${k}','z',-10)" aria-label="Smaller">−</button><button type="button" onclick="scardEdit('${k}','z',10)" aria-label="Bigger">+</button></span>
+  <span style="display:inline-flex;align-items:center;gap:5px"><label>Opacity</label><span class="g"><button type="button" onclick="scardEdit('${k}','o',-10)" aria-label="Picture less clear">−</button><button type="button" onclick="scardEdit('${k}','o',10)" aria-label="Picture clearer">+</button></span></span>
   <label>Emoji <input class="e" value="${esc(c.e)}" maxlength="8" oninput="scardEdit('${k}','e',this.value)"></label>
   <label>Title <input class="tt" value="${esc(c.t)}" maxlength="40" oninput="scardEdit('${k}','t',this.value)"></label>
   <button type="button" class="sal-rs" onclick="scardEdit('${k}','reset')">Reset</button></div></div>`}).join('')}
@@ -17370,7 +17371,7 @@ function salHtml(){
  else if(view==='cards')rows=scardRows(keys);
  else rows=keys.map(k=>{const n=nx[k]||{},g=(SAL.data.greet||{})[k]||['',''];
    return `<div class="sal-gr"><img src="${esc((SAL.data.greetImg||'')+k+'.jpg'+(SAL.data.imgV||''))}" alt="" loading="lazy"><div class="sal-t"><b>${esc(g[0])}</b>${inN(n.at)}<small>${SAL_NAMES[k]} ${tag(k)}${n.at?' · sends '+short(n.at):''}</small><p>${esc(g[1])}</p><button type="button" class="sal-test" onclick="salTest(this,'greet','${k}')">Send me a test</button></div></div>`}).join('');
- return `<div class="sal-h"><b>Season alerts</b><small>${view==='remind'?'A push and an email to the team this many days before each season starts, at 9:00 Muscat. Tests go to you only.':view==='greet'?'A push and an email with the season\'s picture on its first day, at 9:00 Muscat. Tests go to you only.':view==='cards'?'The card each season wears. Move the picture, make it bigger or smaller, change the emoji or title, then Save. Saved for everyone.':'The loading screen wears the season\'s picture and words on its days, then goes back to normal. Tap a picture to see it full size.'}</small></div>`
+ return `<div class="sal-h"><b>Season alerts</b><small>${view==='remind'?'A push and an email to the team this many days before each season starts, at 9:00 Muscat. Tests go to you only.':view==='greet'?'A push and an email with the season\'s picture on its first day, at 9:00 Muscat. Tests go to you only.':view==='cards'?'The card each season wears. Move the picture, make it bigger or smaller, raise its opacity, change the emoji or title, then Save. Saved for everyone.':'The loading screen wears the season\'s picture and words on its days, then goes back to normal. Tap a picture to see it full size.'}</small></div>`
   +seg('view',view,[['remind','Reminders'],['greet','Greetings'],['splash','Loading screen'],['cards','Cards']])+(view==='splash'?seg('dev',SAL.dev||'phone',[['phone','Phone'],['desk','Desktop']]):'')+seg('grp',grp,[['all','All'],['hijri','Hijri'],['us','US']])
   +`<div class="sal-list">${rows}</div>`
   +(view==='cards'?`<div class="sal-act"><button type="button" class="sal-save sal-cdsave" ${SAL.cardDirty&&!SAL.cardBusy?'':'disabled'} onclick="scardSave()">${SAL.cardBusy?'Saving…':'Save'}</button></div>`:'')+(view==='remind'?`<div class="sal-act"><button type="button" class="sal-save" ${dirty&&!SAL.busy?'':'disabled'} onclick="salSave()">${SAL.busy?'Saving…':'Save'}</button>${SAL.err?`<small class="sal-err">${esc(SAL.err)}</small>`:''}</div>`:'');
