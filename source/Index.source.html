@@ -8050,6 +8050,9 @@ window.addEventListener('load',function(){
       html.dk-on:not(.desktop-site-mode) body #dxBody .dcR .dcH-acc{display:inline-block;font-style:normal;font-size:10.5px;font-weight:900;border-radius:99px;padding:1px 7px;margin-left:6px;vertical-align:2px;white-space:nowrap}
       html.dk-on:not(.desktop-site-mode) body #dxBody .dcR .dcH-acc.good{background:#e3f6ec;color:#13804f}html.dk-on:not(.desktop-site-mode) body #dxBody .dcR .dcH-acc.watch{background:#fdf1dc;color:#9a6a12}html.dk-on:not(.desktop-site-mode) body #dxBody .dcR .dcH-acc.bad{background:#fbdde1;color:#c63a4a}
     }
+
+    /* v295 season test emails: one chip per season */
+    .ste-opts{flex-wrap:wrap}.ste-opts .ste-h{flex:0 0 100%;font-size:11px;font-weight:800;color:#8a93ad;margin-bottom:2px}
 </style>
 </head>
 <body>
@@ -8263,8 +8266,9 @@ window.addEventListener('load',function(){
       <div class="sa-opts" id="spendAlertOpts"></div>
       <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon c-o"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l6 6 4-4 8 8"/><path d="M21 11v5h-5"/></svg></span><span class="sk-row-text"><b>ROAS drop alert</b><small>A note when the day's ROAS falls this much below its 7-day average. <a href="#" class="sa-demo" onclick="roasDropCheck(DASH_DATA,true);return false">Show me</a></small></span></div>
       <div class="sa-opts" id="roasAlertOpts"></div>
-      <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon c-p"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span><span class="sk-row-text"><b>Season reminders</b><small>A push and an email to the team 15 days before Ramadan, the Eids, Dhul Hijjah, Giving Tuesday and the other seasons. <a href="#" class="sa-demo" onclick="seasonTestEmail(this);return false">Send me a test email</a></small></span></div>
+      <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon c-p"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span><span class="sk-row-text"><b>Season reminders</b><small>A push and an email to the team 15 days before Ramadan, the Eids, Dhul Hijjah, Giving Tuesday and the other seasons.</small></span></div>
       <div class="sa-opts" id="seasonAlertOpts"></div>
+      <div class="sa-opts ste-opts" id="seasonTestOpts" hidden></div>
     </div>
 
     <div class="st-ver" id="stVer"></div>
@@ -8948,7 +8952,7 @@ function syncNativeSettings(){
  catch(e){}
 }
 function openSettings(){
- closeSidebar();syncSettingsControls();renderProfileCard();settingsUser();drawAccCur();drawSpendAlertOpts();drawRoasAlertOpts();
+ closeSidebar();syncSettingsControls();renderProfileCard();settingsUser();drawAccCur();drawSpendAlertOpts();drawRoasAlertOpts();drawSeasonTest();
  // v173 Team settings are for the owner only
  ['tpTitle','tpCard'].forEach(id=>{const x=document.getElementById(id);if(x)x.hidden=!mrOwner()});tpFoldSet();
  const el=document.getElementById('settingsOverlay');if(el)el.classList.add('open');
@@ -9563,7 +9567,7 @@ function spendAlertCheck(d,force){
 function roasAlertPct(){const v=APP_PREFS&&APP_PREFS.roas;return v==null?40:+v||0}
 function setRoasAlert(v){if(!mrOwner())return;prefsSave({roas:v})}
 function seasonAlertOn(){return !(APP_PREFS&&APP_PREFS.season===false)}
-function drawSeasonAlertOpts(){const b=document.getElementById('seasonAlertOpts');if(!b)return;const on=seasonAlertOn(),lk=!mrOwner();b.innerHTML=[[false,'Off'],[true,'On']].map(([v,l])=>`<button type="button" class="${on===v?'on':''}"${lk?' disabled':''} onclick="if(mrOwner())prefsSave({season:${v}})">${l}</button>`).join('')}
+function drawSeasonAlertOpts(){const b=document.getElementById('seasonAlertOpts');if(!b)return;const on=seasonAlertOn(),lk=!mrOwner();b.innerHTML=[[false,'Off'],[true,'On']].map(([v,l])=>`<button type="button" class="${on===v?'on':''}"${lk?' disabled':''} onclick="if(mrOwner())prefsSave({season:${v}})">${l}</button>`).join('');drawSeasonTest()}
 function drawRoasAlertOpts(){drawSeasonAlertOpts();const b=document.getElementById('roasAlertOpts');if(!b)return;const cur=roasAlertPct();const lk=!mrOwner();b.innerHTML=[0,30,40,50].map(v=>`<button type="button" class="${cur===v?'on':''}"${lk?' disabled':''} onclick="setRoasAlert(${v})">${v?v+'%':'Off'}</button>`).join('')}
 function roasDropOf(d){
  const x=d&&d.latest;if(!x||!(x.spend>0)||!x.date)return null;
@@ -13344,7 +13348,9 @@ const CUR_LIST={GBP:{s:'£',name:'pounds'},USD:{s:'$',name:'dollars'}};
 // The last copy is kept on the device so the app opens in the right currency straight away.
 let APP_PREFS=(()=>{try{const o=JSON.parse(storeGet('sekna_app_prefs')||'null');if(o&&o.cur)return o}catch(e){}return {cur:{usa:'USD',ar:'GBP'},alert:120,roas:40}})();
 let ACC_CUR=APP_PREFS.cur;
-function seasonTestEmail(a){if(a.dataset.busy)return;a.dataset.busy=1;const t=a.textContent;a.textContent='Sending…';serverCall('adminSeasonTestEmail',getAccessToken()).then(r=>{showSettingsToast('Sent to '+((r&&r.to)||'you')+' · '+((r&&r.season)||''))}).catch(e=>showSettingsToast(errorText(e))).finally(()=>{a.textContent=t;delete a.dataset.busy})}
+const STE_SEASONS=[['ramadan','Ramadan'],['last10','Last 10 nights'],['eidfitr','Eid al-Fitr'],['dhulhijjah','Dhul Hijjah'],['arafah','Arafah'],['eidadha','Eid al-Adha'],['ashura','Ashura'],['thanksgiving','Thanksgiving'],['givingtuesday','Giving Tuesday'],['yearend','Year-end']];
+function drawSeasonTest(){const el=document.getElementById('seasonTestOpts');if(!el)return;el.hidden=!mrOwner();if(el.dataset.on)return;el.dataset.on=1;el.innerHTML='<small class="ste-h">Test email · pick a season</small>'+STE_SEASONS.map(([k,n])=>`<button type="button" onclick="seasonTestEmail(this,'${k}')">${n}</button>`).join('')}
+function seasonTestEmail(a,key){if(a.dataset.busy)return;a.dataset.busy=1;const t=a.textContent;a.textContent='Sending…';serverCall('adminSeasonTestEmail',getAccessToken(),key||'').then(r=>{showSettingsToast('Sent to '+((r&&r.to)||'you')+' · '+((r&&r.season)||''))}).catch(e=>showSettingsToast(errorText(e))).finally(()=>{a.textContent=t;delete a.dataset.busy})}
 function prefsLoad(){return serverCall('appPrefs',getAccessToken()).then(p=>{if(!p||!p.cur)return;APP_PREFS=p;ACC_CUR=p.cur;storeSet('sekna_app_prefs',JSON.stringify(p));accCurApply();drawAccCur();drawSpendAlertOpts();drawRoasAlertOpts()}).catch(()=>{})}
 function prefsSave(ch){if(!mrOwner())return;Object.assign(APP_PREFS,ch);storeSet('sekna_app_prefs',JSON.stringify(APP_PREFS));drawAccCur();drawSpendAlertOpts();drawRoasAlertOpts();
  serverCall('appPrefsSet',getAccessToken(),ch).then(p=>{if(p&&p.cur){APP_PREFS=p;ACC_CUR=p.cur;storeSet('sekna_app_prefs',JSON.stringify(p))}showSettingsToast('Saved for the whole team')}).catch(e=>showSettingsToast(errorText(e)))}

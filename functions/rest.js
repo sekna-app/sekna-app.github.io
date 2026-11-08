@@ -261,11 +261,11 @@ const R = {
     return (await fsGet(DOC.story(account === 'ar' ? 'ar' : 'usa', date))) || {};
   },
   /** The next season's reminder email, sent only to the admin who asks (a test, with the real numbers). */
-  async adminSeasonTestEmail([token]) {
+  async adminSeasonTestEmail([token, key]) {
     const me = await assertAdmin(token);
-    const today = dayOf(Date.now());
+    const today = dayOf(Date.now()), want = String(key || '');
     let s = null;
-    for (let n = 1; n <= 400 && !s; n++) s = seasonsDue(isoPlus(today, n - 15)).filter(x => x.left === 15)[0] || null;
+    for (let n = 1; n <= 400 && !s; n++) s = seasonsDue(isoPlus(today, n - 15)).filter(x => x.left === 15 && (!want || x.id.replace(/-\d+$/, '') === want))[0] || null;
     if (!s) throw new Error('No season found in the next year.');
     s.left = Math.round((Date.parse(s.at + 'T00:00:00Z') - Date.parse(today + 'T00:00:00Z')) / 864e5);
     const m = await seasonEmail(s);
