@@ -551,7 +551,7 @@ function seasonsDue(today) {
     const h = dk => { const p = {}; fmt.formatToParts(new Date(dk + 'T00:00:00Z')).forEach(x => { p[x.type] = parseInt(x.value, 10); }); return p; };
     const a = h(dk), b = h(before);
     // A Hijri season starts on the first day that reaches its Hijri date.
-    SEASONS_H.forEach(s => { if (a.month === s.m && a.day >= s.d && !(b.month === s.m && b.day >= s.d)) out.push({ id: s.k + '-' + a.year, name: s.name + (s.y ? ' ' + a.year : ''), e: s.e, left, acc: '', at: dk }); });
+    SEASONS_H.forEach(s => { if (a.month === s.m && a.day >= s.d && !(b.month === s.m && b.day >= s.d)) out.push({ id: s.k + '-' + a.year, name: s.name, e: s.e, left, acc: '', at: dk }); });
     const y = +dk.slice(0, 4), tg = nthDay(y, 11, 4, 4);
     [['thanksgiving', 'Thanksgiving', '🦃', tg], ['givingtuesday', 'Giving Tuesday', '💛', isoPlus(tg, 5)], ['yearend', 'Year-end giving', '🎁', y + '-12-26']]
       .forEach(([k, name, e, at]) => { if (at === dk) out.push({ id: k + '-' + y, name, e, left, acc: 'usa', at: dk }); });
