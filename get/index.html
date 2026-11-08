@@ -482,6 +482,24 @@ h1 span.bxn,h2 span.bxn{background:none!important;-webkit-background-clip:border
 .lsun{position:fixed;inset:0;z-index:0;pointer-events:none}
 .lsun canvas{position:absolute;inset:0;width:100%;height:100%}
 @media (prefers-reduced-motion:reduce){.lsun{display:none}}
+
+/* Phones and tablets: iOS Safari draws the 3D iPhone's back photo as a huge stretched ghost at the edge of the screen
+   (a 3D layer with a mask). So here the iPhone turns in 2D: it squeezes to an edge and opens on its other face. */
+@media (max-width:980px){
+ .g3 .g3s{perspective:none}
+ .g3 .g3f,.g3 .g3f.back,.g3 .g3f.turn{transform-style:flat!important;transform:none;transition:none!important}
+ .g3 .bk3{transform:none;-webkit-backface-visibility:visible;backface-visibility:visible;opacity:0;z-index:3}
+ .g3 .bk3:after{display:none}
+ .g3 .g3f .sc3{-webkit-backface-visibility:visible;backface-visibility:visible}
+ .g3 .g3f.back{animation:bkIdle2 3s ease-in-out infinite!important}
+ .g3 .g3f.back .bk3{opacity:1}.g3 .g3f.back .sc3{opacity:0}
+ .g3 .g3f.turn{animation:flip2 1.1s cubic-bezier(.45,0,.2,1) both!important}
+ .g3 .g3f.turn .bk3{animation:bkOut 1.1s linear both}.g3 .g3f.turn .sc3{animation:scIn 1.1s linear both}
+}
+@keyframes bkIdle2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes flip2{0%{transform:scaleX(1)}48%{transform:scaleX(.03) scaleY(1.03)}52%{transform:scaleX(.03) scaleY(1.03)}100%{transform:scaleX(1)}}
+@keyframes bkOut{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes scIn{0%,49%{opacity:0}50%,100%{opacity:1}}
 </style>
 </head>
 <body>
