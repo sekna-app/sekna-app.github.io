@@ -285,7 +285,7 @@ const R = {
   async adminSeasonLeads([token]) {
     await assertAdmin(token);
     const prefs = (await fsGet('server/app-prefs').catch(() => null)) || {}, leads = seasonLeads(prefs), today = dayOf(Date.now());
-    return { leads, defaults: SEASON_LEAD, next: Object.keys(SEASON_LEAD).map(k => { const s = nextSeason(k, today); return s ? { k, name: s.name, at: s.at, left: s.left, sendOn: isoPlus(s.at, -leads[k]) } : { k }; }) };
+    return { leads, defaults: SEASON_LEAD, greet: SEASON_GREET, greetImg: GREET_IMG, next: Object.keys(SEASON_LEAD).map(k => { const s = nextSeason(k, today); return s ? { k, name: s.name, at: s.at, left: s.left, sendOn: isoPlus(s.at, -leads[k]) } : { k }; }) };
   },
   async adminSeasonLeadsSet([token, map]) {
     await assertAdmin(token);

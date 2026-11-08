@@ -8068,6 +8068,25 @@ window.addEventListener('load',function(){
     .sal-act{margin-top:12px;display:flex;align-items:center;gap:10px}.sal-save{border:0;border-radius:12px;background:#203c8e;color:#fff;font:inherit;font-weight:900;padding:10px 18px;cursor:pointer}.sal-save[disabled]{opacity:.45;cursor:default}.sal-err{color:#c63a4a;font-weight:800}
     body.dark-mode .sal-r{border-color:#252a32}body.dark-mode .sal-n button{background:#1b212b;border-color:#2b323d;color:#9fb6ff}body.dark-mode .sal-n span b,body.dark-mode .sal-t b{color:#fff}
     .ste-mode{flex:0 0 100%;display:flex;gap:6px;margin-bottom:2px}.ste-mode button.on{background:#203c8e!important;color:#fff!important;border-color:#203c8e!important}
+
+    /* v298 notification card */
+    .nfc-ov{position:fixed;inset:0;z-index:100001;display:grid;place-items:center;padding:20px;background:rgba(10,18,48,.38);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity .2s ease}
+    .nfc-ov.on{opacity:1}
+    .nfc{width:min(420px,100%);max-height:86vh;overflow:auto;background:#fff;border-radius:22px;box-shadow:0 24px 60px rgba(10,20,60,.35);transform:translateY(14px) scale(.97);transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+    .nfc-ov.on .nfc{transform:none}
+    .nfc-img{display:block;width:100%;height:auto;border-radius:22px 22px 0 0}
+    .nfc-b{padding:18px 20px 18px}.nfc-b small{display:block;font-size:11.5px;font-weight:800;color:#8a93ad;letter-spacing:.02em}
+    .nfc-b h3{margin:6px 0 8px;font-size:19px;font-weight:900;color:#141b33;line-height:1.25}.nfc-b p{margin:0;font-size:14.5px;line-height:1.6;color:#3f475e;font-weight:600;white-space:pre-line}
+    .nfc-a{display:flex;gap:8px;margin-top:16px}.nfc-a button{flex:1;border:0;border-radius:12px;padding:11px;font:inherit;font-weight:900;font-size:14px;background:#eef1f7;color:#1d2433;cursor:pointer}.nfc-a .go{background:#203c8e;color:#fff}
+    body.dark-mode .nfc{background:#151a22}body.dark-mode .nfc-b h3{color:#fff}body.dark-mode .nfc-b p{color:#c3cad8}body.dark-mode .nfc-a button{background:#232a36;color:#fff}body.dark-mode .nfc-a .go{background:#2c4fb8}
+
+    .sal-seg{display:flex;gap:4px;padding:4px;margin-top:12px;border-radius:12px;background:#f1f3f8}.sal-seg button{flex:1;border:0;border-radius:9px;padding:8px 6px;font:inherit;font-size:12.5px;font-weight:900;color:#5b6478;background:none;cursor:pointer}.sal-seg button.on{background:#fff;color:#203c8e;box-shadow:0 2px 8px rgba(20,40,110,.12)}
+    .sal-seg+.sal-seg{margin-top:6px;background:none;padding:0 4px}.sal-seg+.sal-seg button{flex:0 0 auto;padding:6px 12px;border:1.5px solid #e3e7f0}.sal-seg+.sal-seg button.on{border-color:#203c8e;background:#203c8e;color:#fff;box-shadow:none}
+    .sal-list{margin-top:8px}.sal-r{align-items:flex-start}.sal-tag{font-style:normal;font-size:9.5px;font-weight:900;letter-spacing:.04em;color:#7a46d6;background:#f1eaff;border-radius:99px;padding:1px 7px;margin-left:4px;vertical-align:2px}.sal-tag.us{color:#203c8e;background:#e9eefc}
+    .sal-test{margin-top:6px;border:1.5px solid #e3e7f0;background:#fff;border-radius:9px;padding:4px 10px;font:inherit;font-size:11.5px;font-weight:900;color:#203c8e;cursor:pointer}.sal-test.ok{border-color:#13804f;color:#13804f}.sal-test.bad{border-color:#c63a4a;color:#c63a4a}
+    .sal-gr{display:grid;grid-template-columns:96px minmax(0,1fr);gap:12px;padding:12px 0;border-top:1px solid #eef1f6}.sal-gr:first-child{border-top:0}.sal-gr img{width:96px;height:72px;object-fit:cover;border-radius:12px;display:block}
+    .sal-gr p{margin:4px 0 0;font-size:12px;line-height:1.5;color:#5b6478;font-weight:600;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+    body.dark-mode .sal-seg{background:#1b212b}body.dark-mode .sal-seg button.on{background:#232a36;color:#fff}body.dark-mode .sal-test{background:#1b212b;border-color:#2b323d;color:#9fb6ff}body.dark-mode .sal-gr{border-color:#252a32}body.dark-mode .sal-gr p{color:#aab3c5}
 </style>
 </head>
 <body>
@@ -8281,9 +8300,8 @@ window.addEventListener('load',function(){
       <div class="sa-opts" id="spendAlertOpts"></div>
       <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon c-o"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l6 6 4-4 8 8"/><path d="M21 11v5h-5"/></svg></span><span class="sk-row-text"><b>ROAS drop alert</b><small>A note when the day's ROAS falls this much below its 7-day average. <a href="#" class="sa-demo" onclick="roasDropCheck(DASH_DATA,true);return false">Show me</a></small></span></div>
       <div class="sa-opts" id="roasAlertOpts"></div>
-      <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon c-p"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span><span class="sk-row-text"><b>Season reminders</b><small>A push and an email to the team before each season (days set in Admin → Tools → Season alerts), and a greeting on its first day.</small></span></div>
+      <div class="sk-row sk-row--stack" style="cursor:default"><span class="sk-row-icon c-p"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/></svg></span><span class="sk-row-text"><b>Season reminders</b><small>A push and an email to the team before each season, and a greeting on its first day. Days and tests: Admin → Tools → Season alerts.</small></span></div>
       <div class="sa-opts" id="seasonAlertOpts"></div>
-      <div class="sa-opts ste-opts" id="seasonTestOpts" hidden></div>
     </div>
 
     <div class="st-ver" id="stVer"></div>
@@ -9119,7 +9137,7 @@ function closeSidebar(){
  if(overlay)overlay.classList.remove('open');
  document.body.classList.remove('drawer-open');
 }
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSidebar();closeSettings();closeAbout();closeWhatsNew();closeSignOut();closeAdmin();closeAnnouncement();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){nfCardClose();closeSidebar();closeSettings();closeAbout();closeWhatsNew();closeSignOut();closeAdmin();closeAnnouncement();}});
 function initClientLogos(){
  const src=document.querySelector('.logo img')?.src;
  if(!src)return;
@@ -11165,7 +11183,22 @@ function openNotifs(){
 }
 function closeNotifs(e){if(e&&e.target!==e.currentTarget)return;const o=document.getElementById('notifsOverlay');if(o)o.classList.remove('open');nfBadge();setTimeout(()=>{try{bbDraw()}catch(e){}},0)}
 // A tap goes where the notification is about; Media Plan Lab stays locked for everyone but the admin.
+/* v298 tapping a notification opens it as a card first (picture for greetings, the whole text); "Open" goes where it points */
+const NF_GREET_KEY=[['Ramadan Mubarak','ramadan'],['Blessed Last 10','last10'],['Eid Mubarak','eidfitr'],['Blessed Days of Dhul','dhulhijjah'],['Blessed Day of Arafah','arafah'],['Eid al-Adha','eidadha'],['Blessed Day of Ashura','ashura'],['Happy Thanksgiving','thanksgiving'],['Happy Giving Tuesday','givingtuesday'],["Let's End the Year",'yearend']];
+const NF_GO={season:1,streak:1,spend_alert:1,roas_drop:1,tasks:1,app_update:1,celebrate:1,month_closed:1,new_day:1};
+function nfImage(x){if(x.image)return x.image;if(x.type!=='greeting')return '';const m=NF_GREET_KEY.find(([t])=>String(x.title||'').startsWith(t));return m?'https://sekna-app.web.app/icons/greet/'+m[1]+'.jpg':''}
 function nfOpen(id){
+ const x=(NF.list||[]).find(n=>n.id===id);if(!x)return;
+ document.querySelector('.nfc-ov')?.remove();
+ const img=nfImage(x),when=new Date(x.at).toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'numeric',minute:'2-digit'});
+ const ov=document.createElement('div');ov.className='nfc-ov';ov.setAttribute('data-share-ui','');
+ ov.innerHTML=`<div class="nfc" role="dialog" aria-modal="true">${img?`<img class="nfc-img" src="${esc(img)}" alt="">`:''}<div class="nfc-b"><small>${esc(when)}${x.account?' · '+(x.account==='ar'?'AR':'USA'):''}</small><h3>${esc(x.title||'HEMERA')}</h3>${x.body?`<p>${esc(x.body)}</p>`:''}<div class="nfc-a">${NF_GO[x.type]?`<button type="button" class="go" onclick="nfGo('${esc(x.id)}')">Open</button>`:''}<button type="button" onclick="nfCardClose()">Close</button></div></div></div>`;
+ ov.addEventListener('click',e=>{if(e.target===ov)nfCardClose()});
+ document.body.appendChild(ov);requestAnimationFrame(()=>ov.classList.add('on'));
+}
+function nfCardClose(){const o=document.querySelector('.nfc-ov');if(!o)return;o.classList.remove('on');setTimeout(()=>o.remove(),220)}
+function nfGo(id){
+ nfCardClose();
  const x=(NF.list||[]).find(n=>n.id===id);if(!x)return;
  closeNotifs();
  if(x.type==='season'){switchDashboardTab('seasons');return}
@@ -17066,16 +17099,30 @@ function salD(dk){return new Date(dk+'T00:00:00Z').toLocaleDateString('en-GB',{d
 function salLoad(){if(SAL.busy)return;SAL.busy=true;serverCall('adminSeasonLeads',getAccessToken()).then(r=>{SAL.busy=false;SAL.data=r;SAL.edit={};SAL.err='';if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(e=>{SAL.busy=false;SAL.err=errorText(e);if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
 function salStep(k,d){const L=Object.assign({},SAL.data.leads,SAL.edit);SAL.edit[k]=Math.max(1,Math.min(60,(+L[k]||1)+d));if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function salSave(){if(SAL.busy)return;SAL.busy=true;const m=Object.assign({},SAL.data.leads,SAL.edit);if(ADMIN_LAST)renderAdmin(ADMIN_LAST);serverCall('adminSeasonLeadsSet',getAccessToken(),m).then(r=>{SAL.busy=false;SAL.data=r;SAL.edit={};if(ADMIN_LAST)renderAdmin(ADMIN_LAST);showSettingsToast('Season alerts saved')}).catch(e=>{SAL.busy=false;SAL.err=errorText(e);if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
+function salSet(k,v){SAL[k]=v;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+function salTest(b,kind,key){if(b.dataset.busy)return;b.dataset.busy=1;const t=b.textContent;b.textContent='Sending…';
+ serverCall(kind==='greet'?'adminSeasonTestGreeting':'adminSeasonTestEmail',getAccessToken(),key).then(()=>{b.textContent='Sent ✓';b.classList.add('ok');showSettingsToast(kind==='greet'?'Greeting sent to you (push + email)':'Reminder email sent to you')})
+ .catch(e=>{b.textContent='Not sent';b.classList.add('bad');showSettingsToast(errorText(e))}).finally(()=>setTimeout(()=>{b.textContent=t;b.classList.remove('ok','bad');delete b.dataset.busy},4000))}
 function salHtml(){
  if(SAL.err&&!SAL.data)return `<div class="sk-admin-empty">${esc(SAL.err)}</div>`;
  if(!SAL.data)return '<div class="sk-admin-empty">Loading…</div>';
+ const view=SAL.view||'remind',grp=SAL.grp||'all';
  const L=Object.assign({},SAL.data.leads,SAL.edit),dirty=Object.keys(SAL.edit).some(k=>SAL.edit[k]!==SAL.data.leads[k]);
  const nx={};(SAL.data.next||[]).forEach(n=>nx[n.k]=n);
- const grp=(t,keys)=>`<div class="sal-g">${t}</div>`+keys.map(k=>{const n=nx[k]||{},send=n.at?new Date(Date.parse(n.at+'T00:00:00Z')-L[k]*864e5).toISOString().slice(0,10):'';
-   return `<div class="sal-r"><div class="sal-t"><b>${SAL_NAMES[k]}</b><small>${n.at?'Starts '+salD(n.at).replace(/ \d{4}$/,'')+' · alert '+salD(send).replace(/ \d{4}$/,''):''}</small></div><div class="sal-n"><button type="button" onclick="salStep('${k}',-1)" aria-label="Fewer days">−</button><span><b>${L[k]}</b>${L[k]===1?' day':' days'}</span><button type="button" onclick="salStep('${k}',1)" aria-label="More days">+</button></div></div>`}).join('');
- return `<div class="sal-h"><b>Season alerts</b><small>A push and an email to the team this many days before each season starts (9:00 Muscat). The greeting goes out on the first day.</small></div>`
-  +grp('HIJRI SEASONS · USA & AR',['ramadan','last10','eidfitr','dhulhijjah','arafah','eidadha','ashura'])+grp('US SEASONS · USA',['thanksgiving','givingtuesday','yearend'])
-  +`<div class="sal-act"><button type="button" class="sal-save" ${dirty&&!SAL.busy?'':'disabled'} onclick="salSave()">${SAL.busy?'Saving…':'Save'}</button>${SAL.err?`<small class="sal-err">${esc(SAL.err)}</small>`:''}</div>`;
+ const H=['ramadan','last10','eidfitr','dhulhijjah','arafah','eidadha','ashura'],U=['thanksgiving','givingtuesday','yearend'];
+ const keys=(grp==='us'?U:grp==='hijri'?H:H.concat(U)).slice().sort((a,b)=>{const x=nx[a]||{},y=nx[b]||{};return (x.at||'9')<(y.at||'9')?-1:1});
+ const short=dk=>salD(dk).replace(/ \d{4}$/,'');
+ const seg=(k,v,opts)=>`<div class="sal-seg">${opts.map(([o,l])=>`<button type="button" class="${v===o?'on':''}" onclick="salSet('${k}','${o}')">${l}</button>`).join('')}</div>`;
+ const tag=k=>U.includes(k)?'<em class="sal-tag us">USA</em>':'<em class="sal-tag">USA · AR</em>';
+ let rows='';
+ if(view==='remind')rows=keys.map(k=>{const n=nx[k]||{},send=n.at?new Date(Date.parse(n.at+'T00:00:00Z')-L[k]*864e5).toISOString().slice(0,10):'';
+   return `<div class="sal-r"><div class="sal-t"><b>${SAL_NAMES[k]} ${tag(k)}</b><small>${n.at?'Starts '+short(n.at)+' · alert '+short(send):''}</small><button type="button" class="sal-test" onclick="salTest(this,'remind','${k}')">Send me a test</button></div><div class="sal-n"><button type="button" onclick="salStep('${k}',-1)" aria-label="Fewer days">−</button><span><b>${L[k]}</b>${L[k]===1?' day':' days'}</span><button type="button" onclick="salStep('${k}',1)" aria-label="More days">+</button></div></div>`}).join('');
+ else rows=keys.map(k=>{const n=nx[k]||{},g=(SAL.data.greet||{})[k]||['',''];
+   return `<div class="sal-gr"><img src="${esc((SAL.data.greetImg||'')+k+'.jpg')}" alt="" loading="lazy"><div class="sal-t"><b>${esc(g[0])}</b><small>${SAL_NAMES[k]} ${tag(k)}${n.at?' · sends '+short(n.at):''}</small><p>${esc(g[1])}</p><button type="button" class="sal-test" onclick="salTest(this,'greet','${k}')">Send me a test</button></div></div>`}).join('');
+ return `<div class="sal-h"><b>Season alerts</b><small>${view==='remind'?'A push and an email to the team this many days before each season starts, at 9:00 Muscat.':'A push and an email with the season\'s picture on its first day, at 9:00 Muscat.'} Tests go to you only.</small></div>`
+  +seg('view',view,[['remind','Reminders'],['greet','Greetings']])+seg('grp',grp,[['all','All'],['hijri','Hijri'],['us','US']])
+  +`<div class="sal-list">${rows}</div>`
+  +(view==='remind'?`<div class="sal-act"><button type="button" class="sal-save" ${dirty&&!SAL.busy?'':'disabled'} onclick="salSave()">${SAL.busy?'Saving…':'Save'}</button>${SAL.err?`<small class="sal-err">${esc(SAL.err)}</small>`:''}</div>`:'');
 }
 function adminLoadExtra(k){
  if(k==='seasons')salLoad();

@@ -119,7 +119,7 @@ async function inboxAdd(path, entries) {
 }
 function inboxEntry(x, type, account) {
   return { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7), at: Date.now(), title: String(x.title || 'HEMERA').slice(0, 90),
-    body: String(x.body || '').slice(0, 240), type: String(type || 'updated'), account: account || '' };
+    body: String(x.body || '').slice(0, 400), type: String(type || 'updated'), account: account || '', image: String(x.image || '').slice(0, 300) };
 }
 async function inboxRecord(payload) {
   const team = (payload.topics || []).map(t => inboxEntry(t, t.eventType, t.account || (t.snapshot && t.snapshot.accountKey) || ''));
