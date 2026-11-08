@@ -266,9 +266,10 @@ const R = {
     const s = nextSeason(String(key || 'ramadan'), dayOf(Date.now()));
     if (!s) throw new Error('No season found in the next year.');
     const m = await seasonEmail(s);
+    const start = new Date(s.at + 'T00:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+    const p = await notify.send({ pushes: [{ email: me.email, title: s.e + ' ' + s.name + ' is in ' + s.left + ' days' + (s.acc ? ' · USA' : ''), body: 'Starts ' + start + '. Open to see last year\'s numbers.', eventType: 'season' }] }).catch(() => null);
     const mail = await testMail({ to: me.email, subject: '[Test ' + new Date().toISOString().slice(11, 16) + '] ' + m.subject, rawHtml: m.html, title: m.title, html: m.inner });
-    if (!/^sent/.test(mail)) throw new Error('Email not sent: ' + mail);
-    return { ok: true, to: me.email, season: s.name, at: s.at, email: mail };
+    return { ok: true, to: me.email, season: s.name, at: s.at, push: !!(p && (p.pushes || p.relayed)), email: mail };
   },
   /** The season's first-day greeting (title, text, picture) as a push to the admin only. */
   async adminSeasonTestGreeting([token, key]) {

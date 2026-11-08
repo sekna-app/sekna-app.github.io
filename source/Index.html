@@ -17088,7 +17088,7 @@ function salSave(){if(SAL.busy)return;SAL.busy=true;const m=Object.assign({},SAL
 function salSet(k,v){SAL[k]=v;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function salNote(b,t,ok){let n=b.nextElementSibling;if(!n||!n.classList.contains('sal-note')){n=document.createElement('small');n.className='sal-note';b.after(n)}n.textContent=t;n.classList.toggle('bad',!ok)}
 function salTest(b,kind,key){if(b.dataset.busy)return;b.dataset.busy=1;const t=b.textContent;b.textContent='Sending…';
- serverCall(kind==='greet'?'adminSeasonTestGreeting':'adminSeasonTestEmail',getAccessToken(),key).then(r=>{const ok=/^sent/.test((r&&r.email)||'');b.textContent=ok?'Sent ✓':'Email failed';b.classList.add(ok?'ok':'bad');salNote(b,(kind==='greet'?'Push '+(r&&r.push?'✓':'✗')+' · ':'')+'Email: '+((r&&r.email)||'?'),ok);showSettingsToast((kind==='greet'?'Push '+(r&&r.push?'✓':'✗')+' · ':'')+'Email: '+((r&&r.email)||'?'))})
+ serverCall(kind==='greet'?'adminSeasonTestGreeting':'adminSeasonTestEmail',getAccessToken(),key).then(r=>{const ok=/^sent/.test((r&&r.email)||'');b.textContent=ok?'Sent ✓':'Email failed';b.classList.add(ok?'ok':'bad');salNote(b,'Push '+(r&&r.push?'✓':'✗')+' · Email: '+((r&&r.email)||'?'),ok);showSettingsToast('Push '+(r&&r.push?'✓':'✗')+' · Email: '+((r&&r.email)||'?'))})
  .catch(e=>{b.textContent='Not sent';b.classList.add('bad');salNote(b,errorText(e),false);showSettingsToast(errorText(e))}).finally(()=>setTimeout(()=>{b.textContent=t;b.classList.remove('ok','bad');delete b.dataset.busy},4000))}
 function salHtml(){
  if(SAL.err&&!SAL.data)return `<div class="sk-admin-empty">${esc(SAL.err)}</div>`;
