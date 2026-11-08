@@ -200,6 +200,11 @@ const CALLS = {
     if (c.season != null) now.season = c.season !== false;
     // Season loading screens the owner switched off: { thanksgiving: true, ... }
     if (c.splashOff && typeof c.splashOff === 'object') { const keep = {}; Object.keys(c.splashOff).forEach(k => { if (/^[a-z0-9]{2,20}$/.test(k) && c.splashOff[k]) keep[k] = true; }); now.splashOff = keep; }
+    // Season cards the owner tuned in Admin → Tools → Season alerts → Cards: picture position and size, emoji and title.
+    if (c.card && typeof c.card === 'object') { const keep = {}, num = (v, lo, hi, d) => { const n = Math.round(Number(v)); return Number.isFinite(n) ? Math.max(lo, Math.min(hi, n)) : d; };
+      Object.keys(c.card).forEach(k => { const v = c.card[k]; if (!/^[a-z0-9]{2,20}$/.test(k) || !v || typeof v !== 'object') return;
+        keep[k] = { x: num(v.x, 0, 100, 70), y: num(v.y, 0, 100, 30), z: num(v.z, 100, 300, 100), e: String(v.e || '').slice(0, 8), t: String(v.t || '').replace(/[<>]/g, '').slice(0, 40) }; });
+      now.card = keep; }
     if (c.roas != null) { const r = Number(c.roas); if (![0, 30, 40, 50].includes(r)) throw new Error('Pick a ROAS drop level.'); now.roas = r; }
     now.by = me.email; now.at = Date.now();
     await fsSet(PREFS_DOC, now);
