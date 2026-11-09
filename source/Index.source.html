@@ -8139,6 +8139,17 @@ window.addEventListener('load',function(){
     .sal-ctl input.e{width:54px;text-align:center}.sal-ctl input.tt{width:190px}
     .sal-act:has(.sal-cdsave){position:sticky;bottom:calc(100px + env(safe-area-inset-bottom,0px));z-index:3;justify-content:flex-end}@media(min-width:1100px){.sal-act:has(.sal-cdsave){bottom:16px}}.sal-cdsave{box-shadow:0 8px 20px rgba(20,40,110,.3)}
     .sal-ctl .g{display:inline-flex;gap:4px;padding:3px;border-radius:12px;background:#f1f3f8}.sal-ctl .g button{border:0;background:#fff}
+    /* v313: Same Hijri day spend under the value; Results day accuracy pill on phone; icons in Manual mix */
+    html body .py-c2 .py-v{display:grid!important;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:8px;row-gap:1px}
+    html body .py-c2 .py-v>b{grid-column:1;grid-row:1}html body .py-c2 .py-v>.py-sp{grid-column:1;grid-row:2;font-size:12px;font-weight:800;color:#6b7385}html body .py-c2 .py-v>span{grid-column:2;grid-row:1/3}
+    body.dark-mode .py-c2 .py-v>.py-sp{color:#9aa4c2}
+    .dcH-ac2{display:none}
+    @media (max-width:1099px){html:not(.desktop-site-mode) body .dcH-h .dcH-ac2{display:inline-flex;align-items:center;gap:4px;margin-left:auto;font-style:normal;font-size:12px;font-weight:900;border-radius:99px;padding:3px 8px;background:rgba(255,255,255,.16);color:#fff;white-space:nowrap;flex:none}
+     html:not(.desktop-site-mode) body .dcH-h .dcH-ac2 svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.4}
+     html:not(.desktop-site-mode) body .dcH-h .dcH-ac2.good{color:#7ef0b9}html:not(.desktop-site-mode) body .dcH-h .dcH-ac2.watch{color:#f2d38f}html:not(.desktop-site-mode) body .dcH-h .dcH-ac2.bad{color:#ff9aa6}
+     html:not(.desktop-site-mode) body .dcH-h .dcH-ac2+i{margin-left:0}
+     html:not(.desktop-site-mode) body .dcH-h{gap:6px}}
+    .as-mx>span{display:inline-flex;align-items:center;gap:8px}.as-mx>span .ch-ico{flex:none}
 </style>
 </head>
 <body>
@@ -11088,7 +11099,7 @@ function daysCards(days,latest,T){
    const acc=dayAccuracy(a.spendAchievement,a.convAchievement,a.valueAchievement);
    const accC=acc?(acc.score>=.9?'good':acc.score>=.7?'watch':'bad'):'';
    const accTxt=acc?(acc.score*100).toFixed(1)+'%':'—';
-   const hdrR=acc?hdr.replace('</b>',` <em class="dcH-acc ${accC}" title="Day accuracy">${accTxt}</em></b>`):hdr;
+   const hdrR=acc?hdr.replace('</b>',` <em class="dcH-acc ${accC}" title="Day accuracy">${accTxt}</em></b>`).replace('<i>',`<em class="dcH-ac2 ${accC}" title="Day accuracy ${accTxt}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/></svg>${Math.round(acc.score*100)}%</em><i>`):hdr;
    const accRow=acc?`<div class="dcR-acc"><div class="t"><small>Day accuracy</small><b class="${accC}">${accTxt}</b></div><div class="br"><i style="flex:40"><u class="s" style="width:${(acc.spend*100).toFixed(0)}%"></u></i><i style="flex:20"><u class="c" style="width:${(acc.conv*100).toFixed(0)}%"></u></i><i style="flex:40"><u class="v" style="width:${(acc.value*100).toFixed(0)}%"></u></i></div><div class="k"><span><i class="s"></i>Spend 40%</span><span><i class="c"></i>Conv. 20%</span><span><i class="v"></i>Value 40%</span></div></div>`:'';
    return `<div class="dc-card dcA dcH dcR${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" data-rx="1" onclick="toggleDay('${x.date}')">${rxBadge(x.date)}${hdrR}<div class="dc-main">
      <div class="dcR-g">${box('Spend',money(a.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${(()=>{const r=p.clicks?a.clicks/p.clicks:null;return box('Clicks',fmt(a.clicks,0),r,achClass(r)).replace('class="dcR-k','class="dk-only dcR-k')})()}${box('Conv.',fmt(a.conversions,0),a.convAchievement,achClass(a.convAchievement))}${box('ROAS',a.roas!=null?fmt(a.roas,2)+'x':'—',roR,achClass(roR)).replace('class="dcR-k','class="dk-only dcR-ro dcR-k')}${box('Value',money(a.value),a.valueAchievement,achClass(a.valueAchievement))}</div>
@@ -11404,7 +11415,7 @@ function fcDraw0(){
  const src=(t,x)=>`<div><small>${t}</small><b>${money(x.cost)}</b><span>${esc((String(x.label||'').match(/\(([^)]*)\)/)||['',String(x.label||'')])[1])}<br>${fcK(x.value)} revenue · ${x.cpc!=null?cs()+fmt(cx(x.cpc),2):'—'} CPC</span></div>`;
  const ed=c.edit||{}, nEd=Object.keys(ed).length;
  const inp=(k,t,v,hint,cls,blank)=>{const has=Object.prototype.hasOwnProperty.call(ed,k),val=has?ed[k]:v;
-   return `<label class="${cls||''}${has?' ch':''}"><small>${t}</small><input type="number" inputmode="decimal" step="any" value="${val==null?'':esc(val)}" ${blank?'placeholder="Recommended"':''} ${ro?'disabled':`onchange="fcSet('${k}',this.value)"`}><em>${esc(hint)}</em></label>`};
+   return `<label class="${cls||''}${has?' ch':''}"><small>${t}</small><input type="text" inputmode="decimal" value="${val==null?'':esc(numSep(val))}" ${blank?'placeholder="Recommended"':''} ${ro?'disabled':`oninput="numSepLive(this)" onchange="fcSet('${k}',this.value.replace(/,/g,''))"`}><em>${esc(hint)}</em></label>`};
  // One line per part, with its summary; the open one shows below it.
  const onPlan=(d.weeks||[]).filter(w=>w.acc!=null&&w.acc>=.85&&w.acc<=1.15&&!wkInfo(w).live).length, liveW=(d.weeks||[]).find(w=>wkInfo(w).live);
  const short=n=>n.replace(/^Search\s+/i,'').replace(/Performance Max/i,'PMax').replace(/Demand Gen/i,'DG').replace(/\s*\(.*\)/,'');
@@ -11671,7 +11682,7 @@ function asMixHtml(d,ed){
  const tot=rows.reduce((t,r)=>t+(Number(val(r))||0),0),ok=tot===0||Math.abs(tot-100)<0.05;
  const cell=r=>{if(!labEdit())return `<b class="as-mv">${fmt(val(r),1)}%</b>`;const k=r.row+':mix',has=Object.prototype.hasOwnProperty.call(ed,k);
    return `<label class="as-mi${has?' ch':''}"><input type="number" inputmode="decimal" step="0.1" min="0" max="100" value="${val(r)}" onchange="asSet(${r.row},'mix',this.value)" aria-label="${esc(r.name)} manual mix"><em>%</em></label>`};
- return `<div class="fc-l">MANUAL MIX % <em>0 = auto</em></div><div class="fc-card as-bl2">${rows.map(r=>`<div class="as-mx"><span>${esc(r.name)}</span>${(Number(val(r))||0)===0?'<small>auto</small>':''}${cell(r)}</div>`).join('')}
+ return `<div class="fc-l">MANUAL MIX % <em>0 = auto</em></div><div class="fc-card as-bl2">${rows.map(r=>`<div class="as-mx"><span>${chIco(r.name)}${esc(r.name)}</span>${(Number(val(r))||0)===0?'<small>auto</small>':''}${cell(r)}</div>`).join('')}
   <div class="as-mx tot"><span>Manual total</span><b class="${ok?'':'dn'}">${fmt(tot,1)}%</b></div></div>
   <div class="fc-foot">${tot===0?'All on auto: the sheet sets the mix from the last days.':ok?'The plan uses these shares.':'The shares should add up to 100% (or all be 0 for auto).'}</div>`;
 }
@@ -13066,6 +13077,10 @@ function channelIconSvg(s){
 }
 
 // The small type icon shown next to a campaign type's name everywhere in the app.
+/* v313 numbers typed in the Lab show a comma after every 3 digits (203,000); the comma is dropped before saving */
+function numSep(v){const t=String(v==null?'':v).replace(/,/g,'');if(!/^-?\d*\.?\d*$/.test(t))return t;const neg=t[0]==='-',b=neg?t.slice(1):t,[i,d]=b.split('.');return (neg?'-':'')+(i||'').replace(/\B(?=(\d{3})+(?!\d))/g,',')+(d!=null?'.'+d:'')}
+function numSepLive(el){const v=el.value,end=v.length-(el.selectionEnd==null?v.length:el.selectionEnd),neg=v.trim()[0]==='-',raw=v.replace(/[^0-9.]/g,''),dot=raw.indexOf('.'),clean=dot<0?raw:raw.slice(0,dot+1)+raw.slice(dot+1).replace(/\./g,''),f=numSep((neg?'-':'')+clean);
+ if(f!==v){el.value=f;const pos=Math.max(0,f.length-end);try{el.setSelectionRange(pos,pos)}catch(e){}}}
 function chIco(n){return `<span class="channel-icon ch-ico ${channelIconClass(n)}">${channelIconSvg(n)}</span>`}
 function summaryAchEmoji(ratio,isSpend){
  if(ratio==null||!isFinite(ratio))return '⚪';
@@ -15452,7 +15467,7 @@ function renderPastYears(){
      <div class="py-tl2"><span class="py-h"></span><span class="py-h c">Spend · Conv. · Value</span><span class="py-h">ROAS</span>${byRoas.map(t=>`<span class="py-tn">${chIco(t.n)}${esc(CHANNEL_SHORT[t.n]||t.n)}</span><span class="py-ts"><b>${money(t.c.spend)}</b><i>·</i><b>${fmt(t.c.conversions,0)}</b><i>·</i><b>${money(t.c.value)}</b></span><span class="py-chip ${t.r!=null&&t.r>=(a.roas||0)?'g':'r'}">${t.r!=null?fmt(t.r,2)+'x':'—'}</span>`).join('')}</div>`:'';
    return `<div class="py-c2${y.back?'':' today'}${isWin?' win':''}${open?' open':''}" onclick="pyPick('${y.dk}')">
      <div class="py-yr"><b>${yr(y)}</b><small>${esc(shortDay(y.dk).toLocaleDateString('en-GB',{day:'numeric',month:'short'}))}</small></div>
-     <div class="py-main"><div class="py-v"><b>${money(a.value)}<span class="py-ro">${a.roas!=null?fmt(a.roas,2)+'x':''}</span></b>${isWin?'<span class="py-winb">Winner</span>':chip(a.value,b&&b.value)}</div>
+     <div class="py-main"><div class="py-v"><b>${money(a.value)}<span class="py-ro">${a.roas!=null?fmt(a.roas,2)+'x':''}</span></b><small class="py-sp">Spend ${money(a.spend)}</small>${isWin?'<span class="py-winb">Winner</span>':chip(a.value,b&&b.value)}</div>
 </div>
      ${open?`<div class="py-more py-tb"><div class="py-day">${esc(day(y.dk))}</div><div class="py-g2">${[['Spend',money(a.spend)],['Conversions',fmt(a.conversions,0)],['Value',money(a.value)],['ROAS',fmt(a.roas,2)+'x'],['Clicks',fmt(a.clicks,0)],['CPA',money(a.cpa,2)],['CTR',percent(a.ctr)],['CVR',percent(a.cvr)]].map(([l,v],i)=>`<div style="--d:${i}"><small>${l}</small><b>${v}</b></div>`).join('')}</div></div>`:''}
    </div>`;
