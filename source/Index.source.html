@@ -8705,7 +8705,7 @@ window.addEventListener('load',function(){
       </div>
       <div class="sx-ftiles">
         <div class="sx-ftile"><span class="sx-lbl">Value</span><b id="mValue">—</b><span class="sx-hs" id="mValueNote">—</span><div class="sx-thin green"><span id="mValueBar"></span></div></div>
-        <div class="sx-ftile"><span class="sx-lbl">ROAS</span><b id="mRoas">—</b><span class="sx-hs" id="mRoasNote">—</span><div class="sx-thin gold"><span id="mRoasBar"></span></div></div>
+        <div class="sx-ftile"><span class="sx-lbl">Conversions</span><b id="mConv">—</b><span class="sx-hs" id="mConvNote">—</span><div class="sx-thin gold"><span id="mConvBar"></span></div></div>
         <div class="sx-ftile sx-left"><span class="sx-lbl">Left to spend</span><b id="mLeft2">—</b><span class="sx-hs" id="mGap2">—</span></div>
       </div>
     </div>
@@ -12990,19 +12990,15 @@ function renderMonthForecast(x,m,d){
  setProgress('mValueBar',planValue?value/planValue:0);
  mgTick('mValueBar',vEnd);mgFrame('mValue',vEnd==null?(planValue?value/planValue:null):vEnd,.95,.8);
 
- const roas=m.actualRoas!=null&&isFinite(m.actualRoas)?Number(m.actualRoas):(spend?value/spend:null);
- const planRoas=planSpend?planValue/planSpend:null;
- text('mRoas',roas!=null?fmt(roas,2)+'x':'—');
- const rNote=document.getElementById('mRoasNote');
- if(rNote){
-   if(roas!=null&&planRoas){
-     const diff=roas/planRoas-1;
-     const c=diff>=0?'up':'down',gap=roas-planRoas;
-     rNote.innerHTML=`<span class="mg-rows"><div><span>Target</span><b>${fmt(planRoas,2)}x</b></div><div><span>Gap</span><b class="${c}">${gap>=0?'+':'−'}${fmt(Math.abs(gap),2)}x</b></div>${Number((DASH_DATA&&DASH_DATA.latest&&DASH_DATA.latest.dayNumber)||0)>=25?`<div><span>vs target</span><b class="${c}">${diff>=0?'▲':'▼'} ${Math.abs(Math.round(diff*100))}%</b></div>`:''}</span>`;
-   }else rNote.textContent=planRoas?`Target ${fmt(planRoas,2)}x`:'Actual return';
- }
- setProgress('mRoasBar',(roas!=null&&planRoas)?roas/planRoas:0);
- mgTick('mRoasBar',planRoas?1:null);mgFrame('mRoas',roas!=null&&planRoas?roas/planRoas:null,1,.85);
+ // v316 Conversions in place of ROAS: the month so far from the weeks, its target and where it should end
+ const wks=(d&&Array.isArray(d.weekly))?d.weekly:[];
+ const conv=wks.reduce((t,w)=>t+(Number(w.actualConversions)||0),0), planConv=wks.reduce((t,w)=>t+(Number(w.planConversions??w.planConv)||0),0);
+ const projConv=project(conv), cEnd=projConv!=null&&planConv?projConv/planConv:null;
+ text('mConv',wks.length?fmt(conv,0):'—');
+ const cNote=document.getElementById('mConvNote');
+ if(cNote)cNote.innerHTML=`<span class="mg-rows">${projConv!=null&&mgDay>=25?`<div><span>Projected</span><b>${fmt(projConv,0)}</b></div>`:''}${planConv?`<div><span>Target</span><b>${fmt(planConv,0)}</b></div>`:''}${cEnd!=null?`<div><span>Month end</span><b class="${cEnd>=.95?'up':cEnd<.8?'down':''}">${pct(cEnd)}</b></div>`:planConv?`<div><span>So far</span><b>${pct(conv/planConv)}</b></div>`:''}</span>`;
+ setProgress('mConvBar',planConv?conv/planConv:0);
+ mgTick('mConvBar',cEnd);mgFrame('mConv',cEnd==null?(planConv?conv/planConv:null):cEnd,.95,.8);
 }
 // Month at a Glance: the tick on a bar, and the coloured top edge of the tile (good · behind · off).
 function mgTick(barId,at){const b=document.getElementById(barId),w=b&&b.parentElement;if(!w)return;let t=w.querySelector('.mg-tk');if(at==null){if(t)t.remove();return}if(!t){t=document.createElement('i');t.className='mg-tk';w.appendChild(t)}t.style.left=Math.min(100,Math.max(0,at*100))+'%'}
@@ -16524,7 +16520,7 @@ function trackUsageStart(){
 
 /* ---------- v87: Monthly Report (admin only) ---------- */
 const MP_W=1080, MP_H=1527;
-let MR={open:true,pages:null,pdf:null,busy:'',msg:'',people:null,notes:'',sig:''};
+let MR={open:false,pages:null,pdf:null,busy:'',msg:'',people:null,notes:'',sig:''};
 const mpAcc=(a,p)=>p>0?Math.max(0,1-Math.abs(a-p)/p):null;
 function mpPct(v){return v==null||!isFinite(v)?'—':Math.round(v*100)+'%'}
 function mpK(v){v=Number(v)||0;const c=cx(v);return c>=1e6?cs()+(c/1e6).toFixed(2)+'M':c>=1e4?cs()+(c/1e3).toFixed(1)+'k':money(v)}
