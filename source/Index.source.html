@@ -16978,8 +16978,10 @@ async function mrSend(testOnly){
 function renderMonthlyReport(){
  const body=document.getElementById('mrBody');if(!body)return;
  const sec=document.getElementById('mrSection');
- // Everyone sees the report, open; only the owner emails it to the team.
- if(sec)sec.hidden=false;
+ // v314 only the owner sees the Monthly Report (the PDF); everyone else does not get the card.
+ const own=!!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)&&!VIEW_AS;
+ if(sec)sec.hidden=!own;
+ if(!own){body.innerHTML='';return}
  if(MR.people===null){MR.people=[];serverCall('adminReportRecipients',getAccessToken()).then(r=>{MR.people=(r&&r.people)||[];drawMonthlyReport()}).catch(()=>{})}
  if(MR.pdf&&MR.sig!==mrSig()){MR.pdf=null;MR.pages=null}
  drawMonthlyReport();

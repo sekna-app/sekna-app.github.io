@@ -17116,7 +17116,9 @@ function renderMonthlyReport(){
  const body=document.getElementById('mrBody');if(!body)return;
  const sec=document.getElementById('mrSection');
  
- if(sec)sec.hidden=false;
+ const own=!!(ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin)&&!VIEW_AS;
+ if(sec)sec.hidden=!own;
+ if(!own){body.innerHTML='';return}
  if(MR.people===null){MR.people=[];serverCall('adminReportRecipients',getAccessToken()).then(r=>{MR.people=(r&&r.people)||[];drawMonthlyReport()}).catch(()=>{})}
  if(MR.pdf&&MR.sig!==mrSig()){MR.pdf=null;MR.pages=null}
  drawMonthlyReport();
