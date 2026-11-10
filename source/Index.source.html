@@ -8150,6 +8150,10 @@ window.addEventListener('load',function(){
      html:not(.desktop-site-mode) body .dcH-h .dcH-ac2+i{margin-left:0}
      html:not(.desktop-site-mode) body .dcH-h{gap:6px}}
     .as-mx>span{display:inline-flex;align-items:center;gap:8px}.as-mx>span .ch-ico{flex:none}
+    /* v315 week accuracy pill beside Complete */
+    .wx-acc,.wx-d-head .wx-acc{margin-left:auto;display:inline-flex;align-items:center;gap:4px;font-size:11.5px!important;font-weight:900!important;border-radius:99px;padding:4px 9px;background:#fdf1d8;color:#a56a06!important;white-space:nowrap}
+    .wx-acc svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.6}.wx-acc+.wx-status{margin-left:6px!important}
+    body.dark-mode .wx-acc{background:rgba(226,184,116,.16);color:#f2d38f}
 </style>
 </head>
 <body>
@@ -10592,7 +10596,10 @@ function renderWeekDetail(w,isLive,monthName){
  const range=weekDateRange(w,monthName);
  const wkM=String(w.sourceLabel||'').match(/(\d{1,2})\s*[:\-–]\s*(\d{1,2})\s*$/),wkT=Number((DASH_DATA&&DASH_DATA.latest&&DASH_DATA.latest.dayNumber)||0);
  const wkExp=isLive&&wkM&&wkT?Math.min(1,Math.max(.05,(wkT-+wkM[1]+1)/(+wkM[2]-+wkM[1]+1))):1;
- const status=!has?'<span class="wx-status is-wait">Upcoming</span>':isLive?'<span class="wx-status is-live">● In progress</span>':'<span class="wx-status is-done">Complete</span>';
+ // v315 a finished week shows its accuracy (spend 40 · conv 20 · value 40, the same as a day) beside Complete
+ const wAcc=has&&!isLive?dayAccuracy(planSpend?Number(w.actualSpend)/planSpend:null,planConv?Number(w.actualConversions)/planConv:null,planValue?Number(w.actualValue)/planValue:null):null;
+ const accPill=wAcc?`<span class="wx-acc" title="Week accuracy ${(wAcc.score*100).toFixed(1)}%"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/></svg>${Math.round(wAcc.score*100)}%</span>`:'';
+ const status=!has?'<span class="wx-status is-wait">Upcoming</span>':isLive?'<span class="wx-status is-live">● In progress</span>':accPill+'<span class="wx-status is-done">Complete</span>';
  const metric=(label,actual,plan,f,neutral)=>{
    const ok=has&&plan>0&&actual!=null;
    const r=ok?actual/plan:null;
