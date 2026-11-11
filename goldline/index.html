@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Goldline Studio</title>
+<meta name="description" content="Goldline Studio makes HEMERA, the live media plan, and more apps to come.">
+<meta name="theme-color" content="#132457">
+<link rel="icon" href="mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@500;600;700;800;900&display=swap">
+<style>
+:root{--navy:#203c8e;--navy2:#2c4fb8;--deep:#0a1748;--gold:#e2b874;--gold2:#f2d38f;--sub:#c9d3f5;--mute:#8f9cc8;--line:rgba(255,255,255,.12)}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{min-height:100vh;color:#fff;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:radial-gradient(900px 560px at 80% 10%,rgba(79,124,255,.38),transparent 62%),radial-gradient(700px 420px at 6% 96%,rgba(226,184,116,.14),transparent 60%),linear-gradient(180deg,#132457,#0a1748 60%,#070f33)}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1040px;margin:0 auto;padding:28px max(20px,env(safe-area-inset-left,0px)) 48px max(20px,env(safe-area-inset-right,0px))}
+/* the logo: a G whose bar runs out as a gold line, a gold dot at its tip, the serif word beside it */
+.gl{display:inline-flex;align-items:center;gap:14px}
+.gl svg{width:58px;height:50px;flex:none}
+.gl .w{display:flex;flex-direction:column;line-height:1}
+.gl .w b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:40px;letter-spacing:.2px}
+.gl .w b em{font-style:normal;color:var(--gold)}
+.gl .w small{font-size:10px;font-weight:800;letter-spacing:.42em;color:var(--sub);margin-top:6px;padding-left:2px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+header .gl svg{width:40px;height:34px}header .gl .w b{font-size:26px}header .gl .w small{font-size:8px;margin-top:4px}
+.hero{padding:64px 0 36px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:18px}
+.hero .gl svg{width:86px;height:74px}.hero .gl .w b{font-size:62px}.hero .gl .w small{font-size:12px}
+.hero p{margin:6px 0 0;max-width:560px;color:var(--sub);font-size:17px;line-height:1.6;font-weight:500}
+.ln{width:120px;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+h2{margin:36px 0 14px;font-size:12px;font-weight:900;letter-spacing:.18em;color:var(--gold);text-transform:uppercase}
+.apps{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.app{position:relative;border-radius:22px;padding:20px;background:linear-gradient(150deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid var(--line);display:flex;flex-direction:column;gap:14px;overflow:hidden}
+.app::after{content:"";position:absolute;left:20px;right:20px;bottom:0;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--gold),transparent)}
+.app .top{display:flex;align-items:center;gap:14px}
+.app img{width:60px;height:60px;border-radius:16px;box-shadow:0 10px 24px rgba(0,0,0,.35)}
+.app .top b{display:block;font-size:22px;font-weight:900;letter-spacing:.5px}.app .top b em{font-style:normal;color:var(--gold)}
+.app .top small{display:block;font-size:12.5px;color:var(--mute);font-weight:700;margin-top:3px}
+.app p{margin:0;color:var(--sub);font-size:14px;line-height:1.6}
+.tags{display:flex;flex-wrap:wrap;gap:6px}.tags span{font-size:11px;font-weight:800;border-radius:99px;padding:4px 10px;background:rgba(255,255,255,.08);color:#dfe6fb}
+.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:12px;padding:11px 16px;font-size:14px;font-weight:900}
+.btn.g{background:linear-gradient(135deg,var(--gold),#c89434);color:#1c1405;box-shadow:0 12px 26px rgba(226,184,116,.25)}
+.btn.o{border:1px solid rgba(255,255,255,.22);color:#fff}
+.soon{border-style:dashed;background:transparent;justify-content:center;align-items:flex-start;min-height:180px}
+.soon::after{display:none}
+.soon .dot{width:46px;height:46px;border-radius:14px;border:1.5px dashed rgba(226,184,116,.55);display:grid;place-items:center;color:var(--gold);font-size:22px;font-weight:800}
+.soon b{font-size:18px;font-weight:900}.soon p{color:var(--mute)}
+footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12.5px;color:var(--mute);font-weight:600}
+@media (max-width:560px){.hero{padding-top:44px}.hero .gl svg{width:62px;height:54px}.hero .gl .w b{font-size:44px}.hero .gl .w small{font-size:10px}.hero p{font-size:15px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="gl" href="./" aria-label="Goldline Studio">
+      <svg viewBox="0 0 58 50" aria-hidden="true"><path d="M34 12 A17 17 0 1 0 38.7 27" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path d="M22 26 H52" stroke="#e2b874" stroke-width="6" stroke-linecap="round"/><circle cx="34" cy="12" r="3.4" fill="#e2b874"/></svg>
+      <span class="w"><b>Gold<em>line</em></b><small>STUDIO</small></span>
+    </a>
+  </header>
+
+  <section class="hero">
+    <span class="gl">
+      <svg viewBox="0 0 58 50" aria-hidden="true"><path d="M34 12 A17 17 0 1 0 38.7 27" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path d="M22 26 H52" stroke="#e2b874" stroke-width="6" stroke-linecap="round"/><circle cx="34" cy="12" r="3.4" fill="#e2b874"/></svg>
+      <span class="w"><b>Gold<em>line</em></b><small>STUDIO</small></span>
+    </span>
+    <div class="ln"></div>
+    <p>We build clear, calm apps for teams who live by their numbers.</p>
+  </section>
+
+  <h2>Our apps</h2>
+  <div class="apps">
+    <div class="app">
+      <div class="top"><img src="../icons/icon-192.png" alt="HEMERA"><div><b>H<em>E</em>MERA</b><small>Live media plan · day by day</small></div></div>
+      <p>The whole media plan on your phone and laptop: today against the plan, the month, the seasons and the reports, live from the sheets.</p>
+      <div class="tags"><span>Media planning</span><span>Campaign monitoring</span><span>Reporting</span></div>
+      <div class="btns"><a class="btn g" href="../get/">Download</a><a class="btn o" href="../">Open</a></div>
+    </div>
+    <div class="app soon">
+      <span class="dot">+</span>
+      <b>More apps on the way</b>
+      <p>New apps from Goldline Studio will appear here.</p>
+    </div>
+  </div>
+
+  <footer><span>© <span id="y">2026</span> Goldline Studio</span><span>Made by Ibrahim Amin</span></footer>
+</div>
+<script>document.getElementById('y').textContent=new Date().getFullYear()</script>
+</body>
+</html>
