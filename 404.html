@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Page not found · Goldline Studio</title>
+<meta name="theme-color" content="#132457">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/goldline/mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@500;700;800;900&display=swap">
+<style>
+:root{--gold:#e2b874;--sub:#c9d3f5;--mute:#8f9cc8}
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{color:#fff;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:radial-gradient(900px 560px at 50% 0,rgba(79,124,255,.32),transparent 62%),linear-gradient(180deg,#132457,#0a1748 55%,#070f33);display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
+main{max-width:520px;display:flex;flex-direction:column;align-items:center;gap:14px}
+/* the G whose gold line runs off into nowhere */
+.mk{position:relative;width:200px;height:120px}
+.mk svg{width:100%;height:100%;overflow:visible}
+.mk .ln{stroke-dasharray:6 10;animation:run 1.6s linear infinite}
+@keyframes run{to{stroke-dashoffset:-32}}
+.n{font-family:"DM Serif Display",Georgia,serif;font-size:96px;line-height:1;letter-spacing:2px}
+.n em{font-style:normal;color:var(--gold)}
+h1{margin:0;font-size:22px;font-weight:900}
+p{margin:0;color:var(--sub);font-size:15px;line-height:1.65}
+.btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:10px}
+.btn{display:inline-flex;align-items:center;border-radius:12px;padding:12px 18px;font-size:14px;font-weight:900;text-decoration:none}
+.btn.g{background:linear-gradient(135deg,var(--gold),#c89434);color:#1c1405}
+.btn.o{border:1px solid rgba(255,255,255,.22);color:#fff}
+small{margin-top:20px;color:var(--mute);font-size:12px;font-weight:700}
+small a{color:var(--mute)}
+</style>
+</head>
+<body>
+<main>
+  <div class="mk" aria-hidden="true"><svg viewBox="0 0 200 120"><path d="M70 30 A34 34 0 1 0 79 61" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round"/><path d="M48 58 H110" stroke="#e2b874" stroke-width="10" stroke-linecap="round"/><path class="ln" d="M120 58 H196" stroke="#e2b874" stroke-width="4" stroke-linecap="round" opacity=".5"/><circle cx="70" cy="30" r="6.5" fill="#e2b874"/></svg></div>
+  <div class="n">4<em>0</em>4</div>
+  <h1>This line goes nowhere.</h1>
+  <p>The page you were looking for has moved or never existed. Let's get you back on track.</p>
+  <div class="btns"><a class="btn g" href="/">Open HEMERA</a><a class="btn o" href="/goldline/">Goldline Studio</a></div>
+  <small>Looking for the app? <a href="/get/">Download HEMERA</a></small>
+</main>
+</body>
+</html>
