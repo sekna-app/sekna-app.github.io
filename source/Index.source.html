@@ -8160,13 +8160,15 @@ window.addEventListener('load',function(){
     html body .dx-tybtn.on span::after{transform:scaleX(1)}
     html body .dx-tybtn i{display:inline-grid;place-items:center}html body .dx-tybtn i svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
     body.dark-mode .dx-tybtn{color:#9fb6ff!important;border-top-color:#232a36!important}
-    /* v318 About: HEMERA is a Goldline Studio app (tap for the company page) */
-    .ab3-gl{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;margin:14px auto 4px;padding:12px 18px;border-radius:16px;text-decoration:none;color:#fff;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);width:max-content;max-width:100%}
-    .ab3-gl small{font-size:9.5px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#c9d3f5}
-    .ab3-gl .gl{display:inline-flex;align-items:center;gap:9px}.ab3-gl .gl svg{width:34px;height:29px}
-    .ab3-gl .w{display:flex;flex-direction:column;line-height:1;text-align:left}.ab3-gl .w b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:24px;color:#fff}.ab3-gl .w b em{font-style:normal;color:#e2b874}
-    .ab3-gl .w i{font-style:normal;font-size:7.5px;font-weight:800;letter-spacing:.4em;color:#c9d3f5;margin-top:4px}
-    .ab3-gl .go{font-style:normal;font-size:11px;font-weight:800;color:#e2b874}
+    /* v319 About: An app by Goldline Studio, top right across from the back button (opens the company page) */
+    .sk-about{position:relative}
+    .ab3-gll{position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,#e2b874 30%,#f2d38f 50%,#e2b874 70%,transparent);z-index:3;pointer-events:none}
+    .ab3-glt{position:absolute;top:calc(22px + env(safe-area-inset-top,0px));right:16px;display:flex;align-items:center;gap:8px;text-decoration:none;z-index:4}
+    .ab3-glt span{display:flex;flex-direction:column;line-height:1;text-align:right}
+    .ab3-glt small{font-size:8.5px;font-weight:800;letter-spacing:.2em;color:#9fb0e6;text-transform:uppercase}
+    .ab3-glt b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:17px;color:#fff;margin-top:3px;white-space:nowrap}.ab3-glt b em{font-style:normal;color:#e2b874}
+    .ab3-glt svg{width:30px;height:26px;flex:none}
+    @media (min-width:1100px){.ab3-glt{top:14px;right:max(16px,calc(50% - 340px))}}
 </style>
 </head>
 <body>
@@ -8420,6 +8422,7 @@ window.addEventListener('load',function(){
 
 <div class="app-modal-overlay sk-page" id="aboutOverlay" onclick="closeAbout(event)" data-share-ui>
   <section class="app-modal sk-modal sk-about" role="dialog" aria-modal="true" aria-labelledby="aboutTitle" onclick="event.stopPropagation()">
+    <i class="ab3-gll" aria-hidden="true"></i><a class="ab3-glt" href="goldline/" target="_blank" rel="noopener" aria-label="An app by Goldline Studio, see all our apps"><span><small>An app by</small><b>Gold<em>line</em> Studio</b></span><svg viewBox="0 0 58 50" aria-hidden="true"><path d="M34 12 A17 17 0 1 0 38.7 27" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path d="M22 26 H52" stroke="#e2b874" stroke-width="6" stroke-linecap="round"/><circle cx="34" cy="12" r="3.4" fill="#e2b874"/></svg></a>
     <div class="sk-modal-head"><div><div class="sk-kicker">About</div><h2 id="aboutTitle">HEMERA</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeAbout()" aria-label="Close about"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
     <div class="ab3-grid" aria-hidden="true"></div>
     <img class="ab3-logo" id="aboutSeknaLogo" alt="HEMERA">
@@ -8433,7 +8436,6 @@ window.addEventListener('load',function(){
     <div class="ab3-pills"><span>Media planning</span><span>Campaign monitoring</span><span>Reporting</span><span>Smart tools</span></div>
     <button type="button" class="ab3-idea ab3-tour" onclick="closeAbout();tourStart()"><span class="ab3-bulb">✨</span><span class="ab3-it"><b>Take the tour</b><small>A one-minute look at what HEMERA can do.</small></span><span class="ab3-go">›</span></button>
     <div class="ab3-credit">Designed &amp; developed by <b>Ibrahim Amin</b></div>
-    <a class="ab3-gl" href="goldline/" target="_blank" rel="noopener" aria-label="A Goldline Studio app, see all our apps"><small>A product of</small><span class="gl"><svg viewBox="0 0 58 50" aria-hidden="true"><path d="M34 12 A17 17 0 1 0 38.7 27" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path d="M22 26 H52" stroke="#e2b874" stroke-width="6" stroke-linecap="round"/><circle cx="34" cy="12" r="3.4" fill="#e2b874"/></svg><span class="w"><b>Gold<em>line</em></b><i>STUDIO</i></span></span><em class="go">Our apps ›</em></a>
     <div class="sk-version ab3-ver" id="aboutVer">HEMERA Dashboard</div>
   </section>
 </div>

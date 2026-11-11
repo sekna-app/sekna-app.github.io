@@ -538,12 +538,19 @@ html.lite .nav img{opacity:1!important}
 .glf .w b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:26px}.glf .w b em{font-style:normal;color:var(--gold)}
 .glf .w i{font-style:normal;font-size:8px;font-weight:800;letter-spacing:.4em;color:var(--sub);margin-top:4px}
 .glf .glgo{font-size:12px;font-weight:800;color:var(--gold)}
+.glt-l{position:fixed;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold) 30%,var(--gold2) 50%,var(--gold) 70%,transparent);z-index:50;pointer-events:none}
+.nav{justify-content:space-between}
+.glt{display:flex;align-items:center;gap:8px;text-decoration:none;color:#fff}
+.glt span{display:flex;flex-direction:column;line-height:1;text-align:right}
+.glt small{font-size:8.5px;font-weight:800;letter-spacing:.2em;color:var(--sub);text-transform:uppercase}
+.glt b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:17px;margin-top:3px;white-space:nowrap}.glt b em{font-style:normal;color:var(--gold)}
+.glt svg{width:30px;height:26px;flex:none}
 </style>
 </head>
 <body>
 <canvas id="glC" aria-hidden="true"></canvas><div class="lsun" id="lsun" aria-hidden="true"><canvas></canvas></div>
 <div class="wrap">
-  <div class="nav"><img src="/get/logo-white.webp?v=20" alt="HEMERA"></div>
+  <i class="glt-l" aria-hidden="true"></i><div class="nav"><img src="/get/logo-white.webp?v=20" alt="HEMERA"><a class="glt" href="../goldline/" aria-label="An app by Goldline Studio, see all our apps"><span><small>An app by</small><b>Gold<em>line</em> Studio</b></span><svg viewBox="0 0 58 50" aria-hidden="true"><path d="M34 12 A17 17 0 1 0 38.7 27" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path d="M22 26 H52" stroke="#e2b874" stroke-width="6" stroke-linecap="round"/><circle cx="34" cy="12" r="3.4" fill="#e2b874"/></svg></a></div>
   <div class="hgrid">
     <div class="ht">
       <span class="kick"><i></i>Live media plan dashboard</span>
