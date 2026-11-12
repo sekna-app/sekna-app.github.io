@@ -19,7 +19,9 @@ const IS_ANDROID = /Android/i.test(self.navigator.userAgent || '');
 
 function showSeknaNotification(d) {
   const tag = d.eventType === 'new_day' ? 'data-' + (d.accountKey || 'usa') : (d.eventType || 'sekna');
-  const options = { body: d.body || '', badge: 'icons/badge-96.png', tag: tag, data: { url: './' } };
+  // a season push opens that season in the Seasons Calendar
+  const sk = d.eventType === 'season' ? (String(d.image || '').match(/\/seasons\/([a-z0-9]+)\.jpg/) || [])[1] : '';
+  const options = { body: d.body || '', badge: 'icons/badge-96.png', tag: tag, data: { url: sk ? './?ss=' + sk : './', season: sk || '' } };
   if (!IS_ANDROID) options.icon = 'icons/icon-192.png';
   if (d.image) options.image = d.image;
   return self.registration.showNotification(d.title || 'HEMERA', options);
@@ -29,9 +31,13 @@ self.addEventListener('notificationclick', event => {
   event.notification.close();
   event.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(list => {
     for (const client of list) {
-      if (client.url.startsWith(self.registration.scope) && 'focus' in client) return client.focus();
+      if (client.url.startsWith(self.registration.scope) && 'focus' in client) {
+        const sk = (event.notification.data || {}).season;
+        if (sk) client.postMessage({ type: 'openSeason', key: sk });
+        return client.focus();
+      }
     }
-    return self.clients.openWindow('./');
+    return self.clients.openWindow(((event.notification.data || {}).url) || './');
   }));
 });
 

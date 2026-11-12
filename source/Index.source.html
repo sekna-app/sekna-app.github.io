@@ -10795,6 +10795,9 @@ function gslAll(){GSL_RAF=0;GSL_SEL.forEach(sel=>document.querySelectorAll(sel).
   if(moved&&motionOn()){p.classList.remove('shine');void p.offsetWidth;p.classList.add('shine')}
  }))}
 function gslSoon(){if(!GSL_RAF)GSL_RAF=requestAnimationFrame(gslAll)}
+// v323 a season push tapped on the phone opens that season: ?ss=key on a fresh start, or a message from the service worker
+window.addEventListener('load',()=>{try{const k=new URLSearchParams(location.search).get('ss');if(k&&/^[a-z0-9]+$/.test(k)){history.replaceState(null,'',location.pathname);setTimeout(()=>ssOpenSeason(k),1200)}}catch(e){}
+ try{navigator.serviceWorker&&navigator.serviceWorker.addEventListener('message',e=>{const d=e.data||{};if(d.type==='openSeason'&&/^[a-z0-9]+$/.test(d.key||''))ssOpenSeason(d.key)})}catch(e){}});
 window.addEventListener('load',()=>{try{new MutationObserver(ms=>{if(ms.some(m=>!(m.target.classList&&m.target.classList.contains('gsl-pill'))))gslSoon()}).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class']})}catch(e){}gslSoon()});
 window.addEventListener('resize',gslSoon);
 // A blue pill that slides under the picked button, with the gold shine (Days switch).
@@ -11305,11 +11308,14 @@ function greetAutoShow(){
  }).catch(()=>{});
 }
 function nfCardClose(){const o=document.querySelector('.nfc-ov');if(!o)return;o.classList.remove('on');setTimeout(()=>o.remove(),220)}
+/* v323 open a season in the Seasons Calendar as the big card (from a notification) */
+function nfSeasonKey(x){const m=String(x.image||'').match(/\/seasons\/([a-z0-9]+)\.jpg/);if(m)return m[1];const t=String(x.title||'').replace(/^\S+\s/,'');const k=(typeof NF_SEASON_KEY!=='undefined'?NF_SEASON_KEY:[]).find(([n])=>t.startsWith(n));return k?k[1]:''}
+function ssOpenSeason(k){switchDashboardTab('seasons');if(!k)return;let n=0;const go=()=>{try{SS.f='all';SS.more=false;const t=ssToday(),s=ssList().find(z=>z.key===k&&z.to>=t);if(s){ssHeroPick(s.id);scrollTo(0,0);return}}catch(e){}if(++n<10)setTimeout(go,300)};setTimeout(go,150)}
 function nfGo(id){
  nfCardClose();
  const x=(NF.list||[]).find(n=>n.id===id);if(!x)return;
  closeNotifs();
- if(x.type==='season'){switchDashboardTab('seasons');return}
+ if(x.type==='season'){ssOpenSeason(nfSeasonKey(x));return}
  if(x.type==='streak'||x.type==='spend_alert'||x.type==='roas_drop'){if(x.account&&x.account!==CURRENT_ACCOUNT)switchAccount(x.account);switchDashboardTab('overview');if(x.type==='roas_drop')setTimeout(()=>{try{if(!document.getElementById('roasDrop'))roasDropCheck(DASH_DATA,true)}catch(e){}},1600);return}
  if(x.type==='tasks'){openTasks('mine');return}
  if(x.type==='app_update'){openUpdates();return}
