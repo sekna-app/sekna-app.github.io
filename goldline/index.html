@@ -6,7 +6,7 @@
 <title>Goldline Studio</title>
 <meta name="description" content="Goldline Studio makes HEMERA, the live media plan, and more apps to come.">
 <meta name="theme-color" content="#132457">
-<link rel="icon" href="mark.svg" type="image/svg+xml">
+<link rel="icon" href="mark.svg?v=2" type="image/svg+xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@500;600;700;800;900&display=swap">
 <style>
 :root{--navy:#203c8e;--navy2:#2c4fb8;--deep:#0a1748;--gold:#e2b874;--gold2:#f2d38f;--sub:#c9d3f5;--mute:#8f9cc8;--line:rgba(255,255,255,.12)}
@@ -58,6 +58,9 @@ footer a{color:inherit;text-decoration:none}footer a:hover{color:#fff}footer{mar
 .pr span{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:900;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}.pr svg{width:17px;height:17px;fill:none;stroke:var(--gold);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .pr i{width:5px;height:5px;border-radius:50%;background:rgba(226,184,116,.55)}
 .hero p{font-size:18px!important;margin-top:16px!important}
+.bk{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;text-decoration:none;flex:none;margin-right:14px;transition:background .2s}
+.bk:hover{background:rgba(255,255,255,.12)}.bk svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.topbar{display:flex;align-items:center}
 </style>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Goldline Studio">
@@ -75,10 +78,10 @@ footer a{color:inherit;text-decoration:none}footer a:hover{color:#fff}footer{mar
 <body>
 <div class="wrap">
   <header>
-    <a class="gl" href="./" aria-label="Goldline Studio">
+    <span class="topbar"><a class="bk" href="../get/" aria-label="Back" onclick="if(history.length>1&&document.referrer){history.back();return false}"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></a><a class="gl" href="./" aria-label="Goldline Studio">
       <svg viewBox="0 0 58 50" aria-hidden="true"><path d="M34 12 A17 17 0 1 0 38.7 27" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path d="M22 26 H52" stroke="#e2b874" stroke-width="6" stroke-linecap="round"/><circle cx="34" cy="12" r="3.4" fill="#e2b874"/></svg>
       <span class="w"><b>Gold<em>line</em></b><small>STUDIO</small></span>
-    </a>
+    </a></span>
   </header>
 
   <section class="hero">

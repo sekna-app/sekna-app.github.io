@@ -6,7 +6,7 @@
 <title>Privacy Policy · HEMERA</title>
 <meta name="description" content="How HEMERA, an app by Goldline Studio, uses and protects your information.">
 <meta name="theme-color" content="#132457">
-<link rel="icon" href="../goldline/mark.svg" type="image/svg+xml">
+<link rel="icon" href="../goldline/mark.svg?v=2" type="image/svg+xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@500;600;700;800;900&display=swap">
 <style>
 :root{--gold:#e2b874;--sub:#c9d3f5;--mute:#8f9cc8;--line:rgba(255,255,255,.12)}
@@ -37,14 +37,17 @@ footer a{color:var(--mute);text-decoration:none}footer a:hover{color:#fff}
 .cx{display:flex;flex-direction:column;gap:3px;min-width:0}.cx small{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
 .cx b{font-size:18px;font-weight:900;overflow-wrap:anywhere}.cx em{font-style:normal;font-size:12.5px;color:var(--mute);font-weight:600}
 .ca{margin-left:auto;font-size:26px;color:var(--gold)}
+.bk{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;text-decoration:none;flex:none;margin-right:14px;transition:background .2s}
+.bk:hover{background:rgba(255,255,255,.12)}.bk svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.topbar{display:flex;align-items:center}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <a class="gl" href="../goldline/" aria-label="Goldline Studio">
+  <span class="topbar"><a class="bk" href="../get/" aria-label="Back" onclick="if(history.length>1&&document.referrer){history.back();return false}"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></a><a class="gl" href="../goldline/" aria-label="Goldline Studio">
     <svg viewBox="0 0 58 50" aria-hidden="true"><path d="M34 12 A17 17 0 1 0 38.7 27" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path d="M22 26 H52" stroke="#e2b874" stroke-width="6" stroke-linecap="round"/><circle cx="34" cy="12" r="3.4" fill="#e2b874"/></svg>
     <span class="w"><b>Gold<em>line</em></b><small>STUDIO</small></span>
-  </a>
+  </a></span>
 
   <div class="kk">HEMERA</div>
   <h1>Privacy Policy</h1>
