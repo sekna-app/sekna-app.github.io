@@ -390,7 +390,9 @@ exports.api = onRequest({
   }
   // Download page stars: one rating per device (1-5); the page shows the real average and count.
   if (route === '/rating') {
-    const RATE_DOC = 'server/app-rating';
+    // Each app has its own stars: ?app=aether keeps Aether's apart from HEMERA's.
+    const rateApp = String((req.query && req.query.app) || '').toLowerCase();
+    const RATE_DOC = rateApp === 'aether' ? 'server/app-rating-aether' : 'server/app-rating';
     const summary = d => { const v = Object.values((d && d.by) || {}).map(Number).filter(n => n >= 1 && n <= 5); return { ok: true, count: v.length, avg: v.length ? Math.round(v.reduce((a, b) => a + b, 0) / v.length * 10) / 10 : null }; };
     try {
       const d = (await fsGet(RATE_DOC).catch(() => null)) || { by: {} };
