@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- the fonts load beside the page so a slow connection never holds back the opening screen -->
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Changa:wght@500;600;700&family=Inter:wght@800&family=Herr+Von+Muellerhoff&family=Space+Grotesk:wght@500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Changa:wght@500;600;700&family=Inter:wght@800&family=Herr+Von+Muellerhoff&family=Space+Grotesk:wght@500&display=swap" rel="stylesheet"></noscript>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Changa:wght@500;600;700&family=Inter:wght@800&family=Herr+Von+Muellerhoff&family=Space+Grotesk:wght@500;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Changa:wght@500;600;700&family=Inter:wght@800&family=Herr+Von+Muellerhoff&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet"></noscript>
   <script>
 let FCP_ANIM=Date.now();
 // v75 — startup diagnostics: show why the dashboard did not start instead of an endless "Loading…".
@@ -8170,9 +8170,51 @@ window.addEventListener('load',function(){
     .ab3-glt svg{width:30px;height:26px;flex:none}
     @media (min-width:1100px){.ab3-glt{top:14px;right:max(16px,calc(50% - 340px))}}
     .ab3-pv{display:block;width:max-content;max-width:100%;margin:6px auto 0;font-size:11.5px;font-weight:700;color:#9fb0e6;text-align:center}.ab3-pv a{color:#9fb0e6;text-decoration:none}.ab3-pv a:hover{color:#fff}
+    /* v324 launch splash: Goldline Studio presents → HEMERA · DAY BY DAY (once per launch, ~3.4s) */
+    .lsp{position:fixed;inset:0;z-index:2147483600;display:flex;align-items:center;justify-content:center;background:radial-gradient(90% 55% at 50% 42%,#223A86 0%,#15265F 45%,#0A1238 100%);transition:opacity .3s ease}
+    .lsp.out{opacity:0;pointer-events:none}
+    .lsp-s1{display:flex;flex-direction:column;align-items:center;gap:26px;transition:opacity .35s ease}
+    .lsp-s1.out{opacity:0}
+    .lsp-row{direction:ltr;display:flex;align-items:center;gap:20px;opacity:0;transform:translateY(8px);animation:spUp .5s ease .1s forwards}
+    .lsp-row svg{width:56px;height:56px;flex:none}
+    .lsp-col{display:flex;flex-direction:column;gap:4px}
+    .lsp-col b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:40px;line-height:1;color:#FFFFFF}.lsp-col b em{font-style:normal;color:#E2B874}
+    .lsp-col i{font-style:normal;font-family:"Space Grotesk",Inter,system-ui,sans-serif;font-weight:700;font-size:11px;letter-spacing:.42em;color:#C9D3F5}
+    .lsp-pr{font-family:"Space Grotesk",Inter,system-ui,sans-serif;font-weight:700;font-size:11px;letter-spacing:.5em;padding-left:.5em;color:#7F8FC4;opacity:0;transform:translateY(8px);animation:spUp .4s ease .5s forwards}
+    .lsp-s2{display:none;flex-direction:column;align-items:center;gap:14px;direction:ltr}
+    .lsp-s2.on{display:flex}
+    .lsp-mk{width:96px;height:96px;object-fit:contain;opacity:0;transform:scale(.85);animation:spPop .6s cubic-bezier(.2,.8,.2,1) forwards}
+    .lsp-wm{display:flex;gap:7px;font-family:"Space Grotesk",Inter,system-ui,sans-serif;font-weight:800;font-size:36px;letter-spacing:.06em;color:#FFFFFF;line-height:1}
+    .lsp-wm span{opacity:0;transform:translateY(8px);animation:spUp .3s ease forwards}.lsp-wm span.g{color:#E2B874}
+    .lsp-ln{width:160px;height:2px;background:linear-gradient(90deg,transparent,#E2B874,transparent);transform:scaleX(0);animation:spLine .3s ease 1s forwards}
+    .lsp-tg{font-family:"Space Grotesk",Inter,system-ui,sans-serif;font-weight:700;font-size:11px;letter-spacing:.42em;padding-left:.42em;color:#C9D3F5;opacity:0;transform:translateY(8px);animation:spUp .3s ease 1.15s forwards}
+    @keyframes spUp{to{opacity:1;transform:none}}
+    @keyframes spPop{to{opacity:1;transform:scale(1)}}
+    @keyframes spDraw{to{stroke-dashoffset:0}}
+    @keyframes spOrbit{to{transform:rotate(0);opacity:1}}
+    @keyframes spLine{to{transform:scaleX(1)}}
+    .lsp.rm .lsp-row,.lsp.rm .lsp-pr{animation:none;opacity:1;transform:none}
 </style>
 </head>
 <body>
+<div class="lsp" id="launchSp" aria-hidden="true">
+  <div class="lsp-s1" id="lspS1"><div class="lsp-row"><svg viewBox="0 0 64 64"><path d="M46 18A21 21 0 1 0 50 36" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round"/><path d="M33 34h27" stroke="#E2B874" stroke-width="7" stroke-linecap="round"/><circle cx="47" cy="14" r="4" fill="#E2B874"/></svg><div class="lsp-col"><b>Gold<em>line</em></b><i>STUDIO</i></div></div><div class="lsp-pr">PRESENTS</div></div>
+  <div class="lsp-s2" id="lspS2"><img class="lsp-mk" src="icons/hm-mark.png?v=1" alt=""><div class="lsp-wm"><span style="animation-delay:0.70s">H</span><span style="animation-delay:0.77s">E</span><span style="animation-delay:0.84s">M</span><span class="g" style="animation-delay:0.91s">E</span><span style="animation-delay:0.98s">R</span><span style="animation-delay:1.05s">A</span></div><div class="lsp-ln"></div><div class="lsp-tg">DAY BY DAY</div></div>
+</div>
+<script>
+(function(){var sp=document.getElementById('launchSp');if(!sp)return;var seen=false;
+ try{seen=sessionStorage.getItem('hm_launch')==='1';sessionStorage.setItem('hm_launch','1')}catch(e){}
+ var inFrame=false;try{inFrame=window.self!==window.top}catch(e){inFrame=true}
+ if(seen||inFrame){sp.remove();return}
+ var T=function(f,ms){setTimeout(f,ms)},gone=function(){sp.classList.add('out');T(function(){sp.remove()},300)};
+ var rm=false;try{rm=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+ if(rm){sp.classList.add('rm');T(gone,600);return}
+ T(function(){document.getElementById('lspS1').classList.add('out')},1300);
+ T(function(){var a=document.getElementById('lspS1'),b=document.getElementById('lspS2');if(a)a.style.display='none';if(b)b.classList.add('on')},1650);
+ T(function(){sp.classList.add('out')},3150);
+ T(function(){sp.remove()},3450);
+})();
+</script>
 <div class="sks" id="skSplash" data-share-ui aria-hidden="true">
   <div class="sks-glow g1"></div><div class="sks-glow g2"></div>
   <div class="sks-brand"><div class="sks-logo"><svg class="sks-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1016 233" width="1016" height="233"><defs><linearGradient id="hgS" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f7e3a3"/><stop offset=".45" stop-color="#e8c36f"/><stop offset="1" stop-color="#c38f35"/></linearGradient></defs><path fill="#fff" fill-rule="evenodd" d="M587.8 30.5 L587.2 69.0 L588.0 70.0 L722.2 70.0 L729.0 72.0 L734.8 76.5 L737.8 81.5 L738.8 87.8 L737.8 93.0 L735.0 97.5 L731.0 101.0 L724.0 103.2 L587.8 103.5 L587.2 111.2 L587.5 227.0 L588.5 227.5 L630.5 227.5 L631.0 227.0 L631.0 144.0 L632.0 142.8 L642.2 142.8 L712.2 227.2 L771.0 227.2 L770.8 226.0 L704.0 143.5 L704.5 142.8 L729.5 142.5 L740.2 140.5 L745.8 138.5 L753.5 134.8 L760.2 130.0 L767.0 123.8 L771.5 118.0 L775.8 110.5 L778.5 103.0 L780.2 93.8 L780.5 83.5 L779.5 75.5 L776.8 66.2 L772.5 58.0 L766.8 50.2 L759.8 43.5 L750.0 37.2 L737.2 32.2 L728.5 30.8 L722.8 30.2Z M401.5 30.0 L401.0 30.5 L401.2 227.2 L572.5 227.5 L573.0 227.0 L573.0 189.8 L572.5 189.2 L444.5 189.0 L443.8 188.2 L443.5 152.2 L408.2 152.2 L407.8 151.2 L443.8 115.2 L443.8 70.0 L444.5 69.2 L572.5 69.2 L573.2 68.5 L573.2 30.2 L572.5 29.8Z M766.8 205.8 L766.8 206.5 L783.5 227.5 L804.0 227.8 L883.8 101.8 L885.0 100.8 L933.0 179.2 L962.0 227.8 L1010.8 227.5 L1000.8 209.5 L891.8 27.8 L885.5 18.8Z M5.5 7.8 L5.0 8.5 L5.2 227.0 L6.0 227.5 L53.5 227.5 L54.5 226.8 L54.5 144.0 L55.2 143.2 L140.8 143.2 L141.8 144.2 L141.8 227.0 L142.5 227.5 L193.2 227.2 L193.2 132.5 L162.2 101.2 L55.2 101.2 L54.5 100.5 L54.2 7.8Z"/><path fill="url(#hgS)" fill-rule="evenodd" d="M827.8 207.5 L835.0 208.0 L939.5 207.5 L939.8 207.0 L915.0 165.8 L914.0 165.0 L854.8 165.0 L842.5 183.5Z M409.8 151.0 L443.8 151.8 L528.8 151.5 L532.2 148.5 L571.8 105.5 L568.5 105.0 L456.8 104.8 L455.0 105.8 L444.5 116.2 L443.5 116.2 L412.5 147.5Z M128.5 5.5 L128.8 91.0 L163.5 91.2 L244.8 173.0 L245.5 173.0 L288.2 133.2 L329.5 93.8 L330.5 93.5 L330.8 226.5 L331.2 227.2 L385.5 226.8 L385.5 6.2 L352.2 6.2 L239.8 112.0 L238.8 112.0 L129.8 5.5Z"/></svg></div><div class="sks-tag"><i></i>DAY BY DAY<i></i></div><div class="sks-bar"><i></i></div><div class="sks-lt">LOADING</div></div>
