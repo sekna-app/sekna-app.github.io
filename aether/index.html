@@ -598,7 +598,7 @@ html.lite .nav img{opacity:1!important}
   <div class="hgrid">
     <div class="ht">
       <span class="kick"><i></i>Workspace for clients &amp; tasks</span>
-      <h1>Aether<span class="dsh">–</span>named after <span>the bright sky</span><br>built for focus.</h1>
+      <h1>Elevate Your <span>Everyday</span><br>with Aether.</h1>
       <p class="l">Aether puts your whole working day on your phone: every client and project, every task with its date and priority, a quick inbox for ideas, and a focus timer that logs where your time goes.</p>
     </div>
 
@@ -755,20 +755,19 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
 // two-screen phones switch between their screens.
 (function(){
   var S=[[['home'],'Daily Overview','Your day at a glance','Open tasks, the week’s progress, your active lists, countdowns and a focus timer, all on one screen.'],
-         [['list','cal'],'Tasks & Calendar','Every task, grouped and dated','Tasks grouped by status with their list, date and priority, then the month calendar with each day’s tasks.'],
-         [['inbox'],'Inbox','Capture now, sort later','Type, paste or speak an idea in a second, then turn it into a task, a note or a list with one tap.'],
+         [['list','projects'],'Tasks & Projects','Every task, with its platform','Each task with its platform, ad account, date and priority, then every project with its progress.'],
+         [['inbox','cal'],'Inbox & Calendar','Capture now, plan the month','Type, paste or speak an idea in a second, then see every day’s tasks on the month calendar.'],
          [['focus','count'],'Focus & Countdowns','Flip-clock focus, days to go','Focus sessions that log time to the task and the client, then countdowns to the dates that matter.'],
          [['notes'],'Notes','Lines that turn into tasks','Notes linked to a list. Every line that starts with [ ] becomes a task in one tap.'],
          [['alerts'],'Notifications','What needs you now','Overdue, due today, the inbox and tomorrow, together in one list.'],
-         [['about'],'Your Day in Numbers','Deep work, habits and clients','Today’s focus time, sessions and streak, your day on a timeline, and where the time went by client.'],
-         [['settings'],'Settings','Light, dim or dark · Arabic or English','Themes, language, reminders and the ad accounts behind your work.']];
+         [['about'],'Your Day in Numbers','Deep work, habits and clients','Today’s focus time, sessions and streak, your day on a timeline, and where the time went by client.']];
   var N=S.length, step=360/N, cur=0, timer=null, LAYER=2400, SCROLL=4200;
   var ring=document.getElementById('ring'), stage=document.getElementById('stage'), dots=document.getElementById('dots');
   var capT=document.getElementById('capT'), capS=document.getElementById('capS'), capD=document.getElementById('capD'), cap=capT.parentNode;
   S.forEach(function(x,i){
     var d=document.createElement('div');d.className='rp';
     d.innerHTML='<div class="ed l"></div><div class="ed r"></div><div class="bk"><img src="/aether/logo-white.webp?v=1" alt=""></div><div class="fr"><i class="bt a"></i><i class="bt b"></i><i class="bt c"></i><i class="bt d"></i><div class="scn">'+SB+
-      x[0].map(function(f,k){return '<div class="ly'+(k?'':' on')+'"><img src="/aether/shots/'+f+'.webp?v='+1+'" alt="'+x[1]+'"'+(i>1?' loading="lazy"':'')+'>'+(NAV[f]?'<img class="nvb" src="/get/shots/'+f+'-nav.webp?v='+20+'" alt="" loading="lazy">':'')+'</div>'}).join('')+'<i class="hb"></i><i class="gl"></i></div></div>';
+      x[0].map(function(f,k){return '<div class="ly'+(k?'':' on')+'"><img src="/aether/shots/'+f+'.webp?v='+2+'" alt="'+x[1]+'"'+(i>1?' loading="lazy"':'')+'>'+(NAV[f]?'<img class="nvb" src="/get/shots/'+f+'-nav.webp?v='+20+'" alt="" loading="lazy">':'')+'</div>'}).join('')+'<i class="hb"></i><i class="gl"></i></div></div>';
     ring.appendChild(d);
     dots.appendChild(document.createElement('i'));
   });
