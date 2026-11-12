@@ -9,58 +9,61 @@
 <link rel="icon" href="mark.svg?v=2" type="image/svg+xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@500;600;700;800;900&display=swap">
 <style>
-:root{--navy:#203c8e;--navy2:#2c4fb8;--deep:#0a1748;--gold:#e2b874;--gold2:#f2d38f;--sub:#c9d3f5;--mute:#8f9cc8;--line:rgba(255,255,255,.12)}
+:root{--gold:#e2b874;--sub:#c9d3f5;--mute:#8f9cc8;--line:rgba(255,255,255,.12);--ease:cubic-bezier(.2,.8,.2,1)}
 *{box-sizing:border-box}
 html,body{margin:0}
-body{min-height:100vh;color:#fff;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:radial-gradient(900px 560px at 80% 10%,rgba(79,124,255,.38),transparent 62%),radial-gradient(700px 420px at 6% 96%,rgba(226,184,116,.14),transparent 60%),linear-gradient(180deg,#132457,#0a1748 60%,#070f33)}
+body{min-height:100vh;color:#fff;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;background:radial-gradient(900px 560px at 80% 6%,rgba(79,124,255,.38),transparent 62%),radial-gradient(700px 420px at 6% 96%,rgba(226,184,116,.14),transparent 60%),linear-gradient(180deg,#132457,#0a1748 60%,#070f33)}
 a{color:inherit;text-decoration:none}
-.wrap{max-width:1040px;margin:0 auto;padding:28px max(20px,env(safe-area-inset-left,0px)) 48px max(20px,env(safe-area-inset-right,0px))}
-/* the logo: a G whose bar runs out as a gold line, a gold dot at its tip, the serif word beside it */
-.gl{display:inline-flex;align-items:center;gap:14px}
-.gl svg{width:58px;height:50px;flex:none}
+img{display:block}
+.wrap{max-width:640px;margin:0 auto;padding:24px max(20px,env(safe-area-inset-left,0px)) 32px max(20px,env(safe-area-inset-right,0px));min-height:100vh;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:14px}
+.bk{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);flex:none;transition:background .2s}
+.bk:hover{background:rgba(255,255,255,.12)}
+.bk svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.gl{display:inline-flex;align-items:center;gap:12px}
+.gl svg{width:40px;height:34px}
 .gl .w{display:flex;flex-direction:column;line-height:1}
-.gl .w b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:40px;letter-spacing:.2px}
+.gl .w b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:26px}
 .gl .w b em{font-style:normal;color:var(--gold)}
-.gl .w small{font-size:10px;font-weight:800;letter-spacing:.42em;color:var(--sub);margin-top:6px;padding-left:2px}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px}
-header .gl svg{width:40px;height:34px}header .gl .w b{font-size:26px}header .gl .w small{font-size:8px;margin-top:4px}
-.hero{padding:40px 0 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:18px}
-.hero .gl svg{width:86px;height:74px}.hero .gl .w b{font-size:62px}.hero .gl .w small{font-size:12px}
-.hero p{margin:6px 0 0;max-width:560px;color:var(--sub);font-size:17px;line-height:1.6;font-weight:500}
-.ln{width:120px;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
-h2{margin:36px 0 14px;font-size:12px;font-weight:900;letter-spacing:.18em;color:var(--gold);text-transform:uppercase}
-.apps{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-.app{position:relative;border-radius:22px;padding:20px;background:linear-gradient(150deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid var(--line);display:flex;flex-direction:column;gap:14px;overflow:hidden}
-.app::after{content:"";position:absolute;left:20px;right:20px;bottom:0;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--gold),transparent)}
-.app .top{display:flex;align-items:center;gap:14px}
-.app img{width:60px;height:60px;border-radius:16px;box-shadow:0 10px 24px rgba(0,0,0,.35)}
-.app .top b{display:block;font-size:22px;font-weight:900;letter-spacing:.5px}.app .top b em{font-style:normal;color:var(--gold)}
-.app .top small{display:block;font-size:12.5px;color:var(--mute);font-weight:700;margin-top:3px}
-.app p{margin:0;color:var(--sub);font-size:14px;line-height:1.6}
-.tags{display:flex;flex-wrap:wrap;gap:6px}.tags span{font-size:11px;font-weight:800;border-radius:99px;padding:4px 10px;background:rgba(255,255,255,.08);color:#dfe6fb}
-.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
-.btn{display:inline-flex;align-items:center;gap:8px;border-radius:12px;padding:11px 16px;font-size:14px;font-weight:900}
-.btn.g{background:linear-gradient(135deg,var(--gold),#c89434);color:#1c1405;box-shadow:0 12px 26px rgba(226,184,116,.25)}
-.btn.o{border:1px solid rgba(255,255,255,.22);color:#fff}
-.soon{border-style:dashed;background:transparent;justify-content:center;align-items:flex-start;min-height:180px}
-.soon::after{display:none}
-.soon .dot{width:46px;height:46px;border-radius:14px;border:1.5px dashed rgba(226,184,116,.55);display:grid;place-items:center;color:var(--gold);font-size:22px;font-weight:800}
-.soon b{font-size:18px;font-weight:900}.soon p{color:var(--mute)}
-footer a{color:inherit;text-decoration:none}footer a:hover{color:#fff}footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12.5px;color:var(--mute);font-weight:600}
-@media (max-width:560px){.hero{padding-top:30px}.hero .gl svg{width:62px;height:54px}.hero .gl .w b{font-size:44px}.hero .gl .w small{font-size:10px}.hero p{font-size:15px}}
-.hero{padding:44px 0 10px!important;gap:14px!important}
-.hero .kk{font-size:11px;font-weight:900;letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
-.hero h1{margin:0;font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:64px;line-height:1.02;letter-spacing:-.5px}
-.hero h1 em{font-style:normal;background:linear-gradient(90deg,#f2d38f,#e2b874 50%,#c28d3e);-webkit-background-clip:text;background-clip:text;color:transparent;position:relative}
-.hero h1 em::after{content:"";position:absolute;left:4%;right:4%;bottom:-6px;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
-@media (max-width:560px){.hero h1{font-size:46px}.pr{gap:10px}.pr span{letter-spacing:.14em;font-size:11px;gap:5px}.pr svg{width:15px;height:15px}}
-.pr{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px}
-.pr span{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:900;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}.pr svg{width:17px;height:17px;fill:none;stroke:var(--gold);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
-.pr i{width:5px;height:5px;border-radius:50%;background:rgba(226,184,116,.55)}
-.hero p{font-size:18px!important;margin-top:16px!important}
-.bk{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:12px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;text-decoration:none;flex:none;margin-right:14px;transition:background .2s}
-.bk:hover{background:rgba(255,255,255,.12)}.bk svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
-.topbar{display:flex;align-items:center}
+.gl .w small{font-size:8px;font-weight:800;letter-spacing:.42em;color:var(--sub);margin-top:4px;padding-left:2px}
+.sum{margin-top:30px}
+.sum h1{margin:0;font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:30px;line-height:1.1}
+.sum h1 em{font-style:normal;background:linear-gradient(90deg,#f2d38f,#e2b874 50%,#c28d3e);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sum p{margin:8px 0 0;color:var(--sub);font-size:14.5px;font-weight:500}
+.rows{margin-top:18px}
+.row{border-bottom:1px solid var(--line);padding:13px 0}
+.rh{display:flex;align-items:center;gap:12px}
+.rh .ic{width:54px;height:54px;flex:none;border-radius:24%;overflow:hidden;box-shadow:0 12px 26px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.08)}
+.rh .ic img{width:100%;height:100%}
+.rh .tx{flex:1;min-width:0}
+.nm{display:block;font-size:16px;font-weight:900;letter-spacing:.06em}.nm em{font-style:normal;color:var(--gold)}
+.by{display:block;margin-top:2px;font-size:12px;color:var(--mute);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.by b{color:var(--sub);font-weight:700}
+.chips{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.chips span{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,.07);font-size:11px;font-weight:800;color:#dfe6fb}
+.chips svg{width:12px;height:12px}
+.tg{width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.08);display:grid;place-items:center;cursor:pointer;flex:none;color:#fff;transition:background .2s}
+.tg:hover{background:rgba(255,255,255,.14)}
+.tg svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--ease)}
+.row.open .tg svg{transform:rotate(180deg)}
+.more{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s var(--ease)}
+.row.open .more{grid-template-rows:1fr}
+.more>div{overflow:hidden}
+.shots{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 20px;padding:12px 20px 4px;margin:0 -20px;scrollbar-width:none}
+.shots::-webkit-scrollbar{display:none}
+.sh{flex:none;width:124px;scroll-snap-align:start;border-radius:15px;background:linear-gradient(170deg,#203C8E,#0F1F52);padding:8px 6px 0;overflow:hidden;border:1px solid rgba(226,184,116,.22)}
+.sh b{display:block;text-align:center;font-size:10.5px;font-weight:800;line-height:1.25;min-height:26px}
+.sh b em{font-style:normal;color:var(--gold)}
+.sh div{margin:6px 4px 0;height:170px;border-radius:12px 12px 0 0;overflow:hidden;border:3px solid #0a1748;border-bottom:0}
+.sh img{width:100%}
+.acts{margin-top:10px}
+.btn{display:inline-flex;align-items:center;justify-content:center;border-radius:11px;padding:9px 22px;font-size:13px;font-weight:900;background:linear-gradient(135deg,var(--gold),#c89434);color:#1c1405;box-shadow:0 10px 22px rgba(226,184,116,.22)}
+.row.soon .ic{display:grid;place-items:center;border:1.5px dashed rgba(226,184,116,.55);color:var(--gold);font-size:20px;font-weight:800;box-shadow:none;background:transparent}
+footer{margin-top:auto;padding-top:28px;text-align:center;font-size:12px;color:var(--mute);font-weight:600;line-height:1.7}
+footer a{color:var(--sub)}footer a:hover{color:#fff}
+.rise{opacity:0;transform:translateY(14px);animation:rise .6s var(--ease) forwards;animation-delay:var(--d,0s)}
+@keyframes rise{to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.rise{animation:none;opacity:1;transform:none}.more,.tg svg{transition:none}}
 </style>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Goldline Studio">
@@ -77,42 +80,37 @@ footer a{color:inherit;text-decoration:none}footer a:hover{color:#fff}footer{mar
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <span class="topbar"><a class="bk" href="../get/" aria-label="Back" onclick="if(history.length>1&&document.referrer){history.back();return false}"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></a><a class="gl" href="./" aria-label="Goldline Studio">
-      <svg viewBox="0 0 58 50" aria-hidden="true"><path d="M34 12 A17 17 0 1 0 38.7 27" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path d="M22 26 H52" stroke="#e2b874" stroke-width="6" stroke-linecap="round"/><circle cx="34" cy="12" r="3.4" fill="#e2b874"/></svg>
-      <span class="w"><b>Gold<em>line</em></b><small>STUDIO</small></span>
-    </a></span>
-  </header>
-
-  <section class="hero">
-    <h1>Your numbers,<br><em>in daylight.</em></h1>
-    <p>Calm, clear apps for teams who live by numbers.</p>
-    <div class="pr"><span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>Clear</span><i></i><span><svg viewBox="0 0 24 24"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>Live</span><i></i><span><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg>Private</span></div>
-  </section>
-
-  <h2>Our apps</h2>
-  <div class="apps">
-    <div class="app">
-      <div class="top"><img src="../icons/icon-192.png" alt="HEMERA"><div><b>H<em>E</em>MERA</b><small>Live media plan · day by day</small></div></div>
-      <p>The whole media plan on your phone and laptop: today against the plan, the month, the seasons and the reports, live from the sheets.</p>
-      <div class="tags"><span>Media planning</span><span>Campaign monitoring</span><span>Reporting</span></div>
-      <div class="btns"><a class="btn g" href="../get/">Download</a><a class="btn o" href="../">Open</a></div>
+  <div class="top"><a class="bk" href="../get/" aria-label="Back" onclick="if(history.length>1&&document.referrer){history.back();return false}"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></a>
+    <a class="gl" href="./" aria-label="Goldline Studio"><svg viewBox="0 0 58 50" aria-hidden="true"><path d="M34 12 A17 17 0 1 0 38.7 27" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path d="M22 26 H52" stroke="#e2b874" stroke-width="6" stroke-linecap="round"/><circle cx="34" cy="12" r="3.4" fill="#e2b874"/></svg><span class="w"><b>Gold<em>line</em></b><small>STUDIO</small></span></a></div>
+  <div class="sum rise"><h1>Your numbers,<br><em>in daylight.</em></h1><p>Calm, clear apps for teams who live by numbers.</p></div>
+  <div class="rows rise" style="--d:.1s">
+    <div class="row">
+      <div class="rh"><a class="ic" href="../get/"><img src="../icons/icon-192.png" alt=""></a>
+        <a class="tx" href="../get/"><span class="nm">H<em>E</em>MERA</span><span class="by"><b>Goldline Studio</b> · Media plan</span>
+          <span class="chips"><span>4.8 <svg viewBox="0 0 24 24" fill="#E2B874"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="#C9D3F5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Android · iPhone</span></span></a>
+        <button class="tg" type="button" aria-label="Show screenshots" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></div>
+      <div class="more"><div>
+        <div class="shots"><div class="sh"><b>Today against <em>target</em></b><div><img src="shots/s-h1.webp?v=1" alt="" loading="lazy"></div></div><div class="sh"><b>Every <em>campaign type</em></b><div><img src="shots/s-h2.webp?v=1" alt="" loading="lazy"></div></div><div class="sh"><b>Every <em>Hijri season</em></b><div><img src="shots/s-h3.webp?v=1" alt="" loading="lazy"></div></div><div class="sh"><b>Reports <em>Studio</em></b><div><img src="shots/s-h4.webp?v=1" alt="" loading="lazy"></div></div></div>
+        <div class="acts"><a class="btn" href="../get/">Download</a></div>
+      </div></div>
     </div>
-    <div class="app">
-      <div class="top"><img src="../aether/icon-192.png" alt="Aether"><div><b>A<em>E</em>THER</b><small>Clients, tasks &amp; focus · day by day</small></div></div>
-      <p>Your whole working day in one calm place: every client and project, tasks on a list or a calendar, a quick inbox and a focus timer.</p>
-      <div class="tags"><span>Task management</span><span>Focus timer</span><span>Clients &amp; projects</span></div>
-      <div class="btns"><a class="btn g" href="../aether/">Download</a><a class="btn o" href="../aether/">Open</a></div>
+    <div class="row">
+      <div class="rh"><a class="ic" href="../aether/"><img src="../aether/icon-192.png" alt=""></a>
+        <a class="tx" href="../aether/"><span class="nm">A<em>E</em>THER</span><span class="by"><b>Goldline Studio</b> · Tasks &amp; focus</span>
+          <span class="chips"><span>4.8 <svg viewBox="0 0 24 24" fill="#E2B874"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="#C9D3F5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Android · iPhone</span></span></a>
+        <button class="tg" type="button" aria-label="Show screenshots" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></div>
+      <div class="more"><div>
+        <div class="shots"><div class="sh"><b>Your day at a <em>glance</em></b><div><img src="shots/s-a1.webp?v=1" alt="" loading="lazy"></div></div><div class="sh"><b>Tasks with their <em>platform</em></b><div><img src="shots/s-a2.webp?v=1" alt="" loading="lazy"></div></div><div class="sh"><b>Flip-clock <em>focus</em></b><div><img src="shots/s-a3.webp?v=1" alt="" loading="lazy"></div></div><div class="sh"><b>The month <em>calendar</em></b><div><img src="shots/s-a4.webp?v=1" alt="" loading="lazy"></div></div></div>
+        <div class="acts"><a class="btn" href="../aether/">Download</a></div>
+      </div></div>
     </div>
-    <div class="app soon">
-      <span class="dot">+</span>
-      <b>More apps on the way</b>
-      <p>New apps from Goldline Studio will appear here.</p>
-    </div>
+    <div class="row soon"><div class="rh"><span class="ic">+</span><span class="tx"><span class="nm">More apps</span><span class="by"><b>Goldline Studio</b> · Coming soon</span></span></div></div>
   </div>
-
-  <footer><span>© <span id="y">2026</span> Goldline Studio</span><span><a href="mailto:seknaapp@gmail.com">seknaapp@gmail.com</a> · <a href="../privacy/">Privacy Policy</a> · Made by Ibrahim Amin</span></footer>
+  <footer>© <span id="y">2026</span> Goldline Studio<br><a href="mailto:seknaapp@gmail.com">seknaapp@gmail.com</a> · <a href="../privacy/">Privacy Policy</a> · Made by Ibrahim Amin</footer>
 </div>
-<script>document.getElementById('y').textContent=new Date().getFullYear()</script>
+<script>
+document.getElementById('y').textContent=new Date().getFullYear();
+[].forEach.call(document.querySelectorAll('.tg'),function(t){t.onclick=function(){var r=t.closest('.row');t.setAttribute('aria-expanded',r.classList.toggle('open'))}});
+</script>
 </body>
 </html>
