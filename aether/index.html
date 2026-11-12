@@ -599,7 +599,7 @@ html.lite .nav img{opacity:1!important}
     <div class="ht">
       <span class="kick"><i></i>Workspace for clients &amp; tasks</span>
       <h1>Elevate Your <span>Everyday</span><br>with Aether.</h1>
-      <p class="l">Aether puts your whole working day on your phone: every client and project, every task with its date and priority, a quick inbox for ideas, and a focus timer that logs where your time goes.</p>
+      <p class="l">Your clients, projects and tasks, a quick inbox and a focus timer. Your whole workday, in one place.</p>
     </div>
 
     <div class="stage" id="stage">
@@ -642,6 +642,7 @@ html.lite .nav img{opacity:1!important}
         <a class="open-btn" href="https://sekna-present.web.app/hub/" target="_blank" rel="noopener">Open Aether</a>
       </div></div></div>
 
+      <div class="rt" id="rt"><div class="rt-s" id="rtS"><button type="button" data-s="1" aria-label="1 star"><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z"/></svg></button><button type="button" data-s="2" aria-label="2 stars"><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z"/></svg></button><button type="button" data-s="3" aria-label="3 stars"><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z"/></svg></button><button type="button" data-s="4" aria-label="4 stars"><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z"/></svg></button><button type="button" data-s="5" aria-label="5 stars"><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z"/></svg></button></div><div class="rt-t" id="rtT">Tap to rate Aether</div></div>
       <div class="meta"><span>Price <b>Free</b></span><span>Works <b>offline</b></span><span>Android · iPhone · <b>Web</b></span><span>By <b>Ibrahim Amin</b></span></div>
     </div>
   </div>
@@ -959,8 +960,8 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
 </script>
 <script>
 // Stars: tap to rate once per device; the line then shows the real average from everyone who rated.
-(function(){var API='https://europe-west2-human-appeal-media-plan.cloudfunctions.net/api/rating',S=document.getElementById('rtS'),T=document.getElementById('rtT');if(!S)return;
- var bs=[].slice.call(S.querySelectorAll('button')),K='hemera_rate',id,mine=0;
+(function(){var API='https://europe-west2-human-appeal-media-plan.cloudfunctions.net/api/rating?app=aether',S=document.getElementById('rtS'),T=document.getElementById('rtT');if(!S)return;
+ var bs=[].slice.call(S.querySelectorAll('button')),K='aether_rate',id,mine=0;
  try{id=localStorage.getItem(K+'_id');if(!id){id=(Date.now().toString(36)+Math.random().toString(36).slice(2)).slice(0,20);localStorage.setItem(K+'_id',id)}mine=+localStorage.getItem(K)||0}catch(e){id=Math.random().toString(36).slice(2,18)}
  function fill(n){bs.forEach(function(b,i){b.classList.toggle('on',i<n)})}
  function show(r,pop){if(!r||!r.count)return;var a=r.avg.toFixed(1),c=r.count;T.classList.remove('in');void T.offsetWidth;T.innerHTML='<b>0.0</b>'+c+' rating'+(c===1?'':'s')+(mine?' · thanks!':'');T.classList.add('in');
