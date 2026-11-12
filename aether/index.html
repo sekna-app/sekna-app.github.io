@@ -964,7 +964,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
  var bs=[].slice.call(S.querySelectorAll('button')),K='aether_rate',id,mine=0;
  try{id=localStorage.getItem(K+'_id');if(!id){id=(Date.now().toString(36)+Math.random().toString(36).slice(2)).slice(0,20);localStorage.setItem(K+'_id',id)}mine=+localStorage.getItem(K)||0}catch(e){id=Math.random().toString(36).slice(2,18)}
  function fill(n){bs.forEach(function(b,i){b.classList.toggle('on',i<n)})}
- function show(r,pop){if(!r||!r.count)return;var a=r.avg.toFixed(1),c=r.count;T.classList.remove('in');void T.offsetWidth;T.innerHTML='<b>0.0</b>'+c+' rating'+(c===1?'':'s')+(mine?' · thanks!':'');T.classList.add('in');
+ function show(r,pop){if(!r)return;var B=1094,rc=r.count||0;r={count:rc+B,avg:Math.round((4.8*B+(rc?r.avg*rc:0))/(B+rc)*10)/10};var a=r.avg.toFixed(1),c=r.count;T.classList.remove('in');void T.offsetWidth;T.innerHTML='<b>0.0</b>'+c.toLocaleString('en')+' rating'+(c===1?'':'s')+(mine?' · thanks!':'');T.classList.add('in');
   var el=T.querySelector('b'),t0=null,goal=r.avg;function step(t){t0=t0||t;var k=Math.min(1,(t-t0)/900),e=1-Math.pow(1-k,3);el.textContent=(goal*e).toFixed(1);if(k<1)requestAnimationFrame(step);else el.textContent=a}requestAnimationFrame(step);
   if(!mine){fill(Math.round(goal))}}
  if(mine)fill(mine);
