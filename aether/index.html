@@ -767,7 +767,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   S.forEach(function(x,i){
     var d=document.createElement('div');d.className='rp';
     d.innerHTML='<div class="ed l"></div><div class="ed r"></div><div class="bk"><img src="/aether/logo-white.webp?v=1" alt=""></div><div class="fr"><i class="bt a"></i><i class="bt b"></i><i class="bt c"></i><i class="bt d"></i><div class="scn">'+SB+
-      x[0].map(function(f,k){return '<div class="ly'+(k?'':' on')+'"><img src="/aether/shots/'+f+'.webp?v='+2+'" alt="'+x[1]+'"'+(i>1?' loading="lazy"':'')+'>'+(NAV[f]?'<img class="nvb" src="/get/shots/'+f+'-nav.webp?v='+20+'" alt="" loading="lazy">':'')+'</div>'}).join('')+'<i class="hb"></i><i class="gl"></i></div></div>';
+      x[0].map(function(f,k){return '<div class="ly'+(k?'':' on')+'"><img src="/aether/shots/'+f+'.webp?v='+3+'" alt="'+x[1]+'"'+(i>1?' loading="lazy"':'')+'>'+(NAV[f]?'<img class="nvb" src="/get/shots/'+f+'-nav.webp?v='+20+'" alt="" loading="lazy">':'')+'</div>'}).join('')+'<i class="hb"></i><i class="gl"></i></div></div>';
     ring.appendChild(d);
     dots.appendChild(document.createElement('i'));
   });
