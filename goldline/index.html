@@ -53,9 +53,9 @@ footer a{color:inherit;text-decoration:none}footer a:hover{color:#fff}footer{mar
 .hero h1{margin:0;font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:64px;line-height:1.02;letter-spacing:-.5px}
 .hero h1 em{font-style:normal;background:linear-gradient(90deg,#f2d38f,#e2b874 50%,#c28d3e);-webkit-background-clip:text;background-clip:text;color:transparent;position:relative}
 .hero h1 em::after{content:"";position:absolute;left:4%;right:4%;bottom:-6px;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
-@media (max-width:560px){.hero h1{font-size:46px}}
+@media (max-width:560px){.hero h1{font-size:46px}.pr{gap:10px}.pr span{letter-spacing:.14em;font-size:11px;gap:5px}.pr svg{width:15px;height:15px}}
 .pr{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px}
-.pr span{font-size:12px;font-weight:900;letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
+.pr span{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:900;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}.pr svg{width:17px;height:17px;fill:none;stroke:var(--gold);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .pr i{width:5px;height:5px;border-radius:50%;background:rgba(226,184,116,.55)}
 .hero p{font-size:18px!important;margin-top:16px!important}
 </style>
@@ -84,7 +84,7 @@ footer a{color:inherit;text-decoration:none}footer a:hover{color:#fff}footer{mar
   <section class="hero">
     <h1>Your numbers,<br><em>in daylight.</em></h1>
     <p>Calm, clear apps for teams who live by numbers.</p>
-    <div class="pr"><span>Clear</span><i></i><span>Live</span><i></i><span>Private</span></div>
+    <div class="pr"><span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>Clear</span><i></i><span><svg viewBox="0 0 24 24"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>Live</span><i></i><span><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg>Private</span></div>
   </section>
 
   <h2>Our apps</h2>
