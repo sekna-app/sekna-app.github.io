@@ -545,6 +545,17 @@ html.lite .nav img{opacity:1!important}
 .glt small{font-size:8.5px;font-weight:800;letter-spacing:.2em;color:var(--sub);text-transform:uppercase}
 .glt b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:17px;margin-top:3px;white-space:nowrap}.glt b em{font-style:normal;color:var(--gold)}
 .glt svg{width:30px;height:26px;flex:none}
+.rt{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px}.rt-t{white-space:nowrap}
+.rt-s{display:flex;gap:4px}
+.rt-s button{border:0;background:none;padding:2px;cursor:pointer;line-height:0;transition:transform .2s}
+.rt-s button:hover{transform:scale(1.15)}
+.rt-s svg{width:26px;height:26px;fill:rgba(255,255,255,.14);stroke:rgba(226,184,116,.55);stroke-width:1.2;stroke-linejoin:round;transition:fill .25s,stroke .25s}
+.rt-s button.on svg{fill:var(--gold);stroke:var(--gold)}
+.rt-s.pop button.on{animation:rtpop .5s cubic-bezier(.3,1.6,.5,1) both}.rt-s.pop button.on:nth-child(2){animation-delay:.06s}.rt-s.pop button.on:nth-child(3){animation-delay:.12s}.rt-s.pop button.on:nth-child(4){animation-delay:.18s}.rt-s.pop button.on:nth-child(5){animation-delay:.24s}
+@keyframes rtpop{0%{transform:scale(.6)}60%{transform:scale(1.3)}100%{transform:scale(1)}}
+.rt-t{font-size:13px;font-weight:700;color:var(--mute)}
+.rt-t b{font-size:22px;font-weight:900;color:#fff;margin-right:6px;vertical-align:-2px}
+.rt-t.in{animation:rtin .6s ease both}@keyframes rtin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
@@ -598,6 +609,7 @@ html.lite .nav img{opacity:1!important}
         <a class="open-btn" href="https://sekna-app.web.app/" target="_blank" rel="noopener">Open HEMERA</a>
       </div></div></div>
 
+      <div class="rt" id="rt"><div class="rt-s" id="rtS"><button type="button" data-s="1" aria-label="1 star"><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z"/></svg></button><button type="button" data-s="2" aria-label="2 stars"><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z"/></svg></button><button type="button" data-s="3" aria-label="3 stars"><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z"/></svg></button><button type="button" data-s="4" aria-label="4 stars"><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z"/></svg></button><button type="button" data-s="5" aria-label="5 stars"><svg viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8z"/></svg></button></div><div class="rt-t" id="rtT">Tap to rate HEMERA</div></div>
       <div class="meta"><span>Version <b>1.4.5</b></span><span>Size <b>3.1 MB</b></span><span>Android <b>7+</b></span><span>By <b>Ibrahim Amin</b></span></div>
     </div>
   </div>
@@ -900,6 +912,22 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(size,120)},{passive:true});size();
   raf=requestAnimationFrame(frame);
   document.addEventListener('visibilitychange',function(){cancelAnimationFrame(raf);if(!document.hidden)raf=requestAnimationFrame(frame)});
+})();
+</script>
+<script>
+// Stars: tap to rate once per device; the line then shows the real average from everyone who rated.
+(function(){var API='https://europe-west2-human-appeal-media-plan.cloudfunctions.net/api/rating',S=document.getElementById('rtS'),T=document.getElementById('rtT');if(!S)return;
+ var bs=[].slice.call(S.querySelectorAll('button')),K='hemera_rate',id,mine=0;
+ try{id=localStorage.getItem(K+'_id');if(!id){id=(Date.now().toString(36)+Math.random().toString(36).slice(2)).slice(0,20);localStorage.setItem(K+'_id',id)}mine=+localStorage.getItem(K)||0}catch(e){id=Math.random().toString(36).slice(2,18)}
+ function fill(n){bs.forEach(function(b,i){b.classList.toggle('on',i<n)})}
+ function show(r,pop){if(!r||!r.count)return;var a=r.avg.toFixed(1),c=r.count;T.classList.remove('in');void T.offsetWidth;T.innerHTML='<b>0.0</b>'+c+' rating'+(c===1?'':'s')+(mine?' · thanks!':'');T.classList.add('in');
+  var el=T.querySelector('b'),t0=null,goal=r.avg;function step(t){t0=t0||t;var k=Math.min(1,(t-t0)/900),e=1-Math.pow(1-k,3);el.textContent=(goal*e).toFixed(1);if(k<1)requestAnimationFrame(step);else el.textContent=a}requestAnimationFrame(step);
+  if(!mine){fill(Math.round(goal))}if(pop){S.classList.remove('pop');void S.offsetWidth;S.classList.add('pop')}}
+ if(mine)fill(mine);
+ fetch(API).then(function(x){return x.json()}).then(function(r){show(r,false)}).catch(function(){});
+ bs.forEach(function(b){b.addEventListener('mouseenter',function(){fill(+b.dataset.s)});b.addEventListener('click',function(){mine=+b.dataset.s;try{localStorage.setItem(K,mine)}catch(e){}fill(mine);S.classList.remove('pop');void S.offsetWidth;S.classList.add('pop');
+  fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,stars:mine})}).then(function(x){return x.json()}).then(function(r){show(r,true)}).catch(function(){T.textContent='Thanks for rating!'})})});
+ S.addEventListener('mouseleave',function(){fill(mine||0)});
 })();
 </script>
 </body>

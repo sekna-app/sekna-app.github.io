@@ -388,6 +388,22 @@ exports.api = onRequest({
     } catch (e) { console.error('Report file: ' + e.message); res.status(500).type('text/plain').send('The report could not load. Try again.'); }
     return;
   }
+  // Download page stars: one rating per device (1-5); the page shows the real average and count.
+  if (route === '/rating') {
+    const RATE_DOC = 'server/app-rating';
+    const summary = d => { const v = Object.values((d && d.by) || {}).map(Number).filter(n => n >= 1 && n <= 5); return { ok: true, count: v.length, avg: v.length ? Math.round(v.reduce((a, b) => a + b, 0) / v.length * 10) / 10 : null }; };
+    try {
+      const d = (await fsGet(RATE_DOC).catch(() => null)) || { by: {} };
+      if (req.method === 'POST') {
+        const b = body(req), id = String(b.id || ''), st = Math.round(Number(b.stars));
+        if (!/^[a-z0-9]{12,40}$/i.test(id) || !(st >= 1 && st <= 5)) { res.status(400).json({ ok: false }); return; }
+        d.by = d.by || {}; if (!(id in d.by) && Object.keys(d.by).length >= 5000) { res.json(summary(d)); return; }
+        d.by[id] = st; await fsSet(RATE_DOC, d);
+      }
+      res.json(summary(d));
+    } catch (e) { res.status(500).json({ ok: false }); }
+    return;
+  }
   // Season card look (picture position/size/opacity, title): not private, read by the build to keep it in the code.
   if (route === '/season-cards') { const p = (await fsGet(PREFS_DOC).catch(() => null)) || {}; res.json({ ok: true, card: p.card || {} }); return; }
   if (route === '/ping') { res.json({ ok: true, version: VERSION, mail: notify.mailReady() ? 'gmail' : 'apps-script' }); return; }
