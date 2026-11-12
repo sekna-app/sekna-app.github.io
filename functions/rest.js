@@ -620,7 +620,7 @@ const GREET_IMG = 'https://sekna-app.web.app/icons/greet/';
 const SEASON_NAMES = { ramadan: 'Ramadan', last10: 'Last 10 nights', eidfitr: 'Eid al-Fitr', dhulhijjah: 'First 10 days of Dhul Hijjah', arafah: 'Day of Arafah', eidadha: 'Eid al-Adha', ashura: 'Ashura', thanksgiving: 'Thanksgiving', givingtuesday: 'Giving Tuesday', yearend: 'Year-end', tax: 'Tax season' };
 const SEASON_LEN = { tax: 31, ramadan: 30, last10: 10, eidfitr: 3, dhulhijjah: 10, arafah: 1, eidadha: 4, ashura: 1, thanksgiving: 1, givingtuesday: 1, yearend: 6 };
 const SEASON_IMG = 'https://sekna-app.web.app/icons/seasons/';
-const IMG_V = '?v=4'; // bump when a picture changes (mail apps keep pictures by their address)
+const IMG_V = '?v=5'; // bump when a picture changes (mail apps keep pictures by their address)
 const HIJRI_MONTHS = ['Muharram', 'Safar', 'Rabi I', 'Rabi II', 'Jumada I', 'Jumada II', 'Rajab', 'Shaban', 'Ramadan', 'Shawwal', 'Dhul Qadah', 'Dhul Hijjah'];
 const HFMT = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { day: 'numeric', month: 'numeric', year: 'numeric', timeZone: 'UTC' });
 function hijriParts(dk) { const p = {}; HFMT.formatToParts(new Date(dk + 'T00:00:00Z')).forEach(x => { p[x.type] = parseInt(x.value, 10); }); return p; }
