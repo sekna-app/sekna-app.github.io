@@ -8194,6 +8194,14 @@ window.addEventListener('load',function(){
     @keyframes spOrbit{to{transform:rotate(0);opacity:1}}
     @keyframes spLine{to{transform:scaleX(1)}}
     .lsp.rm .lsp-row,.lsp.rm .lsp-pr{animation:none;opacity:1;transform:none}
+    /* v325 the old splash logo never shows (season picture only, on reloads) */
+    .sks.sks-nolg .sks-brand,.sks.sks-nolg .sks-ln,.sks.sks-nolg .sks-tg,.sks.sks-nolg .sks-rvb{display:none!important}
+    /* v325 About: a Goldline Studio chip floats in last among the cards */
+    .ab3-m5{left:-4px;bottom:-14px;display:flex;align-items:center;gap:7px;padding:7px 12px 7px 9px;border-radius:999px;background:#132457;border:1px solid rgba(226,184,116,.55);box-shadow:0 10px 22px rgba(6,12,40,.35);opacity:0;transform:translateY(8px) scale(.92);animation:ab3GlIn .6s cubic-bezier(.2,.8,.2,1) 1.4s forwards,ab3Float 5s ease-in-out 2s infinite}
+    .ab3-m5 svg{width:22px;height:19px;flex:none}.ab3-m5 svg .gl{stroke-dasharray:1;stroke-dashoffset:1;animation:ab3GlDraw .7s ease 1.7s forwards}
+    .ab3-m5 b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:15px;color:#fff;line-height:1}.ab3-m5 b em{font-style:normal;color:#e2b874}
+    .ab3-m5 small{font-size:8px;font-weight:900;letter-spacing:.24em;color:#c9d3f5;text-transform:uppercase;margin-left:1px}
+    @keyframes ab3GlIn{to{opacity:1;transform:none}}@keyframes ab3GlDraw{to{stroke-dashoffset:0}}
 </style>
 </head>
 <body>
@@ -8246,7 +8254,8 @@ window.addEventListener('load',function(){
  
  
  var inApp=!!(window.AndroidShare&&typeof window.AndroidShare.dashboardReady==='function');
- if(inApp){s.remove();return}
+ if(inApp||document.getElementById('launchSp')||!s.classList.contains('sks-art')){s.remove();return}
+ s.classList.add('sks-nolg');
  var quick=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
  setTimeout(function(){s.classList.add('out');setTimeout(function(){s.remove()},460)},quick?700:2100);
 })();
@@ -8472,6 +8481,7 @@ window.addEventListener('load',function(){
       <div class="ab3-mc ab3-m1"><small>DAILY SPEND</small><b id="ab3Spend">£5,648</b><div class="ab3-bars"><i style="height:55%"></i><i style="height:80%"></i><i style="height:45%"></i><i style="height:70%"></i><i style="height:100%"></i><i style="height:62%"></i><i style="height:85%"></i></div></div>
       <div class="ab3-mc ab3-m2"><small>OF PLAN</small><div class="ab3-ring"><svg width="84" height="84" viewBox="0 0 84 84"><circle cx="42" cy="42" r="35" fill="none" stroke="#eef0f5" stroke-width="10"/><circle class="f" cx="42" cy="42" r="35" fill="none" stroke="#22c47c" stroke-width="10" stroke-linecap="round"/></svg><b id="ab3Pct">79%</b></div></div>
       <div class="ab3-mc ab3-m3"><small>REVENUE THIS MONTH</small><b id="ab3Rev">£294,187</b><svg class="ab3-line" width="100%" height="46" viewBox="0 0 226 46" preserveAspectRatio="none"><path d="M2 40 C30 36 40 22 64 26 S100 10 120 18 S160 4 180 10 S210 2 224 4" fill="none" stroke="#3d6bff" stroke-width="3.5" stroke-linecap="round"/></svg></div>
+      <span class="ab3-mc ab3-m5"><svg viewBox="0 0 58 50"><path d="M34 12 A17 17 0 1 0 38.7 27" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path class="gl" pathLength="1" d="M22 26 H52" stroke="#e2b874" stroke-width="6" stroke-linecap="round"/><circle cx="34" cy="12" r="3.4" fill="#e2b874"/></svg><b>Gold<em>line</em></b><small>Studio</small></span>
       <span class="ab3-mc ab3-m4" id="ab3Roas">ROAS 2.99x ▲</span>
     </div>
     <p class="ab3-text">Your central workspace for media planning, campaign monitoring, reporting and smart tools. Built to help our team manage clients, make faster data-driven decisions and create greater impact — together.</p>
@@ -11316,7 +11326,7 @@ function nfImage(x){if(x.image)return x.image;
  if(x.type!=='greeting')return '';const m=NF_GREET_KEY.find(([t])=>String(x.title||'').startsWith(t));return m?'https:\/\/sekna-app.web.app/icons/greet/'+m[1]+'.jpg?v=4':''}
 function nfOpen(id){
  const x=(NF.list||[]).find(n=>n.id===id);if(!x)return;
- if(x.type==='greeting')greetMarkSeen(x.id);
+ if(x.type==='greeting'||x.type==='season')greetMarkSeen(x.id);
  document.querySelector('.nfc-ov')?.remove();
  const img=nfImage(x),when=new Date(x.at).toLocaleString('en-GB',{weekday:'short',day:'numeric',month:'short',hour:'numeric',minute:'2-digit'});
  const ov=document.createElement('div');ov.className='nfc-ov';ov.setAttribute('data-share-ui','');
@@ -11331,7 +11341,7 @@ function greetAutoShow(){
  if(!getAccessToken()||(typeof canDo==='function'&&!canDo('notifs')))return;
  serverCall('myNotifications',getAccessToken()).then(r=>{
    const list=Array.isArray(r)?r:[],seen=greetSeen();
-   const g=list.filter(x=>x.type==='greeting'&&Date.now()-x.at<24*3600e3&&!seen.includes(x.id)).sort((a,b)=>b.at-a.at)[0];
+   const g=list.filter(x=>(x.type==='greeting'||x.type==='season')&&Date.now()-x.at<24*3600e3&&!seen.includes(x.id)).sort((a,b)=>b.at-a.at)[0];
    if(NF.list===null||!NF.list)NF.list=nfMerge(list);else if(g&&!NF.list.some(x=>x.id===g.id))NF.list=nfMerge(NF.list.concat([g]));
    nfBadge();
    if(g&&!document.querySelector('.nfc-ov'))nfOpen(g.id);
@@ -13913,7 +13923,7 @@ function fetchProfile(){
    if(p.isAdmin)setTimeout(()=>adminFetch().catch(()=>{}),4000);
    
    setTimeout(nfLoad,2500);
-   setTimeout(()=>{fxLoad().catch(()=>{});curDraw();prefsLoad()},3500);setTimeout(greetAutoShow,4200);
+   setTimeout(()=>{fxLoad().catch(()=>{});curDraw();prefsLoad()},3500);setTimeout(greetAutoShow,4700);
    setTimeout(celCheck,4500);
    serverCall('teamStatus',token).then(t=>{
      if(!t||!ACCESS_PROFILE)return;
