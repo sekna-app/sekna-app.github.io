@@ -1,0 +1,986 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Aether App</title>
+<meta name="description" content="Aether, the workspace for your clients, tasks and focus. Install it on Android, iPhone and the web. An app by Goldline Studio.">
+<meta name="theme-color" content="#0c1d5c">
+<link rel="icon" href="/aether/icon-192.png">
+<link rel="apple-touch-icon" href="/aether/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script>/* opened from a Home Screen icon (standalone app window): a light page with no canvases or entrance effects */try{if((window.matchMedia&&matchMedia("(display-mode: standalone)").matches)||navigator.standalone)document.documentElement.classList.add("lite")}catch(e){}</script>
+<style>
+:root{--bg:#070f33;--line:rgba(255,255,255,.12);--sub:#a9b5db;--mute:#7683ad;--gold:#e2b874;--gold2:#f5d9a4;--green:#39e29a}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;background:#070f33}
+body{margin:0;min-height:100vh;background:radial-gradient(900px 560px at 78% 22%,rgba(79,124,255,.42),transparent 62%),radial-gradient(700px 420px at 8% 92%,rgba(226,184,116,.14),transparent 60%),linear-gradient(180deg,#0c1d5c,#070f33 85%);color:#fff;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(180deg,#000 20%,transparent 85%);-webkit-mask-image:linear-gradient(180deg,#000 20%,transparent 85%)}
+a{color:inherit;text-decoration:none}
+.wrap{position:relative;max-width:1080px;margin:0 auto;padding:0 16px 40px}
+.nav{display:flex;align-items:center;height:68px}
+.nav img{height:34px;display:block}
+.hgrid{display:grid;grid-template-columns:1.05fr .95fr;grid-template-areas:"ht stage" "ha stage";grid-template-rows:1fr 1fr;column-gap:30px;padding-top:24px;min-height:calc(100vh - 110px)}
+.ht{grid-area:ht;align-self:end}.ha{grid-area:ha;align-self:start}.stage{grid-area:stage;align-self:center}
+.kick{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--gold);text-transform:uppercase}
+.kick i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(57,226,154,.6);animation:pulse 2s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 9px rgba(57,226,154,0)}100%{box-shadow:0 0 0 0 rgba(57,226,154,0)}}
+h1{font-size:50px;line-height:1.05;letter-spacing:-.035em;margin:14px 0 14px;font-weight:900}
+h1 span{background:linear-gradient(90deg,var(--gold),var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent}
+p.l{font-size:18px;color:var(--sub);margin:0 0 26px;max-width:480px}
+/* buttons + the box each one opens */
+.dl{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:520px}
+.dl a{display:flex;align-items:center;gap:12px;border-radius:18px;padding:14px 16px;transition:transform .15s ease,box-shadow .2s ease,background .2s ease;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dl a:active{transform:scale(.97)}
+.dl a svg{width:28px;height:28px;flex:0 0 28px}
+.dl a b{display:block;font-size:16px;line-height:1.15}
+.dl a small{display:block;font-size:11.5px;font-weight:700;opacity:.75;letter-spacing:.02em}
+.dl .and{background:linear-gradient(135deg,var(--gold),#c89434);color:#1c1405;box-shadow:0 14px 34px rgba(226,184,116,.28)}
+.dl .web{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#fff}
+.dl a.on{box-shadow:0 0 0 3px rgba(255,255,255,.5),0 14px 34px rgba(0,0,0,.25)}
+.box{max-width:520px;display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .45s cubic-bezier(.3,.8,.3,1),opacity .3s ease,margin .45s ease;margin-top:0}
+.box.open{grid-template-rows:1fr;opacity:1;margin-top:12px}
+.box>div{overflow:hidden}
+.card{border-radius:20px;padding:18px;border:1px solid var(--line);background:rgba(10,20,64,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.card.a{border-color:rgba(226,184,116,.45);background:linear-gradient(160deg,rgba(226,184,116,.16),rgba(10,20,64,.8))}
+.card.w{border-color:rgba(120,155,255,.45);background:linear-gradient(160deg,rgba(79,124,255,.2),rgba(10,20,64,.8))}
+.card h3{margin:0 0 4px;font-size:17px;display:flex;align-items:center;gap:8px}
+.card h3 .spin{width:16px;height:16px;border-radius:50%;border:2.5px solid rgba(226,184,116,.3);border-top-color:var(--gold);animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.card>p{margin:0 0 12px;color:var(--sub);font-size:13.5px}
+.card ol{margin:0;padding:0;list-style:none;counter-reset:s;display:grid;gap:8px}
+.card ol li{counter-increment:s;display:grid;grid-template-columns:24px 1fr;gap:10px;font-size:14px;color:var(--sub)}
+.card ol li:before{content:counter(s);width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.1);color:#fff;font-weight:900;font-size:12px}
+.card ol b{color:#fff}
+.card .again{display:inline-block;margin-top:12px;font-size:13px;font-weight:800;color:var(--gold)}
+.url{display:flex;justify-content:space-between;align-items:center;gap:10px;border-radius:14px;background:rgba(0,0,0,.28);border:1px solid var(--line);padding:6px 6px 6px 14px;margin:0 0 14px;font-weight:800;font-size:16px;color:#c8d6ff}
+.url button{border:0;border-radius:10px;background:#fff;color:#0a1748;font:inherit;font-size:13px;font-weight:900;padding:9px 13px;cursor:pointer}
+.open-btn{display:block;text-align:center;margin-top:14px;border-radius:14px;padding:12px;background:#fff;color:#0a1748;font-weight:900}
+.meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:18px;font-size:13px;color:var(--mute);font-weight:600}
+.meta b{color:var(--sub)}
+/* 3D phones on a turning ring */
+.stage{position:relative;display:flex;flex-direction:column;align-items:center;--pw:230px;--r:260px;--t:12px}
+.glow{position:absolute;left:50%;top:44%;width:440px;height:440px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(79,124,255,.5),transparent 65%);filter:blur(12px);pointer-events:none}
+.scene{position:relative;width:100%;height:calc(var(--pw) * 2.164 + 70px);perspective:1100px;perspective-origin:50% 30%;touch-action:pan-y}
+.tilt{position:absolute;inset:0;transform-style:preserve-3d;animation:bob 6s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:rotateX(-7deg) translateY(0)}50%{transform:rotateX(-3deg) translateY(-10px)}}
+.ring{position:absolute;left:50%;top:18px;width:var(--pw);margin-left:calc(var(--pw) / -2);height:calc(var(--pw) * 2.164);transform-style:preserve-3d;transition:transform 1.1s cubic-bezier(.6,0,.2,1)}
+.rp{position:absolute;inset:0;transform-style:preserve-3d}
+.rp>*{transition:opacity .9s ease}
+.fr,.bk{position:absolute;inset:0;border-radius:calc(var(--pw) * .16);backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.fr{transform:translateZ(calc(var(--t) / 2));padding:calc(var(--pw) * .035);background:linear-gradient(145deg,#3a4888,#0b1236 60%);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.18)}
+.fr .scn{position:relative;width:100%;height:100%;overflow:hidden;border-radius:calc(var(--pw) * .13);background:#f4f6fb}
+.fr .ly{position:absolute;inset:0;opacity:0;transition:opacity .8s ease}
+.fr .ly.on{opacity:1}
+.fr .ly img{display:block;width:100%;height:auto;min-height:100%;object-fit:cover;object-position:top}
+.rp.front .ly.on img.sc{animation:pscroll var(--dur,4s) cubic-bezier(.45,0,.4,1) forwards}
+@keyframes pscroll{0%,10%{transform:translateY(0)}90%,100%{transform:translateY(var(--dy,0))}}
+.fr:after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(115deg,rgba(255,255,255,.22) 0,rgba(255,255,255,0) 28%,rgba(255,255,255,0) 70%,rgba(255,255,255,.06));pointer-events:none}
+.bk{transform:rotateY(180deg) translateZ(calc(var(--t) / 2));background:radial-gradient(circle at 30% 20%,#33478f,#101a4a 70%);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.14);display:grid;place-items:center}
+.bk img{width:46%;opacity:.9}
+.bk:before{content:"";position:absolute;top:5%;left:7%;width:34%;aspect-ratio:1;border-radius:24%;background:linear-gradient(145deg,#2a3a7a,#0a1238);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)}
+.ed{position:absolute;top:7%;bottom:7%;width:var(--t);background:linear-gradient(90deg,#1a2558,#5a6aa8 50%,#1a2558)}
+.ed.l{left:calc(var(--t) / -2);transform:rotateY(-90deg)}
+.ed.r{left:calc(var(--pw) - var(--t) / 2);transform:rotateY(90deg)}
+.rp.side .fr{filter:brightness(.68) saturate(.8)}.rp.side .bk{opacity:0}
+.rp.far>*{opacity:.3}.rp.far .fr{opacity:0}
+.floor{position:absolute;left:50%;bottom:6px;width:72%;height:40px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.55),transparent);filter:blur(4px);animation:shad 6s ease-in-out infinite}
+@keyframes shad{0%,100%{opacity:1;width:72%}50%{opacity:.75;width:64%}}
+.cap{position:relative;display:flex;align-items:center;justify-content:center;gap:14px;margin-top:4px;width:100%;max-width:380px}
+.cap-t{flex:1;text-align:center;min-height:46px}
+.cap-t b{display:block;font-size:18px;font-weight:900;letter-spacing:-.01em}
+.cap-t span{display:block;font-size:13.5px;color:var(--sub);font-weight:600}
+.cap-t.swap,.cap-d.swap{animation:capin .55s ease}
+.cap-d{max-width:360px;min-height:4.4em;margin:10px auto 0;text-align:center;font-size:13.5px;line-height:1.45;color:var(--sub);font-weight:600}
+@keyframes capin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.arr{flex:0 0 44px;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);color:#fff;display:grid;place-items:center;cursor:pointer;transition:background .2s ease,transform .15s ease}
+.arr:hover{background:rgba(255,255,255,.14)}.arr:active{transform:scale(.92)}
+.arr svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.dots{display:flex;gap:7px;margin-top:12px}
+.dots i{width:7px;height:7px;border-radius:99px;background:rgba(255,255,255,.25);transition:width .35s ease,background .35s ease}
+.dots i.on{width:46px;background:rgba(255,255,255,.18);position:relative;overflow:hidden}
+.dots i u{position:absolute;inset:0;border-radius:99px;background:linear-gradient(90deg,#f2d38f,var(--gold));transform-origin:left;transform:scaleX(0);animation:dfill var(--hd,6s) linear forwards}
+@keyframes dfill{to{transform:scaleX(1)}}
+.dots small{margin-left:6px;font-size:11px;font-weight:800;color:rgba(255,255,255,.7);font-variant-numeric:tabular-nums;min-width:22px}
+@media (prefers-reduced-motion:reduce){.scr img{animation:none}.tilt,.floor{animation:none}.tilt{transform:rotateX(-6deg)}}
+@media (max-width:900px){
+  .hgrid{grid-template-columns:1fr;grid-template-areas:"ht" "stage" "ha";grid-template-rows:auto;min-height:0;padding-top:20px}
+  .ht{text-align:center}.kick{justify-content:center}p.l{margin:0 auto}
+  .stage{margin:18px 0 22px}
+  .ha{display:flex;flex-direction:column;align-items:center}.dl,.box{width:100%}.meta{justify-content:center}
+}
+@media (max-width:520px){
+  h1{font-size:34px}
+  p.l{font-size:16px}
+  .stage{--pw:176px;--r:196px;--t:10px;margin:12px 0 20px}
+  .scene{perspective:900px}
+  .glow{width:300px;height:300px}
+  .cap{gap:10px}.cap-t b{font-size:16.5px}
+  .dl{grid-template-columns:1fr}
+}
+/* laptop */
+.sec{padding:70px 0 0}
+.kk{font-size:12px;font-weight:800;letter-spacing:.14em;color:var(--gold);text-transform:uppercase}
+h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-weight:900}
+.sec p.s{color:var(--sub);font-size:15.5px;margin:0 0 18px;max-width:440px}
+.lapgrid{display:grid;grid-template-columns:1.35fr .65fr;gap:40px;align-items:center}
+.lap{position:relative;perspective:1600px}
+.lid{position:relative;margin:0 6%;border-radius:18px 18px 6px 6px;padding:2.2% 2.2% 3%;background:linear-gradient(160deg,#2c3a73,#0b1236 70%);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.14),0 40px 80px rgba(0,0,0,.45);transform:rotateX(6deg);transform-origin:50% 100%;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.lap.in .lid{transform:rotateX(0)}
+.lid:before{content:"";position:absolute;top:1%;left:50%;width:6px;height:6px;border-radius:50%;transform:translateX(-50%);background:#05081a;box-shadow:0 0 0 1.5px rgba(255,255,255,.08)}
+.scr{position:relative;aspect-ratio:16/10;overflow:hidden;border-radius:6px;background:#eef1f8}
+.scr img{position:absolute;left:0;top:0;display:block;width:100%;opacity:0;transition:opacity .7s ease}
+.scr img.on{opacity:1;animation:scroll var(--ld,9s) ease-in-out forwards}
+.scr:hover img.on{animation-play-state:paused}
+.ltabs{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:40px}
+.ltabs button{position:relative;overflow:hidden;font:inherit;font-size:13px;font-weight:800;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:8px 14px;background:rgba(255,255,255,.04);cursor:pointer;transition:color .2s,background .2s,border-color .2s}
+.ltabs button:hover{color:#fff}
+.ltabs button.on{color:#1c1405;background:linear-gradient(135deg,var(--gold),#c89434);border-color:transparent}
+.ltabs em{position:absolute;left:0;bottom:0;height:3px;width:0;background:rgba(28,20,5,.45)}
+.ltabs button.on em{animation:ltab var(--ld,9s) linear forwards}
+@keyframes ltab{to{width:100%}}
+@keyframes scroll{0%,10%{transform:translateY(0)}90%,100%{transform:translateY(calc(-100% + 62.5cqw))}}
+.scr{container-type:inline-size}
+.scr:after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.14),rgba(255,255,255,0) 35%);pointer-events:none}
+.base{position:relative;height:16px;border-radius:2px 2px 18px 18px;background:linear-gradient(180deg,#56649e,#26326a 45%,#121a45);box-shadow:0 22px 40px rgba(0,0,0,.45)}
+.base:before{content:"";position:absolute;top:0;left:50%;width:16%;height:6px;transform:translateX(-50%);border-radius:0 0 10px 10px;background:#1a2458}
+.lap-sh{position:absolute;left:8%;right:8%;bottom:-26px;height:30px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.5),transparent);filter:blur(4px)}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+.pills span{font-size:12.5px;font-weight:700;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:5px 11px;background:rgba(255,255,255,.04)}
+.go{display:inline-flex;align-items:center;gap:8px;border-radius:14px;padding:12px 18px;background:#fff;color:#0a1748;font-weight:900}
+/* iPhone guide: one picture */
+.guide{scroll-margin-top:16px;border-radius:26px;padding:22px;border:1px solid var(--line);background:linear-gradient(160deg,rgba(79,124,255,.16),rgba(255,255,255,.03))}
+.gh{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:18px}
+.gh h2{margin:6px 0 0}
+.gh p{margin:0;color:var(--sub);font-size:14px;max-width:340px}
+.strip{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:center;gap:10px}
+.ar{color:var(--gold);font-size:22px;font-weight:900}
+.gs{text-align:center}
+.gs b{display:block;margin-top:10px;font-size:14px}
+.gs span{display:block;font-size:12px;color:var(--sub);font-weight:600}
+.mk{position:relative;margin:0 auto;width:100%;max-width:170px;aspect-ratio:9/16;border-radius:22px;overflow:hidden;background:#f1f3f8;color:#222;border:5px solid #0b1236;box-shadow:0 14px 30px rgba(0,0,0,.35)}
+.mk .n{position:absolute;top:6px;left:6px;z-index:5;width:22px;height:22px;border-radius:50%;background:var(--gold);color:#1c1405;font-size:12px;font-weight:900;display:grid;place-items:center}
+.sf{position:absolute;inset:0;display:flex;flex-direction:column}
+.sf .pg{flex:1;padding:30px 10px 8px;display:flex;flex-direction:column;gap:6px}
+.sf .pg i{border-radius:8px;background:#fff;height:30px}.sf .pg i:first-child{height:8px;width:50%;background:#cfd6e6}
+.sf .ad{margin:0 6px 5px;background:#fff;border-radius:10px;padding:5px 6px;font-size:9.5px;font-weight:700;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.sf .tb{display:flex;justify-content:space-around;align-items:center;padding:6px 4px 9px;background:#f7f7f9;border-top:1px solid #e1e3ea}
+.sf .tb svg{width:15px;height:15px;stroke:#2f6bff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sf .tb .hl{position:relative;display:grid}
+.sf .tb .hl:after{content:"";position:absolute;inset:-7px;border-radius:50%;border:2.5px solid var(--gold);animation:ping 1.6s ease-out infinite}
+@keyframes ping{0%{transform:scale(.7);opacity:1}100%{transform:scale(1.35);opacity:0}}
+.dim{position:absolute;inset:0;background:rgba(0,0,0,.3)}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:#f2f2f6;border-radius:14px 14px 0 0;padding:8px 7px 10px}
+.sheet .row{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:7px 8px;font-size:9.5px;font-weight:600;border-bottom:1px solid #ececf1}
+.sheet .row:first-child{border-radius:8px 8px 0 0}.sheet .row:last-child{border-radius:0 0 8px 8px;border-bottom:0}
+.sheet .row.on{background:#fff6e6;box-shadow:inset 0 0 0 2px var(--gold);font-weight:800}
+.home{position:absolute;inset:0;background:linear-gradient(160deg,#3a2a6b,#0b1a57 70%);padding:30px 10px}
+.home .apps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 6px}
+.home .apps s{display:block;aspect-ratio:1;border-radius:24%;background:rgba(255,255,255,.18)}
+.home .apps s.me{background:url(/aether/icon-192.png) center/cover;box-shadow:0 0 0 2px var(--gold),0 0 14px rgba(226,184,116,.7)}
+.mk img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:bottom}
+.alert{position:absolute;left:8%;right:8%;top:32%;background:rgba(246,246,248,.97);border-radius:11px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.25);overflow:hidden}
+.alert b{display:block;font-size:9.5px;padding:9px 7px 6px;line-height:1.3;margin:0}
+.alert div{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #d9d9de;font-size:10px;color:#2f6bff}
+.alert div em{font-style:normal;padding:6px 0}.alert div em+em{border-left:1px solid #d9d9de;font-weight:800;background:#fff6e6}
+.gnote{margin-top:16px;font-size:12.5px;color:var(--mute);text-align:center}
+@media (max-width:900px){
+  .lapgrid{grid-template-columns:1fr;gap:34px}
+  .gh{flex-direction:column;align-items:flex-start}
+}
+@media (max-width:620px){
+  .sec{padding-top:54px}
+  h2{font-size:28px}
+  .lapgrid .txt{text-align:center}.sec p.s{margin-left:auto;margin-right:auto}.pills{justify-content:center}
+  .guide{padding:16px}
+  .strip{grid-template-columns:1fr 1fr;gap:14px 12px}
+  .ar{display:none}
+  .mk{max-width:150px}
+}
+.jump{display:flex;align-items:center;gap:9px;margin:2px 0 4px;padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);font-weight:800;font-size:14.5px;color:#fff}
+.jump .ap{width:18px;height:18px;flex:0 0 18px}
+.jump span{margin-left:auto;color:var(--gold);font-size:16px;animation:nudge 1.6s ease-in-out infinite}
+@keyframes nudge{50%{transform:translateY(3px)}}
+.kk.ki{display:inline-flex;align-items:center;gap:7px}
+.kk .ap{width:17px;height:17px;margin-top:-3px}
+.lapgrid .txt h2{margin-top:0}
+/* iPhone guide: the phone turns round, then plays the four steps */
+.ipg{display:grid;grid-template-columns:300px 1fr;gap:40px;align-items:center;margin-top:28px}
+.ip-wrap{position:relative;perspective:1400px;display:flex;flex-direction:column;align-items:center;animation:ipbob 6s ease-in-out infinite}
+@keyframes ipbob{50%{transform:translateY(-8px)}}
+.ip{--w:250px;position:relative;width:var(--w);height:calc(var(--w) * 2.05);transform-style:preserve-3d;transform:rotateY(180deg) rotateX(4deg);transition:transform 1.3s cubic-bezier(.55,0,.25,1)}
+.ip.in{transform:rotateY(0) rotateX(4deg)}
+.ip-front,.ip-back{position:absolute;inset:0;border-radius:calc(var(--w) * .17);backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.ip-front{transform:translateZ(5px);padding:9px;background:linear-gradient(145deg,#5a6182,#1a1f36 55%,#3a405c);box-shadow:inset 0 0 0 2px rgba(255,255,255,.18)}
+.ip-back{transform:rotateY(180deg) translateZ(5px);background:linear-gradient(150deg,#3b4a86,#121b4a 55%,#2a3670);box-shadow:inset 0 0 0 2px rgba(255,255,255,.16);display:grid;place-items:center}
+.ip-back>img{width:44%;opacity:.92}
+.ip-cam{position:absolute;top:5%;left:7%;width:40%;aspect-ratio:1;border-radius:26%;background:linear-gradient(145deg,#2b3770,#0b1238);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.14),0 6px 14px rgba(0,0,0,.35)}
+.ip-cam i{position:absolute;width:38%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 40% 35%,#4b5a9a,#05081a 60%);box-shadow:0 0 0 3px #1a2350,0 0 0 4px rgba(255,255,255,.12)}
+.ip-cam i:nth-child(1){top:10%;left:10%}.ip-cam i:nth-child(2){bottom:10%;left:10%}.ip-cam i:nth-child(3){top:31%;right:10%}
+.ip-cam b{position:absolute;top:12%;right:16%;width:12%;aspect-ratio:1;border-radius:50%;background:#f5e7c4;opacity:.7}
+.ip-scr{position:relative;width:100%;height:100%;overflow:hidden;border-radius:calc(var(--w) * .14);background:#f1f3f8;color:#222}
+.ip-isl{position:absolute;top:2.2%;left:50%;width:30%;height:3.4%;transform:translateX(-50%);border-radius:99px;background:#05081a;z-index:6}
+.ip-k{position:absolute;left:0;top:0;width:180px;transform-origin:0 0}
+.ip-k .st{position:absolute;inset:0;opacity:0;transform:scale(.98);transition:opacity .5s ease,transform .5s ease}
+.ip-k .st.on{opacity:1;transform:none}
+.ip-k .sf .pg{padding-top:38px}
+.ip-k .st>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
+.ip-k .home{padding-top:44px}.ip-k .home .lbl{position:absolute;left:0;right:0;top:51%;text-align:center;font-size:8px;color:#fff;font-weight:700;opacity:0}
+.ip-k .st.on .sheet{animation:ipup .6s cubic-bezier(.2,.8,.2,1) both .15s}
+@keyframes ipup{from{transform:translateY(100%)}}
+.ip-k .st.on .alert{animation:ippop .45s cubic-bezier(.2,1.4,.4,1) both .25s}
+@keyframes ippop{from{opacity:0;transform:scale(.85)}}
+.ip-k .st.on .apps .me{animation:ipme 1.4s ease-in-out .3s both}
+@keyframes ipme{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.12);opacity:1}100%{transform:scale(1)}}
+.ip-sh{width:70%;height:26px;margin-top:22px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.55),transparent);filter:blur(4px)}
+.ip-steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.ip-steps li{position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.04);cursor:pointer;transition:background .25s,border-color .25s}
+.ip-steps li:hover{background:rgba(255,255,255,.07)}
+.ip-steps li.on{background:rgba(226,184,116,.1);border-color:rgba(226,184,116,.55)}
+.ip-steps .n{flex:0 0 32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:14px;background:rgba(255,255,255,.1);color:#fff}
+.ip-steps li.on .n{background:var(--gold);color:#1c1405}
+.ip-steps b{display:block;font-size:15px}.ip-steps small{display:block;font-size:12.5px;color:var(--sub);font-weight:600}
+.ip-steps em{position:absolute;left:0;bottom:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.ip-steps li.on em{animation:ltab var(--sd,2200ms) linear forwards}
+@media (max-width:760px){
+  .ipg{grid-template-columns:1fr;gap:22px}
+  .ip{--w:210px}
+  .ip-steps{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .ip-steps li{padding:10px;gap:9px}.ip-steps .n{flex-basis:26px;height:26px;font-size:12px}.ip-steps b{font-size:13px}.ip-steps small{font-size:11px}
+}
+@media (prefers-reduced-motion:reduce){.ip{transition:none}.ip-wrap{animation:none}}
+/* How the media plan works */
+.mpw{position:relative;border-radius:28px;padding:34px 30px 28px;border:1px solid var(--line);background:radial-gradient(circle at 92% 0%,rgba(226,184,116,.16),transparent 42%),radial-gradient(circle at 0% 100%,rgba(79,124,255,.22),transparent 50%),rgba(255,255,255,.03);overflow:hidden}
+.mpw-h{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:26px}
+.mpw-h h2{margin:6px 0 0}.mpw-h p{margin:0;color:var(--sub);font-size:15px;max-width:380px}
+.mpw-h p b,.mpw .hl{color:var(--gold2);font-weight:800}
+.mpw-steps{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:14px;counter-reset:st}
+.mpw-steps:before{content:"";position:absolute;left:4%;right:4%;top:27px;height:2px;background:linear-gradient(90deg,rgba(226,184,116,.1),var(--gold),rgba(226,184,116,.1))}
+.mpw-s{position:relative;padding:0 4px;opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease;transition-delay:calc(var(--i) * 120ms)}
+.mpw.in .mpw-s{opacity:1;transform:none}
+.mpw-n{position:relative;width:56px;height:56px;border-radius:18px;display:grid;place-items:center;margin-bottom:14px;background:linear-gradient(145deg,#2c3f8f,#121c52);box-shadow:inset 0 0 0 1.5px rgba(226,184,116,.55),0 10px 24px rgba(0,0,0,.35)}
+.mpw-n svg{width:24px;height:24px;fill:none;stroke:var(--gold);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mpw-n i{position:absolute;top:-7px;right:-7px;width:22px;height:22px;border-radius:50%;background:var(--gold);color:#1c1405;font-style:normal;font-size:11px;font-weight:900;display:grid;place-items:center}
+.mpw-s b{display:block;font-size:16px;font-weight:900;margin-bottom:6px}
+.mpw-s p{margin:0;font-size:13.5px;line-height:1.55;color:var(--sub);font-weight:600}
+.mpw-k{display:inline-block;margin-top:10px;font-size:12px;font-weight:900;color:#1c1405;background:linear-gradient(135deg,var(--gold),#c89434);border-radius:99px;padding:4px 10px}
+.mpw-k.g{background:rgba(57,226,154,.16);color:var(--green)}
+.mpw-t{display:flex;align-items:center;gap:18px;margin-top:28px;padding:18px 20px;border-radius:20px;background:linear-gradient(120deg,rgba(57,226,154,.12),rgba(255,255,255,.03));border:1px solid rgba(57,226,154,.3)}
+.mpw-t .ic{flex:0 0 48px;height:48px;border-radius:50%;display:grid;place-items:center;background:rgba(57,226,154,.18)}
+.mpw-t .ic svg{width:24px;height:24px;fill:none;stroke:var(--green);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.mpw-t p{margin:0;font-size:14.5px;line-height:1.55;color:var(--sub);font-weight:600}
+.mpw-t .gr{color:var(--green);font-weight:800}
+.mpw-t .bd{display:flex;gap:8px;margin-left:auto;flex:none}
+.mpw-t .bd span{text-align:center;border-radius:14px;padding:8px 12px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
+.mpw-t .bd b{display:block;font-size:20px;font-weight:900;color:#fff}.mpw-t .bd small{font-size:10.5px;color:var(--mute);font-weight:700}
+@media (max-width:1000px){
+  .mpw-steps{grid-template-columns:1fr;gap:18px}
+  .mpw-steps:before{left:27px;right:auto;top:20px;bottom:20px;width:2px;height:auto;background:linear-gradient(180deg,rgba(226,184,116,.1),var(--gold),rgba(226,184,116,.1))}
+  .mpw-s{display:grid;grid-template-columns:56px 1fr;gap:0 16px;padding:0}
+  .mpw-n{grid-row:1/4;margin:0}
+  .mpw-k{justify-self:start}
+  .mpw-t{flex-wrap:wrap}.mpw-t .bd{margin-left:0}
+}
+@media (max-width:620px){.mpw{padding:24px 16px 18px}}
+@media (prefers-reduced-motion:reduce){.mpw-s{opacity:1;transform:none;transition:none}}
+
+/* v174 phone details: status bar, island, side buttons, home bar, glass */
+.fr{--sbh:calc(var(--pw) * .105)}
+.fr .scn{background:#0b1236}
+.fr .ly{top:var(--sbh)}
+.fr .sb{position:absolute;left:0;right:0;top:0;height:var(--sbh);z-index:3;display:flex;align-items:center;justify-content:space-between;padding:0 calc(var(--pw) * .085) 0 calc(var(--pw) * .1);background:linear-gradient(180deg,#0e1c52,#13265f);color:#fff;font-weight:800;font-size:calc(var(--pw) * .052);letter-spacing:-.01em}
+.fr .sb i{display:flex;gap:calc(var(--pw) * .016);align-items:center}
+.fr .sb svg{height:calc(var(--pw) * .046);width:auto;fill:#fff}
+.fr .isl{position:absolute;top:calc(var(--pw) * .028);left:50%;width:30%;height:calc(var(--pw) * .068);transform:translateX(-50%);border-radius:99px;background:#000;z-index:4;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.fr .isl:after{content:"";position:absolute;right:12%;top:50%;width:calc(var(--pw) * .03);height:calc(var(--pw) * .03);transform:translateY(-50%);border-radius:50%;background:radial-gradient(circle at 35% 35%,#3a4f9a,#0a0f2a 60%)}
+.fr .hb{position:absolute;left:50%;bottom:calc(var(--pw) * .022);width:34%;height:calc(var(--pw) * .016);transform:translateX(-50%);border-radius:99px;background:rgba(255,255,255,.75);z-index:4;mix-blend-mode:difference}
+.fr .gl{position:absolute;inset:0;z-index:5;pointer-events:none;border-radius:inherit;background:linear-gradient(118deg,rgba(255,255,255,.16),rgba(255,255,255,0) 30%,rgba(255,255,255,0) 72%,rgba(255,255,255,.06))}
+.fr .bt{position:absolute;width:3px;border-radius:2px;background:linear-gradient(90deg,#5a6aa8,#26326a)}
+.fr .bt.a{left:-3px;top:18%;height:6%}.fr .bt.b{left:-3px;top:27%;height:11%}.fr .bt.c{left:-3px;top:40%;height:11%}.fr .bt.d{right:-3px;top:30%;height:16%}
+.rp.front .fr{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.22),0 0 0 1px rgba(226,184,116,.18),0 30px 60px rgba(0,0,0,.35)}
+/* v174 laptop: browser bar, dark screen, keyboard deck */
+.lbar{display:flex;align-items:center;gap:6px;height:22px;padding:0 9px;border-radius:6px 6px 0 0;background:#0e173f;border-bottom:1px solid rgba(255,255,255,.06)}
+.lbar i{width:7px;height:7px;border-radius:50%;background:#ff5f57}.lbar i:nth-child(2){background:#febc2e}.lbar i:nth-child(3){background:#28c840}
+.lbar span{flex:1;max-width:52%;margin:0 auto;height:13px;border-radius:5px;background:rgba(255,255,255,.07);color:#8a97c4;font-size:8.5px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:4px}
+.lbar span:before{content:"🔒";font-size:7px}
+.lid .scr{border-radius:0 0 6px 6px;background:#eef1f8}
+.base{height:18px}
+.base:after{content:"";position:absolute;left:3%;right:3%;top:2px;height:1px;background:rgba(255,255,255,.18)}
+
+.rp.far .bk,.rp.far .ed{opacity:0!important}
+.ip-steps{margin-right:18px}
+.fr .ly img.nvb{position:absolute;left:0;right:0;bottom:0;top:auto;width:100%;height:auto;min-height:0;z-index:2;pointer-events:none}
+/* v174 iPhone guide: the result first, a lock screen filling with HEMERA alerts */
+.g3{--gy:-12deg;--gx:5deg;position:relative;overflow:hidden;background:radial-gradient(520px 420px at 24% 50%,rgba(79,124,255,.32),transparent 70%),radial-gradient(420px 300px at 30% 90%,rgba(226,184,116,.14),transparent 70%),linear-gradient(160deg,rgba(79,124,255,.12),rgba(255,255,255,.02))}
+.g3g{display:grid;grid-template-columns:460px 1fr;gap:40px;align-items:center}
+.g3s{position:relative;height:600px;perspective:1200px}
+.ph3{position:absolute;aspect-ratio:1/2.05;width:var(--w);border-radius:calc(var(--w) * .17);padding:calc(var(--w) * .03);background:linear-gradient(145deg,#5a6182,#1a1f36 55%,#3a405c);box-shadow:inset 0 0 0 2px rgba(255,255,255,.2),inset 0 0 0 4px rgba(0,0,0,.3),0 40px 70px rgba(0,0,0,.5);transition:transform .35s ease-out}
+.ph3:after{content:"";position:absolute;inset:calc(var(--w) * .03);border-radius:calc(var(--w) * .14);pointer-events:none;z-index:9;background:linear-gradient(115deg,rgba(255,255,255,.2),rgba(255,255,255,0) 30%,rgba(255,255,255,0) 72%,rgba(255,255,255,.07))}
+.ph3:before{content:"";position:absolute;left:-3px;top:22%;width:3px;height:10%;border-radius:2px;background:#5a6182;box-shadow:0 calc(var(--w) * .28) 0 #5a6182}
+.g3b{left:6px;top:150px;transform:rotateY(24deg) rotateX(var(--gx)) translateZ(-90px);opacity:.92}
+.g3f{left:120px;top:40px;transform:rotateY(var(--gy)) rotateX(var(--gx));z-index:2}
+.g3sh{position:absolute;left:90px;right:10px;bottom:-6px;height:40px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.55),transparent);filter:blur(5px)}
+.sc3{position:relative;width:100%;height:100%;overflow:hidden;border-radius:calc(var(--w) * .14);background:#f2f4f9;color:#111;font-size:calc(var(--w) * .05)}
+.isl3{position:absolute;top:2.4%;left:50%;width:31%;height:3.6%;transform:translateX(-50%);border-radius:99px;background:#000;z-index:8}
+.stb3{position:absolute;top:0;left:0;right:0;height:7%;display:flex;justify-content:space-between;align-items:center;padding:0 9% 0 11%;font-size:calc(var(--w) * .055);font-weight:800;z-index:7}
+.stb3.w{color:#fff}
+.si3{width:22%;height:36%;background:linear-gradient(90deg,currentColor 0 14%,transparent 14% 20%,currentColor 20% 34%,transparent 34% 44%,currentColor 44% 100%);-webkit-mask:linear-gradient(#000,#000);opacity:.9;border-radius:2px}
+.k3{position:absolute;inset:0;opacity:0;transition:opacity .45s ease}.k3.on{opacity:1}
+.app3{position:absolute;left:0;right:0;top:7%;bottom:12%;background:url(/aether/shots/home.webp?v=1) top/cover}
+.saf3{position:absolute;left:0;right:0;bottom:0;height:12%;background:rgba(246,246,248,.97);border-top:1px solid #ddd;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+.url3{width:88%;height:40%;border-radius:8px;background:#e6e7ec;font-size:calc(var(--w) * .045);display:flex;align-items:center;justify-content:center;color:#333;font-weight:600}
+.tb3{width:86%;display:flex;justify-content:space-between;color:#1a73e8;font-size:calc(var(--w) * .06)}
+.dim3{position:absolute;inset:0;background:rgba(0,0,0,.35)}
+.sheet3{position:absolute;left:4%;right:4%;bottom:3%;border-radius:12px;background:#fff;overflow:hidden;box-shadow:0 -6px 24px rgba(0,0,0,.25)}
+.k3.on .sheet3{animation:ipup .5s cubic-bezier(.2,.8,.2,1) both .1s}
+.sheet3 div{padding:7% 8%;border-bottom:1px solid #eee}.sheet3 .on{background:#fff6e3;font-weight:800;color:#8a5a00}
+.home3{position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,#3a5bd0,#0c1d5c 60%,#070f33)}
+.grid3{position:absolute;top:14%;left:8%;right:8%;display:grid;grid-template-columns:repeat(4,1fr);gap:16% 10%}
+.grid3 i{display:block;aspect-ratio:1;border-radius:24%;background:rgba(255,255,255,.18)}
+.grid3 span{color:#fff;font-size:calc(var(--w) * .045);text-align:center;font-weight:600}
+.grid3 .me{background:url(/aether/apple-touch-icon.png) center/cover;box-shadow:0 0 0 2px var(--gold),0 0 18px rgba(226,184,116,.8);margin-bottom:3px}
+.k3.on .me{animation:ipme 1.4s ease-in-out .2s both}
+.al3{position:absolute;left:10%;right:10%;top:34%;border-radius:12px;background:rgba(242,242,247,.97);text-align:center;overflow:hidden}
+.k3.on .al3{animation:ippop .45s cubic-bezier(.2,1.4,.4,1) both .15s}
+.al3 b{display:block;padding:10% 8% 6%}.al3 div{display:flex;border-top:1px solid #ccc}.al3 em{flex:1;padding:6%;font-style:normal;color:#1a73e8}.al3 em+em{border-left:1px solid #ccc;font-weight:800}
+.tap3{position:absolute;width:22px;height:22px;border-radius:50%;background:rgba(226,184,116,.6);transform:translate(-50%,-50%);z-index:5;animation:tap3 1.2s ease-out infinite}
+@keyframes tap3{0%{box-shadow:0 0 0 0 rgba(226,184,116,.5)}100%{box-shadow:0 0 0 16px rgba(226,184,116,0)}}
+.lk3{background:radial-gradient(circle at 50% 28%,#3557d6,#0b1a55 55%,#060d2e);color:#fff}
+.lk3:before{content:"";position:absolute;left:-20%;right:-20%;bottom:-10%;height:55%;background:radial-gradient(closest-side,rgba(226,184,116,.28),transparent);pointer-events:none}
+.dt3{position:absolute;top:11%;left:0;right:0;text-align:center;font-weight:700;font-size:calc(var(--w) * .055);color:#dfe6ff}
+.tm3{position:absolute;top:14%;left:0;right:0;text-align:center;font-weight:800;font-size:calc(var(--w) * .27);letter-spacing:-.04em;line-height:1.1}
+.ns3{position:absolute;left:5%;right:5%;top:43%;display:flex;flex-direction:column;gap:7px}
+.nt3{border-radius:16px;padding:8px 10px;background:rgba(255,255,255,.2);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);font-size:calc(var(--w) * .046);animation:nt3 .55s cubic-bezier(.2,1,.3,1) both}
+.nt3:nth-child(2){opacity:.85;transform:scale(.97)}.nt3:nth-child(3){opacity:.55;transform:scale(.94)}
+@keyframes nt3{from{opacity:0;transform:translateY(-16px) scale(.96)}}
+.nt3 .h{display:flex;gap:6px;align-items:center;font-weight:700;opacity:.85;font-size:.92em}.nt3 .h img{width:15px;height:15px;border-radius:4px}.nt3 .h em{margin-left:auto;font-style:normal;opacity:.7}
+.nt3 b{display:block;margin-top:3px}.nt3 p{margin:1px 0 0;opacity:.9;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lb3{position:absolute;left:9%;right:9%;bottom:6%;display:flex;justify-content:space-between}.lb3 i{width:15%;aspect-ratio:1;border-radius:50%;background:rgba(255,255,255,.18);display:grid;place-items:center;font-style:normal;font-size:calc(var(--w) * .05)}
+.hb3{position:absolute;left:50%;bottom:2%;width:34%;height:1%;transform:translateX(-50%);border-radius:9px;background:#fff;opacity:.85}
+.pl3{position:absolute;z-index:4;display:flex;gap:10px;align-items:center;padding:10px 14px;border-radius:16px;background:rgba(18,30,78,.86);border:1px solid rgba(255,255,255,.18);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 16px 34px rgba(0,0,0,.4);font-size:13px;white-space:nowrap;animation:pl3 5s ease-in-out infinite}
+.pl3.a{left:250px;top:6px}.pl3.b{left:0;top:470px;animation-delay:-2.5s}
+@keyframes pl3{50%{transform:translateY(-8px)}}
+.pl3 b{display:block}.pl3 small{color:var(--sub)}
+.n3{flex:0 0 30px;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold),#c89434);color:#1c1405;font-weight:900;font-size:13px}
+.g3x h2 em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tl3{list-style:none;margin:20px 0 18px;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tl3 li{position:relative;overflow:hidden;padding:14px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid var(--line);cursor:pointer;transition:background .25s,border-color .25s,transform .25s}
+.tl3 li .n3{background:rgba(255,255,255,.12);color:#fff}
+.tl3 li.on{transform:translateY(-4px);border-color:rgba(226,184,116,.6);background:linear-gradient(160deg,rgba(226,184,116,.18),rgba(255,255,255,.03))}
+.tl3 li.on .n3{background:linear-gradient(135deg,var(--gold),#c89434);color:#1c1405}
+.tl3 b{display:block;margin-top:10px;font-size:15px}.tl3 small{display:block;color:var(--sub);font-size:12px;font-weight:600}
+.tl3 em{position:absolute;left:0;bottom:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.tl3 li.on em{animation:ltab var(--sd3,2400ms) linear forwards}
+.g3go{display:inline-flex;gap:8px;align-items:center;border-radius:14px;padding:12px 18px;background:#fff;color:#0a1748;font-weight:900}
+.g3 .gnote{text-align:left;margin-top:14px}
+@media (max-width:980px){.g3g{grid-template-columns:1fr;gap:20px}.g3s{max-width:460px;width:100%;margin:0 auto}.g3x{text-align:center}.g3 .gnote{text-align:center}}
+@media (max-width:520px){.g3s{height:470px}.g3f{--w:205px!important;left:auto;right:6px;top:30px}.g3b{--w:118px!important;left:0;top:120px}.pl3{font-size:11.5px;padding:8px 10px}.pl3.a{left:auto;right:0;top:4px}.pl3.b{left:0;top:390px}.n3{flex-basis:26px;width:26px;height:26px}.tl3{grid-template-columns:1fr 1fr}.g3sh{left:40px}}
+@media (prefers-reduced-motion:reduce){.pl3,.tap3,.nt3{animation:none}}
+.g3{--gy:0deg;--gx:4deg;text-align:center}
+.g3 .g3x{max-width:640px;margin:0 auto}.g3 .g3x p.s{margin-left:auto;margin-right:auto;max-width:520px}
+.g3 .g3s{height:auto;display:flex;justify-content:center;padding:26px 0 30px;max-width:none}
+.g3 .g3f{--w:280px;position:relative;left:auto;top:auto;transform:rotateY(var(--gy)) rotateX(var(--gx))}
+.g3 .g3sh{left:50%;right:auto;width:300px;transform:translateX(-50%);bottom:6px}
+.g3 .lk3{background:radial-gradient(circle at 50% 28%,#3557d6,#0b1a55 55%,#060d2e);color:#fff}
+.g3 .pl3{opacity:0;transform:translateY(10px) scale(.96);transition:opacity .45s ease,transform .45s ease;animation:none}
+.g3 .pl3.show{opacity:1;transform:none}
+.g3 .pl3.a{left:calc(50% + 120px);top:90px}.g3 .pl3.b{left:auto;right:calc(50% + 120px);top:auto;bottom:120px}
+.g3 .tl3{max-width:760px;margin:6px auto 14px;text-align:left}
+.g3 .tl3 li.done .n3{background:rgba(57,226,154,.22);color:#39e29a}
+.g3 .gnote{text-align:center}
+.g3 .nt3,.g3 .pl3{text-align:left}.g3 .lb3{display:none}.g3 .ns3{top:37%;gap:6px}.g3 .tm3{top:13%}
+@media (max-width:620px){.g3 .g3f{--w:230px}.g3 .pl3.b{bottom:30px!important}.g3 .pl3.a{left:auto;right:0;top:20px}.g3 .pl3.b{right:auto;left:0;bottom:90px}.g3 .tl3{grid-template-columns:1fr 1fr}}
+
+.dsh{display:inline-block;font-size:.55em;font-weight:700;vertical-align:.32em;margin:0 .22em;opacity:.85}
+
+/* iPhone guide: the phone's back (the real iPhone picture) on the reverse side; it turns round before the steps */
+.g3 .g3f{transform-style:preserve-3d;transition:transform 1.1s cubic-bezier(.6,0,.3,1);background:linear-gradient(145deg,#b9d2ee,#6f94c2 50%,#a3bfe0)!important}
+.g3 .g3f.back{transform:rotateY(calc(var(--gy) + 180deg)) rotateX(var(--gx))}
+.g3 .g3f .sc3{backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.bk3{position:absolute;inset:-1px;transform:rotateY(180deg) translateZ(1px);backface-visibility:hidden;-webkit-backface-visibility:hidden;background:url(/get/iphone-back.webp?v=2) center/100% 100% no-repeat;border-radius:inherit}
+.bk3:after{content:"";position:absolute;inset:0;border-radius:inherit;-webkit-mask:url(/get/iphone-back.webp?v=2) center/100% 100% no-repeat;mask:url(/get/iphone-back.webp?v=2) center/100% 100% no-repeat;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.7) 48%,transparent 61%);background-size:260% 100%;background-position:130% 0}
+.g3f.back .bk3:after{animation:bkSh 2.2s .4s ease-in-out both}
+@keyframes bkSh{to{background-position:-60% 0}}
+
+/* v2 steps as a one-line reel: the current step sits in the middle in clear type; the one done slides up and fades; the next waits below */
+.g3 .tl3{display:block!important;position:relative;height:156px;overflow:hidden;max-width:520px;margin:4px auto 12px;-webkit-mask:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent);mask:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent)}
+.g3 .tl3 li{position:absolute!important;left:0;right:0;top:52px;height:52px;display:flex!important;align-items:center;gap:12px;padding:0 16px!important;border:0!important;background:none!important;border-radius:0!important;
+  transform:translateY(calc((var(--i) - var(--k,0)) * 52px))!important;opacity:.35;transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .5s,filter .5s;white-space:nowrap}
+.g3 .tl3 li b{display:inline!important;margin:0!important;font-size:17px}.g3 .tl3 li small{display:inline!important;font-size:13px;overflow:hidden;text-overflow:ellipsis}
+.g3 .tl3 li.on{opacity:1}.g3 .tl3 li.on b{color:#fff}
+.g3 .tl3 li.done{opacity:.22;filter:blur(.4px)}
+.g3 .tl3 em{display:none!important}
+@media (max-width:520px){.g3 .tl3 li b{font-size:15px}.g3 .tl3 li small{font-size:12px}}
+
+/* v3 the iPhone starts on its back, floating; then it turns to its face in 3D (lifts toward you, tilts, settles) */
+.g3 .g3f.back{transition:none!important;animation:bkIdle 3s ease-in-out infinite}
+.g3 .g3f.turn{transition:none!important;animation:turn3d 1.45s cubic-bezier(.45,0,.2,1) both}
+@keyframes bkIdle{0%,100%{transform:rotateY(180deg) rotateX(4deg) translateY(0)}50%{transform:rotateY(198deg) rotateX(9deg) translateY(-8px)}}
+@keyframes turn3d{0%{transform:rotateY(180deg) rotateX(4deg) translateZ(0) scale(1)}
+ 35%{transform:rotateY(120deg) rotateX(16deg) rotateZ(-4deg) translateZ(90px) scale(1.08)}
+ 70%{transform:rotateY(25deg) rotateX(8deg) rotateZ(2deg) translateZ(40px) scale(1.04)}
+ 100%{transform:rotateY(var(--gy,0deg)) rotateX(var(--gx,4deg)) translateZ(0) scale(1)}}
+.g3 .g3s{perspective:900px}
+
+/* desktop UX: hero text further from the phones and a little lower, the phones and their caption higher;
+   the iPhone guide as two columns, a smaller phone beside its text */
+@media (min-width:981px){
+ .hgrid{column-gap:90px;grid-template-columns:1fr 1fr;padding-top:8px}
+ .ht{padding-top:34px}
+ .stage{align-self:start;margin-top:-18px}
+ .scene{height:calc(var(--pw) * 2.164 + 40px)}
+ .cap{margin-top:-10px}.cap-d{margin-top:6px}
+ .g3{display:grid;grid-template-columns:380px minmax(0,1fr);grid-template-areas:"s ." "s x" "s l" "s n" "s .";grid-template-rows:1fr auto auto auto 1fr;column-gap:56px;align-items:center;text-align:left;padding-left:40px!important;padding-right:48px!important}
+ .g3 .g3x{grid-area:x;max-width:none;margin:0}
+ .g3 .g3x .kk{justify-content:flex-start}
+ .g3 .g3x p.s{margin-left:0;margin-right:0}
+ .g3 .g3s{grid-area:s;padding:18px 0 22px}
+ .g3 .g3f{--w:236px}
+ .g3 .g3sh{width:250px}
+ .g3 .pl3.a{left:calc(50% + 70px);top:70px}.g3 .pl3.b{right:calc(50% + 70px);bottom:90px}
+ .g3 .tl3{grid-area:l;margin:14px 0 6px;max-width:460px}
+ .g3 .gnote{grid-area:n;text-align:left;align-self:start;margin-top:0}
+}
+
+/* phone UX: same order as desktop, tighter and even spacing; the side phones peek in less; a smaller iPhone in the guide */
+@media (max-width:520px){
+ .hgrid{padding-top:6px}
+ .ht h1{margin:12px 0 12px}
+ .stage{--r:168px;margin:6px 0 14px}
+ .scene{height:calc(var(--pw) * 2.164 + 34px)}
+ .cap{margin-top:-6px}.cap-d{margin-top:4px;min-height:0}
+ .g3 .g3f{--w:196px}
+ .g3 .g3s{padding:16px 0 18px}
+ .g3 .g3sh{width:210px}
+ .g3 .tl3{margin:0 auto 8px}
+}
+
+/* smoke canvas for the section entrances */
+#glC{position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
+.wrap{z-index:1}
+/* iPhone guide, desktop: the two notes stay inside the card and off the headline; more blur behind them */
+.g3 .pl3{-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);background:rgba(18,30,78,.72)}
+@media (min-width:981px){.g3 .pl3.a{left:auto;right:6px;top:2px}.g3 .pl3.b{right:auto;left:6px;bottom:60px}}
+
+/* Cinematic 3D, tied to the gold line: each part waits until the line's burning head reaches it. Then headings rise word by
+   word as if turning up from below, devices fly in from far away turning in 3D, step cards flip one after another,
+   lines of text slide in, and a heavy blue smoke rolls out under the devices. */
+html.bx-on .bx{opacity:0;transition:transform 1.4s cubic-bezier(.16,1,.3,1) var(--d,0s),opacity .9s ease var(--d,0s),clip-path .9s ease var(--d,0s);will-change:transform,opacity}
+html.bx-on .bx.dv{transform:translate3d(0,60px,0) scale(.8)}
+html.bx-on .bx.fd{transform:none;transition-duration:.9s,.9s}
+html.bx-on .bx.tx{transform:translate3d(-34px,0,0)}
+html.bx-on .bx.cd{transform:perspective(900px) rotateY(90deg);transition-duration:.8s,.5s}
+html.bx-on .bx.kk2{clip-path:inset(0 100% 0 0);opacity:1}
+html.bx-on .bx.hd{opacity:1;transform:none;perspective:900px}
+html.bx-on .bx.hd .bxw{display:inline-block;opacity:0;transform:translateY(90%) rotateX(-85deg);transform-origin:50% 100%;transition:transform .9s cubic-bezier(.2,.9,.2,1),opacity .6s ease}
+html.bx-on .bx-in .bx{opacity:1;transform:none;clip-path:inset(0 0 0 0)}
+html.bx-on .bx-in .bx.hd .bxw{opacity:1;transform:none}
+h1 span.bxn,h2 span.bxn{background:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;color:inherit!important;-webkit-text-fill-color:currentColor}
+
+/* The logo turns to stars: on scroll its own pixels break into gold and white dust that spreads over the background
+   and twinkles like a night sky; scrolling back gathers the dust into the logo again. */
+.lsun{position:fixed;inset:0;z-index:0;pointer-events:none}
+.lsun canvas{position:absolute;inset:0;width:100%;height:100%}
+@media (prefers-reduced-motion:reduce){.lsun{display:none}}
+
+/* Phones and tablets: iOS Safari draws the 3D iPhone's back photo as a huge stretched ghost at the edge of the screen
+   (a 3D layer with a mask). So here the iPhone turns in 2D: it squeezes to an edge and opens on its other face. */
+@media (max-width:980px){
+ .g3 .g3s{perspective:none}
+ .g3 .g3f,.g3 .g3f.back,.g3 .g3f.turn{transform-style:flat!important;transform:none;transition:none!important}
+ .g3 .bk3{transform:none;-webkit-backface-visibility:visible;backface-visibility:visible;opacity:0;z-index:3}
+ .g3 .bk3:after{display:none}
+ .g3 .g3f .sc3{-webkit-backface-visibility:visible;backface-visibility:visible}
+ .g3 .g3f.back{animation:bkIdle2 3s ease-in-out infinite!important}
+ .g3 .g3f.back .bk3{opacity:1}.g3 .g3f.back .sc3{opacity:0}
+ .g3 .g3f.turn{animation:flip2 1.1s cubic-bezier(.45,0,.2,1) both!important}
+ .g3 .g3f.turn .bk3{animation:bkOut 1.1s linear both}.g3 .g3f.turn .sc3{animation:scIn 1.1s linear both}
+}
+@keyframes bkIdle2{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes flip2{0%{transform:scaleX(1)}48%{transform:scaleX(.03) scaleY(1.03)}52%{transform:scaleX(.03) scaleY(1.03)}100%{transform:scaleX(1)}}
+@keyframes bkOut{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes scIn{0%,49%{opacity:0}50%,100%{opacity:1}}
+
+/* Phones and tablets: no frosted glass. iOS Safari draws a backdrop-filter that sits near 3D or animated layers as a
+   big blurred copy of the page in the wrong place (a lavender streaky panel at the screen edge); solid fills instead. */
+@media (max-width:980px){
+ *{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+ .g3 .pl3,.pl3{background:rgba(18,30,78,.95)!important}
+ .card{background:rgba(10,20,64,.94)!important}
+}
+
+/* the light page for the Home Screen app window (iOS draws the canvas and effect layers wrongly there) */
+html.lite #glC,html.lite .lsun{display:none!important}
+html.lite .nav img{opacity:1!important}
+
+/* the two notes belong to the phone's face: hidden while it shows its back or is turning */
+.g3 .g3f.back~.pl3,.g3 .g3f.turn~.pl3{opacity:0!important;transform:translateY(10px) scale(.96)!important;transition:opacity .25s ease,transform .25s ease}
+
+/* steps line: one even segment from each icon to the next (none before 1 or after 5), on desktop and phone */
+.mpw-steps:before{display:none!important}
+.mpw-s:not(:last-child):after{content:"";position:absolute;top:27px;left:62px;width:calc(100% + 14px - 68px);height:2px;border-radius:2px;background:rgba(226,184,116,.55);z-index:-1}
+@media (max-width:1000px){.mpw-s:not(:last-child):after{top:62px;left:27px;width:2px;height:calc(100% + 18px - 68px)}}
+
+/* the iPhone photo stays still (no floating or tilt, so it stays sharp) and only turns */
+.g3 .g3f.back{animation:none!important;transform:rotateY(180deg)!important}
+.g3 .g3f.turn{animation:turnFlat 1.1s cubic-bezier(.45,0,.2,1) both!important}
+@keyframes turnFlat{from{transform:rotateY(180deg)}to{transform:rotateY(0deg)}}
+.g3 .g3f:not(.back):not(.turn){transform:none!important}
+.g3 .bk3{image-rendering:-webkit-optimize-contrast;transform:rotateY(180deg)}
+@media (max-width:980px){.g3 .g3f.back{animation:none!important;transform:none!important}.g3 .g3f.turn{animation:flip2 1.1s cubic-bezier(.45,0,.2,1) both!important}.g3 .bk3{transform:none}}
+.glt-l{position:fixed;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold) 30%,var(--gold2) 50%,var(--gold) 70%,transparent);z-index:50;pointer-events:none}
+.nav{justify-content:space-between}
+.glt{display:flex;align-items:center;gap:8px;text-decoration:none;color:#fff}
+.glt span{display:flex;flex-direction:column-reverse;line-height:1;text-align:right}.glt b{margin:0 0 4px!important}
+.glt small{font-size:8.5px;font-weight:800;letter-spacing:.2em;color:var(--sub);text-transform:uppercase}
+.glt b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:17px;margin-top:3px;white-space:nowrap}.glt b em{font-style:normal;color:var(--gold)}
+.glt svg{width:30px;height:26px;flex:none}
+.rt{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:18px}.rt-t{white-space:nowrap}
+.rt-s{display:flex;gap:4px}
+.rt-s button{border:0;background:none;padding:2px;cursor:pointer;line-height:0}
+.rt-s svg{width:26px;height:26px;fill:rgba(255,255,255,.14);stroke:rgba(226,184,116,.55);stroke-width:1.2;stroke-linejoin:round;shape-rendering:geometricPrecision}
+.rt-s button.on svg{fill:var(--gold);stroke:var(--gold)}
+.rt-t{font-size:13px;font-weight:700;color:var(--mute)}
+.rt-t b{font-size:22px;font-weight:900;color:#fff;margin-right:6px;vertical-align:-2px}
+.rt-t.in{animation:rtin .6s ease both}@keyframes rtin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.glf{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:22px 30px;align-items:start;margin:52px auto 10px;padding:26px 0 0;border-top:1px solid var(--line);text-align:left}
+.glf small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.2em;color:var(--mute);text-transform:uppercase;margin-bottom:10px}
+.glf-l{display:block;text-decoration:none;color:#fff;border-radius:16px}
+.glf-b{display:inline-flex;align-items:center;gap:10px}.glf-b svg{width:40px;height:34px}
+.glf .w{display:flex;flex-direction:column;line-height:1}
+.glf .w b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:28px}.glf .w b em{font-style:normal;color:var(--gold)}
+.glf .w i{font-style:normal;font-size:8px;font-weight:800;letter-spacing:.42em;color:var(--sub);margin-top:4px}
+.glgo{display:flex;width:max-content;align-items:center;gap:6px;margin-top:12px;font-size:13px;font-weight:800;color:var(--gold)}
+.glgo em{font-style:normal;transition:transform .2s}.glf-l:hover .glgo em{transform:translateX(4px)}
+.glf-r{display:flex;flex-direction:column;align-items:flex-start;gap:9px}
+.glf-r small{margin-bottom:2px}
+.glf-r a{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--sub);text-decoration:none}
+.glf-r a:hover{color:#fff}
+.glf-r svg{width:15px;height:15px;fill:none;stroke:var(--gold);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.glf-c{grid-column:1/-1;padding-top:16px;border-top:1px solid var(--line);font-size:11.5px;font-weight:600;color:var(--mute)}
+@media (max-width:520px){.glf{grid-template-columns:1fr 1fr;gap:20px 14px}.glf .w b{font-size:24px}.glf-b svg{width:34px;height:29px}.glf-r a{font-size:12px}}
+/* opening: Goldline Studio presents, then the page (once per visit, tap to skip) */
+.gi{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:radial-gradient(700px 480px at 50% 40%,rgba(79,124,255,.32),transparent 65%),linear-gradient(180deg,#132457,#0a1748 60%,#070f33);transition:opacity .6s ease,visibility .6s}
+.gi.out{opacity:0;visibility:hidden}
+.gi-in{display:flex;flex-direction:column;align-items:center;gap:16px}
+.gi-l{display:flex;align-items:center;gap:16px;color:#fff}
+.gi-l svg{width:74px;height:64px;overflow:visible}
+.gi-l .w{display:flex;flex-direction:column;line-height:1;opacity:0;transform:translateX(-10px);animation:giw .7s ease .75s forwards}
+.gi-l .w b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:52px}.gi-l .w b em{font-style:normal;color:var(--gold)}
+.gi-l .w i{font-style:normal;font-size:11px;font-weight:800;letter-spacing:.44em;color:var(--sub);margin-top:6px}
+.gi .ia,.gi .ib{stroke-dasharray:1;stroke-dashoffset:1}
+.gi .ia{animation:gid .7s cubic-bezier(.6,0,.3,1) .1s forwards}.gi .ib{animation:gid .45s cubic-bezier(.6,0,.3,1) .6s forwards}
+.gi .ic{opacity:0;animation:gif .3s ease .95s forwards}
+.gi small{font-size:11px;font-weight:800;letter-spacing:.5em;text-transform:uppercase;color:var(--mute);opacity:0;animation:gif .6s ease 1.15s forwards;padding-left:.5em}
+@keyframes gid{to{stroke-dashoffset:0}}@keyframes gif{to{opacity:1}}@keyframes giw{to{opacity:1;transform:none}}
+@media (max-width:520px){.gi-l svg{width:56px;height:48px}.gi-l .w b{font-size:40px}}
+@media (prefers-reduced-motion:reduce){.gi{display:none}}
+</style>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Goldline Studio">
+<meta property="og:url" content="https://sekna-app.web.app/aether/">
+<meta property="og:title" content="Get Aether">
+<meta property="og:description" content="Your clients, tasks and focus in one calm workspace. Android, iPhone and web. An app by Goldline Studio.">
+<meta property="og:image" content="https://sekna-app.web.app/aether/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Get Aether">
+<meta name="twitter:description" content="Your clients, tasks and focus in one calm workspace. Android, iPhone and web. An app by Goldline Studio.">
+<meta name="twitter:image" content="https://sekna-app.web.app/aether/og.png">
+</head>
+<body>
+<div class="gi" id="gIntro" aria-hidden="true"><div class="gi-in"><div class="gi-l"><svg viewBox="0 0 58 50" aria-hidden="true"><path class="ia" d="M34 12 A17 17 0 1 0 38.7 27" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" pathLength="1"/><path class="ib" d="M22 26 H52" stroke="#e2b874" stroke-width="6" stroke-linecap="round" pathLength="1"/><circle class="ic" cx="34" cy="12" r="3.4" fill="#e2b874"/></svg><span class="w"><b>Gold<em>line</em></b><i>STUDIO</i></span></div><small>presents</small></div></div>
+<canvas id="glC" aria-hidden="true"></canvas><div class="lsun" id="lsun" aria-hidden="true"><canvas></canvas></div>
+<div class="wrap">
+  <i class="glt-l" aria-hidden="true"></i><div class="nav"><img src="/aether/logo-white.webp?v=1" alt="Aether"><a class="glt" href="../goldline/" aria-label="An app by Goldline Studio, see all our apps"><span><small>An app by</small><b>Gold<em>line</em> Studio</b></span><svg viewBox="0 0 58 50" aria-hidden="true"><path d="M34 12 A17 17 0 1 0 38.7 27" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path d="M22 26 H52" stroke="#e2b874" stroke-width="6" stroke-linecap="round"/><circle cx="34" cy="12" r="3.4" fill="#e2b874"/></svg></a></div>
+  <div class="hgrid">
+    <div class="ht">
+      <span class="kick"><i></i>Workspace for clients &amp; tasks</span>
+      <h1>Aether<span class="dsh">–</span>named after <span>the bright sky</span><br>built for focus.</h1>
+      <p class="l">Aether puts your whole working day on your phone: every client and project, every task with its date and priority, a quick inbox for ideas, and a focus timer that logs where your time goes.</p>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="glow"></div>
+      <div class="scene"><div class="tilt"><div class="ring" id="ring"></div></div><div class="floor"></div></div>
+      <div class="cap">
+        <button type="button" class="arr" id="prev" aria-label="Previous screen"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <div class="cap-t" aria-live="polite"><b id="capT"></b><span id="capS"></span></div>
+        <button type="button" class="arr" id="next" aria-label="Next screen"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+      </div>
+      <p class="cap-d" id="capD" aria-live="polite"></p>
+      <div class="dots" id="dots"></div>
+    </div>
+
+    <div class="ha">
+      <div class="dl">
+        <a class="and" id="bA" href="https://sekna-present.web.app/hub/" onclick="openBox('a');return false">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 9.48l1.84-3.18a.38.38 0 0 0-.66-.38l-1.86 3.22a11.5 11.5 0 0 0-9.84 0L5.22 5.92a.38.38 0 0 0-.66.38L6.4 9.48A10.8 10.8 0 0 0 1 18h22a10.8 10.8 0 0 0-5.4-8.52zM7 15.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm10 0a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"/></svg>
+          <span><small>INSTALL ON</small><b>Android</b></span></a>
+        <a class="web" id="bW" href="https://sekna-present.web.app/hub/" onclick="openBox('w');return false">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.6c0-2.5 2.1-3.7 2.2-3.8-1.2-1.7-3-2-3.7-2-1.6-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.8-1-2.8-4.1zM13.9 5.1c.7-.9 1.2-2 1-3.1-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3 1.1.1 2.2-.6 2.9-1.4z"/></svg>
+          <span><small>OPEN ON</small><b>iPhone &amp; web</b></span></a>
+      </div>
+
+      <div class="box" id="boxA"><div><div class="card a">
+        <h3>Aether on Android</h3>
+        <p>Free · Chrome on Android · works offline</p>
+        <ol>
+          <li><span>Tap <b>Open Aether</b> below. It opens in Chrome.</span></li>
+          <li><span>Tap <b>⋮</b> at the top, then <b>Install app</b>.</span></li>
+          <li><span>Open Aether from the new icon, sign in with Google and allow notifications.</span></li>
+        </ol>
+        <a class="open-btn" href="https://sekna-present.web.app/hub/" target="_blank" rel="noopener">Open Aether</a>
+      </div></div></div>
+
+      <div class="box" id="boxW"><div><div class="card w">
+        <h3>Aether on iPhone &amp; web</h3>
+        <p>For iPhone, iPad, Mac and Windows.</p>
+        <a class="jump" href="#guide" onclick="toGuide(event)"><svg class="ap" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.5 2.1-3.7 2.2-3.8-1.2-1.7-3-2-3.7-2-1.6-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.8-1-2.8-4.1zM13.9 5.1c.7-.9 1.2-2 1-3.1-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3 1.1.1 2.2-.6 2.9-1.4z"/></svg>How to install Aether on iPhone <span>↓</span></a>
+        <a class="open-btn" href="https://sekna-present.web.app/hub/" target="_blank" rel="noopener">Open Aether</a>
+      </div></div></div>
+
+      <div class="meta"><span>Price <b>Free</b></span><span>Works <b>offline</b></span><span>Android · iPhone · <b>Web</b></span><span>By <b>Ibrahim Amin</b></span></div>
+    </div>
+  </div>
+
+  <section class="sec">
+    <div class="lapgrid">
+      <div><div class="lap" id="lap"><div class="lid"><div class="lbar"><i></i><i></i><i></i><span>sekna-present.web.app/hub</span></div><div class="scr" id="lapScr">
+        <img class="on" src="/aether/shots/desk-home.webp?v=1" alt="Daily Overview on a laptop" loading="lazy">
+        <img src="/aether/shots/desk-tasks.webp?v=1" alt="My Tasks on a laptop" loading="lazy">
+        <img src="/aether/shots/desk-cal.webp?v=1" alt="The calendar on a laptop" loading="lazy">
+      </div></div><div class="base"></div><div class="lap-sh"></div></div>
+      <div class="ltabs" id="lapTabs"><button type="button" class="on">Overview<em></em></button><button type="button">Tasks<em></em></button><button type="button">Calendar<em></em></button></div></div>
+      <div class="txt">
+        <h2>What is Aether?</h2>
+        <p class="s">Aether is one workspace for your day. Spaces for your clients, lists for their projects and dashboards, and tasks with subtasks, priorities and due dates, in a list or on a calendar.</p>
+        <p class="s">Drop any idea into the inbox in a second, run flip-clock focus sessions that log time to the task and the client, and keep countdowns to the dates that matter. The same work on Android, iPhone and your laptop, even offline.</p>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="sec">
+    <div class="mpw" id="mpw">
+      <div class="mpw-h"><div><span class="kk">From idea to done</span><h2>How Aether Works</h2></div>
+        <p>Your day runs through <b>five simple steps</b>.</p></div>
+      <div class="mpw-steps">
+        <div class="mpw-s" style="--i:0"><div class="mpw-n"><svg viewBox="0 0 24 24"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M4 13l2.5-7h11L20 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg><i>1</i></div><b>Capture</b>
+          <p>Type, paste or <span class="hl">speak</span> any idea into the <span class="hl">inbox</span> from any screen, in a second.</p><span class="mpw-k">One tap</span></div>
+        <div class="mpw-s" style="--i:1"><div class="mpw-n"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="7" height="7" rx="1.5"/><rect x="14" y="4" width="7" height="7" rx="1.5"/><rect x="3" y="15" width="7" height="5" rx="1.5"/><rect x="14" y="15" width="7" height="5" rx="1.5"/></svg><i>2</i></div><b>Organise</b>
+          <p>Every client is a <span class="hl">space</span>, every project a <span class="hl">list</span>, every list full of tasks and subtasks.</p><span class="mpw-k">Space · list · task</span></div>
+        <div class="mpw-s" style="--i:2"><div class="mpw-n"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10M15 10v10"/></svg><i>3</i></div><b>Plan</b>
+          <p>Give each task a <span class="hl">priority and a date</span>, then see the week and the month on the <span class="hl">calendar</span>.</p><span class="mpw-k">List · calendar</span></div>
+        <div class="mpw-s" style="--i:3"><div class="mpw-n"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-8-8"/><path d="M15 4.5a8 8 0 0 1 4.5 4.5"/><path d="M12 8v4l2.5 2.5"/></svg><i>4</i></div><b>Focus</b>
+          <p>Start a <span class="hl">flip-clock focus session</span> on a task. The time is logged to the task, the list and the client.</p><span class="mpw-k">25 · 45 · 50 min</span></div>
+        <div class="mpw-s" style="--i:4"><div class="mpw-n"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><i>5</i></div><b>Review</b>
+          <p>See your <span class="hl">deep work, streak</span> and where the week went, <span class="hl">by client</span> and by list.</p><span class="mpw-k">Time report</span></div>
+      </div>
+      <div class="mpw-t"><span class="ic"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+        <p>Aether is <span class="gr">private by design</span>. It opens only for people an owner has approved, keeps working <span class="gr">without a connection</span>, and syncs your work <span class="gr">across your devices</span> through your own Google sign-in.</p>
+        <div class="bd"><span><b>Offline</b><small>ready</small></span><span><b>Private</b><small>by invite</small></span></div></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="guide g3" id="guide">
+      <div class="g3x">
+        <span class="kk ki"><svg class="ap" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.5 2.1-3.7 2.2-3.8-1.2-1.7-3-2-3.7-2-1.6-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.9-1.7 0-3.3 1-4.2 2.5-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9-.1 0-2.8-1-2.8-4.1zM13.9 5.1c.7-.9 1.2-2 1-3.1-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3 1.1.1 2.2-.6 2.9-1.4z"/></svg>iPhone</span>
+        <h2>Your day on the lock screen, <em>every morning.</em></h2>
+        <p class="s">Add Aether to your Home Screen and allow notifications. Four taps in Safari, then it opens full screen from its own icon.</p>
+      </div>
+      <div class="g3s" id="g3s">
+        <div class="g3f ph3 back" id="g3f"><div class="bk3" aria-hidden="true"></div><div class="sc3"><div class="isl3"></div><div class="stb3" id="g3sb"><span>9:41</span><span class="si3"></span></div>
+          <div class="k3"><div class="app3"></div><div class="saf3"><div class="url3">🔒 sekna-present.web.app</div><div class="tb3"><span>‹</span><span>›</span><b>⇪</b><span>▭</span><span>⧉</span></div></div><i class="tap3" style="left:50%;top:94%"></i></div>
+            <div class="k3"><div class="app3"></div><div class="dim3"></div><div class="sheet3"><div>Copy</div><div>Add Bookmark</div><div class="on">Add to Home Screen</div><div>Find on Page</div></div><i class="tap3" style="left:50%;top:84%"></i></div>
+            <div class="k3"><div class="home3"><div class="grid3"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><span><i class="me"></i>Aether</span><i></i><i></i></div></div><i class="tap3" style="left:41%;top:41%"></i></div>
+            <div class="k3"><div class="app3"></div><div class="dim3"></div><div class="al3"><b>“Aether” Would Like to Send You Notifications</b><div><em>Don’t Allow</em><em>Allow</em></div></div><i class="tap3" style="left:67%;top:48%"></i></div>
+          
+          <div class="k3 lk3" id="g3lk"><div class="dt3" id="g3d"></div><div class="tm3">9:41</div><div class="ns3" id="g3n"></div><div class="lb3"><i>🔦</i><i>📷</i></div><div class="hb3"></div></div>
+        </div></div>
+        <div class="pl3 a" id="g3pa"><span class="n3">✓</span><div><b>Added to Home Screen</b><small>opens full screen</small></div></div>
+        <div class="pl3 b" id="g3pb"><span class="n3">🔔</span><div><b>Alerts on</b><small>due tasks, focus, inbox</small></div></div>
+        <div class="g3sh"></div>
+      </div>
+      <ol class="tl3" id="g3l">
+        <li style="--i:0"><span class="n3">1</span><b>Share</b><small>at the bottom of Safari</small><em></em></li>
+        <li style="--i:1"><span class="n3">2</span><b>Add to Home</b><small>then tap Add</small><em></em></li>
+        <li style="--i:2"><span class="n3">3</span><b>Open</b><small>from the new icon</small><em></em></li>
+        <li style="--i:3"><span class="n3">4</span><b>Allow</b><small>the notifications</small><em></em></li>
+      </ol>
+      <div class="gnote">Needs iOS 16.4 or newer. Always open Aether from the Home Screen icon.</div>
+    </div>
+  </section>
+  <footer class="glf">
+    <a class="glf-l" href="../goldline/" aria-label="Goldline Studio, see all our apps">
+      <small>Aether is made by</small>
+      <span class="glf-b"><svg viewBox="0 0 58 50" aria-hidden="true"><path d="M34 12 A17 17 0 1 0 38.7 27" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path d="M22 26 H52" stroke="#e2b874" stroke-width="6" stroke-linecap="round"/><circle cx="34" cy="12" r="3.4" fill="#e2b874"/></svg><span class="w"><b>Gold<em>line</em></b><i>STUDIO</i></span></span>
+      <span class="glgo">See all our apps <em>→</em></span>
+    </a>
+    <div class="glf-r">
+      <small>Get in touch</small>
+      <a href="mailto:seknaapp@gmail.com"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M4 7l8 6 8-6"/></svg>seknaapp@gmail.com</a>
+      <a href="../privacy/"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/></svg>Privacy Policy</a>
+      <a href="https://sekna-present.web.app/hub/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>Open on the web</a>
+    </div>
+    <div class="glf-c">© <span id="glY">2026</span> Goldline Studio · All rights reserved</div>
+  </footer>
+</div>
+
+<script>
+// One box open at a time: Android starts the download and shows what to do next,
+// iPhone & web shows the link.
+function openBox(k){
+  var a=document.getElementById('boxA'), w=document.getElementById('boxW');
+  a.classList.toggle('open',k==='a'); w.classList.toggle('open',k==='w');
+  document.getElementById('bA').classList.toggle('on',k==='a');
+  document.getElementById('bW').classList.toggle('on',k==='w');
+  var box=k==='a'?a:w;
+  setTimeout(function(){var r=box.getBoundingClientRect();if(r.bottom>innerHeight)window.scrollBy({top:r.bottom-innerHeight+16,behavior:'smooth'})},460);
+  }
+function toGuide(e){var g=document.getElementById('guide');if(!g)return;e.preventDefault();g.scrollIntoView({behavior:'smooth',block:'start'})}
+function copyLink(btn){
+  var url='https://sekna-present.web.app/hub/';
+  var done=function(){btn.textContent='Copied';setTimeout(function(){btn.textContent='Copy'},1600)};
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(url).then(done,function(){prompt('Copy this link',url)});
+  else prompt('Copy this link',url);
+}
+
+var NAV={};
+var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12"><path d="M8 11.5l2.4-3a3.4 3.4 0 0 0-4.8 0zM3.5 6.6a6.4 6.4 0 0 1 9 0l1.6-2a9 9 0 0 0-12.2 0zM.4 2.8l1.6 1.9a10.6 10.6 0 0 1 12 0l1.6-1.9a13.2 13.2 0 0 0-15.2 0z"/></svg><svg viewBox="0 0 27 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="#fff" stroke-opacity=".5"/><rect x="2" y="2" width="17" height="8" rx="1.8"/><rect x="24" y="4" width="2" height="4" rx="1" fill-opacity=".5"/></svg></i></div><div class="isl"></div>';
+// 3D phones on a turning ring: one screen at a time comes to the front, and its
+// two-screen phones switch between their screens.
+(function(){
+  var S=[[['home'],'Daily Overview','Your day at a glance','Open tasks, the week’s progress, your active lists, countdowns and a focus timer, all on one screen.'],
+         [['list','cal'],'Tasks & Calendar','Every task, grouped and dated','Tasks grouped by status with their list, date and priority, then the month calendar with each day’s tasks.'],
+         [['inbox'],'Inbox','Capture now, sort later','Type, paste or speak an idea in a second, then turn it into a task, a note or a list with one tap.'],
+         [['focus','count'],'Focus & Countdowns','Flip-clock focus, days to go','Focus sessions that log time to the task and the client, then countdowns to the dates that matter.'],
+         [['notes'],'Notes','Lines that turn into tasks','Notes linked to a list. Every line that starts with [ ] becomes a task in one tap.'],
+         [['alerts'],'Notifications','What needs you now','Overdue, due today, the inbox and tomorrow, together in one list.'],
+         [['about'],'Your Day in Numbers','Deep work, habits and clients','Today’s focus time, sessions and streak, your day on a timeline, and where the time went by client.'],
+         [['settings'],'Settings','Light, dim or dark · Arabic or English','Themes, language, reminders and the ad accounts behind your work.']];
+  var N=S.length, step=360/N, cur=0, timer=null, LAYER=2400, SCROLL=4200;
+  var ring=document.getElementById('ring'), stage=document.getElementById('stage'), dots=document.getElementById('dots');
+  var capT=document.getElementById('capT'), capS=document.getElementById('capS'), capD=document.getElementById('capD'), cap=capT.parentNode;
+  S.forEach(function(x,i){
+    var d=document.createElement('div');d.className='rp';
+    d.innerHTML='<div class="ed l"></div><div class="ed r"></div><div class="bk"><img src="/aether/logo-white.webp?v=1" alt=""></div><div class="fr"><i class="bt a"></i><i class="bt b"></i><i class="bt c"></i><i class="bt d"></i><div class="scn">'+SB+
+      x[0].map(function(f,k){return '<div class="ly'+(k?'':' on')+'"><img src="/aether/shots/'+f+'.webp?v='+1+'" alt="'+x[1]+'"'+(i>1?' loading="lazy"':'')+'>'+(NAV[f]?'<img class="nvb" src="/get/shots/'+f+'-nav.webp?v='+20+'" alt="" loading="lazy">':'')+'</div>'}).join('')+'<i class="hb"></i><i class="gl"></i></div></div>';
+    ring.appendChild(d);
+    dots.appendChild(document.createElement('i'));
+  });
+  var phones=ring.children, dl=dots.children, lt=null;
+  function radius(){var r=parseFloat(getComputedStyle(stage).getPropertyValue('--r'))||260,pw=parseFloat(getComputedStyle(stage).getPropertyValue('--pw'))||230;return Math.max(r,pw*.58/Math.tan(Math.PI/N))}
+  function place(){var r=radius();for(var i=0;i<N;i++)phones[i].style.transform='rotateY('+(i*step)+'deg) translateZ('+r+'px)';show(false)}
+  // The front phone shows one of its screens; a long one scrolls down to its end.
+  function playLayer(ph,k){
+    var ls=ph.querySelectorAll('.ly');
+    for(var j=0;j<ls.length;j++)ls[j].classList.toggle('on',j===k);
+    var img=ls[k].querySelector('img'), box=ph.querySelector('.scn');
+    var go=function(){var dy=img.clientHeight-box.clientHeight;img.className='';void img.offsetWidth;
+      img.style.setProperty('--dur',dur(img)+'ms');img.style.setProperty('--dy',(-Math.max(0,dy))+'px');if(dy>30&&!/\/(tasks)\.webp/.test(img.src))img.className='sc'};
+    if(img.complete)go();else img.onload=go;
+  }
+  function show(anim){
+    var r=radius(), k=((cur%N)+N)%N;
+    ring.style.transform='translateZ('+(-r)+'px) rotateY('+(-cur*step)+'deg)';
+    for(var i=0;i<N;i++){var d=Math.min(Math.abs(i-k),N-Math.abs(i-k));phones[i].className='rp'+(d===0?' front':d===1?' side':d>1?' far':'');dl[i].className=i===k?'on':'';dl[i].innerHTML=''}
+    // the front phone's dot stretches and fills gold for as long as that phone shows; the seconds left beside it
+    var hd=hold();dots.style.setProperty('--hd',hd+'ms');dl[k].innerHTML='<u></u>';
+    clearInterval(window.__dt);var left=Math.ceil(hd/1000),sm=dots.querySelector('small');if(!sm){sm=document.createElement('small');dots.appendChild(sm)}sm.textContent=left+'s';
+    window.__dt=setInterval(function(){left=Math.max(0,left-1);sm.textContent=left+'s'},1000);
+    capT.textContent=S[k][1];capS.textContent=S[k][2];capD.textContent=S[k][3];
+    if(anim){[cap,capD].forEach(function(e){e.classList.remove('swap');void e.offsetWidth;e.classList.add('swap')})}
+    // The screen starts once the ring has turned; a two-screen phone switches halfway.
+    clearTimeout(lt);var ph=phones[k],n=S[k][0].length;
+    var j=0;lt=setTimeout(function nx(){playLayer(ph,j);var w=layerMs(k,j)+300;j++;if(j<n)lt=setTimeout(nx,w)},anim?900:200);
+  }
+  // A long screen gets time to scroll; a short one stays for LAYER.
+  function dur(img){return img.naturalHeight/img.naturalWidth>2.4?SCROLL:LAYER}
+  function layerMs(k,j){var im=phones[k].querySelectorAll('.ly img')[j];return im&&im.naturalWidth?dur(im):(/tasks|studio|compare/.test(S[k][0][j])?SCROLL:LAYER)}
+  function hold(){var k=((cur%N)+N)%N,t=900+600;for(var j=0;j<S[k][0].length;j++)t+=layerMs(k,j)+300;return t}
+  function go(n){cur+=n;show(true)}
+  function play(){stop();timer=setTimeout(function next(){go(1);timer=setTimeout(next,hold())},hold())}
+  function stop(){if(timer)clearTimeout(timer);timer=null}
+  document.getElementById('next').onclick=function(){go(1);play()};
+  document.getElementById('prev').onclick=function(){go(-1);play()};
+  var x0=null;
+  stage.addEventListener('touchstart',function(e){x0=e.touches[0].clientX},{passive:true});
+  stage.addEventListener('touchend',function(e){if(x0==null)return;var dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40){go(dx<0?1:-1);play()}},{passive:true});
+  document.addEventListener('visibilitychange',function(){document.hidden?stop():play()});
+  window.addEventListener('resize',place);
+  place();play();
+})();
+
+// The laptop: the lid settles open in view, then it shows each page in turn and
+// scrolls it; tap a tab to pick one, hover the screen to pause.
+(function(){
+  var l=document.getElementById('lap'), imgs=document.getElementById('lapScr').children, tabs=document.getElementById('lapTabs').children;
+  var cur=0, t=null, D=9000, paused=false, left=D, at=0;
+  function show(i){cur=(i+imgs.length)%imgs.length;
+    for(var k=0;k<imgs.length;k++){[imgs[k],tabs[k]].forEach(function(e){e.classList.remove('on')})}
+    void imgs[cur].offsetWidth;imgs[cur].classList.add('on');tabs[cur].classList.add('on');left=D;arm()}
+  function arm(){clearTimeout(t);at=Date.now();if(!paused)t=setTimeout(function(){show(cur+1)},left)}
+  for(var k=0;k<tabs.length;k++)(function(k){tabs[k].onclick=function(){show(k)}})(k);
+  l.addEventListener('mouseenter',function(){paused=true;clearTimeout(t);left-=Date.now()-at;tabs[cur].querySelector('em').style.animationPlayState='paused'});
+  l.addEventListener('mouseleave',function(){paused=false;tabs[cur].querySelector('em').style.animationPlayState='';arm()});
+  document.documentElement.style.setProperty('--ld',D+'ms');
+  var start=function(){l.classList.add('in');show(0)};
+  if(!('IntersectionObserver' in window)){start();return}
+  new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){start();o.disconnect()}})},{threshold:.3}).observe(l);
+})();
+
+
+// iPhone guide: one phone runs the four steps (Share, Add to Home Screen, open HEMERA,
+// Allow), then locks and three HEMERA alerts arrive; then it starts again.
+(function(){
+  var g=document.getElementById('guide'),f=document.getElementById('g3f');if(!g||!f)return;
+  var ks=f.querySelectorAll('.k3'), li=document.getElementById('g3l').children, ns=document.getElementById('g3n'), sb=document.getElementById('g3sb');
+  var pa=document.getElementById('g3pa'), pb=document.getElementById('g3pb'), t=[], D=2300, cur=-1, round=0;
+  document.documentElement.style.setProperty('--sd3',D+'ms');
+  document.getElementById('g3d').textContent=new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'long'});
+  var N=[[['now','✅ 4 tasks due today','Review PMax asset groups · Send Q4 deck · and 2 more'],['9:00','⏱️ Focus session done','25 min on Ramadan 2027 media plan. Time for a 5-min break.'],['8:30','📥 3 in your inbox to sort','Turn them into tasks, notes or lists in a tap.']],
+         [['now','🔥 12-day focus streak','You hit your deep work goal again today.'],['9:00','⏳ Giving Tuesday is in 19 days','Tuesday, 1 December. Your countdown is running.'],['8:15','🔴 1 task is overdue','Fix broken conversion tag · Google Ads audit']]];
+  function clear(){t.forEach(clearTimeout);t=[]}
+  function later(fn,ms){t.push(setTimeout(fn,ms))}
+  function note(x){var e=document.createElement('div');e.className='nt3';
+    e.innerHTML='<div class="h"><img src="/aether/apple-touch-icon.png" alt="">Aether<em>'+x[0]+'</em></div><b>'+x[1]+'</b><p>'+x[2]+'</p>';ns.insertBefore(e,ns.firstChild)}
+  function show(i){clear();cur=i;
+    for(var n=0;n<ks.length;n++)ks[n].classList.toggle('on',n===i);
+    for(var n=0;n<li.length;n++){li[n].classList.remove('on');li[n].classList.toggle('done',i===4||n<i)}
+    if(i<4){void li[i].offsetWidth;li[i].classList.add('on')}
+    li[0].parentNode.style.setProperty('--k',Math.min(i,3));
+    sb.classList.toggle('w',i===2||i===4);
+    pa.classList.toggle('show',i>=2);pb.classList.toggle('show',i===4);
+    if(i<4){later(function(){show(i+1)},D);return}
+    // Locked: three different alerts arrive, one after another.
+    ns.innerHTML='';var L=N[round%N.length];round++;
+    L.slice().reverse().forEach(function(x,k){later(function(){note(x)},700+k*900)});
+    later(cycle,700+3*900+3600);
+  }
+  for(var n=0;n<li.length;n++)(function(n){li[n].onclick=function(){show(n)}})(n);
+  if(window.matchMedia&&matchMedia('(hover:hover)').matches){g.addEventListener('mousemove',function(e){var r=f.getBoundingClientRect(),dx=Math.max(-1,Math.min(1,(e.clientX-(r.left+r.width/2))/r.width)),dy=Math.max(-1,Math.min(1,(e.clientY-(r.top+r.height/2))/r.height));
+    g.style.setProperty('--gy',(dx*12)+'deg');g.style.setProperty('--gx',(4-dy*6)+'deg')});
+    g.addEventListener('mouseleave',function(){g.style.setProperty('--gy','0deg');g.style.setProperty('--gx','4deg')})}
+  // The iPhone shows its back (with a light passing over it), then turns to its face and plays the steps.
+  function cycle(){clear();f.classList.remove('turn');f.classList.add('back');later(function(){f.classList.remove('back');void f.offsetWidth;f.classList.add('turn');later(function(){f.classList.remove('turn')},1500);later(function(){show(0)},450)},3000)}
+  var start=cycle;
+  if(!('IntersectionObserver' in window)){start();return}
+  new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){start();o.disconnect()}})},{threshold:.3}).observe(g);
+})();
+
+// How the media plan works: the five steps rise in one after another.
+(function(){var m=document.getElementById('mpw');if(!m)return;if(!('IntersectionObserver' in window)){m.classList.add('in');return}
+  new IntersectionObserver(function(es,o){es.forEach(function(e){if(e.isIntersecting){m.classList.add('in');o.disconnect()}})},{threshold:.2}).observe(m)})();
+</script>
+
+<script>
+// Cinematic 3D entrances: each part of the page waits until it scrolls into view, then its heading rises word by word,
+// its devices fly in turning in 3D, cards flip and a blue smoke rolls out under the devices (smoke on a fixed canvas).
+(function(){
+  var cv=document.getElementById('glC');if(!cv||document.documentElement.classList.contains('lite'))return;var cx=cv.getContext('2d');
+  var still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var W=0,t0=performance.now(),last=t0,smoke=[],raf=0,dpr=1,small=false;
+  // the parts the head sets off: the hero, then every section. [selector, kind]: dv device, hd heading, tx text, cd card, kk2 label
+  var GR=[{el:document.querySelector('.hgrid'),q:[['.ht .kick','kk2'],['.ht h1','hd'],['.ht p.l','tx'],['.ha','tx']]}];
+  [].forEach.call(document.querySelectorAll('section.sec'),function(sc){GR.push({el:sc,q:[['.lapgrid>div:first-child','dv'],['.ltabs','tx'],['.txt h2','hd'],['.txt .s','tx'],['.mpw-h .kk','kk2'],['.mpw-h h2','hd'],['.mpw-h p','tx'],['.mpw-s','cd'],['.mpw-t','tx'],['.g3x .kk','kk2'],['.g3x h2','hd'],['.g3x p','tx'],['.g3s','dv'],['.tl3','tx'],['.gnote','tx']]})});
+  function words(h){var w=0,walk=function(n){[].slice.call(n.childNodes).forEach(function(c){
+      if(c.nodeType===3){var f=document.createDocumentFragment();c.textContent.split(/(\s+)/).forEach(function(t){if(!t)return;if(/^\s+$/.test(t)){f.appendChild(document.createTextNode(t));return}
+        var sp=document.createElement('span');sp.className='bxw bxn';sp.textContent=t;sp.style.transitionDelay='calc(var(--d,0s) + '+(w++*.07).toFixed(2)+'s)';f.appendChild(sp)});n.replaceChild(f,c)}
+      else if(c.nodeType===1&&c.tagName!=='BR'){if(/^(SPAN|EM|B)$/.test(c.tagName)&&!c.children.length){c.classList.add('bxw');c.style.transitionDelay='calc(var(--d,0s) + '+(w++*.07).toFixed(2)+'s)'}else walk(c)}})};walk(h)}
+  if(!still){document.documentElement.classList.add('bx-on');
+    GR.forEach(function(g){if(!g.el)return;var k=0;g.q.forEach(function(q){[].forEach.call(g.el.querySelectorAll(q[0]),function(e){e.classList.add('bx',q[1]);var dd=k++*(q[1]==='cd'?.14:.1);e.style.setProperty('--d',dd.toFixed(2)+'s');(g.it=g.it||[]).push([e,dd]);if(q[1]==='hd')words(e);if(q[1]==='dv')(g.dv=g.dv||[]).push(e)})})})}
+  var SPR={};function sprite(c){if(SPR[c])return SPR[c];var k=document.createElement('canvas');k.width=k.height=128;var t=k.getContext('2d'),g=t.createRadialGradient(64,64,0,64,64,64);
+    g.addColorStop(0,'rgba('+c+',1)');g.addColorStop(.45,'rgba('+c+',.45)');g.addColorStop(1,'rgba('+c+',0)');t.fillStyle=g;t.fillRect(0,0,128,128);return SPR[c]=k}
+  function storm(x,y,G){ // heavy blue smoke rolling out under each device, a touch of gold
+    var at=(G&&G.dv&&G.dv.length)?G.dv.map(function(e){var r=e.getBoundingClientRect();return [r.left+r.width/2,r.bottom-20]}):[[x,y]];
+    at.forEach(function(pt){var m=small?14:26;for(var j=0;j<m;j++){var b=(Math.random()-.5)*Math.PI,u=.6+Math.random()*1.4,side=Math.random()<.5?-1:1;
+      smoke.push({x:pt[0]+(Math.random()-.5)*80,y:pt[1]+Math.random()*30,vx:side*u*(.6+Math.random()),vy:-Math.random()*.35,r:30+Math.random()*30,g:.5+Math.random()*.45,l:2600+Math.random()*1800,t:0,c:Math.random()<.78?'120,145,225':'226,184,116'})}})}
+  function size(){W=document.documentElement.clientWidth;small=W<=620;dpr=Math.min(2,window.devicePixelRatio||1);cv.width=innerWidth*dpr;cv.height=innerHeight*dpr;cx.setTransform(dpr,0,0,dpr,0,0)}
+  function frame(now){
+    raf=requestAnimationFrame(frame);
+    var dt=Math.min(50,now-last);last=now;var sy=window.scrollY||0,vh=innerHeight;
+    for(var gi=0;gi<GR.length;gi++){var G=GR[gi];if(!G.el||G.done)continue;var rc=G.el.getBoundingClientRect();
+      if(gi===0?now-t0>250:rc.top<vh*.72){G.done=true;G.el.classList.add('bx-in');(G.it||[]).forEach(function(it){setTimeout(function(){it[0].classList.remove('bx','dv','tx','cd','kk2','fd');it[0].style.removeProperty('--d')},(it[1]+1.9)*1000)});if(gi)storm(W/2,rc.top+rc.height*.5,G)}}
+    cx.clearRect(0,0,innerWidth,vh);if(!smoke.length)return;
+    var dy0=window.__glSy==null?0:sy-window.__glSy;window.__glSy=sy;
+    smoke=smoke.filter(function(p){return (p.t+=dt)<p.l});
+    for(var si=0;si<smoke.length;si++){var q=smoke[si];q.y-=dy0;q.x+=q.vx*dt/16;q.y+=q.vy*dt/16;q.vx*=.982;q.vy=q.vy*.982-.004*dt/16;q.r+=q.g*dt/16;
+      cx.globalAlpha=Math.sin(Math.PI*q.t/q.l)*.24;cx.drawImage(sprite(q.c),q.x-q.r,q.y-q.r,q.r*2,q.r*2)}
+    cx.globalAlpha=1;
+  }
+  var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(size,120)},{passive:true});
+  size();
+  if(!still)raf=requestAnimationFrame(frame);
+  document.addEventListener('visibilitychange',function(){cancelAnimationFrame(raf);if(!document.hidden&&!still){last=performance.now();raf=requestAnimationFrame(frame)}});
+})();
+</script>
+
+<script>
+// Logo to stars (see .lsun). The dots are the logo's own pixels; each has a fixed place in the sky (seeded, the same every
+// visit). Progress p follows the scroll of the first screen; at p=0 the real logo shows, past it the dots take over.
+(function(){
+  var L=document.getElementById('lsun'),nav=document.querySelector('.nav img');if(!L||!nav||document.documentElement.classList.contains('lite'))return;
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  var TXS=document.querySelectorAll('.ht,.ha,.cap,.cap-d,.lap,.txt,.ltabs,.mpw,.guide');
+  var cv=L.querySelector('canvas'),c=cv.getContext('2d'),P=[],cur=0,raf,dpr=1,VW=0,VH=0,ready=false,seed=11;
+  function rnd(){seed=(seed*16807)%2147483647;return (seed-1)/2147483646}
+  function ease(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2}
+  function size(){dpr=Math.min(2,window.devicePixelRatio||1);VW=innerWidth;VH=innerHeight;cv.width=VW*dpr;cv.height=VH*dpr;c.setTransform(dpr,0,0,dpr,0,0)}
+  var im=new Image();im.onload=function(){
+    var r=nav.getBoundingClientRect(),w=Math.max(60,Math.round(r.width||148)),h=Math.round(w*202/880),k=document.createElement('canvas');k.width=w;k.height=h;
+    var t=k.getContext('2d');t.drawImage(im,0,0,w,h);var d;try{d=t.getImageData(0,0,w,h).data}catch(e){return}
+    var st=w>120?2:1.5;for(var y=0;y<h;y+=st)for(var x=0;x<w;x+=st){var i=(Math.floor(y)*w+Math.floor(x))*4;if(d[i+3]>140){
+      var gold=d[i]>200&&d[i+2]<170;P.push({hx:x/w,hy:y/h,tx:.04+rnd()*.92,ty:.06+rnd()*.88,c:gold?'242,211,143':'236,241,255',r:.6+rnd()*1.2,ph:rnd()*6.28,dl:rnd()*.25})}}
+    ready=true};
+  im.src=nav.currentSrc||nav.src;
+  function frame(now){
+    raf=requestAnimationFrame(frame);
+    var y=window.scrollY||0,target=Math.min(1,y/(VH*.7));cur+=(target-cur)*.1;if(Math.abs(target-cur)<.0005)cur=target;var p=ease(cur);
+    nav.style.opacity=ready&&p>.004?0:1;
+    c.clearRect(0,0,VW,VH);if(!ready||p<=.004)return;
+    var r=nav.getBoundingClientRect(),w=r.width,h=r.height;
+    // where there is text (or a card full of it), the stars almost disappear so they never get in the way of reading
+    var TX=[];if(TXS)for(var ti=0;ti<TXS.length;ti++){var b=TXS[ti].getBoundingClientRect();if(b.bottom>-20&&b.top<VH+20)TX.push(b)}
+    c.globalCompositeOperation='lighter';
+    for(var j=0;j<P.length;j++){var q=P[j],e=Math.max(0,Math.min(1,(p-q.dl*.5)/(1-q.dl*.5))),tw=.55+.45*Math.sin(now/420+q.ph);
+      var hx=r.left+q.hx*w,hy=r.top+q.hy*h,tx=q.tx*VW,ty=q.ty*VH;
+      var px=hx+(tx-hx)*e+Math.sin(now/1300+q.ph)*7*e,py=hy+(ty-hy)*e+Math.cos(now/1500+q.ph)*7*e;
+      var a=(1-e*.45)*(e>.92?tw:1)*.75;
+      if(e>.5)for(var tk=0;tk<TX.length;tk++){var bb=TX[tk];if(px>bb.left-8&&px<bb.right+8&&py>bb.top-8&&py<bb.bottom+8){a*=.12;break}}c.fillStyle='rgba('+q.c+','+a.toFixed(3)+')';c.beginPath();c.arc(px,py,q.r*(1+e*.7),0,7);c.fill()}
+    c.globalCompositeOperation='source-over';
+  }
+  var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(size,120)},{passive:true});size();
+  raf=requestAnimationFrame(frame);
+  document.addEventListener('visibilitychange',function(){cancelAnimationFrame(raf);if(!document.hidden)raf=requestAnimationFrame(frame)});
+})();
+</script>
+<script>
+// Stars: tap to rate once per device; the line then shows the real average from everyone who rated.
+(function(){var API='https://europe-west2-human-appeal-media-plan.cloudfunctions.net/api/rating',S=document.getElementById('rtS'),T=document.getElementById('rtT');if(!S)return;
+ var bs=[].slice.call(S.querySelectorAll('button')),K='hemera_rate',id,mine=0;
+ try{id=localStorage.getItem(K+'_id');if(!id){id=(Date.now().toString(36)+Math.random().toString(36).slice(2)).slice(0,20);localStorage.setItem(K+'_id',id)}mine=+localStorage.getItem(K)||0}catch(e){id=Math.random().toString(36).slice(2,18)}
+ function fill(n){bs.forEach(function(b,i){b.classList.toggle('on',i<n)})}
+ function show(r,pop){if(!r||!r.count)return;var a=r.avg.toFixed(1),c=r.count;T.classList.remove('in');void T.offsetWidth;T.innerHTML='<b>0.0</b>'+c+' rating'+(c===1?'':'s')+(mine?' · thanks!':'');T.classList.add('in');
+  var el=T.querySelector('b'),t0=null,goal=r.avg;function step(t){t0=t0||t;var k=Math.min(1,(t-t0)/900),e=1-Math.pow(1-k,3);el.textContent=(goal*e).toFixed(1);if(k<1)requestAnimationFrame(step);else el.textContent=a}requestAnimationFrame(step);
+  if(!mine){fill(Math.round(goal))}}
+ if(mine)fill(mine);
+ fetch(API).then(function(x){return x.json()}).then(function(r){show(r,false)}).catch(function(){});
+ bs.forEach(function(b){b.addEventListener('mouseenter',function(){fill(+b.dataset.s)});b.addEventListener('click',function(){mine=+b.dataset.s;try{localStorage.setItem(K,mine)}catch(e){}fill(mine);
+  fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,stars:mine})}).then(function(x){return x.json()}).then(function(r){show(r,true)}).catch(function(){T.textContent='Thanks for rating!'})})});
+ S.addEventListener('mouseleave',function(){fill(mine||0)});
+})();
+</script>
+<script>try{document.getElementById('glY').textContent=new Date().getFullYear()}catch(e){}</script>
+<script>
+(function(){var g=document.getElementById('gIntro');if(!g)return;var seen=false;try{seen=sessionStorage.getItem('gl_intro')==='1';sessionStorage.setItem('gl_intro','1')}catch(e){}
+ if(seen||document.documentElement.classList.contains('lite')){g.remove();return}
+ var done=function(){if(!g)return;g.classList.add('out');var x=g;g=null;setTimeout(function(){x.remove()},700)};
+ g.addEventListener('click',done);setTimeout(done,2300);
+})();
+</script>
+</body>
+</html>
