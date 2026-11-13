@@ -1,0 +1,60 @@
+/* HEMERA house style — drop-in tokens and base components (no logos).
+   Fonts: <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@500;600;700;800;900&family=Space+Grotesk:wght@700;800&family=Changa:wght@500;700&display=swap"> */
+:root{
+  --navy:#203C8E;--navy-2:#2C4FB8;--navy-3:#16296E;--navy-4:#132457;--navy-5:#0A1748;--blue:#3B6CF5;
+  --gold:#E2B874;--gold-2:#F2D38F;--gold-3:#C28D3E;--gold-ink:#B0812E;
+  --page:#F4F6FB;--card:#FFFFFF;--ink:#141B33;--ink-2:#6B7385;--ink-3:#8A93A8;--line:#DFE4EF;--line-2:#EEF1F6;
+  --on-navy:#FFFFFF;--on-navy-2:#C9D3F5;--on-navy-3:#9FB0E6;
+  --good:#13804F;--good-bg:#E3F6EC;--good-on-navy:#7EF0B9;
+  --warn:#B9770E;--warn-bg:#FDF1D8;--warn-on-navy:#F2D38F;
+  --bad:#C63A4A;--bad-bg:#FBDDE1;--bad-on-navy:#FF9AA6;
+  --s1:#7B5CF0;--s2:#2453D6;--s3:#C99A45;--s4:#1D9CC8;--s5:#E05566;
+  --shadow:0 10px 26px rgba(20,40,110,.08);
+  --ease-in:cubic-bezier(.2,.8,.2,1);--ease-move:cubic-bezier(.65,0,.2,1);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+:lang(ar),[dir=rtl]{font-family:Changa,Inter,system-ui,sans-serif}
+
+.h-title{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:34px;line-height:1.05;margin:0}
+.h-title em{font-style:normal;background:linear-gradient(90deg,var(--gold-2),var(--gold) 50%,var(--gold-3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.kicker{font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.tagline{font-family:"Space Grotesk",Inter,sans-serif;font-weight:700;font-size:11px;letter-spacing:.42em;padding-left:.42em;text-transform:uppercase}
+.num{font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.gold-line{height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);border:0}
+
+.card{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:16px}
+.card.navy{background:linear-gradient(140deg,var(--navy),var(--navy-2));color:var(--on-navy)}
+.card.navy .kicker{color:var(--on-navy-2)}
+.card.navy .bar{background:rgba(255,255,255,.18)}
+.card-head{display:flex;align-items:center;gap:10px;padding:10px 14px;color:#fff;background:radial-gradient(120% 220% at 0 0,var(--navy-2),var(--navy) 60%,var(--navy-4));border-radius:18px 18px 0 0}
+
+.kpi .num{display:block;font-size:26px;margin-top:4px}
+.kpi .sub{font-size:12px;font-weight:700;color:var(--ink-3);margin-top:2px}
+.bar{height:7px;border-radius:99px;background:var(--line-2);overflow:hidden;margin-top:10px}
+.bar>i{display:block;height:100%;border-radius:99px;background:var(--navy)}
+.bar.gold>i{background:linear-gradient(90deg,var(--gold),var(--gold-2))}
+
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:900;border-radius:99px;padding:3px 9px;background:#EEF2FB;color:var(--navy)}
+.pill.good{background:var(--good-bg);color:var(--good)}.pill.warn{background:var(--warn-bg);color:var(--warn)}.pill.bad{background:var(--bad-bg);color:var(--bad)}
+
+.btn{border:0;border-radius:14px;padding:12px 18px;font:inherit;font-weight:900;font-size:14px;cursor:pointer}
+.btn.primary{background:var(--navy);color:#fff}
+.btn.gold{background:linear-gradient(90deg,var(--gold),#F3D79F);color:#0F1F52}
+.btn.ghost{background:#fff;border:1px solid var(--line);color:var(--navy)}
+
+.seg{display:inline-flex;gap:3px;padding:3px;border-radius:12px;background:#F1F3F8}
+.seg button{border:0;background:none;border-radius:9px;padding:7px 14px;font:inherit;font-size:12.5px;font-weight:900;color:#5B6478;cursor:pointer}
+.seg button.on{background:#fff;color:var(--navy);box-shadow:0 2px 6px rgba(20,40,110,.08)}
+
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);text-align:right;padding:6px 0;font-weight:900}
+.tbl td{padding:8px 0;border-top:1px solid var(--line-2);text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+.tbl th:first-child,.tbl td:first-child{text-align:left}
+.sw{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px;vertical-align:1px}
+
+.screen-navy{background:radial-gradient(90% 55% at 50% 42%,#223A86 0%,#15265F 45%,#0A1238 100%);color:#fff}
+
+@keyframes h-up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.in{animation:h-up .4s var(--ease-in) both}
+@media (prefers-reduced-motion:reduce){.in{animation:none}}
