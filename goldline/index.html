@@ -64,6 +64,30 @@ footer a{color:var(--sub)}footer a:hover{color:#fff}
 .rise{opacity:0;transform:translateY(14px);animation:rise .6s var(--ease) forwards;animation-delay:var(--d,0s)}
 @keyframes rise{to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.rise{animation:none;opacity:1;transform:none}.more,.tg svg{transition:none}}
+
+/* Live dot beside each app name */
+.nm{display:flex;align-items:center;gap:8px}
+.live{display:inline-flex;align-items:center;gap:5px;font-size:9.5px;font-weight:900;letter-spacing:.16em;color:#4ade80}
+.live i{position:relative;width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,.9)}
+.live i::before,.live i::after{content:"";position:absolute;inset:0;border-radius:50%;border:1.5px solid #22c55e;animation:ping 2s cubic-bezier(0,0,.2,1) infinite}
+.live i::after{animation-delay:1s}
+@keyframes ping{0%{transform:scale(1);opacity:.9}100%{transform:scale(3.2);opacity:0}}
+/* Easter egg: tap the logo 5 times */
+.gl{cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+.gl.tap svg{animation:tap .32s var(--ease)}
+@keyframes tap{40%{transform:scale(1.18) rotate(-6deg)}}
+.gl .bar{transition:transform .3s var(--ease);transform-origin:22px 26px}
+#egg{position:fixed;inset:0;pointer-events:none;z-index:50}
+.eggt{position:fixed;left:50%;top:50%;z-index:60;width:min(300px,84vw);transform:translate(-50%,-50%) scale(.6);opacity:0;padding:26px 22px 22px;border-radius:24px;text-align:center;background:linear-gradient(160deg,rgba(32,60,142,.96),rgba(10,23,72,.96));border:1px solid rgba(226,184,116,.5);box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 60px rgba(226,184,116,.25);transition:transform .5s cubic-bezier(.2,1.4,.3,1),opacity .35s;pointer-events:auto}
+.eggt.in{transform:translate(-50%,-50%) scale(1);opacity:1}
+.eggt svg{width:110px;height:50px;overflow:visible}
+.eggt .a{stroke-dasharray:110;stroke-dashoffset:110}.eggt .b{stroke-dasharray:240;stroke-dashoffset:240}
+.eggt.in .a{animation:dr .8s var(--ease) .15s forwards}.eggt.in .b{animation:dr 1s var(--ease) .6s forwards}
+@keyframes dr{to{stroke-dashoffset:0}}
+.eggt b{display:block;margin-top:12px;font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:26px;line-height:1.15}
+.eggt b em{font-style:normal;color:var(--gold)}
+.eggt small{display:block;margin-top:8px;color:var(--sub);font-size:13px;font-weight:600}
+.eggt span{display:inline-block;margin-top:14px;font-size:10.5px;font-weight:900;letter-spacing:.24em;color:var(--gold)}
 </style>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Goldline Studio">
@@ -81,12 +105,12 @@ footer a{color:var(--sub)}footer a:hover{color:#fff}
 <body>
 <div class="wrap">
   <div class="top"><a class="bk" href="../get/" aria-label="Back" onclick="if(history.length>1&&document.referrer){history.back();return false}"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></a>
-    <a class="gl" href="./" aria-label="Goldline Studio"><svg viewBox="0 0 58 50" aria-hidden="true"><path d="M34 12 A17 17 0 1 0 38.7 27" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path d="M22 26 H52" stroke="#e2b874" stroke-width="6" stroke-linecap="round"/><circle cx="34" cy="12" r="3.4" fill="#e2b874"/></svg><span class="w"><b>Gold<em>line</em></b><small>STUDIO</small></span></a></div>
+    <a class="gl" href="./" aria-label="Goldline Studio"><svg viewBox="0 0 58 50" aria-hidden="true"><path d="M34 12 A17 17 0 1 0 38.7 27" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><path class="bar" d="M22 26 H52" stroke="#e2b874" stroke-width="6" stroke-linecap="round"/><circle cx="34" cy="12" r="3.4" fill="#e2b874"/></svg><span class="w"><b>Gold<em>line</em></b><small>STUDIO</small></span></a></div>
   <div class="sum rise"><h1>Your numbers,<br><em>in daylight.</em></h1><p>Calm, clear apps for teams who live by numbers.</p></div>
   <div class="rows rise" style="--d:.1s">
     <div class="row">
       <div class="rh"><a class="ic" href="../get/"><img src="../icons/icon-192.png" alt=""></a>
-        <a class="tx" href="../get/"><span class="nm">H<em>E</em>MERA</span><span class="by"><b>Goldline Studio</b> · Media plan</span>
+        <a class="tx" href="../get/"><span class="nm"><span>H<em>E</em>MERA</span><span class="live"><i></i>LIVE</span></span><span class="by"><b>Goldline Studio</b> · Media plan</span>
           <span class="chips"><span>4.8 <svg viewBox="0 0 24 24" fill="#E2B874"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="#C9D3F5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Android · iPhone</span></span></a>
         <button class="tg" type="button" aria-label="Show screenshots" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></div>
       <div class="more"><div>
@@ -96,7 +120,7 @@ footer a{color:var(--sub)}footer a:hover{color:#fff}
     </div>
     <div class="row">
       <div class="rh"><a class="ic" href="../aether/"><img src="../aether/icon-192.png" alt=""></a>
-        <a class="tx" href="../aether/"><span class="nm">A<em>E</em>THER</span><span class="by"><b>Goldline Studio</b> · Tasks &amp; focus</span>
+        <a class="tx" href="../aether/"><span class="nm"><span>A<em>E</em>THER</span><span class="live"><i></i>LIVE</span></span><span class="by"><b>Goldline Studio</b> · Tasks &amp; focus</span>
           <span class="chips"><span>4.8 <svg viewBox="0 0 24 24" fill="#E2B874"><path d="M12 2.5l2.9 6 6.6.8-4.9 4.5 1.3 6.5L12 17l-5.9 3.3 1.3-6.5L2.5 9.3l6.6-.8z"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="#C9D3F5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Android · iPhone</span></span></a>
         <button class="tg" type="button" aria-label="Show screenshots" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button></div>
       <div class="more"><div>
@@ -111,6 +135,32 @@ footer a{color:var(--sub)}footer a:hover{color:#fff}
 <script>
 document.getElementById('y').textContent=new Date().getFullYear();
 [].forEach.call(document.querySelectorAll('.tg'),function(t){t.onclick=function(){var r=t.closest('.row');t.setAttribute('aria-expanded',r.classList.toggle('open'))}});
+
+// Easter egg: tap the Goldline logo 5 times. Each tap stretches the gold bar a little; the 5th rains gold.
+(function(){
+  var g=document.querySelector('.gl'),bar=g.querySelector('.bar'),n=0,t=null,busy=false;
+  var still=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  g.addEventListener('click',function(e){e.preventDefault();if(busy)return;
+    clearTimeout(t);n++;g.classList.remove('tap');void g.offsetWidth;g.classList.add('tap');
+    bar.style.transform='scaleX('+(1+n*.12)+')';
+    if(n>=5){n=0;bar.style.transform='';burst()}else t=setTimeout(function(){n=0;bar.style.transform=''},1600)});
+  function burst(){busy=true;var r=g.getBoundingClientRect(),ox=r.left+r.width*.4,oy=r.top+r.height/2;
+    if(navigator.vibrate)try{navigator.vibrate([20,40,20])}catch(e){}
+    if(!still)rain(ox,oy);toast()}
+  function toast(){var d=document.createElement('div');d.className='eggt';d.setAttribute('role','status');
+    d.innerHTML='<svg viewBox="0 0 120 50"><path class="a" d="M34 12 A17 17 0 1 0 38.7 27" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round"/><path class="b" d="M22 26 H116" stroke="#e2b874" stroke-width="5.5" stroke-linecap="round"/><circle cx="34" cy="12" r="3.4" fill="#e2b874"/></svg><b>You found<br>the <em>gold line</em> ✨</b><small>Some lines lead somewhere.</small><span>GOLDLINE STUDIO</span>';
+    document.body.appendChild(d);requestAnimationFrame(function(){requestAnimationFrame(function(){d.classList.add('in')})});
+    var close=function(){d.classList.remove('in');setTimeout(function(){d.remove();busy=false},400)};d.onclick=close;setTimeout(close,3600)}
+  function rain(ox,oy){var cv=document.createElement('canvas');cv.id='egg';document.body.appendChild(cv);var c=cv.getContext('2d'),dpr=Math.min(2,devicePixelRatio||1),W=innerWidth,H=innerHeight;
+    cv.width=W*dpr;cv.height=H*dpr;c.scale(dpr,dpr);var P=[],C=['#F2D38F','#E2B874','#C28D3E','#FFF3D1','#ffffff'];
+    for(var i=0;i<70;i++){var a=Math.random()*Math.PI*2,v=4+Math.random()*7;P.push({x:ox,y:oy,vx:Math.cos(a)*v,vy:Math.sin(a)*v-4,w:6+Math.random()*8,h:3+Math.random()*3,r:Math.random()*6,vr:(Math.random()-.5)*.4,c:C[i%5],k:i%4?0:1})}
+    for(i=0;i<110;i++)P.push({x:Math.random()*W,y:-20-Math.random()*H*.9,vx:(Math.random()-.5)*1.2,vy:2+Math.random()*3,w:5+Math.random()*9,h:2.5+Math.random()*3,r:Math.random()*6,vr:(Math.random()-.5)*.3,c:C[i%5],k:i%3?0:1,sw:Math.random()*6});
+    var t0=performance.now();(function f(now){var el=now-t0;c.clearRect(0,0,W,H);var fade=el>3200?Math.max(0,1-(el-3200)/800):1;
+      P.forEach(function(p){p.vy+=.12;p.vx*=.99;p.x+=p.vx+(p.sw?Math.sin((now/400)+p.sw)*.6:0);p.y+=p.vy;if(p.vy>5)p.vy=5;p.r+=p.vr;
+        c.save();c.globalAlpha=fade;c.translate(p.x,p.y);c.rotate(p.r);c.fillStyle=p.c;
+        if(p.k){c.beginPath();c.arc(0,0,p.h,0,7);c.fill()}else{c.scale(1,Math.abs(Math.cos(p.r*2))*.8+.2);c.fillRect(-p.w/2,-p.h/2,p.w,p.h)}c.restore()});
+      if(el<4000)requestAnimationFrame(f);else cv.remove()})(t0)}
+})();
 </script>
 </body>
 </html>
