@@ -609,7 +609,7 @@ async function morningPushIfDue() {
 }
 
 /** Router: before the move every call goes to Apps Script unchanged. */
-const AVATAR_OK = [11, 12, 13, 14, 15, 17, 18, 20, 21, 22];
+const AVATAR_OK = [11, 12, 13, 14, 15, 17, 18, 20, 21, 22, 101, 103, 104, 105, 106, 107, 108];
 async function call(fn, args) {
   if (fn === 'adminTasksMove') return adminTasksMove(args);
   if (fn === 'adminTasksMoveStatus') {

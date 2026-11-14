@@ -8516,8 +8516,8 @@ window.addEventListener('load',function(){
     .idc-pic{width:74px;height:74px;flex:none;border-radius:50%;box-shadow:0 0 0 4px #fff;display:block}.idc-pic .sk-emb,.idc-pic svg{width:100%;height:100%;display:block}
     .idc-me b{display:block;font-size:15px;font-weight:900;margin-bottom:4px}
     .idc-f{display:flex;gap:2px;margin:14px;background:#EEF1F7;border-radius:12px;padding:3px}
-    .idc-f>*{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;border:0;background:none;border-radius:9px;padding:8px 4px;font:inherit;font-size:12px;font-weight:900;color:#4b5263;cursor:pointer}
-    .idc-f>.on{background:#fff;color:#203C8E;box-shadow:0 2px 8px rgba(17,24,43,.08)}
+    .idc-f>*:not(.gsl-pill){flex:1;display:flex;align-items:center;justify-content:center;gap:5px;border:0;background:none;border-radius:9px;padding:8px 4px;font:inherit;font-size:12px;font-weight:900;color:#4b5263;cursor:pointer}
+    .idc-f:not(.gslA)>.on{background:#fff;color:#203C8E;box-shadow:0 2px 8px rgba(17,24,43,.08)}
     .idc-f i{width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);margin-top:-3px;transition:transform .2s}.idc-f .open i{transform:rotate(-135deg);margin-top:3px}
     .idc-g{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;padding:0 14px 14px;animation:skRise .25s both}
     .idc-g button{border:0;background:none;padding:0;border-radius:50%;cursor:pointer;line-height:0;opacity:.85}.idc-g button.on{opacity:1;box-shadow:0 0 0 2px #fff,0 0 0 4px #203C8E}
@@ -8534,6 +8534,10 @@ window.addEventListener('load',function(){
     .avc-z{display:flex;align-items:center;gap:10px;margin-top:14px;font-weight:900;color:#203C8E}.avc-z input{flex:1;accent-color:#203C8E}
     .avc-a{display:flex;gap:8px;margin-top:14px}.avc-a button{flex:1;border:0;border-radius:12px;padding:11px;font:inherit;font-size:13px;font-weight:900;background:#EEF1F7;color:#141B33;cursor:pointer}.avc-a .p{background:linear-gradient(135deg,#3d6bff,#203c8e);color:#fff}
     body.dark-mode .avc-md{background:#151a22}body.dark-mode .avc-md>b{color:#fff}body.dark-mode .avc-a button:not(.p){background:#1b212b;color:#fff}
+    /* v357 Upload / My letter / Avatars slide with the gold shine like the other filters */
+    html body .idc-f.gslA{background:#eef1f7!important;border-radius:12px!important;padding:3px!important;gap:2px!important}
+    html body .idc-f.gslA>*:not(.gsl-pill){background:transparent!important;box-shadow:none!important}
+    body.dark-mode .idc-f.gslA{background:#1b212b!important}
 </style>
 </head>
 <body>
@@ -11172,7 +11176,7 @@ function renderExtraTab(d){
 let DAY_VIEW='plan', DAY_OPEN='';
 // v192 The same sliding blue pill with a gold shine on every tab group: it follows the button marked .on,
 // and keeps its last place per group so it glides even when the group is drawn again.
-const GSL_SEL=['.act-seg','.sal-view','.ad-when','.lv-seg','.py-seg','#weeklyTabs','.wly-ms','.phr-tabs','.stp-sw2','#monthsPanel .mx-mode','.ss-fs','.tk-views','.tk-weeks','.nf-fs','.st-chips','.st-sort'];
+const GSL_SEL=['.idc-f','.act-seg','.sal-view','.ad-when','.lv-seg','.py-seg','#weeklyTabs','.wly-ms','.phr-tabs','.stp-sw2','#monthsPanel .mx-mode','.ss-fs','.tk-views','.tk-weeks','.nf-fs','.st-chips','.st-sort'];
 // v212 a filter only slides (and shines) right after a tap on that same filter; any other redraw puts the pill in place without a move
 let GSL_TAP={sel:'',t:0};
 document.addEventListener('pointerdown',e=>{const t=e.target;if(!t||!t.closest)return;const sel=GSL_SEL.find(q=>t.closest(q));if(sel)GSL_TAP={sel,t:Date.now()}},true);
@@ -16881,7 +16885,7 @@ const AVATARS=["<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\
 const AVATAR_NAMES=["Pharos", "Qaitbay", "Tram", "Ship", "Anchor", "Wheel", "Starfish", "Sunglasses", "Camera", "Sea & sun", "Waves", "Crown", "Compass rose", "Trophy"];
 // v353 every avatar in the house look: navy, a thin gold ring, chrome lines. Wheel, camera, compass rose and trophy are gone.
 const AV_KEEP=[11,12,13,14,15,17,18,20,21,22];
-const AV_DEFS='<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><radialGradient id="hmNv" cx="0" cy="0" r="1.4"><stop offset="0" stop-color="#2C4FB8"/><stop offset=".55" stop-color="#203C8E"/><stop offset="1" stop-color="#132457"/></radialGradient><linearGradient id="hmCh" gradientUnits="userSpaceOnUse" x1="0" y1="26" x2="0" y2="74"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".48" stop-color="#E4E8EF"/><stop offset=".52" stop-color="#AEB7C6"/><stop offset="1" stop-color="#EEF1F5"/></linearGradient><linearGradient id="hmGd" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="100"><stop offset="0" stop-color="#F7E2A4"/><stop offset=".55" stop-color="#E2B874"/><stop offset="1" stop-color="#C08A35"/></linearGradient></defs></svg>';
+const AV_DEFS='<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><radialGradient id="hmNv" cx="0" cy="0" r="1.4"><stop offset="0" stop-color="#2C4FB8"/><stop offset=".55" stop-color="#203C8E"/><stop offset="1" stop-color="#132457"/></radialGradient><linearGradient id="hmCh" gradientUnits="userSpaceOnUse" x1="0" y1="26" x2="0" y2="74"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".48" stop-color="#E4E8EF"/><stop offset=".52" stop-color="#AEB7C6"/><stop offset="1" stop-color="#EEF1F5"/></linearGradient><linearGradient id="hmGd" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="100"><stop offset="0" stop-color="#F7E2A4"/><stop offset=".55" stop-color="#E2B874"/><stop offset="1" stop-color="#C08A35"/></linearGradient><clipPath id="hmClip"><circle cx="50" cy="50" r="50"/></clipPath></defs></svg>';
 function avDefs(){if(!document.getElementById('hmAvDefs')){const d=document.createElement('div');d.id='hmAvDefs';d.innerHTML=AV_DEFS;document.body.appendChild(d)}}
 const AV_RING='<circle cx="50" cy="50" r="44" fill="none" stroke="url(#hmGd)" stroke-width="3"/>';
 function avHouse(svg){return String(svg).replace('fill="#58a9de"','fill="url(#hmNv)"').replace(/<path d="M10 80 A50 50 0 0 0 90 80 Z" fill="#ffd200"\/>/,AV_RING+'<g transform="translate(0 3)">').replace(/<\/svg>$/,'</g></svg>').replace(/stroke="#fff"/g,'stroke="url(#hmCh)"')}
@@ -16891,25 +16895,36 @@ function emblemHtml(n){
  const a=AV_HOUSE[+n||0];if(!a)return '';try{avDefs()}catch(e){}return `<span class="sk-emb">${a}</span>`}
 // Everyone without an avatar from the admin gets the team look: the blue and yellow circle with
 // the first letter of their name in place of the star.
-function letterEmblem(name){
+// v357 the first letter in seven house styles; everyone starts with the identity dot (106)
+const LETTER_KEEP=[106,101,103,104,105,107,108];
+function letterEmblem(name,st){
  const l=esc((String(name||'S').trim().charAt(0)||'S').toUpperCase());try{avDefs()}catch(e){}
- return `<span class="sk-emb"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="url(#hmNv)"/>${AV_RING}<text x="50" y="65" text-anchor="middle" font-size="42" font-weight="900" font-family="Inter,HArab,Arial,sans-serif" fill="url(#hmCh)">${l}</text></svg></span>`;
+ st=+st||106;const F='text-anchor="middle" font-weight="900" font-family="Inter,HArab,Arial,sans-serif"',bg='<circle cx="50" cy="50" r="50" fill="url(#hmNv)"/>';
+ const body=st===101?`${bg}<text x="50" y="66" ${F} font-size="44" fill="url(#hmGd)">${l}</text>`
+  :st===103?`${bg}<circle cx="50" cy="50" r="42" fill="none" stroke="url(#hmGd)" stroke-width="3"/><text x="50" y="65" ${F} font-size="40" fill="#fff">${l}</text>`
+  :st===104?`${bg}<text x="50" y="60" ${F} font-size="40" fill="#fff">${l}</text><rect x="36" y="68" width="28" height="5" rx="2.5" fill="url(#hmGd)"/>`
+  :st===105?`<circle cx="50" cy="50" r="50" fill="url(#hmGd)"/><text x="50" y="66" ${F} font-size="44" fill="#203C8E">${l}</text>`
+  :st===107?`${bg}<path d="M100 0V100H30Z" fill="#3D6BFF" opacity=".55" clip-path="url(#hmClip)"/><text x="50" y="66" ${F} font-size="42" fill="#fff">${l}</text>`
+  :st===108?`${bg}<text x="50" y="66" ${F} font-size="44" fill="url(#hmCh)">${l}</text>`
+  :`${bg}<text x="48" y="66" ${F} font-size="44" fill="#fff">${l}</text><circle cx="74" cy="28" r="6" fill="url(#hmGd)"/>`;
+ return `<span class="sk-emb"><svg viewBox="0 0 100 100" aria-hidden="true">${body}</svg></span>`;
 }
-function personAv(avatar,name){return emblemHtml(avatar)||letterEmblem(name)}
+function personAv(avatar,name){const n=+avatar||0;return n>100&&n<110?letterEmblem(name,n):(emblemHtml(avatar)||letterEmblem(name,106))}
 function avatarHtml(photo,name){
  return photo?`<img class="sk-avatar-img" src="${esc(photo)}" alt="" referrerpolicy="no-referrer" onerror="this.replaceWith(document.createTextNode('${esc((String(name||'S').charAt(0)||'S').toUpperCase())}'))">`:esc((String(name||'S').charAt(0)||'S').toUpperCase());
 }
 function renderProfileCard(){}
 // v353 Settings → Your picture: a photo from the device, one of the house avatars, or the first letter. Only the person can change it.
-let MYAV_OPEN=false;
+let MYAV_OPEN='';
 function myAvDraw(){
  const el=document.getElementById('stAvBox');if(!el)return;
  const P=ACCESS_PROFILE||{},mem=P.member||{},cur=mem.avatar||0,name=P.name||storeGet(ACCESS_NAME_KEY)||'',role=mem.role||'';
- const isPh=typeof cur==='string',isAv=!!cur&&!isPh;
- // v354 an ID card: navy cover with a gold line, the picture on it, name and position; three simple filters; the avatars fold open under the third
+ const isPh=typeof cur==='string',n=+cur||0,isL=!isPh&&(n===0||(n>100&&n<110)),isAv=!isPh&&!isL,lc=n||106;
+ // v357 an ID card; Upload / My letter / Avatars slide like the other filters; My letter and Avatars fold open a row
+ const row=(list,on,draw)=>`<div class="idc-g">${list.map(k=>`<button type="button" class="${on(k)?'on':''}" onclick="myAvSet(${k},this)">${draw(k)}</button>`).join('')}</div>`;
  el.innerHTML=`<div class="idc-top"></div><div class="idc-me"><span class="idc-pic">${personAv(cur,name)}</span><div><b>${esc(name||'You')}</b>${role?roleBadge(role):''}</div></div>
-  <div class="idc-f"><label class="${isPh?'on':''}"><input type="file" accept="image/*" onchange="myAvFile(this)" hidden>Upload</label><button type="button" class="${!cur?'on':''}" onclick="myAvSet(0,this)">My letter</button><button type="button" class="${isAv?'on':''}${MYAV_OPEN?' open':''}" onclick="MYAV_OPEN=!MYAV_OPEN;myAvDraw()" aria-expanded="${MYAV_OPEN}">Avatars<i></i></button></div>
-  ${MYAV_OPEN?`<div class="idc-g">${AV_KEEP.map(n=>`<button type="button" class="${cur===n?'on':''}" onclick="myAvSet(${n},this)" aria-label="${AVATAR_NAMES[n-AVATAR_BASE]}">${emblemHtml(n)}</button>`).join('')}</div>`:''}`;
+  <div class="idc-f"><label class="${isPh?'on':''}"><input type="file" accept="image/*" onchange="myAvFile(this)" hidden>Upload</label><button type="button" class="${isL?'on':''}${MYAV_OPEN==='l'?' open':''}" onclick="MYAV_OPEN=MYAV_OPEN==='l'?'':'l';myAvDraw()" aria-expanded="${MYAV_OPEN==='l'}">My letter<i></i></button><button type="button" class="${isAv?'on':''}${MYAV_OPEN==='a'?' open':''}" onclick="MYAV_OPEN=MYAV_OPEN==='a'?'':'a';myAvDraw()" aria-expanded="${MYAV_OPEN==='a'}">Avatars<i></i></button></div>
+  ${MYAV_OPEN==='l'?row(LETTER_KEEP,k=>isL&&lc===k,k=>letterEmblem(name,k)):MYAV_OPEN==='a'?row(AV_KEEP,k=>n===k,k=>emblemHtml(k)):''}`;
 }
 async function myAvSet(v,btn){
  if(btn)btn.disabled=true;
