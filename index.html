@@ -9132,6 +9132,7 @@ body.dark-mode .ak-ef input,body.dark-mode .ak-ef select,body.dark-mode .ak-ef t
 .ak-abt p{margin:0 0 6px;font-size:12.5px;font-weight:600;color:#3b4357;line-height:1.45}.ak-abt p:last-child{margin:0}
 .ak-card{position:relative}
 body.dark-mode .ak-abt{background:#171d27;border-color:#2a3242}body.dark-mode .ak-abt p{color:#c3c9d4}
+.ak-nt2{display:flex;gap:6px;align-items:flex-start;background:#FBF3E2;border-radius:10px;padding:7px 9px;margin-top:6px!important}.ak-nt2 .ak-ic{width:13px;height:13px;color:#C9A24A;flex:none;margin-top:2px}
 </style>
 </head>
 <body>
@@ -10453,7 +10454,7 @@ function akCard(id){
  const L=[['links','Sheet',r.sheet,'#1E8E3E','#E7F5EC'],['rep','Report',r.report,'#1a73e8','#E8F0FE'],['code','Script',r.script,'#C9A24A','#FBF3E2']].filter(x=>x[2]&&x[2].url);
  akPanel('links',`<div class="ak-c2"><div class="h">${akLogo(r.platforms[0]||'')}<b>${akEsc(r.name||r.id)}</b></div>
   ${L.map(([ic,t,o,c,bg])=>`<a class="l" href="${akEsc(o.url)}" target="_blank" rel="noopener"><i style="color:${c};background:${bg}">${akI(ic)}</i><div><b>${t}</b><small>${akEsc(o.name||'')}</small></div>${akI('out')}</a>`).join('')||'<p class="ak-sm">No links saved yet.</p>'}
-  ${r.notes?`<p class="ak-sm">${akEsc(r.notes)}</p>`:''}</div>`+(AK.editor?`<div class="ak-act"><button type="button" aria-label="Edit" title="Edit" onclick="akEdit('${akEsc(r.id)}')">${akI('pen')}</button><button type="button" aria-label="Duplicate" title="Duplicate to another platform" onclick="akDup('${akEsc(r.id)}')">${akI('dup')}</button><button type="button" class="del" aria-label="Delete" title="Delete" onclick="akDel('${akEsc(r.id)}')">${akI('trash')}</button></div>`:'')+AKB('lpop',AK.ls.length>1?'Back to the list':'Back'));
+  ${r.notes&&AK.editor?`<p class="ak-sm ak-nt2">${akI('lock')}${akEsc(r.notes)}</p>`:''}</div>`+(AK.editor?`<div class="ak-act"><button type="button" aria-label="Edit" title="Edit" onclick="akEdit('${akEsc(r.id)}')">${akI('pen')}</button><button type="button" aria-label="Duplicate" title="Duplicate to another platform" onclick="akDup('${akEsc(r.id)}')">${akI('dup')}</button><button type="button" class="del" aria-label="Delete" title="Delete" onclick="akDel('${akEsc(r.id)}')">${akI('trash')}</button></div>`:'')+AKB('lpop',AK.ls.length>1?'Back to the list':'Back'));
 }
  
 const AK_EDF={Details:[['Task_Name','Name','pen','text'],['Platform','Platform','plat','pl'],['Account','Account','globe','ac'],['Category','Category','folder','ct'],['Format','Format','grid','fm']],
