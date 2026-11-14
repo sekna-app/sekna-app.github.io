@@ -8837,6 +8837,17 @@ window.addEventListener('load',function(){
 body .sk-drawer .sk-user .sk-signout{display:grid!important;place-items:center!important;gap:0!important;line-height:0!important}
 body .sk-drawer .sk-user .sk-signout svg{display:block!important}
 body .sk-drawer .sk-user .sk-so-t{display:none}
+/* v375 welcome step 1 (ن٣ Shine): title slides in, the name box pops in and a gold shine passes over it */
+.wl-inw{position:relative;margin-top:14px;border-radius:13px;overflow:hidden}
+.wl-inw .wl-in{margin-top:0;display:block}
+.wl-sl.p1 .wl-k{animation:wlSl .5s cubic-bezier(.2,.8,.2,1) .15s backwards}
+.wl-sl.p1 h2{animation:wlSl .6s cubic-bezier(.2,.8,.2,1) .25s backwards}
+@keyframes wlSl{from{opacity:0;transform:translateX(-60px)}}
+.wl-sl.p1 .wl-inw{animation:wlPop1 .6s cubic-bezier(.2,.9,.3,1.3) .6s backwards}
+@keyframes wlPop1{from{opacity:0;transform:scale(.8)}}
+.wl-sl.p1 .wl-inw:after{content:"";position:absolute;top:0;bottom:0;width:45%;left:-60%;background:linear-gradient(100deg,transparent,rgba(243,213,142,.55),transparent);animation:wlSh 1.1s ease-in-out 1.2s forwards;pointer-events:none}
+@keyframes wlSh{to{left:120%}}
+@media (prefers-reduced-motion:reduce){.wl-sl.p1 .wl-k,.wl-sl.p1 h2,.wl-sl.p1 .wl-inw,.wl-sl.p1 .wl-inw:after{animation:none}}
 </style>
 </head>
 <body>
@@ -17221,10 +17232,10 @@ function wlMaybe(){
 function wlPic(){return WL.photo?emblemHtml(WL.photo):personAv(WL.av,WL.name)}
 function wlDraw(){
  const o=document.getElementById('wlBox');if(!o)return;
- const old=o.querySelector('.wl-sl'),s=document.createElement('div');s.className='wl-sl in'+([0,1,4].indexOf(WL.step)>=0?' low':'')+(WL.step===2?' p2':'');
+ const old=o.querySelector('.wl-sl'),s=document.createElement('div');s.className='wl-sl in'+([0,1,4].indexOf(WL.step)>=0?' low':'')+(WL.step===2?' p2':WL.step===1?' p1':'');
  const dots=`<div class="wl-dots">${[0,1,2,3].map(i=>`<i class="${i<=WL.step?'on':''}"></i>`).join('')}</div>`,first=esc(String(WL.name||'').split(' ')[0]);
  if(WL.step===0)s.innerHTML=`<div class="wl-big wl-pop">${wlPic()}</div><h2>Welcome to HEMERA${first?', '+first:''}</h2><p>Let us make it yours. It takes 20 seconds.</p><div class="wl-bot">${dots}<button type="button" class="wl-btn g" data-go>Let us start</button></div>`;
- if(WL.step===1)s.innerHTML=`<small class="wl-k">STEP 1 · YOUR NAME</small><h2 class="l">How should the team see you?</h2><input class="wl-in" id="wlName" value="${esc(WL.name)}" maxlength="30" autocomplete="name"><div class="wl-bot">${dots}<button type="button" class="wl-btn g" data-go>Next</button></div>`;
+ if(WL.step===1)s.innerHTML=`<small class="wl-k">STEP 1 · YOUR NAME</small><h2 class="l">How should the team see you?</h2><div class="wl-inw"><input class="wl-in" id="wlName" value="${esc(WL.name)}" maxlength="30" autocomplete="name"></div><div class="wl-bot">${dots}<button type="button" class="wl-btn g" data-go>Next</button></div>`;
  if(WL.step===2)s.innerHTML=`<small class="wl-k">STEP 2 · YOUR PICTURE</small><div class="wl-big">${wlPic()}</div><div class="wl-pk">${LETTER_KEEP.slice(0,3).map(k=>`<button type="button" data-a="${k}" class="${!WL.photo&&(WL.av||106)===k?'on':''}">${letterEmblem(WL.name,k)}</button>`).join('')}${AV_KEEP.map(k=>`<button type="button" data-a="${k}" class="${!WL.photo&&WL.av===k?'on':''}">${emblemHtml(k)}</button>`).join('')}</div><div class="wl-bot">${dots}<label class="wl-btn l"><input type="file" accept="image/*" hidden id="wlFile">Upload a photo</label><button type="button" class="wl-btn g" data-go>Next</button></div>`;
  if(WL.step===3)s.innerHTML=`<small class="wl-k">STEP 3 · STAY IN THE LOOP</small><div class="wl-bell">${WL_IC.bell}</div><h2>What should we tell you?</h2><p>Media plan updates, your tasks and new seasons.</p><div class="wl-tl">${[['plan','Media plan','When the numbers update'],['task','Your tasks','New tasks and backups'],['season','Seasons','Reminders before each season']].map(r=>`<div class="wl-tr"><span class="wl-ti">${WL_IC[r[0]]}</span><b>${r[1]}<small>${r[2]}</small></b><span class="wl-ck">✓</span></div>`).join('')}</div><div class="wl-bot">${dots}<button type="button" class="wl-btn g" id="wlPush">Turn on alerts</button><button type="button" class="wl-btn l" data-go>Maybe later</button></div>`;
  if(WL.step===4)s.innerHTML=`<h2 style="margin-top:40px">You are all set</h2><p>This is how the team sees you</p><div class="wl-id"><div class="t${WL.photo?' v':''}"></div><div class="m"><span class="${WL.photo?'vt':''}">${wlPic()}${WL.photo?VBADGE:''}</span><div><b>${esc(WL.name)}</b>${(ACCESS_PROFILE&&ACCESS_PROFILE.member&&ACCESS_PROFILE.member.role)?roleBadge(ACCESS_PROFILE.member.role):''}</div></div></div><div class="wl-bot"><button type="button" class="wl-btn g" id="wlTour">Take the one-minute tour</button><button type="button" class="wl-skip" id="wlEnd">Skip</button></div>`;
