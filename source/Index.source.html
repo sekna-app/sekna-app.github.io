@@ -10262,12 +10262,12 @@ const AK_CAT_IC={'sekna daily report':'clip','briefing':'doc','reporting':'rep',
 const AK_FMT_IC={sheet:'links',screenshot:'cam','weekly screenshot':'off',dashboard:'dash'};
 /* v386 Teach the bot: rules go to the Memory tab, like افتكري on Telegram (editors only) */
 function akRulesHtml(rules){return rules&&rules.length?`<div class="ak-rvs">${rules.map(r=>`<div class="ak-rl2"><b>${akEsc(r.id)}</b><span>${akEsc(r.rule)}</span><button type="button" aria-label="Forget ${akEsc(r.id)}" onclick="akForget('${akEsc(r.id)}',this)">${akI('x')}</button></div>`).join('')}</div>`:'<p class="ak-sm ak-mu">No rules saved yet.</p>'}
-const AK_TM=[['rules','Saved rules','rules'],['refresh','Refresh data','refresh'],['cats','Categories','folder'],['plats','Platforms','plat'],['access','Access','key'],['team','Team','users'],['bc','Broadcast','megaphone']];
+const AK_TM=[['rules','Saved rules','rules'],['refresh','Refresh data','refresh'],['cats','Categories','folder'],['plats','Platforms','plat'],['access','Access','key'],['team','Team','users']];
 const AK_TMD={rules:'Rules you taught',refresh:'From the sheet',cats:'Filters and names',plats:'Lock and access',access:'Who can do what',team:'The HEMERA team',bc:'Scheduled messages'};
 function akTeachHtml(sm){
  const d=k=>{if(!sm)return AK_TMD[k];return{rules:sm.rules+' rules',refresh:sm.rows+' rows',cats:sm.cats+' in use',plats:sm.plats+(sm.locked?' · '+sm.locked+' locked':''),access:sm.blocked?sm.blocked+' blocked':'Everyone can use it',team:(typeof tkPeople==='function'&&TK.data?tkPeople().length:sm.team)+' people',bc:sm.bc?sm.bc+' scheduled':'Nothing scheduled'}[k]};
  const tm=AK.editor?AK_TM:AK_TM.filter(x=>x[0]==='rules'||x[0]==='refresh');
- return `<div class="ak-cr"><div class="hd"><i>${akI('teach')}</i><div><b>Teach the bot</b><small>Type a rule below, or open a tool</small></div></div><div class="gd">${tm.map(([k,t,ic])=>`<button type="button" class="${k==='bc'?'w':''}" onclick="akTm('${k}')"><i>${akI(ic)}</i><b>${t}</b><small>${akEsc(d(k))}</small></button>`).join('')}</div></div>`+AKB('menu');
+ return `<div class="ak-cr"><div class="hd"><i>${akI('teach')}</i><div><b>Teach the bot</b><small>Type a rule below, or open a tool</small></div></div><div class="gd">${tm.map(([k,t,ic])=>`<button type="button" onclick="akTm('${k}')"><i>${akI(ic)}</i><b>${t}</b><small>${akEsc(d(k))}</small></button>`).join('')}</div></div>`+AKB('menu');
 }
 async function akTeach(){
  if(!ASK_HEMERA_URL){akBot('<p>Ask HEMERA is not connected yet.</p>');return}
