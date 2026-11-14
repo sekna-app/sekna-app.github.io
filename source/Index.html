@@ -10289,22 +10289,24 @@ async function akPermsLoad(){await akTeamData();const j=await akAdm('perms');if(
 function akPpl(){return (typeof tkPeople==='function'&&TK.data?tkPeople():[]).filter(p=>p.email)}
 function akIsEd(e){return ((AK.pm&&AK.pm.editors)||[]).indexOf(String(e).toLowerCase())>=0}
 function akPerm(e,key,plat){e=String(e).toLowerCase();if(akIsEd(e))return true;const a=((AK.pm&&AK.pm.access)||{})[e]||{};
- if(key==='use')return a.use!==false;if(key==='add')return a.add===true;if(key==='teach')return a.teach===true;if(key==='plat')return (a.plats||[]).indexOf(plat)>=0;return false}
+ if(key==='use')return a.use!==false;if(key==='add')return a.add===true;if(key==='teach')return a.teach===true;if(key==='plat'){if(a.pl&&(a.pl[plat]===true||a.pl[plat]===false))return a.pl[plat];if((a.plats||[]).indexOf(plat)>=0)return true;return ((AK.pm&&AK.pm.locked)||[]).indexOf(plat)<0}return false}
+
+function akAllPl(){return ((AK.pm&&AK.pm.plats)||((AK.pm&&AK.pm.locked)||[]).map(k=>({key:k,locked:true})))}
 const AK_PK=[['use','Use the bot','spk'],['add','Add sheets','add'],['teach','Teach the bot','teach']];
 function akPermTags(e){if(akIsEd(e))return '<em class="ak-tg2 ed">Editor · full access</em>';if(!akPerm(e,'use'))return '<em class="ak-tg2 no">Blocked</em>';
- const t=[];if(akPerm(e,'add'))t.push('Adds sheets');if(akPerm(e,'teach'))t.push('Teaches');((AK.pm&&AK.pm.locked)||[]).forEach(k=>{if(akPerm(e,'plat',k))t.push(k)});
+ const t=[];if(akPerm(e,'add'))t.push('Adds sheets');if(akPerm(e,'teach'))t.push('Teaches');akAllPl().forEach(p=>{const on=akPerm(e,'plat',p.key);if(p.locked&&on)t.push(p.key);if(!p.locked&&!on)t.push('No '+p.key)});
  return t.length?t.map(x=>`<em class="ak-tg2">${akEsc(x)}</em>`).join(''):'<em class="ak-tg2 mu">Can ask</em>'}
 function akPeopleDraw(){const P=akPpl();
  akPanel('hmteam',akTmTitle('users','Team')+'<p class="ak-sm ak-mu">The people in HEMERA. Tap someone to set what they can do here.</p><div class="ak-rvs">'+P.map((p,i)=>`<div class="ak-ad tp" onclick="akPersonDraw(${i})">${tkAv(p)}<b>${akEsc(p.name||p.email)}<small>${akEsc(p.email)}</small><span class="ak-tgs">${akPermTags(p.email)}</span></b>${akI('chev')}</div>`).join('')+'</div>'+AKB('teach'))}
 function akPersonDraw(i){const p=akPpl()[i];if(!p)return;AK.pi=i;const ed=akIsEd(p.email);
- const rows=AK_PK.map(([k,t,ic])=>[k,'',t,ic]).concat(((AK.pm&&AK.pm.locked)||[]).map(k=>['plat',k,'Sees '+k,'']));
+ const rows=AK_PK.map(([k,t,ic])=>[k,'',t,ic]).concat(akAllPl().map(p=>['plat',p.key,'Sees '+p.key,'']));
  akPanel('hmp:'+p.email,`<div class="ak-pp">${tkAv(p)}<div><b>${akEsc(p.name||p.email)}</b><small>${akEsc(p.email)}</small></div></div>`+(ed?'<p class="ak-sm ak-mu">An editor always has full access.</p>':'')+'<div class="ak-rvs">'+rows.map(([k,pl,t,ic],n)=>`<div class="ak-ad"><i class="${pl?'lg':''}">${pl?akLogo(pl):akI(ic)}</i><b>${akEsc(t)}</b><label class="ak-sw${akPerm(p.email,k,pl)?' on':''}${ed?' off':''}" onclick="akPermFlip('${akEsc(p.email)}','${k}','${akEsc(pl)}',this)"><span></span></label></div>`).join('')+'</div>'+AKB('team'))}
-function akAccessDraw(){const L=AK_PK.map(([k,t,ic])=>[k,'',t,akI(ic)]).concat(((AK.pm&&AK.pm.locked)||[]).map(k=>['plat',k,k,akLogo(k)]));AK.al=L;
+function akAccessDraw(){const L=AK_PK.map(([k,t,ic])=>[k,'',t,akI(ic)]).concat(akAllPl().map(p=>['plat',p.key,p.key,akLogo(p.key)]));AK.al=L;
  akPanel('hmacc',akTmTitle('key','Access')+'<p class="ak-sm ak-mu">Pick what to set, then switch people on or off. Editors always have everything.</p><div class="ak-ch ak-pl ak-cp2">'+L.map(([k,pl,t,ic],n)=>`<button type="button" onclick="akAccPick(${n})"><i>${ic}</i>${akEsc(t)}</button>`).join('')+'</div>'+AKB('teach'))}
 function akAccPick(n){const x=(AK.al||[])[n];if(!x)return;akUser(x[2]);akPermDraw(x[0],x[1],'access')}
 function akPermDraw(key,plat,back){AK.pd=[key,plat,back];const P=akPpl();
  const t=key==='plat'?'Who sees '+plat:{use:'Who can use the bot',add:'Who can add sheets',teach:'Who can teach the bot'}[key];
- const hint=key==='plat'?plat+' is locked. Only the people switched on see its sheets and answers.':key==='use'?'Switch someone off and the bot does not answer them at all.':'';
+ const hint=key==='plat'?'Only the people switched on see '+plat+' sheets and get answers about it.':key==='use'?'Switch someone off and the bot does not answer them at all.':'';
  akPanel('hmpd:'+key+plat,akTmTitle(key==='plat'?'lock':'key',akEsc(t))+(hint?`<p class="ak-sm ak-mu">${akEsc(hint)}</p>`:'')+'<div class="ak-rvs">'+P.map(p=>{const ed=akIsEd(p.email);return `<div class="ak-ad">${tkAv(p)}<b>${akEsc(p.name||p.email)}<small>${ed?'Editor':akEsc(p.email)}</small></b><label class="ak-sw${akPerm(p.email,key,plat)?' on':''}${ed?' off':''}" onclick="akPermFlip('${akEsc(p.email)}','${key}','${akEsc(plat)}',this)"><span></span></label></div>`}).join('')+'</div>'+AKB(back||'access'))}
 async function akPermFlip(e,key,plat,el){if(akIsEd(e)||el.classList.contains('busy'))return;const on=!el.classList.contains('on');el.classList.add('busy');el.classList.toggle('on',on);
  const j=await akAdm('permSet',{email:e,key,plat,on});el.classList.remove('busy');
@@ -10324,7 +10326,7 @@ async function akMove(k){const M=AK.mv;if(!M)return;const to=M.to[k];AK.mv=null;
  if(M.kind==='cat'){const j=await akAdm('catDel',{name:M.from,to});if(j)akCatsDraw(j)}else{const j=await akAdm('platDel',{key:M.from,to});if(j)akPlatsDraw(j)}}
  
 function akPlatsDraw(j){AK.plats=j.plats;
- akPanel('plats',akTmTitle('plat','Platforms')+'<p class="ak-sm ak-mu">Locked platforms are hidden from the team except the people you give access.</p><div class="ak-rvs">'+j.plats.map((p,i)=>`<div class="ak-ad"><i class="lg">${akLogo(p.key)}</i><b>${akEsc(p.key)}</b><em>${p.n}</em><button type="button" class="${p.locked?'lk':''}" aria-label="Lock" onclick="akPl('lock',${i})">${akI(p.locked?'lock':'unlock')}</button>${p.locked?`<button type="button" aria-label="Who has access" onclick="akPl('acc',${i})">${akI('users')}</button>`:''}<button type="button" aria-label="Delete" onclick="akPl('del',${i})">${akI('trash')}</button></div>`).join('')+`</div><div class="ak-nv"><button type="button" onclick="akPl('add')">${akI('add')}Add platform</button></div>`+AKB('teach'))}
+ akPanel('plats',akTmTitle('plat','Platforms')+'<p class="ak-sm ak-mu">The lock hides a platform from everyone by default. The people button sets who sees it.</p><div class="ak-rvs">'+j.plats.map((p,i)=>`<div class="ak-ad"><i class="lg">${akLogo(p.key)}</i><b>${akEsc(p.key)}</b><em>${p.n}</em><button type="button" class="${p.locked?'lk':''}" aria-label="Lock" onclick="akPl('lock',${i})">${akI(p.locked?'lock':'unlock')}</button><button type="button" aria-label="Who sees it" onclick="akPl('acc',${i})">${akI('users')}</button><button type="button" aria-label="Delete" onclick="akPl('del',${i})">${akI('trash')}</button></div>`).join('')+`</div><div class="ak-nv"><button type="button" onclick="akPl('add')">${akI('add')}Add platform</button></div>`+AKB('teach'))}
 async function akPl(a,i){
  if(a==='add'){akBot('<p>Type the new platform name below, in English.</p>');AK.ask={fn:async v=>{const j=await akAdm('platAdd',{key:v});if(j)akPlatsDraw(j)}};return}
  const p=(AK.plats||[])[i];if(!p)return;
