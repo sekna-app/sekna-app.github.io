@@ -8442,6 +8442,27 @@ window.addEventListener('load',function(){
     html body .ab3-glt{gap:6px!important}.ab3-glt svg{width:22px!important;height:19px!important}
     html body .ab3-glt b{font-size:13px!important;margin:0 0 3px!important}html body .ab3-glt small{font-size:7.5px!important;letter-spacing:.24em!important;color:#C9D3F5!important;opacity:.85}
     html body .ab3-glt{padding:6px 10px 6px 12px;border-radius:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);top:calc(26px + env(safe-area-inset-top,0px))!important}
+    /* v330 Lab: plan vs last year as three squares */
+    .pvy{margin-top:8px}.pvy-h{font-size:12px;font-weight:800;color:#6B7385;margin:0 2px 8px}
+    .pvy-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+    .pvy-g div{border-radius:14px;padding:10px 6px;background:#fff;border:1px solid #edf0f6;box-shadow:0 6px 16px rgba(20,40,110,.05);text-align:center;min-width:0}
+    .pvy-g small{display:block;font-size:9.5px;font-weight:900;letter-spacing:.1em;color:#8A93A8}
+    .pvy-g b{display:block;font-size:20px;font-weight:900;margin-top:4px;color:#141B33;font-variant-numeric:tabular-nums}.pvy-g b.dn{color:#C63A4A}.pvy-g b.up{color:#13804F}
+    .pvy-g em{display:block;font-style:normal;font-size:10.5px;font-weight:700;color:#8A93A8;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .pvy-f{margin-top:8px;font-size:11.5px;font-weight:700;color:#8A93A8;text-align:center}
+    body.dark-mode .pvy-g div{background:#151a22;border-color:#2a313c}body.dark-mode .pvy-g b{color:#fff}
+    /* v330 Team Leave: this week as a table */
+    .lw{background:#fff;border-radius:18px;padding:14px;box-shadow:0 10px 26px rgba(20,40,110,.08);margin:10px 0 12px}
+    .lw-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.lw-top b{font-size:15px;font-weight:900;color:#141B33}
+    .lw-top span{font-size:11px;font-weight:900;color:#13804F;background:#E3F6EC;border-radius:99px;padding:3px 9px}.lw-top span.o{color:#A56A06;background:#FDF1D8}
+    .lw-g{display:grid;grid-template-columns:36px repeat(7,minmax(0,1fr));gap:5px;align-items:center}
+    .lw-g>span{text-align:center;font-size:9.5px;font-weight:900;color:#8A93A8;line-height:1.15}.lw-g>span small{display:block;font-size:10px;font-weight:800;color:#B6BDCC}
+    .lw-g>span.on{color:#203C8E}.lw-g>span.on small{color:#203C8E}
+    .lw-av .tk-av{width:32px!important;height:32px!important;font-size:12px}
+    .lw-g>i{height:26px;border-radius:8px;background:#E3F6EC}.lw-g>i.off{background:#FBE3C4}.lw-g>i.t{box-shadow:inset 0 0 0 2px #203C8E}
+    .lw-lg{display:flex;gap:14px;margin-top:12px;font-size:10.5px;font-weight:800;color:#6B7385}
+    .lw-lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:#E3F6EC}.lw-lg i.off{background:#FBE3C4}.lw-lg i.t{background:none;box-shadow:inset 0 0 0 2px #203C8E}
+    body.dark-mode .lw{background:#151a22}body.dark-mode .lw-top b{color:#fff}
 </style>
 </head>
 <body>
@@ -11909,7 +11930,11 @@ function yrHtml(d){
    <div class="yr-ch">${bars}</div><div class="yr-x">${xl}</div>
    <div class="yr-lg"><span><i style="background:#9fb3ea"></i>Spend</span><span><i style="background:#203c8e"></i>Revenue</span><span><i style="background:#13894f"></i>Plan</span></div></div>
   <div class="fc-card as-bl2" style="margin-top:8px">${tbl}</div>
-  ${ly?`<div class="fc-rec ${dr!=null&&dr<0?'warm':''}"><span class="fc-ri">${fcIc('chart')}</span><div><b>Plan vs ${esc(name.slice(0,3))} ${ly.month.slice(0,4)}: ${sg(ds)} spend, ${sg(dr)} revenue</b><small>ROAS ${fmt(p.roas,2)}x vs ${fmt(ly.roas||(ly.cost?ly.value/ly.cost:0),2)}x${soFar?' · '+soFar:''}</small></div></div>`:soFar?`<div class="fc-foot">${soFar}</div>`:''}`;
+  ${ly?(()=>{const lr=ly.roas||(ly.cost?ly.value/ly.cost:0),c=v=>v==null?'':v<0?'dn':'up';
+    return `<div class="pvy"><div class="pvy-h">Plan vs ${esc(name.slice(0,3))} ${ly.month.slice(0,4)}</div><div class="pvy-g">
+     <div><small>SPEND</small><b class="${c(ds)}">${sg(ds)}</b><em>${fcK(p.spend)} vs ${fcK(ly.cost)}</em></div>
+     <div><small>REVENUE</small><b class="${c(dr)}">${sg(dr)}</b><em>${fcK(p.rev)} vs ${fcK(ly.value)}</em></div>
+     <div><small>ROAS</small><b>${p.roas!=null?fmt(p.roas,2)+'x':'—'}</b><em>vs ${fmt(lr,2)}x</em></div></div>${soFar?`<div class="pvy-f">${soFar}</div>`:''}</div>`})():soFar?`<div class="fc-foot">${soFar}</div>`:''}`;
 }
  
 let AS={tab:'index'};
@@ -16149,7 +16174,16 @@ function tkLeaveHtml(){
      ${p.role?`<div class="ln-r"><span>${esc(roleLabel(p.role).toUpperCase())}</span>${dots}</div>`:''}
      ${extra.length?`<div class="lp-ex">${extra.map(l=>{const tt=TK_LEAVE_TYPES.find(x=>x[0]===l.data.type)||TK_LEAVE_TYPES[1];return `<span>${tt[1]} ${(l.data.days||[]).join(', ')}</span>`}).join('')}</div>`:''}</div>
      <em>${w?`<u>${esc(wd)}</u>${b?` · <strong>${first(b.name)}</strong>`:''}`:'No day off'}</em>${admin?'<i class="ln-go">›</i>':''}</button>`}).join('');
- return stats+covers+(people.length?`<div class="lc-ls">${rows}</div>`:'<div class="tk-empty"><b>No one yet</b></div>');
+ 
+ const wk=(()=>{const t=tkToday(),base=new Date(Date.UTC(t.y,t.m-1,t.d)),dow=(base.getUTCDay()+6)%7,mon=new Date(base.getTime()-dow*864e5),fr=tkFrozenToday();
+   const ds=[...Array(7)].map((_,i)=>{const d=new Date(mon.getTime()+i*864e5);return {y:d.getUTCFullYear(),m:d.getUTCMonth()+1,d:d.getUTCDate(),wd:(d.getUTCDay()+1)%7,lab:d.toLocaleDateString('en-GB',{weekday:'short',timeZone:'UTC'}).toUpperCase(),today:i===dow}});
+   const offOn=(email,x)=>{const m=`${x.y}-${String(x.m).padStart(2,'0')}`;return tkLeaveAll().find(l=>l.email===email&&l.data&&(l.data.type==='Weekly'?!fr&&(l.data.weekdays||[]).includes(x.wd):l.month===m&&(l.data.days||[]).includes(x.d)&&!(fr&&l.data.type==='Vacation')))||null};
+   const allIn=!off.length;
+   return `<div class="lw"><div class="lw-top"><b>This week</b><span class="${allIn?'':'o'}">${allIn?'All in today':off.length+' off today'}</span></div>
+    <div class="lw-g"><span></span>${ds.map(x=>`<span class="${x.today?'on':''}">${x.lab}<small>${x.d}</small></span>`).join('')}
+    ${people.map(p=>`<span class="lw-av" title="${esc(p.name)}">${tkAv(p)}</span>${ds.map(x=>{const l=offOn(p.email,x);return `<i class="${l?'off':''}${x.today?' t':''}" title="${esc(first(p.name))} · ${l?esc(l.data.type==='Weekly'?'Day off':l.data.type):'Working'}"></i>`}).join('')}`).join('')}</div>
+    <div class="lw-lg"><span><i></i>Working</span><span><i class="off"></i>Off</span><span><i class="t"></i>Today</span></div></div>`})();
+ return stats+wk+(off.length?covers:'')+(people.length?`<div class="lc-ls">${rows}</div>`:'<div class="tk-empty"><b>No one yet</b></div>');
 }
 
 
