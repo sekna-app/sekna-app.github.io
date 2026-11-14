@@ -78,7 +78,7 @@ async function teamPeople(mem, me) {
     if (!email || seen[email]) return;
     seen[email] = 1;
     const m = mem[email] || {};
-    out.push({ email, name: name || m.name || email.split('@')[0], role: m.role === 'Head of Media' ? 'CEO' : (m.role || ''), avatar: m.avatar || 0 });
+    out.push({ email, name: name || m.name || email.split('@')[0], role: m.role === 'Head of Media' ? 'CEO' : (m.role || ''), avatar: m.avatar || 0, phone: m.phone || '', tz: m.tz || '' });
   };
   const rows = await accessRows();
   rows.forEach(r => { if (r.status === 'Approved') add(r.email, r.name); });
@@ -586,14 +586,20 @@ async function morningPushIfDue() {
     return { day, at: Date.now() };
   });
   if (!claimed) return null;
+  await verifyNudge().catch(e => console.error('Verify nudge: ' + e.message));
   await prunePhotos().catch(e => console.error('Photo clean-up: ' + e.message));
   return morningPush();
 }
 
 /** Router: before the move every call goes to Apps Script unchanged. */
 /** v358 a person's own avatar or photo (and the welcome-done mark), checked here for both Settings and the welcome. */
-async function setMemberSelf(email, value, welcomed) {
+async function setMemberSelf(email, value, welcomed, extra) {
   let v = value;
+  extra = extra || {};
+  // v360 the phone the person adds on their profile (the team sees it) and the time zone of their device (for the place on the profile)
+  let phone = extra.phone, tz = extra.tz;
+  if (phone !== undefined) { phone = String(phone || '').replace(/[^0-9+ ()-]/g, '').trim().slice(0, 22); if (phone && phone.replace(/\D/g, '').length < 6) throw new Error('That phone number looks too short.'); }
+  if (tz !== undefined) { tz = String(tz || '').slice(0, 40); if (tz && !/^[A-Za-z_]+(\/[A-Za-z_+-]+){1,2}$/.test(tz)) tz = undefined; }
   if (typeof v === 'string' && v) {
     if (!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(v)) throw new Error('That photo could not be read.');
     if (v.length > 90000) throw new Error('That photo is too big.');
@@ -606,12 +612,26 @@ async function setMemberSelf(email, value, welcomed) {
     all = all || {};
     const m = all[email] || {};
     if (v !== undefined) { if (v) m.avatar = v; else delete m.avatar; }
-    if (welcomed) m.w = 1;
-    if (m.role || m.avatar || m.w) all[email] = m; else delete all[email];
+    if (welcomed && !(m.w > 1e12)) m.w = Date.now();
+    if (phone !== undefined) { if (phone) m.phone = phone; else delete m.phone; }
+    if (tz) m.tz = tz;
+    if (m.role || m.avatar || m.w || m.phone || m.tz) all[email] = m; else delete all[email];
     result = all[email] || {};
     return all;
   });
   return result;
+}
+/** v360 seven days after the welcome, one push (once ever) to people still showing a letter or an avatar instead of a photo. */
+async function verifyNudge() {
+  const now = Date.now(), due = [];
+  await fsUpdate(DOC.members, all => {
+    if (!all) return undefined;
+    Object.keys(all).forEach(email => { const m = all[email];
+      if (m && m.w > 1e12 && now - m.w >= 7 * 864e5 && !m.vn && !(typeof m.avatar === 'string' && m.avatar)) { m.vn = now; due.push(email); } });
+    return due.length ? all : undefined;
+  });
+  if (due.length) await relay({ pushes: due.map(email => ({ email, title: 'One step to verified', body: 'Your profile is almost there. Add a photo and the blue tick is yours.', eventType: 'profile' })) });
+  return due.length;
 }
 async function clearWelcome(email) {
   await fsUpdate(DOC.members, all => { all = all || {}; const m = all[email]; if (!m || !m.w) return undefined; delete m.w; if (m.role || m.avatar) all[email] = m; else delete all[email]; return all; });

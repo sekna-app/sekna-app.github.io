@@ -8572,6 +8572,37 @@ window.addEventListener('load',function(){
     .wl-id:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,236,190,.8) 50%,transparent 65%);transform:translateX(-120%);animation:wlShn 1.2s .9s ease both}@keyframes wlShn{to{transform:translateX(120%)}}
     .wl-conf{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:3}.wl-conf i{position:absolute;top:-10px;width:7px;height:12px;border-radius:2px;animation:wlFall 2.4s linear forwards}@keyframes wlFall{to{transform:translateY(110vh) rotate(540deg)}}
     @media (prefers-reduced-motion:reduce){.wl *{animation:none!important;transition:none!important}.wl-tr{opacity:1;transform:none}}
+    /* v360 blue tick, verified cover, the profile */
+    .vbd{width:16px;height:16px;vertical-align:-3px;margin-left:4px;display:inline-block;flex:none}
+    .idc-top.v,.wl-id .t.v{background:linear-gradient(120deg,#203C8E,#3D6BFF 60%,#E2B874)!important}
+    .idc-pic{position:relative;border:0;padding:0;cursor:pointer;background:none}.idc-pic .vbd,.wl-id .m>span.vt .vbd{position:absolute;right:0;bottom:2px;width:24px;height:24px;margin:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,.25))}
+    .wl-id .m>span{position:relative}
+    .idc-me>div{flex:1;min-width:0}.idc-view{flex:none;align-self:flex-end;border:0;background:#EEF2FC;color:#203C8E;border-radius:99px;padding:6px 11px;font:inherit;font-size:11.5px;font-weight:900;cursor:pointer;margin-bottom:4px}
+    .pf-tap{display:inline-flex;cursor:pointer;flex:none}
+    .pf{position:fixed;inset:0;z-index:2147481000;background:rgba(10,18,56,0);display:flex;align-items:flex-end;justify-content:center;transition:background .3s}.pf.open{background:rgba(10,18,56,.55)}
+    .pf-card{width:min(460px,100%);max-height:92vh;overflow:auto;background:#F4F6FB;border-radius:24px 24px 0 0;transform:translateY(100%);transition:transform .35s cubic-bezier(.2,.8,.2,1);position:relative;padding-bottom:env(safe-area-inset-bottom,0px)}
+    .pf.open .pf-card{transform:none}
+    .pf-x{position:absolute;right:12px;top:12px;z-index:2;width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.18);display:grid;place-items:center;cursor:pointer}.pf-x .pf-i{stroke:#fff}
+    .pf-cv{height:120px;background:radial-gradient(130% 160% at 0 0,#2C4FB8,#203C8E 55%,#132457);border-bottom:3px solid #E2B874}.pf-cv.v{background:linear-gradient(120deg,#203C8E,#3D6BFF 60%,#E2B874)}
+    .pf-me{display:flex;align-items:flex-end;gap:12px;padding:0 16px;margin-top:-44px}
+    .pf-pic{position:relative;width:96px;height:96px;flex:none;border-radius:50%;box-shadow:0 0 0 4px #F4F6FB;display:block}.pf-pic .sk-emb,.pf-pic>.sk-emb svg{width:100%;height:100%;display:block}
+    .pf-pic .vbd{position:absolute;right:2px;bottom:4px;width:28px;height:28px;margin:0;filter:drop-shadow(0 1px 2px rgba(0,0,0,.25))}
+    .pf-me>div{padding-bottom:6px;min-width:0}.pf-me b{display:block;font-size:19px;font-weight:900;color:#141B33;margin-bottom:5px}
+    .pf-sh{margin:14px 10px 12px;background:#fff;border-radius:22px;padding:6px 14px 14px;box-shadow:0 -4px 18px rgba(20,40,110,.08)}
+    .pf-grab{display:block;width:40px;height:5px;border-radius:9px;background:#D6DCE8;margin:6px auto 10px}
+    .pf-tabs{display:flex;gap:6px}.pf-tabs button{border:0;border-radius:99px;padding:7px 13px;font:inherit;font-size:12px;font-weight:900;background:#EEF1F7;color:#4b5263;cursor:pointer}.pf-tabs button.on{background:#E8EDFB;color:#203C8E}
+    .pf-b{animation:skRise .25s both}.pf-h{font-size:13px;font-weight:900;color:#141B33;margin:14px 0 4px}
+    .pf-r{display:flex;align-items:center;gap:12px;padding:9px 0;font-size:13px;font-weight:800;color:#141B33;text-decoration:none}.pf-t{flex:1;min-width:0;overflow-wrap:anywhere}.pf-t small{display:block;font-size:11px;color:#8a93a8;font-weight:700;margin-top:1px}.pf-t a{color:#203C8E;text-decoration:none}
+    .pf-a .pf-t{color:#203C8E}.pf-i{width:20px;height:20px;fill:none;stroke:#203C8E;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+    .pf-st{flex:none;font-size:10.5px;font-weight:900;border-radius:99px;padding:3px 9px;background:#E3F6EC;color:#13804F}.pf-st.o{background:#FDF1D8;color:#A56A06}
+    .pf-ha{display:flex;align-items:center;gap:10px;padding:7px 0}.pf-hl{width:34px;height:34px;border-radius:10px;background:#fff;box-shadow:0 0 0 1.5px #EDF0F6;display:grid;place-items:center;flex:none}.pf-hl img{width:24px;height:24px;object-fit:contain}
+    .pf-ha b{font-size:14px;font-weight:900;color:#141B33}.pf-ha b.ar{font-family:Cairo,HArab,system-ui,sans-serif;font-size:15px}.pf-ha em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.08em;color:#fff;background:#203C8E;border-radius:6px;padding:2px 6px}
+    .pf-wl{width:38px;height:38px;border-radius:50%;background:#132457;color:#F3D58E;display:grid;place-items:center;font-family:"DM Serif Display",serif;font-size:16px;flex:none}.pf-go{color:#B6BDCC;font-weight:900;font-size:18px}
+    .pf-pen{flex:none;width:32px;height:32px;border-radius:10px;border:0;background:#EEF2FC;display:grid;place-items:center;cursor:pointer}.pf-pen .pf-i{width:15px;height:15px}
+    .pf-add{border:0;background:none;padding:0;font:inherit;font-size:13px;font-weight:900;color:#3D6BFF;cursor:pointer}
+    .pf-in{width:100%;border:1.5px solid #E1E6F0;border-radius:11px;padding:9px 11px;font:inherit;font-size:14px;font-weight:800;color:#141B33;outline:none}.pf-in:focus{border-color:#3D6BFF}
+    .pf-eb{display:flex;gap:6px;margin-top:8px}.pf-eb button{flex:1;border:0;border-radius:10px;padding:8px;font:inherit;font-size:12px;font-weight:900;background:#EEF1F7;color:#141B33;cursor:pointer}.pf-eb .p{background:linear-gradient(135deg,#3d6bff,#203c8e);color:#fff}
+    body.dark-mode .pf-card{background:#0f1420}body.dark-mode .pf-sh{background:#151a22}body.dark-mode .pf-me b,body.dark-mode .pf-r,body.dark-mode .pf-h,body.dark-mode .pf-ha b{color:#fff}body.dark-mode .pf-pic{box-shadow:0 0 0 4px #0f1420}
 </style>
 </head>
 <body>
@@ -14332,7 +14363,7 @@ function updateProfileUI(){
  setTimeout(tkNoticeUI,0);
  const rl=document.getElementById('profileRole');if(rl){const t=roleTier(role);rl.innerHTML=t?`<span class="skr-t">${esc(roleLabel(role).toUpperCase())}</span><span class="skr-p">${[1,2,3,4,5].map(k=>`<i class="${k<=t?'on':''}"></i>`).join('')}</span>`:'';rl.hidden=!role}
  const name=p.name||storeGet(ACCESS_NAME_KEY)||'HEMERA';
- text('profileName',name);
+ {const pn=document.getElementById('profileName');if(pn)pn.innerHTML=esc(name)+vTick(mem&&mem.avatar)}
  text('profileEmail',p.email||storeGet(ACCESS_EMAIL_KEY)||'Signed in');
  const av=document.getElementById('profileAvatar');if(av){av.innerHTML=myAv||letterEmblem(name);av.classList.add('has-emb')}
  renderProfileCard();
@@ -14844,7 +14875,7 @@ function renderAdmin(d){
  const pAv=p=>onDot(`<span class="sk-person-avatar has-emb">${personAv(memberOf(p.email).avatar,p.name)}</span>`,p.last);
  const waitCard=p=>`<div class="pp-w"><div class="pp-wt">${pAv(p)}<div><b>${esc(p.name)}</b><small>${esc(p.email)} · ${seenHtml(p.last,now)}</small></div></div>
    <div class="pp-wa">${personActions(p)}<button class="sk-mini-btn ghost" type="button" onclick="adminEditMember('${esc(p.email)}')">${ADMIN_EDIT===p.email?'Done':'Set position'}</button></div></div>${ADMIN_EDIT===p.email?memberEditor(p):''}`;
- const teamCard=p=>{const open=ADMIN_MENU===p.email;return `<div class="pp-c${open?' open':''}"><div class="pp-ct">${pAv(p)}<div class="pp-m"><b>${esc(p.name)}</b>${roleBadge(memberOf(p.email).role)}<small class="sk-seen">${seenHtml(p.last,now)}</small></div>
+ const teamCard=p=>{const open=ADMIN_MENU===p.email;return `<div class="pp-c${open?' open':''}"><div class="pp-ct"><span class="pf-tap" onclick="profOpen('${esc(p.email)}',event)">${pAv(p)}</span><div class="pp-m"><b>${esc(p.name)}${vTick(memberOf(p.email).avatar)}</b>${roleBadge(memberOf(p.email).role)}<small class="sk-seen">${seenHtml(p.last,now)}</small></div>
    <button type="button" class="pp-mm" onclick="adminMenu('${esc(p.email)}')" aria-label="Actions for ${esc(p.name)}" aria-expanded="${open}">⋯</button></div>
    ${open?`<div class="pp-acts"><small>${esc(p.email)}</small><div>${statusChip(p.status)}${personActions(p)}<button class="sk-mini-btn ghost" type="button" onclick="adminEditMember('${esc(p.email)}')">${ADMIN_EDIT===p.email?'Done':'Position'}</button></div></div>`:''}</div>${ADMIN_EDIT===p.email?memberEditor(p):''}`};
  const peopleView2=`${waiting.length?`<div class="ad-lbl">Waiting · ${waiting.length}</div>${waiting.map(waitCard).join('')}`:''}
@@ -16305,7 +16336,7 @@ function tkLeaveHtml(){
  const offNow=new Set(off.map(x=>x.p.email));
  const rows=people.map((p,i)=>{const w=tkWeeklyOf(p.email),b=w&&w.data.backup?tkPerson(w.data.backup):null, extra=tkLeaveOf(p.email).filter(l=>l.data.type!=='Weekly');
    const wd=w?(w.data.weekdays||[]).map(d=>TK_DAYS[d]).join(', '):'';
-   return `<button type="button" class="ls3-r" style="--i:${i}" ${admin?`onclick="tkNewLeave('${esc(p.email)}')"`:''}>${tkAv(p)}<div class="ls3-m"><b>${esc(p.name)}</b>
+   return `<button type="button" class="ls3-r" style="--i:${i}" ${admin?`onclick="tkNewLeave('${esc(p.email)}')"`:`onclick="profOpen('${esc(p.email)}',event)"`}><span class="pf-tap" onclick="profOpen('${esc(p.email)}',event)">${tkAv(p)}</span><div class="ls3-m"><b>${esc(p.name)}${vTick(p.avatar)}</b>
      <small>${p.role?esc(roleLabel(p.role))+' · ':''}${w?`Off ${esc(wd)}${b?` · ${first(b.name)} covers`:''}`:'No day off'}</small>
      ${extra.length?`<div class="lp-ex">${extra.map(l=>{const tt=TK_LEAVE_TYPES.find(x=>x[0]===l.data.type)||TK_LEAVE_TYPES[1];return `<span>${tt[1]} ${(l.data.days||[]).join(', ')}</span>`}).join('')}</div>`:''}</div>
      <span class="ls3-d${offNow.has(p.email)?' off':''}" title="${offNow.has(p.email)?'Off today':'Working today'}"></span>${admin?'<i class="ls3-go">›</i>':''}</button>`}).join('');
@@ -16927,7 +16958,8 @@ function myAvDraw(){
  const isPh=typeof cur==='string',n=+cur||0,isL=!isPh&&(n===0||(n>100&&n<110)),isAv=!isPh&&!isL,lc=n||106;
  
  const row=(list,on,draw)=>`<div class="idc-g">${list.map(k=>`<button type="button" class="${on(k)?'on':''}" onclick="myAvSet(${k},this)">${draw(k)}</button>`).join('')}</div>`;
- el.innerHTML=`<div class="idc-top"></div><div class="idc-me"><span class="idc-pic">${personAv(cur,name)}</span><div><b>${esc(name||'You')}</b>${role?roleBadge(role):''}</div></div>
+ const me=((P.email||'')+'').toLowerCase(),ver=isVer(cur);
+ el.innerHTML=`<div class="idc-top${ver?' v':''}"></div><div class="idc-me"><button type="button" class="idc-pic" onclick="profOpen('${esc(me)}',event)" aria-label="View your profile">${personAv(cur,name)}${ver?VBADGE:''}</button><div><b>${esc(name||'You')}${vTick(cur)}</b>${role?roleBadge(role):''}</div><button type="button" class="idc-view" onclick="profOpen('${esc(me)}',event)">Profile ›</button></div>
   <div class="idc-f"><label class="${isPh?'on':''}"><input type="file" accept="image/*" onchange="myAvFile(this)" hidden>Upload</label><button type="button" class="${isL?'on':''}${MYAV_OPEN==='l'?' open':''}" onclick="MYAV_OPEN=MYAV_OPEN==='l'?'':'l';myAvDraw()" aria-expanded="${MYAV_OPEN==='l'}">My letter<i></i></button><button type="button" class="${isAv?'on':''}${MYAV_OPEN==='a'?' open':''}" onclick="MYAV_OPEN=MYAV_OPEN==='a'?'':'a';myAvDraw()" aria-expanded="${MYAV_OPEN==='a'}">Avatars<i></i></button></div>
   ${MYAV_OPEN==='l'?row(LETTER_KEEP,k=>isL&&lc===k,k=>letterEmblem(name,k)):MYAV_OPEN==='a'?row(AV_KEEP,k=>n===k,k=>emblemHtml(k)):''}`;
 }
@@ -16946,7 +16978,7 @@ const WL_IC={plan:'<svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M3
 function wlMaybe(){
  const P=ACCESS_PROFILE||{};if(!P.welcome||window.WL_SHOWN||document.getElementById('wlBox'))return;
  
- window.WL_SHOWN=1;serverCall('setMyProfile',getAccessToken(),{}).then(r=>{if(r&&r.member)ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE||{},{member:r.member,welcome:false})}).catch(()=>{});
+ window.WL_SHOWN=1;serverCall('setMyProfile',getAccessToken(),{welcome:true,tz:pfDevTz()}).then(r=>{if(r&&r.member)ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE||{},{member:r.member,welcome:false})}).catch(()=>{});
  const mem=P.member||{};WL.step=0;WL.name=P.name||'';WL.av=mem.avatar&&typeof mem.avatar!=='string'?+mem.avatar:0;WL.photo=typeof mem.avatar==='string'?mem.avatar:'';WL.push=false;
  const o=document.createElement('div');o.id='wlBox';o.className='wl';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Welcome to HEMERA');
  o.innerHTML=`<div class="wl-sea" aria-hidden="true">${WL_SEA}</div><div class="wl-ban" id="wlBan"><span>H</span><div><b>HEMERA · now</b><small>You are all set. Alerts will look like this.</small></div></div>`;
@@ -16961,7 +16993,7 @@ function wlDraw(){
  if(WL.step===1)s.innerHTML=`<small class="wl-k">STEP 1 · YOUR NAME</small><h2 class="l">How should the team see you?</h2><input class="wl-in" id="wlName" value="${esc(WL.name)}" maxlength="30" autocomplete="name"><div class="wl-chips">${[String(WL.name).split(' ')[0],WL.name].filter((v,i,a)=>v&&a.indexOf(v)===i).map(v=>`<button type="button" data-n="${esc(v)}" class="${v===WL.name?'on':''}">${esc(v)}</button>`).join('')}</div><div class="wl-bot">${dots}<button type="button" class="wl-btn g" data-go>Next</button></div>`;
  if(WL.step===2)s.innerHTML=`<small class="wl-k">STEP 2 · YOUR PICTURE</small><div class="wl-big">${wlPic()}</div><div class="wl-pk">${LETTER_KEEP.slice(0,3).map(k=>`<button type="button" data-a="${k}" class="${!WL.photo&&(WL.av||106)===k?'on':''}">${letterEmblem(WL.name,k)}</button>`).join('')}${AV_KEEP.map(k=>`<button type="button" data-a="${k}" class="${!WL.photo&&WL.av===k?'on':''}">${emblemHtml(k)}</button>`).join('')}</div><div class="wl-bot">${dots}<label class="wl-btn l"><input type="file" accept="image/*" hidden id="wlFile">Upload a photo</label><button type="button" class="wl-btn g" data-go>Next</button></div>`;
  if(WL.step===3)s.innerHTML=`<small class="wl-k">STEP 3 · STAY IN THE LOOP</small><div class="wl-bell">${WL_IC.bell}</div><h2>What should we tell you?</h2><p>Media plan updates, your tasks and new seasons.</p><div class="wl-tl">${[['plan','Media plan','When the numbers update'],['task','Your tasks','New tasks and backups'],['season','Seasons','Reminders before each season']].map(r=>`<div class="wl-tr"><span class="wl-ti">${WL_IC[r[0]]}</span><b>${r[1]}<small>${r[2]}</small></b><span class="wl-ck">✓</span></div>`).join('')}</div><div class="wl-bot">${dots}<button type="button" class="wl-btn g" id="wlPush">Turn on alerts</button><button type="button" class="wl-btn l" data-go>Maybe later</button></div>`;
- if(WL.step===4)s.innerHTML=`<h2 style="margin-top:40px">You are all set</h2><p>This is how the team sees you</p><div class="wl-id"><div class="t"></div><div class="m"><span>${wlPic()}</span><div><b>${esc(WL.name)}</b>${(ACCESS_PROFILE&&ACCESS_PROFILE.member&&ACCESS_PROFILE.member.role)?roleBadge(ACCESS_PROFILE.member.role):''}</div></div></div><div class="wl-bot"><button type="button" class="wl-btn g" id="wlTour">Take the one-minute tour</button><button type="button" class="wl-btn l" id="wlEnd">Start using HEMERA</button></div>`;
+ if(WL.step===4)s.innerHTML=`<h2 style="margin-top:40px">You are all set</h2><p>This is how the team sees you</p><div class="wl-id"><div class="t${WL.photo?' v':''}"></div><div class="m"><span class="${WL.photo?'vt':''}">${wlPic()}${WL.photo?VBADGE:''}</span><div><b>${esc(WL.name)}</b>${(ACCESS_PROFILE&&ACCESS_PROFILE.member&&ACCESS_PROFILE.member.role)?roleBadge(ACCESS_PROFILE.member.role):''}</div></div></div><div class="wl-bot"><button type="button" class="wl-btn g" id="wlTour">Take the one-minute tour</button><button type="button" class="wl-btn l" id="wlEnd">Start using HEMERA</button></div>`;
  o.appendChild(s);if(old){old.classList.add('out');setTimeout(()=>old.remove(),480)}
  requestAnimationFrame(()=>requestAnimationFrame(()=>s.classList.remove('in')));
  const redraw=()=>{const b=s.querySelector('.wl-big');if(b)b.innerHTML=wlPic();s.querySelectorAll('[data-a]').forEach(x=>{const k=+x.dataset.a;x.classList.toggle('on',!WL.photo&&(k>100?(WL.av||106)===k&&(!WL.av||WL.av>100):WL.av===k))});s.querySelectorAll('[data-n]').forEach(x=>x.classList.toggle('on',x.dataset.n===WL.name))};
@@ -16990,6 +17022,68 @@ async function wlSave(){
  catch(err){showSettingsToast(errorText(err))}
 }
 function wlConfetti(el){const c=document.createElement('div');c.className='wl-conf';const col=['#F3D58E','#E2B874','#fff','#3d6bff','#2FCB86'];for(let i=0;i<40;i++){const x=document.createElement('i');x.style.left=Math.random()*100+'%';x.style.background=col[i%5];x.style.animationDelay=Math.random()*.6+'s';x.style.animationDuration=1.8+Math.random()*1.4+'s';c.appendChild(x)}el.appendChild(c);setTimeout(()=>c.remove(),3800)}
+
+
+const VBADGE='<svg class="vbd" viewBox="0 0 24 24" aria-label="Verified"><path d="M12 1.5l2.6 2 3.2-.3 1 3.1 2.8 1.6-.9 3.1 1.4 2.9-2.6 1.9-.5 3.2-3.2.4-2 2.6-2.8-1.6-2.8 1.6-2-2.6-3.2-.4-.5-3.2L1.9 14l1.4-2.9-.9-3.1 2.8-1.6 1-3.1 3.2.3z" fill="#3D6BFF"/><path d="M7.5 12.3l3 3 6-6.3" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function isVer(a){return typeof a==='string'&&/^data:image\//.test(a)}
+function vTick(a){return isVer(a)?VBADGE:''}
+
+const PF={email:'',tab:'about',edit:false};
+const PF_TZ={'Africa/Cairo':'Cairo, Egypt','Asia/Muscat':'Muscat, Oman','Europe/London':'London, UK','Asia/Dubai':'Dubai, UAE','Asia/Riyadh':'Riyadh, Saudi Arabia','Asia/Qatar':'Doha, Qatar','Asia/Kuwait':'Kuwait City, Kuwait','America/New_York':'New York, US','America/Chicago':'Chicago, US','America/Los_Angeles':'Los Angeles, US'};
+const PF_IC={clock:'<path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"/><path d="M12 7v5l3 2"/>',pin:'<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',phone:'<path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2"/>',pen:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M14 6l4 4"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',heart:'<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>'};
+const pfI=k=>`<svg class="pf-i" viewBox="0 0 24 24" aria-hidden="true">${PF_IC[k]}</svg>`;
+function pfDevTz(){try{return Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){return ''}}
+function pfPerson(email){
+ const me=tkMe()||((ACCESS_PROFILE&&ACCESS_PROFILE.email)||'').toLowerCase(),P=ACCESS_PROFILE||{};
+ if(email===me){const m=P.member||{};return {email,name:P.name||'',role:m.role||'',avatar:m.avatar||0,phone:m.phone||'',tz:pfDevTz(),self:true}}
+ const t=(TK.data&&TK.data.people||[]).find(x=>x.email===email),m=(typeof memberOf==='function'&&memberOf(email))||{};
+ return Object.assign({email,name:'',role:'',avatar:0,phone:'',tz:''},m,t||{},{self:false});
+}
+function profOpen(email,ev){
+ if(ev){ev.stopPropagation();ev.preventDefault()}
+ email=String(email||'').toLowerCase();if(!email)return;
+ if(!TK.data){try{const c=JSON.parse(storeGet('sekna_tasks_'+tkMonthNow())||'null');if(c)TK.data=c}catch(e){}}
+ PF.email=email;PF.tab='about';PF.edit=false;
+ document.getElementById('pfBox')?.remove();
+ const o=document.createElement('div');o.id='pfBox';o.className='pf';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');
+ o.addEventListener('click',e=>{if(e.target===o)profClose()});document.body.appendChild(o);pfDraw();
+ requestAnimationFrame(()=>o.classList.add('open'));
+ const P=pfPerson(email);if(P.self){const tz=pfDevTz(),m=(ACCESS_PROFILE&&ACCESS_PROFILE.member)||{};if(tz&&tz!==m.tz&&!window.PF_TZ_SENT){window.PF_TZ_SENT=1;serverCall('setMyProfile',getAccessToken(),{tz}).then(r=>{if(r&&r.member)ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE,{member:r.member})}).catch(()=>{})}}
+}
+function profClose(){const o=document.getElementById('pfBox');if(!o)return;o.classList.remove('open');setTimeout(()=>o.remove(),320)}
+function pfLeave(email){
+ const w=tkWeeklyOf(email),days=(w&&w.data&&w.data.weekdays)||[],off=typeof tkOffToday==='function'?tkOffToday(email):null;
+ const chip=`<span class="pf-st${off?' o':''}">${off?'Off today':'Working today'}</span>`;
+ if(!TK.data)return `<div class="pf-r">${pfI('clock')}<div class="pf-t">Days off<small>Open Team Leave once to see them</small></div></div>`;
+ if(!days.length)return `<div class="pf-r">${pfI('clock')}<div class="pf-t">Available every day<small>No weekly day off</small></div>${chip}</div>`;
+ const av=[0,1,2,3,4,5,6].filter(d=>days.indexOf(d)<0);
+ const span=days.length===1?`${TK_DAYS_L[(days[0]+1)%7]} to ${TK_DAYS_L[(days[0]+6)%7]}`:av.map(d=>TK_DAYS[d]).join(' · ');
+ return `<div class="pf-r">${pfI('clock')}<div class="pf-t">Off on ${days.map(d=>TK_DAYS_L[d]+'s').join(' & ')}<small>Available ${span}</small></div>${chip}</div>`;
+}
+function pfDraw(){
+ const o=document.getElementById('pfBox');if(!o)return;const P=pfPerson(PF.email),ver=isVer(P.avatar);
+ let place='';if(P.tz&&!/^(UTC|Etc\/)/.test(P.tz)){const nm=PF_TZ[P.tz]||String(P.tz).split('/').pop().replace(/_/g,' ');let tm='';try{tm=new Date().toLocaleTimeString('en-US',{timeZone:P.tz,hour:'numeric',minute:'2-digit'})}catch(e){}place=`<div class="pf-r">${pfI('pin')}<div class="pf-t">${esc(nm)}<small>${P.self?'From this device':'From their device'}${tm?' · '+esc(tm)+' local':''}</small></div></div>`}
+ const about=`<div class="pf-h">Details</div>${pfLeave(P.email)}${place}
+  <div class="pf-h">Works on</div><div class="pf-ha"><span class="pf-hl"><img src="icons/ha-brand.png" alt=""></span><b class="ar" lang="ar" dir="rtl">هيومن أبيل عربي</b></div><div class="pf-ha"><span class="pf-hl"><img src="icons/ha-brand.png" alt=""></span><b>Human Appeal</b><em>US</em></div>
+  <div class="pf-h">Links</div><a class="pf-r pf-a" href="https:\/\/sekna.co.uk/" target="_blank" rel="noopener">${pfI('globe')}<div class="pf-t">sekna.co.uk<small>Website</small></div></a>`;
+ const phone=PF.edit?`<div class="pf-r">${pfI('phone')}<div class="pf-t"><input class="pf-in" id="pfPh" type="tel" inputmode="tel" maxlength="22" value="${esc(P.phone)}" placeholder="+20 100 000 0000"><div class="pf-eb"><button type="button" onclick="PF.edit=false;pfDraw()">Cancel</button><button type="button" class="p" onclick="pfSavePhone(this)">Save</button></div></div></div>`
+  :P.phone?`<div class="pf-r">${pfI('phone')}<div class="pf-t"><a href="tel:${esc(P.phone.replace(/[^0-9+]/g,''))}">${esc(P.phone)}</a><small>Phone · the team sees it</small></div>${P.self?`<button type="button" class="pf-pen" onclick="PF.edit=true;pfDraw()" aria-label="Edit phone">${pfI('pen')}</button>`:''}</div>`
+  :P.self?`<div class="pf-r">${pfI('phone')}<div class="pf-t"><button type="button" class="pf-add" onclick="PF.edit=true;pfDraw()">Add a phone number</button><small>Only the team sees it</small></div><button type="button" class="pf-pen" onclick="PF.edit=true;pfDraw()" aria-label="Add phone">${pfI('pen')}</button></div>`
+  :`<div class="pf-r">${pfI('phone')}<div class="pf-t">No phone yet<small>Phone</small></div></div>`;
+ const contact=`<div class="pf-h">Contact info</div><a class="pf-r pf-a" href="mailto:${esc(P.email)}">${pfI('mail')}<div class="pf-t">${esc(P.email)}<small>Email</small></div></a>${phone}`;
+ const plat=`<div class="pf-h">Platforms</div><a class="pf-r pf-a" href="https:\/\/wusul.io/services/" target="_blank" rel="noopener"><span class="pf-wl">W</span><div class="pf-t">Wusul<small>Audience intelligence · reaching new clients</small></div><span class="pf-go">›</span></a>`;
+ const body=PF.tab==='contact'?contact:PF.tab==='plat'?plat:about;
+ o.innerHTML=`<div class="pf-card"><button type="button" class="pf-x" onclick="profClose()" aria-label="Close">${pfI('x')}</button>
+  <div class="pf-cv${ver?' v':''}"></div><div class="pf-me"><span class="pf-pic">${personAv(P.avatar,P.name)}${ver?VBADGE:''}</span><div><b>${esc(P.name||P.email.split('@')[0])}</b>${P.role?roleBadge(P.role):''}</div></div>
+  <div class="pf-sh"><i class="pf-grab"></i><div class="pf-tabs">${[['about','About'],['contact','Contact'],['plat','Platforms']].map(([k,l])=>`<button type="button" class="${PF.tab===k?'on':''}" onclick="PF.tab='${k}';PF.edit=false;pfDraw()">${l}</button>`).join('')}</div><div class="pf-b">${body}</div></div></div>`;
+ if(PF.edit)setTimeout(()=>document.getElementById('pfPh')?.focus(),50);
+}
+async function pfSavePhone(btn){
+ const v=(document.getElementById('pfPh')||{}).value||'';btn.disabled=true;btn.textContent='Saving…';
+ try{const r=await serverCall('setMyProfile',getAccessToken(),{phone:v.trim()});ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE||{},{member:(r&&r.member)||{}});
+  const me=(TK.data&&TK.data.people||[]).find(x=>x.email===PF.email);if(me)me.phone=(r&&r.member&&r.member.phone)||'';PF.edit=false;pfDraw();showSettingsToast('Saved')}
+ catch(err){btn.disabled=false;btn.textContent='Save';showSettingsToast(errorText(err))}
+}
 let AVC=null;
 function myAvFile(inp){
  const f=inp.files&&inp.files[0];inp.value='';if(!f)return;
