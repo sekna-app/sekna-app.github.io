@@ -10090,7 +10090,7 @@ async function akPost(action,extra){
 }
 async function akAssets(force){
  if(!force&&AK.assets&&Date.now()-AK.at<600000)return AK.assets;
- const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[]};AK.editor=!!j.editor;AK.at=Date.now();akKb();return AK.assets;
+ const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[],categories:j.categories||[],formats:j.formats||[]};AK.editor=!!j.editor;AK.at=Date.now();akKb();return AK.assets;
 }
 function openAsk(){
  if(!canDo('ask'))return;closeSidebar();
@@ -10254,12 +10254,16 @@ function akShow(id){
 
 function akBackList(){akUser('Back to the list');const rows=AK.res||[];akBot(`<p><b>${rows.length} ${rows.length===1?'result':'results'}</b> <span class="ak-mu">· ${akEsc(AK.nav.p||'')} · ${AK.nav.a==='BOTH'?'Both':akEsc(AK.nav.a||'')}</span></p><div class="ak-rs">${akResRows(rows,6)}</div>`,'wb')}
  
-const AK_ADD=[['Task_Name','Name','text'],['Platform','Platform','pl'],['Account','Account','ac'],['Category','Category','text'],['Format','Format','fm'],['Source_Sheet_Name','Sheet name','text'],['Source_Sheet_URL','Sheet link','url'],['Report_Name','Report name','text'],['Report_URL','Report link','url'],['Script_Name','Script name','text'],['Script_URL','Script link','url'],['Notes','Notes','text']];
+const AK_ADD=[['Task_Name','Name','text'],['Platform','Platform','pl'],['Account','Account','ac'],['Category','Category','ct'],['Format','Format','fm'],['Source_Sheet_Name','Sheet name','text'],['Source_Sheet_URL','Sheet link','url'],['Report_Name','Platform report name','text'],['Report_URL','Platform report link','url'],['Script_Name','Script name','text'],['Script_URL','Script link (platform or report)','url'],['Notes','Notes','text']];
+
+function akCats(a){const base=['Sekna Daily Report','Briefing','Reporting','Partnerships','Performance','Operations','Media Plan','Search Terms','Budget','Pmax','AI Max','Dashboard'];
+ const out=[],seen={},add=x=>{x=String(x||'').trim();const k=x.toLowerCase();if(x&&!seen[k]){seen[k]=1;out.push(x)}};
+ ((a&&a.categories)||[]).forEach(add);if(!out.length){base.forEach(add);((a&&a.rows)||[]).forEach(r=>add(r.category))}return out}
 async function akAddForm(){
  const a=await akNeedAssets();if(!a)return;
  if(!AK.editor){akBot('<p>Only editors can add sheets.</p>');return}
  const sel=(k,list)=>`<select name="${k}">${list.map(x=>`<option>${akEsc(x)}</option>`).join('')}</select>`;
- const f=AK_ADD.map(([k,l,t])=>`<label><span>${l}</span>${t==='pl'?sel(k,a.platforms.map(p=>p.key)):t==='ac'?sel(k,['USA','AR']):t==='fm'?sel(k,['Sheet','Screenshot','Weekly Screenshot','Dashboard','Sheet, Screenshot','Sheet, Dashboard']):`<input name="${k}" ${t==='url'?'type="url" inputmode="url"':''} maxlength="500">`}</label>`).join('');
+ const f=AK_ADD.map(([k,l,t])=>`<label><span>${l}</span>${t==='pl'?sel(k,a.platforms.map(p=>p.key)):t==='ac'?sel(k,['USA','AR']):t==='ct'?sel(k,akCats(a)):t==='fm'?sel(k,a.formats&&a.formats.length?a.formats:['Sheet','Screenshot','Weekly Screenshot','Dashboard','Sheet, Screenshot','Sheet, Dashboard']):`<input name="${k}" ${t==='url'?'type="url" inputmode="url"':''} maxlength="500">`}</label>`).join('');
  akBot(`<form class="ak-fm" onsubmit="akAddSave(event,this)">${f}<button type="submit" class="ak-go">${akI('add')}Add to the sheet</button></form>`,'wide');
 }
 async function akAddSave(e,form){
