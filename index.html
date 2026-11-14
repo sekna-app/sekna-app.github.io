@@ -8859,6 +8859,74 @@ body .sk-drawer .sk-user .sk-so-t{display:none}
 .wl-sl.p0 p{animation:wlUp .6s cubic-bezier(.2,.8,.2,1) 1.2s backwards}
 .wl-sl.p0 .wl-bot{animation:wlFd .5s ease 1.5s backwards}
 @media (prefers-reduced-motion:reduce){.wl-sl.p0 *{animation:none!important}}
+/* v378 Ask HEMERA chat page: full screen on phones, a centred panel on desktop */
+.ak{position:fixed;inset:0;z-index:2147480000;display:flex;justify-content:center;align-items:stretch;background:rgba(10,18,56,0);transition:background .28s}
+.ak.open{background:rgba(10,18,56,.45)}
+.ak-card{position:relative;width:100%;max-width:560px;background:#F3F5FA;display:flex;flex-direction:column;transform:translateY(24px);opacity:0;transition:transform .32s cubic-bezier(.2,.8,.2,1),opacity .25s;font-family:Inter,system-ui,sans-serif}
+.ak.open .ak-card{transform:none;opacity:1}
+.ak-ic{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ak-hd{background:linear-gradient(135deg,#2a4bb3,#16307f);color:#fff;padding:calc(14px + env(safe-area-inset-top,0px)) 14px 14px;display:flex;align-items:center;gap:10px}
+.ak-bk{width:36px;height:36px;border-radius:11px;border:0;background:rgba(255,255,255,.14);color:#fff;display:grid;place-items:center;cursor:pointer}
+.ak-bk .ak-ic{width:18px;height:18px}
+.ak-av{width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3557c4,#132a73);display:grid;place-items:center;box-shadow:0 0 0 2px #E2B874}
+.ak-av .ak-ic{fill:#F3D58E;stroke:none;width:19px;height:19px}
+.ak-hd b{display:block;font-size:16px;font-weight:900}.ak-hd small{font-size:11px;color:#C9D3F5;font-weight:700;display:flex;align-items:center;gap:5px}
+.ak-hd small:before{content:"";width:6px;height:6px;border-radius:50%;background:#34d399}
+.ak-bd{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:8px;-webkit-overflow-scrolling:touch}
+.ak-m{max-width:84%;border-radius:16px;padding:9px 12px;font-size:13.5px;font-weight:600;line-height:1.5;unicode-bidi:plaintext;animation:akIn .35s cubic-bezier(.2,.8,.2,1) backwards}
+@keyframes akIn{from{opacity:0;transform:translateY(8px)}}
+.ak-m p{margin:0 0 4px;unicode-bidi:plaintext;text-align:start}.ak-m p:last-child{margin-bottom:0}
+.ak-m.u{align-self:flex-end;background:linear-gradient(135deg,#2453d6,#1C3C96);color:#fff;border-radius:16px 16px 4px 16px}
+.ak-m.h{align-self:flex-start;background:#fff;color:#141b33;border-radius:16px 16px 16px 4px;box-shadow:0 4px 14px -8px rgba(15,26,58,.3)}
+.ak-m.wide{max-width:94%;width:94%;padding:0;background:none;box-shadow:none}
+.ak-mut{color:#7a8296}
+.ak-dots{display:flex;gap:4px;padding:12px 14px}.ak-dots i{width:6px;height:6px;border-radius:50%;background:#9aa2b6;animation:akBl 1s infinite}.ak-dots i:nth-child(2){animation-delay:.15s}.ak-dots i:nth-child(3){animation-delay:.3s}
+@keyframes akBl{50%{background:#203c8e}}
+.ak-ch{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.ak-ch button{border:1.5px solid #d9e0f2;background:#fff;border-radius:99px;padding:5px 12px;font:800 12px Inter,system-ui,sans-serif;color:#203c8e;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.ak-ch button i{font-style:normal;background:#EEF2FC;border-radius:99px;padding:0 6px;font-size:10.5px}
+.ak-ch button:active{background:#203c8e;color:#fff}
+.ak-ch button.lk{opacity:.5;cursor:default}.ak-ch .ak-ic{width:12px;height:12px}
+.ak-ls{display:flex;flex-direction:column;margin-top:6px;border:1px solid #eef1f7;border-radius:12px;overflow:hidden}
+.ak-ls button{border:0;background:#fff;text-align:left;padding:9px 10px;font:800 12.5px Inter,system-ui,sans-serif;color:#141b33;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer}
+.ak-ls button+button{border-top:1px solid #f0f2f8}.ak-ls .ak-ic{transform:rotate(180deg);color:#b9c0d2;width:14px;height:14px}
+.ak-lk{display:flex;align-items:center;gap:8px;margin:5px 0;padding:8px 10px;border-radius:12px;background:#F4F6FB;color:#203c8e;text-decoration:none;font-weight:900;font-size:12.5px}
+.ak-lk span{flex:1}.ak-lk .ak-ic:last-child{width:13px;height:13px;color:#9aa2b6}
+.ak-lk.g>.ak-ic:first-child{color:#1E8E3E}.ak-lk.r>.ak-ic:first-child{color:#1a73e8}.ak-lk.s>.ak-ic:first-child{color:#C9A24A}
+.ak-row{display:flex;align-items:center;gap:10px;padding:6px 0;color:#141b33;text-decoration:none}
+.ak-row .tk-av{width:30px!important;height:30px!important;flex:none}
+.ak-row b{display:block;font-size:12.5px;font-weight:900}.ak-row small{display:block;font-size:11px;color:#7a8296;font-weight:700}
+.ak-go{margin-top:8px;display:inline-flex;align-items:center;gap:7px;border:0;border-radius:11px;padding:8px 12px;background:#1C3C96;color:#fff;font:800 12px Inter,system-ui,sans-serif;cursor:pointer}
+.ak-go .ak-ic{color:#F3D58E;width:15px;height:15px}
+.ak-rc{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 8px 22px -12px rgba(15,26,58,.35);direction:ltr;text-align:left}
+.ak-rt{background:linear-gradient(135deg,#2a4bb3,#16307f);color:#fff;padding:12px 13px;display:flex;align-items:center;gap:10px}
+.ak-rt i{width:34px;height:34px;border-radius:11px;background:rgba(243,213,142,.18);display:grid;place-items:center;color:#F3D58E;flex:none}
+.ak-rt b{font-size:14.5px;font-weight:900;display:block;word-break:break-word}.ak-rt small{font-size:11px;color:#C9D3F5;font-weight:700}
+.ak-tg{display:flex;gap:5px;flex-wrap:wrap;padding:10px 12px 2px}.ak-tg span{border-radius:99px;padding:3px 9px;font:800 10.5px Inter,system-ui,sans-serif;background:#EEF2FC;color:#203c8e}
+.ak-rl{display:flex;align-items:center;gap:10px;padding:9px 12px}.ak-rl+.ak-rl{border-top:1px solid #f0f2f8}
+.ak-rl .k{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:none}
+.ak-rl .k.g{background:#E7F5EC;color:#1E8E3E}.ak-rl .k.r{background:#E8F0FE;color:#1a73e8}.ak-rl .k.s{background:#FBF3E2;color:#C9A24A}
+.ak-rl>div{flex:1;min-width:0}.ak-rl b{font-size:12.5px;font-weight:900;display:block;color:#141b33}.ak-rl small{font-size:10.5px;color:#7a8296;font-weight:700;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ak-rl a{flex:none;background:#203c8e;color:#fff;border-radius:9px;padding:5px 11px;font:800 11px Inter,system-ui,sans-serif;text-decoration:none}
+.ak-nt{padding:4px 12px 12px;color:#5B6478;font-size:12px}
+.ak-fm{background:#fff;border-radius:18px;padding:12px;display:grid;gap:8px;box-shadow:0 8px 22px -12px rgba(15,26,58,.35)}
+.ak-fm label{display:grid;gap:3px}.ak-fm label span{font-size:10.5px;font-weight:900;letter-spacing:.06em;color:#7a8296;text-transform:uppercase}
+.ak-fm input,.ak-fm select{border:1.5px solid #e3e8f4;border-radius:10px;padding:8px 10px;font:700 13px Inter,system-ui,sans-serif;color:#141b33;background:#F8F9FC;min-width:0}
+.ak-fm .ak-go{justify-self:start}
+.ak-kb{background:#E9EDF6;padding:8px 10px 6px;display:grid;grid-template-columns:1fr 1fr;gap:6px;animation:akKb .4s cubic-bezier(.2,.8,.2,1) backwards}
+.ak-kb[hidden]{display:none}
+@keyframes akKb{from{transform:translateY(30px);opacity:0}}
+.ak-kb button{border:0;background:#fff;border-radius:12px;padding:11px 6px;display:flex;align-items:center;justify-content:center;gap:6px;font:800 12.5px Inter,system-ui,sans-serif;color:#141b33;box-shadow:0 2px 0 #d5dbea;cursor:pointer}
+.ak-kb button .ak-ic{color:#C9A24A;width:15px;height:15px}.ak-kb button.w{grid-column:1/-1}
+.ak-in{margin:8px 12px calc(12px + env(safe-area-inset-bottom,0px));background:#fff;border-radius:16px;padding:6px;display:flex;align-items:center;gap:8px;box-shadow:0 6px 18px -10px rgba(15,26,58,.35)}
+.ak-in input{flex:1;min-width:0;border:0;outline:none;background:none;font:700 14px Inter,system-ui,sans-serif;color:#141b33;unicode-bidi:plaintext}
+.ak-mb{flex:none;height:36px;border:0;border-radius:11px;background:#1C3C96;color:#F3D58E;display:flex;align-items:center;gap:6px;padding:0 11px;font:900 12px Inter,system-ui,sans-serif;cursor:pointer}
+.ak-snd{flex:none;width:36px;height:36px;border:0;border-radius:11px;background:linear-gradient(135deg,#F3D58E,#C9A24A);display:grid;place-items:center;color:#2a1d00;cursor:pointer}
+@media (min-width:900px){.ak{align-items:center;padding:24px}.ak.open{-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}.ak-card{height:min(760px,92vh);border-radius:24px;overflow:hidden;box-shadow:0 30px 70px -20px rgba(10,18,56,.6)}.ak-hd{padding-top:14px}}
+body.dark-mode .ak-card{background:#0f141c}body.dark-mode .ak-m.h,body.dark-mode .ak-in,body.dark-mode .ak-kb button,body.dark-mode .ak-rc,body.dark-mode .ak-fm,body.dark-mode .ak-ls button{background:#171d27;color:#e8ecf3}
+body.dark-mode .ak-kb{background:#0b1016}body.dark-mode .ak-in input,body.dark-mode .ak-rl b,body.dark-mode .ak-row b,body.dark-mode .ak-row{color:#e8ecf3}
+body.dark-mode .ak-ch button{background:#171d27;border-color:#2a3242;color:#c9d6ff}body.dark-mode .ak-lk{background:#1d2431;color:#c9d6ff}
+body.dark-mode .ak-fm input,body.dark-mode .ak-fm select{background:#0f141c;border-color:#2a3242;color:#e8ecf3}
 </style>
 </head>
 <body>
@@ -9032,7 +9100,7 @@ body .sk-drawer .sk-user .sk-so-t{display:none}
   <div class="sk-grp-body" id="grp-ai"><nav class="sk-nav" aria-label="AI Reports">
     <button class="sk-nav-btn" id="monthsTabBtn" type="button" onclick="switchDashboardTab('months')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M7 4l-3 3M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/></svg></span><span>Reports Studio</span></button>
     <button class="sk-nav-btn" id="seasonsTabBtn" type="button" onclick="switchDashboardTab('seasons')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/><path d="M14.5 13.2a2.6 2.6 0 1 0 1.8 4.3 3.2 3.2 0 0 1-1.8-4.3z"/></svg></span><span>Seasons Calendar</span></button>
-    <button class="sk-nav-btn" id="askNavBtn" type="button" onclick="openSoon('ask')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/><path d="M18.5 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg></span><span>Ask HEMERA</span><span class="sk-soon">Soon</span></button>
+    <button class="sk-nav-btn" id="askNavBtn" type="button" onclick="openAsk()"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/><path d="M18.5 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg></span><span>Ask HEMERA</span><span class="sk-soon">Soon</span></button>
   </nav></div>
 
   <button class="sk-grp" type="button" data-grp="tt" onclick="navGroup('tt')" aria-expanded="false"><span class="sk-gt"><b>Team Tasks</b><small class="sk-gn"></small></span><svg class="sk-gchev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
@@ -9898,6 +9966,171 @@ const SOON={
 
 const SEKNA_TG_BOT='';
 function openTgBot(){if(!SEKNA_TG_BOT)return;try{const w=window.open(SEKNA_TG_BOT,'_blank');if(!w)location.href=SEKNA_TG_BOT}catch(e){location.href=SEKNA_TG_BOT}}
+
+ 
+let ASK_HEMERA_URL='';
+const AK={msgs:[],assets:null,at:0,editor:false,hist:[],busy:false,kb:true,nav:{},add:null};
+const AK_IC={
+ spk:'<path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/><path d="M18.5 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>',
+ back:'<path d="M15 18l-6-6 6-6"/>',send:'<path d="M5 12h14M13 6l6 6-6 6"/>',menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
+ links:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 3v18"/>',
+ off:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+ mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+ task:'<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>',
+ add:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 9v6M9 12h6"/>',
+ about:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+ rep:'<path d="M4 19V5M4 19h16M8 15l4-4 3 3 5-6"/>',code:'<path d="M9 8l-4 4 4 4M15 8l4 4-4 4"/>',
+ lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',out:'<path d="M7 17L17 7M9 7h8v8"/>'};
+function akI(k){return `<svg class="ak-ic" viewBox="0 0 24 24" aria-hidden="true">${AK_IC[k]||''}</svg>`}
+function akEsc(x){return esc(String(x==null?'':x))}
+function akMe(){const P=ACCESS_PROFILE||{};return{email:String(P.email||tourEmail()||'').toLowerCase(),name:String(P.name||'').trim()}}
+async function akPost(action,extra){
+ if(!ASK_HEMERA_URL)throw new Error('not connected');
+ const me=akMe();
+ const r=await fetch(ASK_HEMERA_URL,{method:'POST',body:JSON.stringify(Object.assign({action,email:me.email,name:me.name},extra||{}))});
+ const j=await r.json();if(!j||!j.ok)throw new Error((j&&j.error)||'failed');return j;
+}
+async function akAssets(force){
+ if(!force&&AK.assets&&Date.now()-AK.at<600000)return AK.assets;
+ const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[]};AK.editor=!!j.editor;AK.at=Date.now();akKb();return AK.assets;
+}
+function openAsk(){
+ if(!canDo('ask'))return;closeSidebar();
+ document.getElementById('akBox')?.remove();
+ const o=document.createElement('div');o.id='akBox';o.className='ak';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Ask HEMERA');
+ o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av">${akI('spk')}</span><div><b>Ask HEMERA</b><small id="akSt">Ready</small></div></div>
+  <div class="ak-bd" id="akBd"></div><div class="ak-kb" id="akKb"></div>
+  <form class="ak-in" onsubmit="akSend(event)"><button type="button" class="ak-mb" onclick="akToggleKb()">${akI('menu')}Menu</button><input id="akQ" autocomplete="off" maxlength="1500" placeholder="Ask anything…"><button type="submit" class="ak-snd" aria-label="Send">${akI('send')}</button></form></div>`;
+ document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));
+ if(!AK.msgs.length){const n=akMe().name.split(' ')[0];akBot(`<p>Hi${n?' '+akEsc(n):''}. Pick from the menu or type your question.</p>`)}
+ akDraw();akKb();
+ if(ASK_HEMERA_URL)akAssets().catch(()=>{});
+}
+function closeAsk(){const o=document.getElementById('akBox');if(!o)return;o.classList.remove('open');setTimeout(()=>o.remove(),280)}
+function akBot(html,cls){AK.msgs.push({w:'h',html,cls:cls||''});akDraw()}
+function akUser(t){AK.msgs.push({w:'u',html:akEsc(t)});akDraw()}
+function akDraw(){
+ const b=document.getElementById('akBd');if(!b)return;
+ b.innerHTML=AK.msgs.slice(-60).map(m=>`<div class="ak-m ${m.w}${m.cls?' '+m.cls:''}">${m.html}</div>`).join('')+(AK.busy?'<div class="ak-m h ak-dots"><i></i><i></i><i></i></div>':'');
+ requestAnimationFrame(()=>{b.scrollTop=b.scrollHeight});
+}
+function akToggleKb(){AK.kb=!AK.kb;akKb()}
+function akKb(){
+ const k=document.getElementById('akKb');if(!k)return;
+ const items=[['links','Sheets & links'],['off','Team days off'],['mail','Team emails'],['task','My tasks']];
+ if(AK.editor)items.push(['add','Add a sheet']);
+ items.push(['about','About']);
+ k.hidden=!AK.kb;
+ k.innerHTML=items.map(([id,t],i)=>`<button type="button" class="${i===items.length-1&&items.length%2?'w':''}" onclick="akMenu('${id}')">${akI(id)}${t}</button>`).join('');
+}
+async function akSend(e){
+ if(e)e.preventDefault();
+ const i=document.getElementById('akQ');const q=String(i&&i.value||'').trim();if(!q||AK.busy)return;
+ i.value='';akUser(q);AK.kb=false;akKb();
+ if(!ASK_HEMERA_URL){akBot('<p>Ask HEMERA is not connected yet.</p>');return}
+ AK.busy=true;akDraw();
+ try{const j=await akPost('ask',{q,history:AK.hist.slice(-6)});AK.hist.push({role:'user',text:q},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-12);AK.busy=false;akBot(akAnswer(j.answer||''))}
+ catch(err){AK.busy=false;akBot(`<p>${akEsc(/not connected/.test(err.message)?'Ask HEMERA is not connected yet.':'Something went wrong. Try again.')}</p>`)}
+}
+
+function akLinkKind(u){u=String(u);if(/docs\.google\.com\/spreadsheets/.test(u))return['links','Sheet','g'];if(/scripts/.test(u))return['code','Script','s'];if(/ads\.google\.com|ads\.microsoft|tiktok|snapchat/.test(u))return['rep','Report','r'];return['out','Open','o']}
+function akAnswer(t){
+ return String(t).split('\n').map(line=>{
+   const urls=line.match(/https?:\/\/[^\s<>"')]+/g);
+   if(!urls)return line.trim()?`<p>${akEsc(line)}</p>`:'';
+   const lab=line.replace(/https?:\/\/[^\s<>"')]+/g,'').replace(/[:：\-–]+\s*$/,'').trim();
+   return (lab?`<p>${akEsc(lab)}</p>`:'')+urls.map(u=>{const k=akLinkKind(u);return `<a class="ak-lk ${k[2]}" href="${akEsc(u)}" target="_blank" rel="noopener">${akI(k[0])}<span>${k[1]}</span>${akI('out')}</a>`}).join('');
+ }).join('');
+}
+async function akMenu(id){
+ AK.kb=false;akKb();
+ if(id==='about'){akUser('About');akBot('<p><b>Ask HEMERA</b> answers from the team sheet: sheets, reports and scripts, who is off and who covers, and team emails.</p><p>Type it any way you like, in Arabic or English.</p>');return}
+ if(id==='task'){akUser('My tasks');akBot(`<p>Your tasks are in My Tasks.</p><button type="button" class="ak-go" onclick="closeAsk();openTasks('mine')">${akI('task')}Open My Tasks</button>`);return}
+ if(id==='off'||id==='mail'){akUser(id==='off'?'Team days off':'Team emails');await akTeamData();akBot(id==='off'?akOffHtml():akMailHtml());return}
+ if(id==='links'){akUser('Sheets & links');AK.nav={};akStepPlatform();return}
+ if(id==='add'){akUser('Add a sheet');akAddForm();return}
+}
+ 
+async function akTeamData(){
+ if(TK.data)return;
+ try{const c=JSON.parse(storeGet('sekna_tasks_'+tkMonthNow())||'null');if(c){TK.data=c;return}}catch(e){}
+ AK.busy=true;akDraw();
+ try{const d=await serverCall('tasksLoad',getAccessToken(),tkMonthNow());if(d){TK.data=d;storeSet('sekna_tasks_'+d.month,JSON.stringify(d))}}catch(e){}
+ AK.busy=false;
+}
+function akOffHtml(){
+ if(!TK.data)return '<p>Could not load Team Leave. Try again.</p>';
+ const ppl=tkPeople(),first=p=>akEsc(String(p.name||p.email).split(' ')[0]);
+ const off=ppl.filter(p=>tkOffToday(p.email));
+ let h='<p><b>Today</b></p>';
+ h+=off.length?off.map(p=>{const l=tkOffToday(p.email),b=l&&l.data&&l.data.backup;return `<div class="ak-row">${tkAv(p)}<span><b>${first(p)}</b><small>${b?'Covered by '+akEsc(String(tkPerson(b).name||b).split(' ')[0]):'No backup set'}</small></span></div>`}).join(''):'<p class="ak-mut">Everyone is working today.</p>';
+ const wk=ppl.map(p=>({p,w:tkWeeklyOf(p.email)})).filter(x=>x.w&&x.w.data&&(x.w.data.weekdays||[]).length);
+ if(wk.length)h+='<p><b>Weekly days off</b></p>'+wk.map(({p,w})=>`<div class="ak-row">${tkAv(p)}<span><b>${first(p)}</b><small>${w.data.weekdays.map(d=>TK_DAYS_L[d]).join(' & ')}${w.data.backup?' · '+akEsc(String(tkPerson(w.data.backup).name||'').split(' ')[0]):''}</small></span></div>`).join('');
+ if(typeof tkViewOk==='function'&&tkViewOk('leave'))h+=`<button type="button" class="ak-go" onclick="closeAsk();openTasks('leave')">${akI('off')}Open Team Leave</button>`;
+ return h;
+}
+function akMailHtml(){
+ if(!TK.data)return '<p>Could not load the team. Try again.</p>';
+ const ppl=tkPeople().filter(p=>p.email);
+ return ppl.map(p=>`<a class="ak-row" href="mailto:${akEsc(p.email)}">${tkAv(p)}<span><b>${akEsc(p.name||p.email)}</b><small>${akEsc(p.email)}</small></span></a>`).join('')||'<p class="ak-mut">No emails yet.</p>';
+}
+ 
+const AK_TYPES=[['sheet','Sheets'],['daily','Daily shots'],['weekly','Weekly shots'],['dashboard','Dashboard'],['all','Everything']];
+async function akNeedAssets(){
+ if(!ASK_HEMERA_URL){akBot('<p>Ask HEMERA is not connected yet.</p>');return null}
+ if(AK.assets&&Date.now()-AK.at<600000)return AK.assets;
+ AK.busy=true;akDraw();
+ try{const a=await akAssets();AK.busy=false;return a}catch(e){AK.busy=false;akBot('<p>Could not load the sheet list. Try again.</p>');return null}
+}
+async function akStepPlatform(){
+ const a=await akNeedAssets();if(!a)return;
+ akBot('<p>Pick the platform</p><div class="ak-ch">'+a.platforms.map(p=>p.open?`<button type="button" onclick="akPick('p','${akEsc(p.key)}')">${akEsc(p.key)}</button>`:`<button type="button" class="lk" disabled>${akI('lock')}${akEsc(p.key)}</button>`).join('')+'</div>');
+}
+function akRowsOf(nav){
+ return ((AK.assets&&AK.assets.rows)||[]).filter(r=>{
+   if(nav.p&&r.platforms.indexOf(nav.p)<0)return false;
+   if(nav.a&&nav.a!=='BOTH'&&String(r.account).toUpperCase().indexOf(nav.a)<0)return false;
+   if(nav.t&&nav.t!=='all'){if(nav.t==='shots'){if(r.types.indexOf('daily')<0&&r.types.indexOf('weekly')<0)return false}else if(r.types.indexOf(nav.t)<0)return false}
+   return true;
+ });
+}
+function akPick(k,v){
+ AK.nav[k]=v;
+ if(k==='p'){AK.nav.a='';AK.nav.t='';akUser(v);akBot('<p>Which account?</p><div class="ak-ch">'+[['USA','USA'],['AR','AR'],['BOTH','Both']].map(([x,l])=>`<button type="button" onclick="akPick('a','${x}')">${l}</button>`).join('')+'</div>');return}
+ if(k==='a'){AK.nav.t='';akUser(v==='BOTH'?'Both':v);const base=akRowsOf({p:AK.nav.p,a:v});
+   const ch=AK_TYPES.map(([x,l])=>{const n=x==='all'?base.length:base.filter(r=>r.types.indexOf(x)>=0).length;return n?`<button type="button" onclick="akPick('t','${x}')">${l} <i>${n}</i></button>`:''}).join('');
+   akBot(base.length?'<p>What are you looking for?</p><div class="ak-ch">'+ch+'</div>':'<p>Nothing saved here yet.</p>');return}
+ if(k==='t'){akUser((AK_TYPES.find(x=>x[0]===v)||[0,v])[1]);const rows=akRowsOf(AK.nav);
+   akBot(rows.length?`<p>${rows.length} found</p><div class="ak-ls">`+rows.slice(0,40).map(r=>`<button type="button" onclick="akShow('${akEsc(r.id)}')">${akEsc(r.name||r.id)}${akI('back')}</button>`).join('')+'</div>':'<p>Nothing found.</p>');return}
+}
+
+function akShow(id){
+ const r=((AK.assets&&AK.assets.rows)||[]).find(x=>x.id===id);if(!r)return;
+ akUser(r.name||id);
+ const L=[['links','Sheet',r.sheet,'g'],['rep','Platform report',r.report,'r'],['code','Script',r.script,'s']].filter(x=>x[2]&&(x[2].url||x[2].name));
+ const tags=[].concat(r.platforms,r.format?String(r.format).split(/\s*,\s*/):[]).filter(Boolean);
+ akBot(`<div class="ak-rc"><div class="ak-rt"><i>${akI('links')}</i><div><b>${akEsc(r.name||r.id)}</b><small>${akEsc([r.category,r.account].filter(Boolean).join(' · '))}</small></div></div>
+  ${tags.length?`<div class="ak-tg">${tags.map(t=>`<span>${akEsc(t)}</span>`).join('')}</div>`:''}
+  ${L.map(([ic,t,o,c])=>`<div class="ak-rl"><span class="k ${c}">${akI(ic)}</span><div><b>${t}</b><small>${akEsc(o.name||'')}</small></div>${o.url?`<a href="${akEsc(o.url)}" target="_blank" rel="noopener">Open</a>`:''}</div>`).join('')}
+  ${r.notes?`<p class="ak-nt">${akEsc(r.notes)}</p>`:''}</div>`,'wide');
+}
+ 
+const AK_ADD=[['Task_Name','Name','text'],['Platform','Platform','pl'],['Account','Account','ac'],['Category','Category','text'],['Format','Format','fm'],['Source_Sheet_Name','Sheet name','text'],['Source_Sheet_URL','Sheet link','url'],['Report_Name','Report name','text'],['Report_URL','Report link','url'],['Script_Name','Script name','text'],['Script_URL','Script link','url'],['Notes','Notes','text']];
+async function akAddForm(){
+ const a=await akNeedAssets();if(!a)return;
+ if(!AK.editor){akBot('<p>Only editors can add sheets.</p>');return}
+ const sel=(k,list)=>`<select name="${k}">${list.map(x=>`<option>${akEsc(x)}</option>`).join('')}</select>`;
+ const f=AK_ADD.map(([k,l,t])=>`<label><span>${l}</span>${t==='pl'?sel(k,a.platforms.map(p=>p.key)):t==='ac'?sel(k,['USA','AR']):t==='fm'?sel(k,['Sheet','Screenshot','Weekly Screenshot','Dashboard','Sheet, Screenshot','Sheet, Dashboard']):`<input name="${k}" ${t==='url'?'type="url" inputmode="url"':''} maxlength="500">`}</label>`).join('');
+ akBot(`<form class="ak-fm" onsubmit="akAddSave(event,this)">${f}<button type="submit" class="ak-go">${akI('add')}Add to the sheet</button></form>`,'wide');
+}
+async function akAddSave(e,form){
+ e.preventDefault();const row={};new FormData(form).forEach((v,k)=>{row[k]=String(v).trim()});
+ if(!row.Task_Name){showSettingsToast('Write the name first');return}
+ const btn=form.querySelector('button[type=submit]');btn.disabled=true;btn.textContent='Adding…';
+ try{const j=await akPost('add',{row});form.closest('.ak-m').remove();AK.msgs=AK.msgs.filter(m=>m.html.indexOf('ak-fm')<0);AK.assets=null;akBot(`<p>Added to the sheet: <b>${akEsc(row.Task_Name)}</b> (${akEsc(j.id)})</p>`)}
+ catch(err){btn.disabled=false;btn.textContent='Add to the sheet';showSettingsToast(errorText(err))}
+}
+
 function openSoon(k){if(!canDo(k))return;
  const x=SOON[k];if(!x)return;closeSidebar();
  text('soonKicker',x.k);text('soonTitle',x.t);
