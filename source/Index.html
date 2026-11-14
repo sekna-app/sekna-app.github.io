@@ -10198,7 +10198,7 @@ function akAnswer(t){
  out.forEach(x=>{if(x.p){flush();html+=`<p dir="auto">${akEsc(x.p)}</p>`;return}
    any=true;const r=akRowByUrl(x.u);
    if(r){if(seen[r.id])return;seen[r.id]=1;const ac=String(r.account||'').toUpperCase();
-     list.push(`<button type="button" onclick="akAnsOpen('${akEsc(r.id)}')"><i class="g">${akI('links')}</i><span><b>${akEsc(String(r.name||r.id).replace(/_/g,' '))}</b><small>${AK_FLAG[ac]?`<u>${AK_FLAG[ac]}</u>`:''}${akEsc([r.account,r.platforms&&r.platforms[0]].filter(Boolean).join(' · '))}</small></span>${akI('chev')}</button>`);return}
+     list.push(`<button type="button" onclick="akAnsOpen('${akEsc(r.id)}',this)"><i class="g">${akI('links')}</i><span><b>${akEsc(String(r.name||r.id).replace(/_/g,' '))}</b><small>${AK_FLAG[ac]?`<u>${AK_FLAG[ac]}</u>`:''}${akEsc([r.account,r.platforms&&r.platforms[0]].filter(Boolean).join(' · '))}</small></span>${akI('chev')}</button>`);return}
    const k=akLinkKind(x.u);list.push(`<a href="${akEsc(x.u)}" target="_blank" rel="noopener"><i class="${k[2]}">${akI(k[0])}</i><span><b>${akEsc(x.lab?x.lab.replace(/_/g,' '):k[1])}</b><small>${k[1]}</small></span>${akI('out')}</a>`)});
  flush();
  const last=out[out.length-1];
@@ -10206,7 +10206,12 @@ function akAnswer(t){
    html+=`<div class="ak-qr"${ar?' dir="rtl"':''}>${(ar?['أيوه','لا، شكراً']:['Yes','No, thanks']).map(q=>`<button type="button" onclick="akQuick(this,'${q}')">${q}</button>`).join('')}</div>`}
  return html}
 function akQuick(b,q){if(AK.busy)return;const w=b.closest('.ak-qr');if(w)w.remove();const i=document.getElementById('akQ');if(!i)return;i.value=q;akSend()}
-async function akAnsOpen(id){try{await akAssets()}catch(e){}AK.ls=[];akLNav(()=>akCard(id))}
+async function akAnsOpen(id,el){try{await akAssets()}catch(e){}
+ const r=((AK.assets&&AK.assets.rows)||[]).find(x=>x.id===id),box=el&&el.closest('.ak-m'),all=[...document.querySelectorAll('#akBd .ak-m:not(.ak-dots)')],L=AK.msgs.slice(-60),m=box?L[all.indexOf(box)]:null;
+ if(!r||!m){AK.ls=[];akLNav(()=>akCard(id));return}
+ if(m.sv==null){m.sv=m.html;m.sc=m.cls||''}m.cls='wb';m.html=akCardHtml(r)+`<div class="ak-bkl"><button type="button" onclick="akAnsBack(this)">${akI('back')}Back</button></div>`;m.nw=1;akDrawKeep()}
+function akAnsBack(el){const box=el.closest('.ak-m'),all=[...document.querySelectorAll('#akBd .ak-m:not(.ak-dots)')],L=AK.msgs.slice(-60),m=L[all.indexOf(box)];if(!m||!m.sv)return;m.html=m.sv;m.cls=m.sc||'';delete m.sv;delete m.sc;m.nw=1;akDrawKeep()}
+function akDrawKeep(){const b=document.getElementById('akBd'),y=b?b.scrollTop:0;akDraw();if(b)requestAnimationFrame(()=>requestAnimationFrame(()=>{b.scrollTop=y}))}
 
 function AKB(to,l){return `<div class="ak-bkl"><button type="button" onclick="akBackTo('${to}')">${akI('back')}${l||'Back'}</button></div>`}
 async function akBackTo(t){if(t==='pop'){akTBack();return}if(t==='lpop'){akLBack();return}akUser('Back');
@@ -10328,11 +10333,13 @@ function akMore(){AK.resN=999;akLTop()}
 function akShow(id){akLNav(()=>akCard(id))}
 function akCard(id){
  const r=((AK.assets&&AK.assets.rows)||[]).find(x=>x.id===id);if(!r){akLBack();return}
+ akPanel('links',akCardHtml(r)+AKB('lpop',AK.ls.length>1?'Back to the list':'Back'))}
+function akCardHtml(r){
  const L=[['links','Sheet',r.sheet,'#1E8E3E','#E7F5EC'],['rep','Report',r.report,'#1a73e8','#E8F0FE'],['code','Script',r.script,'#C9A24A','#FBF3E2']].filter(x=>x[2]&&x[2].url);
- akPanel('links',`<div class="ak-c2"><div class="h">${akLogo(r.platforms[0]||'')}<b>${akEsc(r.name||r.id)}</b></div>
+ return `<div class="ak-c2"><div class="h">${akLogo(r.platforms[0]||'')}<b>${akEsc(r.name||r.id)}</b></div>
   ${L.map(([ic,t,o,c,bg])=>`<a class="l" href="${akEsc(o.url)}" target="_blank" rel="noopener"><i style="color:${c};background:${bg}">${akI(ic)}</i><div><b>${t}</b><small>${akEsc(o.name||'')}</small></div>${akI('out')}</a>`).join('')||'<p class="ak-sm">No links saved yet.</p>'}
-  ${r.notes&&AK.editor?`<p class="ak-sm ak-nt2">${akI('lock')}${akEsc(r.notes)}</p>`:''}</div>`+(AK.editor?`<div class="ak-act"><button type="button" aria-label="Edit" title="Edit" onclick="akEdit('${akEsc(r.id)}')">${akI('pen')}</button><button type="button" aria-label="Duplicate" title="Duplicate to another platform" onclick="akDup('${akEsc(r.id)}')">${akI('dup')}</button><button type="button" class="del" aria-label="Delete" title="Delete" onclick="akDel('${akEsc(r.id)}')">${akI('trash')}</button></div>`:'')+AKB('lpop',AK.ls.length>1?'Back to the list':'Back'));
-}
+  ${r.notes&&AK.editor?`<p class="ak-sm ak-nt2">${akI('lock')}${akEsc(r.notes)}</p>`:''}</div>`+(AK.editor?`<div class="ak-act"><button type="button" aria-label="Edit" title="Edit" onclick="akEdit('${akEsc(r.id)}')">${akI('pen')}</button><button type="button" aria-label="Duplicate" title="Duplicate to another platform" onclick="akDup('${akEsc(r.id)}')">${akI('dup')}</button><button type="button" class="del" aria-label="Delete" title="Delete" onclick="akDel('${akEsc(r.id)}')">${akI('trash')}</button></div>`:'')}
+
  
 const AK_EDF={Details:[['Task_Name','Name','pen','text'],['Platform','Platform','plat','pl'],['Account','Account','globe','ac'],['Category','Category','folder','ct'],['Format','Format','grid','fm']],
  Links:[['Source_Sheet_Name','Sheet name','links','text'],['Source_Sheet_URL','Sheet link','link2','url'],['Report_Name','Platform report name','rep','text'],['Report_URL','Platform report link','link2','url'],['Script_Name','Script name','code','text'],['Script_URL','Script link','link2','url']],
