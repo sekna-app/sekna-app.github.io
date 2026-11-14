@@ -8494,6 +8494,36 @@ window.addEventListener('load',function(){
     html body #mtdVarianceCard.vc:before{background:linear-gradient(115deg,transparent 34%,rgba(255,255,255,.55) 44%,transparent 54%)!important}
     html body #mtdVarianceCard.vc #mtdVariance{text-shadow:none}
     .vcp-days i{box-shadow:none!important}
+    /* v333 My Tasks: one slim line, all tasks counted together */
+    .tk-m1{position:relative;overflow:hidden;display:flex;align-items:center;gap:10px;padding:12px 14px 14px;border-radius:18px;margin-bottom:10px;color:#fff;background:radial-gradient(130% 160% at 0 0,#2C4FB8,#203C8E 55%,#16296A);box-shadow:0 10px 22px rgba(20,40,110,.18)}
+    .tk-m1 .tk-av{width:32px!important;height:32px!important;font-size:12px;flex:none}.tk-m1>b{font-size:15px;font-weight:900;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .tk-m1-s{margin-left:auto;text-align:right;flex:none}.tk-m1-s small{display:block;font-size:9.5px;font-weight:900;letter-spacing:.08em;color:#B9C6EF}.tk-m1-s strong{display:block;font-size:19px;font-weight:900;line-height:1.15;font-variant-numeric:tabular-nums}
+    .tk-m1.ok .tk-m1-s strong{color:#7EF0B9}
+    .tk-m1>i{position:absolute;left:0;bottom:0;height:3px;background:linear-gradient(90deg,#F1D08F,#E2B874);border-radius:0 99px 99px 0;transition:width .5s}.tk-m1.ok>i{background:#2FCB86}
+    .tk-m1~.tk-task{background:#fff;border-radius:14px;padding:11px;margin-bottom:8px;border:0}body.dark-mode .tk-m1~.tk-task{background:#151a22;color:#fff}
+    /* v333 Leave: ring + switch */
+    .lr3{display:flex;align-items:center;gap:12px;background:#fff;border-radius:18px;padding:12px 14px;box-shadow:0 10px 26px rgba(20,40,110,.08);margin-bottom:10px}
+    .lr3-r{--p:0;width:54px;height:54px;border-radius:50%;flex:none;background:conic-gradient(#2FCB86 calc(var(--p)*1%),#E6EAF2 0);display:grid;place-items:center}
+    .lr3-r span{width:42px;height:42px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:13px;font-weight:900;color:#141B33}
+    .lr3-t{min-width:0}.lr3-t b{display:block;font-size:15px;font-weight:900;color:#141B33}.lr3-t small{display:block;font-size:11.5px;font-weight:700;color:#6B7385;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .lr3-k{margin-left:auto;flex:none;display:flex;align-items:center;gap:8px;border:0;background:none;font:inherit;font-size:11px;font-weight:800;color:#13804F;cursor:pointer;padding:0}.lr3-k:disabled{cursor:default}
+    .lr3-k i{width:38px;height:22px;border-radius:99px;background:#2FCB86;position:relative;flex:none}.lr3-k i:after{content:"";position:absolute;right:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:right .2s}
+    .lr3-k.fr{color:#C63A4A}.lr3-k.fr i{background:#C63A4A}.lr3-k.fr i:after{right:19px}
+    body.dark-mode .lr3{background:#151a22}body.dark-mode .lr3-t b{color:#fff}body.dark-mode .lr3-r{background:conic-gradient(#2FCB86 calc(var(--p)*1%),#2a313c 0)}body.dark-mode .lr3-r span{background:#151a22;color:#fff}
+    /* v333 Leave: the week day by day */
+    .lj2{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-bottom:12px}
+    .lj2>div{border-radius:12px;background:#fff;box-shadow:0 4px 12px rgba(20,40,110,.06);padding:8px 2px;text-align:center;min-height:78px;min-width:0}
+    .lj2>div.on{background:radial-gradient(130% 160% at 0 0,#2C4FB8,#203C8E 60%);color:#fff}
+    .lj2 small{display:block;font-size:9px;font-weight:900;letter-spacing:.06em;color:#8A93A8}.lj2>div.on small{color:#C9D3F5}.lj2 b{display:block;font-size:15px;font-weight:900;color:#141B33}.lj2>div.on b{color:#fff}
+    .lj2-o{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;margin-top:6px}.lj2-o .tk-av{width:20px!important;height:20px!important;font-size:9px;box-shadow:0 0 0 1.5px #fff}
+    .lj2-ok{display:block;margin-top:8px;font-size:12px;color:#2FCB86;font-weight:900}
+    body.dark-mode .lj2>div:not(.on){background:#151a22}body.dark-mode .lj2 b{color:#fff}
+    /* v333 Leave: everyone in one card */
+    .ls3{background:#fff;border-radius:18px;padding:2px 14px;box-shadow:0 10px 26px rgba(20,40,110,.08)}
+    .ls3-r{width:100%;display:flex;align-items:center;gap:10px;padding:11px 0;border:0;background:none;font:inherit;text-align:left;color:inherit;cursor:pointer}.ls3-r+.ls3-r{border-top:1px solid #EDF0F6}
+    .ls3-r .tk-av{width:34px!important;height:34px!important;flex:none}.ls3-m{min-width:0;flex:1}.ls3-m b{display:block;font-size:13.5px;font-weight:900;color:#141B33}.ls3-m small{display:block;font-size:10.5px;font-weight:700;color:#8A93A8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .ls3-d{width:8px;height:8px;border-radius:50%;background:#2FCB86;flex:none}.ls3-d.off{background:#F2A65A}.ls3-go{font-style:normal;color:#B6BDCC;font-weight:900;font-size:16px}
+    body.dark-mode .ls3{background:#151a22}body.dark-mode .ls3-m b{color:#fff}body.dark-mode .ls3-r+.ls3-r{border-color:#2a313c}
 </style>
 </head>
 <body>
@@ -16186,7 +16216,9 @@ function tkLeaveHtml(){
  const off=people.map(p=>({p,l:tkOffToday(p.email)})).filter(x=>x.l);
  const first=n=>esc(String(n||'').split(' ')[0]);
  const day=esc(new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'}).toUpperCase());
- const stats=`<div class="lc-st"><div class="g"><b>${Math.max(0,people.length-off.length)}</b><small>Working today</small></div><div class="o"><b>${off.length}</b><small>Off today</small></div><div class="${fr?'fr':''}"><b class="lc-lk">${fr?'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>':'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.6-1.7"/></svg>'}</b><small>${fr?'Leave frozen':'Leave open'}</small>${admin?'<button type="button" class="lc-ch" onclick="lvLockOpen()">Change</button>':''}</div></div>`;
+ const nIn=Math.max(0,people.length-off.length), pc=people.length?Math.round(nIn/people.length*100):0;
+ const stats=`<div class="lr3"><div class="lr3-r" style="--p:${pc}"><span>${nIn}/${people.length}</span></div><div class="lr3-t"><b>${off.length?off.length+' off today':'All in today'}</b><small>${off.length?off.map(x=>first(x.p.name)).join(', '):'No one is off'}</small></div>
+   <button type="button" class="lr3-k${fr?' fr':''}" ${admin?'onclick="lvLockOpen()"':'disabled'} role="switch" aria-checked="${!fr}" aria-label="Leave open or frozen"><span>${fr?'Leave frozen':'Leave open'}</span><i></i></button></div>`;
  const live=TK.month===tkMonthNow();
  const covers=off.length?off.map(({p,l},i)=>{const b=l.data.backup?tkPerson(l.data.backup):null;
    const n=live?tkTasksFor(p.email,tkWeekOf(tkToday().d)).filter(tkIsToday).length:0;
@@ -16198,23 +16230,20 @@ function tkLeaveHtml(){
  const freeze=`<div class="lc-fz"><span class="lp-im" role="img" aria-label="Moon and sheep"></span><button type="button" class="lp-ft" ${admin?'onclick="tkFreezeEdit()"':''}><b>Freeze leave for a season</b><small>${fr?'On now':'Off now'}</small></button>
    <button type="button" class="lp-tg dk${f.on?' on':''}" ${admin?'onclick="tkFreezeToggle(this)"':'disabled'} role="switch" aria-checked="${!!f.on}" aria-label="Freeze leave now"><i></i></button></div>`;
  
+ 
+ const offNow=new Set(off.map(x=>x.p.email));
  const rows=people.map((p,i)=>{const w=tkWeeklyOf(p.email),b=w&&w.data.backup?tkPerson(w.data.backup):null, extra=tkLeaveOf(p.email).filter(l=>l.data.type!=='Weekly');
-   const wd=w?(w.data.weekdays||[]).map(d=>TK_DAYS[d]).join(', '):'', t=roleTier(p.role);
-   const dots=t?`<span class="ln-d">${[1,2,3,4,5].map(k=>`<i class="${k<=t?'on':''}"></i>`).join('')}</span>`:'';
-   return `<button type="button" class="ln-c tier${t}" style="--i:${i}" ${admin?`onclick="tkNewLeave('${esc(p.email)}')"`:''}>${tkAv(p)}<div class="ln-m"><b>${esc(p.name)}</b>
-     ${p.role?`<div class="ln-r"><span>${esc(roleLabel(p.role).toUpperCase())}</span>${dots}</div>`:''}
+   const wd=w?(w.data.weekdays||[]).map(d=>TK_DAYS[d]).join(', '):'';
+   return `<button type="button" class="ls3-r" style="--i:${i}" ${admin?`onclick="tkNewLeave('${esc(p.email)}')"`:''}>${tkAv(p)}<div class="ls3-m"><b>${esc(p.name)}</b>
+     <small>${p.role?esc(roleLabel(p.role))+' · ':''}${w?`Off ${esc(wd)}${b?` · ${first(b.name)} covers`:''}`:'No day off'}</small>
      ${extra.length?`<div class="lp-ex">${extra.map(l=>{const tt=TK_LEAVE_TYPES.find(x=>x[0]===l.data.type)||TK_LEAVE_TYPES[1];return `<span>${tt[1]} ${(l.data.days||[]).join(', ')}</span>`}).join('')}</div>`:''}</div>
-     <em>${w?`<u>${esc(wd)}</u>${b?` · <strong>${first(b.name)}</strong>`:''}`:'No day off'}</em>${admin?'<i class="ln-go">›</i>':''}</button>`}).join('');
+     <span class="ls3-d${offNow.has(p.email)?' off':''}" title="${offNow.has(p.email)?'Off today':'Working today'}"></span>${admin?'<i class="ls3-go">›</i>':''}</button>`}).join('');
  
  const wk=(()=>{const t=tkToday(),base=new Date(Date.UTC(t.y,t.m-1,t.d)),dow=(base.getUTCDay()+6)%7,mon=new Date(base.getTime()-dow*864e5),fr=tkFrozenToday();
    const ds=[...Array(7)].map((_,i)=>{const d=new Date(mon.getTime()+i*864e5);return {y:d.getUTCFullYear(),m:d.getUTCMonth()+1,d:d.getUTCDate(),wd:(d.getUTCDay()+1)%7,lab:d.toLocaleDateString('en-GB',{weekday:'short',timeZone:'UTC'}).toUpperCase(),today:i===dow}});
    const offOn=(email,x)=>{const m=`${x.y}-${String(x.m).padStart(2,'0')}`;return tkLeaveAll().find(l=>l.email===email&&l.data&&(l.data.type==='Weekly'?!fr&&(l.data.weekdays||[]).includes(x.wd):l.month===m&&(l.data.days||[]).includes(x.d)&&!(fr&&l.data.type==='Vacation')))||null};
-   const allIn=!off.length;
-   return `<div class="lw"><div class="lw-top"><b>This week</b><span class="${allIn?'':'o'}">${allIn?'All in today':off.length+' off today'}</span></div>
-    <div class="lw-g"><span></span>${ds.map(x=>`<span class="${x.today?'on':''}">${x.lab}<small>${x.d}</small></span>`).join('')}
-    ${people.map(p=>`<span class="lw-av" title="${esc(p.name)}">${tkAv(p)}</span>${ds.map(x=>{const l=offOn(p.email,x);return `<i class="${l?'off':''}${x.today?' t':''}" title="${esc(first(p.name))} · ${l?esc(l.data.type==='Weekly'?'Day off':l.data.type):'Working'}"></i>`}).join('')}`).join('')}</div>
-    <div class="lw-lg"><span><i></i>Working</span><span><i class="off"></i>Off</span><span><i class="t"></i>Today</span></div></div>`})();
- return stats+wk+(off.length?covers:'')+(people.length?`<div class="lc-ls">${rows}</div>`:'<div class="tk-empty"><b>No one yet</b></div>');
+   return `<div class="lj2">${ds.map(x=>{const o=people.filter(p=>offOn(p.email,x));return `<div class="${x.today?'on':''}"><small>${x.lab}</small><b>${x.d}</b>${o.length?`<span class="lj2-o">${o.map(p=>`<span title="${esc(first(p.name))}">${tkAv(p)}</span>`).join('')}</span>`:'<span class="lj2-ok">✓</span>'}</div>`}).join('')}</div>`})();
+ return stats+wk+(off.length?covers:'')+(people.length?`<div class="ls3">${rows}</div>`:'<div class="tk-empty"><b>No one yet</b></div>');
 }
 
 
@@ -16308,8 +16337,8 @@ function tkMineHtml(){
  const w=TK.week, me=tkMe(), ts=tkTasksFor(me,w), n=ts.filter(t=>t.done&&t.done[w]).length;
  const q=((TK.data&&TK.data.quick)||[]).filter(x=>x.email===me&&!(x.done&&x.done.at));
  const mp=tkPerson(me);
- const head=`<div class="tk-mine-h"><div class="tk-mh-who">${tkAv(mp)}<div><b>${esc(mp.name||(ACCESS_PROFILE&&ACCESS_PROFILE.name)||'')}</b></div></div><div><small>WEEK ${w} · ${esc(tkRange(TK.month,w))}</small><b>${ts.length?`${n} of ${ts.length} done`:'Nothing this week'}</b></div><div class="tk-bar"><i style="width:${ts.length?(n/ts.length*100).toFixed(0):0}%"></i></div>${(()=>{if(!(tkViewOk('quick')||tkCan('quick')))return '';const all=(TK.data&&TK.data.quick)||[],l=tkCan('quick')?all:all.filter(x=>x.email===me);if(!l.length)return '';const dn=l.filter(x=>x.done&&x.done.at).length;
-   return `<div class="tk-mh-q"><small>REPORTS &amp; OPTIMIZATIONS</small><b>${dn} of ${l.length} done</b><div class="tk-bar g"><i style="width:${(dn/l.length*100).toFixed(0)}%"></i></div></div>`})()}</div>`;
+ const myQ=((TK.data&&TK.data.quick)||[]).filter(x=>x.email===me), qn=myQ.filter(x=>x.done&&x.done.at).length, all=ts.length+myQ.length, dn=n+qn;
+ const head=`<div class="tk-m1${all&&dn===all?' ok':''}">${tkAv(mp)}<b>${esc(String(mp.name||(ACCESS_PROFILE&&ACCESS_PROFILE.name)||'').split(' ')[0])}</b><div class="tk-m1-s"><small>WEEK ${w} · ${esc(tkRange(TK.month,w))}</small><strong>${all?`${dn}/${all}`:'—'}</strong></div><i style="width:${all?(dn/all*100).toFixed(0):0}%"></i></div>`;
  return head+(ts.length?ts.map(t=>tkTaskRow(t,w,true)).join(''):`<div class="tk-empty"><b>You're all clear</b><small>No tasks for week ${w}.</small></div>`)
    ;
 }
