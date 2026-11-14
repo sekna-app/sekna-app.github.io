@@ -8619,6 +8619,8 @@ window.addEventListener('load',function(){
     html body a.pf-ha b.ar{text-align:left}
     /* v364 verified covers use the SEKNA cover from Canva */
     html body .pf-cv.v,html body .idc-top.v,html body .wl-id .t.v{background:#203C8E url(icons/sekna-cover.webp?v=1) right center/cover no-repeat!important}
+    /* v365 the open filter (My letter / Avatars) gets a soft see-through box */
+    html body .idc-f.gslA>button.open:not(.gsl-pill),html body .idc-f>button.open{background:rgba(32,60,142,.09)!important;border-radius:9px;box-shadow:inset 0 0 0 1px rgba(32,60,142,.12)!important}
 </style>
 </head>
 <body>
@@ -17005,7 +17007,7 @@ function myAvDraw(){
  // v357 an ID card; Upload / My letter / Avatars slide like the other filters; My letter and Avatars fold open a row
  const row=(list,on,draw)=>`<div class="idc-g">${list.map(k=>`<button type="button" class="${on(k)?'on':''}" onclick="myAvSet(${k},this)">${draw(k)}</button>`).join('')}</div>`;
  const me=((P.email||'')+'').toLowerCase(),ver=isVer(cur);
- el.innerHTML=`<div class="idc-top${ver?' v':''}"></div><div class="idc-me"><button type="button" class="idc-pic" onclick="profOpen('${esc(me)}',event)" aria-label="View your profile">${personAv(cur,name)}${ver?VBADGE:''}</button><div><b>${esc(name||'You')}${vTick(cur)}</b>${role?roleBadge(role):''}</div><button type="button" class="idc-view" onclick="profOpen('${esc(me)}',event)">Profile ›</button></div>
+ el.innerHTML=`<div class="idc-top${ver?' v':''}"></div><div class="idc-me"><button type="button" class="idc-pic" onclick="profOpen('${esc(me)}',event)" aria-label="View your profile">${personAv(cur,name)}${ver?VBADGE:''}</button><div><b>${esc(name||'You')}</b>${role?roleBadge(role):''}</div><button type="button" class="idc-view" onclick="profOpen('${esc(me)}',event)">Profile ›</button></div>
   <div class="idc-f"><label class="${isPh?'on':''}"><input type="file" accept="image/*" onchange="myAvFile(this)" hidden>Upload</label><button type="button" class="${isL?'on':''}${MYAV_OPEN==='l'?' open':''}" onclick="MYAV_OPEN=MYAV_OPEN==='l'?'':'l';myAvDraw()" aria-expanded="${MYAV_OPEN==='l'}">My letter<i></i></button><button type="button" class="${isAv?'on':''}${MYAV_OPEN==='a'?' open':''}" onclick="MYAV_OPEN=MYAV_OPEN==='a'?'':'a';myAvDraw()" aria-expanded="${MYAV_OPEN==='a'}">Avatars<i></i></button></div>
   ${MYAV_OPEN==='l'?row(LETTER_KEEP,k=>isL&&lc===k,k=>letterEmblem(name,k)):MYAV_OPEN==='a'?row(AV_KEEP,k=>n===k,k=>emblemHtml(k)):''}`;
 }
