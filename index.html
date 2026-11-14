@@ -8568,10 +8568,10 @@ window.addEventListener('load',function(){
     .lv-seg button{border:0;background:none;border-radius:11px;padding:7px 14px;font:inherit;font-size:12px;font-weight:800;color:#4b5263;cursor:pointer}.lv-seg button.on{background:#203c8e;color:#fff}.lv-seg button:disabled{cursor:default}
     body.dark-mode .lv-seg{background:#1a1f29}
     /* v336 filters in the same sliding style as Team / My Tasks / Builder / Leave */
-    html body :is(.act-seg,.sal-seg,.ad-when,.lv-seg).gslA{background:#eef1f7!important;border-radius:14px!important;padding:4px!important;gap:2px!important;border:0!important}
-    html body :is(.act-seg,.sal-seg,.ad-when,.lv-seg).gslA>*:not(.gsl-pill){background:transparent!important;border-color:transparent!important;box-shadow:none!important}
+    html body :is(.act-seg,.sal-view,.ad-when,.lv-seg).gslA{background:#eef1f7!important;border-radius:14px!important;padding:4px!important;gap:2px!important;border:0!important}
+    html body :is(.act-seg,.sal-view,.ad-when,.lv-seg).gslA>*:not(.gsl-pill){background:transparent!important;border-color:transparent!important;box-shadow:none!important}
     html body #adminOverlay .act-seg.gslA::before{display:none!important}html body #adminOverlay .act-seg.gslA>button.on{color:#fff!important}
-    body.dark-mode :is(.act-seg,.sal-seg,.ad-when,.lv-seg).gslA{background:#1a1f29!important}
+    body.dark-mode :is(.act-seg,.sal-view,.ad-when,.lv-seg).gslA{background:#1a1f29!important}
     /* v336 activity: Clear all beside This month / Days */
     .act-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.act-top>.act-rg{margin:0!important}
     .act-clr{margin-left:auto;display:inline-flex;align-items:center;gap:5px;border:1.5px solid #F3C9CF;background:#FFF5F6;color:#C63A4A;border-radius:99px;padding:6px 11px;font:inherit;font-size:11.5px;font-weight:900;cursor:pointer}.act-clr .aic{width:14px;height:14px}
@@ -11224,7 +11224,7 @@ function renderExtraTab(d){
 let DAY_VIEW='plan', DAY_OPEN='';
 
 
-const GSL_SEL=['.act-seg','.sal-seg','.ad-when','.lv-seg','.py-seg','#weeklyTabs','.wly-ms','.phr-tabs','.stp-sw2','#monthsPanel .mx-mode','.ss-fs','.tk-views','.tk-weeks','.nf-fs','.st-chips','.st-sort'];
+const GSL_SEL=['.act-seg','.sal-view','.ad-when','.lv-seg','.py-seg','#weeklyTabs','.wly-ms','.phr-tabs','.stp-sw2','#monthsPanel .mx-mode','.ss-fs','.tk-views','.tk-weeks','.nf-fs','.st-chips','.st-sort'];
 
 let GSL_TAP={sel:'',t:0};
 document.addEventListener('pointerdown',e=>{const t=e.target;if(!t||!t.closest)return;const sel=GSL_SEL.find(q=>t.closest(q));if(sel)GSL_TAP={sel,t:Date.now()}},true);
@@ -17737,7 +17737,7 @@ function salHtml(){
  const keys=(grp==='us'?U:grp==='hijri'?H:H.concat(U)).slice().sort((a,b)=>sendOf(a)<sendOf(b)?-1:1);
  const short=dk=>salD(dk).replace(/ \d{4}$/,'');
  const inN=dk=>{if(!dk)return '';const t=new Date();const d=Math.round((Date.parse(dk+'T00:00:00Z')-Date.UTC(t.getFullYear(),t.getMonth(),t.getDate()))/864e5);return `<span class="sal-in${d<=7?' soon':''}">${d<=0?'Today':d===1?'Tomorrow':'In '+d+' days'}</span>`};
- const seg=(k,v,opts)=>`<div class="sal-seg">${opts.map(([o,l])=>`<button type="button" class="${v===o?'on':''}" onclick="salSet('${k}','${o}')">${l}</button>`).join('')}</div>`;
+ const seg=(k,v,opts)=>`<div class="sal-seg sal-${k}">${opts.map(([o,l])=>`<button type="button" class="${v===o?'on':''}" onclick="salSet('${k}','${o}')">${l}</button>`).join('')}</div>`;
  const tag=k=>U.includes(k)?'<em class="sal-tag us">USA</em>':'<em class="sal-tag">USA · AR</em>';
  let rows='';
  if(view==='remind')rows=keys.map(k=>{const n=nx[k]||{},send=n.at?new Date(Date.parse(n.at+'T00:00:00Z')-L[k]*864e5).toISOString().slice(0,10):'';
