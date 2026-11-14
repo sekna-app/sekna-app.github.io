@@ -78,7 +78,7 @@ async function teamPeople(mem, me) {
     if (!email || seen[email]) return;
     seen[email] = 1;
     const m = mem[email] || {};
-    out.push({ email, name: name || m.name || email.split('@')[0], role: m.role === 'Head of Media' ? 'CEO' : (m.role || ''), avatar: m.avatar || 0, phone: m.phone || '', tz: m.tz || '' });
+    out.push({ email, name: name || m.name || email.split('@')[0], role: m.role === 'Head of Media' ? 'CEO' : (m.role || ''), avatar: m.avatar || 0, phone: m.phone || '', tz: m.tz || '', bio: m.bio || '' });
   };
   const rows = await accessRows();
   rows.forEach(r => { if (r.status === 'Approved') add(r.email, r.name); });
@@ -597,7 +597,8 @@ async function setMemberSelf(email, value, welcomed, extra) {
   let v = value;
   extra = extra || {};
   // v360 the phone the person adds on their profile (the team sees it) and the time zone of their device (for the place on the profile)
-  let phone = extra.phone, tz = extra.tz;
+  let phone = extra.phone, tz = extra.tz, bio = extra.bio;
+  if (bio !== undefined) bio = String(bio || '').replace(/[<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, 100);
   if (phone !== undefined) { phone = String(phone || '').replace(/[^0-9+ ()-]/g, '').trim().slice(0, 22); if (phone && phone.replace(/\D/g, '').length < 6) throw new Error('That phone number looks too short.'); }
   if (tz !== undefined) { tz = String(tz || '').slice(0, 40); if (tz && !/^[A-Za-z_]+(\/[A-Za-z_+-]+){1,2}$/.test(tz)) tz = undefined; }
   if (typeof v === 'string' && v) {
@@ -615,7 +616,8 @@ async function setMemberSelf(email, value, welcomed, extra) {
     if (welcomed && !(m.w > 1e12)) m.w = Date.now();
     if (phone !== undefined) { if (phone) m.phone = phone; else delete m.phone; }
     if (tz) m.tz = tz;
-    if (m.role || m.avatar || m.w || m.phone || m.tz) all[email] = m; else delete all[email];
+    if (bio !== undefined) { if (bio) m.bio = bio; else delete m.bio; }
+    if (m.role || m.avatar || m.w || m.phone || m.tz || m.bio) all[email] = m; else delete all[email];
     result = all[email] || {};
     return all;
   });
