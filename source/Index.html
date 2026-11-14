@@ -9025,6 +9025,14 @@ body.dark-mode .ak-cyb{background:#232b3a;color:#c9d6ff}
 .ak-pg .r.del i{color:#E41E3F;background:#FDEBEE}.ak-pg .r.del b{color:#E41E3F}
 body.dark-mode .ak-pg{background:#0f141c}body.dark-mode .ak-pgt b,body.dark-mode .ak-pgr button,body.dark-mode .ak-pg .r,body.dark-mode .ak-pgp p{color:#e8ecf3}
 body.dark-mode .ak-pgr i,body.dark-mode .ak-pg .r i{background:#232b3a;color:#c9d6ff}body.dark-mode .ak-pga em{border-color:#0f141c}body.dark-mode .ak-pg .r.del i{background:#3a1c22}
+
+/* v409 Clear chat asks first */
+.ak-cf{position:absolute;inset:0;z-index:3;background:rgba(10,18,40,.45);display:grid;place-items:center;padding:24px;animation:akDdIn .15s ease-out}
+.ak-cfb{width:min(300px,100%);background:#fff;border-radius:18px;padding:18px 16px 12px;text-align:center;box-shadow:0 20px 50px -12px rgba(0,0,0,.4)}
+.ak-cfb b{display:block;font-size:16px;font-weight:900;color:#050505}.ak-cfb p{margin:6px 0 14px;font-size:13px;color:#65676B;font-weight:500;line-height:1.45}
+.ak-cfb div{display:flex;gap:8px}.ak-cfb button{flex:1;border:0;border-radius:12px;padding:10px;font:800 14px Inter,system-ui,sans-serif;cursor:pointer;background:#F0F2F5;color:#050505}
+.ak-cfb button.del{background:#E41E3F;color:#fff}
+body.dark-mode .ak-cfb{background:#171d27}body.dark-mode .ak-cfb b{color:#e8ecf3}body.dark-mode .ak-cfb button{background:#232b3a;color:#e8ecf3}body.dark-mode .ak-cfb button.del{background:#E41E3F;color:#fff}
 </style>
 </head>
 <body>
@@ -10180,8 +10188,11 @@ function akAbout(e){if(e)e.stopPropagation();const pg=document.getElementById('a
   <h4>Chat</h4>${row('clear','trash','Clear chat','The chat stays on this device for 24 hours','del')}</div>`;
  pg.setAttribute('aria-hidden','false');requestAnimationFrame(()=>pg.classList.add('on'))}
 function akAboutClose(){const pg=document.getElementById('akAbt');if(!pg)return;pg.classList.remove('on');pg.setAttribute('aria-hidden','true')}
-function akPgGo(id){akAboutClose();
- if(id==='clear'){AK.msgs=[];AK.hist=[];AK.nav={};AK.res=null;AK.resIds=[];AK.ls=[];AK.ts=[];AK.t0=Date.now();try{localStorage.removeItem(AK_KEEP)}catch(e){}const nm=akMe().name.split(' ')[0];akBot(`<p>Hi${nm?' '+akEsc(nm):''}. Pick from the menu or type your question.</p>`);AK.kb=true;akKb();return}
+function akPgGo(id){
+ if(id==='clear'){const pg=document.getElementById('akAbt');if(!pg||pg.querySelector('.ak-cf'))return;
+  pg.insertAdjacentHTML('beforeend',`<div class="ak-cf" onclick="if(event.target===this)this.remove()"><div class="ak-cfb" role="alertdialog" aria-label="Clear chat"><b>Clear this chat?</b><p>All the messages on this device will be deleted. This cannot be undone.</p><div><button type="button" onclick="this.closest('.ak-cf').remove()">Cancel</button><button type="button" class="del" onclick="this.closest('.ak-cf').remove();akPgGo('clear!')">Clear</button></div></div></div>`);return}
+ akAboutClose();
+ if(id==='clear!'){AK.msgs=[];AK.hist=[];AK.nav={};AK.res=null;AK.resIds=[];AK.ls=[];AK.ts=[];AK.t0=Date.now();try{localStorage.removeItem(AK_KEEP)}catch(e){}const nm=akMe().name.split(' ')[0];akBot(`<p>Hi${nm?' '+akEsc(nm):''}. Pick from the menu or type your question.</p>`);AK.kb=true;akKb();return}
  setTimeout(()=>akMenu(id),200)}
 function closeAsk(){if(AKR.on)akRecStop();AK.add=null;AK.teach=false;AK.ask=null;const o=document.getElementById('akBox');if(!o)return;o.classList.remove('open');setTimeout(()=>o.remove(),280)}
 function akBot(html,cls){AK.msgs.push({w:'h',html,cls:cls||'',nw:1});akDraw()}
