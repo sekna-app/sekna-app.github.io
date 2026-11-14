@@ -8600,6 +8600,18 @@ window.addEventListener('load',function(){
     /* v343 latest day: header stays navy; a glowing gold gradient frame and a gold ROAS pill (phone) */
     @media (max-width:1099px){html body #dxBody .dc-card.dcH.latest{border:2px solid transparent!important;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,#F7E1A1,#C99A45 35%,#F3D58E 65%,#B07A2A) border-box!important;box-shadow:0 0 20px rgba(226,184,116,.55),0 10px 22px rgba(20,40,110,.12)!important}
       html body #dxBody .dc-card.dcH.latest>.dcH-h>i{background:linear-gradient(135deg,#F0D18C,#D3A04D)!important;color:#2a1d05!important}}
+    /* v345 season alerts: Phone/Desktop and All/Hijri/US on one row, a soft oval between */
+    .sal-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}.sal-row>.sal-seg{margin:0!important;padding:0!important;background:none!important}
+    .sal-row>.sal-seg button{flex:0 0 auto!important;padding:6px 12px!important;border:1.5px solid #e3e7f0!important;border-radius:9px}.sal-row>.sal-seg button.on{border-color:#203c8e!important;background:#203c8e!important;color:#fff!important;box-shadow:none!important}
+    .sal-sep{width:6px;height:24px;border-radius:99px;background:rgba(32,60,142,.12);flex:none}
+    /* v345 admin role badges: mirror chrome (silver, gold, CEO gold), one shine when People opens */
+    #adminOverlay .rb2{background:linear-gradient(180deg,#FFFFFF 0%,#E4E8EF 45%,#B9C1CE 52%,#E9EDF3 100%)!important;color:#1E2A44!important;box-shadow:0 0 0 1px #A9B2C1,0 3px 10px rgba(80,95,125,.35),inset 0 1px 0 #fff!important}
+    #adminOverlay .rb3{background:linear-gradient(180deg,#FFF6DE 0%,#F0D18C 45%,#C9933F 52%,#F3D58E 100%)!important;color:#3a2606!important;box-shadow:0 0 0 1px #C9933F,0 3px 10px rgba(194,138,58,.35),inset 0 1px 0 #fff!important}
+    #adminOverlay .rb5{background:linear-gradient(180deg,#FFF8D6 0%,#F6C94F 45%,#C88A12 52%,#FBE28D 100%)!important;color:#3b2500!important;box-shadow:0 0 0 1px #E0B040,0 4px 14px rgba(214,151,28,.5),inset 0 1px 0 #fff!important}
+    #adminOverlay :is(.rb3,.rb4,.rb5):after{animation:none!important;display:none}
+    #adminOverlay .a3-body.pshine :is(.rb2,.rb3,.rb5):after{display:block;content:"";position:absolute;top:0;bottom:0;width:40%;left:-50%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.95),transparent);animation:rbSh 1.1s .35s ease-in-out 1 both;pointer-events:none}
+    @keyframes rbSh{to{left:120%}}
+    @media (prefers-reduced-motion:reduce){#adminOverlay .a3-body.pshine :is(.rb2,.rb3,.rb5):after{animation:none;display:none}}
 </style>
 </head>
 <body>
@@ -14719,7 +14731,7 @@ function openAdmin(){
  const el=document.getElementById('adminOverlay');if(el)el.classList.add('open');
  loadAdmin();
 }
-function closeAdmin(event){
+function closeAdmin(event){window.ADM_PV='';
  if(event&&event.target!==event.currentTarget)return;
  try{if(ACT_CAL.open){ACT_CAL.open=false;actCalSync()}}catch(e){}
  const el=document.getElementById('adminOverlay');if(el)el.classList.remove('open');
@@ -14886,6 +14898,7 @@ function renderAdmin(d){
  else body=`<div class="a2-acts">${act('invite',`<i style="font-style:normal;display:grid;color:#a56a06">${aI('userplus')}</i>`,'#fff3dc','Invite','Add someone')}${ACCESS_PROFILE&&ACCESS_PROFILE.owner?act('perms',`<i style="font-style:normal;display:grid;color:#203c8e">${aI('lock')}</i>`,'#e9eefc','Permissions','Who can use what'):''}${act('activity',`<i style="font-style:normal;display:grid;color:#13894f">${aI('chart')}</i>`,'#e3f6ec','Activity','Who uses what')}${act('message',`<i style="font-style:normal;display:grid;color:#203c8e">${aI('mega')}</i>`,'#e9eefc','Team message',annState)}${act('app',`<i style="font-style:normal;display:grid;color:${m.on?'#c63a4a':'#13894f'}">${aI('power')}</i>`,m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('reading',`<i style="font-style:normal;display:grid;color:#13894f">${aI('sheet')}</i>`,'#e3f6ec','Reading the sheets',RW.data&&RW.data.window?(RW.data.window.on?rw12(RW.data.window.from)+' – '+rw12(RW.data.window.to):'All day'):'When to read')}${act('seasons',`<i style="font-style:normal;display:grid;color:#7a46d6">${aI('cal')}</i>`,'#f1eaff','Season alerts',SAL.data&&SAL.data.next?(()=>{const n=SAL.data.next.filter(x=>x.sendOn).sort((a,b)=>a.sendOn<b.sendOn?-1:1)[0];return n?'Next · '+salD(n.sendOn):'Days before each season'})():'Days before each season')}</div>${ADMIN_TAB==='server'?'':sheet}`;
  if(body.startsWith('<div class="a2-acts">')&&ADMIN_TAB&&ADMIN_TAB!=='server'&&sheet)body=`<div class="a2-solo"><div class="a2-bk"><button type="button" onclick="adminBack()" aria-label="Back to tools"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><span class="a2-bi">${aI(({app:'power',message:'mega',invite:'userplus',activity:'chart',reading:'sheet',seasons:'cal',perms:'lock'})[ADMIN_TAB]||'chart')}</span><b>${esc(({app:'App status',message:'Team message',invite:'Invite',activity:'Activity',reading:'Reading the sheets',seasons:'Season alerts',perms:'Permissions'})[ADMIN_TAB]||'Tools')}</b></div>${sheet}</div>`;
  adminBody(tabs+`<div class="a3-body">${body}</div>`);
+ {if(ADMIN_VIEW==='people'&&window.ADM_PV!=='people')window.ADM_PST=Date.now();window.ADM_PV=ADMIN_VIEW;if(ADMIN_VIEW==='people'&&Date.now()-(window.ADM_PST||0)<1200){const b=document.querySelector('#adminOverlay .a3-body');if(b)b.classList.add('pshine')}}
  const hd=document.querySelector('#adminOverlay .sk-modal-head'),tb=document.querySelector('.a3-tabs');if(hd&&tb)tb.style.top=hd.offsetHeight+'px';
 }
 
@@ -17747,7 +17760,7 @@ function salHtml(){
  else rows=keys.map(k=>{const n=nx[k]||{},g=(SAL.data.greet||{})[k]||['',''];
    return `<div class="sal-gr"><img src="${esc((SAL.data.greetImg||'')+k+'.jpg'+(SAL.data.imgV||''))}" alt="" loading="lazy"><div class="sal-t"><b>${esc(g[0])}</b>${inN(n.at)}<small>${SAL_NAMES[k]} ${tag(k)}${n.at?' · sends '+short(n.at):''}</small><p>${esc(g[1])}</p><button type="button" class="sal-test" onclick="salTest(this,'greet','${k}')">Send me a test</button></div></div>`}).join('');
  return `<div class="sal-h"><b>Season alerts</b><small>${view==='remind'?'A push and an email to the team this many days before each season starts, at 9:00 Muscat. Tests go to you only.':view==='greet'?'A push and an email with the season\'s picture on its first day, at 9:00 Muscat. Tests go to you only.':'The loading screen and the Daily card wear the season\'s picture on its days, then go back to normal. Tap a picture to see it full size.'}</small></div>`
-  +seg('view',view,[['remind','Reminders'],['greet','Greetings'],['splash','Loading screen']])+(view==='splash'?seg('dev',SAL.dev||'phone',[['phone','Phone'],['desk','Desktop']]):'')+seg('grp',grp,[['all','All'],['hijri','Hijri'],['us','US']])
+  +seg('view',view,[['remind','Reminders'],['greet','Greetings'],['splash','Loading screen']])+`<div class="sal-row">${view==='splash'?seg('dev',SAL.dev||'phone',[['phone','Phone'],['desk','Desktop']])+'<i class="sal-sep" aria-hidden="true"></i>':''}${seg('grp',grp,[['all','All'],['hijri','Hijri'],['us','US']])}</div>`
   +`<div class="sal-list">${rows}</div>`
   +(view==='remind'?`<div class="sal-act"><button type="button" class="sal-save" ${dirty&&!SAL.busy?'':'disabled'} onclick="salSave()">${SAL.busy?'Saving…':'Save'}</button>${SAL.err?`<small class="sal-err">${esc(SAL.err)}</small>`:''}</div>`:'');
 }
