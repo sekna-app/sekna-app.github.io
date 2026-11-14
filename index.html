@@ -8808,6 +8808,31 @@ window.addEventListener('load',function(){
     /* v371 who is off today: the off person's photo gets a navy veil with OFF in gold (the covers line only) */
     .lvc-p>.tk-av:first-child{position:relative;overflow:hidden;border-radius:50%}.lvc-p>.tk-av:first-child svg,.lvc-p>.tk-av:first-child img{filter:grayscale(.7)}
     .lvc-p>.tk-av:first-child:after{content:"OFF";position:absolute;inset:0;border-radius:50%;background:rgba(15,26,58,.6);color:#F3D58E;font:900 8px/1 Inter,system-ui,sans-serif;letter-spacing:.08em;display:grid;place-items:center}
+
+/* v373 welcome step 2 (ت٢ Ripple): picture and avatars in the middle, gold rings around the picture, avatars slide in */
+.wl-sl.p2 .wl-big{margin-top:auto!important;position:relative;animation:wlR2 .8s cubic-bezier(.2,.9,.3,1.25) .15s backwards}
+.wl-sl.p2 .wl-pk{margin-bottom:auto}
+.wl-sl.p2 .wl-bot{margin-top:0}
+@keyframes wlR2{from{transform:scale(.3);opacity:0}}
+.wl-sl.p2 .wl-big:before,.wl-sl.p2 .wl-big:after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid rgba(226,184,116,.7);animation:wlRip 2.6s ease-out .8s infinite;pointer-events:none;opacity:0}
+.wl-sl.p2 .wl-big:after{animation-delay:2.1s}
+@keyframes wlRip{from{transform:scale(1);opacity:.9}to{transform:scale(1.9);opacity:0}}
+.wl-sl.p2 .wl-pk button{animation:wlR2b .6s cubic-bezier(.2,.8,.2,1) backwards}
+@keyframes wlR2b{from{transform:translateX(160px);opacity:0}}
+.wl-sl.p2 .wl-pk button:nth-child(1){animation-delay:0.45s}
+.wl-sl.p2 .wl-pk button:nth-child(2){animation-delay:0.52s}
+.wl-sl.p2 .wl-pk button:nth-child(3){animation-delay:0.59s}
+.wl-sl.p2 .wl-pk button:nth-child(4){animation-delay:0.66s}
+.wl-sl.p2 .wl-pk button:nth-child(5){animation-delay:0.73s}
+.wl-sl.p2 .wl-pk button:nth-child(6){animation-delay:0.80s}
+.wl-sl.p2 .wl-pk button:nth-child(7){animation-delay:0.87s}
+.wl-sl.p2 .wl-pk button:nth-child(8){animation-delay:0.94s}
+.wl-sl.p2 .wl-pk button:nth-child(9){animation-delay:1.01s}
+.wl-sl.p2 .wl-pk button:nth-child(10){animation-delay:1.08s}
+.wl-sl.p2 .wl-pk button:nth-child(11){animation-delay:1.15s}
+.wl-sl.p2 .wl-pk button:nth-child(12){animation-delay:1.22s}
+.wl-sl.p2 .wl-pk button:nth-child(13){animation-delay:1.29s}
+@media (prefers-reduced-motion:reduce){.wl-sl.p2 .wl-big,.wl-sl.p2 .wl-pk button,.wl-sl.p2 .wl-big:before,.wl-sl.p2 .wl-big:after{animation:none}}
 </style>
 </head>
 <body>
@@ -17192,7 +17217,7 @@ function wlMaybe(){
 function wlPic(){return WL.photo?emblemHtml(WL.photo):personAv(WL.av,WL.name)}
 function wlDraw(){
  const o=document.getElementById('wlBox');if(!o)return;
- const old=o.querySelector('.wl-sl'),s=document.createElement('div');s.className='wl-sl in'+([0,1,4].indexOf(WL.step)>=0?' low':'');
+ const old=o.querySelector('.wl-sl'),s=document.createElement('div');s.className='wl-sl in'+([0,1,4].indexOf(WL.step)>=0?' low':'')+(WL.step===2?' p2':'');
  const dots=`<div class="wl-dots">${[0,1,2,3].map(i=>`<i class="${i<=WL.step?'on':''}"></i>`).join('')}</div>`,first=esc(String(WL.name||'').split(' ')[0]);
  if(WL.step===0)s.innerHTML=`<div class="wl-big wl-pop">${wlPic()}</div><h2>Welcome to HEMERA${first?', '+first:''}</h2><p>Let us make it yours. It takes 20 seconds.</p><div class="wl-bot">${dots}<button type="button" class="wl-btn g" data-go>Let us start</button></div>`;
  if(WL.step===1)s.innerHTML=`<small class="wl-k">STEP 1 · YOUR NAME</small><h2 class="l">How should the team see you?</h2><input class="wl-in" id="wlName" value="${esc(WL.name)}" maxlength="30" autocomplete="name"><div class="wl-bot">${dots}<button type="button" class="wl-btn g" data-go>Next</button></div>`;
@@ -17235,7 +17260,7 @@ function vTick(a){return isVer(a)?VBADGE:''}
 
 const PF={email:'',tab:'about',edit:false,bio:false};
 const PF_TZ={'Africa/Cairo':'Cairo, Egypt','Asia/Muscat':'Muscat, Oman','Europe/London':'London, UK','Asia/Dubai':'Dubai, UAE','Asia/Riyadh':'Riyadh, Saudi Arabia','Asia/Qatar':'Doha, Qatar','Asia/Kuwait':'Kuwait City, Kuwait','America/New_York':'New York, US','America/Chicago':'Chicago, US','America/Los_Angeles':'Los Angeles, US'};
-const PF_IC={clock:'<path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"/><path d="M12 7v5l3 2"/>',pin:'<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',phone:'<path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2"/>',pen:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M14 6l4 4"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',heart:'<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>'};
+const PF_IC={user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',clock:'<path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"/><path d="M12 7v5l3 2"/>',pin:'<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',phone:'<path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2"/>',pen:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M14 6l4 4"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',heart:'<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>'};
 const pfI=k=>`<svg class="pf-i" viewBox="0 0 24 24" aria-hidden="true">${PF_IC[k]}</svg>`;
 function pfDevTz(){try{return Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){return ''}}
 function pfPerson(email){
@@ -17260,11 +17285,13 @@ function pfLeave(email){
  const w=tkWeeklyOf(email),days=(w&&w.data&&w.data.weekdays)||[],off=typeof tkOffToday==='function'?tkOffToday(email):null;
  const chip=`<span class="pf-st${off?' o':''}">${off?'Off today':'Working today'}</span>`;
  if(!TK.data)return `<div class="pf-r">${pfI('clock')}<div class="pf-t">Days off<small>Open Team Leave once to see them</small></div></div>`;
- if(!days.length)return `<div class="pf-r">${pfI('clock')}<div class="pf-t">Available every day<small>No weekly day off</small></div>${chip}</div>`;
+ if(!days.length)return `<div class="pf-r">${pfI('clock')}<div class="pf-t">Available every day<small>No weekly day off</small></div>${chip}</div>`+pfBackup(email,off,null);
  const av=[0,1,2,3,4,5,6].filter(d=>days.indexOf(d)<0);
  const span=days.length===1?`${TK_DAYS_L[(days[0]+1)%7]} to ${TK_DAYS_L[(days[0]+6)%7]}`:av.map(d=>TK_DAYS[d]).join(' · ');
- return `<div class="pf-r">${pfI('clock')}<div class="pf-t">Off on ${days.map(d=>TK_DAYS_L[d]+'s').join(' & ')}<small>Available ${span}</small></div>${chip}</div>`;
+ return `<div class="pf-r">${pfI('clock')}<div class="pf-t">Off on ${days.map(d=>TK_DAYS_L[d]+'s').join(' & ')}<small>Available ${span}</small></div>${chip}</div>`+pfBackup(email,off,w);
 }
+
+function pfBackup(email,off,w){const b=(off&&off.data&&off.data.backup)||(w&&w.data&&w.data.backup)||'';if(!b||b===email)return '';const n=String(tkPerson(b).name||b).split(' ')[0];return `<div class="pf-r">${pfI('user')}<div class="pf-t">${esc(n)}<small>Backup when off</small></div></div>`}
 function pfDraw(){
  const o=document.getElementById('pfBox');if(!o)return;const P=pfPerson(PF.email),ver=isVer(P.avatar);
  let place='';if(P.tz&&!/^(UTC|Etc\/)/.test(P.tz)){const nm=PF_TZ[P.tz]||String(P.tz).split('/').pop().replace(/_/g,' ');let tm='';try{tm=new Date().toLocaleTimeString('en-US',{timeZone:P.tz,hour:'numeric',minute:'2-digit'})}catch(e){}place=`<div class="pf-r">${pfI('pin')}<div class="pf-t">${esc(nm)}<small>${P.self?'From this device':'From their device'}${tm?' · '+esc(tm)+' local':''}</small></div></div>`}
