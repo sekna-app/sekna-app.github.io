@@ -8927,6 +8927,9 @@ body.dark-mode .ak-cr .gd button{background:#171d27;border-color:#2a3242;color:#
 .ak-tg2.ed{background:#FBF3E2;color:#8a6a1e}.ak-tg2.no{background:#FDE7EC;color:#C2185B}.ak-tg2.mu{background:#F0F2F5;color:#65676B}
 .ak-pp{display:flex;align-items:center;gap:10px;margin-bottom:8px}.ak-pp .tk-av{width:42px!important;height:42px!important}.ak-pp b{display:block;font-size:15px;font-weight:900}.ak-pp small{font-size:11px;color:#65676B;font-weight:600}
 .ak-sw.busy{opacity:.6}
+/* v392 no blinking: only new messages slide in */
+.ak-m{animation:none}.ak-m.nw{animation:akIn .35s cubic-bezier(.2,.8,.2,1) backwards}
+.ak-ad>button.lk .ak-ic{color:#F3D58E}
 </style>
 </head>
 <body>
@@ -10049,7 +10052,7 @@ function akRecSend(){
    const blob=new Blob(AKR.chunks,{type:AKR.rec.mimeType||'audio/webm'});akRecStop();
    if(secs<1||!blob.size)return;
    const url=URL.createObjectURL(blob);
-   AK.msgs.push({w:'u',html:`<span class="ak-vb" data-u="${url}" onclick="akPlay(this)">${akI('play')}<span>${lv.filter((x,i)=>i%2===0).map(x=>`<i style="height:${Math.round(4+x*16)}px"></i>`).join('')}</span><b>0:${String(secs).padStart(2,'0')}</b></span>`});
+   AK.msgs.push({w:'u',nw:1,html:`<span class="ak-vb" data-u="${url}" onclick="akPlay(this)">${akI('play')}<span>${lv.filter((x,i)=>i%2===0).map(x=>`<i style="height:${Math.round(4+x*16)}px"></i>`).join('')}</span><b>0:${String(secs).padStart(2,'0')}</b></span>`});
    AK.kb=false;akKb();AK.busy=true;akDraw();
    try{
      const wav=await akWav(blob);
@@ -10074,8 +10077,8 @@ async function akWav(blob){
  const bytes=new Uint8Array(v.buffer);let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000));return btoa(bin);
 }
 function closeAsk(){if(AKR.on)akRecStop();AK.add=null;AK.teach=false;AK.ask=null;const o=document.getElementById('akBox');if(!o)return;o.classList.remove('open');setTimeout(()=>o.remove(),280)}
-function akBot(html,cls){AK.msgs.push({w:'h',html,cls:cls||''});akDraw()}
-function akUser(t){AK.msgs.push({w:'u',html:akEsc(t)});akDraw()}
+function akBot(html,cls){AK.msgs.push({w:'h',html,cls:cls||'',nw:1});akDraw()}
+function akUser(t){AK.msgs.push({w:'u',html:akEsc(t),nw:1});akDraw()}
 // v389 the chat stays on this device for 24 hours from its first message, then starts fresh
 const AK_KEEP='hm_ask_chat';
 function akSave(){clearTimeout(akSave.t);akSave.t=setTimeout(()=>{try{if(!AK.msgs.length)return;AK.t0=AK.t0||Date.now();
@@ -10087,9 +10090,9 @@ function akDraw(){akSave();
  const b=document.getElementById('akBd');if(!b)return;
  const L=AK.msgs.slice(-60);
  b.innerHTML=L.map((m,i)=>{const nx=L[i+1],last=!nx||nx.w!==m.w,first=i===0||L[i-1].w!==m.w;
-   const bub=`<div class="ak-m ${m.w}${m.cls?' '+m.cls:''}${first?' f':''}${last?' l':''}">${m.html}</div>`;
+   const bub=`<div class="ak-m ${m.w}${m.cls?' '+m.cls:''}${first?' f':''}${last?' l':''}${m.nw?' nw':''}">${m.html}</div>`;
    return m.w==='h'?`<div class="ak-g">${last&&!AK.busy||last&&nx?`<span class="ak-sa">${akI('spk')}</span>`:'<span class="ak-sp"></span>'}${bub}</div>`:bub}).join('')+(AK.busy?`<div class="ak-g"><span class="ak-sa">${akI('spk')}</span><div class="ak-m h f l ak-dots"><i></i><i></i><i></i></div></div>`:'');
- requestAnimationFrame(()=>{b.scrollTop=b.scrollHeight});
+ L.forEach(m=>{m.nw=0});requestAnimationFrame(()=>{b.scrollTop=b.scrollHeight});
 }
 function akToggleKb(){AK.kb=!AK.kb;akKb()}
 function akKb(){
@@ -10127,7 +10130,7 @@ function akAnswer(t){
 }
 // v388 every screen has Back: it goes one step up (the menu, the platform, the account, the type, Teach the bot, the team)
 function AKB(to,l){return `<div class="ak-bkl"><button type="button" onclick="akBackTo('${to}')">${akI('back')}${l||'Back'}</button></div>`}
-async function akBackTo(t){akUser('Back');
+async function akBackTo(t){if(t==='pop'){akTBack();return}akUser('Back');
  if(t==='menu'){AK.kb=true;akKb();akBot('<p>What else can I help with?</p>');return}
  if(t==='plat'){akStepPlatform();return}
  if(t==='acct'){akShowAcct();return}
@@ -10271,22 +10274,26 @@ function akTeachHtml(sm){
 }
 async function akTeach(){
  if(!ASK_HEMERA_URL){akBot('<p>Ask HEMERA is not connected yet.</p>');return}
- AK.teach=true;akPanel('teachroot',akTeachHtml(AK.sm));
- try{const j=await akPost('admin',{op:'summary'});AK.sm=j;akPanel('teachroot',akTeachHtml(j))}catch(e){}
+ AK.teach=true;AK.ts=[];akPanel('teach',akTeachHtml(AK.sm));
+ try{const j=await akPost('admin',{op:'summary'});AK.sm=j;if(!AK.ts.length)akPanel('teach',akTeachHtml(j))}catch(e){}
 }
 // replaces a panel that is already in the chat, or adds it
-function akPanel(id,html){const k=AK.msgs.findIndex(x=>x.pid===id);if(k>=0&&k===AK.msgs.length-1){AK.msgs[k].html=html;akDraw();return}if(k>=0)AK.msgs.splice(k,1);AK.msgs.push({w:'h',html,cls:'wb',pid:id});akDraw()}
+function akPanel(id,html){const k=AK.msgs.findIndex(x=>x.pid===id);if(k>=0&&k===AK.msgs.length-1){AK.msgs[k].html=html;akDraw();return}if(k>=0)AK.msgs.splice(k,1);AK.msgs.push({w:'h',html,cls:'wb',pid:id,nw:1});akDraw()}
 async function akAdm(op,extra){AK.busy=true;akDraw();try{const j=await akPost('admin',Object.assign({op},extra||{}));AK.busy=false;akDraw();return j}catch(err){AK.busy=false;akDraw();showSettingsToast(/unknown action/.test(String(err&&err.message))?'This needs the new HemeraApi file in the script.':errorText(err));return null}}
+// the Teach the bot screens are a stack: akNav opens one, Back closes it
+function akNav(fn){AK.ts=AK.ts||[];AK.ts.push(fn);fn()}
+function akTBack(){(AK.ts||[]).pop();const f=(AK.ts||[])[AK.ts.length-1];if(f)f();else akPanel('teach',akTeachHtml(AK.sm))}
+function akTop(){const f=(AK.ts||[])[AK.ts.length-1];if(f)f()}
+// a quiet call: no typing dots, so the screen does not jump while a switch is saved
+async function akAdmQ(op,extra){try{return await akPost('admin',Object.assign({op},extra||{}))}catch(err){showSettingsToast(/unknown action/.test(String(err&&err.message))?'This needs the newest HemeraApi file in the script.':errorText(err));return null}}
 function akTmTitle(ic,t){return `<p class="ak-q">${akI(ic)}<b>${t}</b></p>`}
 async function akTm(k){
- const t=(AK_TM.find(x=>x[0]===k)||[])[1]||k;akUser(t);
- if(k==='rules'){AK.busy=true;akDraw();try{const j=await akPost('rules');AK.busy=false;akPanel('rules',akTmTitle('rules','Saved rules ('+j.rules.length+')')+akRulesHtml(j.rules)+'<p class="ak-sm ak-mu">Type a new rule below to add it.</p>'+AKB('teach'))}catch(e){AK.busy=false;akBot('<p>Teaching needs the new HemeraApi file in the script.</p>')}return}
- if(k==='refresh'){const j=await akAdm('refresh');if(j)akBot(`<p>${akI('refresh')} Refreshed. ${j.rows} rows in the Assets tab.</p>`+AKB('teach'),'wb');AK.assets=null;return}
- if(k==='cats'){const j=await akAdm('cats');if(j)akCatsDraw(j);return}
- if(k==='plats'){const j=await akAdm('plats');if(j)akPlatsDraw(j);return}
- if(k==='access'){if(await akPermsLoad())akAccessDraw();return}
- if(k==='team'){if(await akPermsLoad())akPeopleDraw();return}
- if(k==='bc'){const j=await akAdm('bc');if(j)akBcDraw(j);return}
+ if(k==='rules'){AK.busy=true;akDraw();try{const j=await akPost('rules');AK.busy=false;AK.rl=j.rules;akNav(()=>akPanel('teach',akTmTitle('rules','Saved rules ('+AK.rl.length+')')+akRulesHtml(AK.rl)+'<p class="ak-sm ak-mu">Type a new rule below to add it.</p>'+AKB('pop')))}catch(e){AK.busy=false;akDraw();showSettingsToast(errorText(e))}return}
+ if(k==='refresh'){const j=await akAdm('refresh');if(j){AK.assets=null;akNav(()=>akPanel('teach',`<p class="ak-q">${akI('refresh')}<b>Refreshed</b></p><p class="ak-sm">${j.rows} rows in the Assets tab. The bot and Ask HEMERA see the latest sheet now.</p>`+AKB('pop')))}return}
+ if(k==='cats'){const j=await akAdm('cats');if(j){AK.cats=j;akNav(()=>akCatsDraw(AK.cats))}return}
+ if(k==='plats'){const j=await akAdm('plats');if(j){AK.plj=j;akNav(()=>akPlatsDraw(AK.plj))}return}
+ if(k==='access'){if(await akPermsLoad())akNav(akAccessDraw);return}
+ if(k==='team'){await akTeamData();akNav(akTeamList);return}
 }
 /* v389 access in HEMERA by email: use the bot, add sheets, teach the bot, and each locked platform */
 async function akPermsLoad(){await akTeamData();const j=await akAdm('perms');if(!j)return false;AK.pm=j;return true}
@@ -10300,57 +10307,60 @@ const AK_PK=[['use','Use the bot','spk'],['add','Add sheets','add'],['teach','Te
 function akPermTags(e){if(akIsEd(e))return '<em class="ak-tg2 ed">Editor · full access</em>';if(!akPerm(e,'use'))return '<em class="ak-tg2 no">Blocked</em>';
  const t=[];if(akPerm(e,'add'))t.push('Adds sheets');if(akPerm(e,'teach'))t.push('Teaches');akAllPl().forEach(p=>{const on=akPerm(e,'plat',p.key);if(p.locked&&on)t.push(p.key);if(!p.locked&&!on)t.push('No '+p.key)});
  return t.length?t.map(x=>`<em class="ak-tg2">${akEsc(x)}</em>`).join(''):'<em class="ak-tg2 mu">Can ask</em>'}
+function akTeamList(){const P=akPpl();
+ akPanel('teach',akTmTitle('users','Team ('+P.length+')')+'<p class="ak-sm ak-mu">The people in HEMERA. Tap someone to open their profile.</p><div class="ak-rvs">'+P.map(p=>`<div class="ak-ad tp" onclick="profOpen('${akEsc(p.email)}',event)">${tkAv(p)}<b>${akEsc(p.name||p.email)}<small>${akEsc(p.email)}</small></b>${akI('chev')}</div>`).join('')+'</div>'+AKB('pop'))}
 function akPeopleDraw(){const P=akPpl();
- akPanel('hmteam',akTmTitle('users','Team')+'<p class="ak-sm ak-mu">The people in HEMERA. Tap someone to set what they can do here.</p><div class="ak-rvs">'+P.map((p,i)=>`<div class="ak-ad tp" onclick="akPersonDraw(${i})">${tkAv(p)}<b>${akEsc(p.name||p.email)}<small>${akEsc(p.email)}</small><span class="ak-tgs">${akPermTags(p.email)}</span></b>${akI('chev')}</div>`).join('')+'</div>'+AKB('teach'))}
+ akPanel('teach',akTmTitle('users','Team')+'<p class="ak-sm ak-mu">The people in HEMERA. Tap someone to set what they can do here.</p><div class="ak-rvs">'+P.map((p,i)=>`<div class="ak-ad tp" onclick="akNav(()=>akPersonDraw(${i}))">${tkAv(p)}<b>${akEsc(p.name||p.email)}<small>${akEsc(p.email)}</small><span class="ak-tgs">${akPermTags(p.email)}</span></b>${akI('chev')}</div>`).join('')+'</div>'+AKB('pop'))}
 function akPersonDraw(i){const p=akPpl()[i];if(!p)return;AK.pi=i;const ed=akIsEd(p.email);
  const rows=AK_PK.map(([k,t,ic])=>[k,'',t,ic]).concat(akAllPl().map(p=>['plat',p.key,'Sees '+p.key,'']));
- akPanel('hmp:'+p.email,`<div class="ak-pp">${tkAv(p)}<div><b>${akEsc(p.name||p.email)}</b><small>${akEsc(p.email)}</small></div></div>`+(ed?'<p class="ak-sm ak-mu">An editor always has full access.</p>':'')+'<div class="ak-rvs">'+rows.map(([k,pl,t,ic],n)=>`<div class="ak-ad"><i class="${pl?'lg':''}">${pl?akLogo(pl):akI(ic)}</i><b>${akEsc(t)}</b><label class="ak-sw${akPerm(p.email,k,pl)?' on':''}${ed?' off':''}" onclick="akPermFlip('${akEsc(p.email)}','${k}','${akEsc(pl)}',this)"><span></span></label></div>`).join('')+'</div>'+AKB('team'))}
-function akAccessDraw(){const L=AK_PK.map(([k,t,ic])=>[k,'',t,akI(ic)]).concat(akAllPl().map(p=>['plat',p.key,p.key,akLogo(p.key)]));AK.al=L;
- akPanel('hmacc',akTmTitle('key','Access')+'<p class="ak-sm ak-mu">Pick what to set, then switch people on or off. Editors always have everything.</p><div class="ak-ch ak-pl ak-cp2">'+L.map(([k,pl,t,ic],n)=>`<button type="button" onclick="akAccPick(${n})"><i>${ic}</i>${akEsc(t)}</button>`).join('')+'</div>'+AKB('teach'))}
+ akPanel('teach',`<div class="ak-pp">${tkAv(p)}<div><b>${akEsc(p.name||p.email)}</b><small>${akEsc(p.email)}</small></div></div>`+(ed?'<p class="ak-sm ak-mu">An editor always has full access.</p>':'')+'<div class="ak-rvs">'+rows.map(([k,pl,t,ic],n)=>`<div class="ak-ad"><i class="${pl?'lg':''}">${pl?akLogo(pl):akI(ic)}</i><b>${akEsc(t)}</b><label class="ak-sw${akPerm(p.email,k,pl)?' on':''}${ed?' off':''}" onclick="akPermFlip('${akEsc(p.email)}','${k}','${akEsc(pl)}',this)"><span></span></label></div>`).join('')+'</div>'+AKB('pop'))}
+function akAccessDraw(){const P=akPpl();
+ akPanel('teach',akTmTitle('key','Access')+'<p class="ak-sm ak-mu">Tap someone to see and switch everything they can do here.</p><div class="ak-rvs">'+P.map((p,i)=>`<div class="ak-ad tp" onclick="akNav(()=>akPersonDraw(${i}))">${tkAv(p)}<b>${akEsc(p.name||p.email)}<small>${akEsc(p.email)}</small><span class="ak-tgs">${akPermTags(p.email)}</span></b>${akI('chev')}</div>`).join('')+'</div>'+AKB('pop'))}
+function akAccessOld(){const L=AK_PK.map(([k,t,ic])=>[k,'',t,akI(ic)]).concat(akAllPl().map(p=>['plat',p.key,p.key,akLogo(p.key)]));AK.al=L;
+ akPanel('teach',akTmTitle('key','Access')+'<p class="ak-sm ak-mu">Pick what to set, then switch people on or off. Editors always have everything.</p><div class="ak-ch ak-pl ak-cp2">'+L.map(([k,pl,t,ic],n)=>`<button type="button" onclick="akAccPick(${n})"><i>${ic}</i>${akEsc(t)}</button>`).join('')+'</div>'+AKB('pop'))}
 function akAccPick(n){const x=(AK.al||[])[n];if(!x)return;akUser(x[2]);akPermDraw(x[0],x[1],'access')}
 function akPermDraw(key,plat,back){AK.pd=[key,plat,back];const P=akPpl();
  const t=key==='plat'?'Who sees '+plat:{use:'Who can use the bot',add:'Who can add sheets',teach:'Who can teach the bot'}[key];
  const hint=key==='plat'?'Only the people switched on see '+plat+' sheets and get answers about it.':key==='use'?'Switch someone off and the bot does not answer them at all.':'';
- akPanel('hmpd:'+key+plat,akTmTitle(key==='plat'?'lock':'key',akEsc(t))+(hint?`<p class="ak-sm ak-mu">${akEsc(hint)}</p>`:'')+'<div class="ak-rvs">'+P.map(p=>{const ed=akIsEd(p.email);return `<div class="ak-ad">${tkAv(p)}<b>${akEsc(p.name||p.email)}<small>${ed?'Editor':akEsc(p.email)}</small></b><label class="ak-sw${akPerm(p.email,key,plat)?' on':''}${ed?' off':''}" onclick="akPermFlip('${akEsc(p.email)}','${key}','${akEsc(plat)}',this)"><span></span></label></div>`}).join('')+'</div>'+AKB(back||'access'))}
+ akPanel('teach',akTmTitle(key==='plat'?'lock':'key',akEsc(t))+(hint?`<p class="ak-sm ak-mu">${akEsc(hint)}</p>`:'')+'<div class="ak-rvs">'+P.map(p=>{const ed=akIsEd(p.email);return `<div class="ak-ad">${tkAv(p)}<b>${akEsc(p.name||p.email)}<small>${ed?'Editor':akEsc(p.email)}</small></b><label class="ak-sw${akPerm(p.email,key,plat)?' on':''}${ed?' off':''}" onclick="akPermFlip('${akEsc(p.email)}','${key}','${akEsc(plat)}',this)"><span></span></label></div>`}).join('')+'</div>'+AKB('pop'))}
 async function akPermFlip(e,key,plat,el){if(akIsEd(e)||el.classList.contains('busy'))return;const on=!el.classList.contains('on');el.classList.add('busy');el.classList.toggle('on',on);
- const j=await akAdm('permSet',{email:e,key,plat,on});el.classList.remove('busy');
- if(!j){el.classList.toggle('on',!on);return}AK.pm=j;
- const m=AK.msgs[AK.msgs.length-1];if(m&&/^hmp:/.test(m.pid||''))akPersonDraw(AK.pi);else if(m&&/^hmpd:/.test(m.pid||'')&&AK.pd)akPermDraw(AK.pd[0],AK.pd[1],AK.pd[2])}
+ const j=await akAdmQ('permSet',{email:e,key,plat,on});el.classList.remove('busy');
+ if(!j){el.classList.toggle('on',!on);return}AK.pm=j;akTop()}
 /* categories: star = a filter button for the team; bin = hide, or move its rows first */
 function akCatsDraw(j){AK.cats=j;
- akPanel('cats',akTmTitle('folder','Categories')+'<p class="ak-sm ak-mu">The star makes it a filter button for the team. The number is how many rows use it.</p><div class="ak-rvs">'+j.cats.map((c,i)=>`<div class="ak-ad"><i>${akI(AK_CAT_IC[c.name.toLowerCase()]||'folder')}</i><b>${akEsc(c.name)}</b><em>${c.n}</em><button type="button" class="${c.shown?'on':''}" aria-label="Filter button" onclick="akCat('star',${i})">${akI('star')}</button><button type="button" aria-label="Delete" onclick="akCat('del',${i})">${akI('trash')}</button></div>`).join('')+'</div>'+(j.hidden.length?'<p class="ak-sm"><b>Hidden</b></p><div class="ak-ch">'+j.hidden.map((h,i)=>`<button type="button" onclick="akCat('back',${i})">${akI('back')}${akEsc(h)}</button>`).join('')+'</div>':'')+AKB('teach'))}
+ akPanel('teach',akTmTitle('folder','Categories')+'<p class="ak-sm ak-mu">The star makes it a filter button for the team. The number is how many rows use it.</p><div class="ak-rvs">'+j.cats.map((c,i)=>`<div class="ak-ad"><i>${akI(AK_CAT_IC[c.name.toLowerCase()]||'folder')}</i><b>${akEsc(c.name)}</b><em>${c.n}</em><button type="button" class="${c.shown?'on':''}" aria-label="Filter button" onclick="akCat('star',${i})">${akI('star')}</button><button type="button" aria-label="Delete" onclick="akCat('del',${i})">${akI('trash')}</button></div>`).join('')+'</div>'+(j.hidden.length?'<p class="ak-sm"><b>Hidden</b></p><div class="ak-ch">'+j.hidden.map((h,i)=>`<button type="button" onclick="akCat('back',${i})">${akI('back')}${akEsc(h)}</button>`).join('')+'</div>':'')+AKB('pop'))}
 async function akCat(a,i){const J=AK.cats;if(!J)return;
- if(a==='back'){const j=await akAdm('catBack',{name:J.hidden[i]});if(j)akCatsDraw(j);return}
+ if(a==='back'){const j=await akAdmQ('catBack',{name:J.hidden[i]});if(j){AK.cats=j;akCatsDraw(j)}return}
  const c=J.cats[i];if(!c)return;
- if(a==='star'){const j=await akAdm('catStar',{name:c.name});if(j)akCatsDraw(j);return}
- if(a==='del'){if(!c.n){const j=await akAdm('catDel',{name:c.name});if(j)akCatsDraw(j);return}
+ if(a==='star'){const j=await akAdmQ('catStar',{name:c.name});if(j){AK.cats=j;akCatsDraw(j)}return}
+ if(a==='del'){if(!c.n){const j=await akAdmQ('catDel',{name:c.name});if(j){AK.cats=j;akCatsDraw(j)}return}
    AK.mv={kind:'cat',from:c.name,to:J.cats.filter(x=>x.name!==c.name).map(x=>x.name)};
    akBot(`<p><b>${akEsc(c.name)}</b> has ${c.n} rows. Move them to:</p><div class="ak-ch">${AK.mv.to.map((x,k)=>`<button type="button" onclick="akMove(${k})">${akEsc(x)}</button>`).join('')}</div>`,'wb')}}
 async function akMove(k){const M=AK.mv;if(!M)return;const to=M.to[k];AK.mv=null;akUser(to);
- if(M.kind==='cat'){const j=await akAdm('catDel',{name:M.from,to});if(j)akCatsDraw(j)}else{const j=await akAdm('platDel',{key:M.from,to});if(j)akPlatsDraw(j)}}
+ if(M.kind==='cat'){const j=await akAdm('catDel',{name:M.from,to});if(j){AK.cats=j;akCatsDraw(j)}}else{const j=await akAdm('platDel',{key:M.from,to});if(j){AK.plj=j;akPlatsDraw(j)}}}
 /* platforms: lock for the team, who can see a locked one, add and delete */
 function akPlatsDraw(j){AK.plats=j.plats;
- akPanel('plats',akTmTitle('plat','Platforms')+'<p class="ak-sm ak-mu">The lock hides a platform from everyone by default. The people button sets who sees it.</p><div class="ak-rvs">'+j.plats.map((p,i)=>`<div class="ak-ad"><i class="lg">${akLogo(p.key)}</i><b>${akEsc(p.key)}</b><em>${p.n}</em><button type="button" class="${p.locked?'lk':''}" aria-label="Lock" onclick="akPl('lock',${i})">${akI(p.locked?'lock':'unlock')}</button><button type="button" aria-label="Who sees it" onclick="akPl('acc',${i})">${akI('users')}</button><button type="button" aria-label="Delete" onclick="akPl('del',${i})">${akI('trash')}</button></div>`).join('')+`</div><div class="ak-nv"><button type="button" onclick="akPl('add')">${akI('add')}Add platform</button></div>`+AKB('teach'))}
+ akPanel('teach',akTmTitle('plat','Platforms')+'<p class="ak-sm ak-mu">The lock hides a platform from everyone by default. The people button sets who sees it.</p><div class="ak-rvs">'+j.plats.map((p,i)=>`<div class="ak-ad"><i class="lg">${akLogo(p.key)}</i><b>${akEsc(p.key)}</b><em>${p.n}</em><button type="button" class="${p.locked?'lk':''}" aria-label="Lock" onclick="akPl('lock',${i})">${akI(p.locked?'lock':'unlock')}</button><button type="button" aria-label="Who sees it" onclick="akPl('acc',${i})">${akI('users')}</button><button type="button" aria-label="Delete" onclick="akPl('del',${i})">${akI('trash')}</button></div>`).join('')+`</div><div class="ak-nv"><button type="button" onclick="akPl('add')">${akI('add')}Add platform</button></div>`+AKB('pop'))}
 async function akPl(a,i){
- if(a==='add'){akBot('<p>Type the new platform name below, in English.</p>');AK.ask={fn:async v=>{const j=await akAdm('platAdd',{key:v});if(j)akPlatsDraw(j)}};return}
+ if(a==='add'){akBot('<p>Type the new platform name below, in English.</p>');AK.ask={fn:async v=>{const j=await akAdm('platAdd',{key:v});if(j){AK.plj=j;akPlatsDraw(j)}}};return}
  const p=(AK.plats||[])[i];if(!p)return;
- if(a==='lock'){const j=await akAdm('platLock',{key:p.key});if(j)akPlatsDraw(j);return}
- if(a==='acc'){akUser(p.key+' access');if(await akPermsLoad())akPermDraw('plat',p.key,'plats');return}
- if(a==='del'){if(!p.n){const j=await akAdm('platDel',{key:p.key});if(j)akPlatsDraw(j);return}
+ if(a==='lock'){const b=event&&event.currentTarget;if(b)b.classList.toggle('lk');const j=await akAdmQ('platLock',{key:p.key});if(j){AK.plj=j;akPlatsDraw(j)}else if(b)b.classList.toggle('lk');return}
+ if(a==='acc'){if(await akPermsLoad())akNav(()=>akPermDraw('plat',p.key,'plats'));return}
+ if(a==='del'){if(!p.n){const j=await akAdmQ('platDel',{key:p.key});if(j){AK.plj=j;akPlatsDraw(j)}return}
    AK.mv={kind:'plat',from:p.key,to:AK.plats.filter(x=>x.key!==p.key).map(x=>x.key)};
    akBot(`<p><b>${akEsc(p.key)}</b> has ${p.n} rows. Move them to:</p><div class="ak-ch">${AK.mv.to.map((x,k)=>`<button type="button" onclick="akMove(${k})">${akEsc(x)}</button>`).join('')}</div>`,'wb')}}
 /* access: who can use the bot (no key), or who can see a locked platform */
 function akAccDraw(j){AK.acc=j;
  const t=j.key?j.key+' · who has access':'Bot access';
- akPanel('acc:'+j.key,akTmTitle('key',akEsc(t))+`<p class="ak-sm ak-mu">${j.key?'These people see '+akEsc(j.key)+' even though it is locked.':'The Telegram bot answers only these people and the editors.'}</p><div class="ak-rvs">`+j.people.map((p,i)=>`<div class="ak-ad"><i>${akEsc(String(p.name).charAt(0))}</i><b>${akEsc(p.name)}${p.uid?'':'<small>No Telegram ID in the Team tab</small>'}</b><label class="ak-sw${p.on?' on':''}${p.uid?'':' off'}" onclick="akAcc(${i})"><span></span></label></div>`).join('')+'</div>'+AKB(j.key?'plats':'teach'))}
+ akPanel('teach',akTmTitle('key',akEsc(t))+`<p class="ak-sm ak-mu">${j.key?'These people see '+akEsc(j.key)+' even though it is locked.':'The Telegram bot answers only these people and the editors.'}</p><div class="ak-rvs">`+j.people.map((p,i)=>`<div class="ak-ad"><i>${akEsc(String(p.name).charAt(0))}</i><b>${akEsc(p.name)}${p.uid?'':'<small>No Telegram ID in the Team tab</small>'}</b><label class="ak-sw${p.on?' on':''}${p.uid?'':' off'}" onclick="akAcc(${i})"><span></span></label></div>`).join('')+'</div>'+AKB('pop'))}
 async function akAcc(i){const J=AK.acc;if(!J)return;const p=J.people[i];if(!p||!p.uid)return;const j=await akAdm(p.on?'revoke':'grant',{key:J.key,uid:p.uid});if(j)akAccDraw(j)}
 /* team tab: days off, backup, emails, Telegram ID, time zone */
 const AK_TF={Name:'Name',Email:'Email',Day_Off:'Day off',Backup_Person:'Backup',Telegram_ID:'Telegram ID',Timezone:'Time zone'};
 function akTeamDraw(j){AK.tm=j;
- akPanel('team',akTmTitle('users','Team')+'<div class="ak-rvs">'+j.team.map((p,i)=>`<div class="ak-ad tp" onclick="akTp(${i})"><i>${akEsc(String(p.Name).charAt(0))}</i><b>${akEsc(p.Name)}<small>${akEsc([p.Day_Off,p.Backup_Person?'backup '+p.Backup_Person:''].filter(Boolean).join(' · ')||'Tap to edit')}</small></b>${akI('chev')}</div>`).join('')+`</div><div class="ak-nv"><button type="button" onclick="akTpAdd()">${akI('add')}Add person</button></div>`+AKB('teach'))}
+ akPanel('teach',akTmTitle('users','Team')+'<div class="ak-rvs">'+j.team.map((p,i)=>`<div class="ak-ad tp" onclick="akTp(${i})"><i>${akEsc(String(p.Name).charAt(0))}</i><b>${akEsc(p.Name)}<small>${akEsc([p.Day_Off,p.Backup_Person?'backup '+p.Backup_Person:''].filter(Boolean).join(' · ')||'Tap to edit')}</small></b>${akI('chev')}</div>`).join('')+`</div><div class="ak-nv"><button type="button" onclick="akTpAdd()">${akI('add')}Add person</button></div>`+AKB('pop'))}
 function akTp(i){const J=AK.tm,p=J&&J.team[i];if(!p)return;AK.tp=i;akUser(p.Name);akTpDraw()}
 function akTpDraw(){const J=AK.tm,p=J&&J.team[AK.tp];if(!p)return;
- akPanel('tp:'+p.row,akTmTitle('users',akEsc(p.Name))+'<div class="ak-rvs">'+J.fields.map((f,k)=>`<div class="ak-ad tp" onclick="akTf(${k})"><b>${AK_TF[f.key]||f.key}<small>${akEsc(p[f.key]||'Empty')}</small></b>${akI('pen')}</div>`).join('')+`</div><div class="ak-nv"><button type="button" class="sk" onclick="akTpDel()">${akI('trash')}Remove from the team</button></div>`+AKB('team'))}
+ akPanel('teach',akTmTitle('users',akEsc(p.Name))+'<div class="ak-rvs">'+J.fields.map((f,k)=>`<div class="ak-ad tp" onclick="akTf(${k})"><b>${AK_TF[f.key]||f.key}<small>${akEsc(p[f.key]||'Empty')}</small></b>${akI('pen')}</div>`).join('')+`</div><div class="ak-nv"><button type="button" class="sk" onclick="akTpDel()">${akI('trash')}Remove from the team</button></div>`+AKB('pop'))}
 function akTf(k){const J=AK.tm,p=J&&J.team[AK.tp],f=J&&J.fields[k];if(!p||!f)return;
  const save=async v=>{const j=await akAdm('teamSet',{row:p.row,field:f.key,value:v});if(j){AK.tm=j;akTeamDraw(j);akTpDraw()}};
  AK.tfSave=save;
@@ -10363,7 +10373,7 @@ function akTpAdd(){akBot('<p>Type the new person’s name below.</p>');AK.ask={f
 async function akTpDel(){const J=AK.tm,p=J&&J.team[AK.tp];if(!p)return;if(!confirm('Remove '+p.Name+' from the Team tab?'))return;akUser('Remove '+p.Name);const j=await akAdm('teamDel',{row:p.row});if(j){akTeamDraw(j);akBot(`<p>${akEsc(p.Name)} was removed from the team.</p>`)}}
 /* broadcast: scheduled messages from the bot to the group or to people */
 function akBcDraw(j){AK.bc=j;
- akPanel('bc',akTmTitle('megaphone','Broadcast')+(j.list.length?'<div class="ak-rvs">'+j.list.map((x,i)=>`<div class="ak-ad"><i>${akI(x.waiting?'off':'check')}</i><b>${akEsc(String(x.text).slice(0,70))}<small>${akEsc(x.to)} · ${akEsc(x.when)} · ${akEsc(x.repeat)}</small></b>${x.waiting?`<button type="button" aria-label="Cancel" onclick="akBcDel(${i})">${akI('x')}</button>`:''}</div>`).join('')+'</div>':'<p class="ak-sm ak-mu">No scheduled messages.</p>')+`<div class="ak-nv"><button type="button" onclick="akBcNew()">${akI('add')}New broadcast</button></div>`+AKB('teach'))}
+ akPanel('teach',akTmTitle('megaphone','Broadcast')+(j.list.length?'<div class="ak-rvs">'+j.list.map((x,i)=>`<div class="ak-ad"><i>${akI(x.waiting?'off':'check')}</i><b>${akEsc(String(x.text).slice(0,70))}<small>${akEsc(x.to)} · ${akEsc(x.when)} · ${akEsc(x.repeat)}</small></b>${x.waiting?`<button type="button" aria-label="Cancel" onclick="akBcDel(${i})">${akI('x')}</button>`:''}</div>`).join('')+'</div>':'<p class="ak-sm ak-mu">No scheduled messages.</p>')+`<div class="ak-nv"><button type="button" onclick="akBcNew()">${akI('add')}New broadcast</button></div>`+AKB('pop'))}
 async function akBcDel(i){const x=AK.bc&&AK.bc.list[i];if(!x)return;const j=await akAdm('bcDel',{id:x.id});if(j)akBcDraw(j)}
 function akBcNew(){AK.nb={picked:[]};akUser('New broadcast');akBot('<p>Type the message the bot should send.</p>');AK.ask={fn:v=>{AK.nb.text=v;akBcStep('target')}}}
 function akBcPills(list,fn){return '<div class="ak-ch">'+list.map(([v,l],i)=>`<button type="button" onclick="${fn}(${i})">${l}</button>`).join('')+'</div>'}
@@ -10394,7 +10404,7 @@ async function akLearn(t){
 }
 async function akForget(id,btn){
  btn.disabled=true;
- try{await akPost('forget',{id});const row=btn.closest('.ak-rl2');if(row)row.remove();const m=AK.msgs.find(x=>x.html.indexOf(`akForget('${id}'`)>=0);if(m)m.html=m.html.replace(new RegExp('<div class="ak-rl2"><b>'+id+'</b>[\\s\\S]*?</button></div>'),'');showSettingsToast(id+' removed')}
+ try{const jj=await akPost('forget',{id});if(jj&&jj.rules)AK.rl=jj.rules;const row=btn.closest('.ak-rl2');if(row)row.remove();const m=AK.msgs.find(x=>x.html.indexOf(`akForget('${id}'`)>=0);if(m)m.html=m.html.replace(new RegExp('<div class="ak-rl2"><b>'+id+'</b>[\\s\\S]*?</button></div>'),'');showSettingsToast(id+' removed')}
  catch(err){btn.disabled=false;showSettingsToast(errorText(err))}
 }
 async function akAddForm(){
