@@ -216,7 +216,26 @@ const A = {
     else out.member = (await tasks.members())[a.email] || {};
     out.pushTopic = 'sekna-u-' + sha256(norm(a.email)).slice(0, 24);
     out.app = publicApp(st);
+    // v358 the first-visit welcome: only for people who first asked for access after it launched, and only once
+    try {
+      const first = Math.min(...(await storeRows()).filter(r => norm(r.email) === norm(a.email)).map(r => Number(r.requestedAt) || Infinity));
+      out.welcome = first > WELCOME_FROM && !(out.member && out.member.w);
+    } catch (e) { out.welcome = false; }
     return out;
+  },
+
+  /** v358 the welcome's one request at the end: the name everyone sees and the picture, saved together. */
+  async setMyProfile([token, p]) {
+    const me = await assertAccess(token);
+    const email = norm(me.email);
+    p = p || {};
+    let name = String(p.name == null ? '' : p.name).replace(/[<>"]/g, '').replace(/\s+/g, ' ').trim().slice(0, 30);
+    if (name && name.length < 2) throw new Error('That name is too short.');
+    if (name && name !== me.name && await accessMoved()) {
+      await saveRows(list => { let ch = false; list.forEach(r => { if (norm(r.email) === email && r.name !== name) { r.name = name; ch = true; } }); return ch ? list : undefined; });
+    }
+    const m = await tasks.setMemberSelf(email, p.avatar, true);
+    return { name: name || me.name, member: m };
   },
 
   async accessSignOut([token]) {
@@ -463,10 +482,12 @@ async function adminAccessMove([token]) {
   return counts;
 }
 
+const WELCOME_FROM = Date.parse('2026-11-14T15:00:00Z');
 /** Router: before the move every call goes to Apps Script unchanged. */
 async function call(fn, args) {
   if (fn === 'adminAccessMove') return adminAccessMove(args);
   if (fn === 'adminAccessMoveStatus') { await assertAdmin(args[0]); return (await fsGet(ACC.mode)) || { mode: 'appsscript' }; }
+  if (fn === 'setMyProfile') return A[fn](args); // Firebase only
   if (!(await accessMoved())) return tasks.appsScript(fn, args);
   return A[fn](args);
 }

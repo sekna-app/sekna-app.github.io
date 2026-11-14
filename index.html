@@ -107,7 +107,7 @@ window.addEventListener('load',function(){
     // tk: once this device has seen them on the server, never fall back to the old sheet.
     tasksLoad:{w:25000,t:0,tk:1},taskSave:{w:45000,t:0,tk:1},taskPhoto:{w:25000,t:0,tk:1},seasonsInfo:{w:20000,t:0,tk:1},seasonGoalSet:{w:20000,t:0,tk:1},taskDelete:{w:25000,t:0,tk:1},taskDone:{w:25000,t:0,tk:1},
     tasksCopyMonth:{w:30000,t:0,tk:1},tasksSendWeek:{w:90000,t:0,tk:1},leaveFreezeSet:{w:25000,t:0,tk:1},
-    adminSetMember:{w:25000,t:0,tk:1},setMyAvatar:{w:25000,t:0,tk:2},teamStatus:{w:15000,t:0,tk:1},adminTasksMove:{w:120000,t:0,tk:2},adminTasksMoveStatus:{w:15000,t:0,tk:2},
+    adminSetMember:{w:25000,t:0,tk:1},setMyAvatar:{w:25000,t:0,tk:2},setMyProfile:{w:25000,t:0,tk:2},teamStatus:{w:15000,t:0,tk:1},adminTasksMove:{w:120000,t:0,tk:2},adminTasksMoveStatus:{w:15000,t:0,tk:2},
     // Sign-in, devices and app state: same rule, with their own "moved" mark.
     accessRequestCode:{w:30000,tk:1,k:'sekna_access_fb'},accessVerifyCode:{w:30000,tk:1,k:'sekna_access_fb'},accessStatus:{w:20000,tk:1,k:'sekna_access_fb'},
     accessSignOut:{w:20000,tk:1,k:'sekna_access_fb'},adminOverview:{w:30000,tk:1,k:'sekna_access_fb'},adminSetStatus:{w:30000,tk:1,k:'sekna_access_fb'},
@@ -8705,6 +8705,40 @@ window.addEventListener('load',function(){
     html body .idc-f.gslA{background:#eef1f7!important;border-radius:12px!important;padding:3px!important;gap:2px!important}
     html body .idc-f.gslA>*:not(.gsl-pill){background:transparent!important;box-shadow:none!important}
     body.dark-mode .idc-f.gslA{background:#1b212b!important}
+    /* v358 the first-visit welcome on the sea */
+    .wl{position:fixed;inset:0;z-index:2147482000;background:radial-gradient(120% 90% at 50% 0,#2C4FB8,#203C8E 55%,#0E1B4A);color:#fff;overflow:hidden;font-family:Inter,system-ui,sans-serif;transition:opacity .4s}.wl.bye{opacity:0}
+    .wl-sea{position:absolute;inset:0;pointer-events:none}.wl-sea svg{position:absolute;left:0;width:200%;bottom:0;height:130px;animation:wlSea linear infinite}
+    .wl-sea .s1{animation-duration:9s;opacity:.35}.wl-sea .s2{animation-duration:6s;opacity:.25;bottom:-12px}.wl-sea .s3{animation-duration:12s;opacity:.18;bottom:10px}@keyframes wlSea{to{transform:translateX(-50%)}}
+    .wl-sl{position:absolute;inset:0;max-width:440px;margin:0 auto;padding:calc(30px + env(safe-area-inset-top,0px)) 22px calc(22px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .4s}
+    .wl-sl.in{transform:translateX(110%);opacity:0}.wl-sl.out{transform:translateX(-110%);opacity:0}
+    .wl-sl h2{font-size:23px;font-weight:900;text-align:center;margin:18px 0 6px}.wl-sl h2.l{text-align:left}.wl-sl p{text-align:center;font-size:13px;color:#C9D3F5;font-weight:700;margin:0}
+    .wl-k{font-size:10px;font-weight:900;letter-spacing:.14em;color:#C9D3F5}
+    .wl-big{width:104px;height:104px;margin:46px auto 0}.wl-big .sk-emb,.wl-big svg{width:100%;height:100%;display:block}.wl-pop{animation:wlPop .7s cubic-bezier(.2,1.4,.4,1) both}@keyframes wlPop{from{transform:scale(.3);opacity:0}}
+    .wl-bot{margin-top:auto;display:flex;flex-direction:column;gap:9px;position:relative;z-index:2}
+    .wl-btn{display:block;width:100%;text-align:center;border:0;border-radius:15px;padding:13px;font:inherit;font-size:14px;font-weight:900;cursor:pointer;background:rgba(255,255,255,.12);color:#fff}.wl-btn.g{background:linear-gradient(135deg,#F3D58E,#C99A45);color:#2a1d05}.wl-btn:disabled{opacity:.6}
+    .wl-dots{display:flex;gap:5px;justify-content:center;margin-bottom:6px}.wl-dots i{width:7px;height:7px;border-radius:99px;background:rgba(255,255,255,.25);transition:.3s}.wl-dots i.on{width:20px;background:#F3D58E}
+    .wl-in{width:100%;margin-top:14px;border:0;border-radius:13px;padding:13px 14px;font:inherit;font-size:15px;font-weight:800;color:#141b33;background:#fff;outline:none}
+    .wl-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.wl-chips button{border:0;border-radius:99px;padding:7px 13px;font:inherit;font-size:12.5px;font-weight:800;background:rgba(255,255,255,.1);color:#fff;cursor:pointer}.wl-chips button.on{background:#F3D58E;color:#2a1d05}
+    .wl-pk{display:flex;gap:9px;overflow-x:auto;padding:22px 4px 6px;scrollbar-width:none}.wl-pk::-webkit-scrollbar{display:none}.wl-pk button{flex:0 0 50px;height:50px;border:0;background:none;padding:0;border-radius:50%;cursor:pointer;opacity:.75;transition:.2s}
+    .wl-pk button .sk-emb,.wl-pk svg{width:100%;height:100%;display:block}.wl-pk button.on{opacity:1;box-shadow:0 0 0 2px #fff,0 0 0 4px #E2B874;transform:scale(1.06)}
+    .wl-bell{width:58px;height:58px;margin:18px auto 0;color:#F3D58E;transform-origin:50% 10%}.wl-bell svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .wl-bell.ring{animation:wlRing 1s ease-in-out}@keyframes wlRing{10%{transform:rotate(16deg)}25%{transform:rotate(-14deg)}40%{transform:rotate(10deg)}55%{transform:rotate(-6deg)}70%{transform:rotate(3deg)}}
+    .wl-tl{display:flex;flex-direction:column;gap:8px;margin-top:20px}
+    .wl-tr{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);border-radius:14px;padding:11px 12px;opacity:0;transform:translateY(-36px) scale(.96)}.wl-tr.in{animation:wlIn .55s cubic-bezier(.2,1.3,.3,1) forwards}@keyframes wlIn{to{opacity:1;transform:none}}
+    .wl-ti{width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,.12);color:#F3D58E;padding:7px;flex:none}.wl-ti svg{width:100%;height:100%;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .wl-tr b{flex:1;font-size:13px;font-weight:900}.wl-tr small{display:block;font-size:10.5px;color:#C9D3F5;font-weight:700}
+    .wl-ck{width:26px;height:26px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:13px;font-weight:900;color:transparent;box-shadow:inset 0 0 0 2px rgba(255,255,255,.25);transition:.35s cubic-bezier(.2,1.5,.4,1)}
+    .wl-tr.on .wl-ck{background:#2FCB86;color:#fff;box-shadow:none;transform:scale(1.12)}
+    .wl-ban{position:absolute;left:12px;right:12px;top:calc(10px + env(safe-area-inset-top,0px));z-index:5;max-width:420px;margin:0 auto;background:rgba(255,255,255,.97);color:#141b33;border-radius:18px;padding:10px 12px;display:flex;gap:10px;align-items:center;box-shadow:0 12px 26px rgba(0,0,0,.3);transform:translateY(-140%);transition:transform .5s cubic-bezier(.2,1.2,.3,1)}
+    .wl-ban.show{transform:none}.wl-ban>span{width:30px;height:30px;border-radius:9px;background:radial-gradient(130% 160% at 0 0,#2C4FB8,#203C8E 55%,#132457);color:#F3D58E;display:grid;place-items:center;font-weight:900;font-family:"DM Serif Display",serif;flex:none}
+    .wl-ban b{display:block;font-size:12px;font-weight:900}.wl-ban small{font-size:11px;color:#6b7385;font-weight:700}
+    .wl-id{margin-top:28px;background:#fff;color:#141b33;border-radius:18px;overflow:hidden;box-shadow:0 18px 40px rgba(0,0,0,.35);animation:wlFlip 1s cubic-bezier(.2,.8,.2,1) both;position:relative}
+    @keyframes wlFlip{from{transform:perspective(700px) rotateY(90deg)}}.wl-id .t{height:56px;background:radial-gradient(130% 160% at 0 0,#2C4FB8,#203C8E 55%,#132457);border-bottom:3px solid #E2B874}
+    .wl-id .m{display:flex;gap:12px;align-items:flex-end;padding:0 14px 14px;margin-top:-30px}.wl-id .m>span{width:70px;height:70px;flex:none;border-radius:50%;box-shadow:0 0 0 4px #fff}.wl-id .m>span .sk-emb,.wl-id .m>span svg{width:100%;height:100%;display:block}
+    .wl-id .m>div{padding-top:36px}.wl-id b{display:block;font-size:17px;font-weight:900;margin-bottom:4px}
+    .wl-id:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,236,190,.8) 50%,transparent 65%);transform:translateX(-120%);animation:wlShn 1.2s .9s ease both}@keyframes wlShn{to{transform:translateX(120%)}}
+    .wl-conf{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:3}.wl-conf i{position:absolute;top:-10px;width:7px;height:12px;border-radius:2px;animation:wlFall 2.4s linear forwards}@keyframes wlFall{to{transform:translateY(110vh) rotate(540deg)}}
+    @media (prefers-reduced-motion:reduce){.wl *{animation:none!important;transition:none!important}.wl-tr{opacity:1;transform:none}}
 </style>
 </head>
 <body>
@@ -14461,6 +14495,7 @@ function updateProfileUI(){
  const role=(mem&&mem.role)||'', card=document.querySelector('.sk-drawer .sk-user-card');
  if(card){card.className='sk-user-card'+(roleTier(role)?' tier'+roleTier(role):'');}
  const myAv=mem&&mem.avatar?emblemHtml(mem.avatar):'';try{myAvDraw()}catch(e){}
+ if(p.welcome&&!window.WL_TIMER)window.WL_TIMER=setTimeout(()=>{try{wlMaybe()}catch(e){}},document.getElementById('launchSp')?4300:600);
  setTimeout(tkNoticeUI,0);
  const rl=document.getElementById('profileRole');if(rl){const t=roleTier(role);rl.innerHTML=t?`<span class="skr-t">${esc(roleLabel(role).toUpperCase())}</span><span class="skr-p">${[1,2,3,4,5].map(k=>`<i class="${k<=t?'on':''}"></i>`).join('')}</span>`:'';rl.hidden=!role}
  const name=p.name||storeGet(ACCESS_NAME_KEY)||'HEMERA';
@@ -17069,6 +17104,58 @@ async function myAvSet(v,btn){
  catch(err){if(btn)btn.disabled=false;showSettingsToast(errorText(err))}
 }
 
+
+
+
+const WL={step:0,name:'',av:0,photo:'',push:false,saving:false};
+const WL_SEA=['s1','s2','s3'].map(c=>`<svg class="${c}" viewBox="0 0 800 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 60 Q100 20 200 60 T400 60 T600 60 T800 60 V120 H0Z" fill="#9FB6FF"/></svg>`).join('');
+const WL_IC={plan:'<svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M3 20h18"/></svg>',task:'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',season:'<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>',bell:'<svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>'};
+function wlMaybe(){
+ const P=ACCESS_PROFILE||{};if(!P.welcome||document.getElementById('wlBox'))return;
+ try{if(localStorage.getItem('hm_welcome_done')==='1')return}catch(e){}
+ const mem=P.member||{};WL.step=0;WL.name=P.name||'';WL.av=mem.avatar&&typeof mem.avatar!=='string'?+mem.avatar:0;WL.photo=typeof mem.avatar==='string'?mem.avatar:'';WL.push=false;
+ const o=document.createElement('div');o.id='wlBox';o.className='wl';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Welcome to HEMERA');
+ o.innerHTML=`<div class="wl-sea" aria-hidden="true">${WL_SEA}</div><div class="wl-ban" id="wlBan"><span>H</span><div><b>HEMERA · now</b><small>You are all set. Alerts will look like this.</small></div></div>`;
+ document.body.appendChild(o);wlDraw();
+}
+function wlPic(){return WL.photo?emblemHtml(WL.photo):personAv(WL.av,WL.name)}
+function wlDraw(){
+ const o=document.getElementById('wlBox');if(!o)return;
+ const old=o.querySelector('.wl-sl'),s=document.createElement('div');s.className='wl-sl in';
+ const dots=`<div class="wl-dots">${[0,1,2,3].map(i=>`<i class="${i<=WL.step?'on':''}"></i>`).join('')}</div>`,first=esc(String(WL.name||'').split(' ')[0]);
+ if(WL.step===0)s.innerHTML=`<div class="wl-big wl-pop">${wlPic()}</div><h2>Welcome to HEMERA${first?', '+first:''}</h2><p>Let us make it yours. It takes 20 seconds.</p><div class="wl-bot">${dots}<button type="button" class="wl-btn g" data-go>Let us start</button></div>`;
+ if(WL.step===1)s.innerHTML=`<small class="wl-k">STEP 1 · YOUR NAME</small><h2 class="l">How should the team see you?</h2><input class="wl-in" id="wlName" value="${esc(WL.name)}" maxlength="30" autocomplete="name"><div class="wl-chips">${[String(WL.name).split(' ')[0],WL.name].filter((v,i,a)=>v&&a.indexOf(v)===i).map(v=>`<button type="button" data-n="${esc(v)}" class="${v===WL.name?'on':''}">${esc(v)}</button>`).join('')}</div><div class="wl-bot">${dots}<button type="button" class="wl-btn g" data-go>Next</button></div>`;
+ if(WL.step===2)s.innerHTML=`<small class="wl-k">STEP 2 · YOUR PICTURE</small><div class="wl-big">${wlPic()}</div><div class="wl-pk">${LETTER_KEEP.slice(0,3).map(k=>`<button type="button" data-a="${k}" class="${!WL.photo&&(WL.av||106)===k?'on':''}">${letterEmblem(WL.name,k)}</button>`).join('')}${AV_KEEP.map(k=>`<button type="button" data-a="${k}" class="${!WL.photo&&WL.av===k?'on':''}">${emblemHtml(k)}</button>`).join('')}</div><div class="wl-bot">${dots}<label class="wl-btn l"><input type="file" accept="image/*" hidden id="wlFile">Upload a photo</label><button type="button" class="wl-btn g" data-go>Next</button></div>`;
+ if(WL.step===3)s.innerHTML=`<small class="wl-k">STEP 3 · STAY IN THE LOOP</small><div class="wl-bell">${WL_IC.bell}</div><h2>What should we tell you?</h2><p>Media plan updates, your tasks and new seasons.</p><div class="wl-tl">${[['plan','Media plan','When the numbers update'],['task','Your tasks','New tasks and backups'],['season','Seasons','Reminders before each season']].map(r=>`<div class="wl-tr"><span class="wl-ti">${WL_IC[r[0]]}</span><b>${r[1]}<small>${r[2]}</small></b><span class="wl-ck">✓</span></div>`).join('')}</div><div class="wl-bot">${dots}<button type="button" class="wl-btn g" id="wlPush">Turn on alerts</button><button type="button" class="wl-btn l" data-go>Maybe later</button></div>`;
+ if(WL.step===4)s.innerHTML=`<h2 style="margin-top:40px">You are all set</h2><p>This is how the team sees you</p><div class="wl-id"><div class="t"></div><div class="m"><span>${wlPic()}</span><div><b>${esc(WL.name)}</b>${(ACCESS_PROFILE&&ACCESS_PROFILE.member&&ACCESS_PROFILE.member.role)?roleBadge(ACCESS_PROFILE.member.role):''}</div></div></div><div class="wl-bot"><button type="button" class="wl-btn g" id="wlTour">Take the one-minute tour</button><button type="button" class="wl-btn l" id="wlEnd">Start using HEMERA</button></div>`;
+ o.appendChild(s);if(old){old.classList.add('out');setTimeout(()=>old.remove(),480)}
+ requestAnimationFrame(()=>requestAnimationFrame(()=>s.classList.remove('in')));
+ const redraw=()=>{const b=s.querySelector('.wl-big');if(b)b.innerHTML=wlPic();s.querySelectorAll('[data-a]').forEach(x=>{const k=+x.dataset.a;x.classList.toggle('on',!WL.photo&&(k>100?(WL.av||106)===k&&(!WL.av||WL.av>100):WL.av===k))});s.querySelectorAll('[data-n]').forEach(x=>x.classList.toggle('on',x.dataset.n===WL.name))};
+ s.querySelector('[data-go]')?.addEventListener('click',()=>{const i=s.querySelector('#wlName');if(i){const v=i.value.replace(/\s+/g,' ').trim();if(v.length<2){i.focus();return}WL.name=v}WL.step++;if(WL.step===4)wlSave();wlDraw()});
+ s.querySelector('#wlName')?.addEventListener('input',e=>{WL.name=e.target.value;s.querySelectorAll('[data-n]').forEach(x=>x.classList.toggle('on',x.dataset.n===WL.name.trim()))});
+ s.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>{WL.name=b.dataset.n;const i=s.querySelector('#wlName');if(i)i.value=WL.name;redraw()});
+ s.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{WL.photo='';WL.av=+b.dataset.a;redraw()});
+ s.querySelector('#wlFile')?.addEventListener('change',e=>{const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;const url=URL.createObjectURL(f),img=new Image();img.onload=()=>myCropOpen(img,url,d=>{WL.photo=d;redraw()});img.onerror=()=>{URL.revokeObjectURL(url);showSettingsToast('That photo could not be read')};img.src=url});
+ if(WL.step===3){const bell=s.querySelector('.wl-bell');setTimeout(()=>bell&&bell.classList.add('ring'),350);s.querySelectorAll('.wl-tr').forEach((r,i)=>setTimeout(()=>r.classList.add('in'),650+i*420));
+  s.querySelector('#wlPush').onclick=async e=>{const b=e.currentTarget;if(WL.push){WL.step=4;wlSave();wlDraw();return}b.disabled=true;
+   try{if(window.SEKNA_WEB)await webPushEnable();else{const t=document.getElementById('notificationsToggle');if(t){t.checked=true;saveDashboardSettings()}}WL.push=true}
+   catch(err){showSettingsToast(errorText(err));b.disabled=false;return}
+   bell.classList.remove('ring');void bell.offsetWidth;bell.classList.add('ring');
+   s.querySelectorAll('.wl-tr').forEach((r,i)=>setTimeout(()=>r.classList.add('on'),i*280));
+   setTimeout(()=>{const n=document.getElementById('wlBan');if(n){n.classList.add('show');setTimeout(()=>n.classList.remove('show'),3000)}b.disabled=false;b.textContent='Next';s.querySelector('[data-go]').textContent='Skip'},900)}}
+ if(WL.step===4){setTimeout(()=>wlConfetti(o),300);
+  const end=tour=>{try{localStorage.setItem('hm_welcome_done','1')}catch(e){}o.classList.add('bye');setTimeout(()=>{o.remove();if(tour)try{tourStart()}catch(e){}},400)};
+  s.querySelector('#wlTour').onclick=()=>end(true);s.querySelector('#wlEnd').onclick=()=>end(false)}
+}
+async function wlSave(){
+ if(WL.saving)return;WL.saving=true;
+ const P=ACCESS_PROFILE||{},cur=(P.member||{}).avatar||0,av=WL.photo||WL.av||0,body={name:WL.name!==P.name?WL.name:'',avatar:av!==cur?av:undefined};
+ try{const r=await serverCall('setMyProfile',getAccessToken(),body);
+  ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE||{},{name:(r&&r.name)||P.name,member:(r&&r.member)||P.member,welcome:false});
+  if(r&&r.name){storeSet(ACCESS_NAME_KEY,r.name)}updateProfileUI();try{myAvDraw()}catch(e){}}
+ catch(err){showSettingsToast(errorText(err))}
+}
+function wlConfetti(el){const c=document.createElement('div');c.className='wl-conf';const col=['#F3D58E','#E2B874','#fff','#3d6bff','#2FCB86'];for(let i=0;i<40;i++){const x=document.createElement('i');x.style.left=Math.random()*100+'%';x.style.background=col[i%5];x.style.animationDelay=Math.random()*.6+'s';x.style.animationDuration=1.8+Math.random()*1.4+'s';c.appendChild(x)}el.appendChild(c);setTimeout(()=>c.remove(),3800)}
 let AVC=null;
 function myAvFile(inp){
  const f=inp.files&&inp.files[0];inp.value='';if(!f)return;
@@ -17076,7 +17163,7 @@ function myAvFile(inp){
  img.onload=()=>myCropOpen(img,url);
  img.onerror=()=>{URL.revokeObjectURL(url);showSettingsToast('That photo could not be read')};img.src=url;
 }
-function myCropOpen(img,url){
+function myCropOpen(img,url,done){
  document.getElementById('avCrop')?.remove();
  const o=document.createElement('div');o.id='avCrop';o.className='avc';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Crop your photo');
  o.innerHTML=`<div class="avc-md"><b>Move and zoom</b><small>Drag the photo. Use the slider or two fingers to zoom.</small>
@@ -17085,7 +17172,7 @@ function myCropOpen(img,url){
   <div class="avc-a"><button type="button" onclick="myCropClose()">Cancel</button><button type="button" class="p" onclick="myCropSave(this)">Save</button></div></div>`;
  document.body.appendChild(o);
  const vp=document.getElementById('avcVp'),V=vp.clientWidth;
- AVC={img,url,V,base:V/Math.min(img.naturalWidth,img.naturalHeight),z:1,x:0,y:0,pts:{}};
+ AVC={img,url,V,base:V/Math.min(img.naturalWidth,img.naturalHeight),z:1,x:0,y:0,pts:{},done};
  const pd=e=>{vp.setPointerCapture(e.pointerId);AVC.pts[e.pointerId]={x:e.clientX,y:e.clientY};AVC.pinch=null},
   pm=e=>{const a=AVC.pts[e.pointerId];if(!a)return;const ids=Object.keys(AVC.pts);
    if(ids.length>=2){a.x=e.clientX;a.y=e.clientY;const[p1,p2]=ids.map(k=>AVC.pts[k]),d=Math.hypot(p1.x-p2.x,p1.y-p2.y);if(AVC.pinch){AVC.z=Math.max(1,Math.min(4,AVC.z*d/AVC.pinch));document.getElementById('avcZ').value=AVC.z}AVC.pinch=d}
@@ -17106,7 +17193,7 @@ function myCropSave(btn){
  const sx=(w/2-A.V/2-A.x)/k,sy=(h/2-A.V/2-A.y)/k,c=document.createElement('canvas');c.width=c.height=200;
  c.getContext('2d').drawImage(A.img,sx,sy,sw,sw,0,0,200,200);
  if(btn){btn.disabled=true;btn.textContent='Saving…'}
- const data=c.toDataURL('image/jpeg',.82);myCropClose();myAvSet(data);
+ const data=c.toDataURL('image/jpeg',.82),done=A.done;myCropClose();if(done)done(data);else myAvSet(data);
 }
 function seenHtml(ms,now){
  return ms&&(now-ms)<5*60000?'<span class="sk-active">Active now</span>':'Last seen '+timeAgo(ms,now);

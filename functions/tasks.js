@@ -483,25 +483,7 @@ const T = {
   /** v353 each person picks their own avatar (one of the house avatars), a small photo from their device, or the first letter (0). */
   async setMyAvatar([token, value]) {
     const a = await assertAccess(token);
-    const email = norm(a.email);
-    let v = value;
-    if (typeof v === 'string' && v) {
-      if (!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(v)) throw new Error('That photo could not be read.');
-      if (v.length > 90000) throw new Error('That photo is too big.');
-    } else {
-      v = Math.round(Number(v) || 0);
-      if (v && AVATAR_OK.indexOf(v) < 0) throw new Error('Unknown avatar');
-    }
-    let result = null;
-    await fsUpdate(DOC.members, all => {
-      all = all || {};
-      const m = all[email] || {};
-      if (v) m.avatar = v; else delete m.avatar;
-      if (m.role || m.avatar) all[email] = m; else delete all[email];
-      result = all[email] || {};
-      return all;
-    });
-    return { email, member: result };
+    return { email: norm(a.email), member: await setMemberSelf(norm(a.email), value, false) };
   },
 
   /** What the app adds to the access status: position, the "new tasks" notice, and who this person covers today. */
@@ -609,6 +591,28 @@ async function morningPushIfDue() {
 }
 
 /** Router: before the move every call goes to Apps Script unchanged. */
+/** v358 a person's own avatar or photo (and the welcome-done mark), checked here for both Settings and the welcome. */
+async function setMemberSelf(email, value, welcomed) {
+  let v = value;
+  if (typeof v === 'string' && v) {
+    if (!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(v)) throw new Error('That photo could not be read.');
+    if (v.length > 90000) throw new Error('That photo is too big.');
+  } else if (v !== undefined) {
+    v = Math.round(Number(v) || 0);
+    if (v && AVATAR_OK.indexOf(v) < 0) throw new Error('Unknown avatar');
+  }
+  let result = null;
+  await fsUpdate(DOC.members, all => {
+    all = all || {};
+    const m = all[email] || {};
+    if (v !== undefined) { if (v) m.avatar = v; else delete m.avatar; }
+    if (welcomed) m.w = 1;
+    if (m.role || m.avatar || m.w) all[email] = m; else delete all[email];
+    result = all[email] || {};
+    return all;
+  });
+  return result;
+}
 const AVATAR_OK = [11, 12, 13, 14, 15, 17, 18, 20, 21, 22, 101, 103, 104, 105, 106, 107, 108];
 async function call(fn, args) {
   if (fn === 'adminTasksMove') return adminTasksMove(args);
@@ -623,4 +627,4 @@ async function call(fn, args) {
 }
 const FNS = Object.keys(T).concat(['adminTasksMove', 'adminTasksMoveStatus']);
 
-module.exports = { moved, call, FNS, canManage, morningPush, morningPushIfDue, muscatToday, leavesToday, frozenOn, weekOf, prevMonth, appsScript, relay, teamStatusFor, members };
+module.exports = { setMemberSelf, moved, call, FNS, canManage, morningPush, morningPushIfDue, muscatToday, leavesToday, frozenOn, weekOf, prevMonth, appsScript, relay, teamStatusFor, members };
