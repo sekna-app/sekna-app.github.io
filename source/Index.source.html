@@ -8438,11 +8438,11 @@ window.addEventListener('load',function(){
     .sal-row>.sal-seg button{flex:0 0 auto!important;padding:6px 12px!important;border:1.5px solid #e3e7f0!important;border-radius:9px}.sal-row>.sal-seg button.on{border-color:#203c8e!important;background:#203c8e!important;color:#fff!important;box-shadow:none!important}
     .sal-sep{width:6px;height:24px;border-radius:99px;background:rgba(32,60,142,.12);flex:none}
     /* v345 admin role badges: mirror chrome (silver, gold, CEO gold), one shine when People opens */
-    #adminOverlay .rb2{background:linear-gradient(180deg,#FFFFFF 0%,#E4E8EF 45%,#B9C1CE 52%,#E9EDF3 100%)!important;color:#1E2A44!important;box-shadow:0 0 0 1px #A9B2C1,0 3px 10px rgba(80,95,125,.35),inset 0 1px 0 #fff!important}
-    #adminOverlay .rb3{background:linear-gradient(180deg,#FFF6DE 0%,#F0D18C 45%,#C9933F 52%,#F3D58E 100%)!important;color:#3a2606!important;box-shadow:0 0 0 1px #C9933F,0 3px 10px rgba(194,138,58,.35),inset 0 1px 0 #fff!important}
-    #adminOverlay .rb5{background:linear-gradient(180deg,#FFF8D6 0%,#F6C94F 45%,#C88A12 52%,#FBE28D 100%)!important;color:#3b2500!important;box-shadow:0 0 0 1px #E0B040,0 4px 14px rgba(214,151,28,.5),inset 0 1px 0 #fff!important}
+    #adminOverlay .rb2{background:linear-gradient(180deg,#F7F8FA 0%,#E6E9EF 45%,#DCE0E7 52%,#E8EBF0 100%)!important;color:#1E2A44!important;box-shadow:0 0 0 1px #A9B2C1,0 3px 10px rgba(80,95,125,.35),inset 0 1px 0 #fff!important}
+    #adminOverlay .rb3{background:linear-gradient(180deg,#F7E2AE 0%,#EDCB86 45%,#E3BA70 52%,#EECE8C 100%)!important;color:#3a2606!important;box-shadow:0 0 0 1px #C9933F,0 3px 10px rgba(194,138,58,.35),inset 0 1px 0 #fff!important}
+    #adminOverlay .rb5{background:linear-gradient(180deg,#F9DE8A 0%,#F3C850 45%,#E8B53C 52%,#F6D46E 100%)!important;color:#3b2500!important;box-shadow:0 0 0 1px #E0B040,0 4px 14px rgba(214,151,28,.5),inset 0 1px 0 #fff!important}
     #adminOverlay :is(.rb3,.rb4,.rb5):after{animation:none!important;display:none}
-    #adminOverlay .a3-body.pshine :is(.rb2,.rb3,.rb5):after{display:block;content:"";position:absolute;top:0;bottom:0;width:40%;left:-50%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.95),transparent);animation:rbSh 1.1s .35s ease-in-out 1 both;pointer-events:none}
+    #adminOverlay .a3-body.pshine :is(.rb2,.rb3,.rb5):after{display:block;content:"";position:absolute;top:0;bottom:0;width:40%;left:-50%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.15),transparent);animation:rbSh 1.1s .35s ease-in-out 1 both;pointer-events:none}
     @keyframes rbSh{to{left:120%}}
     @media (prefers-reduced-motion:reduce){#adminOverlay .a3-body.pshine :is(.rb2,.rb3,.rb5):after{animation:none;display:none}}
     /* v347 Server: a pulse card on top, the month's cost as a battery */
@@ -18048,9 +18048,11 @@ function adminServerHtml(){
   ${(SRV_ADMIN.tasks||{}).mode==='firebase'?'':`<div class="srv-box"><b>Team Tasks</b><small>Tasks, leave, backups, positions.</small>${srvTasksHtml()}</div>`}
   <div class="srv-tl">
    <div class="srv-tr"><span class="srv-ic">${aI('swap')}</span><div><b>Same numbers?</b><small>${esc(CURRENT_ACCOUNT.toUpperCase())} on both servers</small></div><button type="button" class="srv-go" onclick="srvParity()" ${SRV_ADMIN.busy||!fb?'disabled':''}>${SRV_ADMIN.busy==='parity'?'Comparing…':'Compare'}</button></div>${parity}
+</div>
+  ${fb?`<div class="srv-dev"><div class="srv-dh"><span class="srv-ic">${aI('phone')}</span><div><b>This device</b><small>For testing, back to Automatic after 1 hour</small></div></div><div class="srv-dial">${seg('auto','Automatic')}${seg('firebase','Firebase')}${seg('appsscript','Apps Script')}</div></div>`:''}
+  <div class="srv-tl">
    <div class="srv-tr"><span class="srv-ic">${aI('refresh')}</span><div><b>Switch log</b><small>All team devices</small></div><span class="srv-ct">${Array.isArray(ev)?(ev.length?ev.length+' switch'+(ev.length===1?'':'es'):'No switches'):'…'}</span></div>
-   ${Array.isArray(ev)&&ev.length?log+'<button type="button" class="sh-reset" onclick="srvClearLog(this)">'+aI('undo')+'Clear log</button>':ev&&ev.error?log:''}</div>
-  ${fb?`<div class="srv-dev"><div class="srv-dh"><span class="srv-ic">${aI('phone')}</span><div><b>This device</b><small>For testing, back to Automatic after 1 hour</small></div></div><div class="srv-dial">${seg('auto','Automatic')}${seg('firebase','Firebase')}${seg('appsscript','Apps Script')}</div></div>`:''}`;
+   ${Array.isArray(ev)&&ev.length?log+'<button type="button" class="sh-reset" onclick="srvClearLog(this)">'+aI('undo')+'Clear log</button>':ev&&ev.error?log:''}</div>`;
 }
 window.addEventListener('sekna-server',()=>{if(ADMIN_TAB==='server'&&ADMIN_LAST)renderAdmin(ADMIN_LAST)});
 function hoursText(sec){sec=Math.round(sec||0);const h=Math.floor(sec/3600),m=Math.round(sec%3600/60);return h?`${h}h ${m}m`:`${m}m`}
