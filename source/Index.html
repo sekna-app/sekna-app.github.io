@@ -8509,6 +8509,20 @@ window.addEventListener('load',function(){
     .st-av-g{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:12px}.st-av-g button{border:0;background:none;padding:3px;border-radius:50%;cursor:pointer;line-height:0}
     .st-av-g button .sk-emb,.st-av-g svg{width:100%;height:100%;display:block}.st-av-g button.on{box-shadow:0 0 0 2.5px #203C8E}
     body.dark-mode .st-av-b>*{background:#1b212b;color:#fff}body.dark-mode .st-av-h b{color:#fff}
+    /* v354 Settings → Your picture as an ID card */
+    .idc{padding:0!important;overflow:hidden}.idc-top{height:58px;background:radial-gradient(130% 160% at 0 0,#2C4FB8,#203C8E 55%,#132457);position:relative}
+    .idc-top:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,#F7E2A4,#C08A35)}
+    .idc-me{display:flex;align-items:flex-end;gap:12px;padding:0 14px;margin-top:-32px;position:relative}
+    .idc-pic{width:74px;height:74px;flex:none;border-radius:50%;box-shadow:0 0 0 4px #fff;display:block}.idc-pic .sk-emb,.idc-pic svg{width:100%;height:100%;display:block}
+    .idc-me b{display:block;font-size:15px;font-weight:900;margin-bottom:4px}
+    .idc-f{display:flex;gap:2px;margin:14px;background:#EEF1F7;border-radius:12px;padding:3px}
+    .idc-f>*{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;border:0;background:none;border-radius:9px;padding:8px 4px;font:inherit;font-size:12px;font-weight:900;color:#4b5263;cursor:pointer}
+    .idc-f>.on{background:#fff;color:#203C8E;box-shadow:0 2px 8px rgba(17,24,43,.08)}
+    .idc-f i{width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);margin-top:-3px;transition:transform .2s}.idc-f .open i{transform:rotate(-135deg);margin-top:3px}
+    .idc-g{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;padding:0 14px 14px;animation:skRise .25s both}
+    .idc-g button{border:0;background:none;padding:0;border-radius:50%;cursor:pointer;line-height:0;opacity:.85}.idc-g button.on{opacity:1;box-shadow:0 0 0 2px #fff,0 0 0 4px #203C8E}
+    .idc-g .sk-emb,.idc-g svg{width:100%;height:100%;display:block}
+    body.dark-mode .idc-f{background:#1b212b}body.dark-mode .idc-f>.on{background:#232a36;color:#fff}body.dark-mode .idc-pic{box-shadow:0 0 0 4px #151a22}body.dark-mode .idc-me b{color:#fff}
 </style>
 </head>
 <body>
@@ -8715,7 +8729,7 @@ window.addEventListener('load',function(){
     <div class="sk-modal-head st-head"><div><div class="sk-kicker">HEMERA</div><h2 id="settingsTitle">Settings</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeSettings()" aria-label="Close settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
 
     <div class="sk-group-title">Your picture</div>
-    <div class="sk-card st-pic" id="stAvBox"></div>
+    <div class="sk-card idc" id="stAvBox"></div>
     <div class="sk-group-title">Appearance</div>
     <div class="sk-card">
       <label class="sk-row"><span class="sk-row-icon c-p"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></span><span class="sk-row-text"><b>Dark mode</b><small>Use a darker theme across the dashboard.</small></span><span class="switch"><input id="darkModeToggle" type="checkbox" onchange="saveDashboardSettings()"><span></span></span></label>
@@ -16846,12 +16860,15 @@ function avatarHtml(photo,name){
 }
 function renderProfileCard(){}
 
+let MYAV_OPEN=false;
 function myAvDraw(){
  const el=document.getElementById('stAvBox');if(!el)return;
- const P=ACCESS_PROFILE||{},mem=P.member||{},cur=mem.avatar||0,name=P.name||storeGet(ACCESS_NAME_KEY)||'';
- el.innerHTML=`<div class="st-av-h"><span class="st-av-now">${personAv(cur,name)}</span><div><b>${esc(name||'You')}</b><small>Everyone in HEMERA sees this</small></div></div>
-  <div class="st-av-b"><label class="st-av-up"><input type="file" accept="image/*" onchange="myAvFile(this)" hidden>Upload a photo</label><button type="button" class="${!cur?'on':''}" onclick="myAvSet(0,this)">Use my letter</button></div>
-  <div class="st-av-g">${AV_KEEP.map(n=>`<button type="button" class="${cur===n?'on':''}" onclick="myAvSet(${n},this)" aria-label="${AVATAR_NAMES[n-AVATAR_BASE]}">${emblemHtml(n)}</button>`).join('')}</div>`;
+ const P=ACCESS_PROFILE||{},mem=P.member||{},cur=mem.avatar||0,name=P.name||storeGet(ACCESS_NAME_KEY)||'',role=mem.role||'';
+ const isPh=typeof cur==='string',isAv=!!cur&&!isPh;
+ 
+ el.innerHTML=`<div class="idc-top"></div><div class="idc-me"><span class="idc-pic">${personAv(cur,name)}</span><div><b>${esc(name||'You')}</b>${role?roleBadge(role):''}</div></div>
+  <div class="idc-f"><label class="${isPh?'on':''}"><input type="file" accept="image/*" onchange="myAvFile(this)" hidden>Upload</label><button type="button" class="${!cur?'on':''}" onclick="myAvSet(0,this)">My letter</button><button type="button" class="${isAv?'on':''}${MYAV_OPEN?' open':''}" onclick="MYAV_OPEN=!MYAV_OPEN;myAvDraw()" aria-expanded="${MYAV_OPEN}">Avatars<i></i></button></div>
+  ${MYAV_OPEN?`<div class="idc-g">${AV_KEEP.map(n=>`<button type="button" class="${cur===n?'on':''}" onclick="myAvSet(${n},this)" aria-label="${AVATAR_NAMES[n-AVATAR_BASE]}">${emblemHtml(n)}</button>`).join('')}</div>`:''}`;
 }
 async function myAvSet(v,btn){
  if(btn)btn.disabled=true;
