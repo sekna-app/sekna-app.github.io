@@ -8666,6 +8666,10 @@ window.addEventListener('load',function(){
 .wl-sl.p2 .wl-pk button:nth-child(12){animation-delay:1.22s}
 .wl-sl.p2 .wl-pk button:nth-child(13){animation-delay:1.29s}
 @media (prefers-reduced-motion:reduce){.wl-sl.p2 .wl-big,.wl-sl.p2 .wl-pk button,.wl-sl.p2 .wl-big:before,.wl-sl.p2 .wl-big:after{animation:none}}
+/* v374 sign-out icon sits in the middle of its button */
+body .sk-drawer .sk-user .sk-signout{display:grid!important;place-items:center!important;gap:0!important;line-height:0!important}
+body .sk-drawer .sk-user .sk-signout svg{display:block!important}
+body .sk-drawer .sk-user .sk-so-t{display:none}
 </style>
 </head>
 <body>
@@ -8864,7 +8868,7 @@ window.addEventListener('load',function(){
 
   <div class="sk-drawer-foot sk-user">
     <div class="sk-user-card"><span class="sk-user-avatar" id="profileAvatar">H</span><span class="sk-user-text"><b id="profileName">HEMERA</b><small id="profileEmail">Signed in</small><span class="sk-role" id="profileRole" hidden></span></span></div>
-    <button class="sk-signout" type="button" onclick="confirmSignOut()" aria-label="Sign out" title="Sign out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg>Sign out</button>
+    <button class="sk-signout" type="button" onclick="confirmSignOut()" aria-label="Sign out" title="Sign out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg><span class="sk-so-t">Sign out</span></button>
   </div>
 </aside>
 
