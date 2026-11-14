@@ -40,7 +40,7 @@ head = '''<meta name="theme-color" content="#203C8E">
     // tk: once this device has seen them on the server, never fall back to the old sheet.
     tasksLoad:{w:25000,t:0,tk:1},taskSave:{w:45000,t:0,tk:1},taskPhoto:{w:25000,t:0,tk:1},seasonsInfo:{w:20000,t:0,tk:1},seasonGoalSet:{w:20000,t:0,tk:1},taskDelete:{w:25000,t:0,tk:1},taskDone:{w:25000,t:0,tk:1},
     tasksCopyMonth:{w:30000,t:0,tk:1},tasksSendWeek:{w:90000,t:0,tk:1},leaveFreezeSet:{w:25000,t:0,tk:1},
-    adminSetMember:{w:25000,t:0,tk:1},teamStatus:{w:15000,t:0,tk:1},adminTasksMove:{w:120000,t:0,tk:2},adminTasksMoveStatus:{w:15000,t:0,tk:2},
+    adminSetMember:{w:25000,t:0,tk:1},setMyAvatar:{w:25000,t:0,tk:2},teamStatus:{w:15000,t:0,tk:1},adminTasksMove:{w:120000,t:0,tk:2},adminTasksMoveStatus:{w:15000,t:0,tk:2},
     // Sign-in, devices and app state: same rule, with their own "moved" mark.
     accessRequestCode:{w:30000,tk:1,k:'sekna_access_fb'},accessVerifyCode:{w:30000,tk:1,k:'sekna_access_fb'},accessStatus:{w:20000,tk:1,k:'sekna_access_fb'},
     accessSignOut:{w:20000,tk:1,k:'sekna_access_fb'},adminOverview:{w:30000,tk:1,k:'sekna_access_fb'},adminSetStatus:{w:30000,tk:1,k:'sekna_access_fb'},
