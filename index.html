@@ -9025,6 +9025,35 @@ body.dark-mode .ak-rs button{color:#e8ecf3;border-color:#2a3242}body.dark-mode .
 .ak-bkl button{display:inline-flex;align-items:center;gap:5px;border:1.5px solid #1C3C96;color:#1C3C96;background:#fff;border-radius:99px;padding:6px 12px 6px 9px;font:700 12.5px Inter,system-ui,sans-serif;cursor:pointer}
 .ak-bkl .ak-ic{width:14px;height:14px}
 body.dark-mode .ak-c2{background:#171d27}body.dark-mode .ak-c2 .l{color:#e8ecf3;border-color:#2a3242}body.dark-mode .ak-bkl button{background:#0f141c;color:#c9d6ff;border-color:#7d9bff}
+/* v385 add a sheet like a chat, and voice messages like Messenger */
+.ak-q{display:flex;align-items:center;gap:6px}.ak-q .ak-ic{color:#C9A24A;width:16px;height:16px}.ak-q .ak-mu{margin-left:auto;font-size:11px}
+.ak-cp2 button i .ak-ic{width:15px;height:15px;color:#C9A24A}
+.ak-nv{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.ak-nv button{display:inline-flex;align-items:center;gap:4px;border:1.5px solid #1C3C96;color:#1C3C96;background:#fff;border-radius:99px;padding:6px 12px 6px 8px;font:700 12.5px Inter,system-ui,sans-serif;cursor:pointer}
+.ak-nv button .ak-ic{width:14px;height:14px}.ak-nv .sk{border-color:transparent;background:none;color:#65676B;padding-left:10px}
+.ak-nv .go{background:#1C3C96;color:#fff}.ak-nv .go .ak-ic{color:#F3D58E}
+.ak-rvs{background:#fff;border-radius:12px;padding:2px 10px}
+.ak-rv{display:grid;grid-template-columns:18px auto 1fr;align-items:center;gap:7px;padding:7px 0;border-top:1px solid #f0f2f8;font-size:12px}.ak-rv:first-child{border-top:0}
+.ak-rv .ak-ic{width:14px;height:14px;color:#C9A24A}.ak-rv span{color:#65676B;font-weight:600}.ak-rv b{text-align:right;font-weight:800;word-break:break-all}
+.ak-in{position:relative}
+.ak-mic{flex:none;width:36px;height:36px;border:0;background:none;color:#1C3C96;display:none;place-items:center;cursor:pointer}.ak-mic .ak-ic{width:22px;height:22px}
+.ak-in.e .ak-snd{display:none}.ak-in.e .ak-mic{display:grid}
+.ak-rec{position:absolute;inset:0;display:none;align-items:center;gap:6px;background:#fff}
+.ak-in.rec .ak-rec{display:flex}
+.ak-rt2,.ak-rs2{flex:none;width:36px;height:36px;border:0;background:none;display:grid;place-items:center;cursor:pointer}
+.ak-rt2{color:#1C3C96}.ak-rt2 .ak-ic{width:21px;height:21px}.ak-rs2{color:#1C3C96}.ak-rs2 .ak-ic{width:22px;height:22px;fill:#1C3C96;stroke:#1C3C96}
+.ak-rw{flex:1;min-width:0;height:38px;border-radius:99px;background:#0866FF;background:linear-gradient(135deg,#2453d6,#1C3C96);color:#fff;display:flex;align-items:center;gap:2px;padding:0 12px;overflow:hidden;transition:background .2s}
+.ak-rw em{width:8px;height:8px;border-radius:50%;background:#fff;flex:none;margin-right:6px;animation:akBl2 1s infinite}
+@keyframes akBl2{50%{opacity:.3}}
+.ak-rw span{flex:1;display:flex;align-items:center;justify-content:flex-end;gap:2px;overflow:hidden;height:100%}
+.ak-rw span i{width:3px;flex:none;border-radius:2px;background:rgba(255,255,255,.9)}
+.ak-rw b{flex:none;font-size:12.5px;margin-left:8px}
+.ak-rec.del .ak-rw{background:#E0245E;animation:akShake .4s}.ak-rec.del .ak-rt2{color:#E0245E;transform:scale(1.15)}
+@keyframes akShake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.ak-vb{display:inline-flex;align-items:center;gap:8px;cursor:pointer}.ak-vb>.ak-ic{width:15px;height:15px;fill:#fff}
+.ak-vb>span{display:flex;align-items:center;gap:2px;height:22px}.ak-vb>span i{width:3px;border-radius:2px;background:rgba(255,255,255,.85)}.ak-vb b{font-size:11.5px}
+.ak-mu .ak-ic{width:12px;height:12px;vertical-align:-2px}
+body.dark-mode .ak-rec{background:#0f141c}body.dark-mode .ak-rvs,body.dark-mode .ak-nv button{background:#171d27;color:#c9d6ff}
 </style>
 </head>
 <body>
@@ -10070,7 +10099,7 @@ let ASK_HEMERA_URL='https:\/\/script.google.com/macros/s/AKfycbwDgKEmZ54-FxWfyCo
 const AK={msgs:[],assets:null,at:0,editor:false,hist:[],busy:false,kb:true,nav:{},add:null};
 const AK_IC={
  spk:'<path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/><path d="M18.5 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>',
- back:'<path d="M15 18l-6-6 6-6"/>',plane:'<path d="M4 12l16-8-6 16-2.5-6.5z"/>',cam:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',dash:'<path d="M4 15a8 8 0 0 1 16 0"/><path d="M12 15l4-5"/>',all:'<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',chev:'<path d="M9 6l6 6-6 6"/>',copy:'<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>',send:'<path d="M5 12h14M13 6l6 6-6 6"/>',menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
+ back:'<path d="M15 18l-6-6 6-6"/>',plane:'<path d="M4 12l16-8-6 16-2.5-6.5z"/>',cam:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',dash:'<path d="M4 15a8 8 0 0 1 16 0"/><path d="M12 15l4-5"/>',all:'<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',chev:'<path d="M9 6l6 6-6 6"/>',mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',play:'<path d="M7 5l12 7-12 7z"/>',pause:'<path d="M8 5v14M16 5v14"/>',pen:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>',plat:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',folder:'<path d="M3 7h7l2 2h9v10H3z"/>',grid:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',link2:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',note:'<path d="M5 4h14v12l-4 4H5z"/><path d="M15 20v-4h4"/>',clip:'<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/>',doc:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>',hand:'<path d="M8 12l3 3 6-6"/><circle cx="12" cy="12" r="9"/>',trend:'<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',wallet:'<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12h3"/>',bolt:'<path d="M13 3L5 13h6l-1 8 8-10h-6z"/>',search:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/>',copy:'<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>',send:'<path d="M5 12h14M13 6l6 6-6 6"/>',menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
  links:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 3v18"/>',
  off:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
  mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
@@ -10098,8 +10127,9 @@ function openAsk(){
  const o=document.createElement('div');o.id='akBox';o.className='ak';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Ask HEMERA');
  o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av">${akI('spk')}</span><div><b>Ask HEMERA</b><small id="akSt">Active now</small></div></div>
   <div class="ak-bd" id="akBd"></div><div class="ak-kb" id="akKb"></div>
-  <form class="ak-in" onsubmit="akSend(event)"><button type="button" class="ak-mb" aria-label="Menu" onclick="akToggleKb()">${akI('menu')}</button><input id="akQ" autocomplete="off" maxlength="1500" placeholder="Aa"><button type="submit" class="ak-snd" aria-label="Send">${akI('plane')}</button></form></div>`;
- document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));akVv();try{avDefs()}catch(e){}
+  <form class="ak-in" onsubmit="akSend(event)"><button type="button" class="ak-mb" aria-label="Menu" onclick="akToggleKb()">${akI('menu')}</button><input id="akQ" autocomplete="off" maxlength="1500" placeholder="Aa" oninput="akInMode()"><button type="submit" class="ak-snd" aria-label="Send">${akI('plane')}</button><button type="button" class="ak-mic" aria-label="Record a voice message" onclick="akRecStart()">${akI('mic')}</button>
+  <div class="ak-rec" id="akRec"><button type="button" class="ak-rt2" aria-label="Delete" onclick="akRecTrash()">${akI('trash')}</button><div class="ak-rw"><em></em><span id="akRw"></span><b id="akRt">0:00</b></div><button type="button" class="ak-rs2" aria-label="Send" onclick="akRecSend()">${akI('plane')}</button></div></form></div>`;
+ document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));akVv();akInMode();try{avDefs()}catch(e){}
  if(!AK.msgs.length){const n=akMe().name.split(' ')[0];akBot(`<p>Hi${n?' '+akEsc(n):''}. Pick from the menu or type your question.</p>`)}
  akDraw();akKb();
  if(ASK_HEMERA_URL)akAssets().catch(()=>{});
@@ -10107,7 +10137,65 @@ function openAsk(){
 
 function akVv(){const v=window.visualViewport;if(!v||akVv.on)return;akVv.on=1;const f=()=>{const o=document.getElementById('akBox');if(!o)return;if(window.innerWidth>=900){o.style.top='';o.style.height='';o.style.bottom='';return}o.style.top=v.offsetTop+'px';o.style.height=v.height+'px';o.style.bottom='auto';const b=document.getElementById('akBd');if(b)b.scrollTop=b.scrollHeight};v.addEventListener('resize',f);v.addEventListener('scroll',f);f()}
 function akCopy(t,btn){try{navigator.clipboard.writeText(t).then(()=>{btn.classList.add('ok');showSettingsToast('Email copied');setTimeout(()=>btn.classList.remove('ok'),1500)},()=>showSettingsToast(t))}catch(e){showSettingsToast(t)}}
-function closeAsk(){const o=document.getElementById('akBox');if(!o)return;o.classList.remove('open');setTimeout(()=>o.remove(),280)}
+
+ 
+const AKR={};
+async function akRecStart(){
+ if(AKR.on||AK.busy)return;
+ if(!ASK_HEMERA_URL){akBot('<p>Ask HEMERA is not connected yet.</p>');return}
+ if(!navigator.mediaDevices||!window.MediaRecorder){showSettingsToast('Voice messages are not supported on this device');return}
+ let stream;try{stream=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){showSettingsToast('Allow the microphone to record');return}
+ AKR.on=true;AKR.stream=stream;AKR.chunks=[];AKR.t0=Date.now();
+ AKR.rec=new MediaRecorder(stream);AKR.rec.ondataavailable=e=>{if(e.data&&e.data.size)AKR.chunks.push(e.data)};AKR.rec.start(250);
+ const f=document.getElementById('akRec');if(f){f.classList.remove('del');f.closest('form').classList.add('rec')}
+ try{const C=window.AudioContext||window.webkitAudioContext;AKR.ac=new C();const src=AKR.ac.createMediaStreamSource(stream);AKR.an=AKR.ac.createAnalyser();AKR.an.fftSize=256;src.connect(AKR.an)}catch(e){}
+ AKR.lv=[];const w=document.getElementById('akRw'),t=document.getElementById('akRt'),buf=new Uint8Array(128);
+ const tick=()=>{if(!AKR.on)return;const s=Math.floor((Date.now()-AKR.t0)/1000);if(t)t.textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+   let v=.15;if(AKR.an){AKR.an.getByteTimeDomainData(buf);let m=0;for(const x of buf)m=Math.max(m,Math.abs(x-128));v=Math.min(1,.12+m/50)}
+   AKR.lv.push(v);if(AKR.lv.length>40)AKR.lv.shift();if(w)w.innerHTML=AKR.lv.map(x=>`<i style="height:${Math.round(4+x*18)}px"></i>`).join('');
+   if(s>=60){akRecSend();return}AKR.raf=requestAnimationFrame(tick)};tick();
+}
+function akRecStop(){
+ AKR.on=false;cancelAnimationFrame(AKR.raf);
+ try{AKR.stream.getTracks().forEach(x=>x.stop())}catch(e){}try{AKR.ac&&AKR.ac.close()}catch(e){}
+ const f=document.getElementById('akRec');if(f)f.closest('form').classList.remove('rec');
+}
+function akRecTrash(){
+ if(!AKR.on)return;const f=document.getElementById('akRec');if(f)f.classList.add('del');
+ try{AKR.rec.onstop=null;AKR.rec.stop()}catch(e){}AKR.on=false;cancelAnimationFrame(AKR.raf);
+ setTimeout(()=>{akRecStop();if(f)f.classList.remove('del')},450);
+}
+function akRecSend(){
+ if(!AKR.on)return;const secs=Math.max(1,Math.round((Date.now()-AKR.t0)/1000)),lv=AKR.lv.slice();
+ AKR.rec.onstop=async()=>{
+   const blob=new Blob(AKR.chunks,{type:AKR.rec.mimeType||'audio/webm'});akRecStop();
+   if(secs<1||!blob.size)return;
+   const url=URL.createObjectURL(blob);
+   AK.msgs.push({w:'u',html:`<span class="ak-vb" data-u="${url}" onclick="akPlay(this)">${akI('play')}<span>${lv.filter((x,i)=>i%2===0).map(x=>`<i style="height:${Math.round(4+x*16)}px"></i>`).join('')}</span><b>0:${String(secs).padStart(2,'0')}</b></span>`});
+   AK.kb=false;akKb();AK.busy=true;akDraw();
+   try{
+     const wav=await akWav(blob);
+     const j=await akPost('voice',{audio:wav,mime:'audio/wav',history:AK.hist.slice(-6)});
+     AK.busy=false;
+     if(AK.add){akBot(`<p class="ak-sm ak-mu">${akI('mic')} ${akEsc(j.heard)}</p>`);akAddAnswer(j.heard);return}
+     AK.hist.push({role:'user',text:j.heard},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-12);
+     akBot(`<p class="ak-sm ak-mu">${akI('mic')} ${akEsc(j.heard)}</p>`+akAnswer(j.answer||''));
+   }catch(err){AK.busy=false;akBot(`<p>${/unknown action/.test(String(err&&err.message))?'Voice messages need the new HemeraApi file in the script.':'Could not hear the message. Try again.'}</p>`)}
+ };
+ try{AKR.rec.stop()}catch(e){akRecStop()}
+}
+function akPlay(el){const u=el.dataset.u;if(!u)return;if(AKR.au&&!AKR.au.paused){AKR.au.pause();return}AKR.au=new Audio(u);AKR.au.play().catch(()=>{})}
+
+async function akWav(blob){
+ const C=window.AudioContext||window.webkitAudioContext,ac=new C(),buf=await ac.decodeAudioData(await blob.arrayBuffer());try{ac.close()}catch(e){}
+ const rate=16000,len=Math.ceil(buf.duration*rate),O=window.OfflineAudioContext||window.webkitOfflineAudioContext,off=new O(1,len,rate),src=off.createBufferSource();
+ src.buffer=buf;src.connect(off.destination);src.start();const out=await off.startRendering(),d=out.getChannelData(0);
+ const v=new DataView(new ArrayBuffer(44+d.length*2)),w=(o,t)=>{for(let i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i))};
+ w(0,'RIFF');v.setUint32(4,36+d.length*2,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,rate,true);v.setUint32(28,rate*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,d.length*2,true);
+ for(let i=0;i<d.length;i++){const x=Math.max(-1,Math.min(1,d[i]));v.setInt16(44+i*2,x<0?x*0x8000:x*0x7fff,true)}
+ const bytes=new Uint8Array(v.buffer);let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000));return btoa(bin);
+}
+function closeAsk(){if(AKR.on)akRecStop();AK.add=null;const o=document.getElementById('akBox');if(!o)return;o.classList.remove('open');setTimeout(()=>o.remove(),280)}
 function akBot(html,cls){AK.msgs.push({w:'h',html,cls:cls||''});akDraw()}
 function akUser(t){AK.msgs.push({w:'u',html:akEsc(t)});akDraw()}
 function akDraw(){
@@ -10127,10 +10215,13 @@ function akKb(){
  k.hidden=!AK.kb;
  k.innerHTML=items.map(([id,t])=>`<button type="button" onclick="akMenu('${id}')">${akI(id)}${t}</button>`).join('');
 }
+function akInMode(){const i=document.getElementById('akQ'),f=i&&i.closest('form');if(f)f.classList.toggle('e',!String(i.value||'').trim())}
 async function akSend(e){
  if(e)e.preventDefault();
  const i=document.getElementById('akQ');const q=String(i&&i.value||'').trim();if(!q||AK.busy)return;
- i.value='';akUser(q);AK.kb=false;akKb();
+ i.value='';akInMode();
+ if(AK.add){akAddAnswer(q);return}
+ akUser(q);AK.kb=false;akKb();
  if(!ASK_HEMERA_URL){akBot('<p>Ask HEMERA is not connected yet.</p>');return}
  AK.busy=true;akDraw();
  try{const j=await akPost('ask',{q,history:AK.hist.slice(-6)});AK.hist.push({role:'user',text:q},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-12);AK.busy=false;akBot(akAnswer(j.answer||''))}
@@ -10259,19 +10350,54 @@ const AK_ADD=[['Task_Name','Name','text'],['Platform','Platform','pl'],['Account
 function akCats(a){const base=['Sekna Daily Report','Briefing','Reporting','Partnerships','Performance','Operations','Media Plan','Search Terms','Budget','Pmax','AI Max','Dashboard'];
  const out=[],seen={},add=x=>{x=String(x||'').trim();const k=x.toLowerCase();if(x&&!seen[k]){seen[k]=1;out.push(x)}};
  ((a&&a.categories)||[]).forEach(add);if(!out.length){base.forEach(add);((a&&a.rows)||[]).forEach(r=>add(r.category))}return out}
+
+const AK_STEPS=[['Task_Name','Name','pen','text',1],['Platform','Platform','plat','pl',1],['Account','Account','globe','ac',1],['Category','Category','folder','ct',1],['Format','Format','grid','fm',1],
+ ['Source_Sheet_Name','Sheet name','links','text',0],['Source_Sheet_URL','Sheet link','link2','url',0],['Report_Name','Platform report name','rep','text',0],['Report_URL','Platform report link','link2','url',0],
+ ['Script_Name','Script name','code','text',0],['Script_URL','Script link (platform or report)','link2','url',0],['Notes','Notes','note','text',0]];
+const AK_CAT_IC={'sekna daily report':'clip','briefing':'doc','reporting':'rep','partnerships':'hand','performance':'trend','operations':'gear','media plan':'off','search terms':'search','budget':'wallet','pmax':'bolt','ai max':'spk','dashboard':'dash'};
+const AK_FMT_IC={sheet:'links',screenshot:'cam','weekly screenshot':'off',dashboard:'dash'};
 async function akAddForm(){
  const a=await akNeedAssets();if(!a)return;
  if(!AK.editor){akBot('<p>Only editors can add sheets.</p>');return}
- const sel=(k,list)=>`<select name="${k}">${list.map(x=>`<option>${akEsc(x)}</option>`).join('')}</select>`;
- const f=AK_ADD.map(([k,l,t])=>`<label><span>${l}</span>${t==='pl'?sel(k,a.platforms.map(p=>p.key)):t==='ac'?sel(k,['USA','AR']):t==='ct'?sel(k,akCats(a)):t==='fm'?sel(k,a.formats&&a.formats.length?a.formats:['Sheet','Screenshot','Weekly Screenshot','Dashboard','Sheet, Screenshot','Sheet, Dashboard']):`<input name="${k}" ${t==='url'?'type="url" inputmode="url"':''} maxlength="500">`}</label>`).join('');
- akBot(`<form class="ak-fm" onsubmit="akAddSave(event,this)">${f}<button type="submit" class="ak-go">${akI('add')}Add to the sheet</button></form>`,'wide');
+ AK.add={i:0,data:{}};akAddAsk();
 }
-async function akAddSave(e,form){
- e.preventDefault();const row={};new FormData(form).forEach((v,k)=>{row[k]=String(v).trim()});
- if(!row.Task_Name){showSettingsToast('Write the name first');return}
- const btn=form.querySelector('button[type=submit]');btn.disabled=true;btn.textContent='Adding…';
- try{const j=await akPost('add',{row});form.closest('.ak-m').remove();AK.msgs=AK.msgs.filter(m=>m.html.indexOf('ak-fm')<0);AK.assets=null;akBot(`<p>Added to the sheet: <b>${akEsc(row.Task_Name)}</b> (${akEsc(j.id)})</p>`)}
- catch(err){btn.disabled=false;btn.textContent='Add to the sheet';showSettingsToast(errorText(err))}
+function akAddOpts(st){
+ const a=AK.assets||{};
+ if(st[3]==='pl')return (a.platforms||[]).map(p=>[p.key,akLogo(p.key),1]);
+ if(st[3]==='ac')return [['USA','🇺🇸'],['AR','🇸🇦']];
+ if(st[3]==='ct')return akCats(a).map(c=>[c,akI(AK_CAT_IC[c.toLowerCase()]||'folder')]);
+ if(st[3]==='fm')return (a.formats&&a.formats.length?a.formats:['Sheet','Screenshot','Weekly Screenshot','Dashboard','Sheet, Screenshot','Sheet, Dashboard']).map(f=>[f,akI(AK_FMT_IC[String(f).toLowerCase()]||'grid')]);
+ return null;
+}
+function akAddAsk(){
+ const A=AK.add;if(!A)return;
+ if(A.i>=AK_STEPS.length){akAddReview();return}
+ const st=AK_STEPS[A.i],ops=akAddOpts(st),n=A.i;
+ const pills=ops?`<div class="ak-ch ak-pl ak-cp2">${ops.map(([v,ic])=>`<button type="button" onclick="akAddPick(${n},this.dataset.v)" data-v="${akEsc(v)}"><i>${ic}</i>${akEsc(v)}</button>`).join('')}</div>`:'';
+ const hint=ops?(st[3]==='ct'||st[3]==='fm'?'<p class="ak-sm ak-mu">Pick one, or type another.</p>':''):`<p class="ak-sm ak-mu">${st[3]==='url'?'Paste the link below.':'Type it below.'}</p>`;
+ akBot(`<p class="ak-q">${akI(st[2])}<b>${st[1]}?</b><span class="ak-mu">${n+1}/${AK_STEPS.length}</span></p>${hint}${pills}<div class="ak-nv">${n?`<button type="button" onclick="akAddBack(${n})">${akI('back')}Back</button>`:''}${st[4]?'':`<button type="button" class="sk" onclick="akAddSkip(${n})">Skip</button>`}<button type="button" class="sk" onclick="akAddCancel()">Cancel</button></div>`,'wb');
+ const q=document.getElementById('akQ');if(q&&!ops&&window.innerWidth>=900)q.focus();
+}
+function akAddPick(n,v){const A=AK.add;if(!A||A.i!==n)return;akAddAnswer(v)}
+function akAddAnswer(v){
+ const A=AK.add;if(!A)return;const st=AK_STEPS[A.i];if(!st)return;
+ v=String(v||'').trim();if(!v)return;
+ if(st[3]==='url'&&!/^https?:\/\//i.test(v)){akUser(v);akBot('<p>That does not look like a link. Paste one that starts with https:\/\/</p>');return}
+ A.data[st[0]]=v;akUser(v);A.i++;akAddAsk();
+}
+function akAddSkip(n){const A=AK.add;if(!A||A.i!==n)return;akUser('Skip');A.i++;akAddAsk()}
+function akAddBack(n){const A=AK.add;if(!A||A.i!==n||!n)return;akUser('Back');A.i--;delete A.data[AK_STEPS[A.i][0]];akAddAsk()}
+function akAddCancel(){if(!AK.add)return;AK.add=null;akUser('Cancel');akBot('<p>Cancelled. Nothing was added.</p>')}
+function akAddReview(){
+ const A=AK.add;
+ const rows=AK_STEPS.filter(st=>A.data[st[0]]).map(st=>`<div class="ak-rv">${akI(st[2])}<span>${st[1]}</span><b>${akEsc(A.data[st[0]])}</b></div>`).join('');
+ akBot(`<p><b>Add this?</b></p><div class="ak-rvs">${rows}</div><div class="ak-nv"><button type="button" class="go" onclick="akAddSave(this)">${akI('add')}Add to the sheet</button><button type="button" onclick="akAddBack(${AK_STEPS.length})">${akI('back')}Back</button><button type="button" class="sk" onclick="akAddCancel()">Cancel</button></div>`,'wb');
+}
+async function akAddSave(btn){
+ const A=AK.add;if(!A||A.i<AK_STEPS.length)return;
+ btn.disabled=true;btn.textContent='Adding…';
+ try{const j=await akPost('add',{row:A.data});AK.add=null;AK.assets=null;akBot(`<p>Added to the sheet: <b>${akEsc(A.data.Task_Name)}</b> (${akEsc(j.id)})</p>`)}
+ catch(err){btn.disabled=false;btn.innerHTML=akI('add')+'Add to the sheet';showSettingsToast(errorText(err))}
 }
 
 function openSoon(k){if(!canDo(k))return;
