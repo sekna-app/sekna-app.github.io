@@ -9073,6 +9073,20 @@ body.dark-mode .ak-rec{background:#0f141c}body.dark-mode .ak-rvs,body.dark-mode 
 .ak-ch button.on{background:#1C3C96;color:#fff;border-color:#1C3C96}
 .ak-tm{margin-top:8px}
 body.dark-mode .ak-ad{border-color:#2a3242}body.dark-mode .ak-ad>button{background:#232a36;color:#c3c9d4}
+/* v388 Teach the bot as a control room (ع١) with slim icons, and Back everywhere */
+.ak-cr .hd{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#2a4bb3,#16307f);color:#fff;border-radius:14px;padding:12px;position:relative;overflow:hidden}
+.ak-cr .hd:after{content:"";position:absolute;right:-30px;top:-30px;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle,rgba(243,213,142,.35),transparent 70%);pointer-events:none}
+.ak-cr .hd i{width:40px;height:40px;border-radius:12px;background:rgba(243,213,142,.16);display:grid;place-items:center;color:#F3D58E;flex:none}.ak-cr .hd i .ak-ic{width:22px;height:22px;stroke-width:1.3}
+.ak-cr .hd b{display:block;font-size:15px;font-weight:900}.ak-cr .hd small{font-size:11px;color:#C9D3F5;font-weight:600}
+.ak-cr .gd{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+.ak-cr .gd button{background:#fff;border-radius:13px;padding:10px;display:flex;flex-direction:column;align-items:flex-start;gap:3px;border:1px solid #E4E6EB;cursor:pointer;font:inherit;text-align:left;color:#141b33;transition:transform .15s}
+.ak-cr .gd button:active{transform:scale(.97)}
+.ak-cr .gd button.w{grid-column:1/-1;flex-direction:row;align-items:center;gap:8px}.ak-cr .gd button.w small{margin-left:auto}
+.ak-cr .gd i{width:30px;height:30px;border-radius:9px;background:#FBF3E2;color:#C9A24A;display:grid;place-items:center;margin-bottom:3px}.ak-cr .gd button.w i{margin:0}
+.ak-cr .gd i .ak-ic{width:17px;height:17px;stroke-width:1.3}
+.ak-cr .gd b{font-size:12.5px;font-weight:800}.ak-cr .gd small{font-size:10.5px;color:#65676B;font-weight:600}
+.ak-bkl+.ak-bkl{display:none}
+body.dark-mode .ak-cr .gd button{background:#171d27;border-color:#2a3242;color:#e8ecf3}
 </style>
 </head>
 <body>
@@ -10258,11 +10272,22 @@ function akAnswer(t){
    return (lab?`<p>${akEsc(lab)}</p>`:'')+urls.map(u=>{const k=akLinkKind(u);return `<a class="ak-lk ${k[2]}" href="${akEsc(u)}" target="_blank" rel="noopener">${akI(k[0])}<span>${k[1]}</span>${akI('out')}</a>`}).join('');
  }).join('');
 }
+
+function AKB(to,l){return `<div class="ak-bkl"><button type="button" onclick="akBackTo('${to}')">${akI('back')}${l||'Back'}</button></div>`}
+async function akBackTo(t){akUser('Back');
+ if(t==='menu'){AK.kb=true;akKb();akBot('<p>What else can I help with?</p>');return}
+ if(t==='plat'){akStepPlatform();return}
+ if(t==='acct'){akShowAcct();return}
+ if(t==='type'){akShowType();return}
+ if(t==='teach'){akTeach();return}
+ if(t==='plats'){const j=await akAdm('plats');if(j)akPlatsDraw(j);return}
+ if(t==='team'){const j=await akAdm('team');if(j)akTeamDraw(j);return}
+}
 async function akMenu(id){
  AK.kb=false;akKb();
- if(id==='about'){akUser('About');akBot('<p><b>Ask HEMERA</b> answers from the team sheet: sheets, reports and scripts, who is off and who covers, and team emails.</p><p>Type it any way you like, in Arabic or English.</p>');return}
- if(id==='task'){akUser('My tasks');await akTeamData();akBot(akTasksHtml(),'wb');return}
- if(id==='off'||id==='mail'){akUser(id==='off'?'Team days off':'Team emails');await akTeamData();akBot(id==='off'?akOffHtml():akMailHtml(),id==='off'?'wb':'');return}
+ if(id==='about'){akUser('About');akBot('<p><b>Ask HEMERA</b> answers from the team sheet: sheets, reports and scripts, who is off and who covers, and team emails.</p><p>Type it any way you like, in Arabic or English.</p>'+AKB('menu'),'wb');return}
+ if(id==='task'){akUser('My tasks');await akTeamData();akBot(akTasksHtml()+AKB('menu'),'wb');return}
+ if(id==='off'||id==='mail'){akUser(id==='off'?'Team days off':'Team emails');await akTeamData();akBot((id==='off'?akOffHtml():akMailHtml())+AKB('menu'),'wb');return}
  if(id==='links'){akUser('Sheets & links');AK.nav={};akStepPlatform();return}
  if(id==='add'){akUser('Add a sheet');akAddForm();return}
  if(id==='teach'){akUser('Teach the bot');akTeach();return}
@@ -10328,7 +10353,7 @@ async function akNeedAssets(){
 }
 async function akStepPlatform(){
  const a=await akNeedAssets();if(!a)return;
- akBot('<p>Pick the platform</p><div class="ak-ch ak-pl">'+a.platforms.map(p=>p.open?`<button type="button" onclick="akPick('p','${akEsc(p.key)}')"><i>${akLogo(p.key)}</i>${akEsc(p.key)}</button>`:`<button type="button" class="lk" disabled><i>${akLogo(p.key)}</i>${akEsc(p.key)}${akI('lock')}</button>`).join('')+'</div>');
+ akBot('<p>Pick the platform</p><div class="ak-ch ak-pl">'+a.platforms.map(p=>p.open?`<button type="button" onclick="akPick('p','${akEsc(p.key)}')"><i>${akLogo(p.key)}</i>${akEsc(p.key)}</button>`:`<button type="button" class="lk" disabled><i>${akLogo(p.key)}</i>${akEsc(p.key)}${akI('lock')}</button>`).join('')+'</div>'+AKB('menu'),'wb');
 }
 function akRowsOf(nav){
  return ((AK.assets&&AK.assets.rows)||[]).filter(r=>{
@@ -10340,13 +10365,16 @@ function akRowsOf(nav){
 }
 function akPick(k,v){
  AK.nav[k]=v;
- if(k==='p'){AK.nav.a='';AK.nav.t='';akUser(v);akBot('<p>Which account?</p><div class="ak-ch ak-pl">'+[['USA','USA','🇺🇸'],['AR','AR','🇸🇦'],['BOTH','Both','🌍']].map(([x,l,f])=>`<button type="button" onclick="akPick('a','${x}')"><u>${f}</u>${l}</button>`).join('')+'</div>');return}
- if(k==='a'){AK.nav.t='';akUser(v==='BOTH'?'Both':v);const base=akRowsOf({p:AK.nav.p,a:v});
-   const ch=AK_TYPES.map(([x,l,ic,c,bg])=>{const n=x==='all'?base.length:base.filter(r=>r.types.indexOf(x)>=0).length;return n?`<button type="button" onclick="akPick('t','${x}')"><i style="color:${c};background:${bg}">${akI(ic)}</i><b>${l}</b><em>${n}</em>${akI('chev')}</button>`:''}).join('');
-   akBot(base.length?'<p>What are you looking for?</p><div class="ak-tl">'+ch+'</div>':'<p>Nothing saved here yet.</p>','wb');return}
- if(k==='t'){const tl=(AK_TYPES.find(x=>x[0]===v)||[0,v])[1];akUser(tl);const rows=akRowsOf(AK.nav);AK.res=rows;
-   akBot(rows.length?`<p><b>${rows.length} ${rows.length===1?'result':'results'}</b> <span class="ak-mu">· ${akEsc(AK.nav.p)} · ${AK.nav.a==='BOTH'?'Both':akEsc(AK.nav.a)}</span></p><div class="ak-rs">${akResRows(rows,6)}</div>`:'<p>Nothing found.</p>','wb');return}
+ if(k==='p'){AK.nav.a='';AK.nav.t='';akUser(v);akShowAcct();return}
+ if(k==='a'){AK.nav.t='';akUser(v==='BOTH'?'Both':v);akShowType();return}
+ if(k==='t'){akUser((AK_TYPES.find(x=>x[0]===v)||[0,v])[1]);akShowRes();return}
 }
+function akShowAcct(){akBot('<p>Which account?</p><div class="ak-ch ak-pl">'+[['USA','USA','🇺🇸'],['AR','AR','🇸🇦'],['BOTH','Both','🌍']].map(([x,l,f])=>`<button type="button" onclick="akPick('a','${x}')"><u>${f}</u>${l}</button>`).join('')+'</div>'+AKB('plat'),'wb')}
+function akShowType(){const base=akRowsOf({p:AK.nav.p,a:AK.nav.a});
+ const ch=AK_TYPES.map(([x,l,ic,c,bg])=>{const n=x==='all'?base.length:base.filter(r=>r.types.indexOf(x)>=0).length;return n?`<button type="button" onclick="akPick('t','${x}')"><i style="color:${c};background:${bg}">${akI(ic)}</i><b>${l}</b><em>${n}</em>${akI('chev')}</button>`:''}).join('');
+ akBot((base.length?'<p>What are you looking for?</p><div class="ak-tl">'+ch+'</div>':'<p>Nothing saved here yet.</p>')+AKB('acct'),'wb')}
+function akShowRes(){const rows=akRowsOf(AK.nav);AK.res=rows;
+ akBot((rows.length?`<p><b>${rows.length} ${rows.length===1?'result':'results'}</b> <span class="ak-mu">· ${akEsc(AK.nav.p)} · ${AK.nav.a==='BOTH'?'Both':akEsc(AK.nav.a)}</span></p><div class="ak-rs">${akResRows(rows,6)}</div>`:'<p>Nothing found.</p>')+AKB('type'),'wb')}
 const AK_TICON={sheet:['links','#1E8E3E'],daily:['cam','#1a73e8'],weekly:['off','#C9A24A'],dashboard:['dash','#7C4DFF']};
 function akResRows(rows,n){
  const ic=r=>{const t=AK_TICON[r.types[0]]||AK_TICON.sheet;return `<i style="color:${t[1]}">${akI(t[0])}</i>`};
@@ -10381,19 +10409,24 @@ const AK_FMT_IC={sheet:'links',screenshot:'cam','weekly screenshot':'off',dashbo
  
 function akRulesHtml(rules){return rules&&rules.length?`<div class="ak-rvs">${rules.map(r=>`<div class="ak-rl2"><b>${akEsc(r.id)}</b><span>${akEsc(r.rule)}</span><button type="button" aria-label="Forget ${akEsc(r.id)}" onclick="akForget('${akEsc(r.id)}',this)">${akI('x')}</button></div>`).join('')}</div>`:'<p class="ak-sm ak-mu">No rules saved yet.</p>'}
 const AK_TM=[['rules','Saved rules','rules'],['refresh','Refresh data','refresh'],['cats','Categories','folder'],['plats','Platforms','plat'],['access','Access','key'],['team','Team','users'],['bc','Broadcast','megaphone']];
-function akTeach(){
+const AK_TMD={rules:'Rules you taught',refresh:'From the sheet',cats:'Filters and names',plats:'Lock and access',access:'Who uses the bot',team:'Days off and backups',bc:'Scheduled messages'};
+function akTeachHtml(sm){
+ const d=k=>{if(!sm)return AK_TMD[k];return{rules:sm.rules+' rules',refresh:sm.rows+' rows',cats:sm.cats+' in use',plats:sm.plats+(sm.locked?' · '+sm.locked+' locked':''),access:sm.bot+' with access',team:sm.team+' people',bc:sm.bc?sm.bc+' scheduled':'Nothing scheduled'}[k]};
+ return `<div class="ak-cr"><div class="hd"><i>${akI('teach')}</i><div><b>Teach the bot</b><small>Type a rule below, or open a tool</small></div></div><div class="gd">${AK_TM.map(([k,t,ic])=>`<button type="button" class="${k==='bc'?'w':''}" onclick="akTm('${k}')"><i>${akI(ic)}</i><b>${t}</b><small>${akEsc(d(k))}</small></button>`).join('')}</div></div>`+AKB('menu');
+}
+async function akTeach(){
  if(!ASK_HEMERA_URL){akBot('<p>Ask HEMERA is not connected yet.</p>');return}
- AK.teach=true;
- akBot(`<p class="ak-q">${akI('teach')}<b>Teach the bot</b></p><p class="ak-sm">Type any rule or correction below. Example: the report with no platform means the Google report.</p><div class="ak-ch ak-pl ak-cp2 ak-tm">${AK_TM.map(([k,t,ic])=>`<button type="button" onclick="akTm('${k}')"><i>${akI(ic)}</i>${t}</button>`).join('')}</div>`,'wb');
+ AK.teach=true;akPanel('teachroot',akTeachHtml(AK.sm));
+ try{const j=await akPost('admin',{op:'summary'});AK.sm=j;akPanel('teachroot',akTeachHtml(j))}catch(e){}
 }
 
-function akPanel(id,html){const m=AK.msgs.find(x=>x.pid===id);if(m){m.html=html;akDraw()}else{AK.msgs.push({w:'h',html,cls:'wb',pid:id});akDraw()}}
+function akPanel(id,html){const k=AK.msgs.findIndex(x=>x.pid===id);if(k>=0&&k===AK.msgs.length-1){AK.msgs[k].html=html;akDraw();return}if(k>=0)AK.msgs.splice(k,1);AK.msgs.push({w:'h',html,cls:'wb',pid:id});akDraw()}
 async function akAdm(op,extra){AK.busy=true;akDraw();try{const j=await akPost('admin',Object.assign({op},extra||{}));AK.busy=false;akDraw();return j}catch(err){AK.busy=false;akDraw();showSettingsToast(/unknown action/.test(String(err&&err.message))?'This needs the new HemeraApi file in the script.':errorText(err));return null}}
 function akTmTitle(ic,t){return `<p class="ak-q">${akI(ic)}<b>${t}</b></p>`}
 async function akTm(k){
  const t=(AK_TM.find(x=>x[0]===k)||[])[1]||k;akUser(t);
- if(k==='rules'){AK.busy=true;akDraw();try{const j=await akPost('rules');AK.busy=false;akPanel('rules',akTmTitle('rules','Saved rules ('+j.rules.length+')')+akRulesHtml(j.rules)+'<p class="ak-sm ak-mu">Type a new rule below to add it.</p>')}catch(e){AK.busy=false;akBot('<p>Teaching needs the new HemeraApi file in the script.</p>')}return}
- if(k==='refresh'){const j=await akAdm('refresh');if(j)akBot(`<p>${akI('refresh')} Refreshed. ${j.rows} rows in the Assets tab.</p>`);AK.assets=null;return}
+ if(k==='rules'){AK.busy=true;akDraw();try{const j=await akPost('rules');AK.busy=false;akPanel('rules',akTmTitle('rules','Saved rules ('+j.rules.length+')')+akRulesHtml(j.rules)+'<p class="ak-sm ak-mu">Type a new rule below to add it.</p>'+AKB('teach'))}catch(e){AK.busy=false;akBot('<p>Teaching needs the new HemeraApi file in the script.</p>')}return}
+ if(k==='refresh'){const j=await akAdm('refresh');if(j)akBot(`<p>${akI('refresh')} Refreshed. ${j.rows} rows in the Assets tab.</p>`+AKB('teach'),'wb');AK.assets=null;return}
  if(k==='cats'){const j=await akAdm('cats');if(j)akCatsDraw(j);return}
  if(k==='plats'){const j=await akAdm('plats');if(j)akPlatsDraw(j);return}
  if(k==='access'){const j=await akAdm('access',{key:''});if(j)akAccDraw(j);return}
@@ -10402,7 +10435,7 @@ async function akTm(k){
 }
  
 function akCatsDraw(j){AK.cats=j;
- akPanel('cats',akTmTitle('folder','Categories')+'<p class="ak-sm ak-mu">The star makes it a filter button for the team. The number is how many rows use it.</p><div class="ak-rvs">'+j.cats.map((c,i)=>`<div class="ak-ad"><i>${akI(AK_CAT_IC[c.name.toLowerCase()]||'folder')}</i><b>${akEsc(c.name)}</b><em>${c.n}</em><button type="button" class="${c.shown?'on':''}" aria-label="Filter button" onclick="akCat('star',${i})">${akI('star')}</button><button type="button" aria-label="Delete" onclick="akCat('del',${i})">${akI('trash')}</button></div>`).join('')+'</div>'+(j.hidden.length?'<p class="ak-sm"><b>Hidden</b></p><div class="ak-ch">'+j.hidden.map((h,i)=>`<button type="button" onclick="akCat('back',${i})">${akI('back')}${akEsc(h)}</button>`).join('')+'</div>':''))}
+ akPanel('cats',akTmTitle('folder','Categories')+'<p class="ak-sm ak-mu">The star makes it a filter button for the team. The number is how many rows use it.</p><div class="ak-rvs">'+j.cats.map((c,i)=>`<div class="ak-ad"><i>${akI(AK_CAT_IC[c.name.toLowerCase()]||'folder')}</i><b>${akEsc(c.name)}</b><em>${c.n}</em><button type="button" class="${c.shown?'on':''}" aria-label="Filter button" onclick="akCat('star',${i})">${akI('star')}</button><button type="button" aria-label="Delete" onclick="akCat('del',${i})">${akI('trash')}</button></div>`).join('')+'</div>'+(j.hidden.length?'<p class="ak-sm"><b>Hidden</b></p><div class="ak-ch">'+j.hidden.map((h,i)=>`<button type="button" onclick="akCat('back',${i})">${akI('back')}${akEsc(h)}</button>`).join('')+'</div>':'')+AKB('teach'))}
 async function akCat(a,i){const J=AK.cats;if(!J)return;
  if(a==='back'){const j=await akAdm('catBack',{name:J.hidden[i]});if(j)akCatsDraw(j);return}
  const c=J.cats[i];if(!c)return;
@@ -10414,7 +10447,7 @@ async function akMove(k){const M=AK.mv;if(!M)return;const to=M.to[k];AK.mv=null;
  if(M.kind==='cat'){const j=await akAdm('catDel',{name:M.from,to});if(j)akCatsDraw(j)}else{const j=await akAdm('platDel',{key:M.from,to});if(j)akPlatsDraw(j)}}
  
 function akPlatsDraw(j){AK.plats=j.plats;
- akPanel('plats',akTmTitle('plat','Platforms')+'<p class="ak-sm ak-mu">Locked platforms are hidden from the team except the people you give access.</p><div class="ak-rvs">'+j.plats.map((p,i)=>`<div class="ak-ad"><i class="lg">${akLogo(p.key)}</i><b>${akEsc(p.key)}</b><em>${p.n}</em><button type="button" class="${p.locked?'lk':''}" aria-label="Lock" onclick="akPl('lock',${i})">${akI(p.locked?'lock':'unlock')}</button>${p.locked?`<button type="button" aria-label="Who has access" onclick="akPl('acc',${i})">${akI('users')}</button>`:''}<button type="button" aria-label="Delete" onclick="akPl('del',${i})">${akI('trash')}</button></div>`).join('')+`</div><div class="ak-nv"><button type="button" onclick="akPl('add')">${akI('add')}Add platform</button></div>`)}
+ akPanel('plats',akTmTitle('plat','Platforms')+'<p class="ak-sm ak-mu">Locked platforms are hidden from the team except the people you give access.</p><div class="ak-rvs">'+j.plats.map((p,i)=>`<div class="ak-ad"><i class="lg">${akLogo(p.key)}</i><b>${akEsc(p.key)}</b><em>${p.n}</em><button type="button" class="${p.locked?'lk':''}" aria-label="Lock" onclick="akPl('lock',${i})">${akI(p.locked?'lock':'unlock')}</button>${p.locked?`<button type="button" aria-label="Who has access" onclick="akPl('acc',${i})">${akI('users')}</button>`:''}<button type="button" aria-label="Delete" onclick="akPl('del',${i})">${akI('trash')}</button></div>`).join('')+`</div><div class="ak-nv"><button type="button" onclick="akPl('add')">${akI('add')}Add platform</button></div>`+AKB('teach'))}
 async function akPl(a,i){
  if(a==='add'){akBot('<p>Type the new platform name below, in English.</p>');AK.ask={fn:async v=>{const j=await akAdm('platAdd',{key:v});if(j)akPlatsDraw(j)}};return}
  const p=(AK.plats||[])[i];if(!p)return;
@@ -10426,15 +10459,15 @@ async function akPl(a,i){
  
 function akAccDraw(j){AK.acc=j;
  const t=j.key?j.key+' · who has access':'Bot access';
- akPanel('acc:'+j.key,akTmTitle('key',akEsc(t))+`<p class="ak-sm ak-mu">${j.key?'These people see '+akEsc(j.key)+' even though it is locked.':'The Telegram bot answers only these people and the editors.'}</p><div class="ak-rvs">`+j.people.map((p,i)=>`<div class="ak-ad"><i>${akEsc(String(p.name).charAt(0))}</i><b>${akEsc(p.name)}${p.uid?'':'<small>No Telegram ID in the Team tab</small>'}</b><label class="ak-sw${p.on?' on':''}${p.uid?'':' off'}" onclick="akAcc(${i})"><span></span></label></div>`).join('')+'</div>')}
+ akPanel('acc:'+j.key,akTmTitle('key',akEsc(t))+`<p class="ak-sm ak-mu">${j.key?'These people see '+akEsc(j.key)+' even though it is locked.':'The Telegram bot answers only these people and the editors.'}</p><div class="ak-rvs">`+j.people.map((p,i)=>`<div class="ak-ad"><i>${akEsc(String(p.name).charAt(0))}</i><b>${akEsc(p.name)}${p.uid?'':'<small>No Telegram ID in the Team tab</small>'}</b><label class="ak-sw${p.on?' on':''}${p.uid?'':' off'}" onclick="akAcc(${i})"><span></span></label></div>`).join('')+'</div>'+AKB(j.key?'plats':'teach'))}
 async function akAcc(i){const J=AK.acc;if(!J)return;const p=J.people[i];if(!p||!p.uid)return;const j=await akAdm(p.on?'revoke':'grant',{key:J.key,uid:p.uid});if(j)akAccDraw(j)}
  
 const AK_TF={Name:'Name',Email:'Email',Day_Off:'Day off',Backup_Person:'Backup',Telegram_ID:'Telegram ID',Timezone:'Time zone'};
 function akTeamDraw(j){AK.tm=j;
- akPanel('team',akTmTitle('users','Team')+'<div class="ak-rvs">'+j.team.map((p,i)=>`<div class="ak-ad tp" onclick="akTp(${i})"><i>${akEsc(String(p.Name).charAt(0))}</i><b>${akEsc(p.Name)}<small>${akEsc([p.Day_Off,p.Backup_Person?'backup '+p.Backup_Person:''].filter(Boolean).join(' · ')||'Tap to edit')}</small></b>${akI('chev')}</div>`).join('')+`</div><div class="ak-nv"><button type="button" onclick="akTpAdd()">${akI('add')}Add person</button></div>`)}
+ akPanel('team',akTmTitle('users','Team')+'<div class="ak-rvs">'+j.team.map((p,i)=>`<div class="ak-ad tp" onclick="akTp(${i})"><i>${akEsc(String(p.Name).charAt(0))}</i><b>${akEsc(p.Name)}<small>${akEsc([p.Day_Off,p.Backup_Person?'backup '+p.Backup_Person:''].filter(Boolean).join(' · ')||'Tap to edit')}</small></b>${akI('chev')}</div>`).join('')+`</div><div class="ak-nv"><button type="button" onclick="akTpAdd()">${akI('add')}Add person</button></div>`+AKB('teach'))}
 function akTp(i){const J=AK.tm,p=J&&J.team[i];if(!p)return;AK.tp=i;akUser(p.Name);akTpDraw()}
 function akTpDraw(){const J=AK.tm,p=J&&J.team[AK.tp];if(!p)return;
- akPanel('tp:'+p.row,akTmTitle('users',akEsc(p.Name))+'<div class="ak-rvs">'+J.fields.map((f,k)=>`<div class="ak-ad tp" onclick="akTf(${k})"><b>${AK_TF[f.key]||f.key}<small>${akEsc(p[f.key]||'Empty')}</small></b>${akI('pen')}</div>`).join('')+`</div><div class="ak-nv"><button type="button" class="sk" onclick="akTpDel()">${akI('trash')}Remove from the team</button></div>`)}
+ akPanel('tp:'+p.row,akTmTitle('users',akEsc(p.Name))+'<div class="ak-rvs">'+J.fields.map((f,k)=>`<div class="ak-ad tp" onclick="akTf(${k})"><b>${AK_TF[f.key]||f.key}<small>${akEsc(p[f.key]||'Empty')}</small></b>${akI('pen')}</div>`).join('')+`</div><div class="ak-nv"><button type="button" class="sk" onclick="akTpDel()">${akI('trash')}Remove from the team</button></div>`+AKB('team'))}
 function akTf(k){const J=AK.tm,p=J&&J.team[AK.tp],f=J&&J.fields[k];if(!p||!f)return;
  const save=async v=>{const j=await akAdm('teamSet',{row:p.row,field:f.key,value:v});if(j){AK.tm=j;akTeamDraw(j);akTpDraw()}};
  AK.tfSave=save;
@@ -10447,7 +10480,7 @@ function akTpAdd(){akBot('<p>Type the new person’s name below.</p>');AK.ask={f
 async function akTpDel(){const J=AK.tm,p=J&&J.team[AK.tp];if(!p)return;if(!confirm('Remove '+p.Name+' from the Team tab?'))return;akUser('Remove '+p.Name);const j=await akAdm('teamDel',{row:p.row});if(j){akTeamDraw(j);akBot(`<p>${akEsc(p.Name)} was removed from the team.</p>`)}}
  
 function akBcDraw(j){AK.bc=j;
- akPanel('bc',akTmTitle('megaphone','Broadcast')+(j.list.length?'<div class="ak-rvs">'+j.list.map((x,i)=>`<div class="ak-ad"><i>${akI(x.waiting?'off':'check')}</i><b>${akEsc(String(x.text).slice(0,70))}<small>${akEsc(x.to)} · ${akEsc(x.when)} · ${akEsc(x.repeat)}</small></b>${x.waiting?`<button type="button" aria-label="Cancel" onclick="akBcDel(${i})">${akI('x')}</button>`:''}</div>`).join('')+'</div>':'<p class="ak-sm ak-mu">No scheduled messages.</p>')+`<div class="ak-nv"><button type="button" onclick="akBcNew()">${akI('add')}New broadcast</button></div>`)}
+ akPanel('bc',akTmTitle('megaphone','Broadcast')+(j.list.length?'<div class="ak-rvs">'+j.list.map((x,i)=>`<div class="ak-ad"><i>${akI(x.waiting?'off':'check')}</i><b>${akEsc(String(x.text).slice(0,70))}<small>${akEsc(x.to)} · ${akEsc(x.when)} · ${akEsc(x.repeat)}</small></b>${x.waiting?`<button type="button" aria-label="Cancel" onclick="akBcDel(${i})">${akI('x')}</button>`:''}</div>`).join('')+'</div>':'<p class="ak-sm ak-mu">No scheduled messages.</p>')+`<div class="ak-nv"><button type="button" onclick="akBcNew()">${akI('add')}New broadcast</button></div>`+AKB('teach'))}
 async function akBcDel(i){const x=AK.bc&&AK.bc.list[i];if(!x)return;const j=await akAdm('bcDel',{id:x.id});if(j)akBcDraw(j)}
 function akBcNew(){AK.nb={picked:[]};akUser('New broadcast');akBot('<p>Type the message the bot should send.</p>');AK.ask={fn:v=>{AK.nb.text=v;akBcStep('target')}}}
 function akBcPills(list,fn){return '<div class="ak-ch">'+list.map(([v,l],i)=>`<button type="button" onclick="${fn}(${i})">${l}</button>`).join('')+'</div>'}
