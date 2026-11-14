@@ -10281,7 +10281,12 @@ function akNav(fn){AK.ts=AK.ts||[];AK.ts.push(fn);fn()}
 function akTBack(){(AK.ts||[]).pop();const f=(AK.ts||[])[AK.ts.length-1];if(f)f();else akPanel('teach',akTeachHtml(AK.sm))}
 function akTop(){const f=(AK.ts||[])[AK.ts.length-1];if(f)f()}
 
-async function akAdmQ(op,extra){try{return await akPost('admin',Object.assign({op},extra||{}))}catch(err){showSettingsToast(/unknown action/.test(String(err&&err.message))?'This needs the newest HemeraApi file in the script.':errorText(err));return null}}
+async function akAdmQ(op,extra){try{const j=await akPost('admin',Object.assign({op},extra||{}));
+  
+  if(op==='permSet'&&extra&&j&&j.access){const a=j.access[String(extra.email).toLowerCase()]||{},k=extra.key,v=k==='plat'?(a.pl&&a.pl[extra.plat]!==undefined?a.pl[extra.plat]:(a.plats||[]).indexOf(extra.plat)>=0):a[k];
+    if(v!==extra.on&&!(k==='use'&&extra.on&&v===undefined))akBot(`<p>The script did not keep this change. It is probably running an older version: in Apps Script use Deploy → Manage deployments → Edit → New version.</p><p class="ak-sm ak-mu">Sent ${akEsc(k)}${extra.plat?' '+akEsc(extra.plat):''} = ${extra.on}, got ${akEsc(String(v))}.</p>`)}
+  return j}
+ catch(err){akBot(`<p>Could not save: ${akEsc(/unknown action/.test(String(err&&err.message))?'the script is on an older version. In Apps Script use Deploy → Manage deployments → Edit → New version.':String(err&&err.message||err))}</p>`);return null}}
 function akTmTitle(ic,t){return `<p class="ak-q">${akI(ic)}<b>${t}</b></p>`}
 async function akTm(k){
  if(k==='rules'){AK.busy=true;akDraw();try{const j=await akPost('rules');AK.busy=false;AK.rl=j.rules;akNav(()=>akPanel('teach',akTmTitle('rules','Saved rules ('+AK.rl.length+')')+akRulesHtml(AK.rl)+'<p class="ak-sm ak-mu">Type a new rule below to add it.</p>'+AKB('pop')))}catch(e){AK.busy=false;akDraw();showSettingsToast(errorText(e))}return}
