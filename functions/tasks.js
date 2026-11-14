@@ -70,8 +70,8 @@ async function assertManager(token, key) {
   if (key ? !(await can(a.email, key)) : !(await canManage(a.email))) throw new Error(NO_PERM[key] || 'You don\'t have access to build tasks.');
   return { a, mem };
 }
-const keyOfKind = kind => (kind === 'quick' ? 'quick' : kind === 'leave' ? 'leave' : 'build');
-const keyOfLoc = loc => (loc === 'quick' ? 'quick' : loc === 'leave' ? 'leave' : 'build');
+const keyOfKind = kind => (kind === 'quick' ? 'quick' : 'build'); // v369 days off are set by people with Task Builder
+const keyOfLoc = loc => (loc === 'quick' ? 'quick' : 'build');
 async function teamPeople(mem, me) {
   const seen = {}, out = [];
   const add = (email, name) => {
@@ -351,7 +351,7 @@ const T = {
   },
 
   async taskDone([token, id, week, done]) {
-    const a = await assertAccess(token), mgr = await canManage(a.email);
+    const a = await assertAccess(token), mgr = await can(a.email, 'build'); // v369 only Task Builder ticks someone else's task
     const loc = await locate(id);
     if (!loc) throw new Error('This task was removed.');
     let out = null;
@@ -435,7 +435,7 @@ const T = {
 
   async leaveFreezeSet([token, cfg, notifyTeam]) {
     const a = await assertAccess(token);
-    if (!(await can(a.email, 'leave'))) throw new Error(NO_PERM.leave);
+    if (!(await can(a.email, 'build'))) throw new Error(NO_PERM.leave);
     cfg = cfg || {};
     const ok = s => /^\d{4}-\d{2}-\d{2}$/.test(String(s || ''));
     const seasons = (Array.isArray(cfg.seasons) ? cfg.seasons : []).slice(0, 12)
@@ -636,7 +636,7 @@ async function verifyNudge() {
   return due.length;
 }
 async function clearWelcome(email) {
-  await fsUpdate(DOC.members, all => { all = all || {}; const m = all[email]; if (!m || !m.w) return undefined; delete m.w; delete m.avatar; delete m.vn; delete m.bio; delete m.phone; if (m.role) all[email] = m; else delete all[email]; return all; });
+  await fsUpdate(DOC.members, all => { all = all || {}; const m = all[email]; if (!m) return undefined; delete m.w; delete m.avatar; delete m.vn; delete m.bio; delete m.phone; if (m.role) all[email] = m; else delete all[email]; return all; });
 }
 const AVATAR_OK = [11, 12, 13, 14, 15, 17, 18, 20, 21, 22, 101, 103, 104, 105, 106, 107, 108];
 async function call(fn, args) {

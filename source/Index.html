@@ -8633,6 +8633,8 @@ window.addEventListener('load',function(){
     /* v368 welcome: content lower on the first, name and last screens; a small Skip under the tour */
     .wl-sl.low{padding-top:calc(18vh + env(safe-area-inset-top,0px))}.wl-sl.low .wl-big{margin-top:0}.wl-sl.low .wl-id{margin-top:34px}
     .wl-skip{border:0;background:none;color:#C9D3F5;font:inherit;font-size:13px;font-weight:800;padding:8px;cursor:pointer;align-self:center}
+    /* v369 welcome: the first, name and last screens sit in the middle */
+    html body .wl-sl.low{padding-top:calc(30px + env(safe-area-inset-top,0px))}html body .wl-sl.low>:first-child{margin-top:auto!important}
 </style>
 </head>
 <body>
@@ -16271,14 +16273,14 @@ function tkTeamHtml(){
    return `<div class="tk-person tk-card${isOpen?' open':''}" style="--i:${i}"><button type="button" class="tk-ph" onclick="tkTOpen('${esc(p.email)}')">${tkAv(p)}<div class="tk-pn"><b>${esc(p.name)}</b>
        <div class="tk-sumc">${tkOffToday(p.email)?`<span class="tk-tag off">🌴 Off today${tkOffToday(p.email).data.backup?' · backup '+esc(tkPerson(tkOffToday(p.email).data.backup).name.split(' ')[0]):''}</span>`:''}<span class="tk-tag">${ts.length} task${ts.length===1?'':'s'}</span>${covN?`<span class="tk-tag cov">↪ +${covN} from ${cov.map(x=>esc(x.q.name.split(' ')[0])).join(', ')}</span>`:''}${sn?`<span class="tk-tag snap">${TK_CAM}${sn}</span>`:''}${tkAccTxt(accs)}${open?`<span class="tk-tag q">⚡ ${open}</span>`:''}</div></div>
      <div class="tk-ring" style="--p:${(pct*100).toFixed(0)}"><span>${n}/${ts.length}</span></div><span class="tk-cv">›</span></button>
-     ${isOpen?`<div class="tk-pd">${ts.map(t=>tkTaskRow(t,w,t.email===me||mgr)).join('')}${cov.map(x=>x.ts.map(t=>`<div class="tk-covr">${tkTaskRow(t,w,t.email===me||mgr||p.email===me)}<span class="tk-from">🌴 ${esc(x.q.name.split(' ')[0])} is off · yours today</span></div>`).join('')).join('')}${tkPersonQuick(p.email)}</div>`:''}</div>`;
+     ${isOpen?`<div class="tk-pd">${ts.map(t=>tkTaskRow(t,w,tkCan('build'))).join('')}${cov.map(x=>x.ts.map(t=>`<div class="tk-covr">${tkTaskRow(t,w,tkCan('build'))}<span class="tk-from">🌴 ${esc(x.q.name.split(' ')[0])} is off · yours today</span></div>`).join('')).join('')}${tkPersonQuick(p.email)}</div>`:''}</div>`;
  }).join('');
 }
 function tkPersonQuick(email){
  const list=((TK.data&&TK.data.quick)||[]).filter(q=>q.email===email&&!(q.done&&q.done.at));if(!list.length)return '';
  const me=tkMe(),mgr=tkCanManage();
  return `<div class="tk-pq"><div class="tk-pq-h">⚡ Quick request${list.length>1?'s':''} · ${list.length} open</div>${list.map(q=>{const age=Math.max(0,Math.floor((Date.now()-q.at)/864e5)),due=tkDue(q.deadline),late=due!=null&&due<0;
-   return `<div class="tk-pqi${late?' late':''}"><button type="button" class="tk-tick" ${q.email===me||mgr?`onclick="tkTick('${q.id}',0,true,this)"`:'disabled'} aria-label="Mark as done"></button><div><b>${esc(q.title)}</b><small>Asked ${age?age+'d':'today'} ago${q.deadline?' · ':''}${q.deadline?(late?`${-due}d late`:due===0?'due today':`due in ${due}d`):''}</small></div></div>`}).join('')}</div>`;
+   return `<div class="tk-pqi${late?' late':''}"><button type="button" class="tk-tick" ${tkCan('build')?`onclick="tkTick('${q.id}',0,true,this)"`:'disabled'} aria-label="Mark as done"></button><div><b>${esc(q.title)}</b><small>Asked ${age?age+'d':'today'} ago${q.deadline?' · ':''}${q.deadline?(late?`${-due}d late`:due===0?'due today':`due in ${due}d`):''}</small></div></div>`}).join('')}</div>`;
 }
 
 
@@ -16347,7 +16349,7 @@ function tkEditLeave(id){const t=tkLeaveAll().find(x=>x.id===id);if(!t)return;TK
 
 
 function tkLeaveHtml(){
- const admin=tkCan('leave'), people=tkPeople(), fr=tkFrozenToday(), f=(TK.data&&TK.data.freeze)||{on:false,seasons:[]};
+ const admin=tkCan('build'), people=tkPeople(), fr=tkFrozenToday(), f=(TK.data&&TK.data.freeze)||{on:false,seasons:[]};
  const off=people.map(p=>({p,l:tkOffToday(p.email)})).filter(x=>x.l);
  const first=n=>esc(String(n||'').split(' ')[0]);
  const day=esc(new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'}).toUpperCase());
@@ -16512,7 +16514,7 @@ function tkQuickDash(list){
 }
 function tkQuickHtml(inMine){
  const me=tkMe(), mgr=tkCan('quick'), all=(TK.data&&TK.data.quick)||[];
- const mine=mgr?all:all.filter(q=>q.email===me);
+ const mine=mgr&&!inMine?all:all.filter(q=>q.email===me);
  const open=mine.filter(q=>!(q.done&&q.done.at)).sort((a,b)=>a.at-b.at), done=mine.filter(q=>q.done&&q.done.at);
  return `${inMine?(open.length?'<div class="ad-lbl" style="margin-top:18px">Reports &amp; optimizations</div>':''):tkQuickDash(mine)}
    ${open.map(q=>tkQuickRow(q,q.email===me||mgr)).join('')}
