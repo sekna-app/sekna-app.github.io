@@ -8609,6 +8609,14 @@ window.addEventListener('load',function(){
     .pf-bio.ed{display:block}.pf-bio textarea{resize:none;font-weight:700}.pf-bio .pf-eb{align-items:center}.pf-bio .pf-eb small{flex:1;font-size:11px;color:#8a93a8;font-weight:800}.pf-bio .pf-eb button{flex:0 0 auto;padding:8px 14px}
     .pf-pen.sm{width:26px;height:26px;border-radius:8px;margin-left:auto}.pf-pen.sm .pf-i{width:13px;height:13px}
     body.dark-mode .pf-bio{color:#c6ccd8}
+    /* v363 profile: strong blur behind; SEKNA on a verified cover; SEKNA and Wusul marks */
+    .pf.open{-webkit-backdrop-filter:blur(18px) saturate(1.2);backdrop-filter:blur(18px) saturate(1.2)}
+    .pf-cv{position:relative;overflow:hidden}
+    .pf-cvt{position:absolute;right:18px;bottom:14px;font-family:"DM Serif Display",Georgia,serif;font-size:44px;letter-spacing:.14em;line-height:1;background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(255,236,190,.55));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 2px 14px rgba(10,18,56,.18);opacity:.9}
+    .pf-cvt:before{content:"";position:absolute;left:4px;right:calc(.14em + 4px);bottom:-6px;height:2px;background:linear-gradient(90deg,transparent,#F3D58E,transparent)}
+    html body .pf-sk{border-radius:50%;background:#1C3C96;color:#fff;font-family:Inter,Arial,sans-serif;font-weight:900;font-size:19px;box-shadow:none}
+    html body .pf-wl{border-radius:10px;background:#0F1A3A}.pf-wl svg{width:24px;height:24px}
+    html body a.pf-ha b.ar{text-align:left}
 </style>
 </head>
 <body>
@@ -17071,18 +17079,18 @@ function pfDraw(){
  let place='';if(P.tz&&!/^(UTC|Etc\/)/.test(P.tz)){const nm=PF_TZ[P.tz]||String(P.tz).split('/').pop().replace(/_/g,' ');let tm='';try{tm=new Date().toLocaleTimeString('en-US',{timeZone:P.tz,hour:'numeric',minute:'2-digit'})}catch(e){}place=`<div class="pf-r">${pfI('pin')}<div class="pf-t">${esc(nm)}<small>${P.self?'From this device':'From their device'}${tm?' · '+esc(tm)+' local':''}</small></div></div>`}
  const about=`<div class="pf-h">Details</div>${pfLeave(P.email)}${place}
   <div class="pf-h">Works at</div><a class="pf-ha pf-a" href="https:\/\/sekna.co.uk/" target="_blank" rel="noopener"><span class="pf-sk">S</span><b>SEKNA<small>Digital marketing agency</small></b><span class="pf-go">›</span></a>
-  <div class="pf-h">Works on</div><div class="pf-ha"><span class="pf-hl"><img src="icons/ha-brand.png" alt=""></span><b class="ar" lang="ar" dir="rtl">هيومن أبيل عربي</b></div><div class="pf-ha"><span class="pf-hl"><img src="icons/ha-brand.png" alt=""></span><b>Human Appeal</b><em>US</em></div>
+  <div class="pf-h">Works on</div><a class="pf-ha pf-a" href="https:\/\/www.facebook.com/share/1EJVoqDZam/" target="_blank" rel="noopener"><span class="pf-hl"><img src="icons/ha-brand.png" alt=""></span><b class="ar" lang="ar" dir="rtl">هيومن أبيل عربي</b><span class="pf-go">›</span></a><a class="pf-ha pf-a" href="https:\/\/www.facebook.com/share/1E7ZAjWWC1/" target="_blank" rel="noopener"><span class="pf-hl"><img src="icons/ha-brand.png" alt=""></span><b>Human Appeal USA</b><span class="pf-go">›</span></a>
   <div class="pf-h">Links</div><a class="pf-r pf-a" href="https:\/\/sekna.co.uk/" target="_blank" rel="noopener">${pfI('globe')}<div class="pf-t">sekna.co.uk<small>Website</small></div></a>`;
  const phone=PF.edit?`<div class="pf-r">${pfI('phone')}<div class="pf-t"><input class="pf-in" id="pfPh" type="tel" inputmode="tel" maxlength="22" value="${esc(P.phone)}" placeholder="+20 100 000 0000"><div class="pf-eb"><button type="button" onclick="PF.edit=false;pfDraw()">Cancel</button><button type="button" class="p" onclick="pfSavePhone(this)">Save</button></div></div></div>`
   :P.phone?`<div class="pf-r">${pfI('phone')}<div class="pf-t"><a href="tel:${esc(P.phone.replace(/[^0-9+]/g,''))}">${esc(P.phone)}</a><small>Phone · the team sees it</small></div>${P.self?`<button type="button" class="pf-pen" onclick="PF.edit=true;pfDraw()" aria-label="Edit phone">${pfI('pen')}</button>`:''}</div>`
   :P.self?`<div class="pf-r">${pfI('phone')}<div class="pf-t"><button type="button" class="pf-add" onclick="PF.edit=true;pfDraw()">Add a phone number</button><small>Only the team sees it</small></div><button type="button" class="pf-pen" onclick="PF.edit=true;pfDraw()" aria-label="Add phone">${pfI('pen')}</button></div>`
   :`<div class="pf-r">${pfI('phone')}<div class="pf-t">No phone yet<small>Phone</small></div></div>`;
  const contact=`<div class="pf-h">Contact info</div><a class="pf-r pf-a" href="mailto:${esc(P.email)}">${pfI('mail')}<div class="pf-t">${esc(P.email)}<small>Email</small></div></a>${phone}`;
- const plat=`<div class="pf-h">Platforms</div><a class="pf-r pf-a" href="https:\/\/wusul.io/services/" target="_blank" rel="noopener"><span class="pf-wl">W</span><div class="pf-t">Wusul<small>Audience intelligence · reaching new clients</small></div><span class="pf-go">›</span></a>`;
+ const plat=`<div class="pf-h">Platforms</div><a class="pf-r pf-a" href="https:\/\/wusul.io/services/" target="_blank" rel="noopener"><span class="pf-wl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 15.5Q12 4 19 15.5" fill="none" stroke="#E2A93B" stroke-width="2.4" stroke-linecap="round"/><circle cx="5" cy="15.5" r="1.6" fill="#E2A93B"/><circle cx="19" cy="15.5" r="1.6" fill="#E2A93B"/><circle cx="12" cy="7.2" r="1.6" fill="#E2A93B"/></svg></span><div class="pf-t">Wusul<small>Audience intelligence · reaching new clients</small></div><span class="pf-go">›</span></a>`;
  const body=PF.tab==='contact'?contact:PF.tab==='plat'?plat:about;
  o.innerHTML=`<div class="pf-card"><button type="button" class="pf-x" onclick="profClose()" aria-label="Close">${pfI('x')}</button>
-  <div class="pf-cv${ver?' v':''}"></div><div class="pf-me"><span class="pf-pic">${personAv(P.avatar,P.name)}${ver?VBADGE:''}</span><div><b>${esc(P.name||P.email.split('@')[0])}</b>${P.role?roleBadge(P.role):''}</div></div>
-  ${PF.bio?`<div class="pf-bio ed"><textarea class="pf-in" id="pfBio" maxlength="100" rows="2" placeholder="Say something about you" oninput="document.getElementById('pfBc').textContent=this.value.length+' / 100'">${esc(P.bio)}</textarea><div class="pf-eb"><small id="pfBc">${String(P.bio).length} / 100</small><button type="button" onclick="PF.bio=false;pfDraw()">Cancel</button><button type="button" class="p" onclick="pfSaveBio(this)">Save</button></div></div>`
+  <div class="pf-cv${ver?' v':''}">${ver?'<span class="pf-cvt" aria-hidden="true">SEKNA</span>':''}</div><div class="pf-me"><span class="pf-pic">${personAv(P.avatar,P.name)}${ver?VBADGE:''}</span><div><b>${esc(P.name||P.email.split('@')[0])}</b>${P.role?roleBadge(P.role):''}</div></div>
+  ${PF.bio?`<div class="pf-bio ed"><textarea class="pf-in" id="pfBio" maxlength="48" rows="2" placeholder="Say something about you" oninput="document.getElementById('pfBc').textContent=this.value.length+' / 48'">${esc(P.bio)}</textarea><div class="pf-eb"><small id="pfBc">${String(P.bio).length} / 48</small><button type="button" onclick="PF.bio=false;pfDraw()">Cancel</button><button type="button" class="p" onclick="pfSaveBio(this)">Save</button></div></div>`
    :P.bio?`<div class="pf-bio">${esc(P.bio)}${P.self?`<button type="button" class="pf-pen sm" onclick="PF.bio=true;pfDraw()" aria-label="Edit caption">${pfI('pen')}</button>`:''}</div>`
    :P.self?`<div class="pf-bio"><button type="button" class="pf-add" onclick="PF.bio=true;pfDraw()">+ Add a caption</button></div>`:''}
   <div class="pf-sh"><i class="pf-grab"></i><div class="pf-tabs">${[['about','About'],['contact','Contact'],['plat','Platforms']].map(([k,l])=>`<button type="button" class="${PF.tab===k?'on':''}" onclick="PF.tab='${k}';PF.edit=false;pfDraw()">${l}</button>`).join('')}</div><div class="pf-b">${body}</div></div></div>`;
@@ -17090,7 +17098,7 @@ function pfDraw(){
  if(PF.bio)setTimeout(()=>{const t=document.getElementById('pfBio');if(t){t.focus();t.setSelectionRange(t.value.length,t.value.length)}},50);
 }
 async function pfSaveBio(btn){
- const v=((document.getElementById('pfBio')||{}).value||'').slice(0,100);btn.disabled=true;btn.textContent='Saving…';
+ const v=((document.getElementById('pfBio')||{}).value||'').slice(0,48);btn.disabled=true;btn.textContent='Saving…';
  try{const r=await serverCall('setMyProfile',getAccessToken(),{bio:v.trim()});ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE||{},{member:(r&&r.member)||{}});
   const me=(TK.data&&TK.data.people||[]).find(x=>x.email===PF.email);if(me)me.bio=(r&&r.member&&r.member.bio)||'';PF.bio=false;pfDraw();showSettingsToast('Saved')}
  catch(err){btn.disabled=false;btn.textContent='Save';showSettingsToast(errorText(err))}

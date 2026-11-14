@@ -598,7 +598,7 @@ async function setMemberSelf(email, value, welcomed, extra) {
   extra = extra || {};
   // v360 the phone the person adds on their profile (the team sees it) and the time zone of their device (for the place on the profile)
   let phone = extra.phone, tz = extra.tz, bio = extra.bio;
-  if (bio !== undefined) bio = String(bio || '').replace(/[<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, 100);
+  if (bio !== undefined) bio = String(bio || '').replace(/[<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, 48);
   if (phone !== undefined) { phone = String(phone || '').replace(/[^0-9+ ()-]/g, '').trim().slice(0, 22); if (phone && phone.replace(/\D/g, '').length < 6) throw new Error('That phone number looks too short.'); }
   if (tz !== undefined) { tz = String(tz || '').slice(0, 40); if (tz && !/^[A-Za-z_]+(\/[A-Za-z_+-]+){1,2}$/.test(tz)) tz = undefined; }
   if (typeof v === 'string' && v) {
