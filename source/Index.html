@@ -8366,6 +8366,31 @@ window.addEventListener('load',function(){
     html body .lya-bars{margin-top:8px!important;gap:4px!important}html body .lya-bars i{height:5px!important}html body .lya-ld{margin-top:6px!important;font-size:10.5px!important}
     /* v334 about: Goldline Studio in the middle, a little higher */
     html body .ab3-glt{left:50%!important;right:auto!important;transform:translateX(-50%);top:calc(14px + env(safe-area-inset-top,0px))!important}
+    /* v335 media plan / results: the Latest day in gold (phone) */
+    @media (max-width:1099px){html body #dxBody .dc-card.dcH.latest{box-shadow:0 0 0 2px #E2B874,0 10px 22px rgba(20,40,110,.14)!important}
+      html body #dxBody .dc-card.dcH.latest>.dcH-h{background:linear-gradient(135deg,#F3D58E,#C9963E)!important;color:#2a1d05!important}
+      html body #dxBody .dc-card.dcH.latest>.dcH-h *{color:#2a1d05!important}html body #dxBody .dc-card.dcH.latest>.dcH-h i,html body #dxBody .dc-card.dcH.latest>.dcH-h em{background:rgba(255,255,255,.45)!important}}
+    /* v335 budget: silver with a navy band and a faint H */
+    html body #mtdVarianceCard.vc{background:linear-gradient(160deg,#FFFFFF,#E9ECF2 60%,#DCE1E9)!important;padding-top:20px!important}
+    html body #mtdVarianceCard.vc:before{display:none!important}
+    .vcp-band{position:absolute;left:0;right:0;top:0;height:7px;background:linear-gradient(90deg,#203C8E,#2C4FB8 70%,#E2B874);z-index:1}
+    html body #mtdVarianceCard.vc .vcp-wm{position:absolute;right:-6px;bottom:-34px;font-size:130px;font-weight:900;color:rgba(32,60,142,.05)!important;line-height:1;pointer-events:none;z-index:0}
+    /* v335 leave: who is off today, one line with an orange edge */
+    .lc2{display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:11px 14px;border-left:4px solid #F2A65A;margin-bottom:10px;box-shadow:0 6px 16px rgba(20,40,110,.06);animation:skRise .3s both;animation-delay:calc(var(--i,0)*60ms)}
+    .lc2-t{min-width:0;flex:1;font-size:13px;font-weight:700;color:#141B33}.lc2-t b{font-weight:900}.lc2-no{color:#C63A4A;font-weight:800}.lc2-t small{display:block;font-size:10.5px;font-weight:700;color:#8A93A8;margin-top:2px}
+    .lc2-p{display:flex;flex:none}.lc2-p .tk-av{width:28px!important;height:28px!important;box-shadow:0 0 0 2px #fff}.lc2-p .tk-av+.tk-av{margin-left:-8px}
+    body.dark-mode .lc2{background:#151a22}body.dark-mode .lc2-t{color:#fff}
+    /* v335 admin tools: one list, a back button on what opens */
+    html body .a2-acts{display:block!important;background:#fff;border-radius:18px;padding:2px 14px;box-shadow:0 10px 26px rgba(20,40,110,.08);margin-top:12px}
+    html body .a2-act{width:100%;display:grid!important;grid-template-columns:36px minmax(0,1fr) auto;grid-template-areas:"i t a" "i s a";align-items:center;gap:0 12px;text-align:left!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:none!important;padding:11px 0!important;min-height:0!important}
+    html body .a2-act+.a2-act{border-top:1px solid #EDF0F6!important}
+    html body .a2-act>span{grid-area:i;width:36px!important;height:36px!important;border-radius:11px!important;display:grid!important;place-items:center;margin:0!important}
+    html body .a2-act>b{grid-area:t;font-size:13.5px!important;margin:0!important}html body .a2-act>small{grid-area:s;font-size:11px!important;margin:0!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    html body .a2-act:after{content:"›";grid-area:a;color:#B6BDCC;font-weight:900;font-size:18px}
+    .a2-bk{display:flex;align-items:center;gap:10px;margin:12px 0 0}.a2-bk b{font-size:17px;font-weight:900;color:#141B33}
+    .a2-bk button{width:38px;height:38px;border-radius:12px;border:0;background:#fff;box-shadow:0 4px 12px rgba(20,40,110,.1);display:grid;place-items:center;cursor:pointer;flex:none}
+    .a2-bk svg{width:20px;height:20px;fill:none;stroke:#203C8E;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+    body.dark-mode .a2-acts{background:#151a22!important}body.dark-mode .a2-act+.a2-act{border-color:#2a313c!important}body.dark-mode .a2-bk b{color:#fff}body.dark-mode .a2-bk button{background:#151a22}body.dark-mode .a2-bk svg{stroke:#fff}
 </style>
 </head>
 <body>
@@ -9018,7 +9043,7 @@ window.addEventListener('load',function(){
   </section>
     <section class="card section vc-sec" id="vcSection">
       <div class="section-head"><div><div class="section-title section-title-with-icon"><span class="section-heading-icon month">◧</span><span>Budget</span></div><div class="section-sub">What is left of the month plan</div></div></div>
-<div class="ox-strip vc" id="mtdVarianceCard"><span class="vc-chip" aria-hidden="true"></span><div class="ox-sr"><div><span class="ox-lbl" id="mtdVarianceLabel">Budget remaining</span><b id="mtdVariance">—</b></div><span class="ox-hs" id="mtdVarianceSub">—</span></div>
+<div class="ox-strip vc" id="mtdVarianceCard"><span class="vcp-band" aria-hidden="true"></span><span class="vcp-wm" aria-hidden="true">H</span><span class="vc-chip" aria-hidden="true"></span><div class="ox-sr"><div><span class="ox-lbl" id="mtdVarianceLabel">Budget remaining</span><b id="mtdVariance">—</b></div><span class="ox-hs" id="mtdVarianceSub">—</span></div>
         <div class="ox-bar"><span class="budget" id="mtdVarianceBar"></span></div>
         <div class="vc-num" id="vcSpent">•••• •••• SPENT —</div>
         <div class="vcp-days" id="vcpDays" aria-hidden="true"></div><div class="vcp-ft"><div><small>SPENT</small><b id="vcpSpent">—</b></div><div><small>MONTH PLAN</small><b id="vcpPlan">—</b></div><div class="r"><small>PER DAY</small><b id="vcpDay">—</b></div></div>
@@ -14590,6 +14615,7 @@ const aI=k=>`<svg class="aic" viewBox="0 0 24 24" aria-hidden="true">${AI_IC[k]|
 const aDot=c=>`<i class="adot" style="background:${c}"></i>`;
 const adIco=(k,c,bg)=>`<span class="a3-ic" style="background:${bg};color:${c}"><svg viewBox="0 0 24 24" aria-hidden="true">${AD_IC[k]}</svg></span>`;
 
+function adminBack(){ADMIN_TAB='';if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function adminTab(k){ADMIN_TAB=ADMIN_TAB===k?'':k;if(ADMIN_TAB)adminLoadExtra(ADMIN_TAB);if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function renderAdmin(d){
  ADMIN_LAST=d;
@@ -14649,6 +14675,7 @@ function renderAdmin(d){
  else if(ADMIN_VIEW==='people')body=peopleView;
  else if(ADMIN_VIEW==='server')body=`<div class="a2-sheet">${adminServerHtml()}</div>`;
  else body=`<div class="a2-acts">${act('app',`<i style="font-style:normal;display:grid;color:${m.on?'#c63a4a':'#13894f'}">${aI('power')}</i>`,m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message',`<i style="font-style:normal;display:grid;color:#203c8e">${aI('mega')}</i>`,'#e9eefc','Team message',annState)}${act('invite',`<i style="font-style:normal;display:grid;color:#a56a06">${aI('userplus')}</i>`,'#fff3dc','Invite','Add someone')}${act('activity',`<i style="font-style:normal;display:grid;color:#13894f">${aI('chart')}</i>`,'#e3f6ec','Activity','Who uses what')}${act('reading',`<i style="font-style:normal;display:grid;color:#13894f">${aI('sheet')}</i>`,'#e3f6ec','Reading the sheets',RW.data&&RW.data.window?(RW.data.window.on?rw12(RW.data.window.from)+' – '+rw12(RW.data.window.to):'All day'):'When to read')}${act('seasons',`<i style="font-style:normal;display:grid;color:#7a46d6">${aI('cal')}</i>`,'#f1eaff','Season alerts',SAL.data&&SAL.data.next?(()=>{const n=SAL.data.next.filter(x=>x.sendOn).sort((a,b)=>a.sendOn<b.sendOn?-1:1)[0];return n?'Next · '+salD(n.sendOn):'Days before each season'})():'Days before each season')}${ACCESS_PROFILE&&ACCESS_PROFILE.owner?act('perms',`<i style="font-style:normal;display:grid;color:#203c8e">${aI('lock')}</i>`,'#e9eefc','Permissions','Who can use what'):''}</div>${ADMIN_TAB==='server'?'':sheet}`;
+ if(body.startsWith('<div class="a2-acts">')&&ADMIN_TAB&&ADMIN_TAB!=='server'&&sheet)body=`<div class="a2-bk"><button type="button" onclick="adminBack()" aria-label="Back to tools"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><b>${esc(({app:'App status',message:'Team message',invite:'Invite',activity:'Activity',reading:'Reading the sheets',seasons:'Season alerts',perms:'Permissions'})[ADMIN_TAB]||'Tools')}</b></div>${sheet}`;
  adminBody(tabs+`<div class="a3-body">${body}</div>`);
  const hd=document.querySelector('#adminOverlay .sk-modal-head'),tb=document.querySelector('.a3-tabs');if(hd&&tb)tb.style.top=hd.offsetHeight+'px';
 }
@@ -16065,10 +16092,9 @@ function tkLeaveHtml(){
  const live=TK.month===tkMonthNow();
  const covers=off.length?off.map(({p,l},i)=>{const b=l.data.backup?tkPerson(l.data.backup):null;
    const n=live?tkTasksFor(p.email,tkWeekOf(tkToday().d)).filter(tkIsToday).length:0;
-   return `<div class="lc-cv" style="--i:${i}"><small>TODAY · ${day}</small>
-    <div class="lc-pair"><div class="lc-pp off">${tkAv(p)}<b>${first(p.name)}</b><small class="lc-off">Off today</small></div><span class="lc-arr"></span>
-     <div class="lc-pp">${b?tkAv(b):'<span class="tk-av">—</span>'}<b>${b?first(b.name):'No backup'}</b><small>${b?'Covers':'Not set'}</small></div></div>
-    ${n?`<div class="lc-tasks">↪ ${n} of ${first(p.name)}'s task${n===1?'':'s'} ${b?`move${n===1?'s':''} to ${first(b.name)} today`:`need${n===1?'s':''} a backup today`}</div>`:''}</div>`}).join('')
+   return `<div class="lc2" style="--i:${i}"><div class="lc2-t"><div><b>${first(p.name)}</b> is off · ${b?`<b>${first(b.name)}</b> covers`:'<span class="lc2-no">no backup</span>'}</div>
+    <small>${n?`${n} task${n===1?'':'s'} ${b?`move${n===1?'s':''} to ${first(b.name)}`:`need${n===1?'s':''} a backup`} today`:'Nothing to hand over today'}</small></div>
+    <div class="lc2-p">${tkAv(p)}${b?tkAv(b):''}</div></div>`}).join('')
    :`<div class="lc-cv lc-all"><small>TODAY · ${day}</small><b>✓ Everyone is working today</b></div>`;
  const freeze=`<div class="lc-fz"><span class="lp-im" role="img" aria-label="Moon and sheep"></span><button type="button" class="lp-ft" ${admin?'onclick="tkFreezeEdit()"':''}><b>Freeze leave for a season</b><small>${fr?'On now':'Off now'}</small></button>
    <button type="button" class="lp-tg dk${f.on?' on':''}" ${admin?'onclick="tkFreezeToggle(this)"':'disabled'} role="switch" aria-checked="${!!f.on}" aria-label="Freeze leave now"><i></i></button></div>`;
