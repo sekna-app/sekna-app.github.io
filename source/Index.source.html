@@ -8376,10 +8376,10 @@ window.addEventListener('load',function(){
     .vcp-band{position:absolute;left:0;right:0;top:0;height:7px;background:linear-gradient(90deg,#203C8E,#2C4FB8 70%,#E2B874);z-index:1}
     html body #mtdVarianceCard.vc .vcp-wm{position:absolute;right:-6px;bottom:-34px;font-size:130px;font-weight:900;color:rgba(32,60,142,.05)!important;line-height:1;pointer-events:none;z-index:0}
     /* v335 leave: who is off today, one line with an orange edge */
-    .lc2{display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:11px 14px;border-left:4px solid #F2A65A;margin-bottom:10px;box-shadow:0 6px 16px rgba(20,40,110,.06);animation:skRise .3s both;animation-delay:calc(var(--i,0)*60ms)}
-    .lc2-t{min-width:0;flex:1;font-size:13px;font-weight:700;color:#141B33}.lc2-t b{font-weight:900}.lc2-no{color:#C63A4A;font-weight:800}.lc2-t small{display:block;font-size:10.5px;font-weight:700;color:#8A93A8;margin-top:2px}
-    .lc2-p{display:flex;flex:none}.lc2-p .tk-av{width:28px!important;height:28px!important;box-shadow:0 0 0 2px #fff}.lc2-p .tk-av+.tk-av{margin-left:-8px}
-    body.dark-mode .lc2{background:#151a22}body.dark-mode .lc2-t{color:#fff}
+    .lvc{display:flex;align-items:center;gap:10px;background:#fff;border-radius:16px;padding:11px 14px;border-left:4px solid #F2A65A;margin-bottom:10px;box-shadow:0 6px 16px rgba(20,40,110,.06);animation:skRise .3s both;animation-delay:calc(var(--i,0)*60ms)}
+    .lvc-t{min-width:0;flex:1;font-size:13px;font-weight:700;color:#141B33}.lvc-t b{font-weight:900}.lvc-no{color:#C63A4A;font-weight:800}.lvc-t small{display:block;font-size:10.5px;font-weight:700;color:#8A93A8;margin-top:2px}
+    .lvc-p{display:flex;flex:none}.lvc-p .tk-av{width:28px!important;height:28px!important;box-shadow:0 0 0 2px #fff}.lvc-p .tk-av+.tk-av{margin-left:-8px}
+    body.dark-mode .lvc{background:#151a22}body.dark-mode .lvc-t{color:#fff}
     /* v335 admin tools: one list, a back button on what opens */
     html body .a2-acts{display:block!important;background:#fff;border-radius:18px;padding:2px 14px;box-shadow:0 10px 26px rgba(20,40,110,.08);margin-top:12px}
     html body .a2-act{width:100%;display:grid!important;grid-template-columns:36px minmax(0,1fr) auto;grid-template-areas:"i t a" "i s a";align-items:center;gap:0 12px;text-align:left!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:none!important;padding:11px 0!important;min-height:0!important}
@@ -8391,6 +8391,36 @@ window.addEventListener('load',function(){
     .a2-bk button{width:38px;height:38px;border-radius:12px;border:0;background:#fff;box-shadow:0 4px 12px rgba(20,40,110,.1);display:grid;place-items:center;cursor:pointer;flex:none}
     .a2-bk svg{width:20px;height:20px;fill:none;stroke:#203C8E;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
     body.dark-mode .a2-acts{background:#151a22!important}body.dark-mode .a2-act+.a2-act{border-color:#2a313c!important}body.dark-mode .a2-bk b{color:#fff}body.dark-mode .a2-bk button{background:#151a22}body.dark-mode .a2-bk svg{stroke:#fff}
+    /* v336 latest day: gold with a little depth, a gold glow around, no "Latest" word */
+    .dcH-l,.dc-hij em{display:none!important}
+    @media (max-width:1099px){html body #dxBody .dc-card.dcH.latest{border-color:#E2B874!important;box-shadow:0 0 0 2px #E2B874,0 0 18px rgba(226,184,116,.6),0 12px 24px rgba(20,40,110,.14)!important}
+      html body #dxBody .dc-card.dcH.latest>.dcH-h{background:linear-gradient(180deg,#FBE7B0 0%,#E9C27C 45%,#C08A35 100%)!important;box-shadow:inset 0 1.5px 0 rgba(255,255,255,.75),inset 0 -2px 0 rgba(120,80,20,.3)!important;text-shadow:0 1px 0 rgba(255,255,255,.45)}}
+    /* v336 results: the whole Hijri date fits, in small type */
+    @media (max-width:1099px){html body #dxBody .dcH-h>span{font-size:9.5px!important;overflow:visible!important;text-overflow:clip!important;flex:0 0 auto;letter-spacing:-.01em}
+      html body #dxBody .dcH-h{gap:6px!important;padding-left:12px!important;padding-right:10px!important}html body #dxBody .dcH-h>b{font-size:13px!important}
+      html body #dxBody .dcH-h .dcH-ac2{font-size:11px!important;padding:2px 7px!important}html body #dxBody .dcH-h>i{font-size:11px!important;padding:2px 7px!important}}
+    /* v336 about: Goldline Studio back on the right, a little higher */
+    html body .ab3-glt{left:auto!important;right:16px!important;transform:none!important;top:calc(12px + env(safe-area-inset-top,0px))!important}
+    /* v336 leave: a small Open / Frozen filter */
+    .lv-row{display:flex;margin-bottom:10px}.lv-seg{display:inline-flex;gap:2px;background:#eef1f7;border-radius:14px;padding:4px}
+    .lv-seg button{border:0;background:none;border-radius:11px;padding:7px 14px;font:inherit;font-size:12px;font-weight:800;color:#4b5263;cursor:pointer}.lv-seg button.on{background:#203c8e;color:#fff}.lv-seg button:disabled{cursor:default}
+    body.dark-mode .lv-seg{background:#1a1f29}
+    /* v336 filters in the same sliding style as Team / My Tasks / Builder / Leave */
+    html body :is(.act-seg,.sal-seg,.ad-when,.lv-seg).gslA{background:#eef1f7!important;border-radius:14px!important;padding:4px!important;gap:2px!important;border:0!important}
+    html body :is(.act-seg,.sal-seg,.ad-when,.lv-seg).gslA>*:not(.gsl-pill){background:transparent!important;border-color:transparent!important;box-shadow:none!important}
+    html body #adminOverlay .act-seg.gslA::before{display:none!important}html body #adminOverlay .act-seg.gslA>button.on{color:#fff!important}
+    body.dark-mode :is(.act-seg,.sal-seg,.ad-when,.lv-seg).gslA{background:#1a1f29!important}
+    /* v336 activity: Clear all beside This month / Days */
+    .act-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.act-top>.act-rg{margin:0!important}
+    .act-clr{margin-left:auto;display:inline-flex;align-items:center;gap:5px;border:1.5px solid #F3C9CF;background:#FFF5F6;color:#C63A4A;border-radius:99px;padding:6px 11px;font:inherit;font-size:11.5px;font-weight:900;cursor:pointer}.act-clr .aic{width:14px;height:14px}
+    /* v336 tools: one title on top with its icon */
+    html body .a2-solo .a2-sheet .ad-h,html body .a2-solo .sal-h>b{display:none!important}
+    html body .a2-solo .a2-sheet{margin-top:10px}
+    .a2-bi{width:34px;height:34px;border-radius:11px;background:#E8EDFB;color:#203C8E;display:grid;place-items:center;position:relative;flex:none}.a2-bi .aic{width:18px;height:18px}
+    /* v336 icons in the house style: navy line icon, a gold dot */
+    html body .a2-act>span{background:#E8EDFB!important;position:relative}html body .a2-act>span i{color:#203C8E!important}
+    html body .a2-act>span:after,.a2-bi:after{content:"";position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:#E2B874;box-shadow:0 0 0 2px #fff}
+    body.dark-mode .a2-act>span,body.dark-mode .a2-bi{background:#1f2a4a!important}body.dark-mode .a2-act>span i,body.dark-mode .a2-bi{color:#C9D3F5!important}
 </style>
 </head>
 <body>
@@ -11023,7 +11053,7 @@ function renderExtraTab(d){
 let DAY_VIEW='plan', DAY_OPEN='';
 // v192 The same sliding blue pill with a gold shine on every tab group: it follows the button marked .on,
 // and keeps its last place per group so it glides even when the group is drawn again.
-const GSL_SEL=['.py-seg','#weeklyTabs','.wly-ms','.phr-tabs','.stp-sw2','#monthsPanel .mx-mode','.ss-fs','.tk-views','.tk-weeks','.nf-fs','.st-chips','.st-sort'];
+const GSL_SEL=['.act-seg','.sal-seg','.ad-when','.lv-seg','.py-seg','#weeklyTabs','.wly-ms','.phr-tabs','.stp-sw2','#monthsPanel .mx-mode','.ss-fs','.tk-views','.tk-weeks','.nf-fs','.st-chips','.st-sort'];
 // v212 a filter only slides (and shines) right after a tap on that same filter; any other redraw puts the pill in place without a move
 let GSL_TAP={sel:'',t:0};
 document.addEventListener('pointerdown',e=>{const t=e.target;if(!t||!t.closest)return;const sel=GSL_SEL.find(q=>t.closest(q));if(sel)GSL_TAP={sel,t:Date.now()}},true);
@@ -11647,6 +11677,7 @@ function noEmoji(t){return String(t||'').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\
 function fcFold(k){FC_OPEN=mxWide()?k:FC_OPEN===k?'':k;fcDraw()}
 // v204 a white shine crosses the Forecast card once when the tab (or the Forecast view) opens
 var FC_SHINE=1;
+document.addEventListener('pointerdown',e=>{const t=e.target;if(t&&t.closest&&t.closest('#labForecast')&&t.closest('button')&&FC_VIEW==='forecast')FC_SHINE=1},true);
 function fcShineGo(){if(!FC_SHINE)return;const h=document.querySelector('#labForecast .fc-hero');if(!h)return;FC_SHINE=0;if(!motionOn())return;h.classList.remove('shn');void h.offsetWidth;h.classList.add('shn')}
 const fcPct=v=>v==null?'—':Math.round(v*100)+'%';
 const fcK=v=>v==null?'—':cs()+fmt(cx(v)/1000,0)+'k';
@@ -14704,7 +14735,7 @@ function renderAdmin(d){
  else if(ADMIN_VIEW==='people')body=peopleView;
  else if(ADMIN_VIEW==='server')body=`<div class="a2-sheet">${adminServerHtml()}</div>`;
  else body=`<div class="a2-acts">${act('app',`<i style="font-style:normal;display:grid;color:${m.on?'#c63a4a':'#13894f'}">${aI('power')}</i>`,m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('message',`<i style="font-style:normal;display:grid;color:#203c8e">${aI('mega')}</i>`,'#e9eefc','Team message',annState)}${act('invite',`<i style="font-style:normal;display:grid;color:#a56a06">${aI('userplus')}</i>`,'#fff3dc','Invite','Add someone')}${act('activity',`<i style="font-style:normal;display:grid;color:#13894f">${aI('chart')}</i>`,'#e3f6ec','Activity','Who uses what')}${act('reading',`<i style="font-style:normal;display:grid;color:#13894f">${aI('sheet')}</i>`,'#e3f6ec','Reading the sheets',RW.data&&RW.data.window?(RW.data.window.on?rw12(RW.data.window.from)+' – '+rw12(RW.data.window.to):'All day'):'When to read')}${act('seasons',`<i style="font-style:normal;display:grid;color:#7a46d6">${aI('cal')}</i>`,'#f1eaff','Season alerts',SAL.data&&SAL.data.next?(()=>{const n=SAL.data.next.filter(x=>x.sendOn).sort((a,b)=>a.sendOn<b.sendOn?-1:1)[0];return n?'Next · '+salD(n.sendOn):'Days before each season'})():'Days before each season')}${ACCESS_PROFILE&&ACCESS_PROFILE.owner?act('perms',`<i style="font-style:normal;display:grid;color:#203c8e">${aI('lock')}</i>`,'#e9eefc','Permissions','Who can use what'):''}</div>${ADMIN_TAB==='server'?'':sheet}`;
- if(body.startsWith('<div class="a2-acts">')&&ADMIN_TAB&&ADMIN_TAB!=='server'&&sheet)body=`<div class="a2-bk"><button type="button" onclick="adminBack()" aria-label="Back to tools"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><b>${esc(({app:'App status',message:'Team message',invite:'Invite',activity:'Activity',reading:'Reading the sheets',seasons:'Season alerts',perms:'Permissions'})[ADMIN_TAB]||'Tools')}</b></div>${sheet}`;
+ if(body.startsWith('<div class="a2-acts">')&&ADMIN_TAB&&ADMIN_TAB!=='server'&&sheet)body=`<div class="a2-solo"><div class="a2-bk"><button type="button" onclick="adminBack()" aria-label="Back to tools"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><span class="a2-bi">${aI(({app:'power',message:'mega',invite:'userplus',activity:'chart',reading:'sheet',seasons:'cal',perms:'lock'})[ADMIN_TAB]||'chart')}</span><b>${esc(({app:'App status',message:'Team message',invite:'Invite',activity:'Activity',reading:'Reading the sheets',seasons:'Season alerts',perms:'Permissions'})[ADMIN_TAB]||'Tools')}</b></div>${sheet}</div>`;
  adminBody(tabs+`<div class="a3-body">${body}</div>`);
  const hd=document.querySelector('#adminOverlay .sk-modal-head'),tb=document.querySelector('.a3-tabs');if(hd&&tb)tb.style.top=hd.offsetHeight+'px';
 }
@@ -16116,15 +16147,13 @@ function tkLeaveHtml(){
  const off=people.map(p=>({p,l:tkOffToday(p.email)})).filter(x=>x.l);
  const first=n=>esc(String(n||'').split(' ')[0]);
  const day=esc(new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'}).toUpperCase());
- const nIn=Math.max(0,people.length-off.length), pc=people.length?Math.round(nIn/people.length*100):0;
- const stats=`<div class="lr3"><div class="lr3-r" style="--p:${pc}"><span>${nIn}/${people.length}</span></div>${off.length?`<div class="lr3-t"><b>${off.length} off today</b><small>${off.map(x=>first(x.p.name)).join(', ')}</small></div>`:''}
-   <button type="button" class="lr3-k${fr?' fr':''}" ${admin?'onclick="lvLockOpen()"':'disabled'} role="switch" aria-checked="${!fr}" aria-label="Leave open or frozen"><span>${fr?'Frozen':'Open'}</span><i></i></button></div>`;
+ const stats=`<div class="lv-row"><div class="lv-seg"><button type="button" class="${f.on?'':'on'}" ${admin?'onclick="lvSegGo(false)"':'disabled'}>Leave open</button><button type="button" class="${f.on?'on':''}" ${admin?'onclick="lvSegGo(true)"':'disabled'}>Frozen</button></div></div>`;
  const live=TK.month===tkMonthNow();
  const covers=off.length?off.map(({p,l},i)=>{const b=l.data.backup?tkPerson(l.data.backup):null;
    const n=live?tkTasksFor(p.email,tkWeekOf(tkToday().d)).filter(tkIsToday).length:0;
-   return `<div class="lc2" style="--i:${i}"><div class="lc2-t"><div><b>${first(p.name)}</b> is off · ${b?`<b>${first(b.name)}</b> covers`:'<span class="lc2-no">no backup</span>'}</div>
+   return `<div class="lvc" style="--i:${i}"><div class="lvc-t"><div><b>${first(p.name)}</b> is off · ${b?`<b>${first(b.name)}</b> covers`:'<span class="lvc-no">no backup</span>'}</div>
     <small>${n?`${n} task${n===1?'':'s'} ${b?`move${n===1?'s':''} to ${first(b.name)}`:`need${n===1?'s':''} a backup`} today`:'Nothing to hand over today'}</small></div>
-    <div class="lc2-p">${tkAv(p)}${b?tkAv(b):''}</div></div>`}).join('')
+    <div class="lvc-p">${tkAv(p)}${b?tkAv(b):''}</div></div>`}).join('')
    :`<div class="lc-cv lc-all"><small>TODAY · ${day}</small><b>✓ Everyone is working today</b></div>`;
  const freeze=`<div class="lc-fz"><span class="lp-im" role="img" aria-label="Moon and sheep"></span><button type="button" class="lp-ft" ${admin?'onclick="tkFreezeEdit()"':''}><b>Freeze leave for a season</b><small>${fr?'On now':'Off now'}</small></button>
    <button type="button" class="lp-tg dk${f.on?' on':''}" ${admin?'onclick="tkFreezeToggle(this)"':'disabled'} role="switch" aria-checked="${!!f.on}" aria-label="Freeze leave now"><i></i></button></div>`;
@@ -16147,6 +16176,7 @@ function tkLeaveHtml(){
 // v207 "Change" on the Leave tile: a window in the middle of a blurred page, one picture with an Open | Frozen switch,
 // "Notify the team" (on by default, can be ticked off) and Save.
 const LV={pick:false,notify:true};
+function lvSegGo(v){const f=(TK.data&&TK.data.freeze)||{};if(!!f.on===v)return;lvLockOpen();try{lvPick(v)}catch(e){}}
 function lvLockOpen(){
  const f=(TK.data&&TK.data.freeze)||{};LV.now=!!f.on;LV.pick=LV.now;LV.notify=true;
  document.getElementById('lvLock')?.remove();
@@ -17971,7 +18001,7 @@ function hoursText(sec){sec=Math.round(sec||0);const h=Math.floor(sec/3600),m=Ma
 function adminActivityHtml(){
  const rg=ADMIN_ACT_RANGE!=='month'&&actRange(), per=rg&&rg.from!==rg.to?actRangeLbl():actRangeLbl();
  const pills=`<div class="act-rg"><button type="button" class="${ADMIN_ACT_RANGE==='month'?'on':''}" onclick="actRangeGo('month')">This month</button><button type="button" class="${ADMIN_ACT_RANGE==='days'||ACT_CAL.open?'on':''}" onclick="actRangeGo('days')">${aI('cal')}${ADMIN_ACT_RANGE==='days'?esc(actRangeLbl()):'Days'}</button></div>`;setTimeout(actCalSync,0);
- const a=rg?(ADMIN_ACT_R||(ADMIN_ACT_RBUSY?null:null)):ADMIN_ACTIVITY, head=`<b class="ad-h">${aI('chart')}Activity</b>${pills}`;
+ const a=rg?(ADMIN_ACT_R||(ADMIN_ACT_RBUSY?null:null)):ADMIN_ACTIVITY, head=`<b class="ad-h">${aI('chart')}Activity</b><div class="act-top">${pills}<button type="button" class="act-clr" onclick="adminResetAllActivity(this)">${aI('undo')}Clear all</button></div>`;
  if(!a)return head+'<div class="sk-admin-empty">Loading…</div>';
  if(a.error)return head+`<div class="sk-admin-empty">${esc(a.error)}</div>`;
  const v=ADMIN_ACT_VIEW, seg=(k,l)=>`<button type="button" class="${v===k?'on':''}" onclick="actView('${k}')">${l}</button>`;
@@ -18013,6 +18043,12 @@ function shLeaderboard(s){
      ${rgd?'':`<div class="shl-days">${Array.from({length:dim},(_,d)=>{const k=s.month+'-'+String(d+1).padStart(2,'0'),n=(p.days||{})[k]||0;return `<i title="${d+1}"><u style="height:${n?Math.max(14,n/mx*100):0}%"></u></i>`}).join('')}</div>
      <div class="shl-dl"><span>1</span><span>${dim}</span></div>`}
      ${p.last?`<small class="shl-last">Last shared ${esc(timeAgo(p.last,Date.now()))}</small>`:''}</div>`:''}</div>`}).join('')}</div>`;
+}
+async function adminResetAllActivity(btn){
+ if(!await askSekna({title:'Clear all activity?',text:'This resets shares, app opens and time in the app to zero for everyone. This cannot be undone.',ok:'Clear all'}))return;
+ if(btn){btn.disabled=true;btn.textContent='Clearing…'}
+ try{for(const k of ['shares','opens','time'])await serverCall('adminResetActivity',getAccessToken(),k);ADMIN_ACTIVITY=null;ADMIN_ACT_R=null;adminLoadExtra('activity');if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+ catch(err){if(btn)btn.disabled=false;tellSekna(errorText(err))}
 }
 async function adminResetActivity(kind,btn){
  const names={shares:'all WhatsApp share counts',opens:'all app-open counts',time:'all time in the app'};
