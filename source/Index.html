@@ -8206,6 +8206,17 @@ window.addEventListener('load',function(){
     .tour[data-i="3"] .tour-gl svg .gl{stroke-dashoffset:0;transition-delay:.9s}
     .tour-gl b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:24px;line-height:1}.tour-gl b em{font-style:normal;color:#e2b874}
     .tour-gl i{font-style:normal;font-size:8.5px;font-weight:800;letter-spacing:.4em;color:#c9d3f5;align-self:flex-end;margin-bottom:3px}
+    /* v327 Media plan: days that have not started yet wear a softer, lighter blue header */
+    html body #dxBody .dc-card.dcH.fut>.dcH-h{background:linear-gradient(135deg,#5B7FD9,#4567C4)!important}
+    html body #dxBody .dc-card.dcH.fut>.dcH-h i{background:rgba(255,255,255,.22)!important}
+    html body #dxBody .dc-card.dcH.fut{border-color:#d6e0f7!important}
+    /* v327 Lab: crisp motion, short fades only (no sliding rows, no long shines) */
+    html body #labPanel .fc-accb>*,html body #labPanel .fc-accb .fc-wk,html body #labPanel .fc-accb .as-tr{animation:lbFade .14s ease-out both!important;animation-delay:0s!important}
+    html body #labPanel .fc-accb .fc-bar i{animation:none!important}
+    html body #labPanel .fc-hero.shn:after,html body #labPanel .fcP-pill.shine:after,html body #labPanel .gsl-pill.shine:after{animation:none!important;display:none!important}
+    html body #labPanel .fc-top.fcP.fcP-in>button,html body #labPanel .fc-top.fcP.fcP-in>.fcP-pill{animation:lbFade .16s ease-out both!important;animation-delay:0s!important}
+    html body #labPanel .fc-acc,html body #labPanel .fc-acc *{transition-duration:.12s!important}
+    @keyframes lbFade{from{opacity:0}}
 </style>
 </head>
 <body>
