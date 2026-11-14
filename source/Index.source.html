@@ -8635,6 +8635,9 @@ window.addEventListener('load',function(){
     .wl-skip{border:0;background:none;color:#C9D3F5;font:inherit;font-size:13px;font-weight:800;padding:8px;cursor:pointer;align-self:center}
     /* v369 welcome: the first, name and last screens sit in the middle */
     html body .wl-sl.low{padding-top:calc(30px + env(safe-area-inset-top,0px))}html body .wl-sl.low>:first-child{margin-top:auto!important}
+    /* v370 Settings: no version line; Done sits above the bottom bar on phones */
+    html body #stVer{display:none!important}
+    @media (max-width:1099px){html body #settingsOverlay .sk-primary-btn{margin:16px 16px calc(118px + env(safe-area-inset-bottom,0px))!important}}
 </style>
 </head>
 <body>
