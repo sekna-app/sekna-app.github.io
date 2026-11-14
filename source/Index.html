@@ -8490,6 +8490,16 @@ window.addEventListener('load',function(){
     .ao-ev>i{width:12px;height:12px;border-radius:50%;flex:none;margin-top:3px;background:#3d6bff;box-shadow:0 0 0 3px #E8EDFB}.ao-ev>i.w{background:#E2B874;box-shadow:0 0 0 3px #FDF1D8}.ao-ev>i.g{background:#2FCB86;box-shadow:0 0 0 3px #E3F6EC}.ao-ev>i.r{background:#C63A4A;box-shadow:0 0 0 3px #FBDDE1}
     .ao-ev b{display:block;font-size:12.5px;font-weight:900;color:#141B33}.ao-ev small{font-size:10.5px;font-weight:700;color:#8a93a8}
     body.dark-mode .ao-ev b{color:#fff}body.dark-mode .ao-ev:before{border-color:#2a313c}
+    /* v352 admin People: team cards */
+    .pp-w{background:linear-gradient(135deg,#FFF8E8,#FDF1D8);border:1.5px solid #F3D58E;border-radius:18px;padding:14px;margin-bottom:10px}
+    .pp-wt{display:flex;align-items:center;gap:12px}.pp-wt b{display:block;font-size:14px;font-weight:900;color:#141B33}.pp-wt small{display:block;font-size:11px;font-weight:700;color:#8a6a2a;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px}
+    .pp-wa{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+    .pp-c{background:#fff;border-radius:18px;padding:12px 14px;margin-bottom:10px;box-shadow:0 6px 16px rgba(20,40,110,.07);border:1.5px solid transparent;transition:border-color .2s}.pp-c.open{border-color:#D6DFF5}
+    .pp-ct{display:flex;align-items:center;gap:12px}.pp-ct .sk-person-avatar{width:44px!important;height:44px!important}
+    .pp-m{min-width:0;flex:1}.pp-m b{display:block;font-size:14px;font-weight:900;color:#141B33;margin-bottom:4px}.pp-m small{display:block;font-size:10.5px;font-weight:700;color:#8a93a8;margin-top:4px}
+    .pp-mm{flex:none;width:36px;height:36px;border-radius:12px;border:0;background:#F1F3F8;color:#6B7385;font-size:18px;font-weight:900;cursor:pointer;line-height:1}.pp-c.open .pp-mm{background:#203C8E;color:#fff}
+    .pp-acts{margin-top:10px;padding-top:10px;border-top:1px solid #EDF0F6}.pp-acts>small{display:block;font-size:11px;font-weight:700;color:#8a93a8;margin-bottom:8px}.pp-acts>div{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+    body.dark-mode .pp-c{background:#151a22}body.dark-mode .pp-m b,body.dark-mode .pp-wt b{color:#fff}body.dark-mode .pp-mm{background:#1b212b;color:#c6ccd8}body.dark-mode .pp-acts{border-color:#2a313c}
 </style>
 </head>
 <body>
@@ -14755,6 +14765,15 @@ function renderAdmin(d){
  const tabs=`<div class="a3-tabs">${[['overview','Overview'],['people','People'+(waiting.length?` · ${waiting.length}`:'')],['tools','Tools'],['server','Server']].map(([k,l])=>`<button type="button" class="${ADMIN_VIEW===k?'on':''}" onclick="adminView('${k}')">${l}</button>`).join('')}</div>`;
  const peopleView=`${waiting.length?`<div class="ad-lbl">Waiting for approval</div><div class="ad-card ad-pend">${waiting.map(person).join('')}</div>`:''}
    <div class="ad-lbl">People · ${team.length}</div><div class="ad-card">${team.map(person).join('')||'<div class="sk-admin-empty">No one has requested access yet.</div>'}</div>`;
+ 
+ const pAv=p=>onDot(`<span class="sk-person-avatar has-emb">${personAv(memberOf(p.email).avatar,p.name)}</span>`,p.last);
+ const waitCard=p=>`<div class="pp-w"><div class="pp-wt">${pAv(p)}<div><b>${esc(p.name)}</b><small>${esc(p.email)} · ${seenHtml(p.last,now)}</small></div></div>
+   <div class="pp-wa">${personActions(p)}<button class="sk-mini-btn ghost" type="button" onclick="adminEditMember('${esc(p.email)}')">${ADMIN_EDIT===p.email?'Done':'Set position'}</button></div></div>${ADMIN_EDIT===p.email?memberEditor(p):''}`;
+ const teamCard=p=>{const open=ADMIN_MENU===p.email;return `<div class="pp-c${open?' open':''}"><div class="pp-ct">${pAv(p)}<div class="pp-m"><b>${esc(p.name)}</b>${roleBadge(memberOf(p.email).role)}<small class="sk-seen">${seenHtml(p.last,now)}</small></div>
+   <button type="button" class="pp-mm" onclick="adminMenu('${esc(p.email)}')" aria-label="Actions for ${esc(p.name)}" aria-expanded="${open}">⋯</button></div>
+   ${open?`<div class="pp-acts"><small>${esc(p.email)}</small><div>${statusChip(p.status)}${personActions(p)}<button class="sk-mini-btn ghost" type="button" onclick="adminEditMember('${esc(p.email)}')">${ADMIN_EDIT===p.email?'Done':'Position'}</button></div></div>`:''}</div>${ADMIN_EDIT===p.email?memberEditor(p):''}`};
+ const peopleView2=`${waiting.length?`<div class="ad-lbl">Waiting · ${waiting.length}</div>${waiting.map(waitCard).join('')}`:''}
+   <div class="ad-lbl">Team · ${team.length}</div>${team.map(teamCard).join('')||'<div class="sk-admin-empty">No one has requested access yet.</div>'}`;
  let body='';
  if(ADMIN_VIEW==='overview'){
    if(!ADMIN_OV_LOADED){ADMIN_OV_LOADED=true;adminLoadExtra('activity');if(!SRV_ADMIN.events)srvLoad()}
@@ -14780,7 +14799,7 @@ function renderAdmin(d){
      ${op&&op.people.length?`<div class="ao-pp">${op.people.slice(0,4).map(p=>`<span>${esc(String(p.name).split(' ')[0])} <b>${p.n}</b></span>`).join('')}</div>`:a&&a.error?`<small class="adc-e">${esc(a.error)}</small>`:''}</div>`;
    body=`${adc}${recent}`;
  }
- else if(ADMIN_VIEW==='people')body=peopleView;
+ else if(ADMIN_VIEW==='people')body=peopleView2;
  else if(ADMIN_VIEW==='server')body=`<div class="a2-sheet">${adminServerHtml()}</div>`;
  else body=`<div class="a2-acts">${act('invite',`<i style="font-style:normal;display:grid;color:#a56a06">${aI('userplus')}</i>`,'#fff3dc','Invite','Add someone')}${ACCESS_PROFILE&&ACCESS_PROFILE.owner?act('perms',`<i style="font-style:normal;display:grid;color:#203c8e">${aI('lock')}</i>`,'#e9eefc','Permissions','Who can use what'):''}${act('activity',`<i style="font-style:normal;display:grid;color:#13894f">${aI('chart')}</i>`,'#e3f6ec','Activity','Who uses what')}${act('message',`<i style="font-style:normal;display:grid;color:#203c8e">${aI('mega')}</i>`,'#e9eefc','Team message',annState)}${act('app',`<i style="font-style:normal;display:grid;color:${m.on?'#c63a4a':'#13894f'}">${aI('power')}</i>`,m.on?'#fde7e5':'#e3f6ec','App status',m.on?'Maintenance':'Live')}${act('reading',`<i style="font-style:normal;display:grid;color:#13894f">${aI('sheet')}</i>`,'#e3f6ec','Reading the sheets',RW.data&&RW.data.window?(RW.data.window.on?rw12(RW.data.window.from)+' – '+rw12(RW.data.window.to):'All day'):'When to read')}${act('seasons',`<i style="font-style:normal;display:grid;color:#7a46d6">${aI('cal')}</i>`,'#f1eaff','Season alerts',SAL.data&&SAL.data.next?(()=>{const n=SAL.data.next.filter(x=>x.sendOn).sort((a,b)=>a.sendOn<b.sendOn?-1:1)[0];return n?'Next · '+salD(n.sendOn):'Days before each season'})():'Days before each season')}</div>${ADMIN_TAB==='server'?'':sheet}`;
  if(body.startsWith('<div class="a2-acts">')&&ADMIN_TAB&&ADMIN_TAB!=='server'&&sheet)body=`<div class="a2-solo"><div class="a2-bk"><button type="button" onclick="adminBack()" aria-label="Back to tools"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><span class="a2-bi">${aI(({app:'power',message:'mega',invite:'userplus',activity:'chart',reading:'sheet',seasons:'cal',perms:'lock'})[ADMIN_TAB]||'chart')}</span><b>${esc(({app:'App status',message:'Team message',invite:'Invite',activity:'Activity',reading:'Reading the sheets',seasons:'Season alerts',perms:'Permissions'})[ADMIN_TAB]||'Tools')}</b></div>${sheet}</div>`;
@@ -14804,6 +14823,8 @@ function personActions(p){
  return out;
 }
 function memberOf(email){return ((ADMIN_LAST&&ADMIN_LAST.members)||{})[email]||{}}
+let ADMIN_MENU='';
+function adminMenu(email){ADMIN_MENU=ADMIN_MENU===email?'':email;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function adminEditMember(email){ADMIN_EDIT=ADMIN_EDIT===email?'':email;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function memberEditor(p){
  const cur=memberOf(p.email).role||'', curAv=+memberOf(p.email).avatar||0;
