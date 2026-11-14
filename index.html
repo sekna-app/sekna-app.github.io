@@ -8690,6 +8690,17 @@ window.addEventListener('load',function(){
     .idc-g button{border:0;background:none;padding:0;border-radius:50%;cursor:pointer;line-height:0;opacity:.85}.idc-g button.on{opacity:1;box-shadow:0 0 0 2px #fff,0 0 0 4px #203C8E}
     .idc-g .sk-emb,.idc-g svg{width:100%;height:100%;display:block}
     body.dark-mode .idc-f{background:#1b212b}body.dark-mode .idc-f>.on{background:#232a36;color:#fff}body.dark-mode .idc-pic{box-shadow:0 0 0 4px #151a22}body.dark-mode .idc-me b{color:#fff}
+    /* v356 your picture: a smaller avatar row; the crop window */
+    html body .idc-g{display:flex!important;gap:8px!important;overflow-x:auto;scrollbar-width:none;padding:5px 14px 14px!important}html body .idc-g::-webkit-scrollbar{display:none}
+    html body .idc-g button{flex:0 0 44px;width:44px;height:44px}
+    .avc{position:fixed;inset:0;z-index:2147483000;background:rgba(10,18,56,.62);backdrop-filter:blur(6px);display:grid;place-items:center;padding:16px}
+    .avc-md{width:min(340px,100%);background:#fff;border-radius:22px;padding:18px;box-shadow:0 24px 60px rgba(0,0,0,.35);text-align:center}
+    .avc-md>b{display:block;font-size:17px;font-weight:900;color:#141B33}.avc-md>small{display:block;font-size:12px;font-weight:700;color:#8a93a8;margin-top:3px}
+    .avc-vp{position:relative;width:min(260px,72vw);aspect-ratio:1;margin:14px auto 0;border-radius:50%;overflow:hidden;background:#0d1430;touch-action:none;cursor:grab;box-shadow:0 0 0 3px #E2B874}
+    .avc-vp img{position:absolute;left:50%;top:50%;max-width:none;user-select:none;-webkit-user-drag:none;pointer-events:none}
+    .avc-z{display:flex;align-items:center;gap:10px;margin-top:14px;font-weight:900;color:#203C8E}.avc-z input{flex:1;accent-color:#203C8E}
+    .avc-a{display:flex;gap:8px;margin-top:14px}.avc-a button{flex:1;border:0;border-radius:12px;padding:11px;font:inherit;font-size:13px;font-weight:900;background:#EEF1F7;color:#141B33;cursor:pointer}.avc-a .p{background:linear-gradient(135deg,#3d6bff,#203c8e);color:#fff}
+    body.dark-mode .avc-md{background:#151a22}body.dark-mode .avc-md>b{color:#fff}body.dark-mode .avc-a button:not(.p){background:#1b212b;color:#fff}
 </style>
 </head>
 <body>
@@ -17042,12 +17053,45 @@ async function myAvSet(v,btn){
  try{const r=await serverCall('setMyAvatar',getAccessToken(),v);ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE||{},{member:(r&&r.member)||{}});updateProfileUI();myAvDraw();showSettingsToast('Saved')}
  catch(err){if(btn)btn.disabled=false;showSettingsToast(errorText(err))}
 }
+
+let AVC=null;
 function myAvFile(inp){
  const f=inp.files&&inp.files[0];inp.value='';if(!f)return;
  const url=URL.createObjectURL(f),img=new Image();
- img.onload=()=>{const c=document.createElement('canvas');c.width=c.height=160;const m=Math.min(img.naturalWidth,img.naturalHeight);
-  c.getContext('2d').drawImage(img,(img.naturalWidth-m)/2,(img.naturalHeight-m)/2,m,m,0,0,160,160);URL.revokeObjectURL(url);myAvSet(c.toDataURL('image/jpeg',.82))};
+ img.onload=()=>myCropOpen(img,url);
  img.onerror=()=>{URL.revokeObjectURL(url);showSettingsToast('That photo could not be read')};img.src=url;
+}
+function myCropOpen(img,url){
+ document.getElementById('avCrop')?.remove();
+ const o=document.createElement('div');o.id='avCrop';o.className='avc';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Crop your photo');
+ o.innerHTML=`<div class="avc-md"><b>Move and zoom</b><small>Drag the photo. Use the slider or two fingers to zoom.</small>
+  <div class="avc-vp" id="avcVp"><img id="avcImg" src="${url}" alt="" draggable="false"><i></i></div>
+  <div class="avc-z"><span>−</span><input type="range" id="avcZ" min="1" max="4" step="0.01" value="1" oninput="AVC.z=+this.value;myCropApply()"><span>+</span></div>
+  <div class="avc-a"><button type="button" onclick="myCropClose()">Cancel</button><button type="button" class="p" onclick="myCropSave(this)">Save</button></div></div>`;
+ document.body.appendChild(o);
+ const vp=document.getElementById('avcVp'),V=vp.clientWidth;
+ AVC={img,url,V,base:V/Math.min(img.naturalWidth,img.naturalHeight),z:1,x:0,y:0,pts:{}};
+ const pd=e=>{vp.setPointerCapture(e.pointerId);AVC.pts[e.pointerId]={x:e.clientX,y:e.clientY};AVC.pinch=null},
+  pm=e=>{const a=AVC.pts[e.pointerId];if(!a)return;const ids=Object.keys(AVC.pts);
+   if(ids.length>=2){a.x=e.clientX;a.y=e.clientY;const[p1,p2]=ids.map(k=>AVC.pts[k]),d=Math.hypot(p1.x-p2.x,p1.y-p2.y);if(AVC.pinch){AVC.z=Math.max(1,Math.min(4,AVC.z*d/AVC.pinch));document.getElementById('avcZ').value=AVC.z}AVC.pinch=d}
+   else{AVC.x+=e.clientX-a.x;AVC.y+=e.clientY-a.y;a.x=e.clientX;a.y=e.clientY}myCropApply()},
+  pu=e=>{delete AVC.pts[e.pointerId];AVC.pinch=null};
+ vp.addEventListener('pointerdown',pd);vp.addEventListener('pointermove',pm);vp.addEventListener('pointerup',pu);vp.addEventListener('pointercancel',pu);
+ vp.addEventListener('wheel',e=>{e.preventDefault();AVC.z=Math.max(1,Math.min(4,AVC.z*(e.deltaY<0?1.06:.94)));document.getElementById('avcZ').value=AVC.z;myCropApply()},{passive:false});
+ myCropApply();
+}
+function myCropApply(){
+ const A=AVC;if(!A)return;const k=A.base*A.z,w=A.img.naturalWidth*k,h=A.img.naturalHeight*k,mx=Math.max(0,(w-A.V)/2),my=Math.max(0,(h-A.V)/2);
+ A.x=Math.max(-mx,Math.min(mx,A.x));A.y=Math.max(-my,Math.min(my,A.y));
+ const el=document.getElementById('avcImg');if(el){el.style.width=w+'px';el.style.height=h+'px';el.style.transform=`translate(calc(-50% + ${A.x}px),calc(-50% + ${A.y}px))`}
+}
+function myCropClose(){const o=document.getElementById('avCrop');if(o)o.remove();if(AVC){URL.revokeObjectURL(AVC.url);AVC=null}}
+function myCropSave(btn){
+ const A=AVC;if(!A)return;const k=A.base*A.z,w=A.img.naturalWidth*k,h=A.img.naturalHeight*k,sw=A.V/k;
+ const sx=(w/2-A.V/2-A.x)/k,sy=(h/2-A.V/2-A.y)/k,c=document.createElement('canvas');c.width=c.height=200;
+ c.getContext('2d').drawImage(A.img,sx,sy,sw,sw,0,0,200,200);
+ if(btn){btn.disabled=true;btn.textContent='Saving…'}
+ const data=c.toDataURL('image/jpeg',.82);myCropClose();myAvSet(data);
 }
 function seenHtml(ms,now){
  return ms&&(now-ms)<5*60000?'<span class="sk-active">Active now</span>':'Last seen '+timeAgo(ms,now);
