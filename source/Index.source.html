@@ -8207,7 +8207,7 @@ window.addEventListener('load',function(){
     .tour-gl b{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:24px;line-height:1}.tour-gl b em{font-style:normal;color:#e2b874}
     .tour-gl i{font-style:normal;font-size:8.5px;font-weight:800;letter-spacing:.4em;color:#c9d3f5;align-self:flex-end;margin-bottom:3px}
     /* v327 Media plan: days that have not started yet wear a softer, lighter blue header */
-    html body #dxBody .dc-card.dcH.fut>.dcH-h{background:linear-gradient(135deg,#5B7FD9,#4567C4)!important}
+    html body #dxBody .dc-card.dcH.fut>.dcH-h{background:linear-gradient(135deg,#4466C8,#3253B0)!important}
     html body #dxBody .dc-card.dcH.fut>.dcH-h i{background:rgba(255,255,255,.22)!important}
     html body #dxBody .dc-card.dcH.fut{border-color:#d6e0f7!important}
     /* v327 Lab: crisp motion, short fades only (no sliding rows, no long shines) */
@@ -8217,6 +8217,41 @@ window.addEventListener('load',function(){
     html body #labPanel .fc-top.fcP.fcP-in>button,html body #labPanel .fc-top.fcP.fcP-in>.fcP-pill{animation:lbFade .16s ease-out both!important;animation-delay:0s!important}
     html body #labPanel .fc-acc,html body #labPanel .fc-acc *{transition-duration:.12s!important}
     @keyframes lbFade{from{opacity:0}}
+    /* v328 day vs last year: navy header with the date in a square */
+    .lyh{display:flex;align-items:center;gap:12px;margin:-2px 46px 12px 0;padding:12px 14px;border-radius:16px;color:#fff;background:radial-gradient(120% 220% at 0 0,#2C4FB8,#203C8E 60%,#132457)}
+    .lyh-d{flex:none;width:46px;height:50px;border-radius:12px;background:rgba(255,255,255,.14);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+    .lyh-d b{font-size:21px;font-weight:900}.lyh-d small{font-size:9px;font-weight:800;letter-spacing:.1em;color:#C9D3F5;margin-top:3px}
+    .lyh-t{min-width:0;display:flex;flex-direction:column;gap:3px}.lyh-t b{font-size:15px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lyh-t small{font-size:11.5px;font-weight:700;color:#C9D3F5;white-space:nowrap}
+    .lyh-p{margin-left:auto;flex:none;font-size:12.5px;font-weight:900;border-radius:99px;padding:4px 10px}.lyh-p.dn{background:rgba(255,154,166,.18);color:#FF9AA6}.lyh-p.up{background:rgba(126,240,185,.16);color:#7EF0B9}
+    /* v328 month: Spend / Conversions / Value rows shorter */
+    html body #channelPanel .ox-tiles.oxL>.ox-tile{padding:9px 0!important;row-gap:3px!important;grid-template-areas:"ic lbl pc" "ic val of" "ic bar bar"!important;grid-template-columns:36px minmax(0,1fr) auto!important}
+    html body #channelPanel .oxL .ox-of{align-self:end;margin:0 0 2px!important}
+    html body #channelPanel .ox-tiles.oxL .ox-tile>.ox-bar{margin-top:6px!important}
+    html body #channelPanel .oxL .ox-ic{width:30px!important;height:30px!important;border-radius:10px!important}
+    html body #channelPanel .oxL .ox-tile>b{font-size:16px!important}
+    /* v328 month: ROAS and Clicks side by side in one box, "of ..." under each */
+    .ox-rc{display:grid;grid-template-columns:1fr 1fr;margin-top:10px;border:1.5px solid #E6E9F2;border-radius:18px;background:#fff;box-shadow:0 6px 16px rgba(32,60,142,.07);overflow:hidden}
+    .ox-rc>.ox-cl.mc{margin:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:none!important;padding:10px 12px!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"t p";gap:6px;align-items:center}
+    .ox-rc>.ox-cl.mc+.ox-cl.mc{border-left:1px solid #E6E9F2!important}
+    .ox-rc>.ox-cl.mc[hidden]{display:none!important}.ox-rc:has(#mtdClkRow[hidden]){grid-template-columns:1fr}
+    .ox-rc>.ox-cl.mc>svg{display:none}.ox-rc>.ox-cl.mc:before,.ox-rc>.ox-cl.mc:after{display:none!important}
+    .ox-rc>.ox-cl.mc>span{grid-area:t;display:flex;flex-wrap:wrap;align-items:baseline;gap:0 5px;font-size:13px;color:#6B7385;font-weight:800;min-width:0}
+    .ox-rc>.ox-cl.mc>span>b{font-size:16px;color:#141B33}
+    .ox-rc>.ox-cl.mc>span>small{flex-basis:100%;font-size:11px;font-weight:700;color:#8A93A8;margin-top:2px}
+    .ox-rc>.ox-cl.mc>em{grid-area:p;margin:0!important;font-size:12px!important;padding:3px 9px!important}
+    .ox-rc .rc-l{grid-area:t}
+    body.dark-mode .ox-rc{background:#151a22;border-color:#2a313c}
+    /* v328 budget: the light platinum card, a square per day */
+    html body #mtdVarianceCard.vc{background:linear-gradient(135deg,#FFFFFF 0%,#EEF1F7 55%,#E3E8F2 100%)!important;color:#141B33!important;border:1px solid #DFE4EF;box-shadow:0 12px 28px rgba(20,40,110,.12)!important}
+    html body #mtdVarianceCard.vc:before,html body #mtdVarianceCard.vc:after{opacity:.35}
+    html body #mtdVarianceCard.vc .ox-lbl{color:#203C8E!important}
+    html body #mtdVarianceCard.vc #mtdVariance{color:#203C8E!important}
+    html body #mtdVarianceCard.vc .ox-hs,html body #mtdVarianceCard.vc>.ox-bar,html body #mtdVarianceCard.vc .vc-num,html body #mtdVarianceCard.vc .vc-foot{display:none!important}
+    .vcp-days{position:relative;z-index:1;display:grid;gap:3px;margin-top:16px}.vcp-days i{height:16px;border-radius:3px;background:#DCE2EE}.vcp-days i.s{background:#203C8E}.vcp-days i.t{background:#E2B874}
+    .vcp-ft{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:16px}
+    .vcp-ft small{display:block;font-size:9.5px!important;font-weight:900;letter-spacing:.12em;color:#8A93A8!important}.vcp-ft b{display:block;font-size:15px!important;font-weight:900;color:#141B33!important;margin-top:3px;font-variant-numeric:tabular-nums}
+    .vcp-ft .r{text-align:right}.vcp-ft .r small,.vcp-ft .r b{color:#B0812E!important}
+    html body #mtdVarianceCard.vc.over #mtdVariance{color:#C63A4A!important}
 </style>
 </head>
 <body>
@@ -8838,8 +8873,8 @@ window.addEventListener('load',function(){
         <div class="ox-tile oxL-ck" id="mtdClkTile"><span class="ox-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4l9 8-4 1-1 4-4-13z"/><path d="M15 15l4 4"/></svg></span><span class="ox-lbl">Clicks</span><b id="mtdClk">—</b><span class="ox-hs" id="mtdClkPlan">—</span>
           <div class="ox-bar"><span class="clicks" id="mtdClkBar"></span><em class="ox-tick" id="mtdClkTick"></em></div></div>
       </div>
-      <div class="ox-cl mc" id="mtdClicksRow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/></svg><span id="mtdRoasLine">ROAS <b id="mtdRoas">—</b> <small id="mtdRoasPlan"></small></span><em id="mtdClicksPct"></em></div>
-      <div class="ox-cl mc" id="mtdClkRow" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l9 8-4 1-1 4-4-13z"/><path d="M15 15l4 4"/></svg><span id="mtdClkLine">Clicks <b id="mtdClk2">—</b> <small id="mtdClkPlan2"></small></span><em id="mtdClkPct2"></em></div>
+      <div class="ox-rc"><div class="ox-cl mc" id="mtdClicksRow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/></svg><span id="mtdRoasLine">ROAS <b id="mtdRoas">—</b> <small id="mtdRoasPlan"></small></span><em id="mtdClicksPct"></em></div>
+      <div class="ox-cl mc" id="mtdClkRow" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l9 8-4 1-1 4-4-13z"/><path d="M15 15l4 4"/></svg><span id="mtdClkLine">Clicks <b id="mtdClk2">—</b> <small id="mtdClkPlan2"></small></span><em id="mtdClkPct2"></em></div></div>
 
       <div class="ox-legend" id="mtdTickLegend"><i></i><span>Black tick = expected by today</span></div>
     </section>
@@ -8873,6 +8908,7 @@ window.addEventListener('load',function(){
 <div class="ox-strip vc" id="mtdVarianceCard"><span class="vc-chip" aria-hidden="true"></span><div class="ox-sr"><div><span class="ox-lbl" id="mtdVarianceLabel">Budget remaining</span><b id="mtdVariance">—</b></div><span class="ox-hs" id="mtdVarianceSub">—</span></div>
         <div class="ox-bar"><span class="budget" id="mtdVarianceBar"></span></div>
         <div class="vc-num" id="vcSpent">•••• •••• SPENT —</div>
+        <div class="vcp-days" id="vcpDays" aria-hidden="true"></div><div class="vcp-ft"><div><small>SPENT</small><b id="vcpSpent">—</b></div><div><small>MONTH PLAN</small><b id="vcpPlan">—</b></div><div class="r"><small>PER DAY</small><b id="vcpDay">—</b></div></div>
         <div class="vc-foot"><div>MONTH PLAN<b id="vcPlan">—</b></div><div id="vcDay"></div><svg class="vc-wave" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8.5a5 5 0 0 1 0 7M11.5 6a8.5 8.5 0 0 1 0 12M15 3.5a12 12 0 0 1 0 17"/></svg></div>
 </div>
     </section>
@@ -10386,7 +10422,7 @@ function renderMtd(d){
  if(roasPlan){
    const delta=roasAch-1;
    roasPlan.innerHTML=Number(m.targetRoas)
-     ?`· target ${fmt(m.targetRoas,2)}x`:'';
+     ?`of ${fmt(m.targetRoas,2)}x`:'';
    const pc=document.getElementById('mtdClicksPct');if(pc){pc.textContent=Number(m.targetRoas)?`${delta>=0?'+':''}${percent(delta)}`:'';pc.className=delta>=0?'up':'dn'}
  }
 
@@ -10401,7 +10437,7 @@ function renderMtd(d){
   text('mtdClk',fmt(kA,0));oxHs('mtdClkPlan',kP?percent(kA/kP):'',kP?fmt(kP,0):'');setProgress('mtdClkBar',kP?kA/kP:0);
   const kt=document.getElementById('mtdClkTick');if(kt){kt.style.display=kP?'':'none';if(kP)kt.style.left=Math.min(100,kE/kP*100)+'%'}
   // v212 clicks as a line like ROAS (the tile in the list is hidden)
-  {const row=document.getElementById('mtdClkRow');if(row){row.hidden=!(kP||kA);text('mtdClk2',fmt(kA,0));const pl=document.getElementById('mtdClkPlan2');if(pl)pl.textContent=kP?`· plan ${fmt(kP,0)}`:'';
+  {const row=document.getElementById('mtdClkRow');if(row){row.hidden=!(kP||kA);text('mtdClk2',kA>=10000?(kA/1000).toFixed(1)+'k':fmt(kA,0));const pl=document.getElementById('mtdClkPlan2');if(pl)pl.textContent=kP?`of ${fmt(kP,0)}`:'';
     const e=document.getElementById('mtdClkPct2');if(e){const pc=pace==null?1:pace||1,r=kP?(kA/kP)/pc:null;e.textContent=kP?percent(kA/kP):'';e.className=r==null?'':r>=.95?'up':'dn'}}}
   if(tile){tile.classList.remove('st-g','st-a','st-r');const pc=pace==null?1:pace||1,r=kP?(kA/kP)/pc:null;if(r!=null&&isFinite(r))tile.classList.add('st-'+(r>=.95?'g':r>=.8?'a':'r'))}}
  text('mtdDayBadge',day&&dim?`Day ${day} of ${dim}`:'');
@@ -10437,6 +10473,11 @@ function renderMtd(d){
  text('vcSpent','•••• •••• SPENT '+((document.getElementById('mtdSpend')||{}).textContent||'—'));
  text('vcPlan',planSpend?money(planSpend):'—');
  text('vcDay',(typeof day!=='undefined'&&typeof dim!=='undefined'&&day&&dim)?`DAY ${day} OF ${dim}`:'');
+ // v328 platinum card: spent, plan, what to spend per day from here, and a square per day of the month
+ {const dd=typeof day!=='undefined'?day:0,dm=typeof dim!=='undefined'?dim:0,left=dm&&dd?Math.max(dm-dd,0):0;
+  text('vcpSpent',(document.getElementById('mtdSpend')||{}).textContent||'—');text('vcpPlan',planSpend?money(planSpend):'—');
+  text('vcpDay',remaining>0&&left?money(remaining/left):'—');
+  const g=document.getElementById('vcpDays');if(g&&dm){g.style.gridTemplateColumns=`repeat(${dm},minmax(0,1fr))`;g.innerHTML=Array.from({length:dm},(_,i)=>`<i class="${i<dd-1?'s':i===dd-1?'t':''}"></i>`).join('')}}
 
  const status=document.getElementById('mtdStatus');
  if(status){
@@ -10967,9 +11008,10 @@ function lyDays(days){
    const rows=[['Value',a.value,l.value,v=>money(v),1],['Spend',a.spend,l.spend,v=>money(v),0],['ROAS',a.spend?a.value/a.spend:null,l.spend?l.value/l.spend:null,v=>v==null?'—':fmt(v,2)+'x',1],
      ['Conversions',a.conversions,l.conversions,v=>fmt(v,0),1],['Clicks',a.clicks,l.extra?l.extra.clicks:null,v=>v==null?'—':fmt(v,0),1],
      ['Avg. donation',a.conversions?a.value/a.conversions:null,l.conversions?l.value/l.conversions:null,v=>v==null?'—':money(v,2),1]];
-   return `<div class="lyx-det lyx-det2"><div class="lyx-lyd">Last year: ${esc(shortDay(r.k).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'}))}</div><div class="lyx-dr hd"><span></span><b>This year</b><b>Last year</b><span></span></div>
+   return `<div class="lyx-det lyx-det2"><div class="lyx-dr hd"><span></span><b>This year</b><b>Last year</b><span></span></div>
     ${rows.map(([t,x,y,f,g])=>{const d=x!=null&&y?x/y-1:null,c=!g||d==null||Math.abs(d)<.005?'neutral':d>0?'good':'bad';return `<div class="lyx-dr"><span>${t}</span><b>${f(x)}</b><b class="m">${f(y)}</b>${mxArrow(d,c)}</div>`}).join('')}</div>`};
  const head=r=>{const x=r.x,d=r.a&&r.l&&r.l.value?r.a.value/r.l.value-1:null;
+   if(r.a&&r.l)return `<div class="lyh"><div class="lyh-d"><b>${x.dayNumber}</b><small>${esc(String(x.dayName||'').slice(0,3).toUpperCase())}</small></div><div class="lyh-t"><b>${esc(x.hijri||'')}</b><small>vs ${esc(shortDay(r.k).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'}))}</small></div>${d!=null?`<span class="lyh-p ${r.w?'up':'dn'}">${lyChip(d)}</span>`:''}</div>`;
    return `${d!=null?`<span class="lyx-dl ${r.w?'up':'dn'}">${lyChip(d)}</span>`:''}<div class="lyx-d"><b>${x.dayNumber}</b>${esc(String(x.dayName||'').slice(0,3))} · ${esc(x.hijri||'')}</div>
     ${r.a?`<div class="lyx-v">${money(r.a.value)}</div><div class="lyx-ly">${r.l?`last year ${money(r.l.value)}`:'No data last year'}</div>`
          :`<div class="lyx-v">${r.l?money(r.l.value):'—'}</div><div class="lyx-ly">${r.l?'last year · to beat':'No data last year'}</div>`}`};
