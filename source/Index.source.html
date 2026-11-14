@@ -8920,6 +8920,13 @@ body.dark-mode .ak-ad{border-color:#2a3242}body.dark-mode .ak-ad>button{backgrou
 .ak-cr .gd b{font-size:12.5px;font-weight:800}.ak-cr .gd small{font-size:10.5px;color:#65676B;font-weight:600}
 .ak-bkl+.ak-bkl{display:none}
 body.dark-mode .ak-cr .gd button{background:#171d27;border-color:#2a3242;color:#e8ecf3}
+/* v389 Team and Access by email */
+.ak-ad>.tk-av{width:30px!important;height:30px!important;flex:none}
+.ak-tgs{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.ak-tg2{font-style:normal;font-size:10px;font-weight:800;border-radius:99px;padding:2px 7px;background:#EEF2FC;color:#203c8e}
+.ak-tg2.ed{background:#FBF3E2;color:#8a6a1e}.ak-tg2.no{background:#FDE7EC;color:#C2185B}.ak-tg2.mu{background:#F0F2F5;color:#65676B}
+.ak-pp{display:flex;align-items:center;gap:10px;margin-bottom:8px}.ak-pp .tk-av{width:42px!important;height:42px!important}.ak-pp b{display:block;font-size:15px;font-weight:900}.ak-pp small{font-size:11px;color:#65676B;font-weight:600}
+.ak-sw.busy{opacity:.6}
 </style>
 </head>
 <body>
@@ -9984,11 +9991,11 @@ async function akPost(action,extra){
  if(!ASK_HEMERA_URL)throw new Error('not connected');
  const me=akMe();
  const r=await fetch(ASK_HEMERA_URL,{method:'POST',body:JSON.stringify(Object.assign({action,email:me.email,name:me.name},extra||{}))});
- const j=await r.json();if(!j||!j.ok)throw new Error((j&&j.error)||'failed');return j;
+ const j=await r.json();if(!j||!j.ok){const e=new Error((j&&j.error)||'failed');if(j&&j.blocked){e.blocked=true;AK.blocked=true}throw e}return j;
 }
 async function akAssets(force){
  if(!force&&AK.assets&&Date.now()-AK.at<600000)return AK.assets;
- const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[],categories:j.categories||[],formats:j.formats||[]};AK.editor=!!j.editor;AK.at=Date.now();akKb();return AK.assets;
+ const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[],categories:j.categories||[],formats:j.formats||[]};AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);AK.blocked=false;AK.at=Date.now();if(AK.resIds&&!AK.res){AK.res=AK.assets.rows.filter(r=>AK.resIds.indexOf(r.id)>=0)}akKb();return AK.assets;
 }
 function openAsk(){
  if(!canDo('ask'))return;closeSidebar();
@@ -9999,9 +10006,10 @@ function openAsk(){
   <form class="ak-in" onsubmit="akSend(event)"><button type="button" class="ak-mb" aria-label="Menu" onclick="akToggleKb()">${akI('menu')}</button><input id="akQ" autocomplete="off" maxlength="1500" placeholder="Aa" oninput="akInMode()"><button type="submit" class="ak-snd" aria-label="Send">${akI('plane')}</button><button type="button" class="ak-mic" aria-label="Record a voice message" onclick="akRecStart()">${akI('mic')}</button>
   <div class="ak-rec" id="akRec"><button type="button" class="ak-rt2" aria-label="Delete" onclick="akRecTrash()">${akI('trash')}</button><div class="ak-rw"><em></em><span id="akRw"></span><b id="akRt">0:00</b></div><button type="button" class="ak-rs2" aria-label="Send" onclick="akRecSend()">${akI('plane')}</button></div></form></div>`;
  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));akVv();akInMode();try{avDefs()}catch(e){}
- if(!AK.msgs.length){const n=akMe().name.split(' ')[0];akBot(`<p>Hi${n?' '+akEsc(n):''}. Pick from the menu or type your question.</p>`)}
+ akRestore();
+ if(!AK.msgs.length){AK.t0=Date.now();const n=akMe().name.split(' ')[0];akBot(`<p>Hi${n?' '+akEsc(n):''}. Pick from the menu or type your question.</p>`)}
  akDraw();akKb();
- if(ASK_HEMERA_URL)akAssets().catch(()=>{});
+ if(ASK_HEMERA_URL)akAssets().catch(e=>{if(e&&e.blocked)akBot('<p>You do not have access to Ask HEMERA. Ask Ibrahim if you need it.</p>')});
 }
 // v381 while typing on a phone the keyboard covers the bottom of the screen: the chat fits the part that is still visible, so the HEMERA bar stays on top
 function akVv(){const v=window.visualViewport;if(!v||akVv.on)return;akVv.on=1;const f=()=>{const o=document.getElementById('akBox');if(!o)return;if(window.innerWidth>=900){o.style.top='';o.style.height='';o.style.bottom='';return}o.style.top=v.offsetTop+'px';o.style.height=v.height+'px';o.style.bottom='auto';const b=document.getElementById('akBd');if(b)b.scrollTop=b.scrollHeight};v.addEventListener('resize',f);v.addEventListener('scroll',f);f()}
@@ -10068,7 +10076,14 @@ async function akWav(blob){
 function closeAsk(){if(AKR.on)akRecStop();AK.add=null;AK.teach=false;AK.ask=null;const o=document.getElementById('akBox');if(!o)return;o.classList.remove('open');setTimeout(()=>o.remove(),280)}
 function akBot(html,cls){AK.msgs.push({w:'h',html,cls:cls||''});akDraw()}
 function akUser(t){AK.msgs.push({w:'u',html:akEsc(t)});akDraw()}
-function akDraw(){
+// v389 the chat stays on this device for 24 hours from its first message, then starts fresh
+const AK_KEEP='hm_ask_chat';
+function akSave(){clearTimeout(akSave.t);akSave.t=setTimeout(()=>{try{if(!AK.msgs.length)return;AK.t0=AK.t0||Date.now();
+ localStorage.setItem(AK_KEEP,JSON.stringify({t0:AK.t0,msgs:AK.msgs.slice(-60).map(m=>({w:m.w,html:String(m.html).replace(/ data-u="blob:[^"]*"/g,''),cls:m.cls||'',pid:m.pid||''})),hist:AK.hist.slice(-12),nav:AK.nav,res:(AK.res||[]).map(r=>r.id)}))}catch(e){}},400)}
+function akRestore(){if(AK.msgs.length)return;try{const o=JSON.parse(localStorage.getItem(AK_KEEP)||'null');if(!o)return;
+ if(Date.now()-(o.t0||0)>864e5){localStorage.removeItem(AK_KEEP);return}
+ AK.t0=o.t0;AK.msgs=o.msgs||[];AK.hist=o.hist||[];AK.nav=o.nav||{};AK.resIds=o.res||[]}catch(e){}}
+function akDraw(){akSave();
  const b=document.getElementById('akBd');if(!b)return;
  const L=AK.msgs.slice(-60);
  b.innerHTML=L.map((m,i)=>{const nx=L[i+1],last=!nx||nx.w!==m.w,first=i===0||L[i-1].w!==m.w;
@@ -10080,7 +10095,7 @@ function akToggleKb(){AK.kb=!AK.kb;akKb()}
 function akKb(){
  const k=document.getElementById('akKb');if(!k)return;
  const items=[['links','Sheets & links'],['off','Team days off'],['mail','Team emails'],['task','My tasks']];
- if(AK.editor)items.push(['add','Add a sheet'],['teach','Teach the bot']);
+ if(AK.canAdd)items.push(['add','Add a sheet']);if(AK.canTeach)items.push(['teach','Teach the bot']);
  items.push(['about','About']);
  k.hidden=!AK.kb;
  k.innerHTML=items.map(([id,t])=>`<button type="button" onclick="akMenu('${id}')">${akI(id)}${t}</button>`).join('');
@@ -10089,6 +10104,7 @@ function akInMode(){const i=document.getElementById('akQ'),f=i&&i.closest('form'
 async function akSend(e){
  if(e)e.preventDefault();
  const i=document.getElementById('akQ');const q=String(i&&i.value||'').trim();if(!q||AK.busy)return;
+ if(AK.blocked){showSettingsToast('You do not have access to Ask HEMERA');return}
  i.value='';akInMode();
  if(AK.ask){const a=AK.ask;AK.ask=null;akUser(q);a.fn(q);return}
  if(AK.add){akAddAnswer(q);return}
@@ -10118,7 +10134,8 @@ async function akBackTo(t){akUser('Back');
  if(t==='type'){akShowType();return}
  if(t==='teach'){akTeach();return}
  if(t==='plats'){const j=await akAdm('plats');if(j)akPlatsDraw(j);return}
- if(t==='team'){const j=await akAdm('team');if(j)akTeamDraw(j);return}
+ if(t==='team'){if(await akPermsLoad())akPeopleDraw();return}
+ if(t==='access'){if(await akPermsLoad())akAccessDraw();return}
 }
 async function akMenu(id){
  AK.kb=false;akKb();
@@ -10246,10 +10263,11 @@ const AK_FMT_IC={sheet:'links',screenshot:'cam','weekly screenshot':'off',dashbo
 /* v386 Teach the bot: rules go to the Memory tab, like افتكري on Telegram (editors only) */
 function akRulesHtml(rules){return rules&&rules.length?`<div class="ak-rvs">${rules.map(r=>`<div class="ak-rl2"><b>${akEsc(r.id)}</b><span>${akEsc(r.rule)}</span><button type="button" aria-label="Forget ${akEsc(r.id)}" onclick="akForget('${akEsc(r.id)}',this)">${akI('x')}</button></div>`).join('')}</div>`:'<p class="ak-sm ak-mu">No rules saved yet.</p>'}
 const AK_TM=[['rules','Saved rules','rules'],['refresh','Refresh data','refresh'],['cats','Categories','folder'],['plats','Platforms','plat'],['access','Access','key'],['team','Team','users'],['bc','Broadcast','megaphone']];
-const AK_TMD={rules:'Rules you taught',refresh:'From the sheet',cats:'Filters and names',plats:'Lock and access',access:'Who uses the bot',team:'Days off and backups',bc:'Scheduled messages'};
+const AK_TMD={rules:'Rules you taught',refresh:'From the sheet',cats:'Filters and names',plats:'Lock and access',access:'Who can do what',team:'The HEMERA team',bc:'Scheduled messages'};
 function akTeachHtml(sm){
- const d=k=>{if(!sm)return AK_TMD[k];return{rules:sm.rules+' rules',refresh:sm.rows+' rows',cats:sm.cats+' in use',plats:sm.plats+(sm.locked?' · '+sm.locked+' locked':''),access:sm.bot+' with access',team:sm.team+' people',bc:sm.bc?sm.bc+' scheduled':'Nothing scheduled'}[k]};
- return `<div class="ak-cr"><div class="hd"><i>${akI('teach')}</i><div><b>Teach the bot</b><small>Type a rule below, or open a tool</small></div></div><div class="gd">${AK_TM.map(([k,t,ic])=>`<button type="button" class="${k==='bc'?'w':''}" onclick="akTm('${k}')"><i>${akI(ic)}</i><b>${t}</b><small>${akEsc(d(k))}</small></button>`).join('')}</div></div>`+AKB('menu');
+ const d=k=>{if(!sm)return AK_TMD[k];return{rules:sm.rules+' rules',refresh:sm.rows+' rows',cats:sm.cats+' in use',plats:sm.plats+(sm.locked?' · '+sm.locked+' locked':''),access:sm.blocked?sm.blocked+' blocked':'Everyone can use it',team:(typeof tkPeople==='function'&&TK.data?tkPeople().length:sm.team)+' people',bc:sm.bc?sm.bc+' scheduled':'Nothing scheduled'}[k]};
+ const tm=AK.editor?AK_TM:AK_TM.filter(x=>x[0]==='rules'||x[0]==='refresh');
+ return `<div class="ak-cr"><div class="hd"><i>${akI('teach')}</i><div><b>Teach the bot</b><small>Type a rule below, or open a tool</small></div></div><div class="gd">${tm.map(([k,t,ic])=>`<button type="button" class="${k==='bc'?'w':''}" onclick="akTm('${k}')"><i>${akI(ic)}</i><b>${t}</b><small>${akEsc(d(k))}</small></button>`).join('')}</div></div>`+AKB('menu');
 }
 async function akTeach(){
  if(!ASK_HEMERA_URL){akBot('<p>Ask HEMERA is not connected yet.</p>');return}
@@ -10266,10 +10284,36 @@ async function akTm(k){
  if(k==='refresh'){const j=await akAdm('refresh');if(j)akBot(`<p>${akI('refresh')} Refreshed. ${j.rows} rows in the Assets tab.</p>`+AKB('teach'),'wb');AK.assets=null;return}
  if(k==='cats'){const j=await akAdm('cats');if(j)akCatsDraw(j);return}
  if(k==='plats'){const j=await akAdm('plats');if(j)akPlatsDraw(j);return}
- if(k==='access'){const j=await akAdm('access',{key:''});if(j)akAccDraw(j);return}
- if(k==='team'){const j=await akAdm('team');if(j)akTeamDraw(j);return}
+ if(k==='access'){if(await akPermsLoad())akAccessDraw();return}
+ if(k==='team'){if(await akPermsLoad())akPeopleDraw();return}
  if(k==='bc'){const j=await akAdm('bc');if(j)akBcDraw(j);return}
 }
+/* v389 access in HEMERA by email: use the bot, add sheets, teach the bot, and each locked platform */
+async function akPermsLoad(){await akTeamData();const j=await akAdm('perms');if(!j)return false;AK.pm=j;return true}
+function akPpl(){return (typeof tkPeople==='function'&&TK.data?tkPeople():[]).filter(p=>p.email)}
+function akIsEd(e){return ((AK.pm&&AK.pm.editors)||[]).indexOf(String(e).toLowerCase())>=0}
+function akPerm(e,key,plat){e=String(e).toLowerCase();if(akIsEd(e))return true;const a=((AK.pm&&AK.pm.access)||{})[e]||{};
+ if(key==='use')return a.use!==false;if(key==='add')return a.add===true;if(key==='teach')return a.teach===true;if(key==='plat')return (a.plats||[]).indexOf(plat)>=0;return false}
+const AK_PK=[['use','Use the bot','spk'],['add','Add sheets','add'],['teach','Teach the bot','teach']];
+function akPermTags(e){if(akIsEd(e))return '<em class="ak-tg2 ed">Editor · full access</em>';if(!akPerm(e,'use'))return '<em class="ak-tg2 no">Blocked</em>';
+ const t=[];if(akPerm(e,'add'))t.push('Adds sheets');if(akPerm(e,'teach'))t.push('Teaches');((AK.pm&&AK.pm.locked)||[]).forEach(k=>{if(akPerm(e,'plat',k))t.push(k)});
+ return t.length?t.map(x=>`<em class="ak-tg2">${akEsc(x)}</em>`).join(''):'<em class="ak-tg2 mu">Can ask</em>'}
+function akPeopleDraw(){const P=akPpl();
+ akPanel('hmteam',akTmTitle('users','Team')+'<p class="ak-sm ak-mu">The people in HEMERA. Tap someone to set what they can do here.</p><div class="ak-rvs">'+P.map((p,i)=>`<div class="ak-ad tp" onclick="akPersonDraw(${i})">${tkAv(p)}<b>${akEsc(p.name||p.email)}<small>${akEsc(p.email)}</small><span class="ak-tgs">${akPermTags(p.email)}</span></b>${akI('chev')}</div>`).join('')+'</div>'+AKB('teach'))}
+function akPersonDraw(i){const p=akPpl()[i];if(!p)return;AK.pi=i;const ed=akIsEd(p.email);
+ const rows=AK_PK.map(([k,t,ic])=>[k,'',t,ic]).concat(((AK.pm&&AK.pm.locked)||[]).map(k=>['plat',k,'Sees '+k,'']));
+ akPanel('hmp:'+p.email,`<div class="ak-pp">${tkAv(p)}<div><b>${akEsc(p.name||p.email)}</b><small>${akEsc(p.email)}</small></div></div>`+(ed?'<p class="ak-sm ak-mu">An editor always has full access.</p>':'')+'<div class="ak-rvs">'+rows.map(([k,pl,t,ic],n)=>`<div class="ak-ad"><i class="${pl?'lg':''}">${pl?akLogo(pl):akI(ic)}</i><b>${akEsc(t)}</b><label class="ak-sw${akPerm(p.email,k,pl)?' on':''}${ed?' off':''}" onclick="akPermFlip('${akEsc(p.email)}','${k}','${akEsc(pl)}',this)"><span></span></label></div>`).join('')+'</div>'+AKB('team'))}
+function akAccessDraw(){const L=AK_PK.map(([k,t,ic])=>[k,'',t,akI(ic)]).concat(((AK.pm&&AK.pm.locked)||[]).map(k=>['plat',k,k,akLogo(k)]));AK.al=L;
+ akPanel('hmacc',akTmTitle('key','Access')+'<p class="ak-sm ak-mu">Pick what to set, then switch people on or off. Editors always have everything.</p><div class="ak-ch ak-pl ak-cp2">'+L.map(([k,pl,t,ic],n)=>`<button type="button" onclick="akAccPick(${n})"><i>${ic}</i>${akEsc(t)}</button>`).join('')+'</div>'+AKB('teach'))}
+function akAccPick(n){const x=(AK.al||[])[n];if(!x)return;akUser(x[2]);akPermDraw(x[0],x[1],'access')}
+function akPermDraw(key,plat,back){AK.pd=[key,plat,back];const P=akPpl();
+ const t=key==='plat'?'Who sees '+plat:{use:'Who can use the bot',add:'Who can add sheets',teach:'Who can teach the bot'}[key];
+ const hint=key==='plat'?plat+' is locked. Only the people switched on see its sheets and answers.':key==='use'?'Switch someone off and the bot does not answer them at all.':'';
+ akPanel('hmpd:'+key+plat,akTmTitle(key==='plat'?'lock':'key',akEsc(t))+(hint?`<p class="ak-sm ak-mu">${akEsc(hint)}</p>`:'')+'<div class="ak-rvs">'+P.map(p=>{const ed=akIsEd(p.email);return `<div class="ak-ad">${tkAv(p)}<b>${akEsc(p.name||p.email)}<small>${ed?'Editor':akEsc(p.email)}</small></b><label class="ak-sw${akPerm(p.email,key,plat)?' on':''}${ed?' off':''}" onclick="akPermFlip('${akEsc(p.email)}','${key}','${akEsc(plat)}',this)"><span></span></label></div>`}).join('')+'</div>'+AKB(back||'access'))}
+async function akPermFlip(e,key,plat,el){if(akIsEd(e)||el.classList.contains('busy'))return;const on=!el.classList.contains('on');el.classList.add('busy');el.classList.toggle('on',on);
+ const j=await akAdm('permSet',{email:e,key,plat,on});el.classList.remove('busy');
+ if(!j){el.classList.toggle('on',!on);return}AK.pm=j;
+ const m=AK.msgs[AK.msgs.length-1];if(m&&/^hmp:/.test(m.pid||''))akPersonDraw(AK.pi);else if(m&&/^hmpd:/.test(m.pid||'')&&AK.pd)akPermDraw(AK.pd[0],AK.pd[1],AK.pd[2])}
 /* categories: star = a filter button for the team; bin = hide, or move its rows first */
 function akCatsDraw(j){AK.cats=j;
  akPanel('cats',akTmTitle('folder','Categories')+'<p class="ak-sm ak-mu">The star makes it a filter button for the team. The number is how many rows use it.</p><div class="ak-rvs">'+j.cats.map((c,i)=>`<div class="ak-ad"><i>${akI(AK_CAT_IC[c.name.toLowerCase()]||'folder')}</i><b>${akEsc(c.name)}</b><em>${c.n}</em><button type="button" class="${c.shown?'on':''}" aria-label="Filter button" onclick="akCat('star',${i})">${akI('star')}</button><button type="button" aria-label="Delete" onclick="akCat('del',${i})">${akI('trash')}</button></div>`).join('')+'</div>'+(j.hidden.length?'<p class="ak-sm"><b>Hidden</b></p><div class="ak-ch">'+j.hidden.map((h,i)=>`<button type="button" onclick="akCat('back',${i})">${akI('back')}${akEsc(h)}</button>`).join('')+'</div>':'')+AKB('teach'))}
@@ -10289,7 +10333,7 @@ async function akPl(a,i){
  if(a==='add'){akBot('<p>Type the new platform name below, in English.</p>');AK.ask={fn:async v=>{const j=await akAdm('platAdd',{key:v});if(j)akPlatsDraw(j)}};return}
  const p=(AK.plats||[])[i];if(!p)return;
  if(a==='lock'){const j=await akAdm('platLock',{key:p.key});if(j)akPlatsDraw(j);return}
- if(a==='acc'){akUser(p.key+' access');const j=await akAdm('access',{key:p.key});if(j)akAccDraw(j);return}
+ if(a==='acc'){akUser(p.key+' access');if(await akPermsLoad())akPermDraw('plat',p.key,'plats');return}
  if(a==='del'){if(!p.n){const j=await akAdm('platDel',{key:p.key});if(j)akPlatsDraw(j);return}
    AK.mv={kind:'plat',from:p.key,to:AK.plats.filter(x=>x.key!==p.key).map(x=>x.key)};
    akBot(`<p><b>${akEsc(p.key)}</b> has ${p.n} rows. Move them to:</p><div class="ak-ch">${AK.mv.to.map((x,k)=>`<button type="button" onclick="akMove(${k})">${akEsc(x)}</button>`).join('')}</div>`,'wb')}}
@@ -10353,7 +10397,7 @@ async function akForget(id,btn){
 }
 async function akAddForm(){
  const a=await akNeedAssets();if(!a)return;
- if(!AK.editor){akBot('<p>Only editors can add sheets.</p>');return}
+ if(!AK.canAdd){akBot('<p>You cannot add sheets.</p>');return}
  AK.add={i:0,data:{}};akAddAsk();
 }
 function akAddOpts(st){
