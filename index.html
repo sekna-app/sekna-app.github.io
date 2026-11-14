@@ -9161,6 +9161,15 @@ body.dark-mode .ak-ddl button{color:#e8ecf3;border-top-color:#232b3a}body.dark-m
 .ak-l3>*>.ak-ic{width:15px;height:15px;color:#9aa3b5;flex:none}
 .ak-qr{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.ak-qr button{border:1.5px solid #1C3C96;color:#1C3C96;background:#fff;border-radius:99px;padding:5px 13px;font-weight:800;font-size:12.5px;cursor:pointer}
 body.dark-mode .ak-l3{background:#171d27}body.dark-mode .ak-l3>button,body.dark-mode .ak-l3>a{color:#e8ecf3;border-top-color:#232b3a}body.dark-mode .ak-qr button{background:transparent;color:#9db4ff;border-color:#6d8cf0}
+
+/* v406 card rows fold open: arrow shows the report / script name, then Open */
+.ak-cx>summary{list-style:none;cursor:pointer}.ak-cx>summary::-webkit-details-marker{display:none}
+.ak-cx>summary em{width:26px;height:26px;border-radius:50%;background:#F0F2F5;color:#65676B;display:grid;place-items:center;flex:none;transition:transform .2s,background .2s}.ak-cx>summary em .ak-ic{width:14px;height:14px}
+.ak-cx[open]>summary em{transform:rotate(180deg);background:#1C3C96;color:#fff}
+.ak-cxo{display:flex;align-items:center;gap:8px;margin:0 0 8px 42px;padding:8px 10px;border-radius:11px;background:#F4F6FB;text-decoration:none;color:#141b33;animation:akDdIn .18s ease-out}
+.ak-cxo span{flex:1;min-width:0;font-size:12.5px;font-weight:700;word-break:break-word}
+.ak-cxo b{display:flex;align-items:center;gap:4px;font-size:11.5px;font-weight:800;color:#1C3C96;flex:none}.ak-cxo b .ak-ic{width:12px;height:12px}
+body.dark-mode .ak-cx>summary em{background:#232b3a;color:#c9d6ff}body.dark-mode .ak-cxo{background:#0f141c;color:#e8ecf3}body.dark-mode .ak-cxo b{color:#9db4ff}
 </style>
 </head>
 <body>
@@ -10504,7 +10513,7 @@ function akCard(id){
 function akCardHtml(r){
  const L=[['links','Sheet',r.sheet,'#1E8E3E','#E7F5EC'],['rep','Report',r.report,'#1a73e8','#E8F0FE'],['code','Script',r.script,'#C9A24A','#FBF3E2']].filter(x=>x[2]&&x[2].url);
  return `<div class="ak-c2"><div class="h">${akLogo(r.platforms[0]||'')}<b>${akEsc(r.name||r.id)}</b></div>
-  ${L.map(([ic,t,o,c,bg])=>`<a class="l" href="${akEsc(o.url)}" target="_blank" rel="noopener"><i style="color:${c};background:${bg}">${akI(ic)}</i><div><b>${t}</b><small>${akEsc(o.name||'')}</small></div>${akI('out')}</a>`).join('')||'<p class="ak-sm">No links saved yet.</p>'}
+  ${L.map(([ic,t,o,c,bg])=>`<details class="ak-cx"><summary class="l"><i style="color:${c};background:${bg}">${akI(ic)}</i><div><b>${t}</b></div><em>${akI('down')}</em></summary><a class="ak-cxo" href="${akEsc(o.url)}" target="_blank" rel="noopener"><span>${akEsc(o.name||t)}</span><b>Open${akI('out')}</b></a></details>`).join('')||'<p class="ak-sm">No links saved yet.</p>'}
   ${r.notes&&AK.editor?`<p class="ak-sm ak-nt2">${akI('lock')}${akEsc(r.notes)}</p>`:''}</div>`+(AK.editor?`<div class="ak-act"><button type="button" aria-label="Edit" title="Edit" onclick="akEdit('${akEsc(r.id)}')">${akI('pen')}</button><button type="button" aria-label="Duplicate" title="Duplicate to another platform" onclick="akDup('${akEsc(r.id)}')">${akI('dup')}</button><button type="button" class="del" aria-label="Delete" title="Delete" onclick="akDel('${akEsc(r.id)}')">${akI('trash')}</button></div>`:'')}
 
  
