@@ -8621,6 +8621,13 @@ window.addEventListener('load',function(){
     html body .pf-cv.v,html body .idc-top.v,html body .wl-id .t.v{background:#203C8E url(icons/sekna-cover.webp?v=1) right center/cover no-repeat!important}
     /* v365 the open filter (My letter / Avatars) gets a soft see-through box */
     html body .idc-f.gslA>button.open:not(.gsl-pill),html body .idc-f>button.open{background:rgba(32,60,142,.09)!important;border-radius:9px;box-shadow:inset 0 0 0 1px rgba(32,60,142,.12)!important}
+    /* v366 Settings card: name and badge a little below the cover line, Profile beside them */
+    html body .idc-me{align-items:flex-start!important}html body .idc-me>div{padding-top:40px}html body .idc-view{align-self:flex-start!important;margin:44px 0 0!important}
+    /* v366 Team Leave: a thin ring round each photo shows it opens the profile; the pressed row tints and the ring turns blue */
+    .ls3-r .pf-tap{border-radius:50%;box-shadow:0 0 0 2px #fff,0 0 0 3.5px #C9D3F5;transition:box-shadow .2s}
+    .ls3-r{transition:background .2s}.ls3-r:active{background:#F4F7FF;margin:0 -14px;padding-left:14px!important;padding-right:14px!important;width:calc(100% + 28px)}
+    .ls3-r:active .pf-tap,.ls3-r .pf-tap:active{box-shadow:0 0 0 2px #fff,0 0 0 3.5px #3D6BFF}
+    body.dark-mode .ls3-r .pf-tap{box-shadow:0 0 0 2px #151a22,0 0 0 3.5px #3a4566}body.dark-mode .ls3-r:active{background:#1b2130}
 </style>
 </head>
 <body>
