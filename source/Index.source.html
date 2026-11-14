@@ -9002,6 +9002,29 @@ body.dark-mode .ak-l3{background:#171d27}body.dark-mode .ak-l3>button,body.dark-
 .ak-cy.sh .ak-cyb{transform:rotate(180deg);background:#E8EDFB;color:#1C3C96}
 .ak-cyo{display:grid;place-items:center;color:#9aa2b6;flex:none;padding:4px}.ak-cyo .ak-ic{width:15px;height:15px}
 body.dark-mode .ak-cyb{background:#232b3a;color:#c9d6ff}
+
+/* v408 Ask HEMERA info page, slides in from the right */
+.ak-pg{position:absolute;inset:0;z-index:20;background:#fff;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .3s cubic-bezier(.2,.8,.2,1);visibility:hidden}
+.ak-pg.on{transform:none;visibility:visible}
+.ak-pgh{display:flex;align-items:center;padding:calc(10px + env(safe-area-inset-top,0px)) 10px 4px}
+.ak-pgh .ak-bk{color:#1C3C96}
+.ak-pgb{flex:1;overflow-y:auto;padding:0 16px 24px}
+.ak-pgt{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0 18px}
+.ak-pga{position:relative;width:96px;height:96px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3557c4,#132a73);display:grid;place-items:center;margin-bottom:10px}
+.ak-pga .ak-ic{width:44px;height:44px;fill:#E2B874;stroke:none}
+.ak-pga em{position:absolute;right:4px;bottom:4px;width:18px;height:18px;border-radius:50%;background:#31A24C;border:3px solid #fff}
+.ak-pgt b{font-size:22px;font-weight:900;color:#050505}.ak-pgt small{font-size:12.5px;color:#65676B;font-weight:600}
+.ak-pgr{display:flex;justify-content:center;gap:18px;padding-bottom:10px}
+.ak-pgr button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font:600 12px Inter,system-ui,sans-serif;color:#050505;width:62px}
+.ak-pgr i{width:46px;height:46px;border-radius:50%;background:#F0F2F5;display:grid;place-items:center;color:#1C3C96}.ak-pgr i .ak-ic{width:20px;height:20px}
+.ak-pgb h4{margin:18px 0 6px;font-size:13px;font-weight:800;color:#65676B}
+.ak-pgp p{margin:0 0 6px;font-size:13.5px;font-weight:500;color:#1c1e21;line-height:1.5}.ak-pgp .ak-mu{color:#65676B;font-size:12.5px}
+.ak-pg .r{width:100%;display:flex;align-items:center;gap:14px;border:0;background:none;padding:10px 0;cursor:pointer;text-align:left;font-family:Inter,system-ui,sans-serif;color:#050505}
+.ak-pg .r i{width:36px;height:36px;border-radius:50%;background:#F0F2F5;display:grid;place-items:center;flex:none;color:#1C3C96}.ak-pg .r i .ak-ic{width:18px;height:18px}
+.ak-pg .r span{display:flex;flex-direction:column}.ak-pg .r b{font-size:15px;font-weight:600}.ak-pg .r small{font-size:12px;color:#65676B;font-weight:500}
+.ak-pg .r.del i{color:#E41E3F;background:#FDEBEE}.ak-pg .r.del b{color:#E41E3F}
+body.dark-mode .ak-pg{background:#0f141c}body.dark-mode .ak-pgt b,body.dark-mode .ak-pgr button,body.dark-mode .ak-pg .r,body.dark-mode .ak-pgp p{color:#e8ecf3}
+body.dark-mode .ak-pgr i,body.dark-mode .ak-pg .r i{background:#232b3a;color:#c9d6ff}body.dark-mode .ak-pga em{border-color:#0f141c}body.dark-mode .ak-pg .r.del i{background:#3a1c22}
 </style>
 </head>
 <body>
@@ -10076,7 +10099,7 @@ function openAsk(){
  if(!canDo('ask'))return;closeSidebar();
  document.getElementById('akBox')?.remove();
  const o=document.createElement('div');o.id='akBox';o.className='ak';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Ask HEMERA');
- o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av">${akI('spk')}</span><div><b>Ask HEMERA</b><small id="akSt">Active now</small></div><button type="button" class="ak-inf" aria-label="About Ask HEMERA" onclick="akAbout(event)">${akI('about')}</button></div><div class="ak-abt" id="akAbt" hidden onclick="event.stopPropagation()"><b>${akI('spk')}Ask HEMERA</b><p>Answers from the team sheet: sheets, platform reports and scripts, who is off and who covers.</p><p>Type it any way you like, in Arabic or English, or send a voice message.</p><p class="ak-mu">Each person sees only the platforms they have access to.</p></div>
+ o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av">${akI('spk')}</span><div><b>Ask HEMERA</b><small id="akSt">Active now</small></div><button type="button" class="ak-inf" aria-label="About Ask HEMERA" onclick="akAbout(event)">${akI('about')}</button></div><div class="ak-pg" id="akAbt" aria-hidden="true"></div>
   <div class="ak-bd" id="akBd"></div><div class="ak-kb" id="akKb"></div>
   <form class="ak-in" onsubmit="akSend(event)"><button type="button" class="ak-mb" aria-label="Menu" onclick="akToggleKb()">${akI('menu')}</button><input id="akQ" autocomplete="off" maxlength="1500" placeholder="Aa" oninput="akInMode()"><button type="submit" class="ak-snd" aria-label="Send">${akI('plane')}</button><button type="button" class="ak-mic" aria-label="Record a voice message" onclick="akRecStart()">${akI('mic')}</button>
   <div class="ak-rec" id="akRec"><button type="button" class="ak-rt2" aria-label="Delete" onclick="akRecTrash()">${akI('trash')}</button><div class="ak-rw"><em></em><span id="akRw"></span><b id="akRt">0:00</b></div><button type="button" class="ak-rs2" aria-label="Send" onclick="akRecSend()">${akI('plane')}</button></div></form></div>`;
@@ -10149,7 +10172,21 @@ async function akWav(blob){
  for(let i=0;i<d.length;i++){const x=Math.max(-1,Math.min(1,d[i]));v.setInt16(44+i*2,x<0?x*0x8000:x*0x7fff,true)}
  const bytes=new Uint8Array(v.buffer);let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000));return btoa(bin);
 }
-function akAbout(e){if(e)e.stopPropagation();const a=document.getElementById('akAbt');if(!a)return;a.hidden=!a.hidden;if(!a.hidden)setTimeout(()=>document.addEventListener('click',function h(){a.hidden=true;document.removeEventListener('click',h)},{once:true}),0)}
+/* v408 the (i) opens a full page from the right, like a chat's info page */
+function akAbout(e){if(e)e.stopPropagation();const pg=document.getElementById('akAbt');if(!pg)return;
+ const n=(id,t)=>`<button type="button" onclick="akPgGo('${id}')"><i>${akI(id)}</i><span>${t}</span></button>`;
+ const row=(id,ic,t,sub,cls)=>`<button type="button" class="r${cls?' '+cls:''}" onclick="akPgGo('${id}')"><i>${akI(ic)}</i><span><b>${t}</b>${sub?`<small>${sub}</small>`:''}</span></button>`;
+ pg.innerHTML=`<div class="ak-pgh"><button type="button" class="ak-bk" aria-label="Back" onclick="akAboutClose()">${akI('back')}</button></div>
+  <div class="ak-pgb"><div class="ak-pgt"><span class="ak-pga">${akI('spk')}<em></em></span><b>Ask HEMERA</b><small>Active now</small></div>
+  <div class="ak-pgr">${n('links','Sheets')}${n('off','Days off')}${n('mail','Emails')}${n('task','Tasks')}</div>
+  <h4>About</h4><div class="ak-pgp"><p>Answers from the team sheet: sheets, platform reports and scripts, who is off and who covers, and team emails.</p><p>Type it any way you like, in Arabic or English, or send a voice message.</p><p class="ak-mu">Each person sees only the platforms they have access to.</p></div>
+  ${AK.canAdd||AK.canTeach?`<h4>Tools</h4>${AK.canAdd?row('add','add','Add a sheet','Put a new sheet in the list'):''}${AK.canTeach?row('teach','teach','Teach the bot','Rules, access and platforms'):''}`:''}
+  <h4>Chat</h4>${row('clear','trash','Clear chat','The chat stays on this device for 24 hours','del')}</div>`;
+ pg.setAttribute('aria-hidden','false');requestAnimationFrame(()=>pg.classList.add('on'))}
+function akAboutClose(){const pg=document.getElementById('akAbt');if(!pg)return;pg.classList.remove('on');pg.setAttribute('aria-hidden','true')}
+function akPgGo(id){akAboutClose();
+ if(id==='clear'){AK.msgs=[];AK.hist=[];AK.nav={};AK.res=null;AK.resIds=[];AK.ls=[];AK.ts=[];AK.t0=Date.now();try{localStorage.removeItem(AK_KEEP)}catch(e){}const nm=akMe().name.split(' ')[0];akBot(`<p>Hi${nm?' '+akEsc(nm):''}. Pick from the menu or type your question.</p>`);AK.kb=true;akKb();return}
+ setTimeout(()=>akMenu(id),200)}
 function closeAsk(){if(AKR.on)akRecStop();AK.add=null;AK.teach=false;AK.ask=null;const o=document.getElementById('akBox');if(!o)return;o.classList.remove('open');setTimeout(()=>o.remove(),280)}
 function akBot(html,cls){AK.msgs.push({w:'h',html,cls:cls||'',nw:1});akDraw()}
 function akUser(t){AK.msgs.push({w:'u',html:akEsc(t),nw:1});akDraw()}
