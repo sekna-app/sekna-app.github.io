@@ -636,7 +636,7 @@ async function verifyNudge() {
   return due.length;
 }
 async function clearWelcome(email) {
-  await fsUpdate(DOC.members, all => { all = all || {}; const m = all[email]; if (!m || !m.w) return undefined; delete m.w; if (m.role || m.avatar) all[email] = m; else delete all[email]; return all; });
+  await fsUpdate(DOC.members, all => { all = all || {}; const m = all[email]; if (!m || !m.w) return undefined; delete m.w; delete m.avatar; delete m.vn; delete m.bio; delete m.phone; if (m.role) all[email] = m; else delete all[email]; return all; });
 }
 const AVATAR_OK = [11, 12, 13, 14, 15, 17, 18, 20, 21, 22, 101, 103, 104, 105, 106, 107, 108];
 async function call(fn, args) {

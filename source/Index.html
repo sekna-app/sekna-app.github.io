@@ -8630,6 +8630,9 @@ window.addEventListener('load',function(){
     body.dark-mode .ls3-r .pf-tap{box-shadow:0 0 0 2px #151a22,0 0 0 3.5px #3a4566}body.dark-mode .ls3-r:active{background:#1b2130}
     /* v367 profile: name and badge sit below the cover line */
     html body .pf-me{align-items:flex-start!important}html body .pf-me>div{padding-top:56px!important;padding-bottom:0!important}
+    /* v368 welcome: content lower on the first, name and last screens; a small Skip under the tour */
+    .wl-sl.low{padding-top:calc(18vh + env(safe-area-inset-top,0px))}.wl-sl.low .wl-big{margin-top:0}.wl-sl.low .wl-id{margin-top:34px}
+    .wl-skip{border:0;background:none;color:#C9D3F5;font:inherit;font-size:13px;font-weight:800;padding:8px;cursor:pointer;align-self:center}
 </style>
 </head>
 <body>
@@ -17006,7 +17009,7 @@ function wlMaybe(){
  const P=ACCESS_PROFILE||{};if(!P.welcome||window.WL_SHOWN||document.getElementById('wlBox'))return;
  
  window.WL_SHOWN=1;serverCall('setMyProfile',getAccessToken(),{welcome:true,tz:pfDevTz()}).then(r=>{if(r&&r.member)ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE||{},{member:r.member,welcome:false})}).catch(()=>{});
- const mem=P.member||{};WL.step=0;WL.name=P.name||'';WL.av=mem.avatar&&typeof mem.avatar!=='string'?+mem.avatar:0;WL.photo=typeof mem.avatar==='string'?mem.avatar:'';WL.push=false;
+ const mem=P.member||{};WL.step=0;WL.name=P.name||'';WL.av=mem.avatar&&typeof mem.avatar!=='string'&&+mem.avatar>100?+mem.avatar:106;WL.photo=typeof mem.avatar==='string'?mem.avatar:'';WL.push=false;
  const o=document.createElement('div');o.id='wlBox';o.className='wl';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Welcome to HEMERA');
  o.innerHTML=`<div class="wl-sea" aria-hidden="true">${WL_SEA}</div><div class="wl-ban" id="wlBan"><span>H</span><div><b>HEMERA · now</b><small>You are all set. Alerts will look like this.</small></div></div>`;
  document.body.appendChild(o);wlDraw();
@@ -17014,13 +17017,13 @@ function wlMaybe(){
 function wlPic(){return WL.photo?emblemHtml(WL.photo):personAv(WL.av,WL.name)}
 function wlDraw(){
  const o=document.getElementById('wlBox');if(!o)return;
- const old=o.querySelector('.wl-sl'),s=document.createElement('div');s.className='wl-sl in';
+ const old=o.querySelector('.wl-sl'),s=document.createElement('div');s.className='wl-sl in'+([0,1,4].indexOf(WL.step)>=0?' low':'');
  const dots=`<div class="wl-dots">${[0,1,2,3].map(i=>`<i class="${i<=WL.step?'on':''}"></i>`).join('')}</div>`,first=esc(String(WL.name||'').split(' ')[0]);
  if(WL.step===0)s.innerHTML=`<div class="wl-big wl-pop">${wlPic()}</div><h2>Welcome to HEMERA${first?', '+first:''}</h2><p>Let us make it yours. It takes 20 seconds.</p><div class="wl-bot">${dots}<button type="button" class="wl-btn g" data-go>Let us start</button></div>`;
- if(WL.step===1)s.innerHTML=`<small class="wl-k">STEP 1 · YOUR NAME</small><h2 class="l">How should the team see you?</h2><input class="wl-in" id="wlName" value="${esc(WL.name)}" maxlength="30" autocomplete="name"><div class="wl-chips">${[String(WL.name).split(' ')[0],WL.name].filter((v,i,a)=>v&&a.indexOf(v)===i).map(v=>`<button type="button" data-n="${esc(v)}" class="${v===WL.name?'on':''}">${esc(v)}</button>`).join('')}</div><div class="wl-bot">${dots}<button type="button" class="wl-btn g" data-go>Next</button></div>`;
+ if(WL.step===1)s.innerHTML=`<small class="wl-k">STEP 1 · YOUR NAME</small><h2 class="l">How should the team see you?</h2><input class="wl-in" id="wlName" value="${esc(WL.name)}" maxlength="30" autocomplete="name"><div class="wl-bot">${dots}<button type="button" class="wl-btn g" data-go>Next</button></div>`;
  if(WL.step===2)s.innerHTML=`<small class="wl-k">STEP 2 · YOUR PICTURE</small><div class="wl-big">${wlPic()}</div><div class="wl-pk">${LETTER_KEEP.slice(0,3).map(k=>`<button type="button" data-a="${k}" class="${!WL.photo&&(WL.av||106)===k?'on':''}">${letterEmblem(WL.name,k)}</button>`).join('')}${AV_KEEP.map(k=>`<button type="button" data-a="${k}" class="${!WL.photo&&WL.av===k?'on':''}">${emblemHtml(k)}</button>`).join('')}</div><div class="wl-bot">${dots}<label class="wl-btn l"><input type="file" accept="image/*" hidden id="wlFile">Upload a photo</label><button type="button" class="wl-btn g" data-go>Next</button></div>`;
  if(WL.step===3)s.innerHTML=`<small class="wl-k">STEP 3 · STAY IN THE LOOP</small><div class="wl-bell">${WL_IC.bell}</div><h2>What should we tell you?</h2><p>Media plan updates, your tasks and new seasons.</p><div class="wl-tl">${[['plan','Media plan','When the numbers update'],['task','Your tasks','New tasks and backups'],['season','Seasons','Reminders before each season']].map(r=>`<div class="wl-tr"><span class="wl-ti">${WL_IC[r[0]]}</span><b>${r[1]}<small>${r[2]}</small></b><span class="wl-ck">✓</span></div>`).join('')}</div><div class="wl-bot">${dots}<button type="button" class="wl-btn g" id="wlPush">Turn on alerts</button><button type="button" class="wl-btn l" data-go>Maybe later</button></div>`;
- if(WL.step===4)s.innerHTML=`<h2 style="margin-top:40px">You are all set</h2><p>This is how the team sees you</p><div class="wl-id"><div class="t${WL.photo?' v':''}"></div><div class="m"><span class="${WL.photo?'vt':''}">${wlPic()}${WL.photo?VBADGE:''}</span><div><b>${esc(WL.name)}</b>${(ACCESS_PROFILE&&ACCESS_PROFILE.member&&ACCESS_PROFILE.member.role)?roleBadge(ACCESS_PROFILE.member.role):''}</div></div></div><div class="wl-bot"><button type="button" class="wl-btn g" id="wlTour">Take the one-minute tour</button><button type="button" class="wl-btn l" id="wlEnd">Start using HEMERA</button></div>`;
+ if(WL.step===4)s.innerHTML=`<h2 style="margin-top:40px">You are all set</h2><p>This is how the team sees you</p><div class="wl-id"><div class="t${WL.photo?' v':''}"></div><div class="m"><span class="${WL.photo?'vt':''}">${wlPic()}${WL.photo?VBADGE:''}</span><div><b>${esc(WL.name)}</b>${(ACCESS_PROFILE&&ACCESS_PROFILE.member&&ACCESS_PROFILE.member.role)?roleBadge(ACCESS_PROFILE.member.role):''}</div></div></div><div class="wl-bot"><button type="button" class="wl-btn g" id="wlTour">Take the one-minute tour</button><button type="button" class="wl-skip" id="wlEnd">Skip</button></div>`;
  o.appendChild(s);if(old){old.classList.add('out');setTimeout(()=>old.remove(),480)}
  requestAnimationFrame(()=>requestAnimationFrame(()=>s.classList.remove('in')));
  const redraw=()=>{const b=s.querySelector('.wl-big');if(b)b.innerHTML=wlPic();s.querySelectorAll('[data-a]').forEach(x=>{const k=+x.dataset.a;x.classList.toggle('on',!WL.photo&&(k>100?(WL.av||106)===k&&(!WL.av||WL.av>100):WL.av===k))});s.querySelectorAll('[data-n]').forEach(x=>x.classList.toggle('on',x.dataset.n===WL.name))};
