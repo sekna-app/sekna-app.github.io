@@ -471,16 +471,36 @@ const T = {
         const r = String(value || '');
         if (r && ROLES.indexOf(r) < 0) throw new Error('Unknown position');
         if (r) m.role = r; else delete m.role;
-      } else if (field === 'avatar') {
-        const n = Math.round(Number(value) || 0);
-        if (n !== 0 && (n < 11 || n > 24)) throw new Error('Unknown avatar');
-        if (n) m.avatar = n; else delete m.avatar;
-      } else throw new Error('Unknown field');
+      } else throw new Error('Unknown field'); // v353 the avatar or photo is each person's own choice (setMyAvatar)
       if (m.role || m.avatar) all[email] = m; else delete all[email];
       result = all[email] || {};
       return all;
     });
     try { await appsScript('adminSetMember', [token, email, field, value]); } catch (e) { console.warn('Apps Script member copy: ' + e.message); }
+    return { email, member: result };
+  },
+
+  /** v353 each person picks their own avatar (one of the house avatars), a small photo from their device, or the first letter (0). */
+  async setMyAvatar([token, value]) {
+    const a = await assertAccess(token);
+    const email = norm(a.email);
+    let v = value;
+    if (typeof v === 'string' && v) {
+      if (!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(v)) throw new Error('That photo could not be read.');
+      if (v.length > 90000) throw new Error('That photo is too big.');
+    } else {
+      v = Math.round(Number(v) || 0);
+      if (v && AVATAR_OK.indexOf(v) < 0) throw new Error('Unknown avatar');
+    }
+    let result = null;
+    await fsUpdate(DOC.members, all => {
+      all = all || {};
+      const m = all[email] || {};
+      if (v) m.avatar = v; else delete m.avatar;
+      if (m.role || m.avatar) all[email] = m; else delete all[email];
+      result = all[email] || {};
+      return all;
+    });
     return { email, member: result };
   },
 
@@ -589,6 +609,7 @@ async function morningPushIfDue() {
 }
 
 /** Router: before the move every call goes to Apps Script unchanged. */
+const AVATAR_OK = [11, 12, 13, 14, 15, 17, 18, 20, 21, 22];
 async function call(fn, args) {
   if (fn === 'adminTasksMove') return adminTasksMove(args);
   if (fn === 'adminTasksMoveStatus') {
@@ -596,6 +617,7 @@ async function call(fn, args) {
     if (!isAdminEmail(a.email)) { const e = new Error('SEKNA_ADMIN_ONLY'); e.access = true; throw e; }
     return (await fsGet(DOC.mode)) || { mode: 'appsscript' };
   }
+  if (fn === 'setMyAvatar') return T[fn](args); // Firebase only, whether or not Team Tasks moved
   if (!(await moved())) return appsScript(fn, args);
   return T[fn](args);
 }

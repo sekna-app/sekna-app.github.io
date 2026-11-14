@@ -8500,6 +8500,15 @@ window.addEventListener('load',function(){
     .pp-mm{flex:none;width:36px;height:36px;border-radius:12px;border:0;background:#F1F3F8;color:#6B7385;font-size:18px;font-weight:900;cursor:pointer;line-height:1}.pp-c.open .pp-mm{background:#203C8E;color:#fff}
     .pp-acts{margin-top:10px;padding-top:10px;border-top:1px solid #EDF0F6}.pp-acts>small{display:block;font-size:11px;font-weight:700;color:#8a93a8;margin-bottom:8px}.pp-acts>div{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
     body.dark-mode .pp-c{background:#151a22}body.dark-mode .pp-m b,body.dark-mode .pp-wt b{color:#fff}body.dark-mode .pp-mm{background:#1b212b;color:#c6ccd8}body.dark-mode .pp-acts{border-color:#2a313c}
+    /* v353 avatars in the house look; your picture in Settings */
+    .sk-emb.sk-ph{display:block;border-radius:50%;overflow:hidden;box-shadow:inset 0 0 0 2px #E2B874}.sk-emb.sk-ph img{display:block;width:100%;height:100%;object-fit:cover;border-radius:50%;box-shadow:0 0 0 2px #E2B874}
+    .st-pic{padding:14px!important}.st-av-h{display:flex;align-items:center;gap:12px}.st-av-now{width:52px;height:52px;flex:none;display:block}.st-av-now .sk-emb,.st-av-now svg{width:100%;height:100%;display:block}
+    .st-av-h b{display:block;font-size:15px;font-weight:900}.st-av-h small{font-size:11.5px;font-weight:700;color:#8a93a8}
+    .st-av-b{display:flex;gap:8px;margin-top:12px}.st-av-b>*{flex:1;text-align:center;border:0;border-radius:12px;padding:10px 6px;font:inherit;font-size:12.5px;font-weight:900;cursor:pointer;background:#EEF1F7;color:#141B33}
+    .st-av-b .st-av-up{background:linear-gradient(135deg,#3d6bff,#203c8e);color:#fff}.st-av-b button.on{box-shadow:inset 0 0 0 2px #203C8E}
+    .st-av-g{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:12px}.st-av-g button{border:0;background:none;padding:3px;border-radius:50%;cursor:pointer;line-height:0}
+    .st-av-g button .sk-emb,.st-av-g svg{width:100%;height:100%;display:block}.st-av-g button.on{box-shadow:0 0 0 2.5px #203C8E}
+    body.dark-mode .st-av-b>*{background:#1b212b;color:#fff}body.dark-mode .st-av-h b{color:#fff}
 </style>
 </head>
 <body>
@@ -8705,6 +8714,8 @@ window.addEventListener('load',function(){
   <section class="app-modal sk-modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle" onclick="event.stopPropagation()">
     <div class="sk-modal-head st-head"><div><div class="sk-kicker">HEMERA</div><h2 id="settingsTitle">Settings</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeSettings()" aria-label="Close settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
 
+    <div class="sk-group-title">Your picture</div>
+    <div class="sk-card st-pic" id="stAvBox"></div>
     <div class="sk-group-title">Appearance</div>
     <div class="sk-card">
       <label class="sk-row"><span class="sk-row-icon c-p"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg></span><span class="sk-row-text"><b>Dark mode</b><small>Use a darker theme across the dashboard.</small></span><span class="switch"><input id="darkModeToggle" type="checkbox" onchange="saveDashboardSettings()"><span></span></span></label>
@@ -9422,7 +9433,7 @@ function syncNativeSettings(){
  catch(e){}
 }
 function openSettings(){
- closeSidebar();syncSettingsControls();renderProfileCard();settingsUser();drawAccCur();drawSpendAlertOpts();drawRoasAlertOpts();drawSeasonTest();
+ closeSidebar();syncSettingsControls();renderProfileCard();try{myAvDraw()}catch(e){}settingsUser();drawAccCur();drawSpendAlertOpts();drawRoasAlertOpts();drawSeasonTest();
  
  ['tpTitle','tpCard'].forEach(id=>{const x=document.getElementById(id);if(x)x.hidden=!mrOwner()});tpFoldSet();
  const el=document.getElementById('settingsOverlay');if(el)el.classList.add('open');
@@ -14253,7 +14264,7 @@ function updateProfileUI(){
  let mem=p.member;if(mem)storeSet('sekna_member',JSON.stringify(mem));else{try{mem=JSON.parse(storeGet('sekna_member')||'null')}catch(e){}}
  const role=(mem&&mem.role)||'', card=document.querySelector('.sk-drawer .sk-user-card');
  if(card){card.className='sk-user-card'+(roleTier(role)?' tier'+roleTier(role):'');}
- const myAv=mem&&mem.avatar?emblemHtml(mem.avatar):'';
+ const myAv=mem&&mem.avatar?emblemHtml(mem.avatar):'';try{myAvDraw()}catch(e){}
  setTimeout(tkNoticeUI,0);
  const rl=document.getElementById('profileRole');if(rl){const t=roleTier(role);rl.innerHTML=t?`<span class="skr-t">${esc(roleLabel(role).toUpperCase())}</span><span class="skr-p">${[1,2,3,4,5].map(k=>`<i class="${k<=t?'on':''}"></i>`).join('')}</span>`:'';rl.hidden=!role}
  const name=p.name||storeGet(ACCESS_NAME_KEY)||'HEMERA';
@@ -14827,11 +14838,10 @@ let ADMIN_MENU='';
 function adminMenu(email){ADMIN_MENU=ADMIN_MENU===email?'':email;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function adminEditMember(email){ADMIN_EDIT=ADMIN_EDIT===email?'':email;if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function memberEditor(p){
- const cur=memberOf(p.email).role||'', curAv=+memberOf(p.email).avatar||0;
+ const cur=memberOf(p.email).role||'';
  return `<div class="ad-mem"><div class="ad-mem-h">Position for ${esc(p.name)}<small>Only shows on their menu. They are not notified.</small></div>
    <div class="ad-roles">${['',...ROLES].map(r=>`<button type="button" class="${r===cur?'on':''}" onclick="adminSetRole('${esc(p.email)}','${r}',this)">${r?roleBadge(r):'<span class="rb rb0">No title</span>'}</button>`).join('')}</div>
-   <div class="ad-mem-h ad-mem-h2">Avatar</div>
-   <div class="ad-avs"><button type="button" class="none${!curAv?' on':''}" onclick="adminSetAvatar('${esc(p.email)}',0,this)" title="No avatar: the first letter">${letterEmblem(p.name)}</button>${AVATARS.map((a,i)=>`<button type="button" class="${curAv===i+AVATAR_BASE?'on':''}" onclick="adminSetAvatar('${esc(p.email)}',${i+AVATAR_BASE},this)" title="${AVATAR_NAMES[i]}">${a}</button>`).join('')}</div></div>`;
+   </div>`;
 }
 function adminSetAvatar(email,n,btn){return adminSetRole(email,n,btn,'avatar')}
 async function adminSetRole(email,role,btn,field){
@@ -16814,18 +16824,47 @@ function roleBadge(r){
 const AVATAR_BASE=11;
 const AVATARS=["<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M30 78 H70 M40 78 L42 50 H58 L60 78 M38 50 H62 M44 50 V38 H56 V50 M42 38 H58 M47 38 V30 H53 V38 M46 30 L50 25 L54 30 M48 78 V72 a2 2 0 0 1 4 0 V78 M50 56 v3 M50 63 v3 M44 32 L22 25 M44 34 L24 34 M44 36 L27 41 M56 32 L78 25 M56 34 L76 34 M56 36 L73 41\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M24 74 H76 M38 74 V48 H62 V74 M38 48 v-4 h4 v4 h4 v-4 h4 v4 h4 v-4 h4 v4 h4 v-4 M28 74 V56 H36 V74 M64 74 V56 H72 V74 M28 56 l4 -5 l4 5 M64 56 l4 -5 l4 5 M47.5 44 V32 H52.5 V44 M46.5 32 L50 26 L53.5 32 M46 74 v-8 a4 4 0 0 1 8 0 v8 M22 82 q4 -3 8 0 t8 0 t8 0 t8 0 t8 0 t8 0 t8 0\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M26 24 H74 M42 24 L50 30 L58 24 M33 30 h34 a4 4 0 0 1 4 4 v32 h-42 v-32 a4 4 0 0 1 4 -4 z M34 38 h32 v12 h-32 z M50 38 v12 M37 60 h4 M59 60 h4 M28 74 H72 M36 66 v8 M64 66 v8\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M24 60 H76 L68 72 H32 Z M34 60 V46 H66 V60 M42 46 V36 H56 V46 M46 36 v-6 M40 53 a2 2 0 1 0 4 0 a2 2 0 1 0 -4 0M50 53 a2 2 0 1 0 4 0 a2 2 0 1 0 -4 0M60 53 a2 2 0 1 0 4 0 a2 2 0 1 0 -4 0\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M45 30 a5 5 0 1 0 10 0 a5 5 0 1 0 -10 0 M50 35 V72 M40 44 H60 M28 58 q4 16 22 16 q18 0 22 -16 M24 62 l4 -4 l4 4 M68 62 l4 -4 l4 4\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M34 52 a16 16 0 1 0 32 0 a16 16 0 1 0 -32 0M45 52 a5 5 0 1 0 10 0 a5 5 0 1 0 -10 0 M50 30 v44 M28 52 h44 M35 37 l30 30 M65 37 l-30 30\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M50 24 L56 42 L76 42 L60 54 L66 74 L50 62 L34 74 L40 54 L24 42 L44 42 Z\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M26 46 H74 M28 46 q0 14 10 14 q10 0 10 -14 M52 46 q0 14 10 14 q10 0 10 -14 M48 48 h4\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M26 40 H40 l4 -6 h12 l4 6 H74 V70 H26 Z M40 54 a10 10 0 1 0 20 0 a10 10 0 1 0 -20 0M46 54 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0 M66 46 h3\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M38 46 a12 12 0 1 0 24 0 a12 12 0 1 0 -24 0 M50 26 v-4 M32 46 h-4 M68 46 h4 M37 33 l-3 -3 M63 33 l3 -3 M22 62 h56 M28 70 q5 -4 10 0 t10 0 t10 0 t10 0 t10 0\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M22 40 q7 -6 14 0 t14 0 t14 0 t14 0 t14 0 M22 54 q7 -6 14 0 t14 0 t14 0 t14 0 t14 0 M22 68 q7 -6 14 0 t14 0 t14 0 t14 0 t14 0\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M27 66 L23 34 L38 48 L50 26 L62 48 L77 34 L73 66 Z M28 74 H72 M46 56 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0M34 58 a2 2 0 1 0 4 0 a2 2 0 1 0 -4 0M62 58 a2 2 0 1 0 4 0 a2 2 0 1 0 -4 0\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M50 22 L55 47 L78 52 L55 57 L50 82 L45 57 L22 52 L45 47 Z M46 52 a4 4 0 1 0 8 0 a4 4 0 1 0 -8 0\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>", "<svg viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"50\" fill=\"#58a9de\"/><path d=\"M10 80 A50 50 0 0 0 90 80 Z\" fill=\"#ffd200\"/><path d=\"M38 26 H62 V40 a12 12 0 0 1 -24 0 Z M38 30 h-8 q0 12 10 14 M62 30 h8 q0 12 -10 14 M50 52 V62 M40 72 h20 l-2 -10 h-16 z\" fill=\"none\" stroke=\"#fff\" stroke-width=\"3.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>"];
 const AVATAR_NAMES=["Pharos", "Qaitbay", "Tram", "Ship", "Anchor", "Wheel", "Starfish", "Sunglasses", "Camera", "Sea & sun", "Waves", "Crown", "Compass rose", "Trophy"];
-function emblemHtml(n){const a=AVATARS[(+n||0)-AVATAR_BASE];return a?`<span class="sk-emb">${a}</span>`:''}
+
+const AV_KEEP=[11,12,13,14,15,17,18,20,21,22];
+const AV_DEFS='<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><radialGradient id="hmNv" cx="0" cy="0" r="1.4"><stop offset="0" stop-color="#2C4FB8"/><stop offset=".55" stop-color="#203C8E"/><stop offset="1" stop-color="#132457"/></radialGradient><linearGradient id="hmCh" gradientUnits="userSpaceOnUse" x1="0" y1="26" x2="0" y2="74"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".48" stop-color="#E4E8EF"/><stop offset=".52" stop-color="#AEB7C6"/><stop offset="1" stop-color="#EEF1F5"/></linearGradient><linearGradient id="hmGd" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="100"><stop offset="0" stop-color="#F7E2A4"/><stop offset=".55" stop-color="#E2B874"/><stop offset="1" stop-color="#C08A35"/></linearGradient></defs></svg>';
+function avDefs(){if(!document.getElementById('hmAvDefs')){const d=document.createElement('div');d.id='hmAvDefs';d.innerHTML=AV_DEFS;document.body.appendChild(d)}}
+const AV_RING='<circle cx="50" cy="50" r="44" fill="none" stroke="url(#hmGd)" stroke-width="3"/>';
+function avHouse(svg){return String(svg).replace('fill="#58a9de"','fill="url(#hmNv)"').replace(/<path d="M10 80 A50 50 0 0 0 90 80 Z" fill="#ffd200"\/>/,AV_RING+'<g transform="translate(0 3)">').replace(/<\/svg>$/,'</g></svg>').replace(/stroke="#fff"/g,'stroke="url(#hmCh)"')}
+const AV_HOUSE={};AV_KEEP.forEach(n=>{AV_HOUSE[n]=avHouse(AVATARS[n-AVATAR_BASE])});
+function emblemHtml(n){
+ if(typeof n==='string'&&/^data:image\//.test(n))return `<span class="sk-emb sk-ph"><img src="${n}" alt=""></span>`;
+ const a=AV_HOUSE[+n||0];if(!a)return '';try{avDefs()}catch(e){}return `<span class="sk-emb">${a}</span>`}
 
 
 function letterEmblem(name){
- const l=esc((String(name||'S').trim().charAt(0)||'S').toUpperCase());
- return `<span class="sk-emb"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="#58a9de"/><path d="M10 80 A50 50 0 0 0 90 80 Z" fill="#ffd200"/><text x="50" y="62" text-anchor="middle" font-size="46" font-weight="800" font-family="HArab,Inter,Arial,sans-serif" fill="#fff">${l}</text></svg></span>`;
+ const l=esc((String(name||'S').trim().charAt(0)||'S').toUpperCase());try{avDefs()}catch(e){}
+ return `<span class="sk-emb"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="url(#hmNv)"/>${AV_RING}<text x="50" y="65" text-anchor="middle" font-size="42" font-weight="900" font-family="Inter,HArab,Arial,sans-serif" fill="url(#hmCh)">${l}</text></svg></span>`;
 }
 function personAv(avatar,name){return emblemHtml(avatar)||letterEmblem(name)}
 function avatarHtml(photo,name){
  return photo?`<img class="sk-avatar-img" src="${esc(photo)}" alt="" referrerpolicy="no-referrer" onerror="this.replaceWith(document.createTextNode('${esc((String(name||'S').charAt(0)||'S').toUpperCase())}'))">`:esc((String(name||'S').charAt(0)||'S').toUpperCase());
 }
 function renderProfileCard(){}
+
+function myAvDraw(){
+ const el=document.getElementById('stAvBox');if(!el)return;
+ const P=ACCESS_PROFILE||{},mem=P.member||{},cur=mem.avatar||0,name=P.name||storeGet(ACCESS_NAME_KEY)||'';
+ el.innerHTML=`<div class="st-av-h"><span class="st-av-now">${personAv(cur,name)}</span><div><b>${esc(name||'You')}</b><small>Everyone in HEMERA sees this</small></div></div>
+  <div class="st-av-b"><label class="st-av-up"><input type="file" accept="image/*" onchange="myAvFile(this)" hidden>Upload a photo</label><button type="button" class="${!cur?'on':''}" onclick="myAvSet(0,this)">Use my letter</button></div>
+  <div class="st-av-g">${AV_KEEP.map(n=>`<button type="button" class="${cur===n?'on':''}" onclick="myAvSet(${n},this)" aria-label="${AVATAR_NAMES[n-AVATAR_BASE]}">${emblemHtml(n)}</button>`).join('')}</div>`;
+}
+async function myAvSet(v,btn){
+ if(btn)btn.disabled=true;
+ try{const r=await serverCall('setMyAvatar',getAccessToken(),v);ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE||{},{member:(r&&r.member)||{}});updateProfileUI();myAvDraw();showSettingsToast('Saved')}
+ catch(err){if(btn)btn.disabled=false;showSettingsToast(errorText(err))}
+}
+function myAvFile(inp){
+ const f=inp.files&&inp.files[0];inp.value='';if(!f)return;
+ const url=URL.createObjectURL(f),img=new Image();
+ img.onload=()=>{const c=document.createElement('canvas');c.width=c.height=160;const m=Math.min(img.naturalWidth,img.naturalHeight);
+  c.getContext('2d').drawImage(img,(img.naturalWidth-m)/2,(img.naturalHeight-m)/2,m,m,0,0,160,160);URL.revokeObjectURL(url);myAvSet(c.toDataURL('image/jpeg',.82))};
+ img.onerror=()=>{URL.revokeObjectURL(url);showSettingsToast('That photo could not be read')};img.src=url;
+}
 function seenHtml(ms,now){
  return ms&&(now-ms)<5*60000?'<span class="sk-active">Active now</span>':'Last seen '+timeAgo(ms,now);
 }
