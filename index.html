@@ -8612,6 +8612,24 @@ window.addEventListener('load',function(){
     #adminOverlay .a3-body.pshine :is(.rb2,.rb3,.rb5):after{display:block;content:"";position:absolute;top:0;bottom:0;width:40%;left:-50%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.95),transparent);animation:rbSh 1.1s .35s ease-in-out 1 both;pointer-events:none}
     @keyframes rbSh{to{left:120%}}
     @media (prefers-reduced-motion:reduce){#adminOverlay .a3-body.pshine :is(.rb2,.rb3,.rb5):after{animation:none;display:none}}
+    /* v347 Server: a pulse card on top, the month's cost as a battery */
+    .srv-hb{background:#fff;border-radius:20px;padding:16px;margin-top:12px;box-shadow:0 10px 26px rgba(20,40,110,.08);border:1.5px solid #e6e9f1}
+    .srv-ht{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.srv-ht small{display:block;font-size:9.5px;font-weight:900;letter-spacing:.12em;color:#8a93a8}
+    .srv-ht b{display:block;font-size:16px;font-weight:900;color:#141B33;margin-top:2px}.srv-ht span{display:block;font-size:11.5px;font-weight:700;color:#8a93a8;margin-top:2px}
+    .srv-ht em{flex:none;font-style:normal;font-size:11px;font-weight:900;border-radius:99px;padding:4px 10px;background:#E3F6EC;color:#13804F}
+    .srv-hb.backup .srv-ht em{background:#FFF1DF;color:#B26A00}.srv-hb.idle .srv-ht em{background:#F1F3F8;color:#8a93a8}
+    .srv-hb svg{display:block;width:100%;height:60px;margin:10px 0 6px}.srv-hb svg path{fill:none;stroke:#2FCB86;stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+    .srv-hb.backup svg path{stroke:#F08A4B}.srv-hb.idle svg path{stroke:#C9D0DC}
+    .srv-hb.draw svg path{stroke-dasharray:600;stroke-dashoffset:600;animation:srvDraw 2.2s ease-out forwards}@keyframes srvDraw{to{stroke-dashoffset:0}}
+    .srv-st{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));text-align:center;border-top:1px solid #EDF0F6;padding-top:10px}
+    .srv-st b{display:block;font-size:15px;font-weight:900;color:#141B33;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.srv-st b.ok{color:#13804F}.srv-st b.bad{color:#C63A4A}.srv-st small{font-size:9.5px;font-weight:800;color:#8a93a8}
+    .srv-cb .srv-k{display:block;font-size:9.5px!important;font-weight:900!important;letter-spacing:.12em;color:#8a93a8!important;margin:0 0 8px!important}
+    .srv-bat{display:flex;align-items:center;gap:12px}.srv-bat>b{font-size:19px;font-weight:900;color:#141B33}
+    .srv-bb{flex:1;height:24px;border-radius:7px;border:2px solid #203C8E;padding:2px;position:relative}.srv-bb:after{content:"";position:absolute;right:-6px;top:6px;width:4px;height:8px;border-radius:0 2px 2px 0;background:#203C8E}
+    .srv-bb i{display:block;height:100%;border-radius:4px;background:#2FCB86;transition:width .6s}.srv-bat.warn .srv-bb i{background:#E2B874}.srv-bat.stop .srv-bb i{background:#C63A4A}
+    .srv-bs{display:block;margin-top:6px;font-size:11px!important;font-weight:700;color:#8a93a8}
+    @media (prefers-reduced-motion:reduce){.srv-hb.draw svg path{animation:none;stroke-dashoffset:0}}
+    body.dark-mode .srv-hb{background:#151a22;border-color:#252a32}body.dark-mode .srv-ht b,body.dark-mode .srv-st b,body.dark-mode .srv-bat>b{color:#fff}body.dark-mode .srv-st{border-color:#2a313c}
 </style>
 </head>
 <body>
@@ -17891,6 +17909,7 @@ async function adminPermsSave(btn){
 
  
 const SRV_ADMIN={status:null,events:null,parity:null,busy:''};
+function srvHbFresh(){const t=Date.now();if(window.ADM_PV!=='server'||!window.SRV_HBT)window.SRV_HBT=t;return t-window.SRV_HBT<1500}
 function serverNow(){
  const s=window.SEKNA_SERVER, fb=window.SEKNA_FB;
  if(!s||!fb)return {icon:aDot('#b8bfcd'),bg:'#f2f4f9',short:'Apps Script',cls:'idle',title:'Apps Script',text:'This copy uses Apps Script only.'};
@@ -18111,12 +18130,11 @@ function adminServerHtml(){
    if(!b)cost=`<small>${st.billingError?esc(st.billingError):'No cost reported yet.'}</small>`;
    else{
      const pct=b.budget?Math.min(100,b.cost/b.budget*100):0;
-     cost=`<div class="srv-cost"><b>$${fmt(b.cost,2)}</b><span>of $${fmt(b.budget,2)} this month</span></div>
-       <div class="srv-bar ${pct>=100?'stop':pct>=50?'warn':''}"><u style="width:${pct.toFixed(1)}%"></u></div>
-       <small style="display:block;margin-top:6px;font-size:11.5px;color:#8a92a6;font-weight:700">Reported ${esc(srvAgo(b.at))}${b.stopped?' · Billing was switched off at the limit':''}</small>`;
+     cost=`<div class="srv-bat ${pct>=100?'stop':pct>=50?'warn':''}"><div class="srv-bb"><i style="width:${Math.max(3,pct).toFixed(1)}%"></i></div><b>$${fmt(b.cost,2)}</b></div>
+       <small class="srv-bs">of $${fmt(b.budget,2)} · reported ${esc(srvAgo(b.at))}${b.stopped?' · billing was switched off at the limit':''}</small>`;
    }
  }
- const health=st&&!st.error?`<div class="srv-grid"><span>Answers<b>${fmt(st.served)}</b></span><span>Errors<b>${fmt(st.errors)}</b></span><span>Running since<b>${esc(srvAgo(st.startedAt))}</b></span><span>Version<b>${esc(st.version||'')}</b></span></div>
+ const health=st&&!st.error?`<div class="srv-st"><div><b>${fmt(st.served)}</b><small>Answers</small></div><div><b class="${st.errors?'bad':'ok'}">${fmt(st.errors)}</b><small>Errors</small></div><div><b>${esc(st.startedAt?new Date(st.startedAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'—')}</b><small>Since</small></div><div><b>${esc(st.version||'—')}</b><small>Version</small></div></div>
    ${st.lastError?`<small style="display:block;margin-top:6px;font-size:11.5px;color:#c2382f;font-weight:700">Last error (${esc(srvAgo(st.lastErrorAt))}): ${esc(st.lastError)}</small>`:''}
    ${Object.keys(st.warmErrors||{}).map(k=>`<small style="display:block;margin-top:6px;font-size:11.5px;color:#b26a00;font-weight:700">${esc(k.toUpperCase())} sheet could not be read (${esc(srvAgo(st.warmErrors[k].at))}): ${esc(st.warmErrors[k].error)}</small>`).join('')}`:'';
  const names={getDashboardData:'Dashboard',getMonthCompareData:'Month history'};
@@ -18134,10 +18152,10 @@ function adminServerHtml(){
  else if(ev)log=ev.length?`<div class="srv-log">${ev.slice(0,12).map(e=>`<div><span>${aDot(/Backup/.test(e.server)?'#f08a4b':'#22c47c')}</span><span>${esc(/Backup/.test(e.server)?'Moved to the backup':'Back on Firebase')}${e.reason?` — ${esc(e.reason)}`:''}<small>${esc(srvAgo(e.at))} · ${esc(e.name||e.email)}</small></span></div>`).join('')}</div>`
    :'<small>No switches yet.</small>';
  return `<b class="ad-h">${aI('server')}Server</b><small class="ad-sub">Firebase first, Apps Script as backup.</small>
-  <div class="srv-now ${n.cls}"><i>${n.icon}</i><span><b>${esc(n.title)}</b><small>${esc(n.text)}</small></span></div>
+  <div class="srv-hb ${n.cls}${srvHbFresh()?' draw':''}"><div class="srv-ht"><div><small>SERVER</small><b>${esc(n.title)}</b><span>${esc(n.text)}</span></div><em>${n.cls==='backup'?'● Backup':n.cls==='idle'?'● Off':'● Healthy'}</em></div>
+   <svg viewBox="0 0 300 60" preserveAspectRatio="none" aria-hidden="true"><path d="${n.cls?'M0 32 H300':'M0 32 H70 L80 32 L88 12 L98 50 L106 22 L114 32 H180 L190 32 L198 14 L208 48 L216 26 L224 32 H300'}"/></svg>${health}</div>
   ${n.cls==='backup'?'<button type="button" class="srv-btn" onclick="srvRetry()">Try Firebase again</button>':''}
-  <div class="srv-box"><b>This month's cost</b><small>Limit $3, then Apps Script takes over.</small>${cost}</div>
-  <div class="srv-box"><b>Firebase server</b><small>Europe (London)</small>${health}</div>
+  <div class="srv-box srv-cb"><small class="srv-k">THIS MONTH'S COST</small>${cost}<small>Limit $3, then Apps Script takes over.</small></div>
   ${(SRV_ADMIN.access||{}).mode==='firebase'?'':`<div class="srv-box"><b>Sign-in</b><small>Devices, approvals, invites, messages.</small>${srvAccessHtml()}</div>`}
   ${(SRV_ADMIN.rest||{}).mode==='firebase'?'':`<div class="srv-box"><b>Everything else</b><small>Usage, shares, plan history, reports, alerts.</small>${srvRestHtml()}</div>`}
   ${(SRV_ADMIN.tasks||{}).mode==='firebase'?'':`<div class="srv-box"><b>Team Tasks</b><small>Tasks, leave, backups, positions.</small>${srvTasksHtml()}</div>`}
