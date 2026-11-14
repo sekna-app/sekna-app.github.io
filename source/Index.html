@@ -8804,6 +8804,13 @@ body.dark-mode .ak-card{background:#0f141c}body.dark-mode .ak-hd{background:#0f1
 body.dark-mode .ak-m.h{background:#232a36;color:#e8ecf3}body.dark-mode .ak-in input{background:#232a36}
 body.dark-mode .ak-kb button,body.dark-mode .ak-ch button{background:#0f141c;border-color:#7d9bff;color:#c9d6ff}
 body.dark-mode .ak-rc{border-color:#232a36}body.dark-mode .ak-rb{border-color:#232a36;color:#c9d6ff}
+/* v381 emails with a copy button */
+.ak-ml{display:flex;align-items:center;gap:10px;flex:1;min-width:0;color:inherit;text-decoration:none}
+.ak-ml span{min-width:0}.ak-ml small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ak-cp{flex:none;width:32px;height:32px;border:0;border-radius:50%;background:#fff;color:#1C3C96;display:grid;place-items:center;cursor:pointer}
+.ak-cp.ok{background:#31A24C;color:#fff}
+.ak-cp .ak-ic{width:15px;height:15px}
+body.dark-mode .ak-cp{background:#0f141c;color:#c9d6ff}
 </style>
 </head>
 <body>
@@ -9849,7 +9856,7 @@ let ASK_HEMERA_URL='https:\/\/script.google.com/macros/s/AKfycbwDgKEmZ54-FxWfyCo
 const AK={msgs:[],assets:null,at:0,editor:false,hist:[],busy:false,kb:true,nav:{},add:null};
 const AK_IC={
  spk:'<path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/><path d="M18.5 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>',
- back:'<path d="M15 18l-6-6 6-6"/>',plane:'<path d="M4 12l16-8-6 16-2.5-6.5z"/>',send:'<path d="M5 12h14M13 6l6 6-6 6"/>',menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
+ back:'<path d="M15 18l-6-6 6-6"/>',plane:'<path d="M4 12l16-8-6 16-2.5-6.5z"/>',copy:'<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>',send:'<path d="M5 12h14M13 6l6 6-6 6"/>',menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
  links:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 3v18"/>',
  off:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
  mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
@@ -9878,11 +9885,14 @@ function openAsk(){
  o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av">${akI('spk')}</span><div><b>Ask HEMERA</b><small id="akSt">Active now</small></div></div>
   <div class="ak-bd" id="akBd"></div><div class="ak-kb" id="akKb"></div>
   <form class="ak-in" onsubmit="akSend(event)"><button type="button" class="ak-mb" aria-label="Menu" onclick="akToggleKb()">${akI('menu')}</button><input id="akQ" autocomplete="off" maxlength="1500" placeholder="Aa"><button type="submit" class="ak-snd" aria-label="Send">${akI('plane')}</button></form></div>`;
- document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));
+ document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));akVv();
  if(!AK.msgs.length){const n=akMe().name.split(' ')[0];akBot(`<p>Hi${n?' '+akEsc(n):''}. Pick from the menu or type your question.</p>`)}
  akDraw();akKb();
  if(ASK_HEMERA_URL)akAssets().catch(()=>{});
 }
+
+function akVv(){const v=window.visualViewport;if(!v||akVv.on)return;akVv.on=1;const f=()=>{const o=document.getElementById('akBox');if(!o)return;if(window.innerWidth>=900){o.style.top='';o.style.height='';o.style.bottom='';return}o.style.top=v.offsetTop+'px';o.style.height=v.height+'px';o.style.bottom='auto';const b=document.getElementById('akBd');if(b)b.scrollTop=b.scrollHeight};v.addEventListener('resize',f);v.addEventListener('scroll',f);f()}
+function akCopy(t,btn){try{navigator.clipboard.writeText(t).then(()=>{btn.classList.add('ok');showSettingsToast('Email copied');setTimeout(()=>btn.classList.remove('ok'),1500)},()=>showSettingsToast(t))}catch(e){showSettingsToast(t)}}
 function closeAsk(){const o=document.getElementById('akBox');if(!o)return;o.classList.remove('open');setTimeout(()=>o.remove(),280)}
 function akBot(html,cls){AK.msgs.push({w:'h',html,cls:cls||''});akDraw()}
 function akUser(t){AK.msgs.push({w:'u',html:akEsc(t)});akDraw()}
@@ -9952,7 +9962,7 @@ function akOffHtml(){
 function akMailHtml(){
  if(!TK.data)return '<p>Could not load the team. Try again.</p>';
  const ppl=tkPeople().filter(p=>p.email);
- return ppl.map(p=>`<a class="ak-row" href="mailto:${akEsc(p.email)}">${tkAv(p)}<span><b>${akEsc(p.name||p.email)}</b><small>${akEsc(p.email)}</small></span></a>`).join('')||'<p class="ak-mut">No emails yet.</p>';
+ return ppl.map(p=>`<div class="ak-row"><a class="ak-ml" href="mailto:${akEsc(p.email)}">${tkAv(p)}<span><b>${akEsc(p.name||p.email)}</b><small>${akEsc(p.email)}</small></span></a><button type="button" class="ak-cp" aria-label="Copy email" onclick="akCopy('${akEsc(p.email)}',this)">${akI('copy')}</button></div>`).join('')||'<p class="ak-mut">No emails yet.</p>';
 }
  
 const AK_TYPES=[['sheet','Sheets'],['daily','Daily shots'],['weekly','Weekly shots'],['dashboard','Dashboard'],['all','Everything']];
