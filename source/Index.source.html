@@ -10137,7 +10137,7 @@ function akKb(){
  // v400 one line you swipe (م١), in this order; About moved to the (i) in the top bar
  const items=[['links','Sheets & links']];
  if(AK.canAdd)items.push(['add','Add a sheet']);if(AK.canTeach)items.push(['teach','Teach the bot']);
- items.push(['off','Team days off'],['task','My tasks']);
+ items.push(['off','Team days off'],['mail','Team emails'],['task','My tasks']);
  k.hidden=!AK.kb;
  k.innerHTML=items.map(([id,t])=>`<button type="button" onclick="akMenu('${id}')">${akI(id)}${t}</button>`).join('');
 }
