@@ -242,12 +242,13 @@ const T = {
     if (!title) throw new Error('Give the task a name.');
     const clean = {
       accounts: (Array.isArray(d.accounts) ? d.accounts : [d.account]).filter((x, i, all) => (x === 'usa' || x === 'ar') && all.indexOf(x) === i),
-      platforms: (Array.isArray(d.platforms) ? d.platforms : []).filter(p => p === 'google' || p === 'microsoft'),
+      platforms: (Array.isArray(d.platforms) ? d.platforms : []).filter(p => p === 'google' || p === 'microsoft' || p === 'openai'),
       snaps: (Array.isArray(d.snaps) ? d.snaps : []).slice(0, 12).map(s => ({ n: String((s && s.n) || '').trim().slice(0, 60), t: String((s && s.t) || '').slice(0, 10) })).filter(s => s.n),
       msg: String(d.msg || '').trim().slice(0, 600),
       days: (Array.isArray(d.days) ? d.days : []).map(Number).filter((n, i, all) => n >= 1 && n <= 31 && Math.round(n) === n && all.indexOf(n) === i).sort((x, y) => x - y)
     };
     if (kind === 'quick') clean.photos = await storePhotos(d.photos, a.email);
+    if (kind === 'quick') clean.qtype = d.qtype === 'optimization' ? 'optimization' : 'report';
     if (kind === 'leave') {
       const backup = norm(d.backup);
       clean.type = leaveType;

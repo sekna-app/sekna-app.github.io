@@ -8384,12 +8384,6 @@ window.addEventListener('load',function(){
     html body #labPanel .fc-top.fcP.fcP-in>button,html body #labPanel .fc-top.fcP.fcP-in>.fcP-pill{animation:lbFade .16s ease-out both!important;animation-delay:0s!important}
     html body #labPanel .fc-acc,html body #labPanel .fc-acc *{transition-duration:.12s!important}
     @keyframes lbFade{from{opacity:0}}
-    /* v328 day vs last year: navy header with the date in a square */
-    .lyh{display:flex;align-items:center;gap:12px;margin:-2px 46px 12px 0;padding:12px 14px;border-radius:16px;color:#fff;background:radial-gradient(120% 220% at 0 0,#2C4FB8,#203C8E 60%,#132457)}
-    .lyh-d{flex:none;width:46px;height:50px;border-radius:12px;background:rgba(255,255,255,.14);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
-    .lyh-d b{font-size:21px;font-weight:900}.lyh-d small{font-size:9px;font-weight:800;letter-spacing:.1em;color:#C9D3F5;margin-top:3px}
-    .lyh-t{min-width:0;display:flex;flex-direction:column;gap:3px}.lyh-t b{font-size:15px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lyh-t small{font-size:11.5px;font-weight:700;color:#C9D3F5;white-space:nowrap}
-    .lyh-p{margin-left:auto;flex:none;font-size:12.5px;font-weight:900;border-radius:99px;padding:4px 10px}.lyh-p.dn{background:rgba(255,154,166,.18);color:#FF9AA6}.lyh-p.up{background:rgba(126,240,185,.16);color:#7EF0B9}
     /* v328 month: Spend / Conversions / Value rows shorter */
     html body #channelPanel .ox-tiles.oxL>.ox-tile{padding:9px 0!important;row-gap:3px!important;grid-template-areas:"ic lbl pc" "ic val of" "ic bar bar"!important;grid-template-columns:36px minmax(0,1fr) auto!important}
     html body #channelPanel .oxL .ox-of{align-self:end;margin:0 0 2px!important}
@@ -8404,7 +8398,7 @@ window.addEventListener('load',function(){
     .ox-rc>.ox-cl.mc>svg{display:none}.ox-rc>.ox-cl.mc:before,.ox-rc>.ox-cl.mc:after{display:none!important}
     .ox-rc>.ox-cl.mc>span{grid-area:t;display:flex;flex-wrap:wrap;align-items:baseline;gap:0 5px;font-size:13px;color:#6B7385;font-weight:800;min-width:0}
     .ox-rc>.ox-cl.mc>span>b{font-size:16px;color:#141B33}
-    .ox-rc>.ox-cl.mc>span>small{flex-basis:100%;font-size:11px;font-weight:700;color:#8A93A8;margin-top:2px}
+    .ox-rc>.ox-cl.mc>span>small{flex-basis:100%;font-size:9.5px;font-weight:700;color:#8A93A8;margin-top:2px}
     .ox-rc>.ox-cl.mc>em{grid-area:p;margin:0!important;font-size:12px!important;padding:3px 9px!important}
     .ox-rc .rc-l{grid-area:t}
     body.dark-mode .ox-rc{background:#151a22;border-color:#2a313c}
@@ -8419,6 +8413,35 @@ window.addEventListener('load',function(){
     .vcp-ft small{display:block;font-size:9.5px!important;font-weight:900;letter-spacing:.12em;color:#8A93A8!important}.vcp-ft b{display:block;font-size:15px!important;font-weight:900;color:#141B33!important;margin-top:3px;font-variant-numeric:tabular-nums}
     .vcp-ft .r{text-align:right}.vcp-ft .r small,.vcp-ft .r b{color:#B0812E!important}
     html body #mtdVarianceCard.vc.over #mtdVariance{color:#C63A4A!important}
+    /* v329 day vs last year sheet: A1 side by side */
+    .lya{margin:-2px 46px 14px 0}
+    .lya-top{display:flex;align-items:baseline;gap:8px}.lya-top b{font-size:26px;font-weight:900;color:#141B33}.lya-top span{font-size:13px;font-weight:700;color:#6B7385}
+    .lya-vs{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:10px;margin-top:12px}
+    .lya-vs small{display:block;font-size:10px;font-weight:900;letter-spacing:.12em;color:#8A93A8;margin-bottom:3px}
+    .lya-vs .ty b{font-size:28px;font-weight:900;color:#141B33;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+    .lya-vs .ly{text-align:right}.lya-vs .ly b{font-size:20px;font-weight:900;color:#8A93A8;font-variant-numeric:tabular-nums}
+    .lya-p{align-self:center;font-size:12.5px;font-weight:900;border-radius:99px;padding:4px 10px}.lya-p.dn{background:#FBDDE1;color:#C63A4A}.lya-p.up{background:#E3F6EC;color:#13804F}
+    .lya-bars{display:flex;flex-direction:column;gap:6px;margin-top:12px}.lya-bars i{display:block;height:8px;border-radius:99px;background:#203C8E}.lya-bars i.l{background:#DFE4EF}
+    .lya-ld{display:block;margin-top:10px;font-size:12px;font-weight:700;color:#8A93A8}
+    body.dark-mode .lya-top b,body.dark-mode .lya-vs .ty b{color:#fff}
+    /* v329 task form: type dropdown and OpenAI */
+    .tk-sel{position:relative}.tk-sel select{width:100%;appearance:none;-webkit-appearance:none;border:1.5px solid #DFE4EF;border-radius:14px;background:#fff;padding:13px 40px 13px 14px;font:inherit;font-size:15px;font-weight:800;color:#141B33}
+    .tk-sel:after{content:"";position:absolute;right:16px;top:50%;width:8px;height:8px;border-right:2.4px solid #203C8E;border-bottom:2.4px solid #203C8E;transform:translateY(-70%) rotate(45deg);pointer-events:none}
+    .tk-chip.o.on{background:#10A37F}.tk-tag.openai{background:#E3F5EF;color:#0B7A5E}
+    /* v329 admin: one navy card */
+    .adc{border-radius:20px;padding:16px;color:#fff;background:linear-gradient(140deg,#203C8E,#2C4FB8);box-shadow:0 12px 28px rgba(32,60,142,.25);margin-bottom:6px}
+    .adc-k{font-size:10.5px;font-weight:900;letter-spacing:.14em;color:#E2B874}
+    .adc-st{display:grid;grid-template-columns:repeat(4,1fr);margin-top:10px}.adc-st div{text-align:center}.adc-st div+div{border-left:1px solid rgba(255,255,255,.14)}
+    .adc-st b{display:block;font-size:24px;font-weight:900;line-height:1.1}.adc-st small{font-size:11px;font-weight:800;color:#C9D3F5}.adc-st .alert b{color:#F2D38F}
+    .adc-op{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.14)}
+    .adc-oh{display:flex;align-items:baseline;justify-content:space-between}.adc-oh small{font-size:10px;font-weight:900;letter-spacing:.12em;color:#C9D3F5}.adc-oh b{font-size:22px;font-weight:900}
+    .adc-bars{display:flex;flex-direction:column;gap:7px;margin-top:8px}.adc-bars div{display:grid;grid-template-columns:90px 1fr 34px;align-items:center;gap:10px;font-size:13px;font-weight:800}
+    .adc-bars span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.adc-bars i{height:7px;border-radius:99px;background:rgba(255,255,255,.16);overflow:hidden}.adc-bars u{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#E2B874,#F2D38F)}.adc-bars b{text-align:right}
+    .adc-e{display:block;margin-top:6px;font-size:12px;color:#C9D3F5}
+    /* v329 About: Goldline Studio smaller and lighter */
+    html body .ab3-glt{gap:6px!important}.ab3-glt svg{width:22px!important;height:19px!important}
+    html body .ab3-glt b{font-size:13px!important;margin:0 0 3px!important}html body .ab3-glt small{font-size:7.5px!important;letter-spacing:.24em!important;color:#C9D3F5!important;opacity:.85}
+    html body .ab3-glt{padding:6px 10px 6px 12px;border-radius:12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);top:calc(26px + env(safe-area-inset-top,0px))!important}
 </style>
 </head>
 <body>
@@ -8601,7 +8624,7 @@ window.addEventListener('load',function(){
     <button class="sk-nav-btn" id="ttMineBtn" type="button" onclick="openTasks('mine')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8.5 12.5l2.5 2.5 5-5.5"/></svg></span><span>My Tasks</span><i class="tk-ndot"></i></button>
     <button class="sk-nav-btn" id="ttBuildBtn" type="button" onclick="openTasks('build')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l10-10-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></span><span>Task Builder</span><span class="sk-nav-lock" id="ttBuildLock"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span></button>
     <button class="sk-nav-btn" id="ttLeaveBtn" type="button" onclick="openTasks('leave')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a8 8 0 0 1 8 8H4a8 8 0 0 1 8-8z"/><path d="M12 11v9M9 20h6"/></svg></span><span>Team Leave</span></button>
-    <button class="sk-nav-btn" id="ttQuickBtn" type="button" onclick="openTasks('quick')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/></svg></span><span>Quick Requests</span></button>
+    <button class="sk-nav-btn" id="ttQuickBtn" type="button" hidden style="display:none" onclick="openTasks('quick')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/></svg></span><span>Quick Requests</span></button>
   </nav></div>
   </div>
 
@@ -9039,8 +9062,8 @@ window.addEventListener('load',function(){
         <div class="ox-tile oxL-ck" id="mtdClkTile"><span class="ox-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 4l9 8-4 1-1 4-4-13z"/><path d="M15 15l4 4"/></svg></span><span class="ox-lbl">Clicks</span><b id="mtdClk">—</b><span class="ox-hs" id="mtdClkPlan">—</span>
           <div class="ox-bar"><span class="clicks" id="mtdClkBar"></span><em class="ox-tick" id="mtdClkTick"></em></div></div>
       </div>
-      <div class="ox-rc"><div class="ox-cl mc" id="mtdClicksRow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/></svg><span id="mtdRoasLine">ROAS <b id="mtdRoas">—</b> <small id="mtdRoasPlan"></small></span><em id="mtdClicksPct"></em></div>
-      <div class="ox-cl mc" id="mtdClkRow" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l9 8-4 1-1 4-4-13z"/><path d="M15 15l4 4"/></svg><span id="mtdClkLine">Clicks <b id="mtdClk2">—</b> <small id="mtdClkPlan2"></small></span><em id="mtdClkPct2"></em></div></div>
+      <div class="ox-rc"><div class="ox-cl mc" id="mtdClkRow" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l9 8-4 1-1 4-4-13z"/><path d="M15 15l4 4"/></svg><span id="mtdClkLine">Clicks <b id="mtdClk2">—</b> <small id="mtdClkPlan2"></small></span><em id="mtdClkPct2"></em></div><div class="ox-cl mc" id="mtdClicksRow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/></svg><span id="mtdRoasLine">ROAS <b id="mtdRoas">—</b> <small id="mtdRoasPlan"></small></span><em id="mtdClicksPct"></em></div>
+      </div>
 
       <div class="ox-legend" id="mtdTickLegend"><i></i><span>Black tick = expected by today</span></div>
     </section>
@@ -11170,7 +11193,9 @@ function lyDays(days){
    return `<div class="lyx-det lyx-det2"><div class="lyx-dr hd"><span></span><b>This year</b><b>Last year</b><span></span></div>
     ${rows.map(([t,x,y,f,g])=>{const d=x!=null&&y?x/y-1:null,c=!g||d==null||Math.abs(d)<.005?'neutral':d>0?'good':'bad';return `<div class="lyx-dr"><span>${t}</span><b>${f(x)}</b><b class="m">${f(y)}</b>${mxArrow(d,c)}</div>`}).join('')}</div>`};
  const head=r=>{const x=r.x,d=r.a&&r.l&&r.l.value?r.a.value/r.l.value-1:null;
-   if(r.a&&r.l)return `<div class="lyh"><div class="lyh-d"><b>${x.dayNumber}</b><small>${esc(String(x.dayName||'').slice(0,3).toUpperCase())}</small></div><div class="lyh-t"><b>${esc(x.hijri||'')}</b><small>vs ${esc(shortDay(r.k).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'}))}</small></div>${d!=null?`<span class="lyh-p ${r.w?'up':'dn'}">${lyChip(d)}</span>`:''}</div>`;
+   if(r.a&&r.l){const mx=Math.max(r.a.value,r.l.value)||1;return `<div class="lya"><div class="lya-top"><b>${x.dayNumber}</b><span>${esc(String(x.dayName||'').slice(0,3))} · ${esc(x.hijri||'')}</span></div>
+    <div class="lya-vs"><div class="ty"><small>THIS YEAR</small><b>${money(r.a.value)}</b></div>${d!=null?`<span class="lya-p ${r.w?'up':'dn'}">${lyChip(d)}</span>`:'<span></span>'}<div class="ly"><small>LAST YEAR</small><b>${money(r.l.value)}</b></div></div>
+    <div class="lya-bars"><i style="width:${(r.a.value/mx*100).toFixed(1)}%"></i><i class="l" style="width:${(r.l.value/mx*100).toFixed(1)}%"></i></div><small class="lya-ld">Last year: ${esc(shortDay(r.k).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'}))}</small></div>`}
    return `${d!=null?`<span class="lyx-dl ${r.w?'up':'dn'}">${lyChip(d)}</span>`:''}<div class="lyx-d"><b>${x.dayNumber}</b>${esc(String(x.dayName||'').slice(0,3))} · ${esc(x.hijri||'')}</div>
     ${r.a?`<div class="lyx-v">${money(r.a.value)}</div><div class="lyx-ly">${r.l?`last year ${money(r.l.value)}`:'No data last year'}</div>`
          :`<div class="lyx-v">${r.l?money(r.l.value):'—'}</div><div class="lyx-ly">${r.l?'last year · to beat':'No data last year'}</div>`}`};
@@ -14688,7 +14713,10 @@ function renderAdmin(d){
    const cleared=+((ADMIN_APP_STATE||{}).recentClearedAt)||0;
    feed.sort((x,y)=>y.at-x.at);
    const recent=`<div class="ad-lbl">Recent</div><div class="ad-card">${feed.filter(f=>f.at>cleared).slice(0,8).map(f=>`<div class="a3-fi">${f.ic}<div><b>${f.t}</b><small>${esc(timeAgo(f.at,now))}</small></div></div>`).join('')||'<div class="sk-admin-empty">Nothing new.</div>'}</div>${feed.some(f=>f.at>cleared)?'<button type="button" class="sh-reset" onclick="clearRecent()">↺ Clear recent</button>':''}`;
-   body=`<div class="a3-stats"><div><b>${users.length}</b><small>Users</small></div><div class="${waiting.length?'alert':''}"><b>${waiting.length}</b><small>Waiting</small></div><div><b>${invited}</b><small>Invited</small></div><div><b>${today}</b><small>Today</small></div></div>${opens}${quick}${recent}`;
+   const mon=new Date().toLocaleDateString('en-GB',{month:'long'}).toUpperCase();
+   const adc=`<div class="adc"><div class="adc-k">TEAM · ${mon}</div><div class="adc-st"><div><b>${users.length}</b><small>Users</small></div><div class="${waiting.length?'alert':''}"><b>${waiting.length}</b><small>Waiting</small></div><div><b>${invited}</b><small>Invited</small></div><div><b>${today}</b><small>Today</small></div></div>
+     <div class="adc-op"><div class="adc-oh"><small>OPENS THIS MONTH</small><b>${op?op.total:'…'}</b></div>${op?(op.people.length?`<div class="adc-bars">${op.people.slice(0,4).map(p=>`<div><span>${esc(p.name)}</span><i><u style="width:${(p.n/mx*100).toFixed(1)}%"></u></i><b>${p.n}</b></div>`).join('')}</div>`:'<small class="adc-e">No one opened HEMERA yet this month.</small>'):`<small class="adc-e">${a&&a.error?esc(a.error):'Loading…'}</small>`}</div></div>`;
+   body=`${adc}${recent}`;
  }
  else if(ADMIN_VIEW==='people')body=peopleView;
  else if(ADMIN_VIEW==='server')body=`<div class="a2-sheet">${adminServerHtml()}</div>`;
@@ -15814,7 +15842,7 @@ const TK_MANAGER_ROLES=['Team Leader','Media Manager','CEO','Head of Media'];
 const TK_CAM='<svg class="tk-cam" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.6l1.4-2h5l1.4 2h1.6A2.5 2.5 0 0 1 20 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5z"/><circle cx="12" cy="12.5" r="3.4"/></svg>';
 const TK_SNAP_EX=['Media Plan','Search Terms'];
 const TK_SNAP_SUGGEST=['Media Plan','Search Terms','Campaigns','Ads','Keywords','Devices'];
-const TK_TITLE_SUGGEST=['SEKNA Report USA','SEKNA Report AR']; 
+const TK_TITLE_SUGGEST=[]; 
 let TK={view:'team',month:'',week:1,data:null,busy:false,form:null,shown:{}};
 function tkToday(){const n=muscatParts(Date.now());return {y:+n[0],m:+n[1],d:+n[2]}}
 function tkMonthNow(){const t=tkToday();return `${t.y}-${String(t.m).padStart(2,'0')}`}
@@ -15915,7 +15943,7 @@ function isOnline(ms){return !!ms&&Date.now()-ms<ONLINE_MS}
 function onDot(av,ms){return isOnline(ms)?`<span class="avw">${av}<i class="on-dot" title="Online now"></i></span>`:av}
 function tkAv(p){return `<span class="tk-av has-emb">${personAv(p.avatar,p.name)}</span>`}
 function adminSeen(email){const r=((ADMIN_LAST&&ADMIN_LAST.rows)||[]).filter(x=>String(x.email).toLowerCase()===String(email).toLowerCase());return Math.max(0,...r.map(x=>x.lastSeenMs||0))}
-const TK_VIEWS={team:['Team Board','The whole team, week by week'],mine:['My Tasks','What you need to do'],build:['Task Builder','Plan the month for the team'],quick:['Quick Requests','Small asks with a deadline'],leave:['Team Leave','Days off and backups']};
+const TK_VIEWS={team:['Team Board','The whole team, week by week'],mine:['My Tasks','What you need to do'],build:['Task Builder','Plan the month for the team'],leave:['Team Leave','Days off and backups']};
 
 function tkSetTitle(t){const el=document.getElementById('tkTitle');if(!el)return;const w=String(t).split(' '),l=w.pop();el.innerHTML=(w.length?esc(w.join(' '))+' ':'')+`<span>${esc(l)}</span>`}
 const TK_VIEW_PERM={team:'team',mine:'mine',build:'build',quick:'quick',leave:'leaveview'};
@@ -15974,10 +16002,10 @@ function tkRender(){
  const weeks=`<div class="tk-weeks">${[1,2,3,4].map(w=>`<button type="button" class="${w===TK.week?'on':''}" onclick="tkSetWeek(${w})"><b>W${w}</b><small>${esc(tkRange(TK.month,w))}</small></button>`).join('')}</div>`;
  let body='';
  if(TK.view==='team')body=month+weeks+tkTodaySw()+tkTeamHtml();
- else if(TK.view==='mine')body=month+weeks+tkMineHtml();
+ else if(TK.view==='mine')body=month+weeks+tkMineHtml()+(tkViewOk('quick')||tkCan('quick')?`<div class="ad-lbl" style="margin-top:18px">Reports &amp; optimizations</div>${tkQuickHtml()}`:'');
  else if(TK.view==='build')body=month+tkBuildHtml();
  else if(TK.view==='leave')body=month+tkLeaveHtml();
- else body=tkQuickHtml();
+ else body=month+weeks+tkMineHtml();
  const key=[TK.view,TK.month,TK.week].join('|');
  b.classList.toggle('tk-still',TK.lastKey===key);TK.lastKey=key;
  b.innerHTML=tabs+body;
@@ -15990,7 +16018,7 @@ function tkTags(t){
  const d=t.data||{},out=[];
  if((d.days||[]).length)out.push(`<span class="tk-tag days">📅 ${d.days.length>4?d.days.length+' days':'Day '+d.days.join(', ')}</span>`);
  out.push(tkAccTxt(tkAccs(d)));
- (d.platforms||[]).forEach(p=>out.push(`<span class="tk-tag ${p}">${p==='google'?'Google':'Microsoft'}</span>`));
+ (d.platforms||[]).forEach(p=>out.push(`<span class="tk-tag ${p}">${p==='google'?'Google':p==='openai'?'OpenAI':'Microsoft'}</span>`));
  return out.join('');
 }
 function tkSnaps(t){const s=(t.data&&t.data.snaps)||[];return s.length?`<div class="tk-snaps">${s.map(x=>`<span>${TK_CAM}${esc(x.n)}${x.t?` · <b>${esc(x.t)}</b>`:''}</span>`).join('')}</div>`:''}
@@ -16259,7 +16287,7 @@ function tkQuickHtml(){
  const mine=mgr?all:all.filter(q=>q.email===me);
  const open=mine.filter(q=>!(q.done&&q.done.at)).sort((a,b)=>a.at-b.at), done=mine.filter(q=>q.done&&q.done.at);
  return `${tkQuickDash(mine)}
-   ${mgr?`<button type="button" class="tq-new" onclick="tkNewQuick()">＋ New request</button>`:''}
+   
    ${open.length?open.map(q=>tkQuickRow(q,q.email===me||mgr)).join(''):`<div class="tk-empty"><b>No open requests</b><small>${mgr?'Add one when someone asks for something.':'Nothing waiting for you.'}</small></div>`}
    ${done.length?`<div class="ad-lbl">Done · last 14 days</div>${done.map(q=>tkQuickRow(q,q.email===me||mgr)).join('')}`:''}`;
 }
@@ -16279,7 +16307,7 @@ function tkBuildHtml(){
  const rows=Object.keys(by).sort((a,b)=>roleTier(tkPerson(b).role)-roleTier(tkPerson(a).role)||tkPerson(a).name.localeCompare(tkPerson(b).name)).map((e,i)=>{const p=tkPerson(e),list=by[e],open=TK.bOpen===e,n=snapN(list);
    return `<div class="b4-row${open?' open':''}" style="--i:${i}"><button type="button" class="b4-h" onclick="tkBOpen('${esc(e)}')">${tkAv(p)}<div class="b4-n"><b>${esc(p.name)}</b><div class="b4-c"><span class="tk-tag">${list.length} task${list.length>1?'s':''}</span>${n?`<span class="tk-tag snap">${TK_CAM}${n}</span>`:''}${tkAccTxt(accOf(list))}</div></div><span class="b4-cv">›</span></button>
      ${open?`<div class="b4-d">${list.map(t=>`<div class="b4-t"><div class="b4-tt"><b>${esc(t.title)}</b><button type="button" class="tk-ed" onclick="tkEdit('${t.id}')" aria-label="Edit">✎</button></div>
-       <div class="tk-tags">${tkAccTxt(tkAccs(t.data))}${(t.data.platforms||[]).map(x=>`<span class="tk-tag ${x}">${x==='google'?'Google':'Microsoft'}</span>`).join('')}${t.weeks.length===4?'<span class="tk-tag all">All weeks</span>':`<span class="tk-tag">W${t.weeks.join(', W')}</span>`}</div>
+       <div class="tk-tags">${tkAccTxt(tkAccs(t.data))}${(t.data.platforms||[]).map(x=>`<span class="tk-tag ${x}">${x==='google'?'Google':x==='openai'?'OpenAI':'Microsoft'}</span>`).join('')}${t.weeks.length===4?'<span class="tk-tag all">All weeks</span>':`<span class="tk-tag">W${t.weeks.join(', W')}</span>`}</div>
        ${tkSnaps(t)}${t.data&&t.data.msg?`<div class="tk-msg">💬 ${esc(t.data.msg)}</div>`:''}</div>`).join('')}</div>`:''}</div>`}).join('');
  const empty=ts.length?'':`<div class="tk-empty"><b>No tasks for week ${w} yet</b><small>Add the first one below.</small></div>`;
  return `${copy}${weeks}${sum}${rows}${empty}
@@ -16309,7 +16337,12 @@ function tkSheet(html){
 function tkSheetClose(){TK.bad=null;const o=document.getElementById('tkSheet');if(o)o.classList.remove('open');const had=!!TK.form;TK.form=null;if(had)tkRender()}
 function tkNew(w){TK.snapEdit=-1;TK.bad=null;TK.form={kind:'weekly',title:'',email:'',weeks:[w],data:{accounts:[],platforms:[],snaps:[],msg:'',days:[]}};tkForm()}
 function tkEdit(id){TK.snapEdit=-1;TK.bad=null;const t=TK.data.tasks.find(x=>x.id===id);if(!t)return;TK.form=JSON.parse(JSON.stringify(t));TK.form.data=Object.assign({platforms:[],snaps:[],msg:''},TK.form.data);TK.form.data.accounts=tkAccs(TK.form.data).slice();delete TK.form.data.account;tkForm()}
-function tkNewQuick(){TK.bad=null;TK.form={kind:'quick',title:'',email:'',deadline:'',data:{msg:'',photos:[]}};tkForm()}
+function tkNewQuick(){TK.bad=null;TK.form={kind:'quick',title:'',email:'',deadline:'',data:{msg:'',photos:[],qtype:'report'}};tkForm()}
+
+function tkFType(v){tkFormRead();const f=TK.form||{},keep={title:f.title||'',email:f.email||'',msg:(f.data&&f.data.msg)||''};
+ if(v==='snapshot'){const w=(f.weeks&&f.weeks.length)?f.weeks:[TK.week||1];TK.form={kind:'weekly',title:keep.title,email:keep.email,weeks:w,data:{accounts:[],platforms:[],snaps:[],msg:keep.msg,days:[]}}}
+ else{TK.form={kind:'quick',title:keep.title,email:keep.email,deadline:f.deadline||'',data:{msg:keep.msg,photos:(f.data&&f.data.photos)||[],qtype:v}}}
+ TK.bad=null;tkForm(false,true)}
 function tkEditQuick(id){const t=TK.data.quick.find(x=>x.id===id);if(!t)return;TK.form=JSON.parse(JSON.stringify(t));TK.form.data=Object.assign({msg:''},TK.form.data);TK.form.data.photos=(TK.form.data.photos||[]).map(id=>({id}));tkForm()}
 function tkF(k,v){const f=TK.form;if(!f)return;
  if(k==='weeks'){const i=f.weeks.indexOf(v);if(v==='all')f.weeks=f.weeks.length===4?[TK.week]:[1,2,3,4];else if(i>=0){if(f.weeks.length>1)f.weeks.splice(i,1)}else f.weeks.push(v);f.weeks.sort()}
@@ -16425,22 +16458,24 @@ function tkForm(keep,stay){
  const sn=f.data.snaps||[], exHtml=TK_SNAP_EX.map(ex=>{const i=sn.findIndex(x=>x.n===ex);return i>=0?snapCard(i):`<div class="sq"><div class="sq-main"><b>${esc(ex)}</b><small>Example</small></div><button type="button" class="sq-b" onclick="tkSnapAdd('${ex}')">＋ Add</button></div>`}).join('');
  const ownHtml=sn.map((x,i)=>TK_SNAP_EX.includes(x.n)?'':snapCard(i)).join('');
  const snaps=`<div class="sq-box">${exHtml}${ownHtml}<div class="sq own"><div class="sq-main"><input id="tkSnapOwn" value="${esc(f._own||'')}" placeholder="Your own snapshot…" maxlength="60" onkeydown="if(event.key==='Enter'){event.preventDefault();tkSnapOwn()}"><small>Type any name</small></div><button type="button" class="sq-b" onclick="tkSnapOwn()">＋ Add</button></div></div>`;
- const html=(`<div class="tk-form tk-fpage"><div class="tk-fh">${q?'⚡ Quick request':f.id?'Edit task':'New task'}</div>
+ const tyNow=q?((f.data&&f.data.qtype)||'report'):'snapshot';
+ const tySel=f.id?'':`<label class="tk-l">Type</label><div class="tk-sel"><select onchange="tkFType(this.value)">${[['snapshot','Snapshot'],['report','Report'],['optimization','Optimization']].map(([v,l])=>`<option value="${v}"${tyNow===v?' selected':''}>${l}</option>`).join('')}</select></div>`;
+ const html=(`<div class="tk-form tk-fpage"><div class="tk-fh">${f.id?'Edit task':'New task'}</div>${tySel}
    <label class="tk-l">${q?'What is needed':'Task name'}</label>
-   <input id="tkfTitle" class="tk-in${bad('title')?' tk-bad':''}" oninput="this.classList.remove('tk-bad')" value="${esc(f.title)}" placeholder="${q?'e.g. Performance report for Gaza':'e.g. SEKNA Report USA'}" maxlength="140">
-   ${q?'':`<div class="tk-sug">${TK_TITLE_SUGGEST.map(s=>chip(false,esc(s),`tkSug('${s}')`)).join('')}</div>`}
+   <input id="tkfTitle" class="tk-in${bad('title')?' tk-bad':''}" oninput="this.classList.remove('tk-bad')" value="${esc(f.title)}" placeholder="${q?'e.g. Performance report for Gaza':'e.g. Daily media plan check'}" maxlength="140">
+
    ${q?`<div class="tq-who${bad('email')?' tk-bad':''}"><div class="tq-q">Who is it for?</div><div class="tq-ppl">${tkPeople().map(p=>`<button type="button" class="${f.email===p.email?'on':''}" onclick="tkF('email','${esc(p.email)}')">${tkAv(p)}<span>${esc(p.name.split(' ')[0])}</span>${tkPeople().filter(x=>x.name.split(' ')[0]===p.name.split(' ')[0]).length>1?`<small>${esc(p.email.split('@')[0].slice(0,12))}</small>`:''}</button>`).join('')||'<small>No approved people yet.</small>'}</div></div>`:`<label class="tk-l">For</label><div class="tk-people${bad('email')?' tk-bad':''}">${people||'<small>No approved people yet.</small>'}</div>`}
    ${q?`<label class="tk-l">Deadline <small>optional</small></label>${tkDlPicker(f)}${tkQuickWarn(f)}${tkPhField(f)}`:`
    <label class="tk-l">Account <small>one or both</small></label><div class="tk-row">${['usa','ar'].map(a=>chip(f.data.accounts.includes(a),`${tkHaLogo()?`<img class="tk-ha" src="${tkHaLogo()}" alt="">`:''}HA-${a.toUpperCase()}${f.data.accounts.includes(a)?'<i class="tk-ck">✓</i>':''}`,`tkF('account','${a}')`,'acc')).join('')}</div>
-   ${f.data.accounts.length?`<label class="tk-l">Platform</label><div class="tk-row">${chip(f.data.platforms.includes('google'),'Google',`tkF('platform','google')`,'g')}${chip(f.data.platforms.includes('microsoft'),'Microsoft',`tkF('platform','microsoft')`,'m')}</div>`:''}
+   ${f.data.accounts.length?`<label class="tk-l">Platform</label><div class="tk-row">${chip(f.data.platforms.includes('google'),'Google',`tkF('platform','google')`,'g')}${chip(f.data.platforms.includes('microsoft'),'Microsoft',`tkF('platform','microsoft')`,'m')}${chip(f.data.platforms.includes('openai'),'OpenAI',`tkF('platform','openai')`,'o')}</div>`:''}
    <label class="tk-l">Snapshots <small>Egypt time</small></label>${snaps}
    <datalist id="tkSnapList">${TK_SNAP_SUGGEST.map(s=>`<option value="${s}">`).join('')}</datalist>
    <label class="tk-l">Weeks</label><div class="tk-row">${[1,2,3,4].map(w=>chip(f.weeks.includes(w),`W${w}<small>${esc(tkRange(TK.month,w))}</small>`,`tkF('weeks',${w})`,'w')).join('')}${chip(f.weeks.length===4&&!(f.data.days||[]).length,'All 4',`tkF('weeks','all')`)}${chip(f.daysOn||(f.data.days||[]).length,'📅 Pick days',`tkF('daysOn')`)}</div>
    ${f.daysOn||(f.data.days||[]).length?tkDayGrid(f):''}${tkLeaveWarn(f)}`}
    <label class="tk-l">Message <small>optional</small></label><textarea id="tkfMsg" class="tk-in" rows="2" maxlength="600" placeholder="Anything they should know">${esc(f.data.msg||'')}</textarea>
-   <div class="tk-fa">${f.id?`<button type="button" class="tk-del" onclick="tkDelete(this)">Delete</button>`:''}<button type="button" class="tk-save" onclick="tkSave(this)">${f.id?'Save changes':q?'Add request':'Add task'}</button></div></div>`);
+   <div class="tk-fa">${f.id?`<button type="button" class="tk-del" onclick="tkDelete(this)">Delete</button>`:''}<button type="button" class="tk-save" onclick="tkSave(this)">${f.id?'Save changes':'Add task'}</button></div></div>`);
  const b=document.getElementById('tasksBody');if(!b)return;
- tkSetTitle(q?'Quick request':f.id?'Edit task':'New task');
+ tkSetTitle(f.id?'Edit task':'New task');
  b.classList.toggle('tk-still',!!(keep||stay));TK.lastKey='';
  b.innerHTML=html;
  if(sc)sc.scrollTop=top;
