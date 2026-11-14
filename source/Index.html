@@ -8463,6 +8463,20 @@ window.addEventListener('load',function(){
     .srv-bs{display:block;margin-top:6px;font-size:11px!important;font-weight:700;color:#8a93a8}
     @media (prefers-reduced-motion:reduce){.srv-hb.draw svg path{animation:none;stroke-dashoffset:0}}
     body.dark-mode .srv-hb{background:#151a22;border-color:#252a32}body.dark-mode .srv-ht b,body.dark-mode .srv-st b,body.dark-mode .srv-bat>b{color:#fff}body.dark-mode .srv-st{border-color:#2a313c}
+    /* v348 Server: Same numbers and Switch log as one tool list; This device as a wide card with a blue filter */
+    .srv-tl{background:#fff;border-radius:18px;padding:2px 14px;margin-top:12px;box-shadow:0 10px 26px rgba(20,40,110,.08);border:1.5px solid #e6e9f1}
+    .srv-tr{display:flex;align-items:center;gap:12px;padding:12px 0}.srv-tl>.srv-tr+*{border-top:0}.srv-tl .srv-tr~.srv-tr{border-top:1px solid #EDF0F6}
+    .srv-tr b,.srv-dh b{display:block;font-size:13.5px;font-weight:900;color:#141B33}.srv-tr small,.srv-dh small{display:block;font-size:11px;font-weight:700;color:#8a93a8}
+    .srv-ic{width:34px;height:34px;border-radius:11px;background:#E8EDFB;color:#203C8E;display:grid;place-items:center;flex:none;position:relative}.srv-ic .aic{margin:0!important;width:17px;height:17px;display:block}
+    .srv-ic:after{content:"";position:absolute;top:5px;right:5px;width:5px;height:5px;border-radius:50%;background:#E2B874;opacity:.85}
+    .srv-go{margin-left:auto;flex:none;border:0;border-radius:99px;padding:7px 14px;background:#203C8E;color:#fff;font:inherit;font-size:11.5px;font-weight:900;cursor:pointer}.srv-go:disabled{opacity:.55}
+    .srv-ct{margin-left:auto;flex:none;font-size:11px;font-weight:900;color:#8a93a8;background:#F1F3F8;border-radius:99px;padding:3px 9px}
+    .srv-tl .srv-res,.srv-tl .srv-log{margin:0 0 12px}.srv-tl .sh-reset{margin:0 0 12px}
+    .srv-dev{background:#fff;border-radius:18px;padding:14px;margin-top:12px;box-shadow:0 10px 26px rgba(20,40,110,.08);border:1.5px solid #e6e9f1}
+    .srv-dh{display:flex;align-items:center;gap:12px}
+    .srv-dial{display:flex;gap:6px;margin-top:12px}.srv-dial button{flex:1;border:0;border-radius:11px;padding:9px 2px;font:inherit;font-size:12px;font-weight:900;background:#F4F6FA;color:#4b5263;cursor:pointer;transition:background .25s,color .25s,box-shadow .25s}
+    .srv-dial button.on{background:linear-gradient(135deg,#3d6bff,#203c8e);color:#fff;box-shadow:0 6px 14px rgba(32,60,142,.3)}
+    body.dark-mode .srv-tl,body.dark-mode .srv-dev{background:#151a22;border-color:#252a32}body.dark-mode .srv-tr b,body.dark-mode .srv-dh b{color:#fff}body.dark-mode .srv-dial button:not(.on){background:#1b212b;color:#c6ccd8}
 </style>
 </head>
 <body>
@@ -17992,11 +18006,11 @@ function adminServerHtml(){
   ${(SRV_ADMIN.access||{}).mode==='firebase'?'':`<div class="srv-box"><b>Sign-in</b><small>Devices, approvals, invites, messages.</small>${srvAccessHtml()}</div>`}
   ${(SRV_ADMIN.rest||{}).mode==='firebase'?'':`<div class="srv-box"><b>Everything else</b><small>Usage, shares, plan history, reports, alerts.</small>${srvRestHtml()}</div>`}
   ${(SRV_ADMIN.tasks||{}).mode==='firebase'?'':`<div class="srv-box"><b>Team Tasks</b><small>Tasks, leave, backups, positions.</small>${srvTasksHtml()}</div>`}
-  <div class="srv-box"><b>Same numbers?</b><small>Compares ${esc(CURRENT_ACCOUNT.toUpperCase())} on both servers.</small>
-    <button type="button" class="srv-btn soft" onclick="srvParity()" ${SRV_ADMIN.busy||!fb?'disabled':''}>Compare with Apps Script</button>${parity}</div>
-  ${fb?`<div class="srv-box"><b>This device</b><small>For testing. Back to Automatic after 1 hour.</small><div class="act-seg" ${segSlide('dev',['auto','firebase','appsscript'].indexOf(dev),3)}>${seg('auto','Automatic')}${seg('firebase','Firebase')}${seg('appsscript','Apps Script')}</div></div>`:''}
-  <div class="srv-box"><b>Switch log</b><small>All team devices.</small>${log}
-    ${Array.isArray(ev)&&ev.length?'<button type="button" class="sh-reset" onclick="srvClearLog(this)">'+aI('undo')+'Clear log</button>':''}</div>`;
+  <div class="srv-tl">
+   <div class="srv-tr"><span class="srv-ic">${aI('swap')}</span><div><b>Same numbers?</b><small>${esc(CURRENT_ACCOUNT.toUpperCase())} on both servers</small></div><button type="button" class="srv-go" onclick="srvParity()" ${SRV_ADMIN.busy||!fb?'disabled':''}>${SRV_ADMIN.busy==='parity'?'Comparing…':'Compare'}</button></div>${parity}
+   <div class="srv-tr"><span class="srv-ic">${aI('refresh')}</span><div><b>Switch log</b><small>All team devices</small></div><span class="srv-ct">${Array.isArray(ev)?(ev.length?ev.length+' switch'+(ev.length===1?'':'es'):'No switches'):'…'}</span></div>
+   ${Array.isArray(ev)&&ev.length?log+'<button type="button" class="sh-reset" onclick="srvClearLog(this)">'+aI('undo')+'Clear log</button>':ev&&ev.error?log:''}</div>
+  ${fb?`<div class="srv-dev"><div class="srv-dh"><span class="srv-ic">${aI('phone')}</span><div><b>This device</b><small>For testing, back to Automatic after 1 hour</small></div></div><div class="srv-dial">${seg('auto','Automatic')}${seg('firebase','Firebase')}${seg('appsscript','Apps Script')}</div></div>`:''}`;
 }
 window.addEventListener('sekna-server',()=>{if(ADMIN_TAB==='server'&&ADMIN_LAST)renderAdmin(ADMIN_LAST)});
 function hoursText(sec){sec=Math.round(sec||0);const h=Math.floor(sec/3600),m=Math.round(sec%3600/60);return h?`${h}h ${m}m`:`${m}m`}
