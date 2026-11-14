@@ -9097,6 +9097,13 @@ body.dark-mode .ak-cr .gd button{background:#171d27;border-color:#2a3242;color:#
 /* v392 no blinking: only new messages slide in */
 .ak-m{animation:none}.ak-m.nw{animation:akIn .35s cubic-bezier(.2,.8,.2,1) backwards}
 .ak-ad>button.lk .ak-ic{color:#F3D58E}
+/* v398 the path you picked, with the platform logo and the flag */
+.ak-crb{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.ak-crb span{display:inline-flex;align-items:center;gap:5px;background:#fff;border:1px solid #E4E6EB;border-radius:99px;padding:3px 10px 3px 6px;font-size:11.5px;font-weight:800;color:#141b33}
+.ak-crb span svg{width:15px;height:15px}.ak-crb u{text-decoration:none;font-size:13px;line-height:1}
+.ak-crb span:last-child{background:#1C3C96;border-color:#1C3C96;color:#fff}
+.ak-rn{font-size:12.5px;color:#65676B;font-weight:700}.ak-rn b{color:#141b33;font-size:15px;font-weight:900}
+body.dark-mode .ak-crb span{background:#171d27;border-color:#2a3242;color:#e8ecf3}
 </style>
 </head>
 <body>
@@ -10162,7 +10169,7 @@ async function akPost(action,extra){
 }
 async function akAssets(force){
  if(!force&&AK.assets&&Date.now()-AK.at<600000)return AK.assets;
- const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[],categories:j.categories||[],formats:j.formats||[]};AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);AK.blocked=false;AK.at=Date.now();if(AK.resIds&&!AK.res){AK.res=AK.assets.rows.filter(r=>AK.resIds.indexOf(r.id)>=0)}akKb();return AK.assets;
+ const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[],categories:j.categories||[],formats:j.formats||[]};AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);try{localStorage.setItem('hm_ask_who',JSON.stringify({e:akMe().email,editor:AK.editor,add:AK.canAdd,teach:AK.canTeach}))}catch(e){}AK.blocked=false;AK.at=Date.now();if(AK.resIds&&!AK.res){AK.res=AK.assets.rows.filter(r=>AK.resIds.indexOf(r.id)>=0)}akKb();return AK.assets;
 }
 function openAsk(){
  if(!canDo('ask'))return;closeSidebar();
@@ -10174,6 +10181,7 @@ function openAsk(){
   <div class="ak-rec" id="akRec"><button type="button" class="ak-rt2" aria-label="Delete" onclick="akRecTrash()">${akI('trash')}</button><div class="ak-rw"><em></em><span id="akRw"></span><b id="akRt">0:00</b></div><button type="button" class="ak-rs2" aria-label="Send" onclick="akRecSend()">${akI('plane')}</button></div></form></div>`;
  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));akVv();akInMode();try{avDefs()}catch(e){}
  akRestore();
+ try{const w=JSON.parse(localStorage.getItem('hm_ask_who')||'null');if(w&&w.e===akMe().email&&AK.canAdd===undefined){AK.editor=w.editor;AK.canAdd=w.add;AK.canTeach=w.teach}}catch(e){}
  if(!AK.msgs.length){AK.t0=Date.now();const n=akMe().name.split(' ')[0];akBot(`<p>Hi${n?' '+akEsc(n):''}. Pick from the menu or type your question.</p>`)}
  akDraw();akKb();
  if(ASK_HEMERA_URL)akAssets().catch(e=>{if(e&&e.blocked)akBot('<p>You do not have access to Ask HEMERA. Ask Ibrahim if you need it.</p>')});
@@ -10293,7 +10301,7 @@ function akAnswer(t){
 }
 
 function AKB(to,l){return `<div class="ak-bkl"><button type="button" onclick="akBackTo('${to}')">${akI('back')}${l||'Back'}</button></div>`}
-async function akBackTo(t){if(t==='pop'){akTBack();return}akUser('Back');
+async function akBackTo(t){if(t==='pop'){akTBack();return}if(t==='lpop'){akLBack();return}akUser('Back');
  if(t==='menu'){AK.kb=true;akKb();akBot('<p>What else can I help with?</p>');return}
  if(t==='plat'){akStepPlatform();return}
  if(t==='acct'){akShowAcct();return}
@@ -10371,9 +10379,17 @@ async function akNeedAssets(){
  AK.busy=true;akDraw();
  try{const a=await akAssets();AK.busy=false;return a}catch(e){AK.busy=false;akBot('<p>Could not load the sheet list. Try again.</p>');return null}
 }
+ 
+function akLNav(fn){AK.ls=AK.ls||[];AK.ls.push(fn);fn()}
+function akLBack(){(AK.ls||[]).pop();const f=(AK.ls||[])[AK.ls.length-1];if(f)f();else{AK.kb=true;akKb();akPanel('links','<p>What else can I help with?</p>')}}
+function akLTop(){const f=(AK.ls||[])[AK.ls.length-1];if(f)f()}
+const AK_FLAG={USA:'🇺🇸',AR:'🇸🇦',BOTH:'🌍'};
+function akCrumb(){const n=AK.nav||{},t=n.t?(AK_TYPES.find(x=>x[0]===n.t)||[0,''])[1]:'';
+ return `<div class="ak-crb">${n.p?`<span>${akLogo(n.p)}${akEsc(n.p)}</span>`:''}${n.a?`<span><u>${AK_FLAG[n.a]||''}</u>${n.a==='BOTH'?'Both':akEsc(n.a)}</span>`:''}${t?`<span>${akEsc(t)}</span>`:''}</div>`}
 async function akStepPlatform(){
  const a=await akNeedAssets();if(!a)return;
- akBot('<p>Pick the platform</p><div class="ak-ch ak-pl">'+a.platforms.map(p=>p.open?`<button type="button" onclick="akPick('p','${akEsc(p.key)}')"><i>${akLogo(p.key)}</i>${akEsc(p.key)}</button>`:`<button type="button" class="lk" disabled><i>${akLogo(p.key)}</i>${akEsc(p.key)}${akI('lock')}</button>`).join('')+'</div>'+AKB('menu'),'wb');
+ AK.ls=[];AK.nav={};
+ akLNav(()=>akPanel('links','<p>Pick the platform</p><div class="ak-ch ak-pl">'+((AK.assets&&AK.assets.platforms)||[]).map(p=>p.open?`<button type="button" onclick="akPick('p','${akEsc(p.key)}')"><i>${akLogo(p.key)}</i>${akEsc(p.key)}</button>`:`<button type="button" class="lk" disabled><i>${akLogo(p.key)}</i>${akEsc(p.key)}${akI('lock')}</button>`).join('')+'</div>'+AKB('lpop')));
 }
 function akRowsOf(nav){
  return ((AK.assets&&AK.assets.rows)||[]).filter(r=>{
@@ -10384,36 +10400,31 @@ function akRowsOf(nav){
  });
 }
 function akPick(k,v){
- AK.nav[k]=v;
- if(k==='p'){AK.nav.a='';AK.nav.t='';akUser(v);akShowAcct();return}
- if(k==='a'){AK.nav.t='';akUser(v==='BOTH'?'Both':v);akShowType();return}
- if(k==='t'){akUser((AK_TYPES.find(x=>x[0]===v)||[0,v])[1]);akShowRes();return}
+ if(k==='p'){const nav={p:v};akLNav(()=>{AK.nav=Object.assign({},nav);akShowAcct()});return}
+ if(k==='a'){const nav={p:AK.nav.p,a:v};akLNav(()=>{AK.nav=Object.assign({},nav);akShowType()});return}
+ if(k==='t'){const nav={p:AK.nav.p,a:AK.nav.a,t:v};AK.resN=6;akLNav(()=>{AK.nav=Object.assign({},nav);akShowRes()});return}
 }
-function akShowAcct(){akBot('<p>Which account?</p><div class="ak-ch ak-pl">'+[['USA','USA','🇺🇸'],['AR','AR','🇸🇦'],['BOTH','Both','🌍']].map(([x,l,f])=>`<button type="button" onclick="akPick('a','${x}')"><u>${f}</u>${l}</button>`).join('')+'</div>'+AKB('plat'),'wb')}
+function akShowAcct(){akPanel('links',akCrumb()+'<p>Which account?</p><div class="ak-ch ak-pl">'+[['USA','USA'],['AR','AR'],['BOTH','Both']].map(([x,l])=>`<button type="button" onclick="akPick('a','${x}')"><u>${AK_FLAG[x]}</u>${l}</button>`).join('')+'</div>'+AKB('lpop'))}
 function akShowType(){const base=akRowsOf({p:AK.nav.p,a:AK.nav.a});
  const ch=AK_TYPES.map(([x,l,ic,c,bg])=>{const n=x==='all'?base.length:base.filter(r=>r.types.indexOf(x)>=0).length;return n?`<button type="button" onclick="akPick('t','${x}')"><i style="color:${c};background:${bg}">${akI(ic)}</i><b>${l}</b><em>${n}</em>${akI('chev')}</button>`:''}).join('');
- akBot((base.length?'<p>What are you looking for?</p><div class="ak-tl">'+ch+'</div>':'<p>Nothing saved here yet.</p>')+AKB('acct'),'wb')}
+ akPanel('links',akCrumb()+(base.length?'<p>What are you looking for?</p><div class="ak-tl">'+ch+'</div>':'<p>Nothing saved here yet.</p>')+AKB('lpop'))}
 function akShowRes(){const rows=akRowsOf(AK.nav);AK.res=rows;
- akBot((rows.length?`<p><b>${rows.length} ${rows.length===1?'result':'results'}</b> <span class="ak-mu">· ${akEsc(AK.nav.p)} · ${AK.nav.a==='BOTH'?'Both':akEsc(AK.nav.a)}</span></p><div class="ak-rs">${akResRows(rows,6)}</div>`:'<p>Nothing found.</p>')+AKB('type'),'wb')}
+ akPanel('links',akCrumb()+(rows.length?`<p class="ak-rn"><b>${rows.length}</b> ${rows.length===1?'result':'results'}</p><div class="ak-rs">${akResRows(rows,AK.resN||6)}</div>`:'<p>Nothing found.</p>')+AKB('lpop'))}
 const AK_TICON={sheet:['links','#1E8E3E'],daily:['cam','#1a73e8'],weekly:['off','#C9A24A'],dashboard:['dash','#7C4DFF']};
 function akResRows(rows,n){
  const ic=r=>{const t=AK_TICON[r.types[0]]||AK_TICON.sheet;return `<i style="color:${t[1]}">${akI(t[0])}</i>`};
- return rows.slice(0,n).map(r=>`<button type="button" onclick="akShow('${akEsc(r.id)}')">${ic(r)}<b>${akEsc(r.name||r.id)}</b>${akI('chev')}</button>`).join('')+(rows.length>n?`<button type="button" class="more" onclick="akMore(this)">Show ${rows.length-n} more</button>`:'');
+ return rows.slice(0,n).map(r=>`<button type="button" onclick="akShow('${akEsc(r.id)}')">${ic(r)}<b>${akEsc(r.name||r.id)}</b>${akI('chev')}</button>`).join('')+(rows.length>n?`<button type="button" class="more" onclick="akMore()">Show ${rows.length-n} more</button>`:'');
 }
-function akMore(btn){const box=btn.parentNode;box.innerHTML=akResRows(AK.res||[],999);const m=AK.msgs.filter(x=>x.html.indexOf('ak-rs')>=0).pop();if(m)m.html=m.html.replace(/<div class="ak-rs">[\s\S]*<\/div>$/,'<div class="ak-rs">'+box.innerHTML+'</div>')}
+function akMore(){AK.resN=999;akLTop()}
 
-function akShow(id){
- const r=((AK.assets&&AK.assets.rows)||[]).find(x=>x.id===id);if(!r)return;
- akUser(r.name||id);
- 
+function akShow(id){akLNav(()=>akCard(id))}
+function akCard(id){
+ const r=((AK.assets&&AK.assets.rows)||[]).find(x=>x.id===id);if(!r){akLBack();return}
  const L=[['links','Sheet',r.sheet,'#1E8E3E','#E7F5EC'],['rep','Report',r.report,'#1a73e8','#E8F0FE'],['code','Script',r.script,'#C9A24A','#FBF3E2']].filter(x=>x[2]&&x[2].url);
- akBot(`<div class="ak-c2"><div class="h">${akLogo(r.platforms[0]||'')}<b>${akEsc(r.name||r.id)}</b></div>
+ akPanel('links',`<div class="ak-c2"><div class="h">${akLogo(r.platforms[0]||'')}<b>${akEsc(r.name||r.id)}</b></div>
   ${L.map(([ic,t,o,c,bg])=>`<a class="l" href="${akEsc(o.url)}" target="_blank" rel="noopener"><i style="color:${c};background:${bg}">${akI(ic)}</i><div><b>${t}</b><small>${akEsc(o.name||'')}</small></div>${akI('out')}</a>`).join('')||'<p class="ak-sm">No links saved yet.</p>'}
-  ${r.notes?`<p class="ak-sm">${akEsc(r.notes)}</p>`:''}</div>
-  ${AK.res&&AK.res.length?`<div class="ak-bkl"><button type="button" onclick="akBackList()">${akI('back')}Back to the list</button></div>`:''}`,'wb');
+  ${r.notes?`<p class="ak-sm">${akEsc(r.notes)}</p>`:''}</div>`+AKB('lpop',AK.ls.length>1?'Back to the list':'Back'));
 }
-
-function akBackList(){akUser('Back to the list');const rows=AK.res||[];akBot(`<p><b>${rows.length} ${rows.length===1?'result':'results'}</b> <span class="ak-mu">· ${akEsc(AK.nav.p||'')} · ${AK.nav.a==='BOTH'?'Both':akEsc(AK.nav.a||'')}</span></p><div class="ak-rs">${akResRows(rows,6)}</div>`,'wb')}
  
 const AK_ADD=[['Task_Name','Name','text'],['Platform','Platform','pl'],['Account','Account','ac'],['Category','Category','ct'],['Format','Format','fm'],['Source_Sheet_Name','Sheet name','text'],['Source_Sheet_URL','Sheet link','url'],['Report_Name','Platform report name','text'],['Report_URL','Platform report link','url'],['Script_Name','Script name','text'],['Script_URL','Script link (platform or report)','url'],['Notes','Notes','text']];
 
