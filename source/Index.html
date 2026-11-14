@@ -8845,6 +8845,19 @@ body.dark-mode .ak-cp{background:#0f141c;color:#c9d6ff}
 body.dark-mode .ak-m.wb{background:#232a36!important}
 body.dark-mode .ak-tl,body.dark-mode .ak-tl button,body.dark-mode .ak-wk>span,body.dark-mode .ak-tk span{background:#171d27;color:#e8ecf3}
 body.dark-mode .ak-rs button{color:#e8ecf3;border-color:#2a3242}body.dark-mode .ak-sm{color:#c3c9d4}
+/* v383 the sheet card (ك٢ rows with names) and Back to the list */
+.ak-c2{background:#fff;border-radius:16px;padding:10px 10px 2px}
+.ak-c2 .h{display:flex;align-items:center;gap:8px;padding-bottom:6px}.ak-c2 .h svg{width:22px;height:22px;flex:none}
+.ak-c2 .h b{font-size:15px;font-weight:900;word-break:break-word}
+.ak-c2 .l{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid #f0f2f8;color:#141b33;text-decoration:none}
+.ak-c2 .l i{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;flex:none}
+.ak-c2 .l div{flex:1;min-width:0}.ak-c2 .l b{display:block;font-size:13px;font-weight:800}
+.ak-c2 .l small{display:block;font-size:11px;color:#65676B;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ak-c2 .l>.ak-ic:last-child{color:#9aa2b6;width:15px;height:15px}
+.ak-bkl{margin-top:10px}
+.ak-bkl button{display:inline-flex;align-items:center;gap:5px;border:1.5px solid #1C3C96;color:#1C3C96;background:#fff;border-radius:99px;padding:6px 12px 6px 9px;font:700 12.5px Inter,system-ui,sans-serif;cursor:pointer}
+.ak-bkl .ak-ic{width:14px;height:14px}
+body.dark-mode .ak-c2{background:#171d27}body.dark-mode .ak-c2 .l{color:#e8ecf3;border-color:#2a3242}body.dark-mode .ak-bkl button{background:#0f141c;color:#c9d6ff;border-color:#7d9bff}
 </style>
 </head>
 <body>
@@ -10064,13 +10077,15 @@ function akMore(btn){const box=btn.parentNode;box.innerHTML=akResRows(AK.res||[]
 function akShow(id){
  const r=((AK.assets&&AK.assets.rows)||[]).find(x=>x.id===id);if(!r)return;
  akUser(r.name||id);
- const L=[['links','Sheet',r.sheet,'g'],['rep','Platform report',r.report,'r'],['code','Script',r.script,'s']].filter(x=>x[2]&&(x[2].url||x[2].name));
- const tags=[].concat(r.platforms,r.format?String(r.format).split(/\s*,\s*/):[]).filter(Boolean);
- akBot(`<div class="ak-rc"><div class="ak-rt"><i>${akI('links')}</i><div><b>${akEsc(r.name||r.id)}</b><small>${akEsc([r.category,r.account].filter(Boolean).join(' · '))}</small></div></div>
-  ${tags.length?`<div class="ak-tg">${tags.map(t=>`<span>${akEsc(t)}</span>`).join('')}</div>`:''}
-  ${L.map(([ic,t,o,c])=>o.url?`<a class="ak-rb ${c}" href="${akEsc(o.url)}" target="_blank" rel="noopener" title="${akEsc(o.name||'')}">${akI(ic)}<span>${t}</span></a>`:'').join('')}
-  ${r.notes?`<p class="ak-nt">${akEsc(r.notes)}</p>`:''}</div>`,'wide');
+ 
+ const L=[['links','Sheet',r.sheet,'#1E8E3E','#E7F5EC'],['rep','Report',r.report,'#1a73e8','#E8F0FE'],['code','Script',r.script,'#C9A24A','#FBF3E2']].filter(x=>x[2]&&x[2].url);
+ akBot(`<div class="ak-c2"><div class="h">${akLogo(r.platforms[0]||'')}<b>${akEsc(r.name||r.id)}</b></div>
+  ${L.map(([ic,t,o,c,bg])=>`<a class="l" href="${akEsc(o.url)}" target="_blank" rel="noopener"><i style="color:${c};background:${bg}">${akI(ic)}</i><div><b>${t}</b><small>${akEsc(o.name||'')}</small></div>${akI('out')}</a>`).join('')||'<p class="ak-sm">No links saved yet.</p>'}
+  ${r.notes?`<p class="ak-sm">${akEsc(r.notes)}</p>`:''}</div>
+  ${AK.res&&AK.res.length?`<div class="ak-bkl"><button type="button" onclick="akBackList()">${akI('back')}Back to the list</button></div>`:''}`,'wb');
 }
+
+function akBackList(){akUser('Back to the list');const rows=AK.res||[];akBot(`<p><b>${rows.length} ${rows.length===1?'result':'results'}</b> <span class="ak-mu">· ${akEsc(AK.nav.p||'')} · ${AK.nav.a==='BOTH'?'Both':akEsc(AK.nav.a||'')}</span></p><div class="ak-rs">${akResRows(rows,6)}</div>`,'wb')}
  
 const AK_ADD=[['Task_Name','Name','text'],['Platform','Platform','pl'],['Account','Account','ac'],['Category','Category','text'],['Format','Format','fm'],['Source_Sheet_Name','Sheet name','text'],['Source_Sheet_URL','Sheet link','url'],['Report_Name','Report name','text'],['Report_URL','Report link','url'],['Script_Name','Script name','text'],['Script_URL','Script link','url'],['Notes','Notes','text']];
 async function akAddForm(){
