@@ -10695,12 +10695,12 @@ function renderMtd(d){
  setProgress('mtdVarianceBar',planSpend?Math.abs(remaining)/planSpend:0);
  if(budgetCard)budgetCard.classList.toggle('over',isOver);
  // v172 the card look: what was spent on the "card number" line, the month plan and the day along the bottom
- text('vcSpent','•••• •••• SPENT '+((document.getElementById('mtdSpend')||{}).textContent||'—'));
+ text('vcSpent','•••• •••• SPENT '+money(Number(m.actualSpend)||0));
  text('vcPlan',planSpend?money(planSpend):'—');
  text('vcDay',(typeof day!=='undefined'&&typeof dim!=='undefined'&&day&&dim)?`DAY ${day} OF ${dim}`:'');
  // v328 platinum card: spent, plan, what to spend per day from here, and a square per day of the month
  {const dd=typeof day!=='undefined'?day:0,dm=typeof dim!=='undefined'?dim:0,left=dm&&dd?Math.max(dm-dd,0):0;
-  text('vcpSpent',(document.getElementById('mtdSpend')||{}).textContent||'—');text('vcpPlan',planSpend?money(planSpend):'—');
+  text('vcpSpent',money(Number(m.actualSpend)||0));text('vcpPlan',planSpend?money(planSpend):'—');
   text('vcpDay',remaining>0&&left?money(remaining/left):'—');
   const g=document.getElementById('vcpDays');if(g&&dm){g.style.gridTemplateColumns=`repeat(${dm},minmax(0,1fr))`;g.innerHTML=Array.from({length:dm},(_,i)=>`<i class="${i<dd-1?'s':i===dd-1?'t':''}"></i>`).join('')}}
 
@@ -10869,12 +10869,16 @@ function vlyArm(){
 }
 // v173 Budget card: when it comes into view, a light sweeps over it, the chip glints and the amount counts up (once per page open).
 let VC_DONE='';
+// v350 the count-up of Budget remaining: a newer render (another account, currency or refresh) stops any older count,
+// so an old number can never be written over the new one.
+let VC_TOK=0,VC_IO=null;
 function vcPlay(v){
+ const tok=++VC_TOK;if(VC_IO){try{VC_IO.disconnect()}catch(e){}VC_IO=null}
  const c=document.getElementById('mtdVarianceCard'),el=document.getElementById('mtdVariance');if(!c||!el||!motionOn()||RENDER_QUIET)return;
  const key=CURRENT_ACCOUNT+'|'+CUR+'|'+Math.round(v);if(VC_DONE===key)return;
- const run=()=>{VC_DONE=key;c.classList.remove('vc-go');void c.offsetWidth;c.classList.add('vc-go');
-  const s=performance.now(),f=n=>{const k=Math.min(1,(n-s)/1100);el.textContent=money(v*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f);else el.textContent=money(v)};requestAnimationFrame(f)};
- if('IntersectionObserver' in window){const io=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){io.disconnect();run()}},{threshold:.4});io.observe(c)}else run();
+ const run=()=>{if(tok!==VC_TOK)return;VC_DONE=key;c.classList.remove('vc-go');void c.offsetWidth;c.classList.add('vc-go');
+  const s=performance.now(),f=n=>{if(tok!==VC_TOK)return;const k=Math.min(1,(n-s)/1100);el.textContent=money(v*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f);else el.textContent=money(v)};requestAnimationFrame(f)};
+ if('IntersectionObserver' in window){const io=VC_IO=new IntersectionObserver(es=>{if(es.some(e=>e.isIntersecting)){io.disconnect();if(VC_IO===io)VC_IO=null;run()}},{threshold:.4});io.observe(c)}else run();
 }
 function renderWeekly(rows){
  const strip=document.getElementById('weeklyStrip');
