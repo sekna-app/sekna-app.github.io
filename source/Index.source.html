@@ -8296,6 +8296,27 @@ window.addEventListener('load',function(){
     .lw-lg{display:flex;gap:14px;margin-top:12px;font-size:10.5px;font-weight:800;color:#6B7385}
     .lw-lg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:#E3F6EC}.lw-lg i.off{background:#FBE3C4}.lw-lg i.t{background:none;box-shadow:inset 0 0 0 2px #203C8E}
     body.dark-mode .lw{background:#151a22}body.dark-mode .lw-top b{color:#fff}
+    /* v331 smaller yearly comparison text */
+    .pvy-h{font-size:11px!important}.pvy-g div{padding:8px 4px!important;border-radius:12px!important}
+    .pvy-g small{font-size:8.5px!important}.pvy-g b{font-size:15px!important;margin-top:2px!important}.pvy-g em{font-size:9.5px!important}.pvy-f{font-size:10.5px!important}
+    .lya-top b{font-size:20px!important}.lya-top span{font-size:12px!important}.lya-vs .ty b{font-size:21px!important}.lya-vs .ly b{font-size:16px!important}.lya-vs small{font-size:9px!important}.lya-p{font-size:11.5px!important}.lya-ld{font-size:11px!important}
+    /* v331 back arrow on task forms */
+    .tk-fback{flex:none;width:38px;height:38px;border-radius:12px;border:0;background:#fff;box-shadow:0 4px 12px rgba(20,40,110,.1);display:flex;align-items:center;justify-content:center;margin-right:10px;cursor:pointer}
+    #tasksOverlay .sk-modal-head:has(.tk-fback:not([hidden])){display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:flex-start!important}#tasksOverlay .tk-fback{order:-9}
+    .tk-fback[hidden]{display:none}.tk-fback svg{width:20px;height:20px;fill:none;stroke:#203C8E;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+    body.dark-mode .tk-fback{background:#151a22}body.dark-mode .tk-fback svg{stroke:#fff}
+    /* v331 my tasks: reports & optimizations inside the week card */
+    .tk-mh-q{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.16)}.tk-mh-q b{font-size:16px!important}
+    .tk-bar.g i{background:linear-gradient(90deg,#3DDC97,#21B573)!important}
+    /* v331 budget: 3D silver card */
+    html body #mtdVarianceCard.vc{background:linear-gradient(135deg,#FAFBFD 0%,#D5DAE3 24%,#F4F6F9 46%,#BFC6D2 72%,#E6E9EF 100%)!important;border:1px solid #C3C9D4!important;
+      box-shadow:inset 0 1.5px 0 #fff,inset 0 -3px 6px rgba(40,50,80,.14),inset 2px 0 0 rgba(255,255,255,.6),0 2px 0 #AEB5C2,0 4px 0 #9AA2B1,0 18px 30px rgba(20,40,110,.24)!important;
+      transform:perspective(900px) rotateX(3deg);transform-origin:50% 100%}
+    html body #mtdVarianceCard.vc:before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;opacity:1!important;z-index:0;
+      background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.75) 42%,transparent 54%),repeating-linear-gradient(90deg,rgba(255,255,255,.07) 0 1px,rgba(0,0,0,.025) 1px 3px)}
+    html body #mtdVarianceCard.vc:after{opacity:.25!important}
+    html body #mtdVarianceCard.vc #mtdVariance{text-shadow:0 1px 0 rgba(255,255,255,.9)}
+    .vcp-days i{background:#C9CFDA!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}.vcp-days i.s{background:linear-gradient(180deg,#2C4FB8,#1A2F75)!important}.vcp-days i.t{background:linear-gradient(180deg,#F1D08F,#C9963E)!important}
 </style>
 </head>
 <body>
@@ -8554,7 +8575,7 @@ window.addEventListener('load',function(){
 
 <div class="app-modal-overlay sk-page" id="tasksOverlay" onclick="closeTasks(event)" data-share-ui>
   <section class="app-modal sk-modal tk-page" role="dialog" aria-modal="true" aria-labelledby="tkTitle" onclick="event.stopPropagation()">
-    <div class="sk-modal-head"><button type="button" class="tk-wa" id="tkWa" onclick="tkShare(this)" aria-label="Share the month on WhatsApp" hidden></button><div><div class="sk-kicker" id="tkKicker">TEAM TASKS</div><h2 id="tkTitle">Team Board</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeTasks()" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
+    <div class="sk-modal-head"><button type="button" class="tk-wa" id="tkWa" onclick="tkShare(this)" aria-label="Share the month on WhatsApp" hidden></button><button type="button" class="tk-fback" id="tkFBack" onclick="tkSheetClose()" aria-label="Back" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div><div class="sk-kicker" id="tkKicker">TEAM TASKS</div><h2 id="tkTitle">Team Board</h2></div><button class="sk-icon-btn sk-icon-btn--light" type="button" onclick="closeTasks()" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button></div>
     <div id="tasksBody" class="tk-body"></div>
   </section>
 </div>
@@ -15833,7 +15854,7 @@ function tkAv(p){return `<span class="tk-av has-emb">${personAv(p.avatar,p.name)
 function adminSeen(email){const r=((ADMIN_LAST&&ADMIN_LAST.rows)||[]).filter(x=>String(x.email).toLowerCase()===String(email).toLowerCase());return Math.max(0,...r.map(x=>x.lastSeenMs||0))}
 const TK_VIEWS={team:['Team Board','The whole team, week by week'],mine:['My Tasks','What you need to do'],build:['Task Builder','Plan the month for the team'],leave:['Team Leave','Days off and backups']};
 
-function tkSetTitle(t){const el=document.getElementById('tkTitle');if(!el)return;const w=String(t).split(' '),l=w.pop();el.innerHTML=(w.length?esc(w.join(' '))+' ':'')+`<span>${esc(l)}</span>`}
+function tkSetTitle(t){{const bk=document.getElementById('tkFBack');if(bk)bk.hidden=!TK.form}const el=document.getElementById('tkTitle');if(!el)return;const w=String(t).split(' '),l=w.pop();el.innerHTML=(w.length?esc(w.join(' '))+' ':'')+`<span>${esc(l)}</span>`}
 const TK_VIEW_PERM={team:'team',mine:'mine',build:'build',quick:'quick',leave:'leaveview'};
 function tkViewOk(v){return canDo(TK_VIEW_PERM[v]||v)}
 // Team Tasks open inside the page area: under the top bar, and on computers beside the menu, so the
@@ -15890,7 +15911,7 @@ function tkRender(){
  const weeks=`<div class="tk-weeks">${[1,2,3,4].map(w=>`<button type="button" class="${w===TK.week?'on':''}" onclick="tkSetWeek(${w})"><b>W${w}</b><small>${esc(tkRange(TK.month,w))}</small></button>`).join('')}</div>`;
  let body='';
  if(TK.view==='team')body=month+weeks+tkTodaySw()+tkTeamHtml();
- else if(TK.view==='mine')body=month+weeks+tkMineHtml()+(tkViewOk('quick')||tkCan('quick')?`<div class="ad-lbl" style="margin-top:18px">Reports &amp; optimizations</div>${tkQuickHtml()}`:'');
+ else if(TK.view==='mine')body=month+weeks+tkMineHtml()+(tkViewOk('quick')||tkCan('quick')?tkQuickHtml(1):'');
  else if(TK.view==='build')body=month+tkBuildHtml();
  else if(TK.view==='leave')body=month+tkLeaveHtml();
  else body=month+weeks+tkMineHtml();
@@ -16140,9 +16161,10 @@ function tkMineHtml(){
  const w=TK.week, me=tkMe(), ts=tkTasksFor(me,w), n=ts.filter(t=>t.done&&t.done[w]).length;
  const q=((TK.data&&TK.data.quick)||[]).filter(x=>x.email===me&&!(x.done&&x.done.at));
  const mp=tkPerson(me);
- const head=`<div class="tk-mine-h"><div class="tk-mh-who">${tkAv(mp)}<div><b>${esc(mp.name||(ACCESS_PROFILE&&ACCESS_PROFILE.name)||'')}</b></div></div><div><small>WEEK ${w} · ${esc(tkRange(TK.month,w))}</small><b>${ts.length?`${n} of ${ts.length} done`:'Nothing this week'}</b></div><div class="tk-bar"><i style="width:${ts.length?(n/ts.length*100).toFixed(0):0}%"></i></div></div>`;
+ const head=`<div class="tk-mine-h"><div class="tk-mh-who">${tkAv(mp)}<div><b>${esc(mp.name||(ACCESS_PROFILE&&ACCESS_PROFILE.name)||'')}</b></div></div><div><small>WEEK ${w} · ${esc(tkRange(TK.month,w))}</small><b>${ts.length?`${n} of ${ts.length} done`:'Nothing this week'}</b></div><div class="tk-bar"><i style="width:${ts.length?(n/ts.length*100).toFixed(0):0}%"></i></div>${(()=>{if(!(tkViewOk('quick')||tkCan('quick')))return '';const all=(TK.data&&TK.data.quick)||[],l=tkCan('quick')?all:all.filter(x=>x.email===me);if(!l.length)return '';const dn=l.filter(x=>x.done&&x.done.at).length;
+   return `<div class="tk-mh-q"><small>REPORTS &amp; OPTIMIZATIONS</small><b>${dn} of ${l.length} done</b><div class="tk-bar g"><i style="width:${(dn/l.length*100).toFixed(0)}%"></i></div></div>`})()}</div>`;
  return head+(ts.length?ts.map(t=>tkTaskRow(t,w,true)).join(''):`<div class="tk-empty"><b>You're all clear</b><small>No tasks for week ${w}.</small></div>`)
-   +(q.length?`<div class="ad-lbl">Quick requests</div>${q.map(x=>tkQuickRow(x,true)).join('')}`:'');
+   ;
 }
 function tkDaysAgo(ms){const d=Math.floor((Date.now()-ms)/864e5);return d<=0?'today':d===1?'1 day ago':d+' days ago'}
 function tkDeadline(s){
@@ -16179,13 +16201,12 @@ function tkQuickDash(list){
  return `<div class="qd"><div class="qd-card"><div class="qd-ring" style="--p:${pct}"><span>${done}/${list.length}<small>DONE</small></span></div><div class="qd-ppl">${rows}</div></div>
    <div class="qd-lg"><span><i class="d"></i>Done</span><span><i class="w"></i>Waiting</span><span><i class="l"></i>Late</span></div></div>`;
 }
-function tkQuickHtml(){
+function tkQuickHtml(inMine){
  const me=tkMe(), mgr=tkCan('quick'), all=(TK.data&&TK.data.quick)||[];
  const mine=mgr?all:all.filter(q=>q.email===me);
  const open=mine.filter(q=>!(q.done&&q.done.at)).sort((a,b)=>a.at-b.at), done=mine.filter(q=>q.done&&q.done.at);
- return `${tkQuickDash(mine)}
-   
-   ${open.length?open.map(q=>tkQuickRow(q,q.email===me||mgr)).join(''):`<div class="tk-empty"><b>No open requests</b><small>${mgr?'Add one when someone asks for something.':'Nothing waiting for you.'}</small></div>`}
+ return `${inMine?(open.length?'<div class="ad-lbl" style="margin-top:18px">Reports &amp; optimizations</div>':''):tkQuickDash(mine)}
+   ${open.map(q=>tkQuickRow(q,q.email===me||mgr)).join('')}
    ${done.length?`<div class="ad-lbl">Done · last 14 days</div>${done.map(q=>tkQuickRow(q,q.email===me||mgr)).join('')}`:''}`;
 }
 function tkAccTxt(list){return list.map(a=>`<span class="tk-acc">${a==='usa'?'US':'AR'}</span>`).join('')}
