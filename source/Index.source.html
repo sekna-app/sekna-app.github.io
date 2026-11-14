@@ -10287,8 +10287,8 @@ function akTop(){const f=(AK.ts||[])[AK.ts.length-1];if(f)f()}
 // a quiet call: no typing dots, so the screen does not jump while a switch is saved
 async function akAdmQ(op,extra){try{const j=await akPost('admin',Object.assign({op},extra||{}));
   // v393 the server must send back the new value; if it does not, say so instead of quietly switching back
-  if(op==='permSet'&&extra&&j&&j.access){const a=j.access[String(extra.who).toLowerCase()]||{},k=extra.key,v=k==='plat'?(a.pl&&a.pl[extra.plat]!==undefined?a.pl[extra.plat]:(a.plats||[]).indexOf(extra.plat)>=0):a[k];
-    if(v!==extra.on&&!(k==='use'&&extra.on&&v===undefined))akBot(`<p>The script did not keep this change. It is probably running an older version: in Apps Script use Deploy → Manage deployments → Edit → New version.</p><p class="ak-sm ak-mu">Sent ${akEsc(k)}${extra.plat?' '+akEsc(extra.plat):''} = ${extra.on}, got ${akEsc(String(v))}.</p>`)}
+  if(op==='permSet'&&extra&&j&&j.access){const wk=String(extra.who).toLowerCase().trim(),a=j.access[wk]||{},k=extra.key,v=k==='plat'?(a.pl&&a.pl[extra.plat]!==undefined?a.pl[extra.plat]:(a.plats||[]).indexOf(extra.plat)>=0):a[k];
+    if(v!==extra.on&&!(k==='use'&&extra.on&&v===undefined))akBot(`<p>The script did not keep this change. It is probably running an older version: in Apps Script use Deploy → Manage deployments → Edit → New version.</p><p class="ak-sm ak-mu">Sent ${akEsc(k)}${extra.plat?' '+akEsc(extra.plat):''} = ${extra.on} for ${akEsc(wk)}, got ${akEsc(String(v))}. Saved record: ${akEsc(JSON.stringify(j.access[wk]||null))}. People saved: ${Object.keys(j.access).length}.</p>`)}
   return j}
  catch(err){akBot(`<p>Could not save: ${akEsc(/unknown action/.test(String(err&&err.message))?'the script is on an older version. In Apps Script use Deploy → Manage deployments → Edit → New version.':String(err&&err.message||err))}</p>`);return null}}
 function akTmTitle(ic,t){return `<p class="ak-q">${akI(ic)}<b>${t}</b></p>`}
@@ -10303,8 +10303,8 @@ async function akTm(k){
 /* v389 access in HEMERA by email: use the bot, add sheets, teach the bot, and each locked platform */
 async function akPermsLoad(){await akTeamData();const j=await akAdm('perms');if(!j)return false;AK.pm=j;return true}
 function akPpl(){return (typeof tkPeople==='function'&&TK.data?tkPeople():[]).filter(p=>p.email)}
-function akIsEd(e){return ((AK.pm&&AK.pm.editors)||[]).indexOf(String(e).toLowerCase())>=0}
-function akPerm(e,key,plat){e=String(e).toLowerCase();if(akIsEd(e))return true;const a=((AK.pm&&AK.pm.access)||{})[e]||{};
+function akIsEd(e){return ((AK.pm&&AK.pm.editors)||[]).indexOf(String(e).toLowerCase().trim())>=0}
+function akPerm(e,key,plat){e=String(e).toLowerCase().trim();if(akIsEd(e))return true;const a=((AK.pm&&AK.pm.access)||{})[e]||{};
  if(key==='use')return a.use!==false;if(key==='add')return a.add===true;if(key==='teach')return a.teach===true;if(key==='plat'){if(a.pl&&(a.pl[plat]===true||a.pl[plat]===false))return a.pl[plat];if((a.plats||[]).indexOf(plat)>=0)return true;return ((AK.pm&&AK.pm.locked)||[]).indexOf(plat)<0}return false}
 // every platform, open or locked, can be given to anyone (v391)
 function akAllPl(){return ((AK.pm&&AK.pm.plats)||((AK.pm&&AK.pm.locked)||[]).map(k=>({key:k,locked:true})))}
@@ -10329,7 +10329,7 @@ function akPermDraw(key,plat,back){AK.pd=[key,plat,back];const P=akPpl();
  const hint=key==='plat'?'Only the people switched on see '+plat+' sheets and get answers about it.':key==='use'?'Switch someone off and the bot does not answer them at all.':'';
  akPanel('teach',akTmTitle(key==='plat'?'lock':'key',akEsc(t))+(hint?`<p class="ak-sm ak-mu">${akEsc(hint)}</p>`:'')+'<div class="ak-rvs">'+P.map(p=>{const ed=akIsEd(p.email);return `<div class="ak-ad">${tkAv(p)}<b>${akEsc(p.name||p.email)}<small>${ed?'Editor':akEsc(p.email)}</small></b><label class="ak-sw${akPerm(p.email,key,plat)?' on':''}${ed?' off':''}" onclick="akPermFlip('${akEsc(p.email)}','${key}','${akEsc(plat)}',this)"><span></span></label></div>`}).join('')+'</div>'+AKB('pop'))}
 async function akPermFlip(e,key,plat,el){if(akIsEd(e)||el.classList.contains('busy'))return;const on=!el.classList.contains('on');el.classList.add('busy');el.classList.toggle('on',on);
- const j=await akAdmQ('permSet',{who:e,key,plat,on});el.classList.remove('busy');
+ const j=await akAdmQ('permSet',{who:String(e).trim(),key,plat,on});el.classList.remove('busy');
  if(!j){el.classList.toggle('on',!on);return}AK.pm=j;akTop()}
 /* categories: star = a filter button for the team; bin = hide, or move its rows first */
 function akCatsDraw(j){AK.cats=j;
