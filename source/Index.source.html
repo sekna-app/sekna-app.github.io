@@ -8436,12 +8436,9 @@ window.addEventListener('load',function(){
     html body .sk-row-icon{position:relative;background:#E8EDFB!important;color:#203C8E!important}html body .sk-row-icon svg{display:block;margin:0}
     body.dark-mode .sk-row-icon{background:#1f2a4a!important;color:#C9D3F5!important}
     html body #settingsOverlay .sk-row-icon,html body #settingsOverlay .sk-row-icon[class*=c-]{background:#E8EDFB!important;color:#203C8E!important}body.dark-mode #settingsOverlay .sk-row-icon{background:#1f2a4a!important;color:#C9D3F5!important}
-    /* v338 latest day: glow and depth from the owner's sliders (--lg, --ld in %) */
-    @media (max-width:1099px){html body #dxBody .dc-card.dcH.latest{box-shadow:0 0 0 2px #E2B874,0 0 calc(var(--lg,15) * .35px) rgba(226,184,116,calc(var(--lg,15) / 100)),0 10px 22px rgba(20,40,110,.12)!important}
-      html body #dxBody .dc-card.dcH.latest>.dcH-h{box-shadow:inset 0 1.5px 0 rgba(255,255,255,calc(var(--ld,15) / 100)),inset 0 -2px 0 rgba(120,80,20,calc(var(--ld,15) / 100)),inset 0 calc(var(--ld,15) * -.12px) calc(var(--ld,15) * .2px) rgba(120,80,20,calc(var(--ld,15) / 300))!important}}
-    .lgx{display:flex;flex-direction:column;gap:8px;margin:-2px 0 12px;padding:10px 12px;border-radius:14px;background:#FFF8E8;border:1.5px dashed #E2B874}
-    .lgx label{display:grid;grid-template-columns:42px 1fr 40px;align-items:center;gap:8px;font-size:12px;font-weight:900;color:#7a5a1c}.lgx input{width:100%;accent-color:#C9963E}.lgx b{text-align:right;font-size:12px}
-    .lgx button{align-self:flex-end;border:0;border-radius:99px;padding:6px 16px;background:#203C8E;color:#fff;font:inherit;font-size:12px;font-weight:900;cursor:pointer}
+    /* v339 latest day: only a soft gold glow (no gold frame), a lighter gold header, no depth */
+    @media (max-width:1099px){html body #dxBody .dc-card.dcH.latest{border-color:transparent!important;box-shadow:0 0 22px rgba(226,184,116,.64),0 10px 22px rgba(20,40,110,.12)!important}
+      html body #dxBody .dc-card.dcH.latest>.dcH-h{background:linear-gradient(180deg,#F8E4AE 0%,#EDCB8A 55%,#E2B874 100%)!important;box-shadow:none!important}}
 </style>
 </head>
 <body>
@@ -11399,16 +11396,7 @@ function dayAccuracy(sa,ca,va){
  return {spend:sp,conv:cv||0,value:v,score:sp*.4+(cv||0)*.2+v*.4};
 }
 /* One card per day; the month total is the navy card on top. */
-// v338 owner-only sliders under the gold Latest day: glow around the card and the 3D depth (saved for the team)
-function lgxApply(){const g=(APP_PREFS&&APP_PREFS.glow)||{},r=document.documentElement;r.style.setProperty('--lg',g.g!=null?g.g:15);r.style.setProperty('--ld',g.d!=null?g.d:15)}
-function lgxMount(){lgxApply();if(!(ACCESS_PROFILE&&ACCESS_PROFILE.owner)||window.innerWidth>=1100)return;const c=document.querySelector('#dxBody .dc-card.latest');if(!c||(c.nextElementSibling&&c.nextElementSibling.classList.contains('lgx')))return;
- const g=(APP_PREFS&&APP_PREFS.glow)||{},gv=g.g!=null?g.g:15,dv=g.d!=null?g.d:15;
- c.insertAdjacentHTML('afterend',`<div class="lgx" onclick="event.stopPropagation()"><label><span>Glow</span><input type="range" min="0" max="100" value="${gv}" oninput="document.documentElement.style.setProperty('--lg',this.value);this.nextElementSibling.textContent=this.value+'%'"><b>${gv}%</b></label>
-  <label><span>3D</span><input type="range" min="0" max="100" value="${dv}" oninput="document.documentElement.style.setProperty('--ld',this.value);this.nextElementSibling.textContent=this.value+'%'"><b>${dv}%</b></label>
-  <button type="button" onclick="lgxSave(this)">Save</button></div>`)}
-function lgxSave(btn){const r=getComputedStyle(document.documentElement),g=+r.getPropertyValue('--lg')||0,d=+r.getPropertyValue('--ld')||0;btn.disabled=true;btn.textContent='Saving…';
- serverCall('appPrefsSet',getAccessToken(),{glow:{g,d}}).then(p=>{if(p&&p.cur){APP_PREFS=p;storeSet('sekna_app_prefs',JSON.stringify(p))}btn.disabled=false;btn.textContent='Saved ✓';showSettingsToast('Saved for the whole team')}).catch(e=>{btn.disabled=false;btn.textContent='Save';showSettingsToast(errorText(e))})}
-function daysCards(days,latest,T){setTimeout(lgxMount,0);
+function daysCards(days,latest,T){
  const plan=DAY_VIEW==='plan';
  const bar=(v,cls)=>`<span class="dc-pb ${cls}"><em style="width:${Math.max(3,Math.min(100,(v||0)*100)).toFixed(0)}%"></em></span>`;
  const cards=days.map(x=>{
