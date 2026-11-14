@@ -4251,7 +4251,7 @@ window.addEventListener('load',function(){
     .pm-who button{position:relative;flex:none;display:flex;flex-direction:column;align-items:center;gap:4px;width:64px;padding:8px 4px;border-radius:14px;border:1.5px solid #e7eaf2;background:#fff;font:inherit;font-size:10.5px;font-weight:800;color:#4b5263;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .pm-who button.on{border-color:#2453d6;box-shadow:0 0 0 3px rgba(36,83,214,.15);color:#203c8e}
     .pm-wn{display:block;max-width:56px;overflow:hidden;text-overflow:ellipsis}
-    .pm-who button i{position:absolute;top:6px;right:8px;width:8px;height:8px;border-radius:50%;background:#ffd200}
+    .pm-who button>i{position:absolute;top:6px;right:8px;width:8px;height:8px;border-radius:50%;background:#ffd200}
     .pm-all{width:26px;height:26px;border-radius:50%;background:#eef1f8;display:grid;place-items:center;font-size:13px}
     body.dark-mode .pm-who button{background:#151a22;border-color:#252a32;color:#c9d0dc}
     .pm-r{display:grid;grid-template-columns:minmax(78px,1fr) repeat(var(--n,5),minmax(30px,40px));align-items:center;gap:2px;padding:9px 8px}.pm-r+.pm-r{border-top:1px solid #eef0f5}
@@ -16998,7 +16998,7 @@ function myAvDraw(){
  const row=(list,on,draw)=>`<div class="idc-g">${list.map(k=>`<button type="button" class="${on(k)?'on':''}" onclick="myAvSet(${k},this)">${draw(k)}</button>`).join('')}</div>`;
  const me=((P.email||'')+'').toLowerCase(),ver=isVer(cur);
  el.innerHTML=`<div class="idc-top${ver?' v':''}"></div><div class="idc-me"><button type="button" class="idc-pic" onclick="profOpen('${esc(me)}',event)" aria-label="View your profile">${personAv(cur,name)}${ver?VBADGE:''}</button><div><b>${esc(name||'You')}</b>${role?roleBadge(role):''}</div><button type="button" class="idc-view" onclick="profOpen('${esc(me)}',event)">Profile ›</button></div>
-  <div class="idc-f"><label class="${isPh?'on':''}"><input type="file" accept="image/*" onchange="myAvFile(this)" hidden>Upload</label><button type="button" class="${isL?'on':''}${MYAV_OPEN==='l'?' open':''}" onclick="MYAV_OPEN=MYAV_OPEN==='l'?'':'l';myAvDraw()" aria-expanded="${MYAV_OPEN==='l'}">My letter<i></i></button><button type="button" class="${isAv?'on':''}${MYAV_OPEN==='a'?' open':''}" onclick="MYAV_OPEN=MYAV_OPEN==='a'?'':'a';myAvDraw()" aria-expanded="${MYAV_OPEN==='a'}">Avatars<i></i></button></div>
+  <div class="idc-f"><label class="on"><input type="file" accept="image/*" onchange="myAvFile(this)" hidden>Upload</label><button type="button" class="${MYAV_OPEN==='l'?'open':''}" onclick="MYAV_OPEN=MYAV_OPEN==='l'?'':'l';myAvDraw()" aria-expanded="${MYAV_OPEN==='l'}">My letter<i></i></button><button type="button" class="${MYAV_OPEN==='a'?'open':''}" onclick="MYAV_OPEN=MYAV_OPEN==='a'?'':'a';myAvDraw()" aria-expanded="${MYAV_OPEN==='a'}">Avatars<i></i></button></div>
   ${MYAV_OPEN==='l'?row(LETTER_KEEP,k=>isL&&lc===k,k=>letterEmblem(name,k)):MYAV_OPEN==='a'?row(AV_KEEP,k=>n===k,k=>emblemHtml(k)):''}`;
 }
 async function myAvSet(v,btn){
