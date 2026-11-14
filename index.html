@@ -9149,6 +9149,18 @@ body.dark-mode .ak-abt{background:#171d27;border-color:#2a3242}body.dark-mode .a
 body.dark-mode .ak-ddf{background:#0f141c;border-color:#2a3242;color:#e8ecf3}
 body.dark-mode .ak-dd.op .ak-ddf,body.dark-mode .ak-ddl{background:#141a24;border-color:#6d8cf0}
 body.dark-mode .ak-ddl button{color:#e8ecf3;border-top-color:#232b3a}body.dark-mode .ak-ddl i{background:#2a2414}body.dark-mode .ak-ddl .on,body.dark-mode .ak-ddl .on>.ak-ic{color:#9db4ff}
+
+/* v404 ر٣ answer list + quick replies */
+.ak-l3{background:#fff;border-radius:14px;overflow:hidden;margin:6px 0}
+.ak-l3>button,.ak-l3>a{width:100%;display:flex;align-items:center;gap:10px;padding:9px 10px;border:0;border-top:1px solid #f0f2f8;background:none;text-align:left;color:#141b33;text-decoration:none;cursor:pointer;font:inherit}
+.ak-l3>:first-child{border-top:0}.ak-l3>:active{background:#F4F6FB}
+.ak-l3 i{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex:none;font-style:normal;background:#E7F5EC;color:#1E8E3E}.ak-l3 i .ak-ic{width:15px;height:15px}
+.ak-l3 i.r{background:#E8F0FE;color:#1a73e8}.ak-l3 i.s{background:#FBF3E2;color:#C9A24A}.ak-l3 i.o{background:#EEF1F8;color:#1C3C96}
+.ak-l3 span{flex:1;min-width:0;display:flex;flex-direction:column}.ak-l3 b{font-size:13px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ak-l3 small{font-size:11px;color:#65676B;font-weight:600;display:flex;align-items:center;gap:4px}.ak-l3 small u{text-decoration:none}
+.ak-l3>*>.ak-ic{width:15px;height:15px;color:#9aa3b5;flex:none}
+.ak-qr{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.ak-qr button{border:1.5px solid #1C3C96;color:#1C3C96;background:#fff;border-radius:99px;padding:5px 13px;font-weight:800;font-size:12.5px;cursor:pointer}
+body.dark-mode .ak-l3{background:#171d27}body.dark-mode .ak-l3>button,body.dark-mode .ak-l3>a{color:#e8ecf3;border-top-color:#232b3a}body.dark-mode .ak-qr button{background:transparent;color:#9db4ff;border-color:#6d8cf0}
 </style>
 </head>
 <body>
@@ -10333,19 +10345,35 @@ async function akSend(e){
  akUser(q);AK.kb=false;akKb();
  if(!ASK_HEMERA_URL){akBot('<p>Ask HEMERA is not connected yet.</p>');return}
  AK.busy=true;akDraw();
- try{const j=await akPost('ask',{q,history:AK.hist.slice(-6)});AK.hist.push({role:'user',text:q},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-12);AK.busy=false;akBot(akAnswer(j.answer||''))}
+ try{const j=await akPost('ask',{q,history:AK.hist.slice(-6)});AK.hist.push({role:'user',text:q},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-12);AK.busy=false;try{await akAssets()}catch(e){}akBot(akAnswer(j.answer||''))}
  catch(err){AK.busy=false;akBot(`<p>${akEsc(/not connected/.test(err.message)?'Ask HEMERA is not connected yet.':'Something went wrong. Try again.')}</p>`)}
 }
 
 function akLinkKind(u){u=String(u);if(/docs\.google\.com\/spreadsheets/.test(u))return['links','Sheet','g'];if(/scripts/.test(u))return['code','Script','s'];if(/ads\.google\.com|ads\.microsoft|tiktok|snapchat/.test(u))return['rep','Report','r'];return['out','Open','o']}
+ 
+function akUrlKey(u){u=String(u||'');const m=u.match(/\/d\/([\w-]{20,})/);return m?m[1]:u.replace(/[?#].*$/,'').replace(/\/+$/,'').toLowerCase()}
+function akRowByUrl(u){const k=akUrlKey(u);return ((AK.assets&&AK.assets.rows)||[]).find(r=>[r.sheet,r.report,r.script].some(o=>o&&o.url&&akUrlKey(o.url)===k))}
 function akAnswer(t){
- return String(t).split('\n').map(line=>{
-   const urls=line.match(/https?:\/\/[^\s<>"')]+/g);
-   if(!urls)return line.trim()?`<p>${akEsc(line)}</p>`:'';
-   const lab=line.replace(/https?:\/\/[^\s<>"')]+/g,'').replace(/[:：\-–]+\s*$/,'').trim();
-   return (lab?`<p>${akEsc(lab)}</p>`:'')+urls.map(u=>{const k=akLinkKind(u);return `<a class="ak-lk ${k[2]}" href="${akEsc(u)}" target="_blank" rel="noopener">${akI(k[0])}<span>${k[1]}</span>${akI('out')}</a>`}).join('');
- }).join('');
-}
+ const out=[],U=/https?:\/\/[^\s<>"')]+/g;
+ String(t).split('\n').forEach(line=>{const urls=line.match(U);
+   if(!urls){if(line.trim())out.push({p:line.trim()});return}
+   let lab=line.replace(U,'').replace(/[:：\-–•*]+\s*$/,'').replace(/^[\s\-–•*\d.)]+/,'').trim();
+   const pv=out[out.length-1];if(!lab&&pv&&pv.p&&pv.p.length<70&&!/[?؟.!:]$/.test(pv.p)){lab=pv.p.replace(/^[\s\-–•*\d.)]+/,'');out.pop()}
+   urls.forEach(u=>out.push({u,lab}))});
+ const seen={};let html='',list=[],any=false;
+ const flush=()=>{if(list.length)html+=`<div class="ak-l3">${list.join('')}</div>`;list=[]};
+ out.forEach(x=>{if(x.p){flush();html+=`<p dir="auto">${akEsc(x.p)}</p>`;return}
+   any=true;const r=akRowByUrl(x.u);
+   if(r){if(seen[r.id])return;seen[r.id]=1;const ac=String(r.account||'').toUpperCase();
+     list.push(`<button type="button" onclick="akAnsOpen('${akEsc(r.id)}')"><i class="g">${akI('links')}</i><span><b>${akEsc(String(r.name||r.id).replace(/_/g,' '))}</b><small>${AK_FLAG[ac]?`<u>${AK_FLAG[ac]}</u>`:''}${akEsc([r.account,r.platforms&&r.platforms[0]].filter(Boolean).join(' · '))}</small></span>${akI('chev')}</button>`);return}
+   const k=akLinkKind(x.u);list.push(`<a href="${akEsc(x.u)}" target="_blank" rel="noopener"><i class="${k[2]}">${akI(k[0])}</i><span><b>${akEsc(x.lab?x.lab.replace(/_/g,' '):k[1])}</b><small>${k[1]}</small></span>${akI('out')}</a>`)});
+ flush();
+ const last=out[out.length-1];
+ if(any&&last&&last.p&&/[?؟]\s*\S{0,3}$/.test(last.p)){const ar=/[؀-ۿ]/.test(last.p);
+   html+=`<div class="ak-qr"${ar?' dir="rtl"':''}>${(ar?['أيوه','لا، شكراً']:['Yes','No, thanks']).map(q=>`<button type="button" onclick="akQuick(this,'${q}')">${q}</button>`).join('')}</div>`}
+ return html}
+function akQuick(b,q){if(AK.busy)return;const w=b.closest('.ak-qr');if(w)w.remove();const i=document.getElementById('akQ');if(!i)return;i.value=q;akSend()}
+async function akAnsOpen(id){try{await akAssets()}catch(e){}AK.ls=[];akLNav(()=>akCard(id))}
 
 function AKB(to,l){return `<div class="ak-bkl"><button type="button" onclick="akBackTo('${to}')">${akI('back')}${l||'Back'}</button></div>`}
 async function akBackTo(t){if(t==='pop'){akTBack();return}if(t==='lpop'){akLBack();return}akUser('Back');
