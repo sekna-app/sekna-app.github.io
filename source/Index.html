@@ -8421,6 +8421,21 @@ window.addEventListener('load',function(){
     html body .a2-act>span{background:#E8EDFB!important;position:relative}html body .a2-act>span i{color:#203C8E!important}
     html body .a2-act>span:after,.a2-bi:after{content:"";position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:#E2B874;box-shadow:0 0 0 2px #fff}
     body.dark-mode .a2-act>span,body.dark-mode .a2-bi{background:#1f2a4a!important}body.dark-mode .a2-act>span i,body.dark-mode .a2-bi{color:#C9D3F5!important}
+    /* v337 latest day: the gold depth at 15% */
+    @media (max-width:1099px){html body #dxBody .dc-card.dcH.latest{box-shadow:0 0 0 2px #E2B874,0 0 14px rgba(226,184,116,.15),0 10px 22px rgba(20,40,110,.12)!important}
+      html body #dxBody .dc-card.dcH.latest>.dcH-h{background:linear-gradient(180deg,#F5DC9A 0%,#E2B874 50%,#CF9E4C 100%)!important;box-shadow:inset 0 1.5px 0 rgba(255,255,255,.15),inset 0 -2px 0 rgba(120,80,20,.15)!important;text-shadow:none!important}}
+    /* v337 weekly: the beat-last-year number above the glow */
+    .wly-col b{position:relative;z-index:2}.wly-col.win b{margin-bottom:9px!important}.wly-sp{display:none!important}
+    /* v337 leave switch under the days */
+    .lv-sw{margin:0 0 12px 4px!important}
+    /* v337 activity: Clear all right beside Days */
+    html body .act-top{flex-wrap:nowrap}html body .act-top>.act-rg{flex:0 0 auto!important;width:auto!important;display:inline-flex!important}html body .act-top>.act-clr{margin-left:0!important;flex:none}
+    /* v337 icons: centred, a small soft gold dot; Settings icons the same */
+    html body .a2-act>span>i{display:grid!important;place-items:center;width:100%;height:100%}html body .a2-act>span .aic,html body .a2-bi .aic{margin:0!important;display:block}
+    html body .a2-act>span:after,html body .a2-bi:after,html body .sk-row-icon:after{content:"";position:absolute;top:5px;right:5px;width:5px;height:5px;border-radius:50%;background:#E2B874;box-shadow:none!important;opacity:.85}
+    html body .sk-row-icon{position:relative;background:#E8EDFB!important;color:#203C8E!important}html body .sk-row-icon svg{display:block;margin:0}
+    body.dark-mode .sk-row-icon{background:#1f2a4a!important;color:#C9D3F5!important}
+    html body #settingsOverlay .sk-row-icon,html body #settingsOverlay .sk-row-icon[class*=c-]{background:#E8EDFB!important;color:#203C8E!important}body.dark-mode #settingsOverlay .sk-row-icon{background:#1f2a4a!important;color:#C9D3F5!important}
 </style>
 </head>
 <body>
@@ -10759,7 +10774,7 @@ function drawWeeklyLy0(anim){
  box.innerHTML=`<div class="wly-cap">Same Hijri weeks last year · ${esc(dd(W[0]&&W[0].from))} – ${esc(dd(W.length&&W[W.length-1].to))}</div>
   <div class="wly-ms">${[['v','Value'],['s','Spend'],['r','ROAS']].map(([k,l])=>`<button type="button" class="${WLY_M===k?'on':''}" onclick="wlyMetric('${k}')">${l}</button>`).join('')}</div>
   ${vlyHtml()}
-  <div class="wly-bars${go?' anim':''}">${W.map((w,j)=>{const wn=win(w);return `<button type="button" class="wly-g" onclick="wlyOpen(${j})"><span class="wly-col"><b>${M.f(M.g(w.l))}</b><i class="l" style="height:${(M.g(w.l)/mx*100).toFixed(1)}%;--d:${j*.12}s"></i></span><span class="wly-col${wn==='t'?' win':w.live&&wn==='l'?' lose':''}"><b class="t">${w.live?M.f(M.g(w.t)):'—'}</b><i class="t" style="height:${Math.max(1,M.g(w.t)/mx*100).toFixed(1)}%;--d:${.3+j*.12}s">${w.live&&wn==='t'?'<u class="wly-sp" style="left:8%;top:-12px"></u><u class="wly-sp" style="right:2px;top:8px;animation-delay:.5s"></u><u class="wly-sp" style="left:42%;top:34%;animation-delay:1s"></u>':''}</i></span><small class="wly-wl">W${j+1}</small></button>`}).join('')}</div>
+  <div class="wly-bars${go?' anim':''}">${W.map((w,j)=>{const wn=win(w);return `<button type="button" class="wly-g" onclick="wlyOpen(${j})"><span class="wly-col"><b>${M.f(M.g(w.l))}</b><i class="l" style="height:${(M.g(w.l)/mx*100).toFixed(1)}%;--d:${j*.12}s"></i></span><span class="wly-col${wn==='t'?' win':w.live&&wn==='l'?' lose':''}"><b class="t">${w.live?M.f(M.g(w.t)):'—'}</b><i class="t" style="height:${Math.max(1,M.g(w.t)/mx*100).toFixed(1)}%;--d:${.3+j*.12}s"></i></span><small class="wly-wl">W${j+1}</small></button>`}).join('')}</div>
   <div class="wly-lg"><span><i class="l"></i>Last year</span><span><i class="t"></i>This year so far</span>${M.hi==null||!W.some(w=>w.live&&win(w)==='t')?'':'<span><i class="n"></i>Beat last year</span>'}${M.hi==null||!W.some(w=>w.live&&win(w)==='l')?'':'<span><i class="r"></i>Below last year</span>'}<span class="tip">Tap a week for details</span></div>
   <div class="wly-list">${W.map((w,j)=>`<button type="button" onclick="wlyOpen(${j})"><span class="wly-wk">W${j+1}</span><span><b>${esc(w.hf)} – ${esc(w.ht)}</b><small>${esc(dd(w.from))} – ${esc(dd(w.to))} ${w.from?w.from.slice(0,4):''}</small></span><span class="r"><b>${mpK(w.l.v)}</b><small>${!w.live?'not yet':w.live<w.n?`<em class="nw">in progress · ${w.live} of ${w.n} days</em>`:`${chip(w.t.v,w.l.v)} this year`}</small></span></button>`).join('')}</div>`;
 }
@@ -11647,12 +11662,12 @@ async function fcMonth(v){
  serverCall('forecastSet',k,{month:pick.v},getAccessToken()).then(r=>{c.moving='';c.data=r;if(AS[k]){AS[k].data=null;AS[k].edit={};AS[k].hj=0}fcDraw()})
   .catch(err=>{c.moving='';c.msg='⚠️ '+esc(errorText(err));fcDraw()});
 }
-function fcView(v){if(v==='forecast'&&FC_VIEW!=='forecast')FC_SHINE=1;FC_VIEW=v;fcDraw()}
+function fcView(v){FC_VIEW=v;fcDraw()}
 
 function fcViewGo(v,btn){const g=btn&&btn.parentNode,i=['forecast','assume','years'].indexOf(v);
  if(!g||!motionOn()||v===FC_VIEW){fcView(v);return}
  g.style.setProperty('--i',i);g.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b===btn));const p=g.querySelector('.fcP-pill');if(p){p.classList.remove('shine');void p.offsetWidth;p.classList.add('shine')}
- setTimeout(()=>{if(v==='forecast')FC_SHINE=1;FC_VIEW=v;fcDraw();const n=document.querySelector('#labForecast .fcP-pill');if(n)n.classList.add('shine')},0)}
+ setTimeout(()=>{FC_VIEW=v;fcDraw();const n=document.querySelector('#labForecast .fcP-pill');if(n)n.classList.add('shine')},0)}
 const FC_IC={okc:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.8"/>',warn:'<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.1"/>',alert:'<circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',list:'<rect x="4" y="3.5" width="16" height="17" rx="3"/><path d="M8 9h8M8 13h8M8 17h5"/>',years:'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17M8 14h2M14 14h2M8 17h2"/>',
  weeks:'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 14h8"/>',channels:'<path d="M4 6h16M4 12h10M4 18h6"/><circle cx="18" cy="12" r="2"/><circle cx="14" cy="18" r="2"/>',source:'<path d="M5 4h14v4l-5 5v7l-4-2v-5L5 8z"/>',
  settings:'<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1.2l2-1.5-2-3.4-2.3 1a7 7 0 0 0-2-1.2L14.3 3h-4l-.3 2.6a7 7 0 0 0-2 1.2l-2.3-1-2 3.4 2 1.5A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.5 2 3.4 2.3-1a7 7 0 0 0 2 1.2l.3 2.7h4l.3-2.7a7 7 0 0 0 2-1.2l2.3 1 2-3.4-2-1.5c.1-.4.1-.8.1-1.2z"/>'};
@@ -11662,7 +11677,6 @@ function noEmoji(t){return String(t||'').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\
 function fcFold(k){FC_OPEN=mxWide()?k:FC_OPEN===k?'':k;fcDraw()}
 
 var FC_SHINE=1;
-document.addEventListener('pointerdown',e=>{const t=e.target;if(t&&t.closest&&t.closest('#labForecast')&&t.closest('button')&&FC_VIEW==='forecast')FC_SHINE=1},true);
 function fcShineGo(){if(!FC_SHINE)return;const h=document.querySelector('#labForecast .fc-hero');if(!h)return;FC_SHINE=0;if(!motionOn())return;h.classList.remove('shn');void h.offsetWidth;h.classList.add('shn')}
 const fcPct=v=>v==null?'—':Math.round(v*100)+'%';
 const fcK=v=>v==null?'—':cs()+fmt(cx(v)/1000,0)+'k';
@@ -16117,7 +16131,7 @@ function tkLeaveHtml(){
  const off=people.map(p=>({p,l:tkOffToday(p.email)})).filter(x=>x.l);
  const first=n=>esc(String(n||'').split(' ')[0]);
  const day=esc(new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'}).toUpperCase());
- const stats=`<div class="lv-row"><div class="lv-seg"><button type="button" class="${f.on?'':'on'}" ${admin?'onclick="lvSegGo(false)"':'disabled'}>Leave open</button><button type="button" class="${f.on?'on':''}" ${admin?'onclick="lvSegGo(true)"':'disabled'}>Frozen</button></div></div>`;
+ const stats=`<button type="button" class="tk-tsw lv-sw${f.on?'':' on'}" ${admin?'onclick="lvSegGo(!((TK.data&&TK.data.freeze)||{}).on)"':'disabled'} role="switch" aria-checked="${!f.on}"><i></i><span>${f.on?'Leave frozen':'Leave open'}</span></button>`;
  const live=TK.month===tkMonthNow();
  const covers=off.length?off.map(({p,l},i)=>{const b=l.data.backup?tkPerson(l.data.backup):null;
    const n=live?tkTasksFor(p.email,tkWeekOf(tkToday().d)).filter(tkIsToday).length:0;
@@ -16141,7 +16155,7 @@ function tkLeaveHtml(){
    const ds=[...Array(7)].map((_,i)=>{const d=new Date(mon.getTime()+i*864e5);return {y:d.getUTCFullYear(),m:d.getUTCMonth()+1,d:d.getUTCDate(),wd:(d.getUTCDay()+1)%7,lab:d.toLocaleDateString('en-GB',{weekday:'short',timeZone:'UTC'}).toUpperCase(),today:i===dow}});
    const offOn=(email,x)=>{const m=`${x.y}-${String(x.m).padStart(2,'0')}`;return tkLeaveAll().find(l=>l.email===email&&l.data&&(l.data.type==='Weekly'?!fr&&(l.data.weekdays||[]).includes(x.wd):l.month===m&&(l.data.days||[]).includes(x.d)&&!(fr&&l.data.type==='Vacation')))||null};
    return `<div class="lj2">${ds.map(x=>{const o=people.filter(p=>offOn(p.email,x));return `<div class="${x.today?'on':''}"><small>${x.lab}</small><b>${x.d}</b>${o.length?`<span class="lj2-o">${o.map(p=>`<span title="${esc(first(p.name))}">${tkAv(p)}</span>`).join('')}</span>`:'<span class="lj2-ok">✓</span>'}</div>`}).join('')}</div>`})();
- return stats+wk+(off.length?covers:'')+(people.length?`<div class="ls3">${rows}</div>`:'<div class="tk-empty"><b>No one yet</b></div>');
+ return wk+stats+(off.length?covers:'')+(people.length?`<div class="ls3">${rows}</div>`:'<div class="tk-empty"><b>No one yet</b></div>');
 }
 
 
