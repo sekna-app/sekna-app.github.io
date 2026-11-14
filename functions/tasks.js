@@ -613,6 +613,9 @@ async function setMemberSelf(email, value, welcomed) {
   });
   return result;
 }
+async function clearWelcome(email) {
+  await fsUpdate(DOC.members, all => { all = all || {}; const m = all[email]; if (!m || !m.w) return undefined; delete m.w; if (m.role || m.avatar) all[email] = m; else delete all[email]; return all; });
+}
 const AVATAR_OK = [11, 12, 13, 14, 15, 17, 18, 20, 21, 22, 101, 103, 104, 105, 106, 107, 108];
 async function call(fn, args) {
   if (fn === 'adminTasksMove') return adminTasksMove(args);
@@ -627,4 +630,4 @@ async function call(fn, args) {
 }
 const FNS = Object.keys(T).concat(['adminTasksMove', 'adminTasksMoveStatus']);
 
-module.exports = { setMemberSelf, moved, call, FNS, canManage, morningPush, morningPushIfDue, muscatToday, leavesToday, frozenOn, weekOf, prevMonth, appsScript, relay, teamStatusFor, members };
+module.exports = { setMemberSelf, clearWelcome, moved, call, FNS, canManage, morningPush, morningPushIfDue, muscatToday, leavesToday, frozenOn, weekOf, prevMonth, appsScript, relay, teamStatusFor, members };

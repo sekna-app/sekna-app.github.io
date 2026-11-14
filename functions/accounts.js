@@ -216,11 +216,8 @@ const A = {
     else out.member = (await tasks.members())[a.email] || {};
     out.pushTopic = 'sekna-u-' + sha256(norm(a.email)).slice(0, 24);
     out.app = publicApp(st);
-    // v358 the first-visit welcome: only for people who first asked for access after it launched, and only once
-    try {
-      const first = Math.min(...(await storeRows()).filter(r => norm(r.email) === norm(a.email)).map(r => Number(r.requestedAt) || Infinity));
-      out.welcome = first > WELCOME_FROM && !(out.member && out.member.w);
-    } catch (e) { out.welcome = false; }
+    // v359 the first-visit welcome: once per email (any device); it shows again only if the admin deletes the email and approves it again
+    out.welcome = !(out.member && out.member.w);
     return out;
   },
 
@@ -330,14 +327,18 @@ const A = {
   async adminDelete([token, id]) {
     const me = await assertAdmin(token);
     await guardOwner(me, id);
-    let name = '';
+    let name = '', email = '', left = 0;
     await saveRows(list => {
       const r = list.find(x => x.id === String(id || ''));
       if (!r) throw new Error('This record no longer exists.');
       if (r.status === 'Approved' || r.status === 'Pending') throw new Error('Revoke or deny this device before deleting it.');
-      name = r.name;
-      return list.filter(x => x !== r);
+      name = r.name; email = norm(r.email);
+      const rest = list.filter(x => x !== r);
+      left = rest.filter(x => norm(x.email) === email).length;
+      return rest;
     });
+    // v359 the email is gone from HEMERA: if it comes back and is approved, the welcome shows once more
+    if (email && !left) await tasks.clearWelcome(email).catch(e => console.error('Welcome reset: ' + e.message));
     return { ok: true, name };
   },
 
@@ -482,7 +483,6 @@ async function adminAccessMove([token]) {
   return counts;
 }
 
-const WELCOME_FROM = Date.parse('2026-11-14T15:00:00Z');
 /** Router: before the move every call goes to Apps Script unchanged. */
 async function call(fn, args) {
   if (fn === 'adminAccessMove') return adminAccessMove(args);

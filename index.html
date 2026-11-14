@@ -17111,8 +17111,9 @@ const WL={step:0,name:'',av:0,photo:'',push:false,saving:false};
 const WL_SEA=['s1','s2','s3'].map(c=>`<svg class="${c}" viewBox="0 0 800 120" preserveAspectRatio="none" aria-hidden="true"><path d="M0 60 Q100 20 200 60 T400 60 T600 60 T800 60 V120 H0Z" fill="#9FB6FF"/></svg>`).join('');
 const WL_IC={plan:'<svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-8M3 20h18"/></svg>',task:'<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',season:'<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg>',bell:'<svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>'};
 function wlMaybe(){
- const P=ACCESS_PROFILE||{};if(!P.welcome||document.getElementById('wlBox'))return;
- try{if(localStorage.getItem('hm_welcome_done')==='1')return}catch(e){}
+ const P=ACCESS_PROFILE||{};if(!P.welcome||window.WL_SHOWN||document.getElementById('wlBox'))return;
+ 
+ window.WL_SHOWN=1;serverCall('setMyProfile',getAccessToken(),{}).then(r=>{if(r&&r.member)ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE||{},{member:r.member,welcome:false})}).catch(()=>{});
  const mem=P.member||{};WL.step=0;WL.name=P.name||'';WL.av=mem.avatar&&typeof mem.avatar!=='string'?+mem.avatar:0;WL.photo=typeof mem.avatar==='string'?mem.avatar:'';WL.push=false;
  const o=document.createElement('div');o.id='wlBox';o.className='wl';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Welcome to HEMERA');
  o.innerHTML=`<div class="wl-sea" aria-hidden="true">${WL_SEA}</div><div class="wl-ban" id="wlBan"><span>H</span><div><b>HEMERA · now</b><small>You are all set. Alerts will look like this.</small></div></div>`;
@@ -17144,7 +17145,7 @@ function wlDraw(){
    s.querySelectorAll('.wl-tr').forEach((r,i)=>setTimeout(()=>r.classList.add('on'),i*280));
    setTimeout(()=>{const n=document.getElementById('wlBan');if(n){n.classList.add('show');setTimeout(()=>n.classList.remove('show'),3000)}b.disabled=false;b.textContent='Next';s.querySelector('[data-go]').textContent='Skip'},900)}}
  if(WL.step===4){setTimeout(()=>wlConfetti(o),300);
-  const end=tour=>{try{localStorage.setItem('hm_welcome_done','1')}catch(e){}o.classList.add('bye');setTimeout(()=>{o.remove();if(tour)try{tourStart()}catch(e){}},400)};
+  const end=tour=>{o.classList.add('bye');setTimeout(()=>{o.remove();if(tour)try{tourStart()}catch(e){}},400)};
   s.querySelector('#wlTour').onclick=()=>end(true);s.querySelector('#wlEnd').onclick=()=>end(false)}
 }
 async function wlSave(){
