@@ -8638,6 +8638,9 @@ window.addEventListener('load',function(){
     /* v370 Settings: no version line; Done sits above the bottom bar on phones */
     html body #stVer{display:none!important}
     @media (max-width:1099px){html body #settingsOverlay .sk-primary-btn{margin:16px 16px calc(118px + env(safe-area-inset-bottom,0px))!important}}
+    /* v371 who is off today: the off person's photo gets a navy veil with OFF in gold (the covers line only) */
+    .lvc-p>.tk-av:first-child{position:relative;overflow:hidden;border-radius:50%}.lvc-p>.tk-av:first-child svg,.lvc-p>.tk-av:first-child img{filter:grayscale(.7)}
+    .lvc-p>.tk-av:first-child:after{content:"OFF";position:absolute;inset:0;border-radius:50%;background:rgba(15,26,58,.6);color:#F3D58E;font:900 8px/1 Inter,system-ui,sans-serif;letter-spacing:.08em;display:grid;place-items:center}
 </style>
 </head>
 <body>
