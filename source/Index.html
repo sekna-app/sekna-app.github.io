@@ -8317,6 +8317,16 @@ window.addEventListener('load',function(){
     html body #mtdVarianceCard.vc:after{opacity:.25!important}
     html body #mtdVarianceCard.vc #mtdVariance{text-shadow:0 1px 0 rgba(255,255,255,.9)}
     .vcp-days i{background:#C9CFDA!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.6)}.vcp-days i.s{background:linear-gradient(180deg,#2C4FB8,#1A2F75)!important}.vcp-days i.t{background:linear-gradient(180deg,#F1D08F,#C9963E)!important}
+    /* v332 week filters: W1-W4 only, compact */
+    html body .tk-weeks small{display:none!important}
+    html body .tk-weeks{display:inline-grid!important;grid-template-columns:repeat(4,auto)!important;width:auto!important}
+    html body .tk-weeks>button{padding:6px 14px!important;min-width:0!important}html body .tk-weeks b{font-size:12.5px!important}
+    /* v332 budget: lighter 3D */
+    html body #mtdVarianceCard.vc{transform:none!important;box-shadow:inset 0 1px 0 #fff,inset 0 -1px 2px rgba(40,50,80,.08),0 2px 0 #C3C9D4,0 12px 24px rgba(20,40,110,.14)!important;
+      background:linear-gradient(135deg,#FBFCFD 0%,#E3E7ED 30%,#F6F7F9 50%,#D3D8E0 78%,#EDEFF3 100%)!important}
+    html body #mtdVarianceCard.vc:before{background:linear-gradient(115deg,transparent 34%,rgba(255,255,255,.55) 44%,transparent 54%)!important}
+    html body #mtdVarianceCard.vc #mtdVariance{text-shadow:none}
+    .vcp-days i{box-shadow:none!important}
 </style>
 </head>
 <body>
@@ -11581,7 +11591,7 @@ function fcDraw0(){
  if(!d){box.innerHTML=`<div class="lab-box fc">${head}<div class="fc-note">${c.err?'⚠️ '+esc(c.err):'<span class="lab-spin dark"></span>Reading the month tab…'}</div>${foot}</div>`;return}
  if(d.missing){box.innerHTML=`<div class="lab-box fc">${head}<div class="fc-note">No forecast tab is linked for ${esc(CURRENT_ACCOUNT.toUpperCase())} yet.</div></div>`;return}
  if(isAs){box.innerHTML=`<div class="lab-box fc">${head}${asHtml()}${foot}</div>`;return}
- if(isYr){box.innerHTML=`<div class="lab-box fc">${head}${yrHtml(d)}${foot}</div>`;return}
+ if(isYr){box.innerHTML=`<div class="lab-box fc">${head}${yrHtml(d)}</div>`;return}
  const p=d.plan||{},wt=d.weekTotal||{},e=d.engine||{},st=d.settings||{},l6=(d.ref||{}).last60||{},ly=(d.ref||{}).ly||{};
  const mon=d.month||'This month';
  const lastDay=Date.parse(st.lastData)?new Date(Date.parse(st.lastData)).getDate():null;
@@ -11788,7 +11798,7 @@ function yrHtml(d){
     return `<div class="pvy"><div class="pvy-h">Plan vs ${esc(name.slice(0,3))} ${ly.month.slice(0,4)}</div><div class="pvy-g">
      <div><small>SPEND</small><b class="${c(ds)}">${sg(ds)}</b><em>${fcK(p.spend)} vs ${fcK(ly.cost)}</em></div>
      <div><small>REVENUE</small><b class="${c(dr)}">${sg(dr)}</b><em>${fcK(p.rev)} vs ${fcK(ly.value)}</em></div>
-     <div><small>ROAS</small><b>${p.roas!=null?fmt(p.roas,2)+'x':'—'}</b><em>vs ${fmt(lr,2)}x</em></div></div>${soFar?`<div class="pvy-f">${soFar}</div>`:''}</div>`})():soFar?`<div class="fc-foot">${soFar}</div>`:''}`;
+     <div><small>ROAS</small><b>${p.roas!=null?fmt(p.roas,2)+'x':'—'}</b><em>vs ${fmt(lr,2)}x</em></div></div></div>`})():''}`;
 }
  
 let AS={tab:'index'};
