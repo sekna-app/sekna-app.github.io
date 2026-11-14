@@ -312,15 +312,15 @@ const R = {
     const month = monthOk(monthKey), range = dayRange(rangeIn);
     const days = Object.keys((await fsGet(DOC.usageDays)) || {}).filter(d => range ? d >= range.from && d <= range.to : d.slice(0, 7) === month);
     const lists = await Promise.all(days.map(d => fsList(DOC.usage(d))));
-    const opens = {}, time = {};
+    const opens = {}, time = {}, byDay = {};
     let openTotal = 0, timeTotal = 0;
-    lists.forEach(list => list.forEach(r => {
+    lists.forEach((list, i) => list.forEach(r => {
       const email = r.email || '', name = r.name || nameFromEmail(email);
-      if (r.kind === 'open') { (opens[email] = opens[email] || { email, name, n: 0 }).n++; openTotal++; }
+      if (r.kind === 'open') { (opens[email] = opens[email] || { email, name, n: 0 }).n++; openTotal++; byDay[days[i]] = (byDay[days[i]] || 0) + 1; }
       else if (r.kind === 'time') { const s = Number(r.sec) || 0; (time[email] = time[email] || { email, name, sec: 0 }).sec += s; timeTotal += s; }
     }));
     return { month, range, shares: await shareStats(month, range),
-      opens: { total: openTotal, people: Object.keys(opens).map(k => opens[k]).sort((a, b) => b.n - a.n) },
+      opens: { total: openTotal, days: byDay, people: Object.keys(opens).map(k => opens[k]).sort((a, b) => b.n - a.n) },
       time: { total: timeTotal, people: Object.keys(time).map(k => time[k]).sort((a, b) => b.sec - a.sec) } };
   },
   async adminResetActivity([token, kind]) {

@@ -8644,6 +8644,19 @@ window.addEventListener('load',function(){
     .srv-dial{display:flex;gap:6px;margin-top:12px}.srv-dial button{flex:1;border:0;border-radius:11px;padding:9px 2px;font:inherit;font-size:12px;font-weight:900;background:#F4F6FA;color:#4b5263;cursor:pointer;transition:background .25s,color .25s,box-shadow .25s}
     .srv-dial button.on{background:linear-gradient(135deg,#3d6bff,#203c8e);color:#fff;box-shadow:0 6px 14px rgba(32,60,142,.3)}
     body.dark-mode .srv-tl,body.dark-mode .srv-dev{background:#151a22;border-color:#252a32}body.dark-mode .srv-tr b,body.dark-mode .srv-dh b{color:#fff}body.dark-mode .srv-dial button:not(.on){background:#1b212b;color:#c6ccd8}
+    /* v351 admin overview: the month's pulse */
+    .ao{background:radial-gradient(130% 160% at 0 0,#2C4FB8,#203C8E 55%,#132457);color:#fff;border-radius:20px;padding:16px;box-shadow:0 14px 28px rgba(16,24,60,.22);margin-top:12px}
+    .ao-h{display:flex;align-items:center;gap:12px}.ao-n{font-size:42px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+    .ao-h small{display:block;font-size:10px;font-weight:900;letter-spacing:.12em;color:#C9D3F5}.ao-h b{display:block;font-size:14px;font-weight:900;margin-top:3px}
+    .ao-sp{display:flex;align-items:flex-end;gap:2px;height:52px;margin-top:14px}.ao-sp i{flex:1;min-width:0;border-radius:3px 3px 1px 1px;background:rgba(255,255,255,.24)}.ao-sp i.t{background:#F3D58E}.ao-sp i.f{background:rgba(255,255,255,.08)}
+    .ao-ch{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}.ao-ch span{background:rgba(255,255,255,.1);border-radius:99px;padding:5px 11px;font-size:11.5px;font-weight:800}.ao-ch b{color:#F3D58E;margin-right:4px}
+    .ao-ch .al{background:#F3D58E;color:#2a1d05}.ao-ch .al b{color:#2a1d05}
+    .ao-pp{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:11px;font-weight:700;color:#C9D3F5}.ao-pp b{color:#fff;font-weight:900}
+    .ao-tl{padding:14px!important}.ao-ev{display:flex;gap:10px;position:relative}.ao-ev+.ao-ev{margin-top:12px}
+    .ao-ev:before{content:"";position:absolute;left:5px;top:14px;bottom:-14px;border-left:2px solid #EDF0F6}.ao-ev:last-child:before{display:none}
+    .ao-ev>i{width:12px;height:12px;border-radius:50%;flex:none;margin-top:3px;background:#3d6bff;box-shadow:0 0 0 3px #E8EDFB}.ao-ev>i.w{background:#E2B874;box-shadow:0 0 0 3px #FDF1D8}.ao-ev>i.g{background:#2FCB86;box-shadow:0 0 0 3px #E3F6EC}.ao-ev>i.r{background:#C63A4A;box-shadow:0 0 0 3px #FBDDE1}
+    .ao-ev b{display:block;font-size:12.5px;font-weight:900;color:#141B33}.ao-ev small{font-size:10.5px;font-weight:700;color:#8a93a8}
+    body.dark-mode .ao-ev b{color:#fff}body.dark-mode .ao-ev:before{border-color:#2a313c}
 </style>
 </head>
 <body>
@@ -14918,15 +14931,20 @@ function renderAdmin(d){
      ${op?(op.people.length?`<div class="a3-bars">${op.people.slice(0,4).map(p=>`<div><span>${esc(p.name)}</span><i><u style="width:${(p.n/mx*100).toFixed(1)}%"></u></i><b>${p.n}</b></div>`).join('')}</div>`:'<div class="sk-admin-empty">No one opened HEMERA yet this month.</div>'):`<div class="sk-admin-empty">${a&&a.error?esc(a.error):'Loading…'}</div>`}</div>`;
    const quick=`<div class="ad-lbl">Quick actions</div><div class="a3-qa"><button type="button" class="${m.on?'red':'green'}" onclick="adminGo('app')">● ${m.on?'Maintenance':'Live'}</button><button type="button" class="navy" onclick="adminGo('message')">Message</button><button type="button" class="gold" onclick="adminGo('invite')">Invite</button></div>`;
    const feed=[];
-   users.forEach(p=>{if(p.last)feed.push({at:p.last,ic:adIco('eye','#203c8e','#eef3ff'),t:`${esc(p.name)} opened HEMERA`})});
-   waiting.forEach(p=>feed.push({at:Math.max(0,...p.devices.map(x=>x.lastSeenMs||0))||now,ic:adIco('user','#9a6a22','#fbf1e1'),t:`${esc(p.name)} asked for access`}));
-   if(Array.isArray(SRV_ADMIN.events))SRV_ADMIN.events.forEach(e=>{if(e.at)feed.push({at:e.at,ic:adIco('server',/Backup/.test(e.server)?'#c43c50':'#0e8f5d',/Backup/.test(e.server)?'#fde8eb':'#e3f6ee'),t:/Backup/.test(e.server)?'Server moved to the backup':'Server back on Firebase'})});
+   users.forEach(p=>{if(p.last)feed.push({at:p.last,k:'o',ic:adIco('eye','#203c8e','#eef3ff'),t:`${esc(p.name)} opened HEMERA`})});
+   waiting.forEach(p=>feed.push({at:Math.max(0,...p.devices.map(x=>x.lastSeenMs||0))||now,k:'w',ic:adIco('user','#9a6a22','#fbf1e1'),t:`${esc(p.name)} asked for access`}));
+   if(Array.isArray(SRV_ADMIN.events))SRV_ADMIN.events.forEach(e=>{if(e.at)feed.push({at:e.at,k:/Backup/.test(e.server)?'r':'g',ic:adIco('server',/Backup/.test(e.server)?'#c43c50':'#0e8f5d',/Backup/.test(e.server)?'#fde8eb':'#e3f6ee'),t:/Backup/.test(e.server)?'Server moved to the backup':'Server back on Firebase'})});
    const cleared=+((ADMIN_APP_STATE||{}).recentClearedAt)||0;
    feed.sort((x,y)=>y.at-x.at);
-   const recent=`<div class="ad-lbl">Recent</div><div class="ad-card">${feed.filter(f=>f.at>cleared).slice(0,8).map(f=>`<div class="a3-fi">${f.ic}<div><b>${f.t}</b><small>${esc(timeAgo(f.at,now))}</small></div></div>`).join('')||'<div class="sk-admin-empty">Nothing new.</div>'}</div>${feed.some(f=>f.at>cleared)?'<button type="button" class="sh-reset" onclick="clearRecent()">↺ Clear recent</button>':''}`;
+   const recent=`<div class="ad-lbl">Recent</div><div class="ad-card ao-tl">${feed.filter(f=>f.at>cleared).slice(0,8).map(f=>`<div class="ao-ev"><i class="${f.k||'o'}"></i><div><b>${f.t}</b><small>${esc(timeAgo(f.at,now))}</small></div></div>`).join('')||'<div class="sk-admin-empty">Nothing new.</div>'}</div>${feed.some(f=>f.at>cleared)?'<button type="button" class="sh-reset" onclick="clearRecent()">↺ Clear recent</button>':''}`;
    const mon=new Date().toLocaleDateString('en-GB',{month:'long'}).toUpperCase();
-   const adc=`<div class="adc"><div class="adc-k">TEAM · ${mon}</div><div class="adc-st"><div><b>${users.length}</b><small>Users</small></div><div class="${waiting.length?'alert':''}"><b>${waiting.length}</b><small>Waiting</small></div><div><b>${invited}</b><small>Invited</small></div><div><b>${today}</b><small>Today</small></div></div>
-     <div class="adc-op"><div class="adc-oh"><small>OPENS THIS MONTH</small><b>${op?op.total:'…'}</b></div>${op?(op.people.length?`<div class="adc-bars">${op.people.slice(0,4).map(p=>`<div><span>${esc(p.name)}</span><i><u style="width:${(p.n/mx*100).toFixed(1)}%"></u></i><b>${p.n}</b></div>`).join('')}</div>`:'<small class="adc-e">No one opened HEMERA yet this month.</small>'):`<small class="adc-e">${a&&a.error?esc(a.error):'Loading…'}</small>`}</div></div>`;
+   
+   const nowD=new Date(),ym=nowD.getFullYear()+'-'+String(nowD.getMonth()+1).padStart(2,'0'),dimN=new Date(nowD.getFullYear(),nowD.getMonth()+1,0).getDate(),tdN=nowD.getDate();
+   const per=(op&&op.days)||{},vals=Array.from({length:dimN},(_,k)=>per[ym+'-'+String(k+1).padStart(2,'0')]||0),mxD=Math.max(1,...vals);
+   const adc=`<div class="ao"><div class="ao-h"><span class="ao-n">${op?op.total:'…'}</span><div><small>OPENS THIS MONTH · ${mon}</small><b>${today} ${today===1?'person':'people'} in HEMERA today</b></div></div>
+     <div class="ao-sp">${vals.map((v,k)=>`<i class="${k+1===tdN?'t':k+1>tdN?'f':''}" style="height:${k+1>tdN?6:Math.max(6,v/mxD*100).toFixed(0)}%" title="${k+1} · ${v} open${v===1?'':'s'}"></i>`).join('')}</div>
+     <div class="ao-ch"><span><b>${users.length}</b>users</span><span class="${waiting.length?'al':''}"><b>${waiting.length}</b>waiting</span><span><b>${invited}</b>invited</span></div>
+     ${op&&op.people.length?`<div class="ao-pp">${op.people.slice(0,4).map(p=>`<span>${esc(String(p.name).split(' ')[0])} <b>${p.n}</b></span>`).join('')}</div>`:a&&a.error?`<small class="adc-e">${esc(a.error)}</small>`:''}</div>`;
    body=`${adc}${recent}`;
  }
  else if(ADMIN_VIEW==='people')body=peopleView;
