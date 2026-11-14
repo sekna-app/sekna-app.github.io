@@ -8534,9 +8534,6 @@ window.addEventListener('load',function(){
     /* v334 about: Goldline Studio in the middle, a little higher */
     html body .ab3-glt{left:50%!important;right:auto!important;transform:translateX(-50%);top:calc(14px + env(safe-area-inset-top,0px))!important}
     /* v335 media plan / results: the Latest day in gold (phone) */
-    @media (max-width:1099px){html body #dxBody .dc-card.dcH.latest{box-shadow:0 0 0 2px #E2B874,0 10px 22px rgba(20,40,110,.14)!important}
-      html body #dxBody .dc-card.dcH.latest>.dcH-h{background:linear-gradient(135deg,#F3D58E,#C9963E)!important;color:#2a1d05!important}
-      html body #dxBody .dc-card.dcH.latest>.dcH-h *{color:#2a1d05!important}html body #dxBody .dc-card.dcH.latest>.dcH-h i,html body #dxBody .dc-card.dcH.latest>.dcH-h em{background:rgba(255,255,255,.45)!important}}
     /* v335 budget: silver with a navy band and a faint H */
     html body #mtdVarianceCard.vc{background:linear-gradient(160deg,#FFFFFF,#E9ECF2 60%,#DCE1E9)!important;padding-top:20px!important}
     html body #mtdVarianceCard.vc:before{display:none!important}
@@ -8560,8 +8557,6 @@ window.addEventListener('load',function(){
     body.dark-mode .a2-acts{background:#151a22!important}body.dark-mode .a2-act+.a2-act{border-color:#2a313c!important}body.dark-mode .a2-bk b{color:#fff}body.dark-mode .a2-bk button{background:#151a22}body.dark-mode .a2-bk svg{stroke:#fff}
     /* v336 latest day: gold with a little depth, a gold glow around, no "Latest" word */
     .dcH-l,.dc-hij em{display:none!important}
-    @media (max-width:1099px){html body #dxBody .dc-card.dcH.latest{border-color:#E2B874!important;box-shadow:0 0 0 2px #E2B874,0 0 18px rgba(226,184,116,.6),0 12px 24px rgba(20,40,110,.14)!important}
-      html body #dxBody .dc-card.dcH.latest>.dcH-h{background:linear-gradient(180deg,#FBE7B0 0%,#E9C27C 45%,#C08A35 100%)!important;box-shadow:inset 0 1.5px 0 rgba(255,255,255,.75),inset 0 -2px 0 rgba(120,80,20,.3)!important;text-shadow:0 1px 0 rgba(255,255,255,.45)}}
     /* v336 results: the whole Hijri date fits, in small type */
     @media (max-width:1099px){html body #dxBody .dcH-h>span{font-size:9.5px!important;overflow:visible!important;text-overflow:clip!important;flex:0 0 auto;letter-spacing:-.01em}
       html body #dxBody .dcH-h{gap:6px!important;padding-left:12px!important;padding-right:10px!important}html body #dxBody .dcH-h>b{font-size:13px!important}
@@ -8589,8 +8584,6 @@ window.addEventListener('load',function(){
     html body .a2-act>span:after,.a2-bi:after{content:"";position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:#E2B874;box-shadow:0 0 0 2px #fff}
     body.dark-mode .a2-act>span,body.dark-mode .a2-bi{background:#1f2a4a!important}body.dark-mode .a2-act>span i,body.dark-mode .a2-bi{color:#C9D3F5!important}
     /* v337 latest day: the gold depth at 15% */
-    @media (max-width:1099px){html body #dxBody .dc-card.dcH.latest{box-shadow:0 0 0 2px #E2B874,0 0 14px rgba(226,184,116,.15),0 10px 22px rgba(20,40,110,.12)!important}
-      html body #dxBody .dc-card.dcH.latest>.dcH-h{background:linear-gradient(180deg,#F5DC9A 0%,#E2B874 50%,#CF9E4C 100%)!important;box-shadow:inset 0 1.5px 0 rgba(255,255,255,.15),inset 0 -2px 0 rgba(120,80,20,.15)!important;text-shadow:none!important}}
     /* v337 weekly: the beat-last-year number above the glow */
     .wly-col b{position:relative;z-index:2}.wly-col.win b{margin-bottom:9px!important}.wly-sp{display:none!important}
     /* v337 leave switch under the days */
@@ -8604,8 +8597,9 @@ window.addEventListener('load',function(){
     body.dark-mode .sk-row-icon{background:#1f2a4a!important;color:#C9D3F5!important}
     html body #settingsOverlay .sk-row-icon,html body #settingsOverlay .sk-row-icon[class*=c-]{background:#E8EDFB!important;color:#203C8E!important}body.dark-mode #settingsOverlay .sk-row-icon{background:#1f2a4a!important;color:#C9D3F5!important}
     /* v339 latest day: only a soft gold glow (no gold frame), a lighter gold header, no depth */
-    @media (max-width:1099px){html body #dxBody .dc-card.dcH.latest{border-color:transparent!important;box-shadow:0 0 0 1px #D4A04E,0 0 22px rgba(226,184,116,.64),0 10px 22px rgba(20,40,110,.12)!important}
-      html body #dxBody .dc-card.dcH.latest>.dcH-h{background:linear-gradient(180deg,#F0D18C 0%,#E0B465 55%,#D3A04D 100%)!important;box-shadow:none!important}}
+    /* v343 latest day: header stays navy; a glowing gold gradient frame and a gold ROAS pill (phone) */
+    @media (max-width:1099px){html body #dxBody .dc-card.dcH.latest{border:2px solid transparent!important;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,#F7E1A1,#C99A45 35%,#F3D58E 65%,#B07A2A) border-box!important;box-shadow:0 0 20px rgba(226,184,116,.55),0 10px 22px rgba(20,40,110,.12)!important}
+      html body #dxBody .dc-card.dcH.latest>.dcH-h>i{background:linear-gradient(135deg,#F0D18C,#D3A04D)!important;color:#2a1d05!important}}
 </style>
 </head>
 <body>
