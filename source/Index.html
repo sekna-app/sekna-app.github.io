@@ -8617,6 +8617,8 @@ window.addEventListener('load',function(){
     html body .pf-sk{border-radius:50%;background:#1C3C96;color:#fff;font-family:Inter,Arial,sans-serif;font-weight:900;font-size:19px;box-shadow:none}
     html body .pf-wl{border-radius:10px;background:#0F1A3A}.pf-wl svg{width:24px;height:24px}
     html body a.pf-ha b.ar{text-align:left}
+    /* v364 verified covers use the SEKNA cover from Canva */
+    html body .pf-cv.v,html body .idc-top.v,html body .wl-id .t.v{background:#203C8E url(icons/sekna-cover.webp?v=1) right center/cover no-repeat!important}
 </style>
 </head>
 <body>
@@ -17089,7 +17091,7 @@ function pfDraw(){
  const plat=`<div class="pf-h">Platforms</div><a class="pf-r pf-a" href="https:\/\/wusul.io/services/" target="_blank" rel="noopener"><span class="pf-wl"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 15.5Q12 4 19 15.5" fill="none" stroke="#E2A93B" stroke-width="2.4" stroke-linecap="round"/><circle cx="5" cy="15.5" r="1.6" fill="#E2A93B"/><circle cx="19" cy="15.5" r="1.6" fill="#E2A93B"/><circle cx="12" cy="7.2" r="1.6" fill="#E2A93B"/></svg></span><div class="pf-t">Wusul<small>Audience intelligence · reaching new clients</small></div><span class="pf-go">›</span></a>`;
  const body=PF.tab==='contact'?contact:PF.tab==='plat'?plat:about;
  o.innerHTML=`<div class="pf-card"><button type="button" class="pf-x" onclick="profClose()" aria-label="Close">${pfI('x')}</button>
-  <div class="pf-cv${ver?' v':''}">${ver?'<span class="pf-cvt" aria-hidden="true">SEKNA</span>':''}</div><div class="pf-me"><span class="pf-pic">${personAv(P.avatar,P.name)}${ver?VBADGE:''}</span><div><b>${esc(P.name||P.email.split('@')[0])}</b>${P.role?roleBadge(P.role):''}</div></div>
+  <div class="pf-cv${ver?' v':''}"></div><div class="pf-me"><span class="pf-pic">${personAv(P.avatar,P.name)}${ver?VBADGE:''}</span><div><b>${esc(P.name||P.email.split('@')[0])}</b>${P.role?roleBadge(P.role):''}</div></div>
   ${PF.bio?`<div class="pf-bio ed"><textarea class="pf-in" id="pfBio" maxlength="48" rows="2" placeholder="Say something about you" oninput="document.getElementById('pfBc').textContent=this.value.length+' / 48'">${esc(P.bio)}</textarea><div class="pf-eb"><small id="pfBc">${String(P.bio).length} / 48</small><button type="button" onclick="PF.bio=false;pfDraw()">Cancel</button><button type="button" class="p" onclick="pfSaveBio(this)">Save</button></div></div>`
    :P.bio?`<div class="pf-bio">${esc(P.bio)}${P.self?`<button type="button" class="pf-pen sm" onclick="PF.bio=true;pfDraw()" aria-label="Edit caption">${pfI('pen')}</button>`:''}</div>`
    :P.self?`<div class="pf-bio"><button type="button" class="pf-add" onclick="PF.bio=true;pfDraw()">+ Add a caption</button></div>`:''}
