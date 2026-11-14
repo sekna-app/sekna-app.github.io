@@ -207,6 +207,8 @@ const CALLS = {
         const look = a => Array.isArray(a) && a.length === 4 ? [num(a[0], 0, 100, 0), num(a[1], 0, 100, 30), num(a[2], 100, 300, 100), num(a[3], 10, 100, 100)] : null;
         const o = {}; if (look(v.d)) o.d = look(v.d); if (look(v.p)) o.p = look(v.p); if (o.d || o.p) keep[k] = o; });
       now.card = keep; }
+    // The gold Latest day: glow around the card and its 3D depth, 0-100 each (owner's sliders under the day).
+    if (c.glow && typeof c.glow === 'object') { const n = v => Math.max(0, Math.min(100, Math.round(Number(v) || 0))); now.glow = { g: n(c.glow.g), d: n(c.glow.d) }; }
     if (c.roas != null) { const r = Number(c.roas); if (![0, 30, 40, 50].includes(r)) throw new Error('Pick a ROAS drop level.'); now.roas = r; }
     now.by = me.email; now.at = Date.now();
     await fsSet(PREFS_DOC, now);
@@ -407,7 +409,7 @@ exports.api = onRequest({
     return;
   }
   // Season card look (picture position/size/opacity, title): not private, read by the build to keep it in the code.
-  if (route === '/season-cards') { const p = (await fsGet(PREFS_DOC).catch(() => null)) || {}; res.json({ ok: true, card: p.card || {} }); return; }
+  if (route === '/season-cards') { const p = (await fsGet(PREFS_DOC).catch(() => null)) || {}; res.json({ ok: true, card: p.card || {}, glow: p.glow || null }); return; }
   if (route === '/ping') { res.json({ ok: true, version: VERSION, mail: notify.mailReady() ? 'gmail' : 'apps-script' }); return; }
   if (route === '/warm') {
     // Called by keepWarm. At most once a minute; it only refreshes the shared data.
