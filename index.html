@@ -10459,10 +10459,12 @@ function akStory(){
  const o=document.createElement('div');o.id='aksBox';o.className='aks';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Meet Alexandra');
  o.innerHTML=`<div class="aks-ph"><div class="aks-bar"><img src="get/logo-white.webp" alt="HEMERA"><button type="button" class="aks-x" aria-label="Close" onclick="akStoryClose()">${akI('x')}</button></div>
   <div class="aks-dots">${AKS.map(()=>'<i></i>').join('')}</div>
-  ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}${s.wide?' wide':''}">${s.wide?`<img class="blur" src="icons/alexandra/${s.img}.webp" alt="">`:''}<img class="bg" src="icons/alexandra/${s.img}.webp" alt="" ${i?'loading="lazy"':''}><div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
+  ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}${s.wide?' wide':''}">${s.wide?`<img class="blur" src="icons/alexandra/${s.img}.webp?v=2" decoding="async" alt="">`:''}<img class="bg" src="icons/alexandra/${s.img}.webp?v=2" decoding="async" alt="" ${i?'loading="lazy"':''}><div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
   <div class="aks-fx"></div><button type="button" class="aks-tap l" aria-label="Back" onclick="akStoryStep(-1)"></button><button type="button" class="aks-tap r" aria-label="Next" onclick="akStoryStep(1)"></button></div>`;
  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));
  window.AKST={o,i:-1,t:null};akStoryShow(0);
+ 
+ setTimeout(()=>o.querySelectorAll('img[loading=lazy]').forEach(im=>im.loading='eager'),300);
 }
 function akStoryClose(chat){const S=window.AKST;if(S)clearTimeout(S.t);const o=document.getElementById('aksBox');if(o){o.classList.remove('open');setTimeout(()=>o.remove(),300)}window.AKST=null;
  if(chat&&!document.getElementById('akBox'))openAsk()}
@@ -10593,7 +10595,7 @@ function akAbout(e){if(e)e.stopPropagation();const pg=document.getElementById('a
  pg.innerHTML=`<div class="ak-pgh"><button type="button" class="ak-bk" aria-label="Back" onclick="akAboutClose()">${akI('back')}</button></div>
   <div class="ak-pgb"><div class="ak-pgt"><span class="ak-pga">${akAvIn()}<em></em>${AK.editor?`<button type="button" class="ak-pgc" aria-label="Change the bot's photo" onclick="akBotAvPick()">${akI('cam')}</button>`:''}</span><b>Alexandra</b><small>Active now</small>${AK.editor&&akBav().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Remove the photo?','The bot goes back to the HEMERA star.','Remove',()=>akBotAvSave(''))">Remove photo</button>`:''}</div>
   <div class="ak-pgr">${n('links','Sheets')}${n('off','Days off')}${n('mail','Emails')}${n('task','Tasks')}</div>
-  <button type="button" class="ak-meet" onclick="akAboutClose();setTimeout(akStory,250)"><img src="icons/alexandra/streams.webp" alt=""><span><b>Meet Alexandra</b><small>Her story with HEMERA</small></span>${akI('play')}</button>
+  <button type="button" class="ak-meet" onclick="akAboutClose();setTimeout(akStory,250)"><img src="icons/alexandra/streams.webp?v=2" alt=""><span><b>Meet Alexandra</b><small>Her story with HEMERA</small></span>${akI('play')}</button>
   <h4>About</h4><div class="ak-pgp"><p>Answers from the team sheet: sheets, platform reports and scripts, who is off and who covers, and team emails.</p><p>Type it any way you like, in Arabic or English, or send a voice message.</p><p class="ak-mu">Each person sees only the platforms they have access to.</p></div>
   ${AK.canAdd||AK.canTeach?`<h4>Tools</h4>${AK.canAdd?row('add','add','Add a sheet','Put a new sheet in the list'):''}${AK.canTeach?row('teach','teach','Teach the bot','Rules, access and platforms'):''}`:''}
   ${AK.editor?`<h4>Settings</h4><div id="akBotW">${akBotRow(AK.bst||null)}</div>`:''}
