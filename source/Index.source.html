@@ -9389,7 +9389,7 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 
 /* v448 desktop: small window can be minimised to a bar; Alexandra profile posts and platforms; HEMERA profile a steady size; weekly figure beside its target */
 .ak-min{width:36px;height:36px;border:0;border-radius:50%;background:none;color:#1C3C96;display:grid;place-items:center;cursor:pointer;margin-left:auto}.ak-min .ak-ic{width:20px;height:20px}
-.ak-min:not([hidden])+.ak-mode{margin-left:0}
+.ak-min:not([hidden])+.ak-mode{margin-left:0}.ak-min[hidden]{display:none!important}
 @media (min-width:1100px){
  .ak.win.mini .ak-card{height:64px!important;overflow:hidden;cursor:pointer}
  .ak.win.mini .ak-card>:not(.ak-hd){visibility:hidden}
@@ -9400,6 +9400,25 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
  .pf-card{width:540px!important;height:min(880px,94vh);max-height:none!important;border-radius:24px!important;margin-top:-1vh}
  html.dk-on:not(.desktop-site-mode) body #channelPanel .weekly-performance .wx-m-v{display:flex!important;align-items:baseline;gap:6px;flex-wrap:wrap}
  html.dk-on:not(.desktop-site-mode) body #channelPanel .weekly-performance .wx-m-v span{display:inline!important;margin:0!important}
+}
+
+/* v449 desktop picks: Budget left as a plain split box; Alexandra shortcuts as a plain list */
+@media (min-width:1100px){
+  html.dk-on:not(.desktop-site-mode) body #channelPanel>.mtd-exec>.ox-bud{display:flex;flex-direction:column;justify-content:space-between;gap:0;padding:0;border-radius:16px;background:#fff;color:#141b33;border:1px solid #e3e8f4;box-shadow:none;overflow:hidden}
+  html.dk-on:not(.desktop-site-mode) body .ox-bud-t{flex-direction:column;align-items:flex-start;gap:2px;padding:12px 16px 8px}
+  html.dk-on:not(.desktop-site-mode) body .ox-bud-t span{color:#8a93a8}
+  html.dk-on:not(.desktop-site-mode) body .ox-bud-t b{font-size:22px;color:#141b33}
+  html.dk-on:not(.desktop-site-mode) body .ox-bud-r{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid #eef1f6}
+  html.dk-on:not(.desktop-site-mode) body .ox-bud-r div{padding:8px 16px;font-size:11px;font-weight:700;color:#65676B;min-width:0}
+  html.dk-on:not(.desktop-site-mode) body .ox-bud-r div+div{border-left:1px solid #eef1f6}
+  html.dk-on:not(.desktop-site-mode) body .ox-bud-r b{display:block;font-size:14px;font-weight:800;color:#141b33;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  html.dk-on:not(.desktop-site-mode) body.dark-mode #channelPanel>.mtd-exec>.ox-bud{background:#181e27;border-color:#2a313c}
+  html.dk-on:not(.desktop-site-mode) body.dark-mode .ox-bud-t b,html.dk-on:not(.desktop-site-mode) body.dark-mode .ox-bud-r b{color:#f2f4f7}
+  html.dk-on:not(.desktop-site-mode) body.dark-mode .ox-bud-r,html.dk-on:not(.desktop-site-mode) body.dark-mode .ox-bud-r div+div{border-color:#2a313c}
+  .ak.pgm .ak-dls{display:none}.ak.pgm .ak-dlt{margin-bottom:8px}
+  .ak.pgm .ak-dl i{width:22px;height:22px;background:none!important;color:#65676B;border-radius:0}
+  .ak.pgm .ak-dl i .ak-ic{width:20px;height:20px}
+  .ak.dk.pgm .ak-dl i{color:#B0B3B8}
 }
 </style>
 </head>
@@ -10026,7 +10045,7 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
       </div>
       <div class="ox-rc"><div class="ox-cl mc" id="mtdClkRow" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l9 8-4 1-1 4-4-13z"/><path d="M15 15l4 4"/></svg><span id="mtdClkLine">Clicks <b id="mtdClk2">—</b> <small id="mtdClkPlan2"></small></span><em id="mtdClkPct2"></em></div><div class="ox-cl mc" id="mtdClicksRow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/></svg><span id="mtdRoasLine">ROAS <b id="mtdRoas">—</b> <small id="mtdRoasPlan"></small></span><em id="mtdClicksPct"></em></div>
       </div>
-      <div class="ox-bud" id="mtdBudTile" aria-label="Budget left"><div class="ox-bud-t"><span>BUDGET LEFT</span><b id="mbtLeft">—</b></div><div class="ox-bud-bar"><i id="mbtBar"></i></div><small id="mbtSub">—</small></div>
+      <div class="ox-bud" id="mtdBudTile" aria-label="Budget left"><div class="ox-bud-t"><span>BUDGET LEFT</span><b id="mbtLeft">—</b></div><div class="ox-bud-r"><div>Spent<b id="mbtSpent">—</b></div><div>Per day<b id="mbtDay">—</b></div></div></div>
 
       <div class="ox-legend" id="mtdTickLegend"><i></i><span>Black tick = expected by today</span></div>
     </section>
@@ -20114,8 +20133,7 @@ window.SEKNA_READY=true;
 /* v447 the Budget left tile copies the Budget card's figures */
 (function(){function sync(){const t=document.getElementById('mtdBudTile');if(!t)return;const g=id=>{const e=document.getElementById(id);return e?e.textContent.trim():''};
  const left=g('mtdVariance'),plan=g('vcpPlan')||g('vcPlan'),day=g('vcpDay'),bar=document.getElementById('mtdVarianceBar');
- document.getElementById('mbtLeft').textContent=left||'—';document.getElementById('mbtSub').textContent=[day&&day!=='—'?day+' a day':'',plan&&plan!=='—'?'of '+plan:''].filter(Boolean).join(' · ')||'—';
- const bi=document.getElementById('mbtBar');if(bi&&bar){const pw=bar.parentElement?bar.parentElement.getBoundingClientRect().width:0,bw=bar.getBoundingClientRect().width;bi.style.width=(/%$/.test(bar.style.width)?bar.style.width:(pw?Math.round(bw/pw*100)+'%':'0'))}}
+ const sp=g('vcpSpent')||g('vcSpent');document.getElementById('mbtLeft').textContent=left||'—';document.getElementById('mbtSpent').textContent=sp||'—';document.getElementById('mbtDay').textContent=day||'—'}
  function start(){const c=document.getElementById('mtdVarianceCard');if(!c)return setTimeout(start,800);new MutationObserver(()=>{clearTimeout(sync.t);sync.t=setTimeout(sync,120)}).observe(c,{subtree:true,childList:true,characterData:true,attributes:true});sync()}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start()})();
 </script>
