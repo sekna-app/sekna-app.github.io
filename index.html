@@ -9486,6 +9486,14 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 .ak-memq{margin:6px 0 8px;padding:8px 11px;border-left:3px solid #C9A24A;background:#fff;border-radius:8px;font-weight:600}
 .ak-memsave{display:inline-flex;align-items:center;gap:5px;border:0!important;background:#1C3C96!important;color:#fff!important}.ak-memsave .ak-ic{width:14px;height:14px}
 .ak.dk .ak-memq{background:#242526}.ak.dk .ak-memsave{background:#5B5BF0!important}
+
+/* v445 delete rule confirm */
+.ak-rl2{flex-wrap:wrap}.ak-rl2.ask{background:#FFF5F6}
+.ak-fcf{grid-column:1/-1;display:flex;align-items:center;gap:8px;margin-top:8px;animation:akDdIn .18s ease-out}
+.ak-fcf span{flex:1;font:600 13px Inter,system-ui,sans-serif;color:#141b33}
+.ak-rl2 .ak-fcf button{width:auto!important;height:auto!important;flex:none;border:0;border-radius:99px;padding:6px 12px;font:800 12.5px Inter,system-ui,sans-serif;background:#F0F2F5;color:#141b33;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.ak-rl2 .ak-fcf .del{background:#E41E3F;color:#fff}.ak-fcf .del .ak-ic{width:13px;height:13px}
+.ak.dk .ak-rl2.ask{background:#3a1c22}.ak.dk .ak-fcf span{color:#E4E6EB}.ak.dk .ak-fcf button:not(.del){background:#3A3B3C;color:#E4E6EB}
 </style>
 </head>
 <body>
@@ -11287,11 +11295,16 @@ async function akMemSave(btn){const t=AK.draft;if(!t||AK.busy)return;akMemOff(bt
  catch(err){AK.busy=false;AK.draft=t;akBot(`<p>${akEsc(err.message||'Something went wrong.')}</p>`)}}
 function akMemCancel(btn){akMemOff(btn);AK.draft=null;AK.teach=false;akUser('Cancel');akBot('<p>OK, nothing was saved.</p>');AK.kb=true;akKb()}
 function akMemMore(btn){akMemOff(btn);AK.teach=true;akBot('<p dir="auto">اكتب اللي عايز تضيفه للميموري.</p><div class="ak-nv"><button type="button" class="sk" onclick="akMemCancel(this)">Cancel</button></div>','wb')}
-async function akForget(id,btn){
- btn.disabled=true;
- try{const jj=await akPost('forget',{id});if(jj&&jj.rules)AK.rl=jj.rules;const row=btn.closest('.ak-rl2');if(row)row.remove();const m=AK.msgs.find(x=>x.html.indexOf(`akForget('${id}'`)>=0);if(m)m.html=m.html.replace(new RegExp('<div class="ak-rl2"><b>'+id+'</b>[\\s\\S]*?</button></div>'),'');showSettingsToast(id+' removed')}
- catch(err){btn.disabled=false;showSettingsToast(errorText(err))}
-}
+ 
+function akForget(id,btn){const row=btn.closest('.ak-rl2');if(!row||row.querySelector('.ak-fcf'))return;
+ row.classList.add('ask');row.insertAdjacentHTML('beforeend',`<div class="ak-fcf"><span>Delete <b>${akEsc(id)}</b>?</span><button type="button" onclick="this.closest('.ak-rl2').classList.remove('ask');this.closest('.ak-fcf').remove()">Cancel</button><button type="button" class="del" onclick="akForgetGo('${akEsc(id)}',this)">${akI('trash')}Delete</button></div>`)}
+async function akForgetGo(id,btn){btn.disabled=true;btn.textContent='Deleting…';const row=btn.closest('.ak-rl2');
+ try{const jj=await akPost('forget',{id});if(jj&&jj.rules)AK.rl=jj.rules;
+  if(row){row.style.transition='opacity .25s,max-height .3s';row.style.opacity='0';setTimeout(()=>row.remove(),260)}
+  AK.msgs.forEach(m=>{if(m.html.indexOf(`akForget('${id}'`)>=0)m.html=m.html.replace(new RegExp('<div class="ak-rl2"><b>'+id+'</b>[\\s\\S]*?</button></div>'),'')});akSave();
+  const n=(AK.rl||[]).length;document.querySelectorAll('#akBd .ak-q b').forEach(b=>{if(/^Saved rules \(/.test(b.textContent))b.textContent='Saved rules ('+n+')'});AK.msgs.forEach(m=>{m.html=m.html.replace(/Saved rules \(\d+\)/,'Saved rules ('+n+')')});
+  showSettingsToast(id+' deleted')}
+ catch(err){btn.disabled=false;btn.innerHTML=`${akI('trash')}Delete`;const m=String(err&&err.message||'');showSettingsToast(/failed|Could not find/.test(m)?(m==='failed'?'The script did not delete it. Put HemeraApi v21 in Apps Script.':m):errorText(err))}}
 async function akAddForm(){
  const a=await akNeedAssets();if(!a)return;
  if(!AK.canAdd){akBot('<p>You cannot add sheets.</p>');return}
