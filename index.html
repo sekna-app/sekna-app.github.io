@@ -9668,6 +9668,7 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 .ak-ncc em{display:block;font-style:normal;font-size:11px;color:#65676B;font-weight:600;margin-top:2px}
 .ak-ncs{display:block;font:600 10.5px Inter,system-ui,sans-serif;color:#8a93a8;margin-top:5px;direction:ltr;text-align:left}
 .ak.dk .ak-ncc,body.dark-mode .ak-ncc{background:#242526}.ak.dk .ak-ncc b,body.dark-mode .ak-ncc b{color:#E4E6EB}
+.ak-oldapi{margin-top:8px;font:600 11.5px/1.5 Inter,system-ui,sans-serif;color:#9A6512;background:#FCEFD6;border-radius:10px;padding:6px 9px;direction:ltr;text-align:left}
 </style>
 </head>
 <body>
@@ -11104,7 +11105,7 @@ async function akSend(e){
  akUser(q);AK.kb=false;akKb();
  if(!ASK_HEMERA_URL){akBot('<p>Alexandra is not connected yet.</p>');return}
  AK.busy=true;akDraw();
- try{let ctx='';try{ctx=await akCtx()}catch(e){}const j=await akPost('ask',{q,history:AK.hist.slice(-8),ctx});AK.hist.push({role:'user',text:q},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-16);AK.busy=false;try{await akAssets()}catch(e){}akBot(akAnswer(j.answer||''))}
+ try{let ctx='';try{ctx=await akCtx()}catch(e){}const j=await akPost('ask',{q,history:AK.hist.slice(-8),ctx});AK.hist.push({role:'user',text:q},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-16);AK.busy=false;try{await akAssets()}catch(e){}akBot(akAnswer(j.answer||'')+(AK.editor&&!j.api?'<p class="ak-oldapi">Editors only: the Alexandra script is older than v23, so she cannot read the dashboard numbers yet. Deploy the new HemeraApi.gs as a New version.</p>':''))}
  catch(err){AK.busy=false;akBot(`<p>${akEsc(/not connected/.test(err.message)?'Alexandra is not connected yet.':'Something went wrong. Try again.')}</p>`)}
 }
 
