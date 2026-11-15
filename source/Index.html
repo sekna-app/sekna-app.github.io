@@ -9420,6 +9420,21 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
   .ak.pgm .ak-dl i .ak-ic{width:20px;height:20px}
   .ak.dk.pgm .ak-dl i{color:#B0B3B8}
 }
+
+/* v450 Lab: the filler rows under Week of month have no lines */
+.as-tr.as-fill{visibility:hidden}
+
+/* v450 adjusting Alexandra's post photos */
+.ak-fbr .ak-pimg{overflow:hidden}
+@media (min-width:1100px){.ak.pgm .ak-fbr .ak-pimg img{object-position:var(--px,50%) var(--py,12%);transform:scale(var(--pz,1));transform-origin:var(--px,50%) var(--py,12%)}}
+.ak-pimg.adj{cursor:grab;user-select:none;-webkit-user-select:none;outline:3px solid #0866FF;outline-offset:-3px;touch-action:none}.ak-pimg.adj:active{cursor:grabbing}
+.ak-padj-b{display:none}.ak-padj-cp{display:none}
+.ak-fbr .ak-padj-b{display:inline-flex;align-items:center;gap:6px;margin:0 16px 8px;border:0;border-radius:8px;background:#E4E6EB;color:#050505;font:700 12.5px Inter,system-ui,sans-serif;padding:6px 10px;cursor:pointer}.ak-padj-b .ak-ic{width:15px;height:15px}
+.ak-fbr .ak-padj-cp{display:inline-flex;float:right;align-items:center;gap:6px;border:0;border-radius:8px;background:#E7F0FF;color:#0866FF;font:700 12px Inter,system-ui,sans-serif;padding:5px 9px;cursor:pointer}.ak-padj-cp .ak-ic{width:14px;height:14px}
+.ak-padj{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 16px;background:#F0F2F5;font:600 12.5px Inter,system-ui,sans-serif;color:#65676B}
+.ak-padj label{display:flex;align-items:center;gap:6px;flex:1;min-width:140px}.ak-padj label .ak-ic{width:16px;height:16px}.ak-padj input{flex:1;accent-color:#0866FF}
+.ak-padj button{border:0;border-radius:8px;padding:7px 12px;font:700 12.5px Inter,system-ui,sans-serif;cursor:pointer;background:#E4E6EB;color:#050505}.ak-padj .s{background:#0866FF;color:#fff}
+.ak.dk .ak-padj{background:#3A3B3C;color:#B0B3B8}.ak.dk .ak-padj button:not(.s),.ak.dk .ak-fbr .ak-padj-b{background:#4E4F50;color:#E4E6EB}
 </style>
 </head>
 <body>
@@ -10610,6 +10625,8 @@ function akDkMode(){try{return localStorage.getItem('hm_ask_mode')==='win'?'win'
 function akDesk(){return window.innerWidth>=1100}
 function akModeApply(){const o=document.getElementById('akBox');if(!o)return;const d=akDesk(),m=akDkMode();o.classList.toggle('pgm',d&&m==='page');o.classList.toggle('win',d&&m==='win');
  const b=o.querySelector('.ak-mode');if(b){b.hidden=!d;b.innerHTML=akI(m==='win'?'expand':'shrink');b.setAttribute('aria-label',m==='win'?'Open as a full page':'Make it a small window');b.title=b.getAttribute('aria-label')}
+ const bk=o.querySelector('.ak-bk');if(bk){const w=d&&m==='win';if(!bk.dataset.ic)bk.dataset.ic=bk.innerHTML;bk.innerHTML=w?akI('x'):bk.dataset.ic;bk.setAttribute('aria-label',w?'Close':'Back')}
+ const mn=o.querySelector('.ak-min');if(mn){mn.hidden=!(d&&m==='win');if(!mn.hidden)mn.innerHTML=akI(o.classList.contains('mini')?'up':'minus')}if(!(d&&m==='win'))o.classList.remove('mini');
  if(d&&m==='page')akSideDraw()}
 function akMini(e){if(e)e.stopPropagation();const o=document.getElementById('akBox');if(!o)return;o.classList.toggle('mini');const b=o.querySelector('.ak-min');if(b){const m=o.classList.contains('mini');b.innerHTML=akI(m?'up':'minus');b.setAttribute('aria-label',m?'Open the chat':'Minimise');b.title=b.getAttribute('aria-label')}}
 document.addEventListener('click',e=>{const o=document.getElementById('akBox');if(o&&o.classList.contains('mini')&&e.target.closest('#akBox .ak-hd')&&!e.target.closest('button'))akMini()});
@@ -10755,11 +10772,11 @@ ${akIntroHtml()}</div>
   ${AK.editor?`<div id="akReqW">${akReqsHtml(AK.rq)}</div><h4>Settings</h4><div id="akBotW">${akBotRow(AK.bst||null)}</div>`:''}
   <h4>Chat</h4><button type="button" class="r" role="switch" aria-checked="${akDk()}" onclick="akDkSet(!akDk(),this)"><i>${akI('moon')}</i><span><b>Dark mode</b><small>Only for this chat</small></span><em class="ak-sw${akDk()?' on':''}"></em></button>${row('clear','trash','Clear chat','The chat stays on this device for 24 hours','del')}`;
  const RX=[[['like','love'],'1.2K',86,24],[['love','wow'],'948',41,12],[['like','haha'],'2.3K',132,57],[['love','like','care'],'1.7K',64,19],[['love','wow','like'],'3.1K',210,88],[['like','care'],'860',35,9],[['love','haha','like'],'2.6K',118,40]],RE={like:['👍','#1877F2'],love:['❤','#F33E58'],wow:['😮','#F7B125'],haha:['😆','#F7B125'],care:['🤗','#F7B125']},D=['2h','5h','1d','2d','3d','5d','1w'];
- const postsHtml=()=>AKS.map((x,i)=>{const r=RX[i%RX.length],cap=akEsc(x.k.charAt(0)+x.k.slice(1).toLowerCase())+' · '+x.h.replace(/<\/?em>/g,'');return `<article class="ak-post"><header><span class="ak-pga">${akAvIn()}</span><div><b>Alexandra ${tick}</b><small>${D[i]} · 🌐</small></div><span class="ak-pdots">···</span></header><p>${cap}</p><button type="button" class="ak-pimg" onclick="akStoryAt(${i})"><img src="${img(x.img)}" alt="" loading="lazy"></button><div class="ak-prx"><span><i>${r[0].map(k=>`<em class="${k}" style="background:${RE[k][1]}">${RE[k][0]}</em>`).join('')}</i>${r[1]}</span><span>${r[2]} comments · ${r[3]} shares</span></div><div class="ak-pact"><span>${akI('like')}Like</span><span>${akI('cmt')}Comment</span><span>${akI('share')}Share</span></div></article>`}).join('');
+ const postsHtml=()=>AKS.map((x,i)=>{const r=RX[i%RX.length],cap=akEsc(x.k.charAt(0)+x.k.slice(1).toLowerCase())+' · '+x.h.replace(/<\/?em>/g,'');return `<article class="ak-post"><header><span class="ak-pga">${akAvIn()}</span><div><b>Alexandra ${tick}</b><small>${D[i]} · 🌐</small></div><span class="ak-pdots">···</span></header><p>${cap}</p>${AK.editor?`<button type="button" class="ak-padj-b" onclick="akPAdj(${i},this)">${akI('pen')}Adjust photo</button>`:''}<button type="button" class="ak-pimg" data-i="${i}" onclick="if(!this.classList.contains('adj'))akStoryAt(${i})"><img src="${img(x.img)}" alt="" loading="lazy" style="${akPFixCss(i)}"></button><div class="ak-prx"><span><i>${r[0].map(k=>`<em class="${k}" style="background:${RE[k][1]}">${RE[k][0]}</em>`).join('')}</i>${r[1]}</span><span>${r[2]} comments · ${r[3]} shares</span></div><div class="ak-pact"><span>${akI('like')}Like</span><span>${akI('cmt')}Comment</span><span>${akI('share')}Share</span></div></article>`}).join('');
  if(tab==='photos')body=postsHtml();
  if(tab==='platforms'){const P=((AK.assets&&AK.assets.platforms)||[]),R=((AK.assets&&AK.assets.rows)||[]);
   body=P.length?`<div class="ak-plist">${P.map(x=>{const n=R.filter(r=>(r.platforms||[]).indexOf(x.key)>=0).length;return `<button type="button" onclick="akPgPlat('${akEsc(x.key)}')"><i>${akLogo(x.key)}</i><span><b>${akEsc(x.key)}</b><small>${n} ${n===1?'sheet':'sheets'}</small></span>${akI('chev')}</button>`}).join('')}</div><p class="ak-mu ak-pgnote">These are the platforms you can see.</p>`:'<p class="ak-mu ak-pgnote">No platforms to show yet.</p>'}
- const fb=document.getElementById('akBox')?.classList.contains('pgm');if(fb&&tab==='about')body=`<div class="ak-fb2"><div class="ak-fbl">${body}</div><div class="ak-fbr"><h4>Posts</h4>${postsHtml()}</div></div>`;
+ const fb=document.getElementById('akBox')?.classList.contains('pgm');if(fb&&tab==='about')body=`<div class="ak-fb2"><div class="ak-fbl">${body}</div><div class="ak-fbr"><h4>Posts${AK.editor?`<button type="button" class="ak-padj-cp" onclick="akPFixCopy(this)">${akI('copy')}Copy photo settings</button>`:''}</h4>${postsHtml()}</div></div>`;
  pg.innerHTML=`<div class="ak-pgb2"><div class="ak-pgh2"><button type="button" class="ak-bk" aria-label="Back" onclick="akAboutClose()">${akI('back')}</button></div><div class="ak-hero" style="background-image:url(${akCovUrl()})">${AK.editor?`<button type="button" class="ak-covb" onclick="akPrevPick('cov')">${akI('cam')}Edit cover</button>`:''}</div>
   <div class="ak-id"><span class="ak-pga">${akAvIn()}<em></em>${AK.editor?`<button type="button" class="ak-pgc" aria-label="Change the bot's photo" onclick="akPrevPick('av')">${akI('cam')}</button>`:''}</span>
    <div class="ak-idn"><h2>Alexandra ${tick}</h2>${AK.editor&&(akBav().data||akCov().data)?`<span class="ak-pgxs">${akBav().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Remove the photo?','The bot goes back to the HEMERA star.','Remove',()=>akBotAvSave(''))">Remove photo</button>`:''}${akCov().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Reset the cover?','The cover goes back to her eye picture.','Reset',akCovReset)">Reset cover</button>`:''}</span>`:''}</div></div>
@@ -12746,8 +12763,8 @@ function renderWeekDetail(w,isLive,monthName){
  host.innerHTML=`<div class="wx-d-head">${wkN?`<span class="wly-wk wx-wk">W${wkN}</span>`:`<b>${esc(w.week||'')}</b>`}${range?`<span>${esc(range)}</span>`:''}${status}</div>
    <div class="wx-grid${has&&!isLive?' wx-done':''}">
      ${metric('Spend',Number(w.actualSpend)||0,planSpend,v=>money(v),isLive)}
-     ${metric('Revenue',Number(w.actualValue)||0,planValue,v=>money(v),isLive)}
      ${metric('Conv.',Number(w.actualConversions)||0,planConv,v=>fmt(v,0),isLive)}
+     ${metric('Value',Number(w.actualValue)||0,planValue,v=>money(v),isLive)}
      ${metric('ROAS',roas,targetRoas,roasF,false)}
    </div>`;
 }
@@ -20092,6 +20109,27 @@ window.SEKNA_READY=true;
  const sp=g('vcpSpent')||g('vcSpent');document.getElementById('mbtLeft').textContent=left||'—';document.getElementById('mbtSpent').textContent=sp||'—';document.getElementById('mbtDay').textContent=day||'—'}
  function start(){const c=document.getElementById('mtdVarianceCard');if(!c)return setTimeout(start,800);new MutationObserver(()=>{clearTimeout(sync.t);sync.t=setTimeout(sync,120)}).observe(c,{subtree:true,childList:true,characterData:true,attributes:true});sync()}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start()})();
+
+ 
+const AK_PFIX={};
+function akPFixAll(){let m={};try{m=JSON.parse(localStorage.getItem('hm_ak_pfix')||'{}')||{}}catch(e){}return Object.assign({},AK_PFIX,m)}
+function akPFixCss(i){const f=akPFixAll()[i];return f?`--px:${f.x}%;--py:${f.y}%;--pz:${f.z}`:''}
+function akPFixCopy(b){const t=JSON.stringify(akPFixAll());const done=()=>{const o=b.innerHTML;b.innerHTML=akI('check')+'Copied';setTimeout(()=>b.innerHTML=o,1600)};
+ if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,()=>prompt('Copy this',t));else prompt('Copy this',t)}
+function akPAdj(i,btn){const post=btn.closest('.ak-post'),box=post&&post.querySelector('.ak-pimg'),im=box&&box.querySelector('img');if(!im||box.classList.contains('adj'))return;
+ const cs=getComputedStyle(im),pos=cs.objectPosition.split(' ');let f=akPFixAll()[i]||{x:parseFloat(pos[0])||50,y:parseFloat(pos[1])||12,z:1};f={x:+f.x,y:+f.y,z:+f.z};const old={...f};
+ const put=()=>{im.style.setProperty('--px',f.x+'%');im.style.setProperty('--py',f.y+'%');im.style.setProperty('--pz',f.z)};
+ box.classList.add('adj');btn.hidden=true;
+ const bar=document.createElement('div');bar.className='ak-padj';bar.innerHTML=`<span>Drag the photo to move it</span><label>${akI('search')}<input type="range" min="1" max="2.5" step="0.05" value="${f.z}" aria-label="Zoom"></label><button type="button" class="r">Reset</button><button type="button" class="c">Cancel</button><button type="button" class="s">Save</button>`;
+ box.after(bar);const rg=bar.querySelector('input');rg.oninput=()=>{f.z=+rg.value;put()};
+ let st=null;const down=e=>{st={x:e.clientX,y:e.clientY,fx:f.x,fy:f.y};box.setPointerCapture(e.pointerId);e.preventDefault()};
+ const move=e=>{if(!st)return;const r=box.getBoundingClientRect(),k=1/f.z;f.x=Math.max(0,Math.min(100,st.fx-(e.clientX-st.x)/r.width*100*k));f.y=Math.max(0,Math.min(100,st.fy-(e.clientY-st.y)/r.height*100*k));f.x=Math.round(f.x*10)/10;f.y=Math.round(f.y*10)/10;put()};
+ const up=()=>{st=null};box.addEventListener('pointerdown',down);box.addEventListener('pointermove',move);box.addEventListener('pointerup',up);box.addEventListener('pointercancel',up);
+ const end=()=>{box.removeEventListener('pointerdown',down);box.removeEventListener('pointermove',move);box.removeEventListener('pointerup',up);box.removeEventListener('pointercancel',up);bar.remove();box.classList.remove('adj');btn.hidden=false};
+ bar.querySelector('.r').onclick=()=>{f={x:50,y:12,z:1};rg.value=1;put()};
+ bar.querySelector('.c').onclick=()=>{f=old;put();end()};
+ bar.querySelector('.s').onclick=()=>{let m={};try{m=JSON.parse(localStorage.getItem('hm_ak_pfix')||'{}')||{}}catch(e){}m[i]=f;try{localStorage.setItem('hm_ak_pfix',JSON.stringify(m))}catch(e){}end()};
+ put()}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
