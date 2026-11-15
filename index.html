@@ -9459,7 +9459,7 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 .ak-ver{background:none!important;width:18px;height:18px}.ak-ver svg{width:18px!important;height:18px!important}
 .ak-ver .b{fill:#0866FF;stroke:none}.ak-ver .c{fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
 .ak-post header .ak-ver,.ak-post header .ak-ver svg{width:15px!important;height:15px!important}
-.ak-covb{position:absolute;z-index:2;right:12px;bottom:12px;display:flex;align-items:center;gap:6px;border:0;border-radius:8px;padding:7px 10px;background:rgba(255,255,255,.92);color:#050505;font:700 12.5px Inter,system-ui,sans-serif;cursor:pointer}.ak-covb .ak-ic{width:15px;height:15px}
+.ak-covb{position:absolute;z-index:5;right:12px;top:calc(12px + env(safe-area-inset-top,0px));display:flex;align-items:center;gap:6px;border:0;border-radius:8px;padding:7px 10px;background:rgba(255,255,255,.92);color:#050505;font:700 12.5px Inter,system-ui,sans-serif;cursor:pointer}.ak-covb .ak-ic{width:15px;height:15px}
 .ak-hero{position:relative}.ak-hero::after{z-index:1}
 .ak-pgxs{display:flex;gap:12px}
 .ak-prev{position:absolute;inset:0;z-index:30;background:rgba(10,18,40,.55);display:flex;align-items:flex-end;justify-content:center;animation:akDdIn .2s ease-out}
@@ -9479,6 +9479,8 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 
 /* v441 mention */
 .ak-intro a.ak-ment{display:inline;gap:0;padding:0 3px;font-size:inherit}.ak-ment{color:#0866FF;font-weight:700;text-decoration:none;background:#E7F0FF;border-radius:4px;padding:0 3px}.ak.dk .ak-ment{color:#8EB8FF;background:#1d2a44}
+
+.ak-preverr{margin:10px 0 0;padding:9px 11px;border-radius:10px;background:#FDECEE;color:#B3122E;font:600 12.5px/1.4 Inter,system-ui,sans-serif}
 </style>
 </head>
 <body>
@@ -10757,10 +10759,10 @@ async function akCovSync(v){if(v===undefined)return;const c=akCov();if((c.v||'')
  if(!v){try{localStorage.setItem('hm_ask_bcov',JSON.stringify({v:'',data:''}))}catch(e){}return}
  try{const j=await akPost('botCover');try{localStorage.setItem('hm_ask_bcov',JSON.stringify({v:j.v||'',data:j.data||''}))}catch(e){}const pg=document.getElementById('akAbt');if(pg&&pg.classList.contains('on'))akAbout(null,1)}catch(e){}}
  
-function akPrevPick(kind){const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=()=>{const f=i.files&&i.files[0];if(!f)return;const url=URL.createObjectURL(f),img=new Image();
+function akPrevPick(kind){const i=document.createElement('input');i.type='file';i.accept='image/*';i.style.cssText='position:fixed;left:-9999px;opacity:0';document.body.appendChild(i);setTimeout(()=>i.remove(),60000);i.onchange=()=>{const f=i.files&&i.files[0];i.remove();if(!f)return;const url=URL.createObjectURL(f),img=new Image();
  img.onload=()=>{if(kind==='av')myCropOpen(img,url,d=>akPrevShow('av',d));else akPrevShow('cov',img)};img.onerror=()=>{URL.revokeObjectURL(url);showSettingsToast('This photo cannot be opened. Try another one.')};img.src=url};i.click()}
-function akCovCut(img,pos){const W=1000,H=500,c=document.createElement('canvas');c.width=W;c.height=H;const r=Math.max(W/img.naturalWidth,H/img.naturalHeight),w=img.naturalWidth*r,h=img.naturalHeight*r;
- c.getContext('2d').drawImage(img,(W-w)/2,(H-h)*pos/100,w,h);return c.toDataURL('image/jpeg',.72)}
+function akCovCut(img,pos){let W=960,d='';for(const q of [.78,.68,.58,.5,.42]){for(const w0 of [960,800,680]){W=w0;const H=W/2,c=document.createElement('canvas');c.width=W;c.height=H;const r=Math.max(W/img.naturalWidth,H/img.naturalHeight),w=img.naturalWidth*r,h=img.naturalHeight*r;
+ const g=c.getContext('2d');g.imageSmoothingQuality='high';g.drawImage(img,(W-w)/2,(H-h)*pos/100,w,h);d=c.toDataURL('image/jpeg',q);if(d.length<110000)return d}}return d}
 function akPrevShow(kind,x){const pg=document.getElementById('akAbt');if(!pg)return;pg.querySelector('.ak-prev')?.remove();AK.pv={kind,x,pos:30};
  const av=kind==='av'?`<img src="${x}" alt="">`:akAvIn(),cov=kind==='cov'?akCovCut(x,30):akCovUrl();AK.pv.data=kind==='av'?x:cov;
  pg.insertAdjacentHTML('beforeend',`<div class="ak-prev"><div class="ak-prevb"><b>Preview</b><p>This is how everyone will see it.</p>
@@ -10771,7 +10773,9 @@ function akPrevShow(kind,x){const pg=document.getElementById('akAbt');if(!pg)ret
 function akPrevMove(v){const P=AK.pv;if(!P||P.kind!=='cov')return;P.pos=v;P.data=akCovCut(P.x,v);const c=document.getElementById('akPvC');if(c)c.style.backgroundImage=`url(${P.data})`}
 async function akPrevSave(btn){const P=AK.pv;if(!P)return;btn.disabled=true;btn.textContent='Saving…';
  if(P.kind==='av'){await akBotAvSave(P.data)}
- else{const j=await akAdmQ('botCovSet',{data:P.data});if(!j||j.ok===false){btn.disabled=false;btn.textContent='Save';showSettingsToast((j&&j.error)||'Could not save the cover');return}
+ else{let j=null,err='';try{j=await akPost('admin',{op:'botCovSet',data:P.data})}catch(e){err=String(e&&e.message||e)}
+  if(!j||j.ok===false||!j.v){btn.disabled=false;btn.textContent='Save';const m=/unknown action/.test(err)||(j&&!j.v&&j.ok!==false)?'The script is on an older version. Put HemeraApi v19 in Apps Script: Deploy → Manage deployments → Edit → New version.':((j&&j.error)||err||'Could not save the cover.');
+   const b=document.querySelector('#akAbt .ak-prevb');if(b){b.querySelector('.ak-preverr')?.remove();b.insertAdjacentHTML('beforeend',`<p class="ak-preverr">${akEsc(m)}</p>`)}return}
   try{localStorage.setItem('hm_ask_bcov',JSON.stringify({v:j.v||'',data:j.data||''}))}catch(e){}showSettingsToast('New cover saved')}
  AK.pv=null;document.querySelector('#akAbt .ak-prev')?.remove();akAbout(null,1)}
 async function akCovReset(){const j=await akAdmQ('botCovDel');if(!j)return;try{localStorage.setItem('hm_ask_bcov',JSON.stringify({v:j.v||'',data:''}))}catch(e){}akAbout(null,1);showSettingsToast('Cover reset')}
