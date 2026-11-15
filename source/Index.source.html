@@ -9460,6 +9460,14 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 #launchSp.dkq .lsp-tg{animation-delay:.8s!important}#launchSp.dkq .lsp-mk{animation-duration:.4s!important}#launchSp.dkq .lsp-s2 [class*=line],#launchSp.dkq .lsp-ln{animation-delay:.7s!important}
 /* v452 Past years table: headings right-aligned over their numbers */
 html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
+
+/* v454 desktop: Message Alexandra inside the page; Monthly bottom row lined up */
+.ak-pgcta[hidden]{display:none!important}
+.ak.pgm .ak-pgcta.ak-pgcta-in{max-width:none;padding:12px 0 0;margin:0}.ak.pgm .ak-plist~.ak-pgcta-in{max-width:380px}
+@media (min-width:1100px){
+  html.dk-on:not(.desktop-site-mode) body #channelPanel>.mtd-exec>.ox-rc,html.dk-on:not(.desktop-site-mode) body #channelPanel>.mtd-exec>.ox-bud{margin-top:10px!important;margin-bottom:0!important;align-self:stretch!important;height:auto!important;min-height:72px;box-sizing:border-box}
+  html.dk-on:not(.desktop-site-mode) body #channelPanel>.mtd-exec>.ox-bud{margin-left:12px!important}
+}
 </style>
 </head>
 <body>
@@ -10812,14 +10820,18 @@ ${akIntroHtml()}</div>
  if(tab==='photos')body=postsHtml();
  if(tab==='platforms'){const P=((AK.assets&&AK.assets.platforms)||[]),R=((AK.assets&&AK.assets.rows)||[]);
   body=P.length?`<div class="ak-plist">${P.map(x=>{const n=R.filter(r=>(r.platforms||[]).indexOf(x.key)>=0).length;return `<button type="button" onclick="akPgPlat('${akEsc(x.key)}')"><i>${akLogo(x.key)}</i><span><b>${akEsc(x.key)}</b><small>${n} ${n===1?'sheet':'sheets'}</small></span>${akI('chev')}</button>`}).join('')}</div><p class="ak-mu ak-pgnote">These are the platforms you can see.</p>`:(AK.assets?'<p class="ak-mu ak-pgnote">No platforms to show yet.</p>':(akAssets().then(()=>{const g=document.getElementById('akAbt');const n=g&&g.querySelector('.ak-pgnote');if(AK.pgTab==='platforms'&&n&&n.textContent==='Loading…')akAbout(null,true)}).catch(()=>{}),'<p class="ak-mu ak-pgnote">Loading…</p>'))}
- const fb=document.getElementById('akBox')?.classList.contains('pgm');if(fb&&tab==='about')body=`<div class="ak-fb2"><div class="ak-fbl">${body}</div><div class="ak-fbr"><h4>Posts${AK.editor?`<button type="button" class="ak-padj-cp" onclick="akPFixCopy(this)">${akI('copy')}Copy photo settings</button>`:''}</h4>${postsHtml()}</div></div>`;
+ const fb=document.getElementById('akBox')?.classList.contains('pgm');
+ // v454 desktop page: Message Alexandra sits under the Intro (About) or in place of the note (Platforms)
+ const ctaIn=`<div class="ak-pgcta ak-pgcta-in"><button type="button" onclick="akAboutClose()">${akI('send')}Message Alexandra</button></div>`,inCta=fb&&(tab==='about'||tab==='platforms');
+ if(fb&&tab==='platforms')body=body.replace(/<p class="ak-mu ak-pgnote">These are the platforms you can see\.<\/p>/,'')+ctaIn;
+ if(fb&&tab==='about')body=`<div class="ak-fb2"><div class="ak-fbcol"><div class="ak-fbl">${body}</div>${ctaIn}</div><div class="ak-fbr"><h4>Posts${AK.editor?`<button type="button" class="ak-padj-cp" onclick="akPFixCopy(this)">${akI('copy')}Copy photo settings</button>`:''}</h4>${postsHtml()}</div></div>`;
  pg.innerHTML=`<div class="ak-pgb2"><div class="ak-pgh2"><button type="button" class="ak-bk" aria-label="Back" onclick="akAboutClose()">${akI('back')}</button></div><div class="ak-hero" style="background-image:url(${akCovUrl()})">${AK.editor?`<button type="button" class="ak-covb" onclick="akPrevPick('cov')">${akI('cam')}Edit cover</button>`:''}</div>
   <div class="ak-id"><span class="ak-pga">${akAvIn()}<em></em>${AK.editor?`<button type="button" class="ak-pgc" aria-label="Change the bot's photo" onclick="akPrevPick('av')">${akI('cam')}</button>`:''}</span>
    <div class="ak-idn"><h2>Alexandra ${tick}</h2>${AK.editor&&(akBav().data||akCov().data)?`<span class="ak-pgxs">${akBav().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Remove the photo?','The bot goes back to the HEMERA star.','Remove',()=>akBotAvSave(''))">Remove photo</button>`:''}${akCov().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Reset the cover?','The cover goes back to her eye picture.','Reset',akCovReset)">Reset cover</button>`:''}</span>`:''}</div></div>
   <div class="ak-hl">${AK_HL.map(([i,t])=>`<button type="button" onclick="akStoryAt(${i})"><img src="${img(AKS[i].img)}" alt="">${t}</button>`).join('')}</div>
   <div class="ak-tabs" role="tablist">${[['about','About'],['photos','Photos'],['platforms','Platforms']].map(([k,t])=>`<button type="button" role="tab" aria-selected="${tab===k}" class="${tab===k?'on':''}" onclick="AK.pgTab='${k}';akAbout(null,1)">${t}</button>`).join('')}</div>
   <div class="ak-pgbody">${body}</div>
-  <div class="ak-pgcta"><button type="button" onclick="akAboutClose()">${akI('send')}Message Alexandra</button></div></div>`;
+  <div class="ak-pgcta"${inCta?' hidden':''}><button type="button" onclick="akAboutClose()">${akI('send')}Message Alexandra</button></div></div>`;
  if(!keep){pg.setAttribute('aria-hidden','false');requestAnimationFrame(()=>pg.classList.add('on'))}
  if(tab==='about'&&AK.editor&&ASK_HEMERA_URL){akBotLoad();akReqsLoad()}}
 /* v441 "Taught by @Ibrahim": opens Ibrahim's HEMERA profile */
