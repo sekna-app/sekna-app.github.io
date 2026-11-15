@@ -9482,6 +9482,13 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 @media (max-width:1099px){.pf-card{height:88vh;height:88dvh;max-height:none!important}}
 /* v455 desktop: View profile as a solid blue button */
 .ak-dr .ak-drb{width:calc(100% - 40px);justify-content:center;background:#0866FF;color:#fff;padding:11px 16px}.ak-dr .ak-drb:hover{background:#0759e0}
+
+/* v456 desktop page: Alexandra inside the content area; HEMERA's menu replaces her shortcut column */
+@media (min-width:1100px){
+ .ak.pgm{left:var(--akL,0)!important;top:var(--akT,0)!important;right:0!important;bottom:0!important;background:#F3F5FA!important;z-index:40}
+ .ak.pgm .ak-card{height:100%!important;padding-left:0!important;border-left:1px solid #E4E6EB}
+ .ak.pgm .ak-dl{display:none!important}
+}
 </style>
 </head>
 <body>
@@ -10680,7 +10687,13 @@ function akModeApply(){const o=document.getElementById('akBox');if(!o)return;con
  const b=o.querySelector('.ak-mode');if(b){b.hidden=!d;b.innerHTML=akI(m==='win'?'expand':'shrink');b.setAttribute('aria-label',m==='win'?'Open as a full page':'Make it a small window');b.title=b.getAttribute('aria-label')}
  const bk=o.querySelector('.ak-bk');if(bk){const w=d&&m==='win';if(!bk.dataset.ic)bk.dataset.ic=bk.innerHTML;bk.innerHTML=w?akI('x'):bk.dataset.ic;bk.setAttribute('aria-label',w?'Close':'Back')}
  const mn=o.querySelector('.ak-min');if(mn){mn.hidden=d&&m!=='win';if(!mn.hidden)mn.innerHTML=akI(o.classList.contains('mini')&&d?'up':'minus')}if(d&&m!=='win')o.classList.remove('mini');
- if(d&&m==='page')akSideDraw()}
+ if(d&&m==='page'){akSideDraw();akFit()}
+}
+
+function akFit(){const o=document.getElementById('akBox');if(!o||!o.classList.contains('pgm'))return;const pn=document.getElementById('dkPanel'),rl=document.getElementById('dkRail'),tb=document.querySelector('.topbar');let L=0,T=0;
+ for(const e of [rl,pn]){if(e&&e.offsetWidth){const r=e.getBoundingClientRect();if(r.right>L&&r.left>=0)L=r.right}}if(tb&&tb.offsetHeight){const r=tb.getBoundingClientRect();if(r.bottom>0)T=r.bottom}
+ o.style.setProperty('--akL',Math.round(L)+'px');o.style.setProperty('--akT',Math.round(T)+'px')}
+document.addEventListener('click',e=>{const o=document.getElementById('akBox');if(!o||!o.classList.contains('pgm'))return;const n=e.target.closest('#dkRail button,#dkRail a,#dkPanel button,#dkPanel a');if(n&&!/alexandra/i.test(n.textContent))closeAsk()},true);
 function akMini(e){if(e)e.stopPropagation();const o=document.getElementById('akBox');if(!o)return;o.classList.toggle('mini');
  if(!akDesk()){let b=o.querySelector('.ak-bub');if(!b){o.insertAdjacentHTML('beforeend',`<button type="button" class="ak-bub" aria-label="Open the chat with Alexandra" onclick="akMini(event)">${akAvIn()}<i></i></button>`);b=o.querySelector('.ak-bub')}document.documentElement.classList.toggle('ak-bubbed',o.classList.contains('mini'))}const b=o.querySelector('.ak-min');if(b){const m=o.classList.contains('mini');b.innerHTML=akI(m?'up':'minus');b.setAttribute('aria-label',m?'Open the chat':'Minimise');b.title=b.getAttribute('aria-label')}}
 document.addEventListener('click',e=>{const o=document.getElementById('akBox');if(o&&o.classList.contains('mini')&&e.target.closest('#akBox .ak-hd')&&!e.target.closest('button'))akMini()});
