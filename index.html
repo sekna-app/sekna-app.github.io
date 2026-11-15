@@ -9657,6 +9657,17 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
  .ak.pgm .ak-dl{display:none!important}
  .ak.pgm .ak-kb:not([hidden]){display:flex!important;flex-wrap:wrap;justify-content:flex-start;gap:8px;padding:8px 16px 4px}
 }
+
+/* v459 Alexandra number cards */
+.ak-nc{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;direction:ltr;text-align:left}.ak-nc.one{grid-template-columns:1fr}
+.ak-ncc{background:#fff;border-radius:14px;padding:9px 11px;font-family:Inter,system-ui,sans-serif;min-width:0}
+.ak-ncc small{display:block;font-size:10px;font-weight:800;letter-spacing:.06em;color:#8a93a8;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ak-ncc b{display:block;font-size:18px;font-weight:900;color:#050505;letter-spacing:-.01em;font-variant-numeric:tabular-nums}.ak-nc.one .ak-ncc b{font-size:26px;display:inline-block;margin-right:6px}
+.ak-ncp{display:inline-block;font-size:11px;font-weight:800;border-radius:6px;padding:1px 6px;background:#EEF0F4;color:#65676B;vertical-align:4px}.ak-ncp.up{background:#E3F6EA;color:#13804F}.ak-ncp.dn{background:#FDE4E7;color:#C63A4A}
+.ak-nc:not(.one) .ak-ncp{vertical-align:0;margin-top:2px}
+.ak-ncc em{display:block;font-style:normal;font-size:11px;color:#65676B;font-weight:600;margin-top:2px}
+.ak-ncs{display:block;font:600 10.5px Inter,system-ui,sans-serif;color:#8a93a8;margin-top:5px;direction:ltr;text-align:left}
+.ak.dk .ak-ncc,body.dark-mode .ak-ncc{background:#242526}.ak.dk .ak-ncc b,body.dark-mode .ak-ncc b{color:#E4E6EB}
 </style>
 </head>
 <body>
@@ -11054,7 +11065,7 @@ function akPgGo(id){
  setTimeout(()=>akMenu(id),200)}
 function closeAsk(){document.documentElement.classList.remove('ak-bubbed');if(AKR.on)akRecStop();AK.add=null;AK.teach=false;AK.ask=null;const o=document.getElementById('akBox');if(!o)return;o.classList.remove('open');setTimeout(()=>o.remove(),280)}
 function akBot(html,cls){AK.msgs.push({w:'h',html,cls:cls||'',nw:1});akDraw()}
-function akUser(t){AK.msgs.push({w:'u',html:akEsc(t),nw:1});akDraw()}
+function akUser(t){AK.msgs.push({w:'u',html:`<span dir="auto">${akEsc(t)}</span>`,nw:1});akDraw()}
 
 const AK_KEEP='hm_ask_chat';
 function akSave(){clearTimeout(akSave.t);akSave.t=setTimeout(()=>{try{if(!AK.msgs.length)return;AK.t0=AK.t0||Date.now();
@@ -11093,7 +11104,7 @@ async function akSend(e){
  akUser(q);AK.kb=false;akKb();
  if(!ASK_HEMERA_URL){akBot('<p>Alexandra is not connected yet.</p>');return}
  AK.busy=true;akDraw();
- try{const j=await akPost('ask',{q,history:AK.hist.slice(-6)});AK.hist.push({role:'user',text:q},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-12);AK.busy=false;try{await akAssets()}catch(e){}akBot(akAnswer(j.answer||''))}
+ try{let ctx='';try{ctx=await akCtx()}catch(e){}const j=await akPost('ask',{q,history:AK.hist.slice(-8),ctx});AK.hist.push({role:'user',text:q},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-16);AK.busy=false;try{await akAssets()}catch(e){}akBot(akAnswer(j.answer||''))}
  catch(err){AK.busy=false;akBot(`<p>${akEsc(/not connected/.test(err.message)?'Alexandra is not connected yet.':'Something went wrong. Try again.')}</p>`)}
 }
 
@@ -11101,7 +11112,8 @@ function akLinkKind(u){u=String(u);if(/docs\.google\.com\/spreadsheets/.test(u))
  
 function akUrlKey(u){u=String(u||'');const m=u.match(/\/d\/([\w-]{20,})/);return m?m[1]:u.replace(/[?#].*$/,'').replace(/\/+$/,'').toLowerCase()}
 function akRowByUrl(u){const k=akUrlKey(u);return ((AK.assets&&AK.assets.rows)||[]).find(r=>[r.sheet,r.report,r.script].some(o=>o&&o.url&&akUrlKey(o.url)===k))}
-function akAnswer(t){
+function akAnswer(t){const cs=akCardsSplit(t);if(cs.cards)return akAnswer0(cs.text)+akCardsHtml(cs.cards);return akAnswer0(t)}
+function akAnswer0(t){
  const out=[],U=/https?:\/\/[^\s<>"')]+/g;
  String(t).split('\n').forEach(line=>{const urls=line.match(U);
    if(!urls){if(line.trim())out.push({p:line.trim()});return}
@@ -20379,6 +20391,41 @@ function akPAdj(i,btn){const post=btn.closest('.ak-post'),box=post&&post.querySe
  bar.querySelector('.c').onclick=()=>{f=old;put();end()};
  bar.querySelector('.s').onclick=()=>{const m=akPFixAll();m[i]=f;try{localStorage.setItem('hm_ak_pfix',JSON.stringify(m))}catch(e){}const sb=bar.querySelector('.s');sb.disabled=true;sb.textContent='Saving…';akPFixPush(m,end).catch(e=>{sb.disabled=false;sb.textContent='Save';alert('Could not save for the team: '+errorText(e))})};
  put()}
+
+ 
+const akR=(v,d)=>{const n=Number(v);return isFinite(n)?(d?Math.round(n*Math.pow(10,d))/Math.pow(10,d):Math.round(n)):''};
+function akWithin(pr,ms){return Promise.race([pr,new Promise(r=>setTimeout(()=>r(null),ms))])}
+function akDashLines(D,title){if(!D)return '';const L=[],a=D.account||{},m=D.mtd||{},mo=D.month||{},lt=D.latest||{};
+ L.push('## '+title+': '+(a.label||a.key||'')+' (key '+(a.key||'')+')');
+ L.push('Latest day with results: '+(lt.date||'?')+' ('+(lt.dayName||'')+'), day '+(lt.dayNumber||'?')+' of '+(lt.monthName||'')+'. Money is in the account currency.');
+ L.push('Month to date: spend '+akR(m.actualSpend)+' of plan '+akR(m.planSpend)+' ('+akR((m.spendAchievement||0)*100,1)+'%), value '+akR(m.actualValue)+' of plan '+akR(m.planValue)+' ('+akR((m.valueAchievement||0)*100,1)+'%), ROAS '+akR(m.actualRoas,2)+' vs target '+akR(m.targetRoas,2)+', budget left '+akR(m.budgetRemaining)+(m.revenueRemaining!=null?', value still to reach '+akR(m.revenueRemaining):''));
+ if(mo.planSpend)L.push('Full month plan: spend '+akR(mo.planSpend)+', value '+akR(mo.planValue));
+ const dp=D.dayPlan||[];if(dp.length){L.push('Days this month (date day hijri | plan spend/value/conv | actual spend/value/conv/clicks ROAS):');
+  dp.forEach(x=>{const p=x.plan||{},q=x.actual;L.push(x.date+' '+String(x.dayName||'').slice(0,3)+' '+(x.hijri||'')+' | '+akR(p.spend)+'/'+akR(p.value)+'/'+akR(p.conversions)+' | '+(q?akR(q.spend)+'/'+akR(q.value)+'/'+akR(q.conversions)+'/'+akR(q.clicks)+' '+akR(q.roas,2):'no results yet'))})}
+ (D.weekly||[]).forEach(w=>L.push('Week '+(w.week||'')+' ('+(w.sourceLabel||'')+', '+(w.days||'')+' days): plan spend '+akR(w.planSpend)+' value '+akR(w.planValue)+' conv '+akR(w.planConversions)+(w.hasActual?' | actual spend '+akR(w.actualSpend)+' value '+akR(w.actualValue)+' conv '+akR(w.actualConversions)+' clicks '+akR(w.actualClicks)+' ROAS '+akR(w.roas,2):' | no results yet')));
+ (D.channels||[]).forEach(c=>L.push('Campaign type this month: '+c.channel+' spend '+akR(c.actualSpend)+' of plan '+akR(c.planSpend)+', clicks '+akR(c.clicks)+', conv '+akR(c.conversions,1)+', value '+akR(c.actualValue)+', ROAS '+akR(c.roas,2)));
+ (D.dayChannels||[]).forEach(c=>L.push('Campaign type on '+(lt.date||'the latest day')+': '+c.channel+' spend '+akR(c.spend)+' (plan '+akR(c.planSpend)+'), clicks '+akR(c.clicks)+', conv '+akR(c.conversions)+', value '+akR(c.value)+', ROAS '+akR(c.roas,2)));
+ (D.history||[]).forEach(h=>L.push('Month '+h.month+(h.hijri?' ('+h.hijri+')':'')+': spend '+akR(h.cost)+', value '+akR(h.value)+', conv '+akR(h.conversions)+(h.partial?' (not finished)':'')));
+ if(D.yoy)L.push('Same Hijri day last year as the latest day: spend '+akR(D.yoy.spend)+', clicks '+akR(D.yoy.clicks)+', conv '+akR(D.yoy.conversions)+', value '+akR(D.yoy.value));
+ (D.topProjects||[]).forEach(t=>L.push('Top project on '+(D.topProjectsDay||'the latest day')+': '+t.name+' spend '+akR(t.spend)+', conv '+akR(t.conversions)+', value '+akR(t.value)+', ROAS '+akR(t.roas,2)));
+ return L.join('\n')}
+async function akCtx(){if(typeof DASH_DATA==='undefined'||!DASH_DATA)return '';const acc=CURRENT_ACCOUNT,L=[];
+ L.push('Today (the user’s date): '+ssToday());try{L.push('Currency: open account '+((ACC_CUR||{})[acc]||'USD')+', other account '+((ACC_CUR||{})[acc==='ar'?'usa':'ar']||''))}catch(e){}
+ L.push(akDashLines(DASH_DATA,'Account open on screen'));
+ 
+ try{let ex=MONTH_EXTRA[acc];if(!ex||!ex.days||!Object.keys(ex.days).length){const r=await akWithin(serverCall('getMonthCompareData',acc,getAccessToken()),6000);if(r){MONTH_EXTRA[acc]=r;ex=r}}
+  if(ex&&ex.days){const first=((DASH_DATA.dayPlan||[])[0]||{}).date||'9999',ks=Object.keys(ex.days).filter(k=>k<first).sort().slice(-75);
+   if(ks.length){L.push('## Days before this month (date | spend/value/conv/clicks ROAS)');ks.forEach(k=>{const t=dayParts(k,ex,null);if(t)L.push(k+' '+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date(k+'T12:00:00Z').getUTCDay()]+' | '+akR(t.spend)+'/'+akR(t.value)+'/'+akR(t.conversions)+'/'+akR((t.extra||{}).clicks)+' '+(t.spend?akR(t.value/t.spend,2):''))})}}}catch(e){}
+ 
+ try{const o=acc==='ar'?'usa':'ar',c=getAccountCache(o);if(c&&c.data)L.push(akDashLines(c.data,'The other account'));else prefetchOtherAccount()}catch(e){}
+ try{const t=ssToday();L.push('## Seasons coming up');ssList().filter(x=>x.to>=t).slice(0,8).forEach(x=>L.push(x.name+': '+x.from+' to '+x.to+' ('+x.len+' days, '+(x.type==='h'?'Hijri':'US')+')'))}catch(e){}
+ return L.join('\n').slice(0,60000)}
+
+function akCardsSplit(t){t=String(t||'');const i=t.indexOf('[[CARDS]]');if(i<0)return {text:t};let cards=null;
+ try{const j=t.slice(i+9).replace(/```(json)?/g,'').trim();const a=JSON.parse(j.slice(j.indexOf('['),j.lastIndexOf(']')+1));if(Array.isArray(a))cards=a.filter(x=>x&&x.v!=null).slice(0,8)}catch(e){}
+ return {text:t.slice(0,i).trim(),cards:cards&&cards.length?cards:null}}
+function akCardsHtml(cs){const one=cs.length===1;return `<div class="ak-nc${one?' one':''}">${cs.map(c=>{const d=c.d==='up'?'up':c.d==='down'?'dn':'';
+ return `<div class="ak-ncc"><small>${akEsc(String(c.l||''))}</small><b>${akEsc(String(c.v))}</b>${c.p?`<span class="ak-ncp ${d}">${akEsc(String(c.p))}</span>`:''}${c.s?`<em>${akEsc(String(c.s))}</em>`:''}</div>`}).join('')}</div><span class="ak-ncs">From the dashboard · ${akEsc((DASH_DATA&&DASH_DATA.account&&DASH_DATA.account.shortLabel)||'')}</span>`}
 </script>
 <div id="seknaFileEnd" hidden></div>
 <script>
