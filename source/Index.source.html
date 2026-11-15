@@ -9145,6 +9145,9 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 /* v414 Ask HEMERA menu item when it is closed for this person */
 #askNavBtn.ak-lockedX{opacity:.55}#askNavBtn.ak-locked:after{content:"";width:13px;height:13px;margin-left:auto;flex:none;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round'%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 0 1 8 0v4'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round'%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 0 1 8 0v4'/%3E%3C/svg%3E") center/contain no-repeat}
 #askNavBtn.ak-wait{opacity:.6;pointer-events:none}
+
+/* v416 no access: the box is shut */
+.ak-in.ak-off input{opacity:.6;cursor:not-allowed}.ak-in.ak-off .ak-mic,.ak-in.ak-off .ak-snd,.ak-in.ak-off .ak-mb{opacity:.35;pointer-events:none}
 </style>
 </head>
 <body>
@@ -10213,7 +10216,7 @@ async function akPost(action,extra){
 }
 async function akAssets(force){
  if(!force&&AK.assets&&Date.now()-AK.at<600000)return AK.assets;
- const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[],categories:j.categories||[],formats:j.formats||[]};AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);AK.blocked=false;akWhoSave(true);AK.at=Date.now();if(AK.resIds&&!AK.res){AK.res=AK.assets.rows.filter(r=>AK.resIds.indexOf(r.id)>=0)}akKb();return AK.assets;
+ const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[],categories:j.categories||[],formats:j.formats||[]};AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);const wasB=AK.blocked;AK.blocked=false;akWhoSave(true);AK.at=Date.now();if(wasB){akLockIn();AK.msgs=AK.msgs.filter(m=>m.html!==AK_NO);akDraw()}if(AK.resIds&&!AK.res){AK.res=AK.assets.rows.filter(r=>AK.resIds.indexOf(r.id)>=0)}akKb();return AK.assets;
 }
 /* v414 Ask HEMERA is closed until an editor gives access: the menu item stays, but it does not open */
 function akWho(){try{const w=JSON.parse(localStorage.getItem('hm_ask_who')||'null');return w&&w.e===akMe().email?w:null}catch(e){return null}}
@@ -10224,7 +10227,8 @@ const AK_NO='<p>You do not have access to Ask HEMERA. Ask Ibrahim if you need it
 function openAsk(){const w=akWho();if(w&&w.ok===false){AK.blocked=true;AK.msgs=[];try{localStorage.removeItem(AK_KEEP)}catch(e){}}akOpenNow()}
 setTimeout(()=>{try{akNavLock(false)}catch(e){}},1500);
 /* v415 no access: the chat opens, but the menu does not open and every message gets the same answer */
-function akBlockedSay(){AK.kb=false;akKb();akBot(AK_NO)}
+function akBlockedSay(){AK.kb=false;akKb();akLockIn();if(!AK.msgs.some(m=>m.html===AK_NO))akBot(AK_NO)}
+function akLockIn(){const i=document.getElementById('akQ'),f=i&&i.closest('form');if(!i)return;const on=!!AK.blocked;i.disabled=on;i.placeholder=on?'You do not have access':'Aa';if(on)i.value='';if(f)f.classList.toggle('ak-off',on);akInMode()}
 async function akRecheck(){try{const j=await akPost('hello');AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);AK.blocked=false;akWhoSave(true);return true}catch(e){if(e&&e.blocked){AK.blocked=true;akWhoSave(false)}return !AK.blocked}}
 function akOpenNow(){
  if(!canDo('ask'))return;closeSidebar();
@@ -10239,8 +10243,8 @@ function akOpenNow(){
  try{const w=JSON.parse(localStorage.getItem('hm_ask_who')||'null');if(w&&w.e===akMe().email&&AK.canAdd===undefined){AK.editor=w.editor;AK.canAdd=w.add;AK.canTeach=w.teach}}catch(e){}
  if(!AK.msgs.length){AK.t0=Date.now();const n=akMe().name.split(' ')[0];akBot(`<p>Hi${n?' '+akEsc(n):''}. Pick from the menu or type your question.</p>`)}
  akDraw();akKb();
- if(AK.blocked){AK.kb=false;akKb();if(!AK.msgs.some(m=>m.html===AK_NO))akBot(AK_NO)}
- if(ASK_HEMERA_URL)akAssets().catch(e=>{if(e&&e.blocked){akWhoSave(false);AK.msgs=AK.msgs.slice(0,1);AK.kb=false;akKb();akBot(AK_NO)}});
+ if(AK.blocked)akBlockedSay();
+ if(ASK_HEMERA_URL)akAssets().catch(e=>{if(e&&e.blocked){akWhoSave(false);AK.msgs=AK.msgs.slice(0,1);akBlockedSay()}});
 }
 // v381 while typing on a phone the keyboard covers the bottom of the screen: the chat fits the part that is still visible, so the HEMERA bar stays on top
 function akVv(){const v=window.visualViewport;if(!v||akVv.on)return;akVv.on=1;const f=()=>{const o=document.getElementById('akBox');if(!o)return;if(window.innerWidth>=900){o.style.top='';o.style.height='';o.style.bottom='';return}o.style.top=v.offsetTop+'px';o.style.height=v.height+'px';o.style.bottom='auto';const b=document.getElementById('akBd');if(b)b.scrollTop=b.scrollHeight};v.addEventListener('resize',f);v.addEventListener('scroll',f);f()}
@@ -10250,7 +10254,7 @@ function akCopy(t,btn){try{navigator.clipboard.writeText(t).then(()=>{btn.classL
    The recording is turned into a small WAV file, sent once, and the answer comes back with what was heard. */
 const AKR={};
 async function akRecStart(){
- if(AKR.on||AK.busy)return;if(AK.blocked){akBlockedSay();return}
+ if(AKR.on||AK.busy)return;if(AK.blocked){akLockIn();return}
  if(!ASK_HEMERA_URL){akBot('<p>Ask HEMERA is not connected yet.</p>');return}
  if(!navigator.mediaDevices||!window.MediaRecorder){showSettingsToast('Voice messages are not supported on this device');return}
  let stream;try{stream=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){showSettingsToast('Allow the microphone to record');return}
@@ -10356,9 +10360,9 @@ function akKb(){
 function akInMode(){const i=document.getElementById('akQ'),f=i&&i.closest('form');if(f)f.classList.toggle('e',!String(i.value||'').trim())}
 async function akSend(e){
  if(e)e.preventDefault();
- const i=document.getElementById('akQ');const q=String(i&&i.value||'').trim();if(!q||AK.busy)return;
+ const i=document.getElementById('akQ');if(AK.blocked){akLockIn();return}const q=String(i&&i.value||'').trim();if(!q||AK.busy)return;
  i.value='';akInMode();
- if(AK.blocked){akUser(q);AK.busy=true;akDraw();const ok=await akRecheck();AK.busy=false;akDraw();if(!ok){akBlockedSay();return}akKb()}
+
  if(AK.ask){const a=AK.ask;AK.ask=null;akUser(q);a.fn(q);return}
  if(AK.add){akAddAnswer(q);return}
  if(AK.teach){akLearn(q);return}
