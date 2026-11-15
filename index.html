@@ -9678,11 +9678,13 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 #akBubX svg{width:28px;height:28px;stroke:#fff;stroke-width:2.6;fill:none;stroke-linecap:round}
 #akBubX.on{opacity:1;transform:none}#akBubX.hot{transform:scale(1.22);background:#D12F35}
 #akBubXg{position:fixed;left:0;right:0;bottom:0;height:260px;background:linear-gradient(to top,rgba(229,72,77,.28),transparent);pointer-events:none;opacity:0;transition:opacity .2s;z-index:2147479998}#akBubXg.on{opacity:1}
-/* v466 a red dot on Alexandra while access requests wait (editors only) */
-html.ak-req-on #askNavBtn .sk-nav-icon,html.ak-req-on .menu-toggle,html.ak-req-on .ak-inf{position:relative}
-html.ak-req-on #askNavBtn .sk-nav-icon::before,html.ak-req-on .menu-toggle::before,html.ak-req-on .ak-inf::before,html.ak-req-on .ak-bub::before{content:"";position:absolute;top:-2px;right:-2px;width:11px;height:11px;border-radius:50%;background:#E5484D;border:2px solid #fff;z-index:2;animation:akRqP 1.8s ease-in-out infinite}
-html.ak-req-on .ak-bub::before{top:1px;right:1px;width:14px;height:14px;border-width:3px}
-@keyframes akRqP{0%,100%{box-shadow:0 0 0 0 rgba(229,72,77,.5)}50%{box-shadow:0 0 0 5px rgba(229,72,77,0)}}
+/* v467 waiting access requests: the same pink count as Notifications (menu rows, menu button, bubble, (i)) */
+.ak-rqb[hidden]{display:none!important}
+.menu-toggle,.ak-inf{position:relative}
+.menu-toggle>.ak-rqb,.ak-inf>.ak-rqb,.ak-bub>.ak-rqb{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;padding:0 4px;border-radius:99px;background:#ff5d73;color:#fff;font-style:normal;font-size:9.5px;font-weight:900;display:grid;place-items:center;box-shadow:0 0 0 2px #1e3a9e;z-index:2;line-height:1;font-family:Inter,system-ui,sans-serif}
+.ak-inf>.ak-rqb{box-shadow:0 0 0 2px #fff}.ak-bub>.ak-rqb{top:-2px;right:-2px;min-width:20px;height:20px;font-size:11px;box-shadow:0 0 0 2px #fff}
+#askNavBtn.ak-locked:has(.ak-rqb:not([hidden])):after{display:none}
+.sk-grp>.ak-rqb{margin:0 10px 0 auto}.sk-grp[aria-expanded="true"]>.ak-rqb{display:none!important}
 </style>
 </head>
 <body>
@@ -10755,7 +10757,7 @@ async function akPost(action,extra){
 }
 async function akAssets(force){
  if(!force&&AK.assets&&Date.now()-AK.at<600000)return AK.assets;
- const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[],categories:j.categories||[],formats:j.formats||[],starred:j.starred||[]};AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);const wasB=AK.blocked;AK.blocked=false;akWhoSave(true);AK.at=Date.now();setTimeout(akModeApply,0);akBavSync(j.botAvV);akCovSync(j.botCovV);if(j.storySeen!==undefined)akStoryFirst(!!j.storySeen);if(wasB){akLockIn();AK.msgs=AK.msgs.filter(m=>!akIsNo(m.html));akWelcome()}if(AK.resIds&&!AK.res){AK.res=AK.assets.rows.filter(r=>AK.resIds.indexOf(r.id)>=0)}akKb();return AK.assets;
+ const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[],categories:j.categories||[],formats:j.formats||[],starred:j.starred||[]};AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);const wasB=AK.blocked;AK.blocked=false;akWhoSave(true);AK.at=Date.now();setTimeout(akModeApply,0);akBavSync(j.botAvV);akCovSync(j.botCovV);if(j.storySeen!==undefined)akStoryFirst(!!j.storySeen);if(wasB||AK.msgs.some(m=>akIsNo(m.html))){akLockIn();AK.msgs=AK.msgs.filter(m=>!akIsNo(m.html));akWelcome()}if(AK.resIds&&!AK.res){AK.res=AK.assets.rows.filter(r=>AK.resIds.indexOf(r.id)>=0)}akKb();return AK.assets;
 }
  
 function akWho(){try{const w=JSON.parse(localStorage.getItem('hm_ask_who')||'null');return w&&w.e===akMe().email?w:null}catch(e){return null}}
@@ -10889,7 +10891,7 @@ function akFit(){const o=document.getElementById('akBox');if(!o||!o.classList.co
  o.style.setProperty('--akL',Math.round(L)+'px');o.style.setProperty('--akT',Math.round(T)+'px')}
 document.addEventListener('click',e=>{const o=document.getElementById('akBox');if(!o||!o.classList.contains('pgm'))return;const n=e.target.closest('#dkRail button,#dkRail a,#dkPanel button,#dkPanel a');if(n&&!/alexandra/i.test(n.textContent))closeAsk()},true);
 function akMini(e){if(e)e.stopPropagation();const o=document.getElementById('akBox');if(!o)return;o.classList.toggle('mini');
- if(!akDesk()){let b=o.querySelector('.ak-bub');if(!b){o.insertAdjacentHTML('beforeend',`<button type="button" class="ak-bub" aria-label="Open the chat with Alexandra" onclick="akMini(event)">${akAvIn()}<i></i></button>`);b=o.querySelector('.ak-bub')}akBubPlace(b);document.documentElement.classList.toggle('ak-bubbed',o.classList.contains('mini'))}const b=o.querySelector('.ak-min');if(b){const m=o.classList.contains('mini');b.innerHTML=akI(m?'up':'minus');b.setAttribute('aria-label',m?'Open the chat':'Minimise');b.title=b.getAttribute('aria-label')}}
+ if(!akDesk()){let b=o.querySelector('.ak-bub');if(!b){o.insertAdjacentHTML('beforeend',`<button type="button" class="ak-bub" aria-label="Open the chat with Alexandra" onclick="akMini(event)">${akAvIn()}<i></i></button>`);b=o.querySelector('.ak-bub')}akBubPlace(b);akReqDot();document.documentElement.classList.toggle('ak-bubbed',o.classList.contains('mini'))}const b=o.querySelector('.ak-min');if(b){const m=o.classList.contains('mini');b.innerHTML=akI(m?'up':'minus');b.setAttribute('aria-label',m?'Open the chat':'Minimise');b.title=b.getAttribute('aria-label')}}
 document.addEventListener('click',e=>{const o=document.getElementById('akBox');if(o&&o.classList.contains('mini')&&e.target.closest('#akBox .ak-hd')&&!e.target.closest('button'))akMini()});
 function akModeFlip(){try{localStorage.setItem('hm_ask_mode',akDkMode()==='win'?'page':'win')}catch(e){}akModeApply()}
 function akSideDraw(){const o=document.getElementById('akBox');if(!o)return;let L=o.querySelector('.ak-dl'),R=o.querySelector('.ak-dr');const c=o.querySelector('.ak-card');
@@ -10899,7 +10901,7 @@ function akSideDraw(){const o=document.getElementById('akBox');if(!o)return;let 
  R.innerHTML=`<div class="ak-drc" style="background-image:url(${akCovUrl()})"></div><span class="ak-pga ak-tapp" onclick="AK.pgTab='about';akAbout(event)">${akAvIn()}<em></em></span><b class="ak-drn">Alexandra ${AK_TICK}</b><small class="ak-drs">Active now</small>
   <div class="ak-intro">${akIntroHtml()}</div><button type="button" class="ak-drb" onclick="AK.pgTab='about';akAbout(event)">${akI('about')}View profile</button>`}
 addEventListener('resize',()=>{clearTimeout(akModeApply.t);akModeApply.t=setTimeout(akModeApply,150)});
-function openAsk(){if(!ASK_HEMERA_URL)setTimeout(()=>akStoryFirst(false),600);const w=akWho();if(w&&w.ok===false){AK.blocked=true;AK.msgs=[];try{localStorage.removeItem(AK_KEEP)}catch(e){}}akOpenNow()}
+function openAsk(){if(!ASK_HEMERA_URL)setTimeout(()=>akStoryFirst(false),600);const w=akWho();if(w&&w.ok===false){AK.blocked=true;AK.msgs=[];try{localStorage.removeItem(AK_KEEP)}catch(e){}}akOpenNow();setTimeout(akReqDot,0)}
 setTimeout(()=>{try{akNavLock(false)}catch(e){}},1500);
  
 function akBlockedSay(){AK.kb=false;akKb();akLockIn();if(!AK.msgs.some(m=>akIsNo(m.html)))akBot(akReqSent()?AK_NO_SENT:AK_NO)}
@@ -11127,7 +11129,7 @@ function akLinkKind(u){u=String(u);if(/docs\.google\.com\/spreadsheets/.test(u))
  
 function akUrlKey(u){u=String(u||'');const m=u.match(/\/d\/([\w-]{20,})/);return m?m[1]:u.replace(/[?#].*$/,'').replace(/\/+$/,'').toLowerCase()}
 function akRowByUrl(u){const k=akUrlKey(u);return ((AK.assets&&AK.assets.rows)||[]).find(r=>[r.sheet,r.report,r.script].some(o=>o&&o.url&&akUrlKey(o.url)===k))}
-function akAnswer(t){const cs=akCardsSplit(t);if(cs.cards)return akAnswer0(cs.text)+akCardsHtml(cs.cards);return akAnswer0(t)}
+function akAnswer(t){const cs=akCardsSplit(t);if(cs.cards)return akAnswer0(cs.text)+akCardsHtml(cs.cards);return akAnswer0(cs.text)}
 function akAnswer0(t){
  const out=[],U=/https?:\/\/[^\s<>"')]+/g;
  String(t).split('\n').forEach(line=>{const urls=line.match(U);
@@ -20471,7 +20473,9 @@ function akBubHot(c){const x=document.getElementById('akBubX');if(!x)return null
  return near?[cx-30,cy-30]:null}
 
 
-function akReqDot(){const n=AK.editor&&Array.isArray(AK.rq)?AK.rq.length:0;document.documentElement.classList.toggle('ak-req-on',n>0)}
+function akReqDot(){const n=AK.editor&&Array.isArray(AK.rq)?AK.rq.length:0;AK.rqN=n;
+ const spots=[['#askNavBtn','nf-badge'],['#adminNavBtn','nf-badge'],['.menu-toggle',''],['#akBox .ak-inf',''],['#akBox .ak-bub','']];
+ spots.push(['.sk-grp[data-grp="ai"]','nf-badge']);spots.forEach(([q,c])=>document.querySelectorAll(q).forEach(el=>{let b=el.querySelector(':scope>.ak-rqb');if(!b){if(!n)return;b=document.createElement('em');b.className='ak-rqb '+c;const ch=el.querySelector(':scope>.sk-gchev');if(ch)el.insertBefore(b,ch);else el.appendChild(b)}b.hidden=!n;b.textContent=n>9?'9+':String(n);if(n)el.setAttribute('data-rq',n);else el.removeAttribute('data-rq')}))}
 async function akReqPoll(){try{if(!ASK_HEMERA_URL||!akMe().email)return;const w=akWho();if(!(AK.editor||(w&&w.editor)))return;
  const j=await akPost('admin',{op:'reqs'});if(j&&Array.isArray(j.reqs)){AK.editor=true;AK.rq=j.reqs;akReqDot();const el=document.getElementById('akReqW');if(el)el.innerHTML=akReqsHtml(AK.rq)}}catch(e){}}
 setTimeout(akReqPoll,6000);setInterval(()=>{if(!document.hidden)akReqPoll()},300000);
