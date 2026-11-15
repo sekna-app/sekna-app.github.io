@@ -9329,6 +9329,63 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 .ak-rl2 .ak-fcf button{width:auto!important;height:auto!important;flex:none;border:0;border-radius:99px;padding:6px 12px;font:800 12.5px Inter,system-ui,sans-serif;background:#F0F2F5;color:#141b33;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
 .ak-rl2 .ak-fcf .del{background:#E41E3F;color:#fff}.ak-fcf .del .ak-ic{width:13px;height:13px}
 .ak.dk .ak-rl2.ask{background:#3a1c22}.ak.dk .ak-fcf span{color:#E4E6EB}.ak.dk .ak-fcf button:not(.del){background:#3A3B3C;color:#E4E6EB}
+
+/* v447 desktop "One slim row": Budget left beside Clicks/ROAS; the Budget section goes, Weekly takes the full width */
+.ox-bud{display:none}
+@media (min-width:1100px){
+  html.dk-on:not(.desktop-site-mode) body #channelPanel>.mtd-exec>.ox-rc{grid-column:1!important;grid-row:4!important}
+  html.dk-on:not(.desktop-site-mode) body #channelPanel>.mtd-exec>.ox-bud{display:flex;flex-direction:column;justify-content:center;gap:6px;grid-column:2;grid-row:4;margin:10px 0 0 12px;padding:10px 18px;border-radius:999px;background:linear-gradient(135deg,#1b2f72,#0e1a45);color:#fff;min-width:0}
+  html.dk-on:not(.desktop-site-mode) body .ox-bud-t{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  html.dk-on:not(.desktop-site-mode) body .ox-bud-t span{font-size:10.5px;font-weight:900;letter-spacing:.12em;color:#C9D3F5}
+  html.dk-on:not(.desktop-site-mode) body .ox-bud-t b{font-size:18px;font-weight:900;font-variant-numeric:tabular-nums}
+  html.dk-on:not(.desktop-site-mode) body .ox-bud-bar{height:6px;border-radius:6px;background:rgba(255,255,255,.18);overflow:hidden}
+  html.dk-on:not(.desktop-site-mode) body .ox-bud-bar i{display:block;height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,#F3D58E,#E2B874);transition:width .6s}
+  html.dk-on:not(.desktop-site-mode) body .ox-bud small{font-size:11px;font-weight:700;color:#C9D3F5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  html.dk-on:not(.desktop-site-mode) body #channelPanel>#vcSection{display:none!important}
+  html.dk-on:not(.desktop-site-mode) body #channelPanel>.weekly-performance,html.dk-on:not(.desktop-site-mode) body #channelPanel>section.weekly-performance{grid-column:1/-1!important}
+}
+
+/* v447 desktop Alexandra: Messenger page, small window, Facebook-page profile, story with blurred sides */
+.ak-mode{width:36px;height:36px;border:0;border-radius:50%;background:none;color:#1C3C96;display:grid;place-items:center;cursor:pointer;margin-left:auto}.ak-mode .ak-ic{width:20px;height:20px}
+.ak-mode:not([hidden])+.ak-inf{margin-left:0}
+.ak-dl,.ak-dr{display:none}
+.aks-arr,.aks-xd{display:none}
+@media (min-width:1100px){
+ .ak.pgm{padding:0!important}.ak.pgm .ak-card{max-width:none!important;width:100%;height:100vh!important;border-radius:0!important;padding-left:280px;padding-right:330px;box-shadow:none!important}
+ .ak.pgm .ak-dl,.ak.pgm .ak-dr{display:flex;flex-direction:column;position:absolute;top:0;bottom:0;background:#fff;overflow-y:auto;z-index:2}
+ .ak.pgm .ak-dl{left:0;width:280px;border-right:1px solid #E4E6EB;padding:22px 14px;gap:6px}
+ .ak-dlt{font:800 24px Inter,system-ui,sans-serif;color:#050505;padding:0 6px}.ak-dls{font:700 12px Inter,system-ui,sans-serif;color:#65676B;margin:10px 6px 4px}
+ .ak-dl button{display:flex;align-items:center;gap:12px;border:0;background:none;border-radius:10px;padding:9px 8px;font:600 14.5px Inter,system-ui,sans-serif;color:#050505;cursor:pointer;text-align:left}.ak-dl button:hover{background:#F0F2F5}.ak-dl button:disabled{opacity:.4;cursor:default}
+ .ak-dl i{width:36px;height:36px;border-radius:50%;background:#F0F2F5;display:grid;place-items:center;color:#1C3C96;flex:none}.ak-dl i .ak-ic{width:18px;height:18px}
+ .ak.pgm .ak-dr{right:0;width:330px;border-left:1px solid #E4E6EB;align-items:center;text-align:center;padding:0 0 20px}
+ .ak-drc{width:100%;height:130px;flex:none;background:#0F1A3A 68% 42%/cover}
+ .ak-dr .ak-pga{width:96px;height:96px;margin:-48px 0 0;border:4px solid #fff;flex:none}
+ .ak-drn{display:flex;align-items:center;gap:6px;font:800 20px Inter,system-ui,sans-serif;color:#050505;margin-top:8px}.ak-drs{font:600 12.5px Inter,system-ui,sans-serif;color:#65676B}
+ .ak-dr .ak-intro{width:100%;text-align:left;padding:14px 20px 0}
+ .ak-drb{margin-top:14px;display:inline-flex;align-items:center;gap:7px;border:0;border-radius:10px;padding:10px 16px;background:#E7F0FF;color:#0866FF;font:700 14px Inter,system-ui,sans-serif;cursor:pointer}.ak-drb .ak-ic{width:17px;height:17px}
+ .ak.pgm .ak-pg{z-index:30}
+ .ak.pgm .ak-kb{display:none!important}
+ .ak.pgm .ak-pgb2{background:#F0F2F5}
+ .ak.pgm .ak-hero{height:340px;max-width:1100px;margin:0 auto;border-radius:0 0 12px 12px}.ak.pgm .ak-hero::after{background:none}
+ .ak.pgm .ak-id,.ak.pgm .ak-hl,.ak.pgm .ak-tabs,.ak.pgm .ak-pgbody,.ak.pgm .ak-pgcta{max-width:1100px;margin-left:auto;margin-right:auto;box-sizing:border-box}
+ .ak.pgm .ak-id{margin-top:-70px;padding:0 30px;background:none}.ak.pgm .ak-id .ak-pga{width:168px;height:168px;border-width:5px}.ak.pgm .ak-id h2{font-size:32px}
+ .ak.pgm .ak-hl,.ak.pgm .ak-tabs{background:#fff}.ak.pgm .ak-hl{padding:16px 30px 8px;margin-top:12px;border-radius:12px 12px 0 0}.ak.pgm .ak-tabs{padding:0 22px;margin-top:0;position:static}
+ .ak.pgm .ak-pgbody{padding:16px 0}
+ .ak-fb2{display:grid;grid-template-columns:380px minmax(0,1fr);gap:16px;align-items:start}
+ .ak-fbl,.ak-fbr{background:#fff;border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.1);padding:4px 16px 16px}
+ .ak-fbr{padding:4px 0 0;overflow:hidden}.ak-fbr>h4{padding:0 16px}.ak-fbr .ak-post{margin:12px 0 0}.ak-fbr .ak-pimg img{aspect-ratio:16/10}
+ .ak.pgm .ak-pgcta{max-width:420px}
+ .ak.win{background:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;pointer-events:none;padding:0!important}
+ .ak.win .ak-card{pointer-events:auto;position:fixed;right:24px;bottom:0;width:390px;max-width:390px;height:min(600px,80vh)!important;border-radius:16px 16px 0 0!important;box-shadow:0 12px 40px rgba(0,0,0,.3)!important}
+ .ak.dk .ak-dl,.ak.dk .ak-dr{background:#242526;border-color:#3E4042}.ak.dk .ak-dlt,.ak.dk .ak-dl button,.ak.dk .ak-drn{color:#E4E6EB}.ak.dk .ak-dl i{background:#3A3B3C;color:#E4E6EB}.ak.dk .ak-dr .ak-pga{border-color:#242526}
+ .ak.dk.pgm .ak-pgb2{background:#18191A}.ak.dk .ak-fbl,.ak.dk .ak-fbr,.ak.dk.pgm .ak-hl,.ak.dk.pgm .ak-tabs{background:#242526}
+ /* story: phone in the middle, the picture blurred on both sides, arrows */
+ .aks{background:#000}.aks::before{content:"";position:absolute;inset:-60px;background:var(--aksbg) center/cover;filter:blur(40px) brightness(.45);transition:background-image .4s}
+ .aks-ph{z-index:1}
+ .aks-arr{display:grid;place-items:center;position:absolute;z-index:3;top:50%;width:52px;height:52px;margin-top:-26px;border:0;border-radius:50%;background:rgba(255,255,255,.9);color:#141b33;font:900 28px/1 Inter,system-ui,sans-serif;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+ .aks-arr.l{left:calc(50% - min(220px,25dvh) - 80px)}.aks-arr.r{right:calc(50% - min(220px,25dvh) - 80px)}
+ .aks-xd{display:grid;place-items:center;position:absolute;z-index:3;right:26px;top:22px;width:44px;height:44px;border:0;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;cursor:pointer}.aks-xd .ak-ic{width:22px;height:22px}
+}
 </style>
 </head>
 <body>
@@ -9953,6 +10010,7 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
       </div>
       <div class="ox-rc"><div class="ox-cl mc" id="mtdClkRow" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l9 8-4 1-1 4-4-13z"/><path d="M15 15l4 4"/></svg><span id="mtdClkLine">Clicks <b id="mtdClk2">—</b> <small id="mtdClkPlan2"></small></span><em id="mtdClkPct2"></em></div><div class="ox-cl mc" id="mtdClicksRow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/></svg><span id="mtdRoasLine">ROAS <b id="mtdRoas">—</b> <small id="mtdRoasPlan"></small></span><em id="mtdClicksPct"></em></div>
       </div>
+      <div class="ox-bud" id="mtdBudTile" aria-label="Budget left"><div class="ox-bud-t"><span>BUDGET LEFT</span><b id="mbtLeft">—</b></div><div class="ox-bud-bar"><i id="mbtBar"></i></div><small id="mbtSub">—</small></div>
 
       <div class="ox-legend" id="mtdTickLegend"><i></i><span>Black tick = expected by today</span></div>
     </section>
@@ -10372,7 +10430,7 @@ function openTgBot(){if(!SEKNA_TG_BOT)return;try{const w=window.open(SEKNA_TG_BO
  
 let ASK_HEMERA_URL='https:\/\/script.google.com/macros/s/AKfycbwDgKEmZ54-FxWfyCoYAE-u6HZBcFA7V0c0DpUToVfPfNpo0HMyrPueFgUBtXBH--e1/exec';
 const AK={msgs:[],assets:null,at:0,editor:false,hist:[],busy:false,kb:true,nav:{},add:null};
-const AK_IC={like:'<path d="M7 11v9H4v-9zM7 11l4-7c1.5 0 2.3 1 2 2.5L12.5 10H19a2 2 0 0 1 2 2.3l-1.2 6A2 2 0 0 1 17.8 20H7"/>',cmt:'<path d="M4 5h16v11H9l-5 4z"/>',share:'<path d="M14 5l7 7-7 7v-4c-5 0-8 1.5-10 5 .5-5 3-9 10-10z"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',bug:'<rect x="8" y="7" width="8" height="12" rx="4"/><path d="M12 7V4M8 11H4M20 11h-4M8 16H5M19 16h-3"/>',filter:'<path d="M4 5h16l-6 8v6l-4-2v-4z"/>',power:'<path d="M12 3v8"/><path d="M6.3 7a8 8 0 1 0 11.4 0"/>',moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',down:'<path d="M6 9l6 6 6-6"/>',check:'<path d="M5 12l5 5 9-10"/>',
+const AK_IC={expand:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',shrink:'<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>',like:'<path d="M7 11v9H4v-9zM7 11l4-7c1.5 0 2.3 1 2 2.5L12.5 10H19a2 2 0 0 1 2 2.3l-1.2 6A2 2 0 0 1 17.8 20H7"/>',cmt:'<path d="M4 5h16v11H9l-5 4z"/>',share:'<path d="M14 5l7 7-7 7v-4c-5 0-8 1.5-10 5 .5-5 3-9 10-10z"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',bug:'<rect x="8" y="7" width="8" height="12" rx="4"/><path d="M12 7V4M8 11H4M20 11h-4M8 16H5M19 16h-3"/>',filter:'<path d="M4 5h16l-6 8v6l-4-2v-4z"/>',power:'<path d="M12 3v8"/><path d="M6.3 7a8 8 0 1 0 11.4 0"/>',moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',down:'<path d="M6 9l6 6 6-6"/>',check:'<path d="M5 12l5 5 9-10"/>',
  spk:'<path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/><path d="M18.5 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>',
  back:'<path d="M15 18l-6-6 6-6"/>',plane:'<path d="M4 12l16-8-6 16-2.5-6.5z"/>',cam:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',dash:'<path d="M4 15a8 8 0 0 1 16 0"/><path d="M12 15l4-5"/>',all:'<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',chev:'<path d="M9 6l6 6-6 6"/>',mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',play:'<path d="M7 5l12 7-12 7z"/>',pause:'<path d="M8 5v14M16 5v14"/>',pen:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>',plat:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',folder:'<path d="M3 7h7l2 2h9v10H3z"/>',grid:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',link2:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',note:'<path d="M5 4h14v12l-4 4H5z"/><path d="M15 20v-4h4"/>',clip:'<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/>',doc:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>',hand:'<path d="M8 12l3 3 6-6"/><circle cx="12" cy="12" r="9"/>',trend:'<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',wallet:'<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12h3"/>',bolt:'<path d="M13 3L5 13h6l-1 8 8-10h-6z"/>',search:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/>',teach:'<path d="M12 4a4 4 0 0 0-4 4 3.5 3.5 0 0 0-3 5.5A3.5 3.5 0 0 0 8 19h4V4zM12 4a4 4 0 0 1 4 4 3.5 3.5 0 0 1 3 5.5A3.5 3.5 0 0 1 16 19h-4"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20a7 7 0 0 1 14 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14a5 5 0 0 1 6 5"/>',refresh:'<path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/>',star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',unlock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/>',key:'<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/>',megaphone:'<path d="M4 10v4h3l7 5V5L7 10z"/><path d="M18 9a4 4 0 0 1 0 6"/>',home:'<path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/>',rules:'<path d="M6 3h12v18H6z"/><path d="M9 8h6M9 12h6M9 16h4"/>',dup:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V6a2 2 0 0 1 2-2h10"/>',copy:'<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>',send:'<path d="M5 12h14M13 6l6 6-6 6"/>',menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
  links:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 3v18"/>',
@@ -10394,7 +10452,7 @@ async function akPost(action,extra){
 }
 async function akAssets(force){
  if(!force&&AK.assets&&Date.now()-AK.at<600000)return AK.assets;
- const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[],categories:j.categories||[],formats:j.formats||[],starred:j.starred||[]};AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);const wasB=AK.blocked;AK.blocked=false;akWhoSave(true);AK.at=Date.now();akBavSync(j.botAvV);akCovSync(j.botCovV);if(j.storySeen!==undefined)akStoryFirst(!!j.storySeen);if(wasB){akLockIn();AK.msgs=AK.msgs.filter(m=>!akIsNo(m.html));akWelcome()}if(AK.resIds&&!AK.res){AK.res=AK.assets.rows.filter(r=>AK.resIds.indexOf(r.id)>=0)}akKb();return AK.assets;
+ const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[],categories:j.categories||[],formats:j.formats||[],starred:j.starred||[]};AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);const wasB=AK.blocked;AK.blocked=false;akWhoSave(true);AK.at=Date.now();setTimeout(akModeApply,0);akBavSync(j.botAvV);akCovSync(j.botCovV);if(j.storySeen!==undefined)akStoryFirst(!!j.storySeen);if(wasB){akLockIn();AK.msgs=AK.msgs.filter(m=>!akIsNo(m.html));akWelcome()}if(AK.resIds&&!AK.res){AK.res=AK.assets.rows.filter(r=>AK.resIds.indexOf(r.id)>=0)}akKb();return AK.assets;
 }
  
 function akWho(){try{const w=JSON.parse(localStorage.getItem('hm_ask_who')||'null');return w&&w.e===akMe().email?w:null}catch(e){return null}}
@@ -10430,12 +10488,13 @@ function akStory(){
   <div class="aks-dots">${AKS.map(()=>'<i></i>').join('')}</div>
   ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}"><img class="bg" src="icons/alexandra/${s.img}.webp?v=7" decoding="async" alt="">${s.smoke?'<i class="aks-vig"></i>':''}<div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
   <div class="aks-fx"></div><div class="aks-tap" aria-hidden="true"></div>
-  <div class="aks-kb"><button type="button" aria-label="Back" onclick="akStoryStep(-1)"></button><button type="button" aria-label="Next" onclick="akStoryStep(1)"></button></div></div>`;
+  <div class="aks-kb"><button type="button" aria-label="Back" onclick="akStoryStep(-1)"></button><button type="button" aria-label="Next" onclick="akStoryStep(1)"></button></div></div><button type="button" class="aks-arr l" aria-label="Back" onclick="akStoryStep(-1)">‹</button><button type="button" class="aks-arr r" aria-label="Next" onclick="akStoryStep(1)">›</button><button type="button" class="aks-xd" aria-label="Close" onclick="akStoryClose()">${akI('x')}</button>`;
  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));
  window.AKST={o,i:-1,t:null,left:0,end:0,held:false,tok:0};
  
  const tap=o.querySelector('.aks-tap');let down=0,hold=null,x=0;
- tap.addEventListener('pointerdown',e=>{down=Date.now();x=e.clientX;tap.setPointerCapture(e.pointerId);hold=setTimeout(()=>akStoryHold(true),180)});
+ const onGo=e=>{const S=window.AKST,g=S&&S.i===AKS.length-1&&o.querySelector('.aks-sc.on .aks-go');if(!g)return false;const b=g.getBoundingClientRect();return e.clientX>=b.left-10&&e.clientX<=b.right+10&&e.clientY>=b.top-10&&e.clientY<=b.bottom+10};
+ tap.addEventListener('pointerdown',e=>{if(onGo(e)){e.preventDefault();down=0;akStoryClose(true);return}down=Date.now();x=e.clientX;tap.setPointerCapture(e.pointerId);hold=setTimeout(()=>akStoryHold(true),e.pointerType==='mouse'?350:180)});
  const up=e=>{if(!down)return;clearTimeout(hold);const S=window.AKST;const long=S&&S.held;down=0;
   if(long){akStoryHold(false);return}
   if(e.type==='pointercancel')return;const g=S&&S.i===AKS.length-1&&o.querySelector('.aks-sc.on .aks-go');if(g){const b=g.getBoundingClientRect();if(e.clientX>=b.left-8&&e.clientX<=b.right+8&&e.clientY>=b.top-8&&e.clientY<=b.bottom+8){akStoryClose(true);return}}
@@ -10467,6 +10526,7 @@ async function akStoryShow(i,again){
  if(cur&&cur!==now){cur.classList.remove('on');cur.classList.add('out')}
  now.classList.remove('out');now.classList.add('on');fx.innerHTML='';
  ph.querySelectorAll('.aks-dots i').forEach((d,k)=>{d.className=k<i?'done':k===i?'now':''});
+ S.o.style.setProperty('--aksbg',`url(icons/alexandra/${AKS[i].img}.webp?v=7)`);
  let ta=null;const A=(k,op)=>(ta=now.animate(k,Object.assign({duration:T,easing:AKS_E,fill:'both'},op||{})));
  const el=(c,css)=>{const d=document.createElement('i');d.className=c;Object.assign(d.style,css||{});fx.appendChild(d);return d};
  const B=(c,k,op,css)=>el(c,css).animate(k,Object.assign({duration:T,easing:AKS_E,fill:'forwards'},op||{}));
@@ -10511,6 +10571,20 @@ async function akReqAccess(btn){if(btn.disabled)return;btn.disabled=true;btn.tex
  if(!ok){btn.disabled=false;btn.textContent='Request access';showSettingsToast('Could not send the request. Try again.');return}
  try{localStorage.setItem('hm_ak_req_'+akMe().email,String(Date.now()))}catch(e){}
  AK.msgs.forEach(m=>{if(akIsNo(m.html))m.html=AK_NO_SENT});akDraw();showSettingsToast('Request sent to Ibrahim')}
+ 
+function akDkMode(){try{return localStorage.getItem('hm_ask_mode')==='win'?'win':'page'}catch(e){return 'page'}}
+function akDesk(){return window.innerWidth>=1100}
+function akModeApply(){const o=document.getElementById('akBox');if(!o)return;const d=akDesk(),m=akDkMode();o.classList.toggle('pgm',d&&m==='page');o.classList.toggle('win',d&&m==='win');
+ const b=o.querySelector('.ak-mode');if(b){b.hidden=!d;b.innerHTML=akI(m==='win'?'expand':'shrink');b.setAttribute('aria-label',m==='win'?'Open as a full page':'Make it a small window');b.title=b.getAttribute('aria-label')}
+ if(d&&m==='page')akSideDraw()}
+function akModeFlip(){try{localStorage.setItem('hm_ask_mode',akDkMode()==='win'?'page':'win')}catch(e){}akModeApply()}
+function akSideDraw(){const o=document.getElementById('akBox');if(!o)return;let L=o.querySelector('.ak-dl'),R=o.querySelector('.ak-dr');const c=o.querySelector('.ak-card');
+ if(!L){c.insertAdjacentHTML('afterbegin','<aside class="ak-dl"></aside><aside class="ak-dr"></aside>');L=o.querySelector('.ak-dl');R=o.querySelector('.ak-dr')}
+ const items=[['links','Sheets & links']];if(AK.canAdd)items.push(['add','Add a sheet']);if(AK.canTeach)items.push(['teach','Teach the bot']);items.push(['off','Team days off'],['mail','Team emails'],['task','My tasks']);
+ L.innerHTML=`<b class="ak-dlt">Alexandra</b><small class="ak-dls">Shortcuts</small>${items.map(([id,t])=>`<button type="button" ${AK.blocked?'disabled':''} onclick="akMenu('${id}')"><i>${akI(id)}</i>${t}</button>`).join('')}<button type="button" onclick="akStory()"><i>${akI('play')}</i>Meet Alexandra</button>`;
+ R.innerHTML=`<div class="ak-drc" style="background-image:url(${akCovUrl()})"></div><span class="ak-pga ak-tapp" onclick="AK.pgTab='about';akAbout(event)">${akAvIn()}<em></em></span><b class="ak-drn">Alexandra ${AK_TICK}</b><small class="ak-drs">Active now</small>
+  <div class="ak-intro">${akIntroHtml()}</div><button type="button" class="ak-drb" onclick="AK.pgTab='about';akAbout(event)">${akI('about')}View profile</button>`}
+addEventListener('resize',()=>{clearTimeout(akModeApply.t);akModeApply.t=setTimeout(akModeApply,150)});
 function openAsk(){if(!ASK_HEMERA_URL)setTimeout(()=>akStoryFirst(false),600);const w=akWho();if(w&&w.ok===false){AK.blocked=true;AK.msgs=[];try{localStorage.removeItem(AK_KEEP)}catch(e){}}akOpenNow()}
 setTimeout(()=>{try{akNavLock(false)}catch(e){}},1500);
  
@@ -10521,12 +10595,12 @@ function akOpenNow(){
  if(!canDo('ask'))return;closeSidebar();
  document.getElementById('akBox')?.remove();
  const o=document.createElement('div');o.id='akBox';o.className='ak'+(akDk()?' dk':'');o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Alexandra');
- o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av ak-tapp" id="akHdAv" role="button" tabindex="0" aria-label="Open Alexandra's profile" onclick="AK.pgTab='about';akAbout(event)">${akAvIn()}</span><div><b>Alexandra <svg class="ak-flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="10" rx="2" fill="#0057B7"/><rect y="10" width="30" height="10" rx="2" fill="#FFD700"/><rect y="8" width="30" height="4" fill="#0057B7"/><rect y="10" width="30" height="2" fill="#FFD700"/></svg></b><small id="akSt">Active now</small></div><button type="button" class="ak-inf" aria-label="About Alexandra" onclick="AK.pgTab='about';akAbout(event)">${akI('about')}</button></div><div class="ak-pg" id="akAbt" aria-hidden="true"></div>
+ o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av ak-tapp" id="akHdAv" role="button" tabindex="0" aria-label="Open Alexandra's profile" onclick="AK.pgTab='about';akAbout(event)">${akAvIn()}</span><div><b>Alexandra <svg class="ak-flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="10" rx="2" fill="#0057B7"/><rect y="10" width="30" height="10" rx="2" fill="#FFD700"/><rect y="8" width="30" height="4" fill="#0057B7"/><rect y="10" width="30" height="2" fill="#FFD700"/></svg></b><small id="akSt">Active now</small></div><button type="button" class="ak-mode" hidden onclick="akModeFlip()"></button><button type="button" class="ak-inf" aria-label="About Alexandra" onclick="AK.pgTab='about';akAbout(event)">${akI('about')}</button></div><div class="ak-pg" id="akAbt" aria-hidden="true"></div>
   <div class="ak-bd" id="akBd"></div><div class="ak-kb" id="akKb"></div>
   <form class="ak-in" onsubmit="akSend(event)"><button type="button" class="ak-mb" aria-label="Menu" onclick="akToggleKb()">${akI('menu')}</button><input id="akQ" autocomplete="off" maxlength="1500" placeholder="Aa" oninput="akInMode()"><button type="submit" class="ak-snd" aria-label="Send">${akI('plane')}</button><button type="button" class="ak-mic" aria-label="Record a voice message" onclick="akRecStart()">${akI('mic')}</button>
   <div class="ak-rec" id="akRec"><button type="button" class="ak-rt2" aria-label="Delete" onclick="akRecTrash()">${akI('trash')}</button><div class="ak-rw"><em></em><span id="akRw"></span><b id="akRt">0:00</b></div><button type="button" class="ak-rs2" aria-label="Send" onclick="akRecSend()">${akI('plane')}</button></div></form></div>`;
  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));akVv();akInMode();try{avDefs()}catch(e){}
- akRestore();
+ akRestore();akModeApply();
  try{const w=JSON.parse(localStorage.getItem('hm_ask_who')||'null');if(w&&w.e===akMe().email&&AK.canAdd===undefined){AK.editor=w.editor;AK.canAdd=w.add;AK.canTeach=w.teach}}catch(e){}
  if(!AK.msgs.length){AK.t0=Date.now();const n=akMe().name.split(' ')[0];akBot(`<p>Hi${n?' '+akEsc(n):''}. Pick from the menu or type your question.</p>`)}
  akDraw();akKb();
@@ -10633,13 +10707,9 @@ function akAbout(e,keep){if(e&&e.stopPropagation)e.stopPropagation();const pg=do
  const feat=(id,ic,t,sub)=>`<button type="button" onclick="akPgGo('${id}')">${akI(ic)}<b>${t}</b><small>${sub}</small></button>`;
  const tick=AK_TICK;
  let body='';
- const tg='<img class="ak-tgi" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTIiIGZpbGw9IiMyMjlFRDkiLz48cGF0aCBkPSJNNS40IDExLjdsMTEuNC00LjRjLjUtLjIgMSAuMS44LjlsLTEuOSA5LjFjLS4xLjYtLjUuOC0xLjEuNWwtMy0yLjItMS40IDEuNGMtLjIuMi0uMy4zLS42LjNsLjItMy4xIDUuNi01LjFjLjItLjIgMC0uMy0uNC0uMWwtNi45IDQuNC0zLS45Yy0uNi0uMi0uNi0uNi4zLS44eiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==" alt="">';
+ const tg='<img class="ak-tgi" src="'+AK_TGI+'" alt="">';
  if(tab==='about')body=`<h4>Intro</h4><div class="ak-intro">
-   <div>${akI('rep')}<span>Works at <b>HEMERA</b></span></div>
-   <div>${akI('teach')}<span>Taught by <a class="ak-ment" href="#" onclick="event.preventDefault();akOpenOwner(event)">@${akEsc(akOwner().name)}</a></span></div>
-   <div><u><svg class="ak-flag2" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="10" rx="2" fill="#0057B7"/><rect y="10" width="30" height="10" rx="2" fill="#FFD700"/><rect y="8" width="30" height="4" fill="#0057B7"/><rect y="10" width="30" height="2" fill="#FFD700"/></svg></u><span>From <b>Alexandria, Egypt</b></span></div>
-   <div>${akI('mic')}<span>Speaks <b>Arabic</b> and <b>English</b></span></div>
-   <a href="https:\/\/t.me/Seknaa_bot" target="_blank" rel="noopener">${tg}<span>On Telegram <b>@Seknaa_bot</b></span></a></div>
+${akIntroHtml()}</div>
   <h4>What she does</h4><div class="ak-does">
    <button type="button" onclick="akPgGo('links')">${akI('links')}<span>Finds <b>sheets, reports</b> and <b>scripts</b></span></button>
    <button type="button" onclick="akPgGo('off')">${akI('off')}<span>Knows <b>who is off</b> and who covers</span></button>
@@ -10648,10 +10718,12 @@ function akAbout(e,keep){if(e&&e.stopPropagation)e.stopPropagation();const pg=do
   ${AK.canAdd||AK.canTeach?`<h4>Tools</h4>${AK.canAdd?row('add','add','Add a sheet','Put a new sheet in the list'):''}${AK.canTeach?row('teach','teach','Teach the bot','Rules, access and platforms'):''}`:''}
   ${AK.editor?`<div id="akReqW">${akReqsHtml(AK.rq)}</div><h4>Settings</h4><div id="akBotW">${akBotRow(AK.bst||null)}</div>`:''}
   <h4>Chat</h4><button type="button" class="r" role="switch" aria-checked="${akDk()}" onclick="akDkSet(!akDk(),this)"><i>${akI('moon')}</i><span><b>Dark mode</b><small>Only for this chat</small></span><em class="ak-sw${akDk()?' on':''}"></em></button>${row('clear','trash','Clear chat','The chat stays on this device for 24 hours','del')}`;
- if(tab==='photos'){const RX=[[['like','love'],'1.2K',86,24],[['love','wow'],'948',41,12],[['like','haha'],'2.3K',132,57],[['love','like','care'],'1.7K',64,19],[['love','wow','like'],'3.1K',210,88],[['like','care'],'860',35,9],[['love','haha','like'],'2.6K',118,40]],RE={like:['👍','#1877F2'],love:['❤','#F33E58'],wow:['😮','#F7B125'],haha:['😆','#F7B125'],care:['🤗','#F7B125']},D=['2h','5h','1d','2d','3d','5d','1w'];
-  body=AKS.map((x,i)=>{const r=RX[i%RX.length],cap=akEsc(x.k.charAt(0)+x.k.slice(1).toLowerCase())+' · '+x.h.replace(/<\/?em>/g,'');return `<article class="ak-post"><header><span class="ak-pga">${akAvIn()}</span><div><b>Alexandra ${tick}</b><small>${D[i]} · 🌐</small></div><span class="ak-pdots">···</span></header><p>${cap}</p><button type="button" class="ak-pimg" onclick="akStoryAt(${i})"><img src="${img(x.img)}" alt="" loading="lazy"></button><div class="ak-prx"><span><i>${r[0].map(k=>`<em class="${k}" style="background:${RE[k][1]}">${RE[k][0]}</em>`).join('')}</i>${r[1]}</span><span>${r[2]} comments · ${r[3]} shares</span></div><div class="ak-pact"><span>${akI('like')}Like</span><span>${akI('cmt')}Comment</span><span>${akI('share')}Share</span></div></article>`}).join('')}
+ const RX=[[['like','love'],'1.2K',86,24],[['love','wow'],'948',41,12],[['like','haha'],'2.3K',132,57],[['love','like','care'],'1.7K',64,19],[['love','wow','like'],'3.1K',210,88],[['like','care'],'860',35,9],[['love','haha','like'],'2.6K',118,40]],RE={like:['👍','#1877F2'],love:['❤','#F33E58'],wow:['😮','#F7B125'],haha:['😆','#F7B125'],care:['🤗','#F7B125']},D=['2h','5h','1d','2d','3d','5d','1w'];
+ const postsHtml=()=>AKS.map((x,i)=>{const r=RX[i%RX.length],cap=akEsc(x.k.charAt(0)+x.k.slice(1).toLowerCase())+' · '+x.h.replace(/<\/?em>/g,'');return `<article class="ak-post"><header><span class="ak-pga">${akAvIn()}</span><div><b>Alexandra ${tick}</b><small>${D[i]} · 🌐</small></div><span class="ak-pdots">···</span></header><p>${cap}</p><button type="button" class="ak-pimg" onclick="akStoryAt(${i})"><img src="${img(x.img)}" alt="" loading="lazy"></button><div class="ak-prx"><span><i>${r[0].map(k=>`<em class="${k}" style="background:${RE[k][1]}">${RE[k][0]}</em>`).join('')}</i>${r[1]}</span><span>${r[2]} comments · ${r[3]} shares</span></div><div class="ak-pact"><span>${akI('like')}Like</span><span>${akI('cmt')}Comment</span><span>${akI('share')}Share</span></div></article>`}).join('');
+ if(tab==='photos')body=postsHtml();
  if(tab==='platforms'){const P=((AK.assets&&AK.assets.platforms)||[]),R=((AK.assets&&AK.assets.rows)||[]);
   body=P.length?`<div class="ak-plist">${P.map(x=>{const n=R.filter(r=>(r.platforms||[]).indexOf(x.key)>=0).length;return `<button type="button" onclick="akPgPlat('${akEsc(x.key)}')"><i>${akLogo(x.key)}</i><span><b>${akEsc(x.key)}</b><small>${n} ${n===1?'sheet':'sheets'}</small></span>${akI('chev')}</button>`}).join('')}</div><p class="ak-mu ak-pgnote">These are the platforms you can see.</p>`:'<p class="ak-mu ak-pgnote">No platforms to show yet.</p>'}
+ const fb=document.getElementById('akBox')?.classList.contains('pgm');if(fb&&tab==='about')body=`<div class="ak-fb2"><div class="ak-fbl">${body}</div><div class="ak-fbr"><h4>Posts</h4>${postsHtml()}</div></div>`;
  pg.innerHTML=`<div class="ak-pgb2"><div class="ak-pgh2"><button type="button" class="ak-bk" aria-label="Back" onclick="akAboutClose()">${akI('back')}</button></div><div class="ak-hero" style="background-image:url(${akCovUrl()})">${AK.editor?`<button type="button" class="ak-covb" onclick="akPrevPick('cov')">${akI('cam')}Edit cover</button>`:''}</div>
   <div class="ak-id"><span class="ak-pga">${akAvIn()}<em></em>${AK.editor?`<button type="button" class="ak-pgc" aria-label="Change the bot's photo" onclick="akPrevPick('av')">${akI('cam')}</button>`:''}</span>
    <div class="ak-idn"><h2>Alexandra ${tick}</h2>${AK.editor&&(akBav().data||akCov().data)?`<span class="ak-pgxs">${akBav().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Remove the photo?','The bot goes back to the HEMERA star.','Remove',()=>akBotAvSave(''))">Remove photo</button>`:''}${akCov().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Reset the cover?','The cover goes back to her eye picture.','Reset',akCovReset)">Reset cover</button>`:''}</span>`:''}</div></div>
@@ -10665,6 +10737,12 @@ function akAbout(e,keep){if(e&&e.stopPropagation)e.stopPropagation();const pg=do
 const AK_OWNER=['ibrahim@sekna.co.uk','ibrahim.amin6700@gmail.com'];
 function akOwner(){const P=akPpl();for(const e of AK_OWNER){const p=P.find(x=>String(x.email).toLowerCase()===e);if(p)return{email:p.email,name:String(p.name||'Ibrahim').split(' ')[0]}}return{email:AK_OWNER[0],name:'Ibrahim'}}
 async function akOpenOwner(e){try{await akTeamData()}catch(x){}const o=akOwner();try{profOpen(o.email,e)}catch(x){showSettingsToast('Could not open the profile')}}
+const AK_TGI='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTIiIGZpbGw9IiMyMjlFRDkiLz48cGF0aCBkPSJNNS40IDExLjdsMTEuNC00LjRjLjUtLjIgMSAuMS44LjlsLTEuOSA5LjFjLS4xLjYtLjUuOC0xLjEuNWwtMy0yLjItMS40IDEuNGMtLjIuMi0uMy4zLS42LjNsLjItMy4xIDUuNi01LjFjLjItLjIgMC0uMy0uNC0uMWwtNi45IDQuNC0zLS45Yy0uNi0uMi0uNi0uNi4zLS44eiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==';
+function akIntroHtml(){const tg='<img class="ak-tgi" src="'+AK_TGI+'" alt="">';return `   <div>${akI('rep')}<span>Works at <b>HEMERA</b></span></div>
+   <div>${akI('teach')}<span>Taught by <a class="ak-ment" href="#" onclick="event.preventDefault();akOpenOwner(event)">@${akEsc(akOwner().name)}</a></span></div>
+   <div><u><svg class="ak-flag2" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="10" rx="2" fill="#0057B7"/><rect y="10" width="30" height="10" rx="2" fill="#FFD700"/><rect y="8" width="30" height="4" fill="#0057B7"/><rect y="10" width="30" height="2" fill="#FFD700"/></svg></u><span>From <b>Alexandria, Egypt</b></span></div>
+   <div>${akI('mic')}<span>Speaks <b>Arabic</b> and <b>English</b></span></div>
+   <a href="https:\/\/t.me/Seknaa_bot" target="_blank" rel="noopener">${tg}<span>On Telegram <b>@Seknaa_bot</b></span></a>`}
 function akStoryAt(i){akStory();if(window.AKST)AKST.ret=1;if(i)setTimeout(()=>akStoryShow(i),60)}
 function akPgPlat(k){akAboutClose();setTimeout(()=>{AK.kb=false;akKb();akUser(k);AK.ls=[];akPick('p',k)},250)}
 function akDk(){try{return localStorage.getItem('hm_ask_dark')==='1'}catch(e){return false}}
@@ -19971,6 +20049,14 @@ async function adminResetActivity(kind,btn){
   .catch(err=>{if(btn)btn.disabled=false;tellSekna(errorText(err))});
 }
 window.SEKNA_READY=true;
+
+ 
+(function(){function sync(){const t=document.getElementById('mtdBudTile');if(!t)return;const g=id=>{const e=document.getElementById(id);return e?e.textContent.trim():''};
+ const left=g('mtdVariance'),plan=g('vcpPlan')||g('vcPlan'),day=g('vcpDay'),bar=document.getElementById('mtdVarianceBar');
+ document.getElementById('mbtLeft').textContent=left||'—';document.getElementById('mbtSub').textContent=[day&&day!=='—'?day+' a day':'',plan&&plan!=='—'?'of '+plan:''].filter(Boolean).join(' · ')||'—';
+ const bi=document.getElementById('mbtBar');if(bi&&bar){const pw=bar.parentElement?bar.parentElement.getBoundingClientRect().width:0,bw=bar.getBoundingClientRect().width;bi.style.width=(/%$/.test(bar.style.width)?bar.style.width:(pw?Math.round(bw/pw*100)+'%':'0'))}}
+ function start(){const c=document.getElementById('mtdVarianceCard');if(!c)return setTimeout(start,800);new MutationObserver(()=>{clearTimeout(sync.t);sync.t=setTimeout(sync,120)}).observe(c,{subtree:true,childList:true,characterData:true,attributes:true});sync()}
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start()})();
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
