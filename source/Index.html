@@ -9511,6 +9511,11 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 #akBubX svg{width:28px;height:28px;stroke:#fff;stroke-width:2.6;fill:none;stroke-linecap:round}
 #akBubX.on{opacity:1;transform:none}#akBubX.hot{transform:scale(1.22);background:#D12F35}
 #akBubXg{position:fixed;left:0;right:0;bottom:0;height:260px;background:linear-gradient(to top,rgba(229,72,77,.28),transparent);pointer-events:none;opacity:0;transition:opacity .2s;z-index:2147479998}#akBubXg.on{opacity:1}
+/* v466 a red dot on Alexandra while access requests wait (editors only) */
+html.ak-req-on #askNavBtn .sk-nav-icon,html.ak-req-on .menu-toggle,html.ak-req-on .ak-inf{position:relative}
+html.ak-req-on #askNavBtn .sk-nav-icon::before,html.ak-req-on .menu-toggle::before,html.ak-req-on .ak-inf::before,html.ak-req-on .ak-bub::before{content:"";position:absolute;top:-2px;right:-2px;width:11px;height:11px;border-radius:50%;background:#E5484D;border:2px solid #fff;z-index:2;animation:akRqP 1.8s ease-in-out infinite}
+html.ak-req-on .ak-bub::before{top:1px;right:1px;width:14px;height:14px;border-width:3px}
+@keyframes akRqP{0%,100%{box-shadow:0 0 0 0 rgba(229,72,77,.5)}50%{box-shadow:0 0 0 5px rgba(229,72,77,0)}}
 </style>
 </head>
 <body>
@@ -10897,8 +10902,8 @@ function akReqsHtml(list){if(!list||!list.length)return '';const P=akPpl();
  return `<h4>Access requests <em class="ak-rqn">${list.length}</em></h4>`+list.map(r=>{const p=P.find(x=>String(x.email).toLowerCase()===r.email)||{name:r.name||r.email,email:r.email};
   return `<div class="ak-rq">${p.avatar!==undefined?tkAv(p):`<span class="ak-uv" style="background:#1C3C96">${akEsc(String(p.name||p.email).charAt(0).toUpperCase())}</span>`}<span><b>${akEsc(p.name||r.email)}</b><small>${akEsc(r.email)}</small></span><button type="button" class="no" aria-label="Dismiss" onclick="akReqDo('reqDel','${akEsc(r.email)}',this)">${akI('x')}</button><button type="button" class="ed" aria-label="Set access" onclick="akReqEdit('${akEsc(r.email)}','${akEsc(p.name||r.name||'')}')">${akI('pen')}</button><button type="button" class="ok" onclick="akReqDo('reqAllow','${akEsc(r.email)}',this)">Allow</button></div>`}).join('')}
 async function akReqEdit(email,name){akAboutClose();await new Promise(r=>setTimeout(r,250));if(!(await akPermsLoad()))return;AK.teach=true;AK.ts=[];AK.kb=false;akKb();akNav(()=>akPersonDrawE(email,name))}
-async function akReqsLoad(){const j=await akAdmQ('reqs');if(!j||!j.reqs)return;AK.rq=j.reqs;const w=document.getElementById('akReqW');if(w)w.innerHTML=akReqsHtml(AK.rq)}
-async function akReqDo(op,email,btn){btn.disabled=true;const j=await akAdmQ(op,{who:email});if(!j||!j.reqs){btn.disabled=false;return}if(op==='reqAllow')akTellGranted(email);AK.rq=j.reqs;AK.pm=null;const w=document.getElementById('akReqW');if(w)w.innerHTML=akReqsHtml(AK.rq);showSettingsToast(op==='reqAllow'?'Access given':'Request dismissed')}
+async function akReqsLoad(){const j=await akAdmQ('reqs');if(!j||!j.reqs)return;AK.rq=j.reqs;akReqDot();const w=document.getElementById('akReqW');if(w)w.innerHTML=akReqsHtml(AK.rq)}
+async function akReqDo(op,email,btn){btn.disabled=true;const j=await akAdmQ(op,{who:email});if(!j||!j.reqs){btn.disabled=false;return}if(op==='reqAllow')akTellGranted(email);AK.rq=j.reqs;akReqDot();AK.pm=null;const w=document.getElementById('akReqW');if(w)w.innerHTML=akReqsHtml(AK.rq);showSettingsToast(op==='reqAllow'?'Access given':'Request dismissed')}
 function akAboutClose(){const pg=document.getElementById('akAbt');if(!pg)return;pg.classList.remove('on');pg.setAttribute('aria-hidden','true')}
 function akPgGo(id){
  if(id==='clear'){const pg=document.getElementById('akAbt');if(!pg||pg.querySelector('.ak-cf'))return;
@@ -13024,8 +13029,9 @@ function gslAll(){GSL_RAF=0;GSL_SEL.forEach(sel=>document.querySelectorAll(sel).
  }))}
 function gslSoon(){if(!GSL_RAF)GSL_RAF=requestAnimationFrame(gslAll)}
 
-window.addEventListener('load',()=>{try{const k=new URLSearchParams(location.search).get('ss');if(k&&/^[a-z0-9]+$/.test(k)){history.replaceState(null,'',location.pathname);setTimeout(()=>ssOpenSeason(k),1200)}}catch(e){}
- try{navigator.serviceWorker&&navigator.serviceWorker.addEventListener('message',e=>{const d=e.data||{};if(d.type==='openSeason'&&/^[a-z0-9]+$/.test(d.key||''))ssOpenSeason(d.key)})}catch(e){}});
+window.addEventListener('load',()=>{try{const a=new URLSearchParams(location.search).get('ak');if(a==='req'||a==='chat'){history.replaceState(null,'',location.pathname);setTimeout(()=>akOpenFrom(a),1500)}}catch(e){}
+ try{const k=new URLSearchParams(location.search).get('ss');if(k&&/^[a-z0-9]+$/.test(k)){history.replaceState(null,'',location.pathname);setTimeout(()=>ssOpenSeason(k),1200)}}catch(e){}
+ try{navigator.serviceWorker&&navigator.serviceWorker.addEventListener('message',e=>{const d=e.data||{};if(d.type==='openSeason'&&/^[a-z0-9]+$/.test(d.key||''))ssOpenSeason(d.key);if(d.type==='openAk')akOpenFrom(d.to==='req'?'req':'chat')})}catch(e){}});
 window.addEventListener('load',()=>{try{new MutationObserver(ms=>{if(ms.some(m=>!(m.target.classList&&m.target.classList.contains('gsl-pill'))))gslSoon()}).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class']})}catch(e){}gslSoon()});
 window.addEventListener('resize',gslSoon);
 
@@ -13462,7 +13468,7 @@ function localWhen(ms,withDay){
 const NF_FILTERS=[['all','All'],['data','Data'],['tasks','Tasks'],['team','Team'],['app','App']];
 const NF_GROUP={season:'data',streak:'data',spend_alert:'data',roas_drop:'data',new_day:'data',month_closed:'data',updated:'data',tasks:'tasks',announcement:'team',app_update:'app',celebrate:'team',read_alert:'data'};
 
-const NF_KIND={season:'cal',month_closed:'cal',streak:'flame',spend_alert:'warn',read_alert:'warn',roas_drop:'down',new_day:'data',updated:'data',announcement:'mega',app_update:'app',tasks:'check',celebrate:'trophy',leave:'cal'};
+const NF_KIND={alexandra:'bell',season:'cal',month_closed:'cal',streak:'flame',spend_alert:'warn',read_alert:'warn',roas_drop:'down',new_day:'data',updated:'data',announcement:'mega',app_update:'app',tasks:'check',celebrate:'trophy',leave:'cal'};
 const NF_SVG={cal:'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/>',flame:'<path d="M12 21c-3.9 0-6.5-2.6-6.5-6.2 0-3.4 2.6-5.2 3.6-8.3.8 1.5 1.9 2.4 3.1 2.8.3-2 1.4-4 3.3-5.3-.2 3.4 3 5.4 3 9.3C19.5 18.1 16.3 21 12 21z"/>',
  warn:'<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.1"/>',down:'<path d="M4 7l6 6 4-4 6 8"/><path d="M20 12v5h-5"/>',data:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
  mega:'<path d="M4 10v4h3l6 4V6L7 10z"/><path d="M17 9a4 4 0 0 1 0 6"/>',app:'<rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18h3"/>',check:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.8"/>',
@@ -13506,7 +13512,7 @@ function closeNotifs(e){if(e&&e.target!==e.currentTarget)return;const o=document
 
  
 const NF_GREET_KEY=[['Ramadan Mubarak','ramadan'],['Blessed Last 10','last10'],['Eid Mubarak','eidfitr'],['Blessed Days of Dhul','dhulhijjah'],['Blessed Day of Arafah','arafah'],['Eid al-Adha','eidadha'],['Blessed Day of Ashura','ashura'],['Happy Thanksgiving','thanksgiving'],['Happy Giving Tuesday','givingtuesday'],["Let's End the Year",'yearend'],['Good morning, and welcome December','tax']];
-const NF_GO={season:1,streak:1,spend_alert:1,roas_drop:1,tasks:1,app_update:1,celebrate:1,month_closed:1,new_day:1};
+const NF_GO={alexandra:1,season:1,streak:1,spend_alert:1,roas_drop:1,tasks:1,app_update:1,celebrate:1,month_closed:1,new_day:1};
 const NF_SEASON_KEY=[['Thanksgiving','thanksgiving'],['Giving Tuesday','givingtuesday'],['Year-end','yearend'],['Tax season','tax'],['December planning','tax'],['Ramadan','ramadan'],['The last 10','last10'],['Last 10','last10'],['Eid al-Fitr','eidfitr'],['First 10 days','dhulhijjah'],['The Day of Arafah','arafah'],['Day of Arafah','arafah'],['Eid al-Adha','eidadha'],['Ashura','ashura']];
 function nfImage(x){if(x.image)return x.image;
  if(x.type==='season'){const t=String(x.title||'').replace(/^\S+\s/,'');const m=NF_SEASON_KEY.find(([n])=>t.startsWith(n));return m?'https:\/\/sekna-app.web.app/icons/seasons/'+m[1]+'.jpg?v=4':''}
@@ -13544,6 +13550,7 @@ function nfGo(id){
  closeNotifs();
  if(x.type==='season'){ssOpenSeason(nfSeasonKey(x));return}
  if(x.type==='streak'||x.type==='spend_alert'||x.type==='roas_drop'){if(x.account&&x.account!==CURRENT_ACCOUNT)switchAccount(x.account);switchDashboardTab('overview');if(x.type==='roas_drop')setTimeout(()=>{try{if(!document.getElementById('roasDrop'))roasDropCheck(DASH_DATA,true)}catch(e){}},1600);return}
+ if(x.type==='alexandra'){akOpenFrom(/request/i.test(x.title||'')?'req':'chat');return}
  if(x.type==='tasks'){openTasks('mine');return}
  if(x.type==='app_update'){openUpdates();return}
  if(x.type==='celebrate'){serverCall('celebrationLatest',getAccessToken()).then(c=>{if(c&&c.id)celShow(c,true)}).catch(()=>{});return}
@@ -16992,7 +16999,7 @@ async function seknaPushToken(){
 async function showWebPush(d){
  try{
    const reg=await navigator.serviceWorker.ready;
-   const options={body:d.body||'',badge:'icons/badge-96.png',tag:d.eventType==='new_day'?'data-'+(d.accountKey||'usa'):(d.eventType||'sekna'),data:{url:'./'}};
+   const options={body:d.body||'',badge:'icons/badge-96.png',tag:d.eventType==='new_day'?'data-'+(d.accountKey||'usa'):(d.eventType||'sekna'),data:{url:d.eventType==='alexandra'?'./?ak='+(/request/i.test(d.title||'')?'req':'chat'):'./',ak:d.eventType==='alexandra'?(/request/i.test(d.title||'')?'req':'chat'):''}};
    if(!/Android/i.test(navigator.userAgent))options.icon='icons/icon-192.png';
    reg.showNotification(d.title||'HEMERA',options);
  }catch(e){}
@@ -20295,6 +20302,18 @@ function akBubX(on){let x=document.getElementById('akBubX'),g=document.getElemen
 function akBubHot(c){const x=document.getElementById('akBubX');if(!x)return null;const r=x.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
  const near=Math.hypot(c[0]+30-cx,c[1]+30-cy)<80;if(near!==akBubX.hot){akBubX.hot=near;x.classList.toggle('hot',near);if(near&&navigator.vibrate)try{navigator.vibrate(12)}catch(_){}}
  return near?[cx-30,cy-30]:null}
+
+
+function akReqDot(){const n=AK.editor&&Array.isArray(AK.rq)?AK.rq.length:0;document.documentElement.classList.toggle('ak-req-on',n>0)}
+async function akReqPoll(){try{if(!ASK_HEMERA_URL||!akMe().email)return;const w=akWho();if(!(AK.editor||(w&&w.editor)))return;
+ const j=await akPost('admin',{op:'reqs'});if(j&&Array.isArray(j.reqs)){AK.editor=true;AK.rq=j.reqs;akReqDot();const el=document.getElementById('akReqW');if(el)el.innerHTML=akReqsHtml(AK.rq)}}catch(e){}}
+setTimeout(akReqPoll,6000);setInterval(()=>{if(!document.hidden)akReqPoll()},300000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){clearTimeout(akReqPoll.t);akReqPoll.t=setTimeout(akReqPoll,1500)}});
+
+function akOpenFrom(to){try{closeNotifs()}catch(e){}try{nfCardClose()}catch(e){}
+ if(to==='chat'){try{localStorage.removeItem('hm_ask_who')}catch(e){}AK.blocked=false}
+ let o=document.getElementById('akBox');if(o&&o.classList.contains('mini'))akMini();if(!o)openAsk();
+ if(to==='req'){let n=0;const go=()=>{if(document.getElementById('akAbt')){AK.pgTab='about';akAbout();return}if(++n<20)setTimeout(go,200)};setTimeout(go,450)}}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
