@@ -232,6 +232,10 @@ const CALLS = {
       now.card = keep; }
     // The gold Latest day: glow around the card and its 3D depth, 0-100 each (owner's sliders under the day).
     if (c.glow && typeof c.glow === 'object') { const n = v => Math.max(0, Math.min(100, Math.round(Number(v) || 0))); now.glow = { g: n(c.glow.g), d: n(c.glow.d) }; }
+    // Alexandra's post photos as the owner placed them in her About tab: { postIndex: { x %, y %, z zoom } }
+    if (c.akPfix && typeof c.akPfix === 'object') { const keep = {}, f = (v, lo, hi, d) => { const n = Number(v); return Number.isFinite(n) ? Math.max(lo, Math.min(hi, Math.round(n * 100) / 100)) : d; };
+      Object.keys(c.akPfix).forEach(k => { const v = c.akPfix[k]; if (!/^\d{1,2}$/.test(k) || !v || typeof v !== 'object') return; keep[k] = { x: f(v.x, 0, 100, 50), y: f(v.y, 0, 100, 12), z: f(v.z, 1, 3, 1) }; });
+      now.akPfix = keep; }
     if (c.roas != null) { const r = Number(c.roas); if (![0, 30, 40, 50].includes(r)) throw new Error('Pick a ROAS drop level.'); now.roas = r; }
     now.by = me.email; now.at = Date.now();
     await fsSet(PREFS_DOC, now);

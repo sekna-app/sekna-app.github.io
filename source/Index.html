@@ -10821,7 +10821,7 @@ async function akPrevSave(btn){const P=AK.pv;if(!P)return;btn.disabled=true;btn.
   try{localStorage.setItem('hm_ask_bcov',JSON.stringify({v:j.v||'',data:j.data||''}))}catch(e){}showSettingsToast('New cover saved')}
  AK.pv=null;document.querySelector('#akAbt .ak-prev')?.remove();akAbout(null,1)}
 async function akCovReset(){const j=await akAdmQ('botCovDel');if(!j)return;try{localStorage.setItem('hm_ask_bcov',JSON.stringify({v:j.v||'',data:''}))}catch(e){}akAbout(null,1);showSettingsToast('Cover reset')}
-function akAbout(e,keep){if(e&&e.stopPropagation)e.stopPropagation();const pg=document.getElementById('akAbt');if(!pg)return;
+function akAbout(e,keep){if(e&&e.stopPropagation)e.stopPropagation();try{akPFixMigrate()}catch(x){}const pg=document.getElementById('akAbt');if(!pg)return;
  const tab=AK.pgTab||'about',v='?v=7',img=k=>`icons/alexandra/${k}.webp${v}`;
  const row=(id,ic,t,sub,cls)=>`<button type="button" class="r${cls?' '+cls:''}" onclick="akPgGo('${id}')"><i>${akI(ic)}</i><span><b>${t}</b>${sub?`<small>${sub}</small>`:''}</span></button>`;
  const feat=(id,ic,t,sub)=>`<button type="button" onclick="akPgGo('${id}')">${akI(ic)}<b>${t}</b><small>${sub}</small></button>`;
@@ -10847,7 +10847,7 @@ ${akIntroHtml()}</div>
  
  const ctaIn=`<div class="ak-pgcta ak-pgcta-in"><button type="button" onclick="akAboutClose()">${akI('send')}Message Alexandra</button></div>`,inCta=fb&&(tab==='about'||tab==='platforms');
  if(fb&&tab==='platforms')body=body.replace(/<p class="ak-mu ak-pgnote">These are the platforms you can see\.<\/p>/,'')+ctaIn;
- if(fb&&tab==='about')body=`<div class="ak-fb2"><div class="ak-fbcol"><div class="ak-fbl">${body}</div>${ctaIn}</div><div class="ak-fbr"><h4>Posts${AK.editor?`<button type="button" class="ak-padj-cp" onclick="akPFixCopy(this)">${akI('copy')}Copy photo settings</button>`:''}</h4>${postsHtml()}</div></div>`;
+ if(fb&&tab==='about')body=`<div class="ak-fb2"><div class="ak-fbcol"><div class="ak-fbl">${body}</div>${ctaIn}</div><div class="ak-fbr"><h4>Posts</h4>${postsHtml()}</div></div>`;
  pg.innerHTML=`<div class="ak-pgb2"><div class="ak-pgh2"><button type="button" class="ak-bk" aria-label="Back" onclick="akAboutClose()">${akI('back')}</button></div><div class="ak-hero" style="background-image:url(${akCovUrl()})">${AK.editor?`<button type="button" class="ak-covb" onclick="akPrevPick('cov')">${akI('cam')}Edit cover</button>`:''}</div>
   <div class="ak-id"><span class="ak-pga">${akAvIn()}<em></em>${AK.editor?`<button type="button" class="ak-pgc" aria-label="Change the bot's photo" onclick="akPrevPick('av')">${akI('cam')}</button>`:''}</span>
    <div class="ak-idn"><h2>Alexandra ${tick}</h2>${AK.editor&&(akBav().data||akCov().data)?`<span class="ak-pgxs">${akBav().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Remove the photo?','The bot goes back to the HEMERA star.','Remove',()=>akBotAvSave(''))">Remove photo</button>`:''}${akCov().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Reset the cover?','The cover goes back to her eye picture.','Reset',akCovReset)">Reset cover</button>`:''}</span>`:''}</div></div>
@@ -20187,7 +20187,13 @@ window.SEKNA_READY=true;
 
  
 const AK_PFIX={};
-function akPFixAll(){let m={};try{m=JSON.parse(localStorage.getItem('hm_ak_pfix')||'{}')||{}}catch(e){}return Object.assign({},AK_PFIX,m)}
+
+function akPFixSrv(){try{return (typeof APP_PREFS!=='undefined'&&APP_PREFS&&APP_PREFS.akPfix)||null}catch(e){return null}}
+function akPFixLocal(){let m={};try{m=JSON.parse(localStorage.getItem('hm_ak_pfix')||'{}')||{}}catch(e){}return m}
+function akPFixAll(){const sv=akPFixSrv();return Object.assign({},AK_PFIX,sv||{},sv?{}:akPFixLocal())}
+function akPFixPush(m,ok){return serverCall('appPrefsSet',getAccessToken(),{akPfix:m}).then(p=>{if(p&&p.cur){APP_PREFS=p;storeSet('sekna_app_prefs',JSON.stringify(p))}try{localStorage.removeItem('hm_ak_pfix')}catch(e){}if(ok)ok()})}
+
+function akPFixMigrate(){if(!AK.editor||akPFixSrv())return;const m=akPFixLocal();if(Object.keys(m).length)akPFixPush(m).catch(()=>{})}
 function akPFixCss(i){const f=akPFixAll()[i];return f?`--px:${f.x}%;--py:${f.y}%;--pz:${f.z}`:''}
 function akPFixCopy(b){const t=JSON.stringify(akPFixAll());const done=()=>{const o=b.innerHTML;b.innerHTML=akI('check')+'Copied';setTimeout(()=>b.innerHTML=o,1600)};
  if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,()=>prompt('Copy this',t));else prompt('Copy this',t)}
@@ -20203,7 +20209,7 @@ function akPAdj(i,btn){const post=btn.closest('.ak-post'),box=post&&post.querySe
  const end=()=>{box.removeEventListener('pointerdown',down);box.removeEventListener('pointermove',move);box.removeEventListener('pointerup',up);box.removeEventListener('pointercancel',up);bar.remove();box.classList.remove('adj');btn.hidden=false};
  bar.querySelector('.r').onclick=()=>{f={x:50,y:12,z:1};rg.value=1;put()};
  bar.querySelector('.c').onclick=()=>{f=old;put();end()};
- bar.querySelector('.s').onclick=()=>{let m={};try{m=JSON.parse(localStorage.getItem('hm_ak_pfix')||'{}')||{}}catch(e){}m[i]=f;try{localStorage.setItem('hm_ak_pfix',JSON.stringify(m))}catch(e){}end()};
+ bar.querySelector('.s').onclick=()=>{const m=akPFixAll();m[i]=f;try{localStorage.setItem('hm_ak_pfix',JSON.stringify(m))}catch(e){}const sb=bar.querySelector('.s');sb.disabled=true;sb.textContent='Saving…';akPFixPush(m,end).catch(e=>{sb.disabled=false;sb.textContent='Save';alert('Could not save for the team: '+errorText(e))})};
  put()}
 </script>
 <div id="seknaFileEnd" hidden></div>
