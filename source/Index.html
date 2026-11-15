@@ -9148,6 +9148,12 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 
 /* v416 no access: the box is shut */
 .ak-in.ak-off input{opacity:.6;cursor:not-allowed}.ak-in.ak-off .ak-mic,.ak-in.ak-off .ak-snd,.ak-in.ak-off .ak-mb{opacity:.35;pointer-events:none}
+
+/* v417 the bot's photo */
+.ak-av,.ak-sa,.ak-pga{overflow:visible}.ak-av>img,.ak-sa>img,.ak-pga>img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+.ak-pgc{position:absolute;left:-2px;bottom:2px;width:30px;height:30px;border-radius:50%;border:3px solid #fff;background:#1C3C96;color:#fff;display:grid;place-items:center;cursor:pointer;padding:0}.ak-pgc .ak-ic{width:14px!important;height:14px!important;fill:none!important;stroke:currentColor!important}
+.ak-pgx{margin-top:6px;border:0;background:none;color:#E41E3F;font:700 12px Inter,system-ui,sans-serif;cursor:pointer}
+.ak.dk .ak-pgc{border-color:#000;background:#5B5BF0}body.dark-mode .ak-pgc{border-color:#0f141c}
 </style>
 </head>
 <body>
@@ -10213,25 +10219,35 @@ async function akPost(action,extra){
 }
 async function akAssets(force){
  if(!force&&AK.assets&&Date.now()-AK.at<600000)return AK.assets;
- const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[],categories:j.categories||[],formats:j.formats||[]};AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);const wasB=AK.blocked;AK.blocked=false;akWhoSave(true);AK.at=Date.now();if(wasB){akLockIn();AK.msgs=AK.msgs.filter(m=>m.html!==AK_NO);akDraw()}if(AK.resIds&&!AK.res){AK.res=AK.assets.rows.filter(r=>AK.resIds.indexOf(r.id)>=0)}akKb();return AK.assets;
+ const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[],categories:j.categories||[],formats:j.formats||[]};AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);const wasB=AK.blocked;AK.blocked=false;akWhoSave(true);AK.at=Date.now();akBavSync(j.botAvV);if(wasB){akLockIn();AK.msgs=AK.msgs.filter(m=>m.html!==AK_NO);akDraw()}if(AK.resIds&&!AK.res){AK.res=AK.assets.rows.filter(r=>AK.resIds.indexOf(r.id)>=0)}akKb();return AK.assets;
 }
  
 function akWho(){try{const w=JSON.parse(localStorage.getItem('hm_ask_who')||'null');return w&&w.e===akMe().email?w:null}catch(e){return null}}
 function akWhoSave(ok){try{localStorage.setItem('hm_ask_who',JSON.stringify({e:akMe().email,editor:!!AK.editor,add:!!AK.canAdd,teach:!!AK.canTeach,ok}))}catch(e){}akNavLock(!ok)}
 function akNavLock(on){}
 function akNoAccess(){showSettingsToast('Ask HEMERA is closed for you. Ask Ibrahim to give you access.')}
+ 
+function akBav(){try{return JSON.parse(localStorage.getItem('hm_ask_bav')||'null')||{}}catch(e){return {}}}
+function akAvIn(){const d=akBav().data;return d&&/^data:image\//.test(d)?`<img src="${d}" alt="">`:akI('spk')}
+function akAvRedraw(){const h=document.getElementById('akHdAv');if(h)h.innerHTML=akAvIn();akDraw();const pg=document.getElementById('akAbt');if(pg&&pg.classList.contains('on'))akAbout()}
+async function akBavSync(v){if(v===undefined)return;const c=akBav();if((c.v||'')===String(v||''))return;
+ if(!v){try{localStorage.setItem('hm_ask_bav',JSON.stringify({v:'',data:''}))}catch(e){}akAvRedraw();return}
+ try{const j=await akPost('botAvatar');try{localStorage.setItem('hm_ask_bav',JSON.stringify({v:j.v||'',data:j.data||''}))}catch(e){}akAvRedraw()}catch(e){}}
+function akBotAvPick(){const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=()=>{const f=i.files&&i.files[0];if(!f)return;const url=URL.createObjectURL(f),img=new Image();img.onload=()=>myCropOpen(img,url,d=>akBotAvSave(d));img.onerror=()=>{URL.revokeObjectURL(url);showSettingsToast('This photo cannot be opened. Try another one.')};img.src=url};i.click()}
+async function akBotAvSave(d){const j=await akAdmQ(d?'botAvSet':'botAvDel',d?{data:d}:{});if(!j)return;if(j.ok===false){showSettingsToast(j.error||'Could not save the photo');return}
+ try{localStorage.setItem('hm_ask_bav',JSON.stringify({v:j.v||'',data:j.data||''}))}catch(e){}akAvRedraw();showSettingsToast(d?'The bot has a new photo':'Photo removed')}
 const AK_NO='<p>You do not have access to Ask HEMERA. Ask Ibrahim if you need it.</p>';
 function openAsk(){const w=akWho();if(w&&w.ok===false){AK.blocked=true;AK.msgs=[];try{localStorage.removeItem(AK_KEEP)}catch(e){}}akOpenNow()}
 setTimeout(()=>{try{akNavLock(false)}catch(e){}},1500);
  
 function akBlockedSay(){AK.kb=false;akKb();akLockIn();if(!AK.msgs.some(m=>m.html===AK_NO))akBot(AK_NO)}
 function akLockIn(){const i=document.getElementById('akQ'),f=i&&i.closest('form');if(!i)return;const on=!!AK.blocked;i.disabled=on;i.placeholder=on?'You do not have access':'Aa';if(on)i.value='';if(f)f.classList.toggle('ak-off',on);akInMode()}
-async function akRecheck(){try{const j=await akPost('hello');AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);AK.blocked=false;akWhoSave(true);return true}catch(e){if(e&&e.blocked){AK.blocked=true;akWhoSave(false)}return !AK.blocked}}
+async function akRecheck(){try{const j=await akPost('hello');akBavSync(j.botAvV);AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);AK.blocked=false;akWhoSave(true);return true}catch(e){if(e&&e.blocked){AK.blocked=true;akWhoSave(false)}return !AK.blocked}}
 function akOpenNow(){
  if(!canDo('ask'))return;closeSidebar();
  document.getElementById('akBox')?.remove();
  const o=document.createElement('div');o.id='akBox';o.className='ak'+(akDk()?' dk':'');o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Ask HEMERA');
- o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av">${akI('spk')}</span><div><b>Ask HEMERA</b><small id="akSt">Active now</small></div><button type="button" class="ak-inf" aria-label="About Ask HEMERA" onclick="akAbout(event)">${akI('about')}</button></div><div class="ak-pg" id="akAbt" aria-hidden="true"></div>
+ o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av" id="akHdAv">${akAvIn()}</span><div><b>Ask HEMERA</b><small id="akSt">Active now</small></div><button type="button" class="ak-inf" aria-label="About Ask HEMERA" onclick="akAbout(event)">${akI('about')}</button></div><div class="ak-pg" id="akAbt" aria-hidden="true"></div>
   <div class="ak-bd" id="akBd"></div><div class="ak-kb" id="akKb"></div>
   <form class="ak-in" onsubmit="akSend(event)"><button type="button" class="ak-mb" aria-label="Menu" onclick="akToggleKb()">${akI('menu')}</button><input id="akQ" autocomplete="off" maxlength="1500" placeholder="Aa" oninput="akInMode()"><button type="submit" class="ak-snd" aria-label="Send">${akI('plane')}</button><button type="button" class="ak-mic" aria-label="Record a voice message" onclick="akRecStart()">${akI('mic')}</button>
   <div class="ak-rec" id="akRec"><button type="button" class="ak-rt2" aria-label="Delete" onclick="akRecTrash()">${akI('trash')}</button><div class="ak-rw"><em></em><span id="akRw"></span><b id="akRt">0:00</b></div><button type="button" class="ak-rs2" aria-label="Send" onclick="akRecSend()">${akI('plane')}</button></div></form></div>`;
@@ -10309,7 +10325,7 @@ function akAbout(e){if(e)e.stopPropagation();const pg=document.getElementById('a
  const n=(id,t)=>`<button type="button" onclick="akPgGo('${id}')"><i>${akI(id)}</i><span>${t}</span></button>`;
  const row=(id,ic,t,sub,cls)=>`<button type="button" class="r${cls?' '+cls:''}" onclick="akPgGo('${id}')"><i>${akI(ic)}</i><span><b>${t}</b>${sub?`<small>${sub}</small>`:''}</span></button>`;
  pg.innerHTML=`<div class="ak-pgh"><button type="button" class="ak-bk" aria-label="Back" onclick="akAboutClose()">${akI('back')}</button></div>
-  <div class="ak-pgb"><div class="ak-pgt"><span class="ak-pga">${akI('spk')}<em></em></span><b>Ask HEMERA</b><small>Active now</small></div>
+  <div class="ak-pgb"><div class="ak-pgt"><span class="ak-pga">${akAvIn()}<em></em>${AK.editor?`<button type="button" class="ak-pgc" aria-label="Change the bot's photo" onclick="akBotAvPick()">${akI('cam')}</button>`:''}</span><b>Ask HEMERA</b><small>Active now</small>${AK.editor&&akBav().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Remove the photo?','The bot goes back to the HEMERA star.','Remove',()=>akBotAvSave(''))">Remove photo</button>`:''}</div>
   <div class="ak-pgr">${n('links','Sheets')}${n('off','Days off')}${n('mail','Emails')}${n('task','Tasks')}</div>
   <h4>About</h4><div class="ak-pgp"><p>Answers from the team sheet: sheets, platform reports and scripts, who is off and who covers, and team emails.</p><p>Type it any way you like, in Arabic or English, or send a voice message.</p><p class="ak-mu">Each person sees only the platforms they have access to.</p></div>
   ${AK.canAdd||AK.canTeach?`<h4>Tools</h4>${AK.canAdd?row('add','add','Add a sheet','Put a new sheet in the list'):''}${AK.canTeach?row('teach','teach','Teach the bot','Rules, access and platforms'):''}`:''}
@@ -10340,7 +10356,7 @@ function akDraw(){akSave();
  const L=AK.msgs.slice(-60);
  b.innerHTML=L.map((m,i)=>{const nx=L[i+1],last=!nx||nx.w!==m.w,first=i===0||L[i-1].w!==m.w;
    const bub=`<div class="ak-m ${m.w}${m.cls?' '+m.cls:''}${first?' f':''}${last?' l':''}${m.nw?' nw':''}">${m.html}</div>`;
-   return m.w==='h'?`<div class="ak-g">${last&&!AK.busy||last&&nx?`<span class="ak-sa">${akI('spk')}</span>`:'<span class="ak-sp"></span>'}${bub}</div>`:bub}).join('')+(AK.busy?`<div class="ak-g"><span class="ak-sa">${akI('spk')}</span><div class="ak-m h f l ak-dots"><i></i><i></i><i></i></div></div>`:'');
+   return m.w==='h'?`<div class="ak-g">${last&&!AK.busy||last&&nx?`<span class="ak-sa">${akAvIn()}</span>`:'<span class="ak-sp"></span>'}${bub}</div>`:bub}).join('')+(AK.busy?`<div class="ak-g"><span class="ak-sa">${akI('spk')}</span><div class="ak-m h f l ak-dots"><i></i><i></i><i></i></div></div>`:'');
  L.forEach(m=>{m.nw=0});requestAnimationFrame(()=>{b.scrollTop=b.scrollHeight});
 }
 function akToggleKb(){if(AK.blocked){AK.kb=false;akKb();return}AK.kb=!AK.kb;akKb()}
