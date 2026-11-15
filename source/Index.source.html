@@ -9196,13 +9196,8 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 .ak-meet span{flex:1;display:flex;flex-direction:column}.ak-meet b{font:800 14.5px Inter,system-ui,sans-serif}.ak-meet small{font:600 12px Inter,system-ui,sans-serif;color:#C9D3F5}
 .ak-meet>.ak-ic{width:28px;height:28px;padding:7px;border-radius:50%;background:#E2B874;color:#0a1230;fill:#0a1230;stroke:none;flex:none;box-sizing:border-box}
 
-/* v421 smoke drifting over the Sekna hall */
-.aks-smoke{position:absolute;left:0;right:0;z-index:1;pointer-events:none;background:url(icons/alexandra/smoke.webp) repeat-x 0 0/auto 100%;mix-blend-mode:screen}
-.aks-smoke.a{bottom:12%;height:34%;opacity:.42;animation:aksSmoke 38s linear infinite}
-.aks-smoke.b{bottom:30%;height:28%;opacity:.28;animation:aksSmoke 26s linear infinite reverse;filter:blur(2px)}
-.aks-smoke.c{bottom:-4%;height:30%;opacity:.36;animation:aksSmoke 52s linear infinite;filter:blur(1px) sepia(.35)}
-@keyframes aksSmoke{from{background-position-x:0}to{background-position-x:-1024px}}
-@media (prefers-reduced-motion:reduce){.aks-smoke{animation:none}}
+/* v424 Sekna hall: a crisp dark frame instead of smoke (lighter on phones) */
+.aks-vig{position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(120% 85% at 50% 42%,transparent 52%,rgba(0,0,0,.55) 78%,rgba(0,0,0,.92) 100%),linear-gradient(180deg,rgba(0,0,0,.55) 0%,transparent 14%,transparent 62%,rgba(0,0,0,.6) 100%)}
 </style>
 </head>
 <body>
@@ -10306,7 +10301,7 @@ function akStory(){
  const o=document.createElement('div');o.id='aksBox';o.className='aks';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Meet Alexandra');
  o.innerHTML=`<div class="aks-ph"><div class="aks-bar"><img src="get/logo-white.webp" alt="HEMERA"><button type="button" class="aks-x" aria-label="Close" onclick="akStoryClose()">${akI('x')}</button></div>
   <div class="aks-dots">${AKS.map(()=>'<i></i>').join('')}</div>
-  ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}"><img class="bg" src="icons/alexandra/${s.img}.webp?v=4" decoding="async" alt="">${s.smoke?'<i class="aks-smoke a"></i><i class="aks-smoke b"></i><i class="aks-smoke c"></i>':''}<div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
+  ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}"><img class="bg" src="icons/alexandra/${s.img}.webp?v=4" decoding="async" alt="">${s.smoke?'<i class="aks-vig"></i>':''}<div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
   <div class="aks-fx"></div><div class="aks-tap" aria-hidden="true"></div>
   <div class="aks-kb"><button type="button" aria-label="Back" onclick="akStoryStep(-1)"></button><button type="button" aria-label="Next" onclick="akStoryStep(1)"></button></div></div>`;
  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));
@@ -10350,7 +10345,7 @@ async function akStoryShow(i,again){
  const B=(c,k,op,css)=>el(c,css).animate(k,Object.assign({duration:T,easing:AKS_E,fill:'forwards'},op||{}));
  const W=ph.clientWidth,H=ph.clientHeight,full='inset(0 0 0 0)';
  if(!reduce){
-  if(now.querySelector('.aks-smoke'))im.animate([{transform:'scale(1)'},{transform:'scale(1.04)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
+  if(now.querySelector('.aks-vig'))im.animate([{transform:'scale(1)'},{transform:'scale(1.04)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
   else im.animate([{transform:'scale(1.05) translateX(2%)'},{transform:'scale(1.05) translateX(-2%)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
   if(tr==='sweepD'){A([{clipPath:'inset(0 0 100% 0)'},{clipPath:full}]);B('aks-beam h',[{transform:'translateY(-40px)',opacity:1},{opacity:1,offset:.85},{transform:`translateY(${H+40}px)`,opacity:0}])}
   if(tr==='sweepL'){A([{clipPath:'inset(0 0 0 100%)'},{clipPath:full}]);B('aks-beam v',[{transform:`translateX(${W+40}px) skewX(-12deg)`,opacity:1},{opacity:1,offset:.85},{transform:'translateX(-60px) skewX(-12deg)',opacity:0}])}
