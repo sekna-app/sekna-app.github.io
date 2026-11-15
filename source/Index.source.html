@@ -9219,7 +9219,7 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 .aks-sc.lowfade img.bg{object-position:50% 30%}
 
 /* v431 flag next to Alexandra's name */
-.ak-flag{font-size:.9em;margin-left:3px;vertical-align:1px;font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif}
+.ak-flag{width:26px;height:17px;margin-left:5px;vertical-align:-1px;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,.08);display:inline-block}
 </style>
 </head>
 <body>
@@ -10416,7 +10416,7 @@ function akOpenNow(){
  if(!canDo('ask'))return;closeSidebar();
  document.getElementById('akBox')?.remove();
  const o=document.createElement('div');o.id='akBox';o.className='ak'+(akDk()?' dk':'');o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Alexandra');
- o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av" id="akHdAv">${akAvIn()}</span><div><b>Alexandra <span class="ak-flag" aria-hidden="true">🇺🇦</span></b><small id="akSt">Active now</small></div><button type="button" class="ak-inf" aria-label="About Alexandra" onclick="akAbout(event)">${akI('about')}</button></div><div class="ak-pg" id="akAbt" aria-hidden="true"></div>
+ o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av" id="akHdAv">${akAvIn()}</span><div><b>Alexandra <img class="ak-flag" src="icons/alexandra/flag-icon.png?v=3" alt="Alexandria flag" width="26" height="17"></b><small id="akSt">Active now</small></div><button type="button" class="ak-inf" aria-label="About Alexandra" onclick="akAbout(event)">${akI('about')}</button></div><div class="ak-pg" id="akAbt" aria-hidden="true"></div>
   <div class="ak-bd" id="akBd"></div><div class="ak-kb" id="akKb"></div>
   <form class="ak-in" onsubmit="akSend(event)"><button type="button" class="ak-mb" aria-label="Menu" onclick="akToggleKb()">${akI('menu')}</button><input id="akQ" autocomplete="off" maxlength="1500" placeholder="Aa" oninput="akInMode()"><button type="submit" class="ak-snd" aria-label="Send">${akI('plane')}</button><button type="button" class="ak-mic" aria-label="Record a voice message" onclick="akRecStart()">${akI('mic')}</button>
   <div class="ak-rec" id="akRec"><button type="button" class="ak-rt2" aria-label="Delete" onclick="akRecTrash()">${akI('trash')}</button><div class="ak-rw"><em></em><span id="akRw"></span><b id="akRt">0:00</b></div><button type="button" class="ak-rs2" aria-label="Send" onclick="akRecSend()">${akI('plane')}</button></div></form></div>`;
