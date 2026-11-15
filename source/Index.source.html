@@ -9265,6 +9265,11 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 .ak.dk .ak-hero::after{background:linear-gradient(180deg,rgba(0,0,0,0) 45%,#000 100%)}
 .ak.dk .ak-id .ak-pga{border-color:#000}.ak.dk .ak-id h2,.ak.dk .ak-hl button,.ak.dk .ak-pgbody h4,.ak.dk .ak-feat b,.ak.dk .ak-intro div,.ak.dk .ak-plist b{color:#E4E6EB}
 .ak.dk .ak-tabs{background:#000;border-color:#3E4042}.ak.dk .ak-feat button{background:#242526;border-color:#3E4042}.ak.dk .ak-hl img{background:#000}.ak.dk .ak-plist i{background:#3A3B3C}.ak.dk .ak-plist button{border-color:#3E4042}
+
+/* v436 Alexandra: Arabic in Noto Kufi (Arabic letters only; English stays in Inter) */
+@font-face{font-family:AKufi;font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/kufi-ar.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+08A0-08FF,U+FB50-FDFF,U+FE70-FEFF,U+200C-200F}
+.ak .ak-m,.ak .ak-in input,.ak .ak-noacc p{font-family:AKufi,Inter,system-ui,sans-serif}
+.ak .ak-m.h,.ak .ak-m.u{line-height:1.7}
 </style>
 </head>
 <body>
