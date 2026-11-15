@@ -5532,7 +5532,7 @@ window.addEventListener('load',function(){
       #labForecast .fc:has(.fc-hero)>.fc-rd{grid-column:2;grid-row:7}#labForecast .fc:has(.fc-hero)>.fc-foot{grid-column:2;grid-row:8}
       #labForecast .fc:has(.yr-c)>.yr-c{grid-column:1;grid-row:3/span 4}
       #labForecast .fc:has(.yr-c)>.yr-c+.fc-card{grid-column:2;grid-row:3}#labForecast .fc:has(.yr-c)>.fc-rec{grid-column:2;grid-row:4}
-      #labForecast .fc:has(.yr-c)>.fc-rd{grid-column:2;grid-row:5}#labForecast .fc:has(.yr-c)>.fc-foot{grid-column:2;grid-row:6}
+      #labForecast .fc:has(.yr-c)>.pvy{grid-column:1/-1;grid-row:8;margin-top:14px}#labForecast .fc:has(.yr-c)>.fc-rd{grid-column:2;grid-row:5}#labForecast .fc:has(.yr-c)>.fc-foot{grid-column:2;grid-row:6}
       /* Media Plan Lab · Assumptions "Underline tabs": a narrower page so labels sit close to their numbers */
       #labForecast .fc:has(.as-seg)>.fc-top{display:flex!important;gap:26px!important;border-bottom:1.5px solid #e6e9f2;padding:0 4px!important;background:none!important}
       #labForecast .fc:has(.as-seg)>.fc-top button{flex:none!important;width:auto!important;height:40px!important;padding:0 2px!important;background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;color:#6b7385!important;font-size:13.5px!important;border-bottom:2.5px solid transparent!important;margin-bottom:-1.5px}
@@ -9219,7 +9219,7 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 .aks-sc.lowfade img.bg{object-position:50% 30%}
 
 /* v431 flag next to Alexandra's name */
-.ak-flag{font-size:.9em;margin-left:3px;vertical-align:1px;font-family:'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif}
+.ak-flag{width:21px;height:14px;margin-left:5px;vertical-align:0;border-radius:2px;display:inline-block}
 
 /* v434 real logos, request edit, categories more, starred categories, usage bin */
 .ak-limg{width:20px;height:20px;object-fit:contain;display:inline-block;vertical-align:middle;flex:none}.ak-crb .ak-limg{width:16px;height:16px}
@@ -9315,6 +9315,8 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 
 .ak-preverr{margin:10px 0 0;padding:9px 11px;border-radius:10px;background:#FDECEE;color:#B3122E;font:600 12.5px/1.4 Inter,system-ui,sans-serif}
 
+/* v446 flag as a drawing so Windows shows it too */
+.ak-flag2{width:20px;height:14px;border-radius:2px;display:block}
 /* v444 memory confirm */
 .ak-memq{margin:6px 0 8px;padding:8px 11px;border-left:3px solid #C9A24A;background:#fff;border-radius:8px;font-weight:600}
 .ak-memsave{display:inline-flex;align-items:center;gap:5px;border:0!important;background:#1C3C96!important;color:#fff!important}.ak-memsave .ak-ic{width:14px;height:14px}
@@ -10519,7 +10521,7 @@ function akOpenNow(){
  if(!canDo('ask'))return;closeSidebar();
  document.getElementById('akBox')?.remove();
  const o=document.createElement('div');o.id='akBox';o.className='ak'+(akDk()?' dk':'');o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Alexandra');
- o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av ak-tapp" id="akHdAv" role="button" tabindex="0" aria-label="Open Alexandra's profile" onclick="AK.pgTab='about';akAbout(event)">${akAvIn()}</span><div><b>Alexandra <span class="ak-flag" aria-hidden="true">🇺🇦</span></b><small id="akSt">Active now</small></div><button type="button" class="ak-inf" aria-label="About Alexandra" onclick="AK.pgTab='about';akAbout(event)">${akI('about')}</button></div><div class="ak-pg" id="akAbt" aria-hidden="true"></div>
+ o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av ak-tapp" id="akHdAv" role="button" tabindex="0" aria-label="Open Alexandra's profile" onclick="AK.pgTab='about';akAbout(event)">${akAvIn()}</span><div><b>Alexandra <svg class="ak-flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="10" rx="2" fill="#0057B7"/><rect y="10" width="30" height="10" rx="2" fill="#FFD700"/><rect y="8" width="30" height="4" fill="#0057B7"/><rect y="10" width="30" height="2" fill="#FFD700"/></svg></b><small id="akSt">Active now</small></div><button type="button" class="ak-inf" aria-label="About Alexandra" onclick="AK.pgTab='about';akAbout(event)">${akI('about')}</button></div><div class="ak-pg" id="akAbt" aria-hidden="true"></div>
   <div class="ak-bd" id="akBd"></div><div class="ak-kb" id="akKb"></div>
   <form class="ak-in" onsubmit="akSend(event)"><button type="button" class="ak-mb" aria-label="Menu" onclick="akToggleKb()">${akI('menu')}</button><input id="akQ" autocomplete="off" maxlength="1500" placeholder="Aa" oninput="akInMode()"><button type="submit" class="ak-snd" aria-label="Send">${akI('plane')}</button><button type="button" class="ak-mic" aria-label="Record a voice message" onclick="akRecStart()">${akI('mic')}</button>
   <div class="ak-rec" id="akRec"><button type="button" class="ak-rt2" aria-label="Delete" onclick="akRecTrash()">${akI('trash')}</button><div class="ak-rw"><em></em><span id="akRw"></span><b id="akRt">0:00</b></div><button type="button" class="ak-rs2" aria-label="Send" onclick="akRecSend()">${akI('plane')}</button></div></form></div>`;
@@ -10635,7 +10637,7 @@ function akAbout(e,keep){if(e&&e.stopPropagation)e.stopPropagation();const pg=do
  if(tab==='about')body=`<h4>Intro</h4><div class="ak-intro">
    <div>${akI('rep')}<span>Works at <b>HEMERA</b></span></div>
    <div>${akI('teach')}<span>Taught by <a class="ak-ment" href="#" onclick="event.preventDefault();akOpenOwner(event)">@${akEsc(akOwner().name)}</a></span></div>
-   <div><u>🇺🇦</u><span>From <b>Alexandria, Egypt</b></span></div>
+   <div><u><svg class="ak-flag2" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="10" rx="2" fill="#0057B7"/><rect y="10" width="30" height="10" rx="2" fill="#FFD700"/><rect y="8" width="30" height="4" fill="#0057B7"/><rect y="10" width="30" height="2" fill="#FFD700"/></svg></u><span>From <b>Alexandria, Egypt</b></span></div>
    <div>${akI('mic')}<span>Speaks <b>Arabic</b> and <b>English</b></span></div>
    <a href="https:\/\/t.me/Seknaa_bot" target="_blank" rel="noopener">${tg}<span>On Telegram <b>@Seknaa_bot</b></span></a></div>
   <h4>What she does</h4><div class="ak-does">
