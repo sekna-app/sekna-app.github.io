@@ -9203,8 +9203,8 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 .aks-sc.fitw{background:#03060f}.aks-sc.fitw img.bg{height:auto;bottom:auto;object-fit:contain;transform:none;transform-origin:50% 0;-webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent)}
 
 /* v427 no access card with Request access, and the requests list for the editors */
-.ak-noacc{display:flex;flex-direction:column;gap:8px;max-width:260px}
-.ak-noacc img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;display:block}
+.ak-noacc{display:flex;flex-direction:column;gap:8px;max-width:300px}
+.ak-noacc img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;display:block}
 .ak-noacc p{margin:0}.ak-wel b{color:#1C3C96}.ak.dk .ak-wel b{color:#8E8CFF}
 .ak-reqb{align-self:flex-start;border:0;border-radius:99px;padding:8px 16px;font:800 13px Inter,system-ui,sans-serif;background:#1C3C96;color:#fff;cursor:pointer}
 .ak-reqb.sent{background:#E7F5EC;color:#1E8E3E;cursor:default}.ak-reqb.sent:before{content:"✓ "}
@@ -10385,10 +10385,10 @@ async function akStoryShow(i,again){
 function akStorySeenLocal(){try{return localStorage.getItem('hm_aks_'+akMe().email)==='1'}catch(e){return false}}
 function akStoryMark(){try{localStorage.setItem('hm_aks_'+akMe().email,'1')}catch(e){}if(ASK_HEMERA_URL)akPost('storySeen').catch(()=>{})}
 function akStoryFirst(seen){if(seen){try{localStorage.setItem('hm_aks_'+akMe().email,'1')}catch(e){}return}if(akStorySeenLocal()||!document.getElementById('akBox')||document.getElementById('aksBox'))return;akStoryMark();akStory()}
-const AK_NO='<div class="ak-noacc"><img src="icons/alexandra/noaccess.webp?v=1" alt=""><p>You do not have access to Alexandra. Ask Ibrahim if you need it.</p><button type="button" class="ak-reqb" onclick="akReqAccess(this)">Request access</button></div>';
+const AK_NO='<div class="ak-noacc"><img src="icons/alexandra/noaccess.webp?v=2" alt=""><p>You do not have access to Alexandra. Ask Ibrahim if you need it.</p><button type="button" class="ak-reqb" onclick="akReqAccess(this)">Request access</button></div>';
 const AK_NO_SENT=AK_NO.replace('<button type="button" class="ak-reqb" onclick="akReqAccess(this)">Request access</button>','<button type="button" class="ak-reqb sent" disabled>Request sent</button>');
 /* v428 access just given: a welcome card in the chat, once */
-const AK_WELCOME=()=>{const n=akMe().name.split(' ')[0];return `<div class="ak-noacc ak-wel"><img src="icons/alexandra/welcome.webp?v=1" alt=""><p><b>You're in${n?', '+akEsc(n):''}!</b> Ibrahim gave you access to Alexandra.</p><p>Ask me about sheets, reports, scripts, days off or team emails. Pick from the menu or just type.</p></div>`};
+const AK_WELCOME=()=>{const n=akMe().name.split(' ')[0];return `<div class="ak-noacc ak-wel"><img src="icons/alexandra/welcome.webp?v=2" alt=""><p><b>You're in${n?', '+akEsc(n):''}!</b> Ibrahim gave you access to Alexandra.</p><p>Ask me about sheets, reports, scripts, days off or team emails. Pick from the menu or just type.</p></div>`};
 function akWelcome(){try{localStorage.removeItem('hm_ak_req_'+akMe().email)}catch(e){}AK.kb=true;akKb();akBot(AK_WELCOME())}
 function akIsNo(h){return /ak-noacc/.test(String(h||''))}
 function akReqSent(){try{const t=+localStorage.getItem('hm_ak_req_'+akMe().email)||0;return Date.now()-t<864e5}catch(e){return false}}
