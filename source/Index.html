@@ -9287,6 +9287,25 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 .ak-prx i{display:inline-flex;margin-right:5px;font-style:normal}.ak-prx em{font-style:normal;width:19px;height:19px;border-radius:50%;display:inline-grid;place-items:center;font-size:10.5px;line-height:1;margin-left:-4px;box-shadow:0 0 0 2px #fff;color:#fff}.ak-prx em.like,.ak-prx em.love{filter:saturate(1.1)}.ak-prx em.love{font-size:10px}.ak-prx em.wow,.ak-prx em.haha,.ak-prx em.care{background:none!important;font-size:16px}.ak-prx em:first-child{margin-left:0}
 .ak-pact{display:flex;border-top:1px solid #E4E6EB;margin:0 16px}.ak-pact span{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 0;font:600 13.5px Inter,system-ui,sans-serif;color:#65676B}.ak-pact .ak-ic{width:17px;height:17px}
 .ak.dk .ak-intro a,.ak.dk .ak-does button,.ak.dk .ak-post header b,.ak.dk .ak-post>p{color:#E4E6EB}.ak.dk .ak-post{border-color:#18191A}.ak.dk .ak-pact{border-color:#3E4042}.ak.dk .ak-prx em{box-shadow:0 0 0 2px #242526}
+
+/* v439 Facebook's scalloped verified badge; cover and photo preview */
+.ak-ver{background:none!important;width:18px;height:18px}.ak-ver svg{width:18px!important;height:18px!important}
+.ak-ver .b{fill:#0866FF;stroke:none}.ak-ver .c{fill:none;stroke:#fff;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.ak-post header .ak-ver,.ak-post header .ak-ver svg{width:15px!important;height:15px!important}
+.ak-covb{position:absolute;z-index:2;right:12px;bottom:12px;display:flex;align-items:center;gap:6px;border:0;border-radius:8px;padding:7px 10px;background:rgba(255,255,255,.92);color:#050505;font:700 12.5px Inter,system-ui,sans-serif;cursor:pointer}.ak-covb .ak-ic{width:15px;height:15px}
+.ak-hero{position:relative}.ak-hero::after{z-index:1}
+.ak-pgxs{display:flex;gap:12px}
+.ak-prev{position:absolute;inset:0;z-index:30;background:rgba(10,18,40,.55);display:flex;align-items:flex-end;justify-content:center;animation:akDdIn .2s ease-out}
+.ak-prevb{width:100%;max-width:520px;background:#fff;border-radius:20px 20px 0 0;padding:16px 16px calc(14px + env(safe-area-inset-bottom,0px))}
+.ak-prevb>b{font:800 17px Inter,system-ui,sans-serif;color:#050505}.ak-prevb>p{margin:2px 0 10px;font:500 13px Inter,system-ui,sans-serif;color:#65676B}
+.ak-prevm{border:1px solid #E4E6EB;border-radius:14px;overflow:hidden}
+.ak-prevc{height:120px;background:#0F1A3A center/cover}
+.ak-previd{display:flex;align-items:flex-end;gap:10px;margin-top:-34px;padding:0 12px}
+.ak-previd .ak-pga{width:68px;height:68px;margin:0;border:3px solid #fff;flex:none}.ak-previd .ak-pga img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.ak-previd h3{margin:0;font:800 17px Inter,system-ui,sans-serif;color:#050505;display:flex;align-items:center;gap:5px}.ak-previd small{font:600 11.5px Inter,system-ui,sans-serif;color:#65676B}
+.ak-prevchat{display:flex;align-items:center;gap:8px;padding:12px}.ak-prevchat .ak-sa{width:28px;height:28px}.ak-prevchat i{font-style:normal;background:#F0F2F5;border-radius:16px;padding:7px 11px;font:500 13px Inter,system-ui,sans-serif;color:#050505}
+.ak-prevs{display:flex;flex-direction:column;gap:4px;margin-top:12px;font:600 12.5px Inter,system-ui,sans-serif;color:#65676B}.ak-prevs input{width:100%;accent-color:#0866FF}
+.ak-prevbt{display:flex;gap:8px;margin-top:14px}.ak-prevbt button{flex:1;border:0;border-radius:10px;padding:11px;font:700 14px Inter,system-ui,sans-serif;background:#E4E6EB;color:#050505;cursor:pointer}.ak-prevbt .p{background:#0866FF;color:#fff}
 </style>
 </head>
 <body>
@@ -10352,7 +10371,7 @@ async function akPost(action,extra){
 }
 async function akAssets(force){
  if(!force&&AK.assets&&Date.now()-AK.at<600000)return AK.assets;
- const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[],categories:j.categories||[],formats:j.formats||[],starred:j.starred||[]};AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);const wasB=AK.blocked;AK.blocked=false;akWhoSave(true);AK.at=Date.now();akBavSync(j.botAvV);if(j.storySeen!==undefined)akStoryFirst(!!j.storySeen);if(wasB){akLockIn();AK.msgs=AK.msgs.filter(m=>!akIsNo(m.html));akWelcome()}if(AK.resIds&&!AK.res){AK.res=AK.assets.rows.filter(r=>AK.resIds.indexOf(r.id)>=0)}akKb();return AK.assets;
+ const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[],categories:j.categories||[],formats:j.formats||[],starred:j.starred||[]};AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);const wasB=AK.blocked;AK.blocked=false;akWhoSave(true);AK.at=Date.now();akBavSync(j.botAvV);akCovSync(j.botCovV);if(j.storySeen!==undefined)akStoryFirst(!!j.storySeen);if(wasB){akLockIn();AK.msgs=AK.msgs.filter(m=>!akIsNo(m.html));akWelcome()}if(AK.resIds&&!AK.res){AK.res=AK.assets.rows.filter(r=>AK.resIds.indexOf(r.id)>=0)}akKb();return AK.assets;
 }
  
 function akWho(){try{const w=JSON.parse(localStorage.getItem('hm_ask_who')||'null');return w&&w.e===akMe().email?w:null}catch(e){return null}}
@@ -10558,11 +10577,36 @@ async function akWav(blob){
  
  
 const AK_HL=[[0,'Alliance'],[1,'Numbers'],[2,'Answers'],[3,'The team'],[5,'Sekna'],[6,'Ask her']];
+const AK_TICK='<span class="ak-ver"><svg viewBox="0 0 24 24"><path class="b" d="M23.6 12.0L23.4 12.7L22.7 13.4L22.1 14.0L21.7 14.6L21.8 15.3L22.0 16.1L22.2 17.0L22.0 17.8L21.5 18.3L20.6 18.6L19.7 18.8L19.1 19.1L18.8 19.7L18.6 20.6L18.3 21.5L17.8 22.0L17.0 22.2L16.1 22.0L15.3 21.8L14.6 21.7L14.0 22.1L13.4 22.7L12.7 23.4L12.0 23.6L11.3 23.4L10.6 22.7L10.0 22.1L9.4 21.7L8.7 21.8L7.9 22.0L7.0 22.2L6.2 22.0L5.7 21.5L5.4 20.6L5.2 19.7L4.9 19.1L4.3 18.8L3.4 18.6L2.5 18.3L2.0 17.8L1.8 17.0L2.0 16.1L2.2 15.3L2.3 14.6L1.9 14.0L1.3 13.4L0.6 12.7L0.4 12.0L0.6 11.3L1.3 10.6L1.9 10.0L2.3 9.4L2.2 8.7L2.0 7.9L1.8 7.0L2.0 6.2L2.5 5.7L3.4 5.4L4.3 5.2L4.9 4.9L5.2 4.3L5.4 3.4L5.7 2.5L6.2 2.0L7.0 1.8L7.9 2.0L8.7 2.2L9.4 2.3L10.0 1.9L10.6 1.3L11.3 0.6L12.0 0.4L12.7 0.6L13.4 1.3L14.0 1.9L14.6 2.3L15.3 2.2L16.1 2.0L17.0 1.8L17.8 2.0L18.3 2.5L18.6 3.4L18.8 4.3L19.1 4.9L19.7 5.2L20.6 5.4L21.5 5.7L22.0 6.2L22.2 7.0L22.0 7.9L21.8 8.7L21.7 9.4L22.1 10.0L22.7 10.6L23.4 11.3Z"/><path class="c" d="M7.4 12.3l3.1 3.1 6.1-6.6"/></svg></span>';
+function akCov(){try{return JSON.parse(localStorage.getItem('hm_ask_bcov')||'null')||{}}catch(e){return {}}}
+function akCovUrl(){const d=akCov().data;return d&&/^data:image\//.test(d)?d:'icons/alexandra/alliance.webp?v=7'}
+async function akCovSync(v){if(v===undefined)return;const c=akCov();if((c.v||'')===String(v||''))return;
+ if(!v){try{localStorage.setItem('hm_ask_bcov',JSON.stringify({v:'',data:''}))}catch(e){}return}
+ try{const j=await akPost('botCover');try{localStorage.setItem('hm_ask_bcov',JSON.stringify({v:j.v||'',data:j.data||''}))}catch(e){}const pg=document.getElementById('akAbt');if(pg&&pg.classList.contains('on'))akAbout(null,1)}catch(e){}}
+ 
+function akPrevPick(kind){const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=()=>{const f=i.files&&i.files[0];if(!f)return;const url=URL.createObjectURL(f),img=new Image();
+ img.onload=()=>{if(kind==='av')myCropOpen(img,url,d=>akPrevShow('av',d));else akPrevShow('cov',img)};img.onerror=()=>{URL.revokeObjectURL(url);showSettingsToast('This photo cannot be opened. Try another one.')};img.src=url};i.click()}
+function akCovCut(img,pos){const W=1000,H=500,c=document.createElement('canvas');c.width=W;c.height=H;const r=Math.max(W/img.naturalWidth,H/img.naturalHeight),w=img.naturalWidth*r,h=img.naturalHeight*r;
+ c.getContext('2d').drawImage(img,(W-w)/2,(H-h)*pos/100,w,h);return c.toDataURL('image/jpeg',.72)}
+function akPrevShow(kind,x){const pg=document.getElementById('akAbt');if(!pg)return;pg.querySelector('.ak-prev')?.remove();AK.pv={kind,x,pos:30};
+ const av=kind==='av'?`<img src="${x}" alt="">`:akAvIn(),cov=kind==='cov'?akCovCut(x,30):akCovUrl();AK.pv.data=kind==='av'?x:cov;
+ pg.insertAdjacentHTML('beforeend',`<div class="ak-prev"><div class="ak-prevb"><b>Preview</b><p>This is how everyone will see it.</p>
+  <div class="ak-prevm"><div class="ak-prevc" id="akPvC" style="background-image:url(${cov})"></div><div class="ak-previd"><span class="ak-pga">${av}<em></em></span><div><h3>Alexandra ${AK_TICK}</h3><small>Active now</small></div></div>
+   <div class="ak-prevchat"><span class="ak-sa">${av}</span><i>Hi! Ask me anything.</i></div></div>
+  ${kind==='cov'?`<label class="ak-prevs"><span>Move the picture</span><input id="akPvS" type="range" min="0" max="100" value="30" oninput="akPrevMove(+this.value)"></label>`:''}
+  <div class="ak-prevbt"><button type="button" onclick="this.closest('.ak-prev').remove();AK.pv=null">Cancel</button><button type="button" class="p" onclick="akPrevSave(this)">Save</button></div></div></div>`)}
+function akPrevMove(v){const P=AK.pv;if(!P||P.kind!=='cov')return;P.pos=v;P.data=akCovCut(P.x,v);const c=document.getElementById('akPvC');if(c)c.style.backgroundImage=`url(${P.data})`}
+async function akPrevSave(btn){const P=AK.pv;if(!P)return;btn.disabled=true;btn.textContent='Saving…';
+ if(P.kind==='av'){await akBotAvSave(P.data)}
+ else{const j=await akAdmQ('botCovSet',{data:P.data});if(!j||j.ok===false){btn.disabled=false;btn.textContent='Save';showSettingsToast((j&&j.error)||'Could not save the cover');return}
+  try{localStorage.setItem('hm_ask_bcov',JSON.stringify({v:j.v||'',data:j.data||''}))}catch(e){}showSettingsToast('New cover saved')}
+ AK.pv=null;document.querySelector('#akAbt .ak-prev')?.remove();akAbout(null,1)}
+async function akCovReset(){const j=await akAdmQ('botCovDel');if(!j)return;try{localStorage.setItem('hm_ask_bcov',JSON.stringify({v:j.v||'',data:''}))}catch(e){}akAbout(null,1);showSettingsToast('Cover reset')}
 function akAbout(e,keep){if(e&&e.stopPropagation)e.stopPropagation();const pg=document.getElementById('akAbt');if(!pg)return;
  const tab=AK.pgTab||'about',v='?v=7',img=k=>`icons/alexandra/${k}.webp${v}`;
  const row=(id,ic,t,sub,cls)=>`<button type="button" class="r${cls?' '+cls:''}" onclick="akPgGo('${id}')"><i>${akI(ic)}</i><span><b>${t}</b>${sub?`<small>${sub}</small>`:''}</span></button>`;
  const feat=(id,ic,t,sub)=>`<button type="button" onclick="akPgGo('${id}')">${akI(ic)}<b>${t}</b><small>${sub}</small></button>`;
- const tick='<span class="ak-ver"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span>';
+ const tick=AK_TICK;
  let body='';
  const tg='<img class="ak-tgi" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTIiIGZpbGw9IiMyMjlFRDkiLz48cGF0aCBkPSJNNS40IDExLjdsMTEuNC00LjRjLjUtLjIgMSAuMS44LjlsLTEuOSA5LjFjLS4xLjYtLjUuOC0xLjEuNWwtMy0yLjItMS40IDEuNGMtLjIuMi0uMy4zLS42LjNsLjItMy4xIDUuNi01LjFjLjItLjIgMC0uMy0uNC0uMWwtNi45IDQuNC0zLS45Yy0uNi0uMi0uNi0uNi4zLS44eiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==" alt="">';
  if(tab==='about')body=`<h4>Intro</h4><div class="ak-intro">
@@ -10583,9 +10627,9 @@ function akAbout(e,keep){if(e&&e.stopPropagation)e.stopPropagation();const pg=do
   body=AKS.map((x,i)=>{const r=RX[i%RX.length],cap=akEsc(x.k.charAt(0)+x.k.slice(1).toLowerCase())+' · '+x.h.replace(/<\/?em>/g,'');return `<article class="ak-post"><header><span class="ak-pga">${akAvIn()}</span><div><b>Alexandra ${tick}</b><small>${D[i]} · 🌐</small></div><span class="ak-pdots">···</span></header><p>${cap}</p><button type="button" class="ak-pimg" onclick="akStoryAt(${i})"><img src="${img(x.img)}" alt="" loading="lazy"></button><div class="ak-prx"><span><i>${r[0].map(k=>`<em class="${k}" style="background:${RE[k][1]}">${RE[k][0]}</em>`).join('')}</i>${r[1]}</span><span>${r[2]} comments · ${r[3]} shares</span></div><div class="ak-pact"><span>${akI('like')}Like</span><span>${akI('cmt')}Comment</span><span>${akI('share')}Share</span></div></article>`}).join('')}
  if(tab==='platforms'){const P=((AK.assets&&AK.assets.platforms)||[]),R=((AK.assets&&AK.assets.rows)||[]);
   body=P.length?`<div class="ak-plist">${P.map(x=>{const n=R.filter(r=>(r.platforms||[]).indexOf(x.key)>=0).length;return `<button type="button" onclick="akPgPlat('${akEsc(x.key)}')"><i>${akLogo(x.key)}</i><span><b>${akEsc(x.key)}</b><small>${n} ${n===1?'sheet':'sheets'}</small></span>${akI('chev')}</button>`}).join('')}</div><p class="ak-mu ak-pgnote">These are the platforms you can see.</p>`:'<p class="ak-mu ak-pgnote">No platforms to show yet.</p>'}
- pg.innerHTML=`<div class="ak-pgb2"><div class="ak-pgh2"><button type="button" class="ak-bk" aria-label="Back" onclick="akAboutClose()">${akI('back')}</button></div><div class="ak-hero" style="background-image:url(${img('alliance')})"></div>
-  <div class="ak-id"><span class="ak-pga">${akAvIn()}<em></em>${AK.editor?`<button type="button" class="ak-pgc" aria-label="Change the bot's photo" onclick="akBotAvPick()">${akI('cam')}</button>`:''}</span>
-   <div class="ak-idn"><h2>Alexandra ${tick}</h2>${AK.editor&&akBav().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Remove the photo?','The bot goes back to the HEMERA star.','Remove',()=>akBotAvSave(''))">Remove photo</button>`:''}</div></div>
+ pg.innerHTML=`<div class="ak-pgb2"><div class="ak-pgh2"><button type="button" class="ak-bk" aria-label="Back" onclick="akAboutClose()">${akI('back')}</button></div><div class="ak-hero" style="background-image:url(${akCovUrl()})">${AK.editor?`<button type="button" class="ak-covb" onclick="akPrevPick('cov')">${akI('cam')}Edit cover</button>`:''}</div>
+  <div class="ak-id"><span class="ak-pga">${akAvIn()}<em></em>${AK.editor?`<button type="button" class="ak-pgc" aria-label="Change the bot's photo" onclick="akPrevPick('av')">${akI('cam')}</button>`:''}</span>
+   <div class="ak-idn"><h2>Alexandra ${tick}</h2>${AK.editor&&(akBav().data||akCov().data)?`<span class="ak-pgxs">${akBav().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Remove the photo?','The bot goes back to the HEMERA star.','Remove',()=>akBotAvSave(''))">Remove photo</button>`:''}${akCov().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Reset the cover?','The cover goes back to the alliance picture.','Reset',akCovReset)">Reset cover</button>`:''}</span>`:''}</div></div>
   <div class="ak-hl">${AK_HL.map(([i,t])=>`<button type="button" onclick="akStoryAt(${i})"><img src="${img(AKS[i].img)}" alt="">${t}</button>`).join('')}</div>
   <div class="ak-tabs" role="tablist">${[['about','About'],['photos','Photos'],['platforms','Platforms']].map(([k,t])=>`<button type="button" role="tab" aria-selected="${tab===k}" class="${tab===k?'on':''}" onclick="AK.pgTab='${k}';akAbout(null,1)">${t}</button>`).join('')}</div>
   <div class="ak-pgbody">${body}</div>
