@@ -10943,7 +10943,7 @@ async function akSend(e){
  akUser(q);AK.kb=false;akKb();
  if(!ASK_HEMERA_URL){akBot('<p>Alexandra is not connected yet.</p>');return}
  AK.busy=true;akDraw();
- try{let ctx='';try{ctx=await akCtx()}catch(e){}const j=await akPost('ask',{q,history:AK.hist.slice(-8),ctx});AK.hist.push({role:'user',text:q},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-16);AK.busy=false;try{await akAssets()}catch(e){}akBot(akAnswer(j.answer||'')+(AK.editor&&!j.api?'<p class="ak-oldapi">Editors only: the Alexandra script is older than v23, so she cannot read the dashboard numbers yet. Deploy the new HemeraApi.gs as a New version.</p>':''))}
+ try{let ctx='';try{ctx=await akCtx()}catch(e){}const j=await akPost('ask',{q,history:AK.hist.slice(-8),ctx});AK.hist.push({role:'user',text:q},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-16);AK.busy=false;try{await akAssets()}catch(e){}akBot(akAnswer(j.answer||'')+(AK.editor&&!ctx?'<p class="ak-oldapi">Editors only: this device could not read the dashboard numbers, so they were not sent with the question.</p>':'')+(AK.editor&&!j.api?'<p class="ak-oldapi">Editors only: the Alexandra script is older than v23, so she cannot read the dashboard numbers yet. Deploy the new HemeraApi.gs as a New version.</p>':''))}
  catch(err){AK.busy=false;akBot(`<p>${akEsc(/not connected/.test(err.message)?'Alexandra is not connected yet.':'Something went wrong. Try again.')}</p>`)}
 }
 // the answer text, with every link turned into a button (sheet, report, script)
