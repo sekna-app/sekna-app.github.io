@@ -9188,7 +9188,7 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 .aks-kb button:focus{position:fixed}
 .aks-sc img.bg{image-rendering:high-quality}
 .aks-sc.on .aks-go{position:relative;z-index:25}.aks-cap{z-index:22;pointer-events:none}.aks-go{pointer-events:auto}
-.aks-bar,.aks-dots,.aks-cap{transition:opacity .25s}.aks.hold .aks-bar,.aks.hold .aks-dots,.aks.hold .aks-cap{opacity:0}
+
 .aks-sc.smoke-pos img.bg{object-position:50% 38%}
 .aks-kb button:focus-visible,.aks-x:focus-visible,.aks-go:focus-visible{outline:2px solid #F3D58E;outline-offset:2px}
 .ak-meet{display:flex;align-items:center;gap:12px;width:100%;margin-top:14px;border:0;border-radius:16px;padding:8px 12px 8px 8px;background:linear-gradient(135deg,#0F1A3A,#1C3C96);color:#fff;cursor:pointer;text-align:left}
@@ -10292,7 +10292,7 @@ async function akBotAvSave(d){const j=await akAdmQ(d?'botAvSet':'botAvDel',d?{da
 const AKS=[
  {img:'alliance',cls:'fitw',k:'THE ALLIANCE',h:'Two minds. <em>One light.</em>'},
  {img:'eyes',k:'ALEXANDRA',h:'She reads <em>every number</em>'},
- {img:'hand',k:'HEMERA',h:'and turns it into <em>answers</em>'},
+ {img:'answers',k:'HEMERA',h:'and turns it into <em>answers</em>'},
  {img:'team',k:'FOR THE TEAM',h:'Sheets, reports and days off, <em>in one chat</em>'},
  {img:'flag',k:'ALEXANDRA × HEMERA',h:'Built for <em>HEMERA</em>'},
  {img:'sekna',k:'SEKNA',h:'Made at <em>Sekna</em>',smoke:1,cls:'smoke-pos'},
@@ -10304,7 +10304,7 @@ function akStory(){
  const o=document.createElement('div');o.id='aksBox';o.className='aks';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Meet Alexandra');
  o.innerHTML=`<div class="aks-ph"><div class="aks-bar"><img src="get/logo-white.webp" alt="HEMERA"><button type="button" class="aks-x" aria-label="Close" onclick="akStoryClose()">${akI('x')}</button></div>
   <div class="aks-dots">${AKS.map(()=>'<i></i>').join('')}</div>
-  ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}"><img class="bg" src="icons/alexandra/${s.img}.webp?v=5" decoding="async" alt="">${s.smoke?'<i class="aks-vig"></i>':''}<div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
+  ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}"><img class="bg" src="icons/alexandra/${s.img}.webp?v=6" decoding="async" alt="">${s.smoke?'<i class="aks-vig"></i>':''}<div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
   <div class="aks-fx"></div><div class="aks-tap" aria-hidden="true"></div>
   <div class="aks-kb"><button type="button" aria-label="Back" onclick="akStoryStep(-1)"></button><button type="button" aria-label="Next" onclick="akStoryStep(1)"></button></div></div>`;
  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));
@@ -10343,7 +10343,7 @@ async function akStoryShow(i,again){
  if(cur&&cur!==now){cur.classList.remove('on');cur.classList.add('out')}
  now.classList.remove('out');now.classList.add('on');fx.innerHTML='';
  ph.querySelectorAll('.aks-dots i').forEach((d,k)=>{d.className=k<i?'done':k===i?'now':''});
- const A=(k,op)=>now.animate(k,Object.assign({duration:T,easing:AKS_E,fill:'both'},op||{}));
+ let ta=null;const A=(k,op)=>(ta=now.animate(k,Object.assign({duration:T,easing:AKS_E,fill:'both'},op||{})));
  const el=(c,css)=>{const d=document.createElement('i');d.className=c;Object.assign(d.style,css||{});fx.appendChild(d);return d};
  const B=(c,k,op,css)=>el(c,css).animate(k,Object.assign({duration:T,easing:AKS_E,fill:'forwards'},op||{}));
  const W=ph.clientWidth,H=ph.clientHeight,full='inset(0 0 0 0)';
@@ -10364,7 +10364,7 @@ async function akStoryShow(i,again){
   const go=now.querySelector('.aks-go');if(go)go.animate([{opacity:0,transform:'translateY(10px)'},{opacity:1,transform:'none'}],{duration:700,delay:d0+700,fill:'both'});
  }
  const dur=tr==='calm'?1150:tr==='none'?750:T*1.05;
- if(cur&&cur!==now)setTimeout(()=>{if(tok!==S.tok)return;cur.classList.remove('out');cur.getAnimations({subtree:true}).forEach(a=>{if(!(a instanceof CSSAnimation))a.cancel()});cur.removeAttribute('style');cur.querySelectorAll('[style]').forEach(n=>n.removeAttribute('style'))},dur+60);
+ if(cur&&cur!==now)(ta?ta.finished.catch(()=>{}):new Promise(r=>setTimeout(r,dur))).then(()=>{if(tok!==S.tok)return;cur.classList.remove('out');cur.getAnimations({subtree:true}).forEach(a=>{if(!(a instanceof CSSAnimation))a.cancel()});cur.removeAttribute('style');cur.querySelectorAll('[style]').forEach(n=>n.removeAttribute('style'))});
  S.i=i;
  if(i<AKS.length-1){S.left=AKS_DUR;S.end=Date.now()+AKS_DUR;S.t=setTimeout(()=>akStoryShow(i+1),AKS_DUR)}
 }
@@ -10464,7 +10464,7 @@ function akAbout(e){if(e)e.stopPropagation();const pg=document.getElementById('a
  pg.innerHTML=`<div class="ak-pgh"><button type="button" class="ak-bk" aria-label="Back" onclick="akAboutClose()">${akI('back')}</button></div>
   <div class="ak-pgb"><div class="ak-pgt"><span class="ak-pga">${akAvIn()}<em></em>${AK.editor?`<button type="button" class="ak-pgc" aria-label="Change the bot's photo" onclick="akBotAvPick()">${akI('cam')}</button>`:''}</span><b>Alexandra</b><small>Active now</small>${AK.editor&&akBav().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Remove the photo?','The bot goes back to the HEMERA star.','Remove',()=>akBotAvSave(''))">Remove photo</button>`:''}</div>
   <div class="ak-pgr">${n('links','Sheets')}${n('off','Days off')}${n('mail','Emails')}${n('task','Tasks')}</div>
-  <button type="button" class="ak-meet" onclick="akAboutClose();setTimeout(akStory,250)"><img src="icons/alexandra/alliance.webp?v=5" alt=""><span><b>Meet Alexandra</b><small>Her story with HEMERA</small></span>${akI('play')}</button>
+  <button type="button" class="ak-meet" onclick="akAboutClose();setTimeout(akStory,250)"><img src="icons/alexandra/alliance.webp?v=6" alt=""><span><b>Meet Alexandra</b><small>Her story with HEMERA</small></span>${akI('play')}</button>
   <h4>About</h4><div class="ak-pgp"><p>Answers from the team sheet: sheets, platform reports and scripts, who is off and who covers, and team emails.</p><p>Type it any way you like, in Arabic or English, or send a voice message.</p><p class="ak-mu">Each person sees only the platforms they have access to.</p></div>
   ${AK.canAdd||AK.canTeach?`<h4>Tools</h4>${AK.canAdd?row('add','add','Add a sheet','Put a new sheet in the list'):''}${AK.canTeach?row('teach','teach','Teach the bot','Rules, access and platforms'):''}`:''}
   ${AK.editor?`<h4>Settings</h4><div id="akBotW">${akBotRow(AK.bst||null)}</div>`:''}
