@@ -129,6 +129,16 @@ async function withAccess(token, dataPromise) {
 }
 
 const CALLS = {
+  /** Alexandra: an admin allowed someone; tell that person. */
+  async alexandraAccessGranted([token, email]) {
+    await assertAdmin(token);
+    const e = String(email || '').toLowerCase().trim();
+    if (!/^[^@\s]+@[^@\s]+$/.test(e)) throw new Error('No email.');
+    await notify.send({ pushes: [{ email: e, title: 'Alexandra · you are in', body: 'Ibrahim gave you access to Alexandra. Open it and ask her anything.', eventType: 'alexandra' }] });
+    const path = 'server/alexandra-requests', doc = (await fsGet(path)) || {};
+    if (doc[e]) { delete doc[e]; await fsSet(path, doc); }
+    return { ok: true };
+  },
   /** Alexandra: someone without access asks for it; the two admins get a notification (at most once an hour per person). */
   async alexandraAccessRequest([token]) {
     const me = await assertAccess(token);
