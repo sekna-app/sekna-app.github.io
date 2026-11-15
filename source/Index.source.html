@@ -9314,6 +9314,11 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 .ak-intro a.ak-ment{display:inline;gap:0;padding:0 3px;font-size:inherit}.ak-ment{color:#0866FF;font-weight:700;text-decoration:none;background:#E7F0FF;border-radius:4px;padding:0 3px}.ak.dk .ak-ment{color:#8EB8FF;background:#1d2a44}
 
 .ak-preverr{margin:10px 0 0;padding:9px 11px;border-radius:10px;background:#FDECEE;color:#B3122E;font:600 12.5px/1.4 Inter,system-ui,sans-serif}
+
+/* v444 memory confirm */
+.ak-memq{margin:6px 0 8px;padding:8px 11px;border-left:3px solid #C9A24A;background:#fff;border-radius:8px;font-weight:600}
+.ak-memsave{display:inline-flex;align-items:center;gap:5px;border:0!important;background:#1C3C96!important;color:#fff!important}.ak-memsave .ak-ic{width:14px;height:14px}
+.ak.dk .ak-memq{background:#242526}.ak.dk .ak-memsave{background:#5B5BF0!important}
 </style>
 </head>
 <body>
@@ -10709,6 +10714,7 @@ async function akSend(e){
  if(AK.ask){const a=AK.ask;AK.ask=null;akUser(q);a.fn(q);return}
  if(AK.add){akAddAnswer(q);return}
  if(AK.teach){akLearn(q);return}
+ if(AK.canTeach&&AK_MEM_RE.test(q)){akMemAsk(q);return}
  akUser(q);AK.kb=false;akKb();
  if(!ASK_HEMERA_URL){akBot('<p>Alexandra is not connected yet.</p>');return}
  AK.busy=true;akDraw();
@@ -11106,11 +11112,19 @@ async function akBcSave(btn){const B=AK.nb;if(!B)return;btn.disabled=true;
  const j=await akAdm('bcAdd',{text:B.text,target:B.target,picked:B.picked,tz:B.tz,day:B.day,h:(B.hour%12)+(B.ampm==='pm'?12:0),mi:B.min,repeat:B.repeat});
  if(j){AK.nb=null;akBot('<p>Scheduled.</p>');akBcDraw(j)}else btn.disabled=false}
 function akTeachEnd(){if(!AK.teach)return;AK.teach=false;akUser('Done');akBot('<p>Done. The bot follows the new rules from now on.</p>')}
-async function akLearn(t){
- akUser(t);AK.busy=true;akDraw();
- try{const j=await akPost('learn',{rule:t});AK.busy=false;akBot(`<p>Learned it: <b>${akEsc(j.id)}</b></p><p class="ak-sm">Type another rule, or tap Done.</p><div class="ak-nv"><button type="button" class="sk" onclick="akTeachEnd()">Done</button></div>`,'wb')}
- catch(err){AK.busy=false;akBot(`<p>${akEsc(err.message||'Something went wrong.')}</p>`)}
-}
+/* v444 memory: nothing is saved until you tap Save */
+const AK_MEM_RE=/(ضيف|اضيف|أضيف|نضيف|زود|احفظ|سجل|سجّل|حط)[^\n]{0,30}?(مومري|ميموري|ممري|ذاكر[ةه]|memory)|^\s*(افتكر|افتكري)\b|add [^\n]{0,20}to (your )?memory|^\s*remember\b/i;
+function akMemAsk(q){akUser(q);AK.teach=true;AK.kb=false;akKb();akBot('<p dir="auto">عايز تضيف إيه للميموري؟ اكتبه في رسالة.</p><div class="ak-nv"><button type="button" class="sk" onclick="akMemCancel(this)">Cancel</button></div>','wb')}
+function akLearn(t){
+ akUser(t);AK.draft=t;
+ akBot(`<p class="ak-sm ak-mu">${akI('teach')} Save this to memory?</p><blockquote class="ak-memq" dir="auto">${akEsc(t)}</blockquote><div class="ak-nv"><button type="button" class="ak-memsave" onclick="akMemSave(this)">${akI('check')}Save</button><button type="button" class="sk" onclick="akMemCancel(this)">Cancel</button></div>`,'wb')}
+function akMemOff(btn){const m=btn&&btn.closest('.ak-m');if(m)m.querySelectorAll('.ak-nv button').forEach(b=>b.disabled=true)}
+async function akMemSave(btn){const t=AK.draft;if(!t||AK.busy)return;akMemOff(btn);AK.draft=null;AK.busy=true;akDraw();
+ try{const j=await akPost('learn',{rule:t});AK.busy=false;AK.teach=false;
+  akBot(`<p>${akI('check')} Saved to memory: <b>${akEsc(j.id)}</b></p><p class="ak-sm ak-mu">The bot follows it from now on.</p><div class="ak-nv"><button type="button" class="sk" onclick="akMemMore(this)">${akI('add')}Add another</button></div>`,'wb')}
+ catch(err){AK.busy=false;AK.draft=t;akBot(`<p>${akEsc(err.message||'Something went wrong.')}</p>`)}}
+function akMemCancel(btn){akMemOff(btn);AK.draft=null;AK.teach=false;akUser('Cancel');akBot('<p>OK, nothing was saved.</p>');AK.kb=true;akKb()}
+function akMemMore(btn){akMemOff(btn);AK.teach=true;akBot('<p dir="auto">اكتب اللي عايز تضيفه للميموري.</p><div class="ak-nv"><button type="button" class="sk" onclick="akMemCancel(this)">Cancel</button></div>','wb')}
 async function akForget(id,btn){
  btn.disabled=true;
  try{const jj=await akPost('forget',{id});if(jj&&jj.rules)AK.rl=jj.rules;const row=btn.closest('.ak-rl2');if(row)row.remove();const m=AK.msgs.find(x=>x.html.indexOf(`akForget('${id}'`)>=0);if(m)m.html=m.html.replace(new RegExp('<div class="ak-rl2"><b>'+id+'</b>[\\s\\S]*?</button></div>'),'');showSettingsToast(id+' removed')}
