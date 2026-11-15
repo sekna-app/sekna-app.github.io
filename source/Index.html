@@ -9309,6 +9309,9 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 
 /* v440 tap her photo in the chat to open her profile */
 .ak-tapp{cursor:pointer}.ak-tapp:active{transform:scale(.94)}
+
+/* v441 mention */
+.ak-intro a.ak-ment{display:inline;gap:0;padding:0 3px;font-size:inherit}.ak-ment{color:#0866FF;font-weight:700;text-decoration:none;background:#E7F0FF;border-radius:4px;padding:0 3px}.ak.dk .ak-ment{color:#8EB8FF;background:#1d2a44}
 </style>
 </head>
 <body>
@@ -10614,7 +10617,7 @@ function akAbout(e,keep){if(e&&e.stopPropagation)e.stopPropagation();const pg=do
  const tg='<img class="ak-tgi" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTIiIGZpbGw9IiMyMjlFRDkiLz48cGF0aCBkPSJNNS40IDExLjdsMTEuNC00LjRjLjUtLjIgMSAuMS44LjlsLTEuOSA5LjFjLS4xLjYtLjUuOC0xLjEuNWwtMy0yLjItMS40IDEuNGMtLjIuMi0uMy4zLS42LjNsLjItMy4xIDUuNi01LjFjLjItLjIgMC0uMy0uNC0uMWwtNi45IDQuNC0zLS45Yy0uNi0uMi0uNi0uNi4zLS44eiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==" alt="">';
  if(tab==='about')body=`<h4>Intro</h4><div class="ak-intro">
    <div>${akI('rep')}<span>Works at <b>HEMERA</b></span></div>
-   <div>${akI('teach')}<span>Studied at <b>Sekna</b></span></div>
+   <div>${akI('teach')}<span>Taught by <a class="ak-ment" href="#" onclick="event.preventDefault();akOpenOwner(event)">@${akEsc(akOwner().name)}</a></span></div>
    <div><u>🇺🇦</u><span>From <b>Alexandria, Egypt</b></span></div>
    <div>${akI('mic')}<span>Speaks <b>Arabic</b> and <b>English</b></span></div>
    <a href="https:\/\/t.me/Seknaa_bot" target="_blank" rel="noopener">${tg}<span>On Telegram <b>@Seknaa_bot</b></span></a></div>
@@ -10639,6 +10642,10 @@ function akAbout(e,keep){if(e&&e.stopPropagation)e.stopPropagation();const pg=do
   <div class="ak-pgcta"><button type="button" onclick="akAboutClose()">${akI('send')}Message Alexandra</button></div></div>`;
  if(!keep){pg.setAttribute('aria-hidden','false');requestAnimationFrame(()=>pg.classList.add('on'))}
  if(tab==='about'&&AK.editor&&ASK_HEMERA_URL){akBotLoad();akReqsLoad()}}
+ 
+const AK_OWNER=['ibrahim@sekna.co.uk','ibrahim.amin6700@gmail.com'];
+function akOwner(){const P=akPpl();for(const e of AK_OWNER){const p=P.find(x=>String(x.email).toLowerCase()===e);if(p)return{email:p.email,name:String(p.name||'Ibrahim').split(' ')[0]}}return{email:AK_OWNER[0],name:'Ibrahim'}}
+async function akOpenOwner(e){try{await akTeamData()}catch(x){}const o=akOwner();try{profOpen(o.email,e)}catch(x){showSettingsToast('Could not open the profile')}}
 function akStoryAt(i){akStory();if(window.AKST)AKST.ret=1;if(i)setTimeout(()=>akStoryShow(i),60)}
 function akPgPlat(k){akAboutClose();setTimeout(()=>{AK.kb=false;akKb();akUser(k);AK.ls=[];akPick('p',k)},250)}
 function akDk(){try{return localStorage.getItem('hm_ask_dark')==='1'}catch(e){return false}}
