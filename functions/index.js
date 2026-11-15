@@ -129,6 +129,19 @@ async function withAccess(token, dataPromise) {
 }
 
 const CALLS = {
+  /** Alexandra: someone without access asks for it; the two admins get a notification (at most once an hour per person). */
+  async alexandraAccessRequest([token]) {
+    const me = await assertAccess(token);
+    const email = String(me.email || '').toLowerCase().trim(), who = String(me.name || email).slice(0, 60);
+    const path = 'server/alexandra-requests';
+    const doc = (await fsGet(path)) || {}, last = (doc[email] && doc[email].at) || 0;
+    if (Date.now() - last < 3600000) return { ok: true, again: true };
+    doc[email] = { at: Date.now(), name: who };
+    await fsSet(path, doc);
+    await notify.send({ pushes: ACCESS.ADMIN_EMAILS.map(e => ({ email: e, title: 'Alexandra · access request',
+      body: who + ' (' + email + ') asked to use Alexandra. Open Alexandra, tap (i), and allow it under Access requests.', eventType: 'alexandra' })) });
+    return { ok: true };
+  },
   async getDashboardData(args) {
     const key = normalizeAccountKey_(args[0]);
     return withAccess(args[2], sheetData('dash', key, !!args[1]));

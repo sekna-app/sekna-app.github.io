@@ -9201,6 +9201,19 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 
 /* v425 the alliance picture is shown full width so the HEMERA logo is never cut */
 .aks-sc.fitw{background:#03060f}.aks-sc.fitw img.bg{height:auto;bottom:auto;object-fit:contain;transform:none;transform-origin:50% 0;-webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent)}
+
+/* v427 no access card with Request access, and the requests list for the editors */
+.ak-noacc{display:flex;flex-direction:column;gap:8px;max-width:260px}
+.ak-noacc img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;display:block}
+.ak-noacc p{margin:0}
+.ak-reqb{align-self:flex-start;border:0;border-radius:99px;padding:8px 16px;font:800 13px Inter,system-ui,sans-serif;background:#1C3C96;color:#fff;cursor:pointer}
+.ak-reqb.sent{background:#E7F5EC;color:#1E8E3E;cursor:default}.ak-reqb.sent:before{content:"✓ "}
+.ak-rqn{font-style:normal;background:#E41E3F;color:#fff;border-radius:99px;padding:1px 7px;font-size:11px;margin-left:4px}
+.ak-rq{display:flex;align-items:center;gap:10px;padding:8px 0}.ak-rq .tk-av,.ak-rq .ak-uv{width:38px;height:38px;flex:none}
+.ak-rq>span:not(.tk-av):not(.ak-uv){flex:1;min-width:0;display:flex;flex-direction:column}.ak-rq b{font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ak-rq small{font-size:11.5px;color:#65676B;overflow:hidden;text-overflow:ellipsis}
+.ak-rq button{border:0;cursor:pointer;flex:none}.ak-rq .ok{border-radius:99px;padding:7px 14px;background:#1C3C96;color:#fff;font:800 12.5px Inter,system-ui,sans-serif}
+.ak-rq .no{width:32px;height:32px;border-radius:50%;background:#F0F2F5;color:#65676B;display:grid;place-items:center}.ak-rq .no .ak-ic{width:14px;height:14px}
+.ak.dk .ak-rq .no{background:#3A3B3C;color:#E4E6EB}.ak.dk .ak-rq .ok,.ak.dk .ak-reqb:not(.sent){background:#5B5BF0}.ak.dk .ak-rq b{color:#E4E6EB}
 </style>
 </head>
 <body>
@@ -10266,7 +10279,7 @@ async function akPost(action,extra){
 }
 async function akAssets(force){
  if(!force&&AK.assets&&Date.now()-AK.at<600000)return AK.assets;
- const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[],categories:j.categories||[],formats:j.formats||[]};AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);const wasB=AK.blocked;AK.blocked=false;akWhoSave(true);AK.at=Date.now();akBavSync(j.botAvV);if(j.storySeen!==undefined)akStoryFirst(!!j.storySeen);if(wasB){akLockIn();AK.msgs=AK.msgs.filter(m=>m.html!==AK_NO);akDraw()}if(AK.resIds&&!AK.res){AK.res=AK.assets.rows.filter(r=>AK.resIds.indexOf(r.id)>=0)}akKb();return AK.assets;
+ const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[],categories:j.categories||[],formats:j.formats||[]};AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);const wasB=AK.blocked;AK.blocked=false;akWhoSave(true);AK.at=Date.now();akBavSync(j.botAvV);if(j.storySeen!==undefined)akStoryFirst(!!j.storySeen);if(wasB){akLockIn();AK.msgs=AK.msgs.filter(m=>!akIsNo(m.html));akDraw()}if(AK.resIds&&!AK.res){AK.res=AK.assets.rows.filter(r=>AK.resIds.indexOf(r.id)>=0)}akKb();return AK.assets;
 }
  
 function akWho(){try{const w=JSON.parse(localStorage.getItem('hm_ask_who')||'null');return w&&w.e===akMe().email?w:null}catch(e){return null}}
@@ -10368,11 +10381,22 @@ async function akStoryShow(i,again){
 function akStorySeenLocal(){try{return localStorage.getItem('hm_aks_'+akMe().email)==='1'}catch(e){return false}}
 function akStoryMark(){try{localStorage.setItem('hm_aks_'+akMe().email,'1')}catch(e){}if(ASK_HEMERA_URL)akPost('storySeen').catch(()=>{})}
 function akStoryFirst(seen){if(seen){try{localStorage.setItem('hm_aks_'+akMe().email,'1')}catch(e){}return}if(akStorySeenLocal()||!document.getElementById('akBox')||document.getElementById('aksBox'))return;akStoryMark();akStory()}
-const AK_NO='<p>You do not have access to Alexandra. Ask Ibrahim if you need it.</p>';
+const AK_NO='<div class="ak-noacc"><img src="icons/alexandra/noaccess.webp?v=1" alt=""><p>You do not have access to Alexandra. Ask Ibrahim if you need it.</p><button type="button" class="ak-reqb" onclick="akReqAccess(this)">Request access</button></div>';
+const AK_NO_SENT=AK_NO.replace('<button type="button" class="ak-reqb" onclick="akReqAccess(this)">Request access</button>','<button type="button" class="ak-reqb sent" disabled>Request sent</button>');
+function akIsNo(h){return /ak-noacc/.test(String(h||''))}
+function akReqSent(){try{const t=+localStorage.getItem('hm_ak_req_'+akMe().email)||0;return Date.now()-t<864e5}catch(e){return false}}
+ 
+async function akReqAccess(btn){if(btn.disabled)return;btn.disabled=true;btn.textContent='Sending…';
+ let ok=false;
+ try{const j=await akPost('accessRequest');ok=!!(j&&j.ok);if(j&&j.allowed){AK.blocked=false;akLockIn();AK.msgs=AK.msgs.filter(m=>!akIsNo(m.html));akDraw();akKb();akAssets(true).catch(()=>{});return}}catch(e){}
+ try{if(window.SEKNA_FB&&typeof getAccessToken==='function'){const t=getAccessToken();if(t){await window.SEKNA_FB.post('/call',{fn:'alexandraAccessRequest',args:[t]},20000);ok=true}}}catch(e){}
+ if(!ok){btn.disabled=false;btn.textContent='Request access';showSettingsToast('Could not send the request. Try again.');return}
+ try{localStorage.setItem('hm_ak_req_'+akMe().email,String(Date.now()))}catch(e){}
+ AK.msgs.forEach(m=>{if(akIsNo(m.html))m.html=AK_NO_SENT});akDraw();showSettingsToast('Request sent to Ibrahim')}
 function openAsk(){if(!ASK_HEMERA_URL)setTimeout(()=>akStoryFirst(false),600);const w=akWho();if(w&&w.ok===false){AK.blocked=true;AK.msgs=[];try{localStorage.removeItem(AK_KEEP)}catch(e){}}akOpenNow()}
 setTimeout(()=>{try{akNavLock(false)}catch(e){}},1500);
  
-function akBlockedSay(){AK.kb=false;akKb();akLockIn();if(!AK.msgs.some(m=>m.html===AK_NO))akBot(AK_NO)}
+function akBlockedSay(){AK.kb=false;akKb();akLockIn();if(!AK.msgs.some(m=>akIsNo(m.html)))akBot(akReqSent()?AK_NO_SENT:AK_NO)}
 function akLockIn(){const i=document.getElementById('akQ'),f=i&&i.closest('form');if(!i)return;const on=!!AK.blocked;i.disabled=on;i.placeholder=on?'You do not have access':'Aa';if(on)i.value='';if(f)f.classList.toggle('ak-off',on);akInMode()}
 async function akRecheck(){try{const j=await akPost('hello');akBavSync(j.botAvV);AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);AK.blocked=false;akWhoSave(true);return true}catch(e){if(e&&e.blocked){AK.blocked=true;akWhoSave(false)}return !AK.blocked}}
 function akOpenNow(){
@@ -10462,11 +10486,16 @@ function akAbout(e){if(e)e.stopPropagation();const pg=document.getElementById('a
   <button type="button" class="ak-meet" onclick="akAboutClose();setTimeout(akStory,250)"><img src="icons/alexandra/alliance.webp?v=6" alt=""><span><b>Meet Alexandra</b><small>Her story with HEMERA</small></span>${akI('play')}</button>
   <h4>About</h4><div class="ak-pgp"><p>Answers from the team sheet: sheets, platform reports and scripts, who is off and who covers, and team emails.</p><p>Type it any way you like, in Arabic or English, or send a voice message.</p><p class="ak-mu">Each person sees only the platforms they have access to.</p></div>
   ${AK.canAdd||AK.canTeach?`<h4>Tools</h4>${AK.canAdd?row('add','add','Add a sheet','Put a new sheet in the list'):''}${AK.canTeach?row('teach','teach','Teach the bot','Rules, access and platforms'):''}`:''}
-  ${AK.editor?`<h4>Settings</h4><div id="akBotW">${akBotRow(AK.bst||null)}</div>`:''}
+  ${AK.editor?`<div id="akReqW">${akReqsHtml(AK.rq)}</div><h4>Settings</h4><div id="akBotW">${akBotRow(AK.bst||null)}</div>`:''}
   <h4>Chat</h4><button type="button" class="r" role="switch" aria-checked="${akDk()}" onclick="akDkSet(!akDk(),this)"><i>${akI('moon')}</i><span><b>Dark mode</b><small>Only for this chat</small></span><em class="ak-sw${akDk()?' on':''}"></em></button>${row('clear','trash','Clear chat','The chat stays on this device for 24 hours','del')}</div>`;
- pg.setAttribute('aria-hidden','false');requestAnimationFrame(()=>pg.classList.add('on'));if(AK.editor&&ASK_HEMERA_URL)akBotLoad()}
+ pg.setAttribute('aria-hidden','false');requestAnimationFrame(()=>pg.classList.add('on'));if(AK.editor&&ASK_HEMERA_URL){akBotLoad();akReqsLoad()}}
 function akDk(){try{return localStorage.getItem('hm_ask_dark')==='1'}catch(e){return false}}
 function akDkSet(on,btn){try{localStorage.setItem('hm_ask_dark',on?'1':'0')}catch(e){}const o=document.getElementById('akBox');if(o)o.classList.toggle('dk',on);if(btn){btn.setAttribute('aria-checked',on);const w=btn.querySelector('.ak-sw');if(w)w.classList.toggle('on',on)}}
+function akReqsHtml(list){if(!list||!list.length)return '';const P=akPpl();
+ return `<h4>Access requests <em class="ak-rqn">${list.length}</em></h4>`+list.map(r=>{const p=P.find(x=>String(x.email).toLowerCase()===r.email)||{name:r.name||r.email,email:r.email};
+  return `<div class="ak-rq">${p.avatar!==undefined?tkAv(p):`<span class="ak-uv" style="background:#1C3C96">${akEsc(String(p.name||p.email).charAt(0).toUpperCase())}</span>`}<span><b>${akEsc(p.name||r.email)}</b><small>${akEsc(r.email)}</small></span><button type="button" class="no" aria-label="Dismiss" onclick="akReqDo('reqDel','${akEsc(r.email)}',this)">${akI('x')}</button><button type="button" class="ok" onclick="akReqDo('reqAllow','${akEsc(r.email)}',this)">Allow</button></div>`}).join('')}
+async function akReqsLoad(){const j=await akAdmQ('reqs');if(!j||!j.reqs)return;AK.rq=j.reqs;const w=document.getElementById('akReqW');if(w)w.innerHTML=akReqsHtml(AK.rq)}
+async function akReqDo(op,email,btn){btn.disabled=true;const j=await akAdmQ(op,{who:email});if(!j||!j.reqs){btn.disabled=false;return}AK.rq=j.reqs;AK.pm=null;const w=document.getElementById('akReqW');if(w)w.innerHTML=akReqsHtml(AK.rq);showSettingsToast(op==='reqAllow'?'Access given':'Request dismissed')}
 function akAboutClose(){const pg=document.getElementById('akAbt');if(!pg)return;pg.classList.remove('on');pg.setAttribute('aria-hidden','true')}
 function akPgGo(id){
  if(id==='clear'){const pg=document.getElementById('akAbt');if(!pg||pg.querySelector('.ak-cf'))return;
