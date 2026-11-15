@@ -9133,6 +9133,14 @@ body.dark-mode .ak-cfb{background:#171d27}body.dark-mode .ak-cfb b{color:#e8ecf3
 body.dark-mode .ak-uc button,body.dark-mode .ak-um,body.dark-mode .ak-ucf,body.dark-mode .ak-ub,body.dark-mode .ak-ur,body.dark-mode .ak-kv{background:#171d27;border-color:#2a3242;color:#e8ecf3}body.dark-mode .ak-um button,body.dark-mode .ak-ur em{color:#e8ecf3}body.dark-mode .ak-kv div{border-color:#2a3242}
 .ak.dk .ak-uc button,.ak.dk .ak-um,.ak.dk .ak-ucf,.ak.dk .ak-ub,.ak.dk .ak-ur,.ak.dk .ak-kv{background:#242526;border-color:#3E4042;color:#E4E6EB}.ak.dk .ak-uc .on{background:#5B5BF0;border-color:#5B5BF0;color:#fff}.ak.dk .ak-uf{background:#5B5BF0}
 .ak.dk .ak-um button,.ak.dk .ak-ur em,.ak.dk .ak-ucf b{color:#E4E6EB}.ak.dk .ak-um .del{color:#ff6b81}.ak.dk .ak-ub b{color:#8E8CFF}.ak.dk .ak-kv div{border-color:#3E4042}.ak.dk .ak-ucf button{background:#4E4F50;color:#E4E6EB}.ak.dk .ak-ucf .del{background:#E41E3F;color:#fff}
+
+/* v413 + New category / New format inside the list */
+.ak-ddl .ak-ddp{color:#1C3C96;border-top:1px dashed #d9deea}.ak-ddl .ak-ddp i{background:#EEF2FC;color:#1C3C96}
+.ak-ddn{display:flex;gap:6px;padding:8px 2px;border-top:1px dashed #d9deea}
+.ak-ddn input{flex:1;min-width:0;border:1.5px solid #1C3C96;border-radius:10px;padding:7px 10px;font:700 13px Inter,system-ui,sans-serif;color:#141b33;background:#fff;outline:none}
+.ak-ddl .ak-ddn button{width:auto;flex:none;display:block;border:0;border-radius:10px;padding:0 16px;color:#fff;background:#1C3C96;color:#fff;font:800 12.5px Inter,system-ui,sans-serif;cursor:pointer}
+body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8cf0}
+.ak.dk .ak-ddn input{background:#303030;color:#E4E6EB;border-color:#5B5BF0}.ak.dk .ak-ddn button{background:#5B5BF0}.ak.dk .ak-ddl .ak-ddp{color:#8E8CFF}.ak.dk .ak-ddl .ak-ddp i{background:#3A3B3C;color:#8E8CFF}
 </style>
 </head>
 <body>
@@ -10525,8 +10533,11 @@ function akEditDraw(){const E=AK.ed;if(!E)return;
 /* v403 list picker (opens under the field) for every list inside Ask HEMERA */
 function akDdIc(t,o){const m=t==='fm'?AK_FMT_IC:AK_CAT_IC;return m[String(o).toLowerCase()]||(t==='fm'?'grid':'folder')}
 function akDd(k,v,ops,t,open){const all=(ops.indexOf(v)<0&&v?[v]:[]).concat(ops);
- return `<div class="ak-dd${open?' op':''}"><button type="button" class="ak-ddf" aria-expanded="${open}" onclick="akDdTog('${k}')"><span>${akI(akDdIc(t,v))}${akEsc(v||'Choose')}</span><b class="ak-dn">${akI('down')}</b></button>${open?`<div class="ak-ddl">${all.map(o=>`<button type="button" class="${o===v?'on':''}" onclick="akDdSet('${k}','${akEsc(o)}')"><i>${akI(akDdIc(t,o))}</i><span>${akEsc(o)}</span>${o===v?akI('check'):''}</button>`).join('')}</div>`:''}</div>`}
-function akDdTog(k){const E=AK.ed;if(!E)return;E.dd=E.dd===k?null:k;akEditDraw()}
+ return `<div class="ak-dd${open?' op':''}"><button type="button" class="ak-ddf" aria-expanded="${open}" onclick="akDdTog('${k}')"><span>${akI(akDdIc(t,v))}${akEsc(v||'Choose')}</span><b class="ak-dn">${akI('down')}</b></button>${open?`<div class="ak-ddl">${all.map(o=>`<button type="button" class="${o===v?'on':''}" onclick="akDdSet('${k}','${akEsc(o)}')"><i>${akI(akDdIc(t,o))}</i><span>${akEsc(o)}</span>${o===v?akI('check'):''}</button>`).join('')}${t==='ct'||t==='fm'?(AK.ed&&AK.ed.ddn===k?`<div class="ak-ddn"><input id="akDdN" maxlength="60" placeholder="${t==='fm'?'New format':'New category'}" onkeydown="if(event.key==='Enter'){event.preventDefault();akDdAdd('${k}','${t}')}"><button type="button" onclick="akDdAdd('${k}','${t}')">Add</button></div>`:`<button type="button" class="ak-ddp" onclick="AK.ed.ddn='${k}';akEditDraw();setTimeout(()=>{const i=document.getElementById('akDdN');if(i)i.focus()},50)"><i>${akI('add')}</i><span>${t==='fm'?'New format':'New category'}</span></button>`):''}</div>`:''}</div>`}
+function akDdAdd(k,t){const i=document.getElementById('akDdN'),v=String(i&&i.value||'').trim().replace(/\s+/g,' ');if(!v){if(i)i.focus();return}
+ const a=AK.assets||(AK.assets={});const key=t==='fm'?'formats':'categories';a[key]=a[key]||[];if(!a[key].some(x=>String(x).toLowerCase()===v.toLowerCase()))a[key].push(v);
+ const E=AK.ed;E.f[k]=v;E.dd=null;E.ddn=null;akEditDraw()}
+function akDdTog(k){const E=AK.ed;if(!E)return;E.dd=E.dd===k?null:k;E.ddn=null;akEditDraw()}
 function akDdSet(k,v){const E=AK.ed;if(!E)return;E.f[k]=v;E.dd=null;akEditDraw()}
 function akEdPick(k,v){const E=AK.ed;if(!E)return;
  if(k==='Platform'){const cur=String(E.f.Platform||'').split(/\s*,\s*/).filter(Boolean),i=cur.indexOf(v);if(i>=0)cur.splice(i,1);else cur.push(v);E.f.Platform=cur.join(', ')}else E.f[k]=v;akEditDraw()}
