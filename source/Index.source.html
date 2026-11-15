@@ -9189,6 +9189,10 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 .ak-meet img{width:52px;height:52px;border-radius:12px;object-fit:cover;flex:none}
 .ak-meet span{flex:1;display:flex;flex-direction:column}.ak-meet b{font:800 14.5px Inter,system-ui,sans-serif}.ak-meet small{font:600 12px Inter,system-ui,sans-serif;color:#C9D3F5}
 .ak-meet>.ak-ic{width:28px;height:28px;padding:7px;border-radius:50%;background:#E2B874;color:#0a1230;fill:#0a1230;stroke:none;flex:none;box-sizing:border-box}
+
+/* v419 a wide picture in the story */
+.aks-sc.wide img.blur{position:absolute;inset:-20px;width:calc(100% + 40px);height:calc(100% + 40px);object-fit:cover;filter:blur(18px) brightness(.55);transform:scale(1.1)}
+.aks-sc.wide img.bg{inset:auto 0;top:30%;height:auto;object-fit:contain;transform-origin:58% 40%;-webkit-mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(transparent,#000 14%,#000 86%,transparent)}
 </style>
 </head>
 <body>
@@ -10283,15 +10287,16 @@ const AKS=[
  {img:'hand',k:'HEMERA',h:'and turns it into <em>answers</em>'},
  {img:'room',k:'FOR THE TEAM',h:'Sheets, reports and days off, <em>in one chat</em>'},
  {img:'flag',k:'ALEXANDRA × HEMERA',h:'Built for <em>HEMERA</em>'},
+ {img:'sekna',k:'SEKNA',h:'Made at <em>Sekna</em>',wide:1},
  {img:'smile',k:'MEET ALEXANDRA',h:'Ask her <em>anything</em>',cls:'smile'}];
-const AKS_TR=['none','sweepD','diag','split','sweepR','calm'],AKS_DUR=3800,AKS_T=1050,AKS_E='cubic-bezier(.7,0,.2,1)';
+const AKS_TR=['none','sweepD','diag','split','sweepR','sweepL','calm'],AKS_DUR=3800,AKS_T=1050,AKS_E='cubic-bezier(.7,0,.2,1)';
 function akStoryWords(h){let em=false;return h.split(/(<em>|<\/em>| )/).filter(x=>x&&x!==' ').map(t=>{if(t==='<em>'){em=true;return ''}if(t==='</em>'){em=false;return ''}return `<span>${em?`<em>${t}</em>`:t}</span>`}).filter(Boolean).join(' ')}
 function akStory(){
  document.getElementById('aksBox')?.remove();
  const o=document.createElement('div');o.id='aksBox';o.className='aks';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Meet Alexandra');
  o.innerHTML=`<div class="aks-ph"><div class="aks-bar"><img src="get/logo-white.webp" alt="HEMERA"><button type="button" class="aks-x" aria-label="Close" onclick="akStoryClose()">${akI('x')}</button></div>
   <div class="aks-dots">${AKS.map(()=>'<i></i>').join('')}</div>
-  ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}"><img class="bg" src="icons/alexandra/${s.img}.webp" alt="" ${i?'loading="lazy"':''}><div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
+  ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}${s.wide?' wide':''}">${s.wide?`<img class="blur" src="icons/alexandra/${s.img}.webp" alt="">`:''}<img class="bg" src="icons/alexandra/${s.img}.webp" alt="" ${i?'loading="lazy"':''}><div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
   <div class="aks-fx"></div><button type="button" class="aks-tap l" aria-label="Back" onclick="akStoryStep(-1)"></button><button type="button" class="aks-tap r" aria-label="Next" onclick="akStoryStep(1)"></button></div>`;
  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));
  window.AKST={o,i:-1,t:null};akStoryShow(0);
@@ -10312,8 +10317,10 @@ function akStoryShow(i){
  const B=(c,k,op,css)=>el(c,css).animate(k,Object.assign({duration:T,easing:AKS_E,fill:'forwards'},op||{}));
  const W=ph.clientWidth,H=ph.clientHeight,full='inset(0 0 0 0)';
  if(!reduce){
-  now.querySelector('img.bg').animate([{transform:'scale(1.12) translateX(4%)'},{transform:'scale(1.12) translateX(-4%)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
+  if(now.classList.contains('wide'))now.querySelector('img.bg').animate([{transform:'scale(1)'},{transform:'scale(1.9) translate(-8%,6%)'}],{duration:AKS_DUR+T,easing:'cubic-bezier(.4,0,.2,1)',fill:'forwards'});
+  else now.querySelector('img.bg').animate([{transform:'scale(1.12) translateX(4%)'},{transform:'scale(1.12) translateX(-4%)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
   if(tr==='sweepD'){A([{clipPath:'inset(0 0 100% 0)'},{clipPath:full}]);B('aks-beam h',[{transform:'translateY(-40px)',opacity:1},{opacity:1,offset:.85},{transform:`translateY(${H+40}px)`,opacity:0}])}
+  if(tr==='sweepL'){A([{clipPath:'inset(0 0 0 100%)'},{clipPath:full}]);B('aks-beam v',[{transform:`translateX(${W+40}px) skewX(-12deg)`,opacity:1},{opacity:1,offset:.85},{transform:'translateX(-60px) skewX(-12deg)',opacity:0}])}
   if(tr==='sweepR'){A([{clipPath:'inset(0 100% 0 0)'},{clipPath:full}]);B('aks-beam v',[{transform:'translateX(-60px) skewX(12deg)',opacity:1},{opacity:1,offset:.85},{transform:`translateX(${W+40}px) skewX(12deg)`,opacity:0}])}
   if(tr==='diag'){A([{clipPath:'polygon(0 0,0 0,0 0,0 0)'},{clipPath:'polygon(0 0,250% 0,0 250%,0 0)'}]);B('aks-beam v',[{transform:`translateX(${-W}px) translateY(${-H*.4}px) rotate(45deg)`,opacity:1},{opacity:1,offset:.85},{transform:`translateX(${W}px) translateY(${H*.4}px) rotate(45deg)`,opacity:0}],{},{left:'50%',top:'-40%',bottom:'-40%'})}
   if(tr==='split'){A([{clipPath:'inset(0 50% 0 50%)'},{clipPath:full}]);[-1,1].forEach(d=>B('aks-beam v',[{transform:'translateX(0)',opacity:1},{opacity:1,offset:.85},{transform:`translateX(${d*W*.58}px)`,opacity:0}],{},{left:'50%',marginLeft:'-15px'}))}
