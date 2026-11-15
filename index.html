@@ -9624,7 +9624,7 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
   html.dk-on:not(.desktop-site-mode) body.dark-mode .ox-bh+.ox-bh{border-color:#2a313c}html.dk-on:not(.desktop-site-mode) body.dark-mode .ox-bh b{color:#f2f4f7}html.dk-on:not(.desktop-site-mode) body.dark-mode .ox-bh i{background:#232a36;color:#e8ebf0}
 }
 /* v451 quicker desktop intro */
-#launchSp.dkq .lsp-tg{animation-delay:.6s!important}#launchSp.dkq .lsp-mk{animation-duration:.4s!important}#launchSp.dkq .lsp-s2 [class*=line],#launchSp.dkq .lsp-ln{animation-delay:.5s!important}
+#launchSp.dkq .lsp-tg{animation-delay:.8s!important}#launchSp.dkq .lsp-mk{animation-duration:.4s!important}#launchSp.dkq .lsp-s2 [class*=line],#launchSp.dkq .lsp-ln{animation-delay:.7s!important}
 /* v452 Past years table: headings right-aligned over their numbers */
 html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 </style>
@@ -9643,13 +9643,14 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
  var rm=false;try{rm=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
  if(rm){sp.classList.add('rm');T(gone,600);return}
  
- var q=1;try{q=matchMedia('(min-width:1100px)').matches?.58:1}catch(e){}
+ var q=1;try{q=matchMedia('(min-width:1100px)').matches?.65:1}catch(e){}
  if(q<1)sp.classList.add('dkq');
- if(q<1)[].forEach.call(sp.querySelectorAll('[style*="animation-delay"]'),function(e){e.style.animationDelay=(parseFloat(e.style.animationDelay)*.5).toFixed(2)+'s'});
+ if(q<1)[].forEach.call(sp.querySelectorAll('[style*="animation-delay"]'),function(e){e.style.animationDelay=(parseFloat(e.style.animationDelay)*.65).toFixed(2)+'s'});
  T(function(){document.getElementById('lspS1').classList.add('out')},1500*q);
  T(function(){var a=document.getElementById('lspS1'),b=document.getElementById('lspS2');if(a)a.style.display='none';if(b)b.classList.add('on')},1850*q);
- T(function(){sp.classList.add('out')},3700*q);
- T(function(){sp.remove()},4000*q);
+ 
+ T(function(){sp.classList.add('out')},q<1?3100:3700);
+ T(function(){sp.remove()},q<1?3400:4000);
  T(function(){if(sp.parentNode)sp.remove()},6000);
 })();
 </script>
