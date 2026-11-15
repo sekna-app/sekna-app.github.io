@@ -9473,6 +9473,9 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 .ak-prevchat{display:flex;align-items:center;gap:8px;padding:12px}.ak-prevchat .ak-sa{width:28px;height:28px}.ak-prevchat i{font-style:normal;background:#F0F2F5;border-radius:16px;padding:7px 11px;font:500 13px Inter,system-ui,sans-serif;color:#050505}
 .ak-prevs{display:flex;flex-direction:column;gap:4px;margin-top:12px;font:600 12.5px Inter,system-ui,sans-serif;color:#65676B}.ak-prevs input{width:100%;accent-color:#0866FF}
 .ak-prevbt{display:flex;gap:8px;margin-top:14px}.ak-prevbt button{flex:1;border:0;border-radius:10px;padding:11px;font:700 14px Inter,system-ui,sans-serif;background:#E4E6EB;color:#050505;cursor:pointer}.ak-prevbt .p{background:#0866FF;color:#fff}
+
+/* v440 tap her photo in the chat to open her profile */
+.ak-tapp{cursor:pointer}.ak-tapp:active{transform:scale(.94)}
 </style>
 </head>
 <body>
@@ -10665,7 +10668,7 @@ function akOpenNow(){
  if(!canDo('ask'))return;closeSidebar();
  document.getElementById('akBox')?.remove();
  const o=document.createElement('div');o.id='akBox';o.className='ak'+(akDk()?' dk':'');o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Alexandra');
- o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av" id="akHdAv">${akAvIn()}</span><div><b>Alexandra <span class="ak-flag" aria-hidden="true">🇺🇦</span></b><small id="akSt">Active now</small></div><button type="button" class="ak-inf" aria-label="About Alexandra" onclick="AK.pgTab='about';akAbout(event)">${akI('about')}</button></div><div class="ak-pg" id="akAbt" aria-hidden="true"></div>
+ o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av ak-tapp" id="akHdAv" role="button" tabindex="0" aria-label="Open Alexandra's profile" onclick="AK.pgTab='about';akAbout(event)">${akAvIn()}</span><div><b>Alexandra <span class="ak-flag" aria-hidden="true">🇺🇦</span></b><small id="akSt">Active now</small></div><button type="button" class="ak-inf" aria-label="About Alexandra" onclick="AK.pgTab='about';akAbout(event)">${akI('about')}</button></div><div class="ak-pg" id="akAbt" aria-hidden="true"></div>
   <div class="ak-bd" id="akBd"></div><div class="ak-kb" id="akKb"></div>
   <form class="ak-in" onsubmit="akSend(event)"><button type="button" class="ak-mb" aria-label="Menu" onclick="akToggleKb()">${akI('menu')}</button><input id="akQ" autocomplete="off" maxlength="1500" placeholder="Aa" oninput="akInMode()"><button type="submit" class="ak-snd" aria-label="Send">${akI('plane')}</button><button type="button" class="ak-mic" aria-label="Record a voice message" onclick="akRecStart()">${akI('mic')}</button>
   <div class="ak-rec" id="akRec"><button type="button" class="ak-rt2" aria-label="Delete" onclick="akRecTrash()">${akI('trash')}</button><div class="ak-rw"><em></em><span id="akRw"></span><b id="akRt">0:00</b></div><button type="button" class="ak-rs2" aria-label="Send" onclick="akRecSend()">${akI('plane')}</button></div></form></div>`;
@@ -10835,7 +10838,7 @@ function akDraw(){akSave();
  const L=AK.msgs.slice(-60);
  b.innerHTML=L.map((m,i)=>{const nx=L[i+1],last=!nx||nx.w!==m.w,first=i===0||L[i-1].w!==m.w;
    const bub=`<div class="ak-m ${m.w}${m.cls?' '+m.cls:''}${first?' f':''}${last?' l':''}${m.nw?' nw':''}">${m.html}</div>`;
-   return m.w==='h'?`<div class="ak-g">${last&&!AK.busy||last&&nx?`<span class="ak-sa">${akAvIn()}</span>`:'<span class="ak-sp"></span>'}${bub}</div>`:bub}).join('')+(AK.busy?`<div class="ak-g"><span class="ak-sa">${akAvIn()}</span><div class="ak-m h f l ak-dots"><i></i><i></i><i></i></div></div>`:'');
+   return m.w==='h'?`<div class="ak-g">${last&&!AK.busy||last&&nx?`<span class="ak-sa ak-tapp" role="button" aria-label="Open Alexandra's profile" onclick="AK.pgTab='about';akAbout(event)">${akAvIn()}</span>`:'<span class="ak-sp"></span>'}${bub}</div>`:bub}).join('')+(AK.busy?`<div class="ak-g"><span class="ak-sa">${akAvIn()}</span><div class="ak-m h f l ak-dots"><i></i><i></i><i></i></div></div>`:'');
  L.forEach(m=>{m.nw=0});requestAnimationFrame(()=>{b.scrollTop=b.scrollHeight});
 }
 function akToggleKb(){if(AK.blocked){AK.kb=false;akKb();return}AK.kb=!AK.kb;akKb()}
