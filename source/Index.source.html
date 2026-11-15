@@ -9270,6 +9270,23 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 @font-face{font-family:AKufi;font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/kufi-ar.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+08A0-08FF,U+FB50-FDFF,U+FE70-FEFF,U+200C-200F}
 .ak .ak-m,.ak .ak-in input,.ak .ak-noacc p{font-family:AKufi,Inter,system-ui,sans-serif}
 .ak .ak-m.h,.ak .ak-m.u{line-height:1.7}
+
+/* v437 profile: Intro, What she does, Photos as posts */
+.ak-idn{padding-bottom:4px;margin-top:22px}
+.ak-intro a{display:flex;align-items:center;gap:12px;padding:7px 0;font:500 14px/1.35 Inter,system-ui,sans-serif;color:#050505;text-decoration:none}.ak-intro a b{color:#229ED9}
+.ak-tgi{width:20px;height:20px;flex:none;display:block}
+.ak-does button{width:100%;display:flex;align-items:center;gap:12px;border:0;background:none;padding:7px 0;cursor:pointer;text-align:left;font:500 14px/1.35 Inter,system-ui,sans-serif;color:#050505}
+.ak-does .ak-ic{width:20px;height:20px;color:#65676B;flex:none}.ak-does b{font-weight:700}
+.ak-post{margin:12px -16px 0;border-top:8px solid #F0F2F5;padding-top:10px}
+.ak-post header{display:flex;align-items:center;gap:9px;padding:0 16px}.ak-post .ak-pga{width:40px;height:40px;margin:0;border:0}.ak-post .ak-pga .ak-ic{width:18px;height:18px}
+.ak-post header div{flex:1;min-width:0}.ak-post header b{display:flex;align-items:center;gap:4px;font:700 14.5px Inter,system-ui,sans-serif;color:#050505}.ak-post header .ak-ver{width:14px;height:14px}.ak-post header .ak-ver svg{width:9px;height:9px}
+.ak-post header small{font:500 12px Inter,system-ui,sans-serif;color:#65676B}.ak-pdots{color:#65676B;font-weight:800}
+.ak-post>p{margin:8px 16px;font:500 14.5px/1.45 Inter,system-ui,sans-serif;color:#050505}
+.ak-pimg{display:block;width:100%;border:0;padding:0;background:#0F1A3A;cursor:pointer}.ak-pimg img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block}
+.ak-prx{display:flex;justify-content:space-between;align-items:center;padding:9px 16px;font:500 13px Inter,system-ui,sans-serif;color:#65676B}
+.ak-prx i{display:inline-flex;margin-right:5px;font-style:normal}.ak-prx em{font-style:normal;width:19px;height:19px;border-radius:50%;display:inline-grid;place-items:center;font-size:10.5px;line-height:1;margin-left:-4px;box-shadow:0 0 0 2px #fff;color:#fff}.ak-prx em.like,.ak-prx em.love{filter:saturate(1.1)}.ak-prx em.love{font-size:10px}.ak-prx em.wow,.ak-prx em.haha,.ak-prx em.care{background:none!important;font-size:16px}.ak-prx em:first-child{margin-left:0}
+.ak-pact{display:flex;border-top:1px solid #E4E6EB;margin:0 16px}.ak-pact span{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 0;font:600 13.5px Inter,system-ui,sans-serif;color:#65676B}.ak-pact .ak-ic{width:17px;height:17px}
+.ak.dk .ak-intro a,.ak.dk .ak-does button,.ak.dk .ak-post header b,.ak.dk .ak-post>p{color:#E4E6EB}.ak.dk .ak-post{border-color:#18191A}.ak.dk .ak-pact{border-color:#3E4042}.ak.dk .ak-prx em{box-shadow:0 0 0 2px #242526}
 </style>
 </head>
 <body>
@@ -10316,7 +10333,7 @@ function openTgBot(){if(!SEKNA_TG_BOT)return;try{const w=window.open(SEKNA_TG_BO
    One request when the page opens (the sheet list, kept for 10 minutes), then one per question. */
 let ASK_HEMERA_URL='https://script.google.com/macros/s/AKfycbwDgKEmZ54-FxWfyCoYAE-u6HZBcFA7V0c0DpUToVfPfNpo0HMyrPueFgUBtXBH--e1/exec';
 const AK={msgs:[],assets:null,at:0,editor:false,hist:[],busy:false,kb:true,nav:{},add:null};
-const AK_IC={chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',bug:'<rect x="8" y="7" width="8" height="12" rx="4"/><path d="M12 7V4M8 11H4M20 11h-4M8 16H5M19 16h-3"/>',filter:'<path d="M4 5h16l-6 8v6l-4-2v-4z"/>',power:'<path d="M12 3v8"/><path d="M6.3 7a8 8 0 1 0 11.4 0"/>',moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',down:'<path d="M6 9l6 6 6-6"/>',check:'<path d="M5 12l5 5 9-10"/>',
+const AK_IC={like:'<path d="M7 11v9H4v-9zM7 11l4-7c1.5 0 2.3 1 2 2.5L12.5 10H19a2 2 0 0 1 2 2.3l-1.2 6A2 2 0 0 1 17.8 20H7"/>',cmt:'<path d="M4 5h16v11H9l-5 4z"/>',share:'<path d="M14 5l7 7-7 7v-4c-5 0-8 1.5-10 5 .5-5 3-9 10-10z"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',bug:'<rect x="8" y="7" width="8" height="12" rx="4"/><path d="M12 7V4M8 11H4M20 11h-4M8 16H5M19 16h-3"/>',filter:'<path d="M4 5h16l-6 8v6l-4-2v-4z"/>',power:'<path d="M12 3v8"/><path d="M6.3 7a8 8 0 1 0 11.4 0"/>',moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',down:'<path d="M6 9l6 6 6-6"/>',check:'<path d="M5 12l5 5 9-10"/>',
  spk:'<path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/><path d="M18.5 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>',
  back:'<path d="M15 18l-6-6 6-6"/>',plane:'<path d="M4 12l16-8-6 16-2.5-6.5z"/>',cam:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',dash:'<path d="M4 15a8 8 0 0 1 16 0"/><path d="M12 15l4-5"/>',all:'<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',chev:'<path d="M9 6l6 6-6 6"/>',mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',play:'<path d="M7 5l12 7-12 7z"/>',pause:'<path d="M8 5v14M16 5v14"/>',pen:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>',plat:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',folder:'<path d="M3 7h7l2 2h9v10H3z"/>',grid:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',link2:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',note:'<path d="M5 4h14v12l-4 4H5z"/><path d="M15 20v-4h4"/>',clip:'<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/>',doc:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>',hand:'<path d="M8 12l3 3 6-6"/><circle cx="12" cy="12" r="9"/>',trend:'<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',wallet:'<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12h3"/>',bolt:'<path d="M13 3L5 13h6l-1 8 8-10h-6z"/>',search:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/>',teach:'<path d="M12 4a4 4 0 0 0-4 4 3.5 3.5 0 0 0-3 5.5A3.5 3.5 0 0 0 8 19h4V4zM12 4a4 4 0 0 1 4 4 3.5 3.5 0 0 1 3 5.5A3.5 3.5 0 0 1 16 19h-4"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20a7 7 0 0 1 14 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14a5 5 0 0 1 6 5"/>',refresh:'<path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/>',star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',unlock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/>',key:'<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/>',megaphone:'<path d="M4 10v4h3l7 5V5L7 10z"/><path d="M18 9a4 4 0 0 1 0 6"/>',home:'<path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/>',rules:'<path d="M6 3h12v18H6z"/><path d="M9 8h6M9 12h6M9 16h4"/>',dup:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V6a2 2 0 0 1 2-2h10"/>',copy:'<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>',send:'<path d="M5 12h14M13 6l6 6-6 6"/>',menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
  links:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 3v18"/>',
@@ -10391,7 +10408,7 @@ function akStory(){
  // the pictures are full quality: load them all while the first one plays
  o.querySelectorAll('.aks-sc img.bg').forEach(im=>{try{im.decode().catch(()=>{})}catch(e){}});
 }
-function akStoryClose(chat){const S=window.AKST;if(S)clearTimeout(S.t);const o=document.getElementById('aksBox');if(o){o.classList.remove('open');setTimeout(()=>o.remove(),300)}window.AKST=null;
+function akStoryClose(chat){const S=window.AKST;if(S)clearTimeout(S.t);if(S&&S.ret&&!chat)setTimeout(()=>akAbout(null),320);const o=document.getElementById('aksBox');if(o){o.classList.remove('open');setTimeout(()=>o.remove(),300)}window.AKST=null;
  if(chat&&!document.getElementById('akBox'))openAsk()}
 function akStoryStep(d){const S=window.AKST;if(!S)return;const n=S.i+d;if(n<0||n>=AKS.length){if(d<0&&S.i===0)akStoryShow(0,true);return}akStoryShow(n)}
 function akStoryAnims(){const S=window.AKST;return S?S.o.querySelector('.aks-ph').getAnimations({subtree:true}):[]}
@@ -10552,28 +10569,35 @@ function akAbout(e,keep){if(e&&e.stopPropagation)e.stopPropagation();const pg=do
  const feat=(id,ic,t,sub)=>`<button type="button" onclick="akPgGo('${id}')">${akI(ic)}<b>${t}</b><small>${sub}</small></button>`;
  const tick='<span class="ak-ver"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span>';
  let body='';
- if(tab==='about')body=`<h4>What she does</h4><div class="ak-feat">${feat('links','links','Sheets & links','Sheets, reports and scripts by platform')}${feat('off','off','Days off','Who is off and who covers')}${feat('mail','mail','Team emails','Copy any email in one tap')}${feat('task','task','My tasks','Your tasks in HEMERA')}</div>
-  <h4>Intro</h4><div class="ak-intro">
-   <div>${akI('rep')}<span>Works at <b>HEMERA</b> · made at <b>Sekna</b></span></div>
-   <div><u>🇺🇦</u><span>From <b>Alexandria</b></span></div>
-   <div>${akI('mic')}<span>Speaks <b>Arabic</b> and <b>English</b>, and listens to voice messages</span></div>
-   <div>${akI('lock')}<span>Each person sees only the platforms they have access to</span></div></div>
+ const tg='<img class="ak-tgi" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMTIiIGZpbGw9IiMyMjlFRDkiLz48cGF0aCBkPSJNNS40IDExLjdsMTEuNC00LjRjLjUtLjIgMSAuMS44LjlsLTEuOSA5LjFjLS4xLjYtLjUuOC0xLjEuNWwtMy0yLjItMS40IDEuNGMtLjIuMi0uMy4zLS42LjNsLjItMy4xIDUuNi01LjFjLjItLjIgMC0uMy0uNC0uMWwtNi45IDQuNC0zLS45Yy0uNi0uMi0uNi0uNi4zLS44eiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==" alt="">';
+ if(tab==='about')body=`<h4>Intro</h4><div class="ak-intro">
+   <div>${akI('rep')}<span>Works at <b>HEMERA</b></span></div>
+   <div>${akI('teach')}<span>Studied at <b>Sekna</b></span></div>
+   <div><u>🇪🇬</u><span>From <b>Alexandria, Egypt</b></span></div>
+   <div>${akI('mic')}<span>Speaks <b>Arabic</b> and <b>English</b></span></div>
+   <a href="https://t.me/Seknaa_bot" target="_blank" rel="noopener">${tg}<span>On Telegram <b>@Seknaa_bot</b></span></a></div>
+  <h4>What she does</h4><div class="ak-does">
+   <button type="button" onclick="akPgGo('links')">${akI('links')}<span>Finds <b>sheets, reports</b> and <b>scripts</b></span></button>
+   <button type="button" onclick="akPgGo('off')">${akI('off')}<span>Knows <b>who is off</b> and who covers</span></button>
+   <button type="button" onclick="akPgGo('mail')">${akI('mail')}<span>Shares <b>team emails</b></span></button>
+   <button type="button" onclick="akPgGo('task')">${akI('task')}<span>Shows <b>your tasks</b></span></button></div>
   ${AK.canAdd||AK.canTeach?`<h4>Tools</h4>${AK.canAdd?row('add','add','Add a sheet','Put a new sheet in the list'):''}${AK.canTeach?row('teach','teach','Teach the bot','Rules, access and platforms'):''}`:''}
   ${AK.editor?`<div id="akReqW">${akReqsHtml(AK.rq)}</div><h4>Settings</h4><div id="akBotW">${akBotRow(AK.bst||null)}</div>`:''}
   <h4>Chat</h4><button type="button" class="r" role="switch" aria-checked="${akDk()}" onclick="akDkSet(!akDk(),this)"><i>${akI('moon')}</i><span><b>Dark mode</b><small>Only for this chat</small></span><em class="ak-sw${akDk()?' on':''}"></em></button>${row('clear','trash','Clear chat','The chat stays on this device for 24 hours','del')}`;
- if(tab==='photos')body=`<div class="ak-ph3">${AKS.map((x,i)=>x.img==='flag'?'':`<button type="button" aria-label="${akEsc(x.k)}" onclick="akStoryAt(${i})"><img src="${img(x.img)}" alt="" loading="lazy"></button>`).join('')}</div><p class="ak-mu ak-pgnote">Tap a photo to watch her story from there.</p>`;
+ if(tab==='photos'){const RX=[[['like','love'],'1.2K',86,24],[['love','wow'],'948',41,12],[['like','haha'],'2.3K',132,57],[['love','like','care'],'1.7K',64,19],[['love','wow','like'],'3.1K',210,88],[['like','care'],'860',35,9],[['love','haha','like'],'2.6K',118,40]],RE={like:['👍','#1877F2'],love:['❤','#F33E58'],wow:['😮','#F7B125'],haha:['😆','#F7B125'],care:['🤗','#F7B125']},D=['2h','5h','1d','2d','3d','5d','1w'];
+  body=AKS.map((x,i)=>{const r=RX[i%RX.length],cap=akEsc(x.k.charAt(0)+x.k.slice(1).toLowerCase())+' · '+x.h.replace(/<\/?em>/g,'');return `<article class="ak-post"><header><span class="ak-pga">${akAvIn()}</span><div><b>Alexandra ${tick}</b><small>${D[i]} · 🌐</small></div><span class="ak-pdots">···</span></header><p>${cap}</p><button type="button" class="ak-pimg" onclick="akStoryAt(${i})"><img src="${img(x.img)}" alt="" loading="lazy"></button><div class="ak-prx"><span><i>${r[0].map(k=>`<em class="${k}" style="background:${RE[k][1]}">${RE[k][0]}</em>`).join('')}</i>${r[1]}</span><span>${r[2]} comments · ${r[3]} shares</span></div><div class="ak-pact"><span>${akI('like')}Like</span><span>${akI('cmt')}Comment</span><span>${akI('share')}Share</span></div></article>`}).join('')}
  if(tab==='platforms'){const P=((AK.assets&&AK.assets.platforms)||[]),R=((AK.assets&&AK.assets.rows)||[]);
   body=P.length?`<div class="ak-plist">${P.map(x=>{const n=R.filter(r=>(r.platforms||[]).indexOf(x.key)>=0).length;return `<button type="button" onclick="akPgPlat('${akEsc(x.key)}')"><i>${akLogo(x.key)}</i><span><b>${akEsc(x.key)}</b><small>${n} ${n===1?'sheet':'sheets'}</small></span>${akI('chev')}</button>`}).join('')}</div><p class="ak-mu ak-pgnote">These are the platforms you can see.</p>`:'<p class="ak-mu ak-pgnote">No platforms to show yet.</p>'}
  pg.innerHTML=`<div class="ak-pgb2"><div class="ak-pgh2"><button type="button" class="ak-bk" aria-label="Back" onclick="akAboutClose()">${akI('back')}</button></div><div class="ak-hero" style="background-image:url(${img('alliance')})"></div>
   <div class="ak-id"><span class="ak-pga">${akAvIn()}<em></em>${AK.editor?`<button type="button" class="ak-pgc" aria-label="Change the bot's photo" onclick="akBotAvPick()">${akI('cam')}</button>`:''}</span>
-   <div><h2>Alexandra ${tick}</h2><small>🇺🇦 Alexandria × HEMERA · Active now</small>${AK.editor&&akBav().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Remove the photo?','The bot goes back to the HEMERA star.','Remove',()=>akBotAvSave(''))">Remove photo</button>`:''}</div></div>
+   <div class="ak-idn"><h2>Alexandra ${tick}</h2>${AK.editor&&akBav().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Remove the photo?','The bot goes back to the HEMERA star.','Remove',()=>akBotAvSave(''))">Remove photo</button>`:''}</div></div>
   <div class="ak-hl">${AK_HL.map(([i,t])=>`<button type="button" onclick="akStoryAt(${i})"><img src="${img(AKS[i].img)}" alt="">${t}</button>`).join('')}</div>
   <div class="ak-tabs" role="tablist">${[['about','About'],['photos','Photos'],['platforms','Platforms']].map(([k,t])=>`<button type="button" role="tab" aria-selected="${tab===k}" class="${tab===k?'on':''}" onclick="AK.pgTab='${k}';akAbout(null,1)">${t}</button>`).join('')}</div>
   <div class="ak-pgbody">${body}</div>
   <div class="ak-pgcta"><button type="button" onclick="akAboutClose()">${akI('send')}Message Alexandra</button></div></div>`;
  if(!keep){pg.setAttribute('aria-hidden','false');requestAnimationFrame(()=>pg.classList.add('on'))}
  if(tab==='about'&&AK.editor&&ASK_HEMERA_URL){akBotLoad();akReqsLoad()}}
-function akStoryAt(i){akAboutClose();setTimeout(()=>{akStory();if(i)setTimeout(()=>akStoryShow(i),60)},250)}
+function akStoryAt(i){akAboutClose();setTimeout(()=>{akStory();if(window.AKST)AKST.ret=1;if(i)setTimeout(()=>akStoryShow(i),60)},250)}
 function akPgPlat(k){akAboutClose();setTimeout(()=>{AK.kb=false;akKb();akUser(k);AK.ls=[];akPick('p',k)},250)}
 function akDk(){try{return localStorage.getItem('hm_ask_dark')==='1'}catch(e){return false}}
 function akDkSet(on,btn){try{localStorage.setItem('hm_ask_dark',on?'1':'0')}catch(e){}const o=document.getElementById('akBox');if(o)o.classList.toggle('dk',on);if(btn){btn.setAttribute('aria-checked',on);const w=btn.querySelector('.ak-sw');if(w)w.classList.toggle('on',on)}}
