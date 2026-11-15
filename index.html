@@ -9602,6 +9602,29 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 .ak-padj label{display:flex;align-items:center;gap:6px;flex:1;min-width:140px}.ak-padj label .ak-ic{width:16px;height:16px}.ak-padj input{flex:1;accent-color:#0866FF}
 .ak-padj button{border:0;border-radius:8px;padding:7px 12px;font:700 12.5px Inter,system-ui,sans-serif;cursor:pointer;background:#E4E6EB;color:#050505}.ak-padj .s{background:#0866FF;color:#fff}
 .ak.dk .ak-padj{background:#3A3B3C;color:#B0B3B8}.ak.dk .ak-padj button:not(.s),.ak.dk .ak-fbr .ak-padj-b{background:#4E4F50;color:#E4E6EB}
+
+/* v451 desktop: day accuracy as an outlined pill with a target */
+@media (min-width:1100px){
+ html.dk-on:not(.desktop-site-mode) body #dxBody .dcR .dcH-acc{display:inline-flex!important;align-items:center;gap:4px;background:none!important;border:1.5px solid currentColor;padding:1px 7px 1px 4px!important;font-size:11px!important}
+ html.dk-on:not(.desktop-site-mode) body #dxBody .dcR .dcH-acc svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.4}
+ html.dk-on:not(.desktop-site-mode) body #dxBody .dcR .dcH-acc.good{color:#13804f!important}html.dk-on:not(.desktop-site-mode) body #dxBody .dcR .dcH-acc.watch{color:#B7791F!important}html.dk-on:not(.desktop-site-mode) body #dxBody .dcR .dcH-acc.bad{color:#C63A4A!important}
+}
+
+/* v451 desktop: Budget left as two halves with icons, the same height as Clicks and ROAS */
+@media (min-width:1100px){
+  html.dk-on:not(.desktop-site-mode) body #channelPanel>.mtd-exec>.ox-bud{display:grid!important;grid-template-columns:1fr 1fr;align-items:stretch;margin:10px 0 0 12px;border:1.5px solid #E6E9F2;border-radius:18px;box-shadow:0 6px 16px rgba(32,60,142,.07);background:#fff}
+  html.dk-on:not(.desktop-site-mode) body .ox-bh{display:flex;align-items:center;gap:10px;padding:10px 14px;min-width:0}
+  html.dk-on:not(.desktop-site-mode) body .ox-bh+.ox-bh{border-left:1px solid #E6E9F2}
+  html.dk-on:not(.desktop-site-mode) body .ox-bh i{width:36px;height:36px;border-radius:10px;background:#F0F2F5;color:#141b33;display:grid;place-items:center;flex:none}
+  html.dk-on:not(.desktop-site-mode) body .ox-bh svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  html.dk-on:not(.desktop-site-mode) body .ox-bh span{min-width:0}
+  html.dk-on:not(.desktop-site-mode) body .ox-bh small{display:block;font-size:10.5px;font-weight:800;letter-spacing:.06em;color:#8a93a8}
+  html.dk-on:not(.desktop-site-mode) body .ox-bh b{display:block;font-size:18px;font-weight:900;color:#141b33;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  html.dk-on:not(.desktop-site-mode) body.dark-mode #channelPanel>.mtd-exec>.ox-bud{background:#181e27;border-color:#2a313c}
+  html.dk-on:not(.desktop-site-mode) body.dark-mode .ox-bh+.ox-bh{border-color:#2a313c}html.dk-on:not(.desktop-site-mode) body.dark-mode .ox-bh b{color:#f2f4f7}html.dk-on:not(.desktop-site-mode) body.dark-mode .ox-bh i{background:#232a36;color:#e8ebf0}
+}
+/* v451 quicker desktop intro */
+#launchSp.dkq .lsp-tg{animation-delay:.6s!important}#launchSp.dkq .lsp-mk{animation-duration:.4s!important}#launchSp.dkq .lsp-s2 [class*=line],#launchSp.dkq .lsp-ln{animation-delay:.5s!important}
 </style>
 </head>
 <body>
@@ -9617,10 +9640,15 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
  var T=function(f,ms){setTimeout(f,ms)},gone=function(){sp.classList.add('out');T(function(){sp.remove()},300)};
  var rm=false;try{rm=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
  if(rm){sp.classList.add('rm');T(gone,600);return}
- T(function(){document.getElementById('lspS1').classList.add('out')},1500);
- T(function(){var a=document.getElementById('lspS1'),b=document.getElementById('lspS2');if(a)a.style.display='none';if(b)b.classList.add('on')},1850);
- T(function(){sp.classList.add('out')},3700);
- T(function(){sp.remove()},4000);
+ 
+ var q=1;try{q=matchMedia('(min-width:1100px)').matches?.58:1}catch(e){}
+ if(q<1)sp.classList.add('dkq');
+ if(q<1)[].forEach.call(sp.querySelectorAll('[style*="animation-delay"]'),function(e){e.style.animationDelay=(parseFloat(e.style.animationDelay)*.5).toFixed(2)+'s'});
+ T(function(){document.getElementById('lspS1').classList.add('out')},1500*q);
+ T(function(){var a=document.getElementById('lspS1'),b=document.getElementById('lspS2');if(a)a.style.display='none';if(b)b.classList.add('on')},1850*q);
+ T(function(){sp.classList.add('out')},3700*q);
+ T(function(){sp.remove()},4000*q);
+ T(function(){if(sp.parentNode)sp.remove()},6000);
 })();
 </script>
 <div class="sks" id="skSplash" data-share-ui aria-hidden="true">
@@ -9657,7 +9685,7 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
  if(inApp||document.getElementById('launchSp')||!s.classList.contains('sks-art')){s.remove();return}
  s.classList.add('sks-nolg');
  var quick=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
- setTimeout(function(){s.classList.add('out');setTimeout(function(){s.remove()},460)},quick?700:2100);
+ var dkq=window.matchMedia&&matchMedia('(min-width:1100px)').matches;setTimeout(function(){s.classList.add('out');setTimeout(function(){s.remove()},460)},quick?700:dkq?1300:2100);
 })();
 </script>
 <div class="sk-loadbar" id="skLoadbar" aria-hidden="true"></div>
@@ -10226,7 +10254,7 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
       </div>
       <div class="ox-rc"><div class="ox-cl mc" id="mtdClkRow" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4l9 8-4 1-1 4-4-13z"/><path d="M15 15l4 4"/></svg><span id="mtdClkLine">Clicks <b id="mtdClk2">—</b> <small id="mtdClkPlan2"></small></span><em id="mtdClkPct2"></em></div><div class="ox-cl mc" id="mtdClicksRow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/></svg><span id="mtdRoasLine">ROAS <b id="mtdRoas">—</b> <small id="mtdRoasPlan"></small></span><em id="mtdClicksPct"></em></div>
       </div>
-      <div class="ox-bud" id="mtdBudTile" aria-label="Budget left"><div class="ox-bud-t"><span>BUDGET LEFT</span><b id="mbtLeft">—</b></div><div class="ox-bud-r"><div>Spent<b id="mbtSpent">—</b></div><div>Per day<b id="mbtDay">—</b></div></div></div>
+      <div class="ox-bud" id="mtdBudTile" aria-label="Budget left"><div class="ox-bh"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h14a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a1 1 0 0 1-1-1z"/><path d="M4 7l11-3v3"/><circle cx="16" cy="13.5" r="1.2"/></svg></i><span><small>BUDGET LEFT</small><b id="mbtLeft">—</b></span></div><div class="ox-bh"><i><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></i><span><small>PER DAY</small><b id="mbtDay">—</b></span></div></div>
 
       <div class="ox-legend" id="mtdTickLegend"><i></i><span>Black tick = expected by today</span></div>
     </section>
@@ -10942,7 +10970,7 @@ ${akIntroHtml()}</div>
  const postsHtml=()=>AKS.map((x,i)=>{const r=RX[i%RX.length],cap=akEsc(x.k.charAt(0)+x.k.slice(1).toLowerCase())+' · '+x.h.replace(/<\/?em>/g,'');return `<article class="ak-post"><header><span class="ak-pga">${akAvIn()}</span><div><b>Alexandra ${tick}</b><small>${D[i]} · 🌐</small></div><span class="ak-pdots">···</span></header><p>${cap}</p>${AK.editor?`<button type="button" class="ak-padj-b" onclick="akPAdj(${i},this)">${akI('pen')}Adjust photo</button>`:''}<button type="button" class="ak-pimg" data-i="${i}" onclick="if(!this.classList.contains('adj'))akStoryAt(${i})"><img src="${img(x.img)}" alt="" loading="lazy" style="${akPFixCss(i)}"></button><div class="ak-prx"><span><i>${r[0].map(k=>`<em class="${k}" style="background:${RE[k][1]}">${RE[k][0]}</em>`).join('')}</i>${r[1]}</span><span>${r[2]} comments · ${r[3]} shares</span></div><div class="ak-pact"><span>${akI('like')}Like</span><span>${akI('cmt')}Comment</span><span>${akI('share')}Share</span></div></article>`}).join('');
  if(tab==='photos')body=postsHtml();
  if(tab==='platforms'){const P=((AK.assets&&AK.assets.platforms)||[]),R=((AK.assets&&AK.assets.rows)||[]);
-  body=P.length?`<div class="ak-plist">${P.map(x=>{const n=R.filter(r=>(r.platforms||[]).indexOf(x.key)>=0).length;return `<button type="button" onclick="akPgPlat('${akEsc(x.key)}')"><i>${akLogo(x.key)}</i><span><b>${akEsc(x.key)}</b><small>${n} ${n===1?'sheet':'sheets'}</small></span>${akI('chev')}</button>`}).join('')}</div><p class="ak-mu ak-pgnote">These are the platforms you can see.</p>`:'<p class="ak-mu ak-pgnote">No platforms to show yet.</p>'}
+  body=P.length?`<div class="ak-plist">${P.map(x=>{const n=R.filter(r=>(r.platforms||[]).indexOf(x.key)>=0).length;return `<button type="button" onclick="akPgPlat('${akEsc(x.key)}')"><i>${akLogo(x.key)}</i><span><b>${akEsc(x.key)}</b><small>${n} ${n===1?'sheet':'sheets'}</small></span>${akI('chev')}</button>`}).join('')}</div><p class="ak-mu ak-pgnote">These are the platforms you can see.</p>`:(AK.assets?'<p class="ak-mu ak-pgnote">No platforms to show yet.</p>':(akAssets().then(()=>{const g=document.getElementById('akAbt');const n=g&&g.querySelector('.ak-pgnote');if(AK.pgTab==='platforms'&&n&&n.textContent==='Loading…')akAbout(null,true)}).catch(()=>{}),'<p class="ak-mu ak-pgnote">Loading…</p>'))}
  const fb=document.getElementById('akBox')?.classList.contains('pgm');if(fb&&tab==='about')body=`<div class="ak-fb2"><div class="ak-fbl">${body}</div><div class="ak-fbr"><h4>Posts${AK.editor?`<button type="button" class="ak-padj-cp" onclick="akPFixCopy(this)">${akI('copy')}Copy photo settings</button>`:''}</h4>${postsHtml()}</div></div>`;
  pg.innerHTML=`<div class="ak-pgb2"><div class="ak-pgh2"><button type="button" class="ak-bk" aria-label="Back" onclick="akAboutClose()">${akI('back')}</button></div><div class="ak-hero" style="background-image:url(${akCovUrl()})">${AK.editor?`<button type="button" class="ak-covb" onclick="akPrevPick('cov')">${akI('cam')}Edit cover</button>`:''}</div>
   <div class="ak-id"><span class="ak-pga">${akAvIn()}<em></em>${AK.editor?`<button type="button" class="ak-pgc" aria-label="Change the bot's photo" onclick="akPrevPick('av')">${akI('cam')}</button>`:''}</span>
@@ -11041,7 +11069,7 @@ function akAnswer(t){
  out.forEach(x=>{if(x.p){flush();html+=`<p dir="auto">${akEsc(x.p)}</p>`;return}
    any=true;const r=akRowByUrl(x.u);
    if(r){if(seen[r.id])return;seen[r.id]=1;const ac=String(r.account||'').toUpperCase();
-     list.push(`<button type="button" onclick="akAnsOpen('${akEsc(r.id)}',this)"><i class="g">${akI('links')}</i><span><b>${akEsc(String(r.name||r.id).replace(/_/g,' '))}</b><small>${AK_FLAG[ac]?`<u>${AK_FLAG[ac]}</u>`:''}${akEsc([r.account,r.platforms&&r.platforms[0]].filter(Boolean).join(' · '))}</small></span>${akI('chev')}</button>`);return}
+     list.push(`<button type="button" onclick="akAnsOpen('${akEsc(r.id)}',this)"><i class="g">${akI('links')}</i><span><b>${akEsc(String(r.name||r.id).replace(/_/g,' '))}</b><small>${akFlg(ac)?`<u>${akFlg(ac)}</u>`:''}${akEsc([r.account,r.platforms&&r.platforms[0]].filter(Boolean).join(' · '))}</small></span>${akI('chev')}</button>`);return}
    const k=akLinkKind(x.u);list.push(`<a href="${akEsc(x.u)}" target="_blank" rel="noopener"><i class="${k[2]}">${akI(k[0])}</i><span><b>${akEsc(x.lab?x.lab.replace(/_/g,' '):k[1])}</b><small>${k[1]}</small></span>${akI('out')}</a>`)});
  flush();
  const last=out[out.length-1];
@@ -11141,8 +11169,12 @@ function akLNav(fn){AK.ls=AK.ls||[];AK.ls.push(fn);fn()}
 function akLBack(){(AK.ls||[]).pop();const f=(AK.ls||[])[AK.ls.length-1];if(f)f();else{AK.kb=true;akKb();akPanel('links','<p>What else can I help with?</p>')}}
 function akLTop(){const f=(AK.ls||[])[AK.ls.length-1];if(f)f()}
 const AK_FLAG={USA:'🇺🇸',AR:'🇸🇦',BOTH:'🌍'};
+
+function dkNoFlag(){return matchMedia('(min-width:1100px)').matches}
+function akFlg(x){return dkNoFlag()&&x!=='BOTH'?'':(AK_FLAG[x]||'')}
+function noFl(t){return dkNoFlag()?String(t).replace(/[\u{1F1E6}-\u{1F1FF}]{2}\s?/gu,''):t}
 function akCrumb(){const n=AK.nav||{},t=n.t?(AK_TYPES.find(x=>x[0]===n.t)||[0,''])[1]:'';
- return `<div class="ak-crb">${n.p?`<span>${akLogo(n.p)}${akEsc(n.p)}</span>`:''}${n.a?`<span><u>${AK_FLAG[n.a]||''}</u>${n.a==='BOTH'?'Both':akEsc(n.a)}</span>`:''}${t?`<span>${akEsc(t)}</span>`:''}${n.c?`<span>${akEsc(n.c)}</span>`:''}</div>`}
+ return `<div class="ak-crb">${n.p?`<span>${akLogo(n.p)}${akEsc(n.p)}</span>`:''}${n.a?`<span>${akFlg(n.a)?`<u>${akFlg(n.a)}</u>`:''}${n.a==='BOTH'?'Both':akEsc(n.a)}</span>`:''}${t?`<span>${akEsc(t)}</span>`:''}${n.c?`<span>${akEsc(n.c)}</span>`:''}</div>`}
 async function akStepPlatform(){
  const a=await akNeedAssets();if(!a)return;
  AK.ls=[];AK.nav={};
@@ -11163,7 +11195,7 @@ function akPick(k,v){
  if(k==='t'){const nav={p:AK.nav.p,a:AK.nav.a,t:v};AK.resN=6;akLNav(()=>{AK.nav=Object.assign({},nav);akShowRes()});return}
  if(k==='c'){const nav={p:AK.nav.p,a:AK.nav.a,c:v};AK.resN=6;akLNav(()=>{AK.nav=Object.assign({},nav);akShowRes()});return}
 }
-function akShowAcct(){akPanel('links',akCrumb()+'<p>Which account?</p><div class="ak-ch ak-pl">'+[['USA','USA'],['AR','AR'],['BOTH','Both']].map(([x,l])=>`<button type="button" onclick="akPick('a','${x}')"><u>${AK_FLAG[x]}</u>${l}</button>`).join('')+'</div>'+AKB('lpop'))}
+function akShowAcct(){akPanel('links',akCrumb()+'<p>Which account?</p><div class="ak-ch ak-pl">'+[['USA','USA'],['AR','AR'],['BOTH','Both']].map(([x,l])=>`<button type="button" onclick="akPick('a','${x}')">${akFlg(x)?`<u>${akFlg(x)}</u>`:''}${l}</button>`).join('')+'</div>'+AKB('lpop'))}
 function akStarCats(base){const st=(AK.assets&&AK.assets.starred)||[];return st.map(c=>[c,base.filter(r=>String(r.category||'').toLowerCase()===c.toLowerCase()).length]).filter(x=>x[1])}
 function akShowType(){const base=akRowsOf({p:AK.nav.p,a:AK.nav.a});
  const ch=AK_TYPES.map(([x,l,ic,c,bg])=>{const n=x==='all'?base.length:base.filter(r=>r.types.indexOf(x)>=0).length;return n?`<button type="button" onclick="akPick('t','${x}')"><i style="color:${c};background:${bg}">${akI(ic)}</i><b>${l}</b><em>${n}</em>${akI('chev')}</button>`:''}).join('');
@@ -11200,7 +11232,7 @@ function akEdOps(t){const a=AK.assets||{};
  if(t==='ct')return akCats(a);if(t==='fm')return (a.formats&&a.formats.length?a.formats:['Sheet','Screenshot','Weekly Screenshot','Dashboard','Sheet, Screenshot','Sheet, Dashboard']);return null}
 function akEditDraw(){const E=AK.ed;if(!E)return;
  const field=([k,l,ic,t])=>{const v=E.f[k]||'',ops=akEdOps(t);
-   let ctl;if(t==='pl'||t==='ac'||t==='st')ctl=`<div class="ak-ch ak-pl">${ops.map(o=>`<button type="button" class="${String(v).split(/\s*,\s*/).indexOf(o)>=0?'on':''}" onclick="akEdPick('${k}','${akEsc(o)}')">${t==='pl'?`<i>${akLogo(o)}</i>`:t==='ac'?`<u>${AK_FLAG[o]||''}</u>`:''}${akEsc(o)}</button>`).join('')}</div>`;
+   let ctl;if(t==='pl'||t==='ac'||t==='st')ctl=`<div class="ak-ch ak-pl">${ops.map(o=>`<button type="button" class="${String(v).split(/\s*,\s*/).indexOf(o)>=0?'on':''}" onclick="akEdPick('${k}','${akEsc(o)}')">${t==='pl'?`<i>${akLogo(o)}</i>`:t==='ac'?(akFlg(o)?`<u>${akFlg(o)}</u>`:''):''}${akEsc(o)}</button>`).join('')}</div>`;
    else if(ops)return `<div class="ak-ef"><span>${akI(ic)}${l}</span>${akDd(k,v,ops,t,E.dd===k)}</div>`;
    else if(t==='area')ctl=`<textarea rows="3" oninput="AK.ed.f['${k}']=this.value">${akEsc(v)}</textarea>`;
    else ctl=`<input ${t==='url'?'type="url" inputmode="url"':''} value="${akEsc(v)}" oninput="AK.ed.f['${k}']=this.value">`;
@@ -11446,7 +11478,7 @@ async function akAddForm(){
 function akAddOpts(st){
  const a=AK.assets||{};
  if(st[3]==='pl')return (a.platforms||[]).map(p=>[p.key,akLogo(p.key),1]);
- if(st[3]==='ac')return [['USA','🇺🇸'],['AR','🇸🇦']];
+ if(st[3]==='ac')return [['USA',akFlg('USA')],['AR',akFlg('AR')]];
  if(st[3]==='ct')return akCats(a).map(c=>[c,akI(AK_CAT_IC[c.toLowerCase()]||'folder')]);
  if(st[3]==='fm')return (a.formats&&a.formats.length?a.formats:['Sheet','Screenshot','Weekly Screenshot','Dashboard','Sheet, Screenshot','Sheet, Dashboard']).map(f=>[f,akI(AK_FMT_IC[String(f).toLowerCase()]||'grid')]);
  return null;
@@ -13424,7 +13456,7 @@ function daysCards(days,latest,T){
    const acc=dayAccuracy(a.spendAchievement,a.convAchievement,a.valueAchievement);
    const accC=acc?(acc.score>=.9?'good':acc.score>=.7?'watch':'bad'):'';
    const accTxt=acc?(acc.score*100).toFixed(1)+'%':'—';
-   const hdrR=acc?hdr.replace('</b>',` <em class="dcH-acc ${accC}" title="Day accuracy">${accTxt}</em></b>`).replace('<i>',`<em class="dcH-ac2 ${accC}" title="Day accuracy ${accTxt}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/></svg>${Math.round(acc.score*100)}%</em><i>`):hdr;
+   const hdrR=acc?hdr.replace('</b>',` <em class="dcH-acc ${accC}" title="Day accuracy"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/></svg>${accTxt}</em></b>`).replace('<i>',`<em class="dcH-ac2 ${accC}" title="Day accuracy ${accTxt}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.5"/></svg>${Math.round(acc.score*100)}%</em><i>`):hdr;
    const accRow=acc?`<div class="dcR-acc"><div class="t"><small>Day accuracy</small><b class="${accC}">${accTxt}</b></div><div class="br"><i style="flex:40"><u class="s" style="width:${(acc.spend*100).toFixed(0)}%"></u></i><i style="flex:20"><u class="c" style="width:${(acc.conv*100).toFixed(0)}%"></u></i><i style="flex:40"><u class="v" style="width:${(acc.value*100).toFixed(0)}%"></u></i></div><div class="k"><span><i class="s"></i>Spend 40%</span><span><i class="c"></i>Conv. 20%</span><span><i class="v"></i>Value 40%</span></div></div>`:'';
    return `<div class="dc-card dcA dcH dcR${open?' open':''}${x.date===latest?' latest':''}" data-date="${x.date}" data-rx="1" onclick="toggleDay('${x.date}')">${rxBadge(x.date)}${hdrR}<div class="dc-main">
      <div class="dcR-g">${box('Spend',money(a.spend),a.spendAchievement,achClass(a.spendAchievement,true))}${(()=>{const r=p.clicks?a.clicks/p.clicks:null;return box('Clicks',fmt(a.clicks,0),r,achClass(r)).replace('class="dcR-k','class="dk-only dcR-k')})()}${box('Conv.',fmt(a.conversions,0),a.convAchievement,achClass(a.convAchievement))}${box('ROAS',a.roas!=null?fmt(a.roas,2)+'x':'—',roR,achClass(roR)).replace('class="dcR-k','class="dk-only dcR-ro dcR-k')}${box('Value',money(a.value),a.valueAchievement,achClass(a.valueAchievement))}</div>
@@ -17526,7 +17558,7 @@ function ssShareHtml(s){
  const ro=v=>v.spend?fmt(v.value/v.spend,2)+'x':'—',live=s.from<=t&&t<=s.to,n=ssDays(t,s.from);
  const when=prev.from===prev.to?new Date(prev.from+'T00:00:00Z').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}):`${ssD(prev.from)} – ${ssD(prev.to,{year:'numeric'})}`;
  const tag=live?'ON NOW':`IN ${n} DAY${n===1?'':'S'} · ${ssD(s.from).toUpperCase()}`;
- const accRow=ak==='all'?`<h4>BY ACCOUNT</h4><div class="ssp-acc">${[['usa','🇺🇸 USA'],['ar','AR']].map(([a,l])=>{const v=d.acc[a];return `<div><span>${l}<i>${ro(v)}</i></span><small>Spent</small><b>${money(v.spend)}</b><small>Raised ${money(v.value)}</small></div>`}).join('')}</div>`:'';
+ const accRow=ak==='all'?`<h4>BY ACCOUNT</h4><div class="ssp-acc">${[['usa',noFl('🇺🇸 USA')],['ar','AR']].map(([a,l])=>{const v=d.acc[a];return `<div><span>${l}<i>${ro(v)}</i></span><small>Spent</small><b>${money(v.spend)}</b><small>Raised ${money(v.value)}</small></div>`}).join('')}</div>`:'';
  const rows=Object.keys(d.ch).map(k=>[k,d.ch[k]]).filter(([,v])=>v.spend||v.value).sort((a,b)=>b[1].spend-a[1].spend)
   .map(([k,v])=>`<tr><td><i style="background:${SSP_C[k]||'#8a93ad'}"></i>${esc(k.replace('Video (YouTube)','YouTube'))}</td><td>${money(v.spend)}</td><td>${fmt(v.conv)}</td><td>${money(v.value)}</td><td>${ro(v)}</td></tr>`).join('');
  const html=`<div class="ssp-ph" style="background-image:url('icons/seasons/${s.key}.webp?v=7')"><i class="ssp-sh"></i>
@@ -17664,7 +17696,7 @@ function renderSeasons(){
      ${p?`<div class="ss-rd">Team ready · ${pct}% (${p.done} of ${p.n} prep task${p.n>1?'s':''})</div><div class="ss-bar"><i style="width:${pct}%"></i></div>`:`<div class="ss-rd ss-rd0">No prep tasks yet. A task with “${esc(big.w[0].replace(/^./,c=>c.toUpperCase()))}” in its name counts here.</div>`}
      <div class="ss-hd">${ssDetail(big,all)}</div></div>`}
  const list=next.filter(s=>SS.f==='all'||s.type===SS.f), show=SS.more?list:list.slice(0,10);
- const fsH=`<div class="ss-fs">${[['all','All'],['h','🌙 Hijri'],['u','🇺🇸 US']].map(x=>`<button type="button" class="${SS.f===x[0]?'on':''}" onclick="ssFilter('${x[0]}')">${x[1]}</button>`).join('')}</div>`;
+ const fsH=`<div class="ss-fs">${[['all','All'],['h','🌙 Hijri'],['u',noFl('🇺🇸 US')]].map(x=>`<button type="button" class="${SS.f===x[0]?'on':''}" onclick="ssFilter('${x[0]}')">${x[1]}</button>`).join('')}</div>`;
  
  if(mxWide()){
    
@@ -17677,7 +17709,7 @@ function renderSeasons(){
    return;
  }
  el.innerHTML=`${hero}
-   <div class="ss-fs">${[['all','All'],['h','🌙 Hijri'],['u','🇺🇸 US']].map(x=>`<button type="button" class="${SS.f===x[0]?'on':''}" onclick="ssFilter('${x[0]}')">${x[1]}</button>`).join('')}</div>
+   <div class="ss-fs">${[['all','All'],['h','🌙 Hijri'],['u',noFl('🇺🇸 US')]].map(x=>`<button type="button" class="${SS.f===x[0]?'on':''}" onclick="ssFilter('${x[0]}')">${x[1]}</button>`).join('')}</div>
    <div class="ss-lbl">COMING UP · TAP ONE FOR LAST YEAR</div>
    ${show.map((s,i)=>ssRow(s,t,all,i)).join('')}
    ${list.length>show.length?`<button type="button" class="ss-more" onclick="SS.more=true;renderSeasons()">Show ${list.length-show.length} more ›</button>`:''}
@@ -20030,7 +20062,7 @@ function readWinHtml(){
  return `<div class="rw"><b class="ad-h">${aI('sheet')}Reading the sheets</b>
    <div class="rw-st ${st.cls}"><span>${aI(st.ic)}</span><div><b>${esc(st.t)}</b><small>${esc(st.s)}</small></div></div>
    <div class="rw-mode"><button type="button" class="${c.on?'on':''}" onclick="rwSet('on',true)">${aI('alarm')}Set times</button><button type="button" class="${c.on?'':'on'}" onclick="rwSet('on',false)">${aI('refresh')}All day</button></div>
-   <div class="rw-tzs rw-tz2">${RW_TZ.map(([k,l])=>`<button type="button" class="${k===c.tz?'on':''}" onclick="rwSet('tz','${k}')"><i>${RW_FLAG[k]}</i><b>${l}</b><small>${esc(rwNow(k))}</small></button>`).join('')}</div>
+   <div class="rw-tzs rw-tz2">${RW_TZ.map(([k,l])=>`<button type="button" class="${k===c.tz?'on':''}" onclick="rwSet('tz','${k}')">${noFl(RW_FLAG[k])?`<i>${RW_FLAG[k]}</i>`:''}<b>${l}</b><small>${esc(rwNow(k))}</small></button>`).join('')}</div>
    ${acc}${bar}
    ${c.on?`
    <div class="rw-l">OPTIONS</div><div class="rw-opts"><div class="rw-o"><div><b>Stop when the data is in</b><small>No reads after the new day</small></div>${sw('stopOnData',c.stopOnData!==false)}</div>
@@ -20273,7 +20305,7 @@ window.SEKNA_READY=true;
  
 (function(){function sync(){const t=document.getElementById('mtdBudTile');if(!t)return;const g=id=>{const e=document.getElementById(id);return e?e.textContent.trim():''};
  const left=g('mtdVariance'),plan=g('vcpPlan')||g('vcPlan'),day=g('vcpDay'),bar=document.getElementById('mtdVarianceBar');
- const sp=g('vcpSpent')||g('vcSpent');document.getElementById('mbtLeft').textContent=left||'—';document.getElementById('mbtSpent').textContent=sp||'—';document.getElementById('mbtDay').textContent=day||'—'}
+ const sp=g('vcpSpent')||g('vcSpent');document.getElementById('mbtLeft').textContent=left||'—';document.getElementById('mbtDay').textContent=day||'—'}
  function start(){const c=document.getElementById('mtdVarianceCard');if(!c)return setTimeout(start,800);new MutationObserver(()=>{clearTimeout(sync.t);sync.t=setTimeout(sync,120)}).observe(c,{subtree:true,childList:true,characterData:true,attributes:true});sync()}
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start()})();
 
