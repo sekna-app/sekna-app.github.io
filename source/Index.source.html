@@ -9506,6 +9506,11 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 .ak.mini:not(.win) .ak-bub{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .ak.mini:not(.win) .ak-bub.ak-drag{transition:none!important;animation:none;transform:scale(1.08);box-shadow:0 0 0 2px #E2B874,0 14px 30px rgba(10,18,56,.45)}
 .ak.mini:not(.win) .ak-bub.ak-snap{transition:left .25s cubic-bezier(.2,.8,.2,1),top .25s cubic-bezier(.2,.8,.2,1)}
+/* v463 phones: a red close circle shows at the bottom while Alexandra's bubble is dragged */
+#akBubX{position:fixed;left:50%;bottom:calc(120px + env(safe-area-inset-bottom,0px));width:64px;height:64px;margin-left:-32px;border-radius:50%;background:#E5484D;color:#fff;display:flex;align-items:center;justify-content:center;z-index:2147479999;pointer-events:none;opacity:0;transform:translateY(40px) scale(.6);transition:opacity .2s,transform .22s cubic-bezier(.2,.8,.2,1);box-shadow:0 10px 26px rgba(229,72,77,.45)}
+#akBubX svg{width:28px;height:28px;stroke:#fff;stroke-width:2.6;fill:none;stroke-linecap:round}
+#akBubX.on{opacity:1;transform:none}#akBubX.hot{transform:scale(1.22);background:#D12F35}
+#akBubXg{position:fixed;left:0;right:0;bottom:0;height:260px;background:linear-gradient(to top,rgba(229,72,77,.28),transparent);pointer-events:none;opacity:0;transition:opacity .2s;z-index:2147479998}#akBubXg.on{opacity:1}
 </style>
 </head>
 <body>
@@ -13267,7 +13272,7 @@ function rxArm(body){
    setTimeout(()=>{set(0,true);setTimeout(()=>{busy=false;el.classList.remove('spin');set(0,false)},260)},1500)};
  window.haRefresh=()=>{mk();if(busy)return;try{const r=(document.querySelector('.topbar')||document.body).getBoundingClientRect();el.style.left=(r.left+r.width/2)+'px'}catch(e){}el.classList.remove('spin');set(0,false);void el.offsetWidth;set(GO*.6,true);setTimeout(run,180)};
  if(!touch)return;
- window.addEventListener('touchstart',e=>{mk();if(busy||e.touches.length!==1||window.scrollY>0||blocked()){y0=null;return}y0=e.touches[0].clientY;dy=0},{passive:true});
+ window.addEventListener('touchstart',e=>{mk();if(busy||e.touches.length!==1||window.scrollY>0||blocked()||(e.target.closest&&e.target.closest('.ak-bub'))){y0=null;return}y0=e.touches[0].clientY;dy=0},{passive:true});
  window.addEventListener('touchmove',e=>{if(y0==null)return;const d=e.touches[0].clientY-y0;if(d<=0||window.scrollY>0){if(dy)set(0,true);dy=0;return}
    dy=d*.5;set(dy,false);if(dy>8&&e.cancelable)e.preventDefault()},{passive:false});
  window.addEventListener('touchend',()=>{if(y0==null)return;y0=null;
@@ -20319,16 +20324,24 @@ function akBubPlace(b){if(!b)return;let p=null;try{p=JSON.parse(localStorage.get
  const vw=innerWidth,x=p.s==='l'?12:vw-60-12,c=akBubClamp(x,p.y*innerHeight);b.style.left=c[0]+'px';b.style.top=c[1]+'px';b.style.right='auto';b.style.bottom='auto'}
 document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest('.ak.mini:not(.win) .ak-bub');if(!b||(e.button&&e.button!==0))return;
  const r=b.getBoundingClientRect(),sx=e.clientX,sy=e.clientY,ox=sx-r.left,oy=sy-r.top;let moved=false;
- const mv=ev=>{if(!moved&&Math.hypot(ev.clientX-sx,ev.clientY-sy)<8)return;if(!moved){moved=true;b.classList.remove('ak-snap');b.classList.add('ak-drag');try{b.setPointerCapture(e.pointerId)}catch(_){}}
-  ev.preventDefault();const c=akBubClamp(ev.clientX-ox,ev.clientY-oy);b.style.left=c[0]+'px';b.style.top=c[1]+'px';b.style.right='auto';b.style.bottom='auto'};
+ const mv=ev=>{if(!moved&&Math.hypot(ev.clientX-sx,ev.clientY-sy)<8)return;if(!moved){moved=true;b.classList.remove('ak-snap');b.classList.add('ak-drag');try{b.setPointerCapture(e.pointerId)}catch(_){}akBubX(1)}
+  ev.preventDefault();let c=akBubClamp(ev.clientX-ox,ev.clientY-oy);const z=akBubHot(c);if(z)c=z;b.style.left=c[0]+'px';b.style.top=c[1]+'px';b.style.right='auto';b.style.bottom='auto'};
  const up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up);if(!moved)return;
-  b.classList.remove('ak-drag');const q=b.getBoundingClientRect(),left=q.left+30<innerWidth/2,c=akBubClamp(left?12:innerWidth-72,q.top);
+  b.classList.remove('ak-drag');const hot=akBubX.hot;akBubX(0);if(hot){b.dataset.dragged='1';try{const t=document.getElementById('akBox');if(t)t.style.transition='none'}catch(_){}b.style.transition='transform .18s,opacity .18s';b.style.transform='scale(.2)';b.style.opacity='0';setTimeout(()=>{closeAsk();b.style.transition=b.style.transform=b.style.opacity=''},170);return}const q=b.getBoundingClientRect(),left=q.left+30<innerWidth/2,c=akBubClamp(left?12:innerWidth-72,q.top);
   b.classList.add('ak-snap');b.style.left=c[0]+'px';b.style.top=c[1]+'px';setTimeout(()=>b.classList.remove('ak-snap'),300);
   try{localStorage.setItem('hm_ak_bub',JSON.stringify({s:left?'l':'r',y:c[1]/innerHeight}))}catch(_){}
   b.dataset.dragged='1';setTimeout(()=>{delete b.dataset.dragged},350)};
  addEventListener('pointermove',mv,{passive:false});addEventListener('pointerup',up);addEventListener('pointercancel',up)});
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.ak-bub');if(b&&b.dataset.dragged){e.stopPropagation();e.preventDefault();delete b.dataset.dragged}},true);
 addEventListener('resize',()=>akBubPlace(document.querySelector('.ak.mini .ak-bub')));
+
+// v463 the red close circle: drop the bubble on it to close Alexandra
+function akBubX(on){let x=document.getElementById('akBubX'),g=document.getElementById('akBubXg');
+ if(on&&!x){document.body.insertAdjacentHTML('beforeend','<div id="akBubXg"></div><div id="akBubX" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></div>');x=document.getElementById('akBubX');g=document.getElementById('akBubXg');void x.offsetWidth}
+ akBubX.hot=false;if(!x)return;if(on){x.classList.add('on');g.classList.add('on')}else{x.classList.remove('on','hot');g.classList.remove('on')}}
+function akBubHot(c){const x=document.getElementById('akBubX');if(!x)return null;const r=x.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
+ const near=Math.hypot(c[0]+30-cx,c[1]+30-cy)<80;if(near!==akBubX.hot){akBubX.hot=near;x.classList.toggle('hot',near);if(near&&navigator.vibrate)try{navigator.vibrate(12)}catch(_){}}
+ return near?[cx-30,cy-30]:null}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
