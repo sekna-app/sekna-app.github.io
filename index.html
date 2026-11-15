@@ -9395,6 +9395,43 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 .ak-sc button{display:inline-flex;align-items:center;gap:6px}.ak-sc i{display:grid;place-items:center;font-style:normal;color:#C9A24A}.ak-sc i .ak-ic{width:14px;height:14px}.ak-sc em{font-style:normal;font-size:11px;font-weight:800;background:#EEF2FC;color:#1C3C96;border-radius:99px;padding:1px 7px}
 .ak-ubin{width:34px;height:34px;border-radius:50%;border:0;background:#FDECEE;color:#E41E3F;display:grid;place-items:center;cursor:pointer;flex:none}.ak-ubin .ak-ic{width:16px;height:16px}
 .ak.dk .ak-more{background:#242526;color:#8E8CFF}.ak.dk .ak-ubin{background:#4a2328;color:#ff6b81}.ak.dk .ak-rq .ed{background:#3A3B3C;color:#E4E6EB}
+
+/* v435 Highlights (i) page with tabs */
+.ak-pgh2{position:absolute;z-index:4;top:0;left:0;right:0;padding:calc(10px + env(safe-area-inset-top,0px)) 10px 0;pointer-events:none}
+.ak-pgh2 .ak-bk{pointer-events:auto;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.35);color:#fff;display:grid;place-items:center;border:0;backdrop-filter:blur(6px)}
+.ak-pgb2{flex:1;overflow-y:auto;padding-bottom:20px;position:relative}
+.ak-hero{height:220px;background:#0F1A3A center 18%/cover no-repeat;position:relative}
+.ak-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 45%,#fff 100%)}
+.ak-id{position:relative;z-index:2;margin-top:-62px;padding:0 16px;display:flex;align-items:flex-end;gap:12px}
+.ak-id .ak-pga{width:92px;height:92px;margin:0;border:4px solid #fff;flex:none}
+.ak-id .ak-pga .ak-ic{width:40px;height:40px}
+.ak-id h2{margin:0;font:800 22px Inter,system-ui,sans-serif;color:#050505;display:flex;align-items:center;gap:6px}
+.ak-id small{display:block;font:600 12.5px Inter,system-ui,sans-serif;color:#65676B;margin-top:2px}
+.ak-id .ak-pgx{margin-top:2px;padding:0}
+.ak-ver{display:inline-grid;place-items:center;width:17px;height:17px;border-radius:50%;background:#0866FF;flex:none}.ak-ver svg{width:11px;height:11px;fill:none;stroke:#fff;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round}
+.ak-hl{display:flex;gap:12px;overflow-x:auto;padding:14px 16px 6px;scrollbar-width:none}.ak-hl::-webkit-scrollbar{display:none}
+.ak-hl button{flex:none;width:64px;display:flex;flex-direction:column;align-items:center;gap:5px;border:0;background:none;padding:0;cursor:pointer;font:600 11.5px Inter,system-ui,sans-serif;color:#050505}
+.ak-hl img{width:60px;height:60px;border-radius:50%;object-fit:cover;padding:2px;border:2.5px solid #0866FF;background:#fff}
+.ak-tabs{display:flex;gap:2px;padding:0 10px;margin-top:6px;border-bottom:1px solid #E4E6EB;position:sticky;top:0;background:#fff;z-index:3}
+.ak-tabs button{border:0;background:none;padding:12px 10px;font:700 14px Inter,system-ui,sans-serif;color:#65676B;cursor:pointer;border-radius:8px 8px 0 0}
+.ak-tabs button.on{color:#0866FF;box-shadow:inset 0 -3px 0 #0866FF}
+.ak-pgbody{padding:0 16px}
+.ak-pgbody h4{margin:18px 0 8px;font:800 16px Inter,system-ui,sans-serif;color:#050505}
+.ak-feat{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ak-feat button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;border:1px solid #E4E6EB;border-radius:12px;padding:10px;background:#fff;cursor:pointer;min-width:0}
+.ak-feat .ak-ic{width:22px;height:22px;color:#0866FF;margin-bottom:4px}.ak-feat b{font:700 13.5px Inter,system-ui,sans-serif;color:#050505}.ak-feat small{font:500 12px Inter,system-ui,sans-serif;color:#65676B;line-height:1.35}
+.ak-intro div{display:flex;align-items:center;gap:12px;padding:7px 0;font:500 14px/1.35 Inter,system-ui,sans-serif;color:#050505}
+.ak-intro .ak-ic{width:20px;height:20px;color:#65676B;flex:none}.ak-intro u{text-decoration:none;width:20px;text-align:center;flex:none}.ak-intro b{font-weight:700}
+.ak-ph3{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:12px;border-radius:10px;overflow:hidden}
+.ak-ph3 button{border:0;padding:0;background:#0F1A3A;cursor:pointer}.ak-ph3 img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
+.ak-pgnote{font-size:12.5px;margin:10px 0 0}
+.ak-plist{margin-top:8px}.ak-plist button{width:100%;display:flex;align-items:center;gap:12px;border:0;border-bottom:1px solid #F0F2F5;background:none;padding:10px 0;cursor:pointer;text-align:left}
+.ak-plist i{width:36px;height:36px;border-radius:10px;background:#F0F2F5;display:grid;place-items:center;flex:none;font-style:normal}.ak-plist i svg,.ak-plist i .ak-limg{width:22px;height:22px}
+.ak-plist span{flex:1;display:flex;flex-direction:column}.ak-plist b{font:700 14.5px Inter,system-ui,sans-serif;color:#050505}.ak-plist small{font:500 12px Inter,system-ui,sans-serif;color:#65676B}.ak-plist>button>.ak-ic{width:16px;height:16px;color:#9aa3b5}
+.ak-pgcta{padding:18px 16px 4px}.ak-pgcta button{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:10px;padding:11px;background:#0866FF;color:#fff;font:700 14.5px Inter,system-ui,sans-serif;cursor:pointer}.ak-pgcta .ak-ic{width:17px;height:17px}
+.ak.dk .ak-hero::after{background:linear-gradient(180deg,rgba(0,0,0,0) 45%,#000 100%)}
+.ak.dk .ak-id .ak-pga{border-color:#000}.ak.dk .ak-id h2,.ak.dk .ak-hl button,.ak.dk .ak-pgbody h4,.ak.dk .ak-feat b,.ak.dk .ak-intro div,.ak.dk .ak-plist b{color:#E4E6EB}
+.ak.dk .ak-tabs{background:#000;border-color:#3E4042}.ak.dk .ak-feat button{background:#242526;border-color:#3E4042}.ak.dk .ak-hl img{background:#000}.ak.dk .ak-plist i{background:#3A3B3C}.ak.dk .ak-plist button{border-color:#3E4042}
 </style>
 </head>
 <body>
@@ -10587,7 +10624,7 @@ function akOpenNow(){
  if(!canDo('ask'))return;closeSidebar();
  document.getElementById('akBox')?.remove();
  const o=document.createElement('div');o.id='akBox';o.className='ak'+(akDk()?' dk':'');o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Alexandra');
- o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av" id="akHdAv">${akAvIn()}</span><div><b>Alexandra <span class="ak-flag" aria-hidden="true">🇺🇦</span></b><small id="akSt">Active now</small></div><button type="button" class="ak-inf" aria-label="About Alexandra" onclick="akAbout(event)">${akI('about')}</button></div><div class="ak-pg" id="akAbt" aria-hidden="true"></div>
+ o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av" id="akHdAv">${akAvIn()}</span><div><b>Alexandra <span class="ak-flag" aria-hidden="true">🇺🇦</span></b><small id="akSt">Active now</small></div><button type="button" class="ak-inf" aria-label="About Alexandra" onclick="AK.pgTab='about';akAbout(event)">${akI('about')}</button></div><div class="ak-pg" id="akAbt" aria-hidden="true"></div>
   <div class="ak-bd" id="akBd"></div><div class="ak-kb" id="akKb"></div>
   <form class="ak-in" onsubmit="akSend(event)"><button type="button" class="ak-mb" aria-label="Menu" onclick="akToggleKb()">${akI('menu')}</button><input id="akQ" autocomplete="off" maxlength="1500" placeholder="Aa" oninput="akInMode()"><button type="submit" class="ak-snd" aria-label="Send">${akI('plane')}</button><button type="button" class="ak-mic" aria-label="Record a voice message" onclick="akRecStart()">${akI('mic')}</button>
   <div class="ak-rec" id="akRec"><button type="button" class="ak-rt2" aria-label="Delete" onclick="akRecTrash()">${akI('trash')}</button><div class="ak-rw"><em></em><span id="akRw"></span><b id="akRt">0:00</b></div><button type="button" class="ak-rs2" aria-label="Send" onclick="akRecSend()">${akI('plane')}</button></div></form></div>`;
@@ -10639,18 +10676,21 @@ function akRecSend(){
    AK.msgs.push({w:'u',nw:1,html:`<span class="ak-vb" data-u="${url}" onclick="akPlay(this)">${akI('play')}<span>${lv.filter((x,i)=>i%2===0).map(x=>`<i style="height:${Math.round(4+x*16)}px"></i>`).join('')}</span><b>0:${String(secs).padStart(2,'0')}</b></span>`});
    AK.kb=false;akKb();AK.busy=true;akDraw();
    try{
-     const wav=await akWav(blob);
-     const j=await akPost('voice',{audio:wav,mime:'audio/wav',history:AK.hist.slice(-6)});
+     
+     let audio,mime='audio/wav';
+     try{audio=await akWav(blob)}catch(e){audio=await akB64(blob);mime=/mp4|m4a|aac/.test(blob.type)?'audio/aac':/ogg/.test(blob.type)?'audio/ogg':(blob.type||'audio/webm').split(';')[0]}
+     const j=await akPost('voice',{audio,mime,history:AK.hist.slice(-6)});
      AK.busy=false;
      if(AK.add){akBot(`<p class="ak-sm ak-mu">${akI('mic')} ${akEsc(j.heard)}</p>`);akAddAnswer(j.heard);return}
      AK.hist.push({role:'user',text:j.heard},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-12);
      akBot(`<p class="ak-sm ak-mu">${akI('mic')} ${akEsc(j.heard)}</p>`+akAnswer(j.answer||''));
-   }catch(err){AK.busy=false;akBot(`<p>${/unknown action/.test(String(err&&err.message))?'Voice messages need the new HemeraApi file in the script.':'Could not hear the message. Try again.'}</p>`)}
+   }catch(err){AK.busy=false;const m=String(err&&err.message||'');akBot(`<p>${/unknown action/.test(m)?'Voice messages need the new HemeraApi file in the script.':/Too many|Could not hear/.test(m)?akEsc(m.replace(/\.?$/,'.'))+(/Too many/.test(m)?'':' Try again.'):'Could not hear the message. Try again.'}</p>`)}
  };
  try{AKR.rec.stop()}catch(e){akRecStop()}
 }
 function akPlay(el){const u=el.dataset.u;if(!u)return;if(AKR.au&&!AKR.au.paused){AKR.au.pause();return}AKR.au=new Audio(u);AKR.au.play().catch(()=>{})}
 
+async function akB64(blob){const b=new Uint8Array(await blob.arrayBuffer());let s='';for(let i=0;i<b.length;i+=0x8000)s+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000));return btoa(s)}
 async function akWav(blob){
  const C=window.AudioContext||window.webkitAudioContext,ac=new C(),buf=await ac.decodeAudioData(await blob.arrayBuffer());try{ac.close()}catch(e){}
  const rate=16000,len=Math.ceil(buf.duration*rate),O=window.OfflineAudioContext||window.webkitOfflineAudioContext,off=new O(1,len,rate),src=off.createBufferSource();
@@ -10661,18 +10701,37 @@ async function akWav(blob){
  const bytes=new Uint8Array(v.buffer);let bin='';for(let i=0;i<bytes.length;i+=0x8000)bin+=String.fromCharCode.apply(null,bytes.subarray(i,i+0x8000));return btoa(bin);
 }
  
-function akAbout(e){if(e)e.stopPropagation();const pg=document.getElementById('akAbt');if(!pg)return;
- const n=(id,t)=>`<button type="button" onclick="akPgGo('${id}')"><i>${akI(id)}</i><span>${t}</span></button>`;
+ 
+const AK_HL=[[0,'Alliance'],[1,'Numbers'],[2,'Answers'],[3,'The team'],[5,'Sekna'],[6,'Ask her']];
+function akAbout(e,keep){if(e&&e.stopPropagation)e.stopPropagation();const pg=document.getElementById('akAbt');if(!pg)return;
+ const tab=AK.pgTab||'about',v='?v=7',img=k=>`icons/alexandra/${k}.webp${v}`;
  const row=(id,ic,t,sub,cls)=>`<button type="button" class="r${cls?' '+cls:''}" onclick="akPgGo('${id}')"><i>${akI(ic)}</i><span><b>${t}</b>${sub?`<small>${sub}</small>`:''}</span></button>`;
- pg.innerHTML=`<div class="ak-pgh"><button type="button" class="ak-bk" aria-label="Back" onclick="akAboutClose()">${akI('back')}</button></div>
-  <div class="ak-pgb"><div class="ak-pgt"><span class="ak-pga">${akAvIn()}<em></em>${AK.editor?`<button type="button" class="ak-pgc" aria-label="Change the bot's photo" onclick="akBotAvPick()">${akI('cam')}</button>`:''}</span><b>Alexandra</b><small>Active now</small>${AK.editor&&akBav().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Remove the photo?','The bot goes back to the HEMERA star.','Remove',()=>akBotAvSave(''))">Remove photo</button>`:''}</div>
-  <div class="ak-pgr">${n('links','Sheets')}${n('off','Days off')}${n('mail','Emails')}${n('task','Tasks')}</div>
-  <button type="button" class="ak-meet" onclick="akAboutClose();setTimeout(akStory,250)"><img src="icons/alexandra/alliance.webp?v=7" alt=""><span><b>Meet Alexandra</b><small>Her story with HEMERA</small></span>${akI('play')}</button>
-  <h4>About</h4><div class="ak-pgp"><p>Answers from the team sheet: sheets, platform reports and scripts, who is off and who covers, and team emails.</p><p>Type it any way you like, in Arabic or English, or send a voice message.</p><p class="ak-mu">Each person sees only the platforms they have access to.</p></div>
+ const feat=(id,ic,t,sub)=>`<button type="button" onclick="akPgGo('${id}')">${akI(ic)}<b>${t}</b><small>${sub}</small></button>`;
+ const tick='<span class="ak-ver"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></span>';
+ let body='';
+ if(tab==='about')body=`<h4>What she does</h4><div class="ak-feat">${feat('links','links','Sheets & links','Sheets, reports and scripts by platform')}${feat('off','off','Days off','Who is off and who covers')}${feat('mail','mail','Team emails','Copy any email in one tap')}${feat('task','task','My tasks','Your tasks in HEMERA')}</div>
+  <h4>Intro</h4><div class="ak-intro">
+   <div>${akI('rep')}<span>Works at <b>HEMERA</b> · made at <b>Sekna</b></span></div>
+   <div><u>🇺🇦</u><span>From <b>Alexandria</b></span></div>
+   <div>${akI('mic')}<span>Speaks <b>Arabic</b> and <b>English</b>, and listens to voice messages</span></div>
+   <div>${akI('lock')}<span>Each person sees only the platforms they have access to</span></div></div>
   ${AK.canAdd||AK.canTeach?`<h4>Tools</h4>${AK.canAdd?row('add','add','Add a sheet','Put a new sheet in the list'):''}${AK.canTeach?row('teach','teach','Teach the bot','Rules, access and platforms'):''}`:''}
   ${AK.editor?`<div id="akReqW">${akReqsHtml(AK.rq)}</div><h4>Settings</h4><div id="akBotW">${akBotRow(AK.bst||null)}</div>`:''}
-  <h4>Chat</h4><button type="button" class="r" role="switch" aria-checked="${akDk()}" onclick="akDkSet(!akDk(),this)"><i>${akI('moon')}</i><span><b>Dark mode</b><small>Only for this chat</small></span><em class="ak-sw${akDk()?' on':''}"></em></button>${row('clear','trash','Clear chat','The chat stays on this device for 24 hours','del')}</div>`;
- pg.setAttribute('aria-hidden','false');requestAnimationFrame(()=>pg.classList.add('on'));if(AK.editor&&ASK_HEMERA_URL){akBotLoad();akReqsLoad()}}
+  <h4>Chat</h4><button type="button" class="r" role="switch" aria-checked="${akDk()}" onclick="akDkSet(!akDk(),this)"><i>${akI('moon')}</i><span><b>Dark mode</b><small>Only for this chat</small></span><em class="ak-sw${akDk()?' on':''}"></em></button>${row('clear','trash','Clear chat','The chat stays on this device for 24 hours','del')}`;
+ if(tab==='photos')body=`<div class="ak-ph3">${AKS.map((x,i)=>x.img==='flag'?'':`<button type="button" aria-label="${akEsc(x.k)}" onclick="akStoryAt(${i})"><img src="${img(x.img)}" alt="" loading="lazy"></button>`).join('')}</div><p class="ak-mu ak-pgnote">Tap a photo to watch her story from there.</p>`;
+ if(tab==='platforms'){const P=((AK.assets&&AK.assets.platforms)||[]),R=((AK.assets&&AK.assets.rows)||[]);
+  body=P.length?`<div class="ak-plist">${P.map(x=>{const n=R.filter(r=>(r.platforms||[]).indexOf(x.key)>=0).length;return `<button type="button" onclick="akPgPlat('${akEsc(x.key)}')"><i>${akLogo(x.key)}</i><span><b>${akEsc(x.key)}</b><small>${n} ${n===1?'sheet':'sheets'}</small></span>${akI('chev')}</button>`}).join('')}</div><p class="ak-mu ak-pgnote">These are the platforms you can see.</p>`:'<p class="ak-mu ak-pgnote">No platforms to show yet.</p>'}
+ pg.innerHTML=`<div class="ak-pgb2"><div class="ak-pgh2"><button type="button" class="ak-bk" aria-label="Back" onclick="akAboutClose()">${akI('back')}</button></div><div class="ak-hero" style="background-image:url(${img('alliance')})"></div>
+  <div class="ak-id"><span class="ak-pga">${akAvIn()}<em></em>${AK.editor?`<button type="button" class="ak-pgc" aria-label="Change the bot's photo" onclick="akBotAvPick()">${akI('cam')}</button>`:''}</span>
+   <div><h2>Alexandra ${tick}</h2><small>🇺🇦 Alexandria × HEMERA · Active now</small>${AK.editor&&akBav().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Remove the photo?','The bot goes back to the HEMERA star.','Remove',()=>akBotAvSave(''))">Remove photo</button>`:''}</div></div>
+  <div class="ak-hl">${AK_HL.map(([i,t])=>`<button type="button" onclick="akStoryAt(${i})"><img src="${img(AKS[i].img)}" alt="">${t}</button>`).join('')}</div>
+  <div class="ak-tabs" role="tablist">${[['about','About'],['photos','Photos'],['platforms','Platforms']].map(([k,t])=>`<button type="button" role="tab" aria-selected="${tab===k}" class="${tab===k?'on':''}" onclick="AK.pgTab='${k}';akAbout(null,1)">${t}</button>`).join('')}</div>
+  <div class="ak-pgbody">${body}</div>
+  <div class="ak-pgcta"><button type="button" onclick="akAboutClose()">${akI('send')}Message Alexandra</button></div></div>`;
+ if(!keep){pg.setAttribute('aria-hidden','false');requestAnimationFrame(()=>pg.classList.add('on'))}
+ if(tab==='about'&&AK.editor&&ASK_HEMERA_URL){akBotLoad();akReqsLoad()}}
+function akStoryAt(i){akAboutClose();setTimeout(()=>{akStory();if(i)setTimeout(()=>akStoryShow(i),60)},250)}
+function akPgPlat(k){akAboutClose();setTimeout(()=>{AK.kb=false;akKb();akUser(k);AK.ls=[];akPick('p',k)},250)}
 function akDk(){try{return localStorage.getItem('hm_ask_dark')==='1'}catch(e){return false}}
 function akDkSet(on,btn){try{localStorage.setItem('hm_ask_dark',on?'1':'0')}catch(e){}const o=document.getElementById('akBox');if(o)o.classList.toggle('dk',on);if(btn){btn.setAttribute('aria-checked',on);const w=btn.querySelector('.ak-sw');if(w)w.classList.toggle('on',on)}}
 function akReqsHtml(list){if(!list||!list.length)return '';const P=akPpl();
@@ -10703,7 +10762,7 @@ function akDraw(){akSave();
  const L=AK.msgs.slice(-60);
  b.innerHTML=L.map((m,i)=>{const nx=L[i+1],last=!nx||nx.w!==m.w,first=i===0||L[i-1].w!==m.w;
    const bub=`<div class="ak-m ${m.w}${m.cls?' '+m.cls:''}${first?' f':''}${last?' l':''}${m.nw?' nw':''}">${m.html}</div>`;
-   return m.w==='h'?`<div class="ak-g">${last&&!AK.busy||last&&nx?`<span class="ak-sa">${akAvIn()}</span>`:'<span class="ak-sp"></span>'}${bub}</div>`:bub}).join('')+(AK.busy?`<div class="ak-g"><span class="ak-sa">${akI('spk')}</span><div class="ak-m h f l ak-dots"><i></i><i></i><i></i></div></div>`:'');
+   return m.w==='h'?`<div class="ak-g">${last&&!AK.busy||last&&nx?`<span class="ak-sa">${akAvIn()}</span>`:'<span class="ak-sp"></span>'}${bub}</div>`:bub}).join('')+(AK.busy?`<div class="ak-g"><span class="ak-sa">${akAvIn()}</span><div class="ak-m h f l ak-dots"><i></i><i></i><i></i></div></div>`:'');
  L.forEach(m=>{m.nw=0});requestAnimationFrame(()=>{b.scrollTop=b.scrollHeight});
 }
 function akToggleKb(){if(AK.blocked){AK.kb=false;akKb();return}AK.kb=!AK.kb;akKb()}
