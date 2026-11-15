@@ -9502,6 +9502,10 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 .ak-ncs{display:block;font:600 10.5px Inter,system-ui,sans-serif;color:#8a93a8;margin-top:5px;direction:ltr;text-align:left}
 .ak.dk .ak-ncc,body.dark-mode .ak-ncc{background:#242526}.ak.dk .ak-ncc b,body.dark-mode .ak-ncc b{color:#E4E6EB}
 .ak-oldapi{margin-top:8px;font:600 11.5px/1.5 Inter,system-ui,sans-serif;color:#9A6512;background:#FCEFD6;border-radius:10px;padding:6px 9px;direction:ltr;text-align:left}
+/* v462 phones: Alexandra's bubble can be dragged anywhere, then it sticks to the nearest side */
+.ak.mini:not(.win) .ak-bub{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.ak.mini:not(.win) .ak-bub.ak-drag{transition:none!important;animation:none;transform:scale(1.08);box-shadow:0 0 0 2px #E2B874,0 14px 30px rgba(10,18,56,.45)}
+.ak.mini:not(.win) .ak-bub.ak-snap{transition:left .25s cubic-bezier(.2,.8,.2,1),top .25s cubic-bezier(.2,.8,.2,1)}
 </style>
 </head>
 <body>
@@ -10712,7 +10716,7 @@ function akFit(){const o=document.getElementById('akBox');if(!o||!o.classList.co
  o.style.setProperty('--akL',Math.round(L)+'px');o.style.setProperty('--akT',Math.round(T)+'px')}
 document.addEventListener('click',e=>{const o=document.getElementById('akBox');if(!o||!o.classList.contains('pgm'))return;const n=e.target.closest('#dkRail button,#dkRail a,#dkPanel button,#dkPanel a');if(n&&!/alexandra/i.test(n.textContent))closeAsk()},true);
 function akMini(e){if(e)e.stopPropagation();const o=document.getElementById('akBox');if(!o)return;o.classList.toggle('mini');
- if(!akDesk()){let b=o.querySelector('.ak-bub');if(!b){o.insertAdjacentHTML('beforeend',`<button type="button" class="ak-bub" aria-label="Open the chat with Alexandra" onclick="akMini(event)">${akAvIn()}<i></i></button>`);b=o.querySelector('.ak-bub')}document.documentElement.classList.toggle('ak-bubbed',o.classList.contains('mini'))}const b=o.querySelector('.ak-min');if(b){const m=o.classList.contains('mini');b.innerHTML=akI(m?'up':'minus');b.setAttribute('aria-label',m?'Open the chat':'Minimise');b.title=b.getAttribute('aria-label')}}
+ if(!akDesk()){let b=o.querySelector('.ak-bub');if(!b){o.insertAdjacentHTML('beforeend',`<button type="button" class="ak-bub" aria-label="Open the chat with Alexandra" onclick="akMini(event)">${akAvIn()}<i></i></button>`);b=o.querySelector('.ak-bub')}akBubPlace(b);document.documentElement.classList.toggle('ak-bubbed',o.classList.contains('mini'))}const b=o.querySelector('.ak-min');if(b){const m=o.classList.contains('mini');b.innerHTML=akI(m?'up':'minus');b.setAttribute('aria-label',m?'Open the chat':'Minimise');b.title=b.getAttribute('aria-label')}}
 document.addEventListener('click',e=>{const o=document.getElementById('akBox');if(o&&o.classList.contains('mini')&&e.target.closest('#akBox .ak-hd')&&!e.target.closest('button'))akMini()});
 function akModeFlip(){try{localStorage.setItem('hm_ask_mode',akDkMode()==='win'?'page':'win')}catch(e){}akModeApply()}
 function akSideDraw(){const o=document.getElementById('akBox');if(!o)return;let L=o.querySelector('.ak-dl'),R=o.querySelector('.ak-dr');const c=o.querySelector('.ak-card');
@@ -20307,6 +20311,24 @@ function akCardsSplit(t){t=String(t||'');const i=t.indexOf('[[CARDS]]');if(i<0)r
  return {text:t.slice(0,i).trim(),cards:cards&&cards.length?cards:null}}
 function akCardsHtml(cs){const one=cs.length===1;return `<div class="ak-nc${one?' one':''}">${cs.map(c=>{const d=c.d==='up'?'up':c.d==='down'?'dn':'';
  return `<div class="ak-ncc"><small>${akEsc(String(c.l||''))}</small><b>${akEsc(String(c.v))}</b>${c.p?`<span class="ak-ncp ${d}">${akEsc(String(c.p))}</span>`:''}${c.s?`<em>${akEsc(String(c.s))}</em>`:''}</div>`}).join('')}</div><span class="ak-ncs">From the dashboard · ${akEsc((DASH_DATA&&DASH_DATA.account&&DASH_DATA.account.shortLabel)||'')}</span>`}
+
+// v462 phones: drag Alexandra's bubble; a short tap still opens the chat. The spot is remembered.
+function akBubClamp(x,y){const w=60,m=8,vw=innerWidth,vh=innerHeight;return[Math.max(m,Math.min(vw-w-m,x)),Math.max(m+20,Math.min(vh-w-m-20,y))]}
+function akBubPlace(b){if(!b)return;let p=null;try{p=JSON.parse(localStorage.getItem('hm_ak_bub')||'null')}catch(e){}
+ if(!p||typeof p.y!=='number'){b.style.left=b.style.top=b.style.right=b.style.bottom='';return}
+ const vw=innerWidth,x=p.s==='l'?12:vw-60-12,c=akBubClamp(x,p.y*innerHeight);b.style.left=c[0]+'px';b.style.top=c[1]+'px';b.style.right='auto';b.style.bottom='auto'}
+document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest('.ak.mini:not(.win) .ak-bub');if(!b||(e.button&&e.button!==0))return;
+ const r=b.getBoundingClientRect(),sx=e.clientX,sy=e.clientY,ox=sx-r.left,oy=sy-r.top;let moved=false;
+ const mv=ev=>{if(!moved&&Math.hypot(ev.clientX-sx,ev.clientY-sy)<8)return;if(!moved){moved=true;b.classList.remove('ak-snap');b.classList.add('ak-drag');try{b.setPointerCapture(e.pointerId)}catch(_){}}
+  ev.preventDefault();const c=akBubClamp(ev.clientX-ox,ev.clientY-oy);b.style.left=c[0]+'px';b.style.top=c[1]+'px';b.style.right='auto';b.style.bottom='auto'};
+ const up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up);if(!moved)return;
+  b.classList.remove('ak-drag');const q=b.getBoundingClientRect(),left=q.left+30<innerWidth/2,c=akBubClamp(left?12:innerWidth-72,q.top);
+  b.classList.add('ak-snap');b.style.left=c[0]+'px';b.style.top=c[1]+'px';setTimeout(()=>b.classList.remove('ak-snap'),300);
+  try{localStorage.setItem('hm_ak_bub',JSON.stringify({s:left?'l':'r',y:c[1]/innerHeight}))}catch(_){}
+  b.dataset.dragged='1';setTimeout(()=>{delete b.dataset.dragged},350)};
+ addEventListener('pointermove',mv,{passive:false});addEventListener('pointerup',up);addEventListener('pointercancel',up)});
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.ak-bub');if(b&&b.dataset.dragged){e.stopPropagation();e.preventDefault();delete b.dataset.dragged}},true);
+addEventListener('resize',()=>akBubPlace(document.querySelector('.ak.mini .ak-bub')));
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
