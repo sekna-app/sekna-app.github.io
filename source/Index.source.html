@@ -9183,8 +9183,14 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 .aks-beam{position:absolute;opacity:0;box-shadow:0 0 30px 10px rgba(95,208,255,.35),0 0 60px 22px rgba(226,184,116,.28)}
 .aks-beam.v{top:-20%;bottom:-20%;width:30px;left:0;background:linear-gradient(90deg,transparent,#5fd0ff 30%,#fff 50%,#F3D58E 70%,transparent)}
 .aks-beam.h{left:-20%;right:-20%;height:30px;top:0;background:linear-gradient(180deg,transparent,#5fd0ff 30%,#fff 50%,#F3D58E 70%,transparent)}
-.aks-tap{position:absolute;z-index:20;top:90px;bottom:120px;width:40%;border:0;background:none;cursor:pointer;padding:0}.aks-tap.l{left:0}.aks-tap.r{right:0;width:60%}
-.aks-tap:focus-visible,.aks-x:focus-visible,.aks-go:focus-visible{outline:2px solid #F3D58E;outline-offset:2px}
+.aks-tap{position:absolute;z-index:20;left:0;right:0;top:calc(64px + env(safe-area-inset-top,0px));bottom:0;touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.aks-kb{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.aks-kb button:focus{position:fixed}
+.aks-sc{will-change:clip-path,opacity}.aks-sc img.bg{will-change:transform;backface-visibility:hidden}
+.aks-sc.on .aks-go{position:relative;z-index:25}.aks-cap{z-index:22;pointer-events:none}.aks-go{pointer-events:auto}
+.aks-bar,.aks-dots,.aks-cap{transition:opacity .25s}.aks.hold .aks-bar,.aks.hold .aks-dots,.aks.hold .aks-cap{opacity:0}
+.aks-sc.smoke-pos img.bg{object-position:50% 38%}
+.aks-kb button:focus-visible,.aks-x:focus-visible,.aks-go:focus-visible{outline:2px solid #F3D58E;outline-offset:2px}
 .ak-meet{display:flex;align-items:center;gap:12px;width:100%;margin-top:14px;border:0;border-radius:16px;padding:8px 12px 8px 8px;background:linear-gradient(135deg,#0F1A3A,#1C3C96);color:#fff;cursor:pointer;text-align:left}
 .ak-meet img{width:52px;height:52px;border-radius:12px;object-fit:cover;flex:none}
 .ak-meet span{flex:1;display:flex;flex-direction:column}.ak-meet b{font:800 14.5px Inter,system-ui,sans-serif}.ak-meet small{font:600 12px Inter,system-ui,sans-serif;color:#C9D3F5}
@@ -10291,7 +10297,7 @@ const AKS=[
  {img:'hand',k:'HEMERA',h:'and turns it into <em>answers</em>'},
  {img:'room',k:'FOR THE TEAM',h:'Sheets, reports and days off, <em>in one chat</em>'},
  {img:'flag',k:'ALEXANDRA × HEMERA',h:'Built for <em>HEMERA</em>'},
- {img:'sekna',k:'SEKNA',h:'Made at <em>Sekna</em>',smoke:1},
+ {img:'sekna',k:'SEKNA',h:'Made at <em>Sekna</em>',smoke:1,cls:'smoke-pos'},
  {img:'smile',k:'MEET ALEXANDRA',h:'Ask her <em>anything</em>',cls:'smile'}];
 const AKS_TR=['none','sweepD','diag','split','sweepR','sweepL','calm'],AKS_DUR=3800,AKS_T=1050,AKS_E='cubic-bezier(.7,0,.2,1)';
 function akStoryWords(h){let em=false;return h.split(/(<em>|<\/em>| )/).filter(x=>x&&x!==' ').map(t=>{if(t==='<em>'){em=true;return ''}if(t==='</em>'){em=false;return ''}return `<span>${em?`<em>${t}</em>`:t}</span>`}).filter(Boolean).join(' ')}
@@ -10300,22 +10306,43 @@ function akStory(){
  const o=document.createElement('div');o.id='aksBox';o.className='aks';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Meet Alexandra');
  o.innerHTML=`<div class="aks-ph"><div class="aks-bar"><img src="get/logo-white.webp" alt="HEMERA"><button type="button" class="aks-x" aria-label="Close" onclick="akStoryClose()">${akI('x')}</button></div>
   <div class="aks-dots">${AKS.map(()=>'<i></i>').join('')}</div>
-  ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}"><img class="bg" src="icons/alexandra/${s.img}.webp?v=3" decoding="async" alt="" ${i?'loading="lazy"':''}>${s.smoke?'<i class="aks-smoke a"></i><i class="aks-smoke b"></i><i class="aks-smoke c"></i>':''}<div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
-  <div class="aks-fx"></div><button type="button" class="aks-tap l" aria-label="Back" onclick="akStoryStep(-1)"></button><button type="button" class="aks-tap r" aria-label="Next" onclick="akStoryStep(1)"></button></div>`;
+  ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}"><img class="bg" src="icons/alexandra/${s.img}.webp?v=3" decoding="async" alt="">${s.smoke?'<i class="aks-smoke a"></i><i class="aks-smoke b"></i><i class="aks-smoke c"></i>':''}<div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
+  <div class="aks-fx"></div><div class="aks-tap" aria-hidden="true"></div>
+  <div class="aks-kb"><button type="button" aria-label="Back" onclick="akStoryStep(-1)"></button><button type="button" aria-label="Next" onclick="akStoryStep(1)"></button></div></div>`;
  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));
- window.AKST={o,i:-1,t:null};akStoryShow(0);
- // the pictures are full quality: start loading the rest while the first one plays
- setTimeout(()=>o.querySelectorAll('img[loading=lazy]').forEach(im=>im.loading='eager'),300);
+ window.AKST={o,i:-1,t:null,left:0,end:0,held:false,tok:0};
+ // v422 like a story: tap the right side for next, the left side for back; press and hold to pause
+ const tap=o.querySelector('.aks-tap');let down=0,hold=null,x=0;
+ tap.addEventListener('pointerdown',e=>{down=Date.now();x=e.clientX;tap.setPointerCapture(e.pointerId);hold=setTimeout(()=>akStoryHold(true),180)});
+ const up=e=>{if(!down)return;clearTimeout(hold);const S=window.AKST;const long=S&&S.held;down=0;
+  if(long){akStoryHold(false);return}
+  if(e.type==='pointercancel')return;const g=S&&S.i===AKS.length-1&&o.querySelector('.aks-sc.on .aks-go');if(g){const b=g.getBoundingClientRect();if(e.clientX>=b.left-8&&e.clientX<=b.right+8&&e.clientY>=b.top-8&&e.clientY<=b.bottom+8){akStoryClose(true);return}}
+  const r=tap.getBoundingClientRect();akStoryStep(x-r.left<r.width*.35?-1:1)};
+ tap.addEventListener('pointerup',up);tap.addEventListener('pointercancel',up);
+ tap.addEventListener('contextmenu',e=>e.preventDefault());
+ akStoryShow(0);
+ // the pictures are full quality: load them all while the first one plays
+ AKS.forEach(s=>{const im=new Image();im.src='icons/alexandra/'+s.img+'.webp?v=3'});
 }
 function akStoryClose(chat){const S=window.AKST;if(S)clearTimeout(S.t);const o=document.getElementById('aksBox');if(o){o.classList.remove('open');setTimeout(()=>o.remove(),300)}window.AKST=null;
  if(chat&&!document.getElementById('akBox'))openAsk()}
-function akStoryStep(d){const S=window.AKST;if(!S)return;const n=S.i+d;if(n<0||n>=AKS.length)return;akStoryShow(n)}
-function akStoryShow(i){
- const S=window.AKST;if(!S)return;clearTimeout(S.t);
- const ph=S.o.querySelector('.aks-ph'),sc=ph.querySelectorAll('.aks-sc'),now=sc[i],prev=S.i>=0?sc[S.i]:null,fx=ph.querySelector('.aks-fx');
- const back=S.i>i,tr=S.i<0?'none':back?'calm':AKS_TR[i],T=AKS_T,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
- sc.forEach(s=>{if(s!==now&&s!==prev)s.classList.remove('on','out')});
- if(prev){prev.classList.remove('on');prev.classList.add('out')}
+function akStoryStep(d){const S=window.AKST;if(!S)return;const n=S.i+d;if(n<0||n>=AKS.length){if(d<0&&S.i===0)akStoryShow(0,true);return}akStoryShow(n)}
+function akStoryAnims(){const S=window.AKST;return S?S.o.querySelector('.aks-ph').getAnimations({subtree:true}):[]}
+function akStoryHold(on){const S=window.AKST;if(!S||S.held===on)return;S.held=on;S.o.classList.toggle('hold',on);
+ akStoryAnims().forEach(a=>{if(typeof CSSTransition!=='undefined'&&a instanceof CSSTransition)return;try{on?a.pause():a.play()}catch(e){}});
+ if(on){clearTimeout(S.t);S.left=Math.max(0,S.end-Date.now())}
+ else if(S.i<AKS.length-1){S.end=Date.now()+S.left;S.t=setTimeout(()=>akStoryShow(S.i+1),S.left)}}
+async function akStoryShow(i,again){
+ const S=window.AKST;if(!S)return;clearTimeout(S.t);if(S.held)akStoryHold(false);
+ const tok=++S.tok,ph=S.o.querySelector('.aks-ph'),sc=[...ph.querySelectorAll('.aks-sc')],now=sc[i],cur=S.i>=0?sc[S.i]:null,fx=ph.querySelector('.aks-fx');
+ // wait (a little) for the picture, so it never flashes in half drawn
+ const im=now.querySelector('img.bg');if(!im.complete){try{await Promise.race([im.decode(),new Promise(r=>setTimeout(r,1500))])}catch(e){}if(tok!==S.tok||!window.AKST)return}
+ const back=S.i>i,tr=S.i<0?'none':again||back?'calm':AKS_TR[i],T=AKS_T,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ // the picture on screen stays as it is now, still, behind the new one; everything else is cleared
+ if(cur&&cur!==now)cur.getAnimations({subtree:true}).forEach(a=>{if(a instanceof CSSAnimation)return;try{a.commitStyles()}catch(e){}a.cancel()});
+ sc.forEach(s=>{if(s===now||s===cur)return;s.classList.remove('on','out');s.getAnimations({subtree:true}).forEach(a=>{if(!(a instanceof CSSAnimation))a.cancel()});s.removeAttribute('style');s.querySelectorAll('[style]').forEach(n=>n.removeAttribute('style'))});
+ now.getAnimations({subtree:true}).forEach(a=>{if(!(a instanceof CSSAnimation))a.cancel()});now.removeAttribute('style');now.querySelectorAll('[style]').forEach(n=>n.removeAttribute('style'));
+ if(cur&&cur!==now){cur.classList.remove('on');cur.classList.add('out')}
  now.classList.remove('out');now.classList.add('on');fx.innerHTML='';
  ph.querySelectorAll('.aks-dots i').forEach((d,k)=>{d.className=k<i?'done':k===i?'now':''});
  const A=(k,op)=>now.animate(k,Object.assign({duration:T,easing:AKS_E,fill:'both'},op||{}));
@@ -10323,23 +10350,24 @@ function akStoryShow(i){
  const B=(c,k,op,css)=>el(c,css).animate(k,Object.assign({duration:T,easing:AKS_E,fill:'forwards'},op||{}));
  const W=ph.clientWidth,H=ph.clientHeight,full='inset(0 0 0 0)';
  if(!reduce){
-  if(now.querySelector('.aks-smoke'))now.querySelector('img.bg').animate([{transform:'scale(1.02)'},{transform:'scale(1.14) translateY(-2%)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
-  else now.querySelector('img.bg').animate([{transform:'scale(1.12) translateX(4%)'},{transform:'scale(1.12) translateX(-4%)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
+  if(now.querySelector('.aks-smoke'))im.animate([{transform:'scale(1)'},{transform:'scale(1.06)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
+  else im.animate([{transform:'scale(1.12) translateX(4%)'},{transform:'scale(1.12) translateX(-4%)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
   if(tr==='sweepD'){A([{clipPath:'inset(0 0 100% 0)'},{clipPath:full}]);B('aks-beam h',[{transform:'translateY(-40px)',opacity:1},{opacity:1,offset:.85},{transform:`translateY(${H+40}px)`,opacity:0}])}
   if(tr==='sweepL'){A([{clipPath:'inset(0 0 0 100%)'},{clipPath:full}]);B('aks-beam v',[{transform:`translateX(${W+40}px) skewX(-12deg)`,opacity:1},{opacity:1,offset:.85},{transform:'translateX(-60px) skewX(-12deg)',opacity:0}])}
   if(tr==='sweepR'){A([{clipPath:'inset(0 100% 0 0)'},{clipPath:full}]);B('aks-beam v',[{transform:'translateX(-60px) skewX(12deg)',opacity:1},{opacity:1,offset:.85},{transform:`translateX(${W+40}px) skewX(12deg)`,opacity:0}])}
   if(tr==='diag'){A([{clipPath:'polygon(0 0,0 0,0 0,0 0)'},{clipPath:'polygon(0 0,250% 0,0 250%,0 0)'}]);B('aks-beam v',[{transform:`translateX(${-W}px) translateY(${-H*.4}px) rotate(45deg)`,opacity:1},{opacity:1,offset:.85},{transform:`translateX(${W}px) translateY(${H*.4}px) rotate(45deg)`,opacity:0}],{},{left:'50%',top:'-40%',bottom:'-40%'})}
   if(tr==='split'){A([{clipPath:'inset(0 50% 0 50%)'},{clipPath:full}]);[-1,1].forEach(d=>B('aks-beam v',[{transform:'translateX(0)',opacity:1},{opacity:1,offset:.85},{transform:`translateX(${d*W*.58}px)`,opacity:0}],{},{left:'50%',marginLeft:'-15px'}))}
-  if(tr==='calm')A([{opacity:0,transform:'scale(1.04)',filter:'blur(6px)'},{opacity:1,transform:'none',filter:'none'}],{duration:1700,easing:'cubic-bezier(.25,.1,.25,1)'});
+  if(tr==='calm')A([{opacity:0},{opacity:1}],{duration:1100,easing:'cubic-bezier(.25,.1,.25,1)'});
   if(tr==='none')A([{opacity:0},{opacity:1}],{duration:700});
-  const d0=tr==='none'?300:tr==='calm'?900:T*.65;
+  const d0=tr==='none'?300:tr==='calm'?550:T*.65;
   now.querySelector('.aks-cap small').animate([{opacity:0,letterSpacing:'.5em'},{opacity:1,letterSpacing:'.22em'}],{duration:700,delay:d0-150,fill:'both',easing:'ease-out'});
   now.querySelectorAll('.aks-cap h3 span').forEach((w,k)=>w.animate([{opacity:0,transform:'translateY(14px)'},{opacity:1,transform:'none'}],{duration:520,delay:d0+k*80,fill:'both',easing:'cubic-bezier(.2,.8,.2,1)'}));
   const go=now.querySelector('.aks-go');if(go)go.animate([{opacity:0,transform:'translateY(10px)'},{opacity:1,transform:'none'}],{duration:700,delay:d0+700,fill:'both'});
  }
- if(prev)setTimeout(()=>prev.classList.remove('out'),tr==='calm'?1800:T*1.35);
+ const dur=tr==='calm'?1150:tr==='none'?750:T*1.05;
+ if(cur&&cur!==now)setTimeout(()=>{if(tok!==S.tok)return;cur.classList.remove('out');cur.getAnimations({subtree:true}).forEach(a=>{if(!(a instanceof CSSAnimation))a.cancel()});cur.removeAttribute('style');cur.querySelectorAll('[style]').forEach(n=>n.removeAttribute('style'))},dur+60);
  S.i=i;
- if(i<AKS.length-1)S.t=setTimeout(()=>akStoryShow(i+1),AKS_DUR);
+ if(i<AKS.length-1){S.left=AKS_DUR;S.end=Date.now()+AKS_DUR;S.t=setTimeout(()=>akStoryShow(i+1),AKS_DUR)}
 }
 // once per email: remembered on this device at once, and in the script (v15) so another device does not show it again
 function akStorySeenLocal(){try{return localStorage.getItem('hm_aks_'+akMe().email)==='1'}catch(e){return false}}
