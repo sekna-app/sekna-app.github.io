@@ -9308,6 +9308,10 @@ body.dark-mode .ak-uc button,body.dark-mode .ak-um,body.dark-mode .ak-ucf,body.d
 .ak-ddl .ak-ddn button{width:auto;flex:none;display:block;border:0;border-radius:10px;padding:0 16px;color:#fff;background:#1C3C96;color:#fff;font:800 12.5px Inter,system-ui,sans-serif;cursor:pointer}
 body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8cf0}
 .ak.dk .ak-ddn input{background:#303030;color:#E4E6EB;border-color:#5B5BF0}.ak.dk .ak-ddn button{background:#5B5BF0}.ak.dk .ak-ddl .ak-ddp{color:#8E8CFF}.ak.dk .ak-ddl .ak-ddp i{background:#3A3B3C;color:#8E8CFF}
+
+/* v414 Ask HEMERA menu item when it is closed for this person */
+#askNavBtn.ak-locked{opacity:.55}#askNavBtn.ak-locked:after{content:"";width:13px;height:13px;margin-left:auto;flex:none;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round'%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 0 1 8 0v4'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round'%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Cpath d='M8 11V7a4 4 0 0 1 8 0v4'/%3E%3C/svg%3E") center/contain no-repeat}
+#askNavBtn.ak-wait{opacity:.6;pointer-events:none}
 </style>
 </head>
 <body>
@@ -10373,9 +10377,24 @@ async function akPost(action,extra){
 }
 async function akAssets(force){
  if(!force&&AK.assets&&Date.now()-AK.at<600000)return AK.assets;
- const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[],categories:j.categories||[],formats:j.formats||[]};AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);try{localStorage.setItem('hm_ask_who',JSON.stringify({e:akMe().email,editor:AK.editor,add:AK.canAdd,teach:AK.canTeach}))}catch(e){}AK.blocked=false;AK.at=Date.now();if(AK.resIds&&!AK.res){AK.res=AK.assets.rows.filter(r=>AK.resIds.indexOf(r.id)>=0)}akKb();return AK.assets;
+ const j=await akPost('assets');AK.assets={platforms:j.platforms||[],rows:j.rows||[],categories:j.categories||[],formats:j.formats||[]};AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);AK.blocked=false;akWhoSave(true);AK.at=Date.now();if(AK.resIds&&!AK.res){AK.res=AK.assets.rows.filter(r=>AK.resIds.indexOf(r.id)>=0)}akKb();return AK.assets;
 }
-function openAsk(){
+ 
+function akWho(){try{const w=JSON.parse(localStorage.getItem('hm_ask_who')||'null');return w&&w.e===akMe().email?w:null}catch(e){return null}}
+function akWhoSave(ok){try{localStorage.setItem('hm_ask_who',JSON.stringify({e:akMe().email,editor:!!AK.editor,add:!!AK.canAdd,teach:!!AK.canTeach,ok}))}catch(e){}akNavLock(!ok)}
+function akNavLock(on){const b=document.getElementById('askNavBtn');if(b)b.classList.toggle('ak-locked',!!on)}
+function akNoAccess(){showSettingsToast('Ask HEMERA is closed for you. Ask Ibrahim to give you access.')}
+async function openAsk(){
+ if(!canDo('ask'))return;
+ const w=akWho();
+ if(!ASK_HEMERA_URL||(w&&w.ok===true)){akOpenNow();return}
+ if(openAsk.busy)return;openAsk.busy=1;const b=document.getElementById('askNavBtn');if(b)b.classList.add('ak-wait');
+ try{const j=await akPost('hello');AK.editor=!!j.editor;AK.canAdd=!!(j.canAdd||j.editor);AK.canTeach=!!(j.canTeach||j.editor);AK.blocked=false;akWhoSave(true);akOpenNow()}
+ catch(e){if(e&&e.blocked){akWhoSave(false);closeSidebar();akNoAccess()}else akOpenNow()}
+ finally{openAsk.busy=0;if(b)b.classList.remove('ak-wait')}
+}
+setTimeout(()=>{try{const w=akWho();if(w&&w.ok===false)akNavLock(true)}catch(e){}},1500);
+function akOpenNow(){
  if(!canDo('ask'))return;closeSidebar();
  document.getElementById('akBox')?.remove();
  const o=document.createElement('div');o.id='akBox';o.className='ak'+(akDk()?' dk':'');o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Ask HEMERA');
@@ -10388,7 +10407,7 @@ function openAsk(){
  try{const w=JSON.parse(localStorage.getItem('hm_ask_who')||'null');if(w&&w.e===akMe().email&&AK.canAdd===undefined){AK.editor=w.editor;AK.canAdd=w.add;AK.canTeach=w.teach}}catch(e){}
  if(!AK.msgs.length){AK.t0=Date.now();const n=akMe().name.split(' ')[0];akBot(`<p>Hi${n?' '+akEsc(n):''}. Pick from the menu or type your question.</p>`)}
  akDraw();akKb();
- if(ASK_HEMERA_URL)akAssets().catch(e=>{if(e&&e.blocked)akBot('<p>You do not have access to Ask HEMERA. Ask Ibrahim if you need it.</p>')});
+ if(ASK_HEMERA_URL)akAssets().catch(e=>{if(e&&e.blocked){akWhoSave(false);AK.msgs=[];try{localStorage.removeItem(AK_KEEP)}catch(x){}closeAsk();akNoAccess()}});
 }
 
 function akVv(){const v=window.visualViewport;if(!v||akVv.on)return;akVv.on=1;const f=()=>{const o=document.getElementById('akBox');if(!o)return;if(window.innerWidth>=900){o.style.top='';o.style.height='';o.style.bottom='';return}o.style.top=v.offsetTop+'px';o.style.height=v.height+'px';o.style.bottom='auto';const b=document.getElementById('akBd');if(b)b.scrollTop=b.scrollHeight};v.addEventListener('resize',f);v.addEventListener('scroll',f);f()}
@@ -10741,7 +10760,7 @@ function akRulesHtml(rules){return rules&&rules.length?`<div class="ak-rvs">${ru
 const AK_TM=[['rules','Saved rules','rules'],['refresh','Refresh data','refresh'],['cats','Categories','folder'],['plats','Platforms','plat'],['access','Access','key'],['team','Team','users'],['usage','Team usage','chart'],['debug','Debug','bug']];
 const AK_TMD={rules:'Rules you taught',refresh:'From the sheet',cats:'Filters and names',plats:'Lock and access',access:'Who can do what',team:'The HEMERA team',bc:'Scheduled messages',usage:'Messages to the bot',debug:'Model and data'};
 function akTeachHtml(sm){
- const d=k=>{if(!sm)return AK_TMD[k];return{rules:sm.rules+' rules',refresh:sm.rows+' rows',cats:sm.cats+' in use',plats:sm.plats+(sm.locked?' · '+sm.locked+' locked':''),access:sm.blocked?sm.blocked+' blocked':'Everyone can use it',team:(typeof tkPeople==='function'&&TK.data?tkPeople().length:sm.team)+' people',bc:sm.bc?sm.bc+' scheduled':'Nothing scheduled',usage:sm.msgs7!=null?sm.msgs7+' this week':AK_TMD.usage,debug:AK_TMD.debug}[k]};
+ const d=k=>{if(!sm)return AK_TMD[k];return{rules:sm.rules+' rules',refresh:sm.rows+' rows',cats:sm.cats+' in use',plats:sm.plats+(sm.locked?' · '+sm.locked+' locked':''),access:sm.allowed!=null?(sm.allowed?sm.allowed+' can use it':'Only the editors'):sm.blocked?sm.blocked+' blocked':'Everyone can use it',team:(typeof tkPeople==='function'&&TK.data?tkPeople().length:sm.team)+' people',bc:sm.bc?sm.bc+' scheduled':'Nothing scheduled',usage:sm.msgs7!=null?sm.msgs7+' this week':AK_TMD.usage,debug:AK_TMD.debug}[k]};
  const tm=AK.editor?AK_TM:AK_TM.filter(x=>x[0]==='rules'||x[0]==='refresh');
  return `<div class="ak-cr"><div class="hd"><i>${akI('teach')}</i><div><b>Teach the bot</b><small>Type a rule below, or open a tool</small></div></div><div class="gd">${tm.map(([k,t,ic])=>`<button type="button" onclick="akTm('${k}')"><i>${akI(ic)}</i><b>${t}</b><small>${akEsc(d(k))}</small></button>`).join('')}</div></div>`+AKB('menu');
 }
@@ -10801,7 +10820,7 @@ async function akPermsLoad(){await akTeamData();const j=await akAdm('perms');if(
 function akPpl(){return (typeof tkPeople==='function'&&TK.data?tkPeople():[]).filter(p=>p.email)}
 function akIsEd(e){return ((AK.pm&&AK.pm.editors)||[]).indexOf(String(e).toLowerCase().trim())>=0}
 function akPerm(e,key,plat){e=String(e).toLowerCase().trim();if(akIsEd(e))return true;const a=((AK.pm&&AK.pm.access)||{})[e]||{};
- if(key==='use')return a.use!==false;if(key==='add')return a.add===true;if(key==='teach')return a.teach===true;if(key==='plat'){if(a.pl&&(a.pl[plat]===true||a.pl[plat]===false))return a.pl[plat];if((a.plats||[]).indexOf(plat)>=0)return true;return ((AK.pm&&AK.pm.locked)||[]).indexOf(plat)<0}return false}
+ if(key==='use')return a.use===true;if(key==='add')return a.add===true;if(key==='teach')return a.teach===true;if(key==='plat'){if(a.pl&&(a.pl[plat]===true||a.pl[plat]===false))return a.pl[plat];if((a.plats||[]).indexOf(plat)>=0)return true;return ((AK.pm&&AK.pm.locked)||[]).indexOf(plat)<0}return false}
 
 function akAllPl(){return ((AK.pm&&AK.pm.plats)||((AK.pm&&AK.pm.locked)||[]).map(k=>({key:k,locked:true})))}
 const AK_PK=[['use','Use the bot','spk'],['add','Add sheets','add'],['teach','Teach the bot','teach']];
