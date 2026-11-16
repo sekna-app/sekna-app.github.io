@@ -10741,7 +10741,7 @@ function akFit(){const o=document.getElementById('akBox');if(!o||!o.classList.co
  o.style.setProperty('--akL',Math.round(L)+'px');o.style.setProperty('--akT',Math.round(T)+'px')}
 document.addEventListener('click',e=>{const o=document.getElementById('akBox');if(!o||!o.classList.contains('pgm'))return;const n=e.target.closest('#dkRail button,#dkRail a,#dkPanel button,#dkPanel a');if(n&&!/alexandra/i.test(n.textContent))closeAsk()},true);
 function akMini(e){if(e)e.stopPropagation();const o=document.getElementById('akBox');if(!o)return;o.classList.toggle('mini');
- if(!akDesk()){let b=o.querySelector('.ak-bub');if(!b){o.insertAdjacentHTML('beforeend',`<button type="button" class="ak-bub" aria-label="Open the chat with Alexandra" onclick="akMini(event)">${akAvIn()}<i></i></button>`);b=o.querySelector('.ak-bub')}akBubPlace(b);akReqDot();document.documentElement.classList.toggle('ak-bubbed',o.classList.contains('mini'))}const b=o.querySelector('.ak-min');if(b){const m=o.classList.contains('mini');b.innerHTML=akI(m?'up':'minus');b.setAttribute('aria-label',m?'Open the chat':'Minimise');b.title=b.getAttribute('aria-label')}}
+ if(!akDesk()){let b=o.querySelector('.ak-bub');if(!b){o.insertAdjacentHTML('beforeend',`<button type="button" class="ak-bub" aria-label="Open the chat with Alexandra" onclick="akMini(event)">${akAvIn()}<i></i></button>`);b=o.querySelector('.ak-bub')}akBubPlace(b);akReqDot();document.documentElement.classList.toggle('ak-bubbed',o.classList.contains('mini'));akBubSys(o.classList.contains('mini'))}const b=o.querySelector('.ak-min');if(b){const m=o.classList.contains('mini');b.innerHTML=akI(m?'up':'minus');b.setAttribute('aria-label',m?'Open the chat':'Minimise');b.title=b.getAttribute('aria-label')}}
 document.addEventListener('click',e=>{const o=document.getElementById('akBox');if(o&&o.classList.contains('mini')&&e.target.closest('#akBox .ak-hd')&&!e.target.closest('button'))akMini()});
 function akModeFlip(){try{localStorage.setItem('hm_ask_mode',akDkMode()==='win'?'page':'win')}catch(e){}akModeApply()}
 function akSideDraw(){const o=document.getElementById('akBox');if(!o)return;let L=o.querySelector('.ak-dl'),R=o.querySelector('.ak-dr');const c=o.querySelector('.ak-card');
@@ -10968,7 +10968,7 @@ function akPgGo(id){
  akAboutClose();
  if(id==='clear!'){AK.msgs=[];AK.hist=[];AK.nav={};AK.res=null;AK.resIds=[];AK.ls=[];AK.ts=[];AK.t0=Date.now();try{localStorage.removeItem(AK_KEEP)}catch(e){}const nm=akMe().name.split(' ')[0];akBot(`<p>Hi${nm?' '+akEsc(nm):''}. Pick from the menu or type your question.</p>`);AK.kb=true;akKb();return}
  setTimeout(()=>akMenu(id),200)}
-function closeAsk(){document.documentElement.classList.remove('ak-bubbed');if(AKR.on)akRecStop();AK.add=null;AK.teach=false;AK.ask=null;const o=document.getElementById('akBox');if(!o)return;o.classList.remove('open');setTimeout(()=>o.remove(),280)}
+function closeAsk(){document.documentElement.classList.remove('ak-bubbed');akBubSys(false);if(AKR.on)akRecStop();AK.add=null;AK.teach=false;AK.ask=null;const o=document.getElementById('akBox');if(!o)return;o.classList.remove('open');setTimeout(()=>o.remove(),280)}
 function akBot(html,cls){AK.msgs.push({w:'h',html,cls:cls||'',nw:1});akDraw()}
 function akUser(t){AK.msgs.push({w:'u',html:`<span dir="auto">${akEsc(t)}</span>`,nw:1});akDraw()}
 
@@ -12417,6 +12417,8 @@ function notifyAndroidDashboard(d){
        accountLabel:(d.account&&d.account.label)||''
      }));
    }
+   
+   if(typeof window.AndroidShare.onWidgetData==='function'){try{window.AndroidShare.onWidgetData(JSON.stringify(hmWidgetData(d)))}catch(e){}}
    if(typeof window.AndroidShare.dashboardReady==='function'){
      window.AndroidShare.dashboardReady();
    }
@@ -20381,6 +20383,25 @@ function wlNameCheck(i,strict){const v=i.value,t=v.trim(),e=document.getElementB
  else if(strict&&t.length<2)m='Write your first name.';
  i.classList.toggle('bad',!!m);i.setAttribute('aria-invalid',m?'true':'false');if(e){e.hidden=!m;e.textContent=m}
  return !m}
+
+
+function hmWidgetData(d){const out={account:(d.account&&d.account.key)||CURRENT_ACCOUNT,label:(d.account&&d.account.label)||'',cur:(typeof cs==='function'?cs():'')};
+ try{const x=d.latest||{};out.date=x.date||'';out.value=Number(x.value)||0;out.spend=Number(x.spend)||0;out.roas=out.spend?Math.round(out.value/out.spend*100)/100:0;
+  const rows=((d.dayPlan)||[]).filter(r=>r.actual&&Number(r.actual.spend)>0).sort((a,b)=>a.date<b.date?-1:1);
+  const today=rows.find(r=>r.date===x.date);out.plan=today&&today.plan?Number(today.plan.value)||0:0;
+  out.v14=rows.slice(-14).map(r=>Math.round(Number(r.actual.value)||0));
+  const s7=a=>a.reduce((t,v)=>t+v,0),l=out.v14;out.wk=l.length>=14?Math.round((s7(l.slice(-7))/Math.max(1,s7(l.slice(-14,-7)))-1)*100):null}catch(e){}
+ try{const st=streakOf(d);out.streak=st.n;const rows=((d.dayPlan)||[]).filter(r=>r.actual&&r.plan&&Number(r.plan.value)>0).sort((a,b)=>a.date<b.date?-1:1).slice(-5);out.s5=rows.map(r=>Number(r.actual.value)>=Number(r.plan.value)?1:0)}catch(e){}
+ try{const t=ssToday(),n=ssList().find(z=>z.from>t);if(n){out.season={key:n.key,name:n.name,days:ssDays(t,n.from),from:ssD(n.from),img:'https:\/\/sekna-app.web.app/icons/seasons/'+n.key+'.jpg?v=4'}}}catch(e){}
+ try{const b=akBav().data;if(b&&/^data:image\//.test(b))out.avatar=b}catch(e){}
+ return out}
+
+function hmGo(g){g=String(g||'');const [k,v]=[g.split(':')[0],g.slice(g.indexOf(':')+1)];
+ if(k==='ak'){akOpenFrom(v==='req'?'req':'chat');if(v==='nums'||v==='sheets'||v==='voice'){let n=0;const go=()=>{const i=document.getElementById('akQ');if(i&&!AK.busy&&ASK_HEMERA_URL){if(v==='nums'){i.value="How are today's numbers?";akSend()}else if(v==='sheets')akMenu('links');else showSettingsToast('Hold the mic while you talk');return}if(++n<25)setTimeout(go,300)};setTimeout(go,700)}return}
+ if(k==='ss'){ssOpenSeason(v);return}
+ if(k==='tab'){try{switchDashboardTab(v||'overview')}catch(e){}}}
+
+function akBubSys(on){try{if(window.AndroidShare&&typeof window.AndroidShare.setAlexandraBubble==='function')window.AndroidShare.setAlexandraBubble(!!on)}catch(e){}}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
