@@ -74,13 +74,17 @@ const keyOfKind = kind => (kind === 'quick' ? 'quick' : 'build'); // v369 days o
 const keyOfLoc = loc => (loc === 'quick' ? 'quick' : 'build');
 async function teamPeople(mem, me) {
   const seen = {}, out = [];
+  const rows = await accessRows();
+  // v475 last seen: the newest moment any of the person's devices reached HEMERA
+  const hits = (await fsGet('acc/seen').catch(() => null)) || {}, last = {};
+  rows.forEach(r => { const e = norm(r.email); const t = Math.max(Number(r.lastSeen) || 0, Number(hits[r.tokenHash]) || 0); if (e && t > (last[e] || 0)) last[e] = t; });
   const add = (email, name) => {
     if (!email || seen[email]) return;
     seen[email] = 1;
     const m = mem[email] || {};
-    out.push({ email, name: name || m.name || email.split('@')[0], role: m.role === 'Head of Media' ? 'CEO' : (m.role || ''), avatar: m.avatar || 0, phone: m.phone || '', tz: m.tz || '', bio: m.bio || '' });
+    out.push({ email, name: name || m.name || email.split('@')[0], role: m.role === 'Head of Media' ? 'CEO' : (m.role || ''), avatar: m.avatar || 0, phone: m.phone || '', tz: m.tz || '', bio: m.bio || '',
+      bday: m.bday || '', plats: Array.isArray(m.plats) ? m.plats : null, friends: Array.isArray(m.friends) ? m.friends : [], seen: last[email] || 0 });
   };
-  const rows = await accessRows();
   rows.forEach(r => { if (r.status === 'Approved') add(r.email, r.name); });
   // Only people with an approved device (someone the admin deleted or revoked drops off the
   // team even if a position is still saved for them), and the person asking.
@@ -471,13 +475,46 @@ const T = {
         const r = String(value || '');
         if (r && ROLES.indexOf(r) < 0) throw new Error('Unknown position');
         if (r) m.role = r; else delete m.role;
+      } else if (field === 'plats') {
+        // v475 the ad platforms this person works on (Admin → Positions)
+        const list = (Array.isArray(value) ? value : []).map(String).filter((k, i, a) => PLAT_KEYS.indexOf(k) >= 0 && a.indexOf(k) === i);
+        if (Array.isArray(value)) m.plats = list; else delete m.plats;
       } else throw new Error('Unknown field'); // v353 the avatar or photo is each person's own choice (setMyAvatar)
-      if (m.role || m.avatar) all[email] = m; else delete all[email];
+      if (Object.keys(m).length) all[email] = m; else delete all[email];
       result = all[email] || {};
       return all;
     });
     try { await appsScript('adminSetMember', [token, email, field, value]); } catch (e) { console.warn('Apps Script member copy: ' + e.message); }
     return { email, member: result };
+  },
+
+  /** v475 the team with positions, photos, birthdays, platforms, friends and last seen (for profiles, also without Team Tasks) */
+  async teamPeopleGet([token]) {
+    const a = await assertAccess(token);
+    return { me: a.email, now: Date.now(), people: await teamPeople(await members(), a) };
+  },
+
+  /** v475 add or remove a friend; friendship is shown on both profiles */
+  async friendSet([token, email, on]) {
+    const a = await assertAccess(token), me = norm(a.email);
+    email = norm(email);
+    if (!email || email === me) throw new Error('Pick someone else.');
+    const team = await teamPeople(await members(), a);
+    if (!team.some(p => p.email === email)) throw new Error('That person is not on the HEMERA team.');
+    let mine = null;
+    await fsUpdate(DOC.members, all => {
+      all = all || {};
+      [[me, email], [email, me]].forEach(([x, y]) => {
+        const m = all[x] || {};
+        const f = (Array.isArray(m.friends) ? m.friends : []).filter(z => z !== y);
+        if (on) f.push(y);
+        if (f.length) m.friends = f; else delete m.friends;
+        if (Object.keys(m).length) all[x] = m; else delete all[x];
+      });
+      mine = (all[me] && all[me].friends) || [];
+      return all;
+    });
+    return { friends: mine };
   },
 
   /** v353 each person picks their own avatar (one of the house avatars), a small photo from their device, or the first letter (0). */
@@ -597,7 +634,13 @@ async function setMemberSelf(email, value, welcomed, extra) {
   let v = value;
   extra = extra || {};
   // v360 the phone the person adds on their profile (the team sees it) and the time zone of their device (for the place on the profile)
-  let phone = extra.phone, tz = extra.tz, bio = extra.bio;
+  let phone = extra.phone, tz = extra.tz, bio = extra.bio, bday = extra.bday;
+  // v475 birthday: YYYY-MM-DD, or MM-DD when the year is kept private
+  if (bday !== undefined) {
+    bday = String(bday || '').trim();
+    if (bday && !/^(\d{4}-)?(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(bday)) throw new Error('That date of birth is not right.');
+    if (/^\d{4}-/.test(bday)) { const y = +bday.slice(0, 4), now = new Date().getFullYear(); if (y < now - 90 || y > now - 14) throw new Error('That year of birth is not right.'); }
+  }
   if (bio !== undefined) bio = String(bio || '').replace(/[<>]/g, '').replace(/\s+/g, ' ').trim().slice(0, 48);
   if (phone !== undefined) { phone = String(phone || '').replace(/[^0-9+ ()-]/g, '').trim().slice(0, 22); if (phone && phone.replace(/\D/g, '').length < 6) throw new Error('That phone number looks too short.'); }
   if (tz !== undefined) { tz = String(tz || '').slice(0, 40); if (tz && !/^[A-Za-z_]+(\/[A-Za-z_+-]+){1,2}$/.test(tz)) tz = undefined; }
@@ -617,7 +660,8 @@ async function setMemberSelf(email, value, welcomed, extra) {
     if (phone !== undefined) { if (phone) m.phone = phone; else delete m.phone; }
     if (tz) m.tz = tz;
     if (bio !== undefined) { if (bio) m.bio = bio; else delete m.bio; }
-    if (m.role || m.avatar || m.w || m.phone || m.tz || m.bio) all[email] = m; else delete all[email];
+    if (bday !== undefined) { if (bday) m.bday = bday; else delete m.bday; }
+    if (Object.keys(m).length) all[email] = m; else delete all[email];
     result = all[email] || {};
     return all;
   });
@@ -638,6 +682,7 @@ async function verifyNudge() {
 async function clearWelcome(email) {
   await fsUpdate(DOC.members, all => { all = all || {}; const m = all[email]; if (!m) return undefined; delete m.w; delete m.avatar; delete m.vn; delete m.bio; delete m.phone; if (m.role) all[email] = m; else delete all[email]; return all; });
 }
+const PLAT_KEYS = ['google', 'microsoft', 'openai', 'meta', 'tiktok', 'snapchat', 'linkedin', 'x'];
 const AVATAR_OK = [11, 12, 13, 14, 15, 17, 18, 20, 21, 22, 101, 103, 104, 105, 106, 107, 108];
 async function call(fn, args) {
   if (fn === 'adminTasksMove') return adminTasksMove(args);
@@ -646,7 +691,7 @@ async function call(fn, args) {
     if (!isAdminEmail(a.email)) { const e = new Error('SEKNA_ADMIN_ONLY'); e.access = true; throw e; }
     return (await fsGet(DOC.mode)) || { mode: 'appsscript' };
   }
-  if (fn === 'setMyAvatar') return T[fn](args); // Firebase only, whether or not Team Tasks moved
+  if (fn === 'setMyAvatar' || fn === 'teamPeopleGet' || fn === 'friendSet') return T[fn](args); // Firebase only, whether or not Team Tasks moved
   if (!(await moved())) return appsScript(fn, args);
   return T[fn](args);
 }
