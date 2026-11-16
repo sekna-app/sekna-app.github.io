@@ -481,11 +481,6 @@ const T = {
         // v475 the ad platforms this person works on (Admin → Positions)
         const list = (Array.isArray(value) ? value : []).map(String).filter((k, i, a) => PLAT_KEYS.indexOf(k) >= 0 && a.indexOf(k) === i);
         if (Array.isArray(value)) m.plats = list; else delete m.plats;
-      } else if (field === 'avatar' && isAdminEmail(a.email) && m.role === 'CEO') {
-        // v478 the HEMERA owner may set the CEO's photo; the CEO can still change it himself
-        const v = String(value || '');
-        if (!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(v) || v.length > 90000) throw new Error('That photo could not be read.');
-        m.avatar = v;
       } else throw new Error('Unknown field'); // v353 the avatar or photo is each person's own choice (setMyAvatar)
       if (Object.keys(m).length) all[email] = m; else delete all[email];
       result = all[email] || {};
@@ -631,6 +626,7 @@ async function morningPushIfDue() {
   });
   if (!claimed) return null;
   await verifyNudge().catch(e => console.error('Verify nudge: ' + e.message));
+  await birthdays().catch(e => console.error('Birthdays: ' + e.message));
   await prunePhotos().catch(e => console.error('Photo clean-up: ' + e.message));
   return morningPush();
 }
@@ -677,6 +673,53 @@ async function setMemberSelf(email, value, welcomed, extra) {
   });
   return result;
 }
+/** v479 birthdays: in the morning (Cairo), the person gets the gold birthday email and a notification,
+ *  and the rest of the team a short note so they can wish them well. Once a year per person. */
+async function birthdays() {
+  const p = {};
+  new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Cairo', year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'long' })
+    .formatToParts(new Date()).forEach(x => { p[x.type] = x.value; });
+  const md = p.month + '-' + p.day, year = Number(p.year), due = [];
+  await fsUpdate(DOC.members, all => {
+    if (!all) return undefined;
+    Object.keys(all).forEach(email => { const m = all[email];
+      if (m && m.bday && String(m.bday).slice(-5) === md && m.bg !== year) { m.bg = year; due.push(email); } });
+    return due.length ? all : undefined;
+  });
+  if (!due.length) return 0;
+  const team = await teamPeople(await members());
+  const nameOf = e => { const t = team.find(x => x.email === e); return String((t && t.name) || e.split('@')[0]).split(' ')[0]; };
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const dayLine = p.weekday + ' ' + Number(p.day) + ' ' + months[Number(p.month) - 1];
+  const emails = [], pushes = [];
+  due.forEach(email => {
+    const n = nameOf(email);
+    emails.push({ to: email, subject: 'Happy birthday, ' + n + '! 🎂', rawHtml: birthdayMail(n, dayLine) });
+    pushes.push({ email, title: 'Happy birthday, ' + n + '! 🎂', body: 'The whole team wishes you a wonderful year ahead.', eventType: 'birthday' });
+    team.filter(t => t.email !== email).forEach(t => pushes.push({ email: t.email, title: 'Today is ' + n + "'s birthday 🎂", body: 'Send ' + n + ' your wishes.', eventType: 'birthday' }));
+  });
+  await relay({ emails, pushes });
+  return due.length;
+}
+function birthdayMail(name, dayLine) {
+  const esc = v => String(v).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const conf = [['40%', '18px', '#F3D58E', 20], ['62%', '40px', '#5B8CFF', -30], ['78%', '20px', '#FFFFFF', 60], ['52%', '72px', '#E2B874', 0], ['88%', '58px', '#2FCB86', 40]]
+    .map(c => `<span style="position:absolute;left:${c[0]};top:${c[1]};width:7px;height:12px;border-radius:2px;background:${c[2]};transform:rotate(${c[3]}deg);display:block"></span>`).join('');
+  return `<!doctype html><html><body style="margin:0;background:#EEF1F7;font-family:Inter,Segoe UI,Arial,sans-serif">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#EEF1F7;padding:24px 12px"><tr><td align="center">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;border-radius:18px;overflow:hidden">
+<tr><td style="background:#0b1236;background-image:radial-gradient(120% 90% at 80% 0%,rgba(243,213,142,.5),transparent 60%),linear-gradient(135deg,#0b1236,#1b2f7a);padding:24px 22px 28px;color:#ffffff;position:relative">
+<div style="position:relative">${conf}
+<img src="https://sekna-app.web.app/get/logo-white.webp" alt="HEMERA" height="22" style="display:block;height:22px">
+<div style="font-size:34px;line-height:1.15;font-weight:900;margin:20px 0 6px;letter-spacing:-.5px">Happy birthday,<br><span style="color:#F3D58E">${esc(name)}</span>!</div>
+<div style="color:#C9D3F5;font-size:14px;font-weight:600">${esc(dayLine)}</div>
+<div style="position:absolute;right:0;bottom:-8px;font-size:64px;line-height:1">🎂</div></div></td></tr>
+<tr><td style="padding:22px;font-size:15px;line-height:1.6;color:#2b3150">Everyone at SEKNA wishes you a wonderful year ahead: good health, big wins and campaigns that beat every plan. Thank you for everything you bring to the team.
+<div style="margin-top:20px"><a href="https://sekna-app.web.app/" style="display:inline-block;background:#E2B874;background-image:linear-gradient(135deg,#F3D58E,#C9A24A);color:#1a2a66;font-weight:900;border-radius:12px;padding:12px 22px;font-size:14px;text-decoration:none">Open HEMERA</a></div></td></tr>
+<tr><td style="padding:12px 18px 18px;text-align:center;font-size:11px;color:#8A93B5">HEMERA · SEKNA · sent once a year on your birthday</td></tr>
+</table></td></tr></table></body></html>`;
+}
+
 /** v360 seven days after the welcome, one push (once ever) to people still showing a letter or an avatar instead of a photo. */
 async function verifyNudge() {
   const now = Date.now(), due = [];

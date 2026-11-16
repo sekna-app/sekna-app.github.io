@@ -9570,7 +9570,7 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 .pf-fa.ceo{box-shadow:0 0 0 2.5px #E2B874}
 .pf-ceo .pf-cv{background:#203C8E url(icons/sekna-cover.webp?v=1) right center/cover no-repeat!important}
 .pf-ceo .pf-cv:after{display:none}
-.pf-pic .vbd.gold{filter:drop-shadow(0 2px 4px rgba(184,138,46,.5))}
+.vbd.gold{filter:drop-shadow(0 1.5px 1.5px rgba(107,74,16,.45)) drop-shadow(0 3px 6px rgba(184,138,46,.35))!important}
 /* v477 birthday wheels */
 .pfbd{position:fixed;inset:0;z-index:2147483200;background:rgba(10,18,56,0);display:flex;align-items:flex-end;justify-content:center;transition:background .25s}
 .pfbd.on{background:rgba(10,18,56,.5)}
@@ -9597,7 +9597,6 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 .pf-sw{position:absolute;inset:0;border-radius:50%;overflow:hidden;pointer-events:none;z-index:2}
 .pf-sw:after{content:"";position:absolute;top:-30%;left:-90%;width:55%;height:160%;background:linear-gradient(90deg,transparent,rgba(255,246,214,.95),rgba(243,213,142,.55),transparent);transform:rotate(25deg);animation:pfSw 1.1s .35s ease-in-out both}
 @keyframes pfSw{from{left:-90%}to{left:140%}}
-.pf-shine .vbd.gold{animation:pfTp .5s 1.05s ease-out both}
 @keyframes pfTp{0%{transform:scale(1)}45%{transform:scale(1.35)}100%{transform:scale(1)}}
 .pf-cam{position:absolute;left:-2px;bottom:4px;width:30px;height:30px;border-radius:50%;background:#fff;color:#1C3C96;display:grid;place-items:center;box-shadow:0 2px 8px rgba(20,30,80,.25);cursor:pointer;z-index:4}
 .pf-cam .pf-i{width:16px;height:16px;stroke:currentColor}
@@ -13596,12 +13595,12 @@ function localWhen(ms,withDay){
 const NF_FILTERS=[['all','All'],['data','Data'],['tasks','Tasks'],['team','Team'],['app','App']];
 const NF_GROUP={season:'data',streak:'data',spend_alert:'data',roas_drop:'data',new_day:'data',month_closed:'data',updated:'data',tasks:'tasks',announcement:'team',app_update:'app',celebrate:'team',read_alert:'data'};
 
-const NF_KIND={alexandra:'bell',season:'cal',month_closed:'cal',streak:'flame',spend_alert:'warn',read_alert:'warn',roas_drop:'down',new_day:'data',updated:'data',announcement:'mega',app_update:'app',tasks:'check',celebrate:'trophy',leave:'cal'};
+const NF_KIND={birthday:'cake',alexandra:'bell',season:'cal',month_closed:'cal',streak:'flame',spend_alert:'warn',read_alert:'warn',roas_drop:'down',new_day:'data',updated:'data',announcement:'mega',app_update:'app',tasks:'check',celebrate:'trophy',leave:'cal'};
 const NF_SVG={cal:'<rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/>',flame:'<path d="M12 21c-3.9 0-6.5-2.6-6.5-6.2 0-3.4 2.6-5.2 3.6-8.3.8 1.5 1.9 2.4 3.1 2.8.3-2 1.4-4 3.3-5.3-.2 3.4 3 5.4 3 9.3C19.5 18.1 16.3 21 12 21z"/>',
  warn:'<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.1"/>',down:'<path d="M4 7l6 6 4-4 6 8"/><path d="M20 12v5h-5"/>',data:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
  mega:'<path d="M4 10v4h3l6 4V6L7 10z"/><path d="M17 9a4 4 0 0 1 0 6"/>',app:'<rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18h3"/>',check:'<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.8"/>',
- trophy:'<path d="M8 4h8v4a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 12v4M9 20h6M10 16h4v4h-4z"/>',bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.3 20a1.9 1.9 0 0 0 3.4 0"/>'};
-const NF_EDGE={new_day:'g',updated:'g',month_closed:'g',streak:'y',celebrate:'y',season:'y',announcement:'y',spend_alert:'o',roas_drop:'o',read_alert:'o',tasks:'t',app_update:'n'};
+ trophy:'<path d="M8 4h8v4a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 12v4M9 20h6M10 16h4v4h-4z"/>',bell:'<path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.3 20a1.9 1.9 0 0 0 3.4 0"/>',cake:'<path d="M4 21h16v-7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2z"/><path d="M4 16c2 1.3 4 1.3 6 0s4-1.3 6 0 3 .8 4 0M12 12V8"/>'};
+const NF_EDGE={birthday:'y',new_day:'g',updated:'g',month_closed:'g',streak:'y',celebrate:'y',season:'y',announcement:'y',spend_alert:'o',roas_drop:'o',read_alert:'o',tasks:'t',app_update:'n'};
 const NF_TINT={season:'y',streak:'y',spend_alert:'',roas_drop:'',new_day:'',updated:'',month_closed:'g',tasks:'t',announcement:'y',app_update:'p',celebrate:'y'};
 function nfShort(ms){
  const d=new Date(ms),now=new Date(),k=x=>new Date(x.getFullYear(),x.getMonth(),x.getDate()).getTime(),df=Math.round((k(now)-k(d))/864e5);
@@ -18940,7 +18939,12 @@ function wlConfetti(el){const c=document.createElement('div');c.className='wl-co
 
 const VBADGE='<svg class="vbd" viewBox="0 0 24 24" aria-label="Verified"><path d="M12 1.5l2.6 2 3.2-.3 1 3.1 2.8 1.6-.9 3.1 1.4 2.9-2.6 1.9-.5 3.2-3.2.4-2 2.6-2.8-1.6-2.8 1.6-2-2.6-3.2-.4-.5-3.2L1.9 14l1.4-2.9-.9-3.1 2.8-1.6 1-3.1 3.2.3z" fill="#3D6BFF"/><path d="M7.5 12.3l3 3 6-6.3" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function isVer(a){return typeof a==='string'&&/^data:image\//.test(a)}
-function vTick(a){return isVer(a)?VBADGE:''}
+function vTick(a){return isVer(a)?(ceoAvs().has(a)?PF_GTICK:VBADGE):''}
+
+function ceoAvs(){const out=new Set(),add=l=>(l||[]).forEach(x=>{if(x&&x.role==='CEO'&&isVer(x.avatar))out.add(x.avatar)});
+ try{add(PFP.people)}catch(e){}try{add(TK.data&&TK.data.people)}catch(e){}
+ try{const m=(ADMIN_LAST&&ADMIN_LAST.members)||{};Object.keys(m).forEach(k=>{if(m[k].role==='CEO'&&isVer(m[k].avatar))out.add(m[k].avatar)})}catch(e){}
+ try{const me=(ACCESS_PROFILE&&ACCESS_PROFILE.member)||{};if(me.role==='CEO'&&isVer(me.avatar))out.add(me.avatar)}catch(e){}return out}
 
 const PF={email:'',tab:'about',edit:false,bio:false,bd:false};
 const PF_TZ={'Africa/Cairo':'Cairo, Egypt','Asia/Muscat':'Muscat, Oman','Europe/London':'London, UK','Asia/Dubai':'Dubai, UAE','Asia/Riyadh':'Riyadh, Saudi Arabia','Asia/Qatar':'Doha, Qatar','Asia/Kuwait':'Kuwait City, Kuwait','America/New_York':'New York, US','America/Chicago':'Chicago, US','America/Los_Angeles':'Los Angeles, US'};
@@ -19000,7 +19004,7 @@ function pfDraw(){
   :P.self?`<div class="pf-r">${pfI('cake')}<div class="pf-t"><button type="button" class="pf-add" onclick="pfBdOpen()">Add your birthday</button><small>So the team can wish you a happy birthday</small></div><button type="button" class="pf-pen" onclick="pfBdOpen()" aria-label="Add birthday">${pfI('pen')}</button></div>`:'';
  const works=`<div class="pf-h">Works at</div><a class="pf-ha pf-a" href="https:\/\/sekna.co.uk/" target="_blank" rel="noopener"><span class="pf-sk">S</span><b>SEKNA<small>${ceo?'Owner · Founder & CEO':'Digital marketing agency'}</small></b><span class="pf-go">›</span></a>
   <a class="pf-ha pf-a" href="https:\/\/wusul.io/" target="_blank" rel="noopener"><span class="pf-wl">${PF_WUSUL}</span><b>Wusul<small>${ceo?'Owner · by SEKNA':'by SEKNA · bringing in new clients'}</small></b><span class="pf-go">›</span></a>`;
- const workson=`<div class="pf-h">Works on</div><div class="pf-ha pf-ha2"><span class="pf-hl"><img src="icons/ha-brand.png" alt=""></span><b>Human Appeal <span class="pf-acc"><a href="https:\/\/www.facebook.com/share/1E7ZAjWWC1/" target="_blank" rel="noopener" aria-label="Human Appeal USA">US</a><a href="https:\/\/www.facebook.com/share/1EJVoqDZam/" target="_blank" rel="noopener" aria-label="Human Appeal Arabic">AR</a></span><small>Media buying for both accounts</small></b></div>`;
+ const workson=`<div class="pf-h">Works on</div><div class="pf-ha pf-ha2"><span class="pf-hl"><img src="icons/ha-brand.png" alt=""></span><b>Human Appeal <span class="pf-acc"><a href="https:\/\/www.facebook.com/share/1E7ZAjWWC1/" target="_blank" rel="noopener" aria-label="Human Appeal USA">US</a><a href="https:\/\/www.facebook.com/share/1EJVoqDZam/" target="_blank" rel="noopener" aria-label="Human Appeal Arabic">AR</a></span></b></div>`;
  const RK=['CEO','Media Manager','Team Leader','Senior Media Buyer','Media Buyer'],rk=r=>{const i=RK.indexOf(r);return i<0?9:i};
  const fr=(PFP.people||[]).filter(x=>x.email!==P.email).map(x=>pfPerson(x.email)).sort((a,b)=>rk(a.role)-rk(b.role)||String(a.name).localeCompare(String(b.name)));
  const friends=`<div class="pf-h">Friends${fr.length?' <em>'+fr.length+'</em>':''}</div>`+(fr.length?`<div class="pf-fr">${fr.map(f=>`<button type="button" onclick="profOpen('${esc(f.email)}',event)"><span class="pf-fa${f.role==='CEO'?' ceo':''}">${personAv(f.avatar,f.name)}${f.online&&!pfPrivate(f)?'<i></i>':''}</span><b>${esc(String(f.name||f.email).split(' ')[0])}</b>${f.role?`<small>${esc(f.role==='CEO'?'CEO':f.role.replace('Senior Media Buyer','Sr. Buyer').replace('Media Buyer','Buyer').replace('Media Manager','Manager'))}</small>`:''}</button>`).join('')}</div>`:`<p class="pf-none">The team shows here.</p>`);
@@ -19018,7 +19022,7 @@ function pfDraw(){
   <div class="pf-h">SEKNA platforms</div><a class="pf-r pf-a" href="https:\/\/wusul.io/services/" target="_blank" rel="noopener"><span class="pf-wl">${PF_WUSUL}</span><div class="pf-t">Wusul<small>Audience intelligence · reaching new clients</small></div><span class="pf-go">›</span></a>`;
  const body=PF.tab==='contact'?contact:PF.tab==='plat'?plat:about;
  o.innerHTML=`<div class="pf-card"><button type="button" class="pf-x" onclick="profClose()" aria-label="Close">${pfI('x')}</button>
-  <div class="pf-cv${ver?' v':''}"></div><div class="pf-me"><span class="pf-pic${ceo?' pf-shine':''}">${personAv(P.avatar,P.name)}${ceo?'<i class="pf-sw"></i>'+PF_GTICK:ver?VBADGE:''}${ceo&&!P.self&&ACCESS_PROFILE&&ACCESS_PROFILE.owner?`<label class="pf-cam" title="Set the CEO's photo" aria-label="Set the CEO's photo"><input type="file" accept="image/*" hidden onchange="pfCeoPhoto(this,'${esc(P.email)}')">${pfI('cam')}</label>`:''}</span><div><b>${esc(P.name||P.email.split('@')[0])}</b>${P.role?roleBadge(P.role):''}${pfPrivate(P)?'':`<small class="pf-seen${P.online?' on':''}">${esc(P.self?'Online now':pfAgo(P.seen))}</small>`}</div></div>
+  <div class="pf-cv${ver?' v':''}"></div><div class="pf-me"><span class="pf-pic${ceo?' pf-shine':''}">${personAv(P.avatar,P.name)}${ceo?'<i class="pf-sw"></i>'+PF_GTICK:ver?VBADGE:''}</span><div><b>${esc(P.name||P.email.split('@')[0])}</b>${P.role?roleBadge(P.role):''}${pfPrivate(P)?'':`<small class="pf-seen${P.online?' on':''}">${esc(P.self?'Online now':pfAgo(P.seen))}</small>`}</div></div>
 
   ${PF.bio?`<div class="pf-bio ed"><textarea class="pf-in" id="pfBio" maxlength="48" rows="2" placeholder="Say something about you" oninput="document.getElementById('pfBc').textContent=this.value.length+' / 48'">${esc(P.bio)}</textarea><div class="pf-eb"><small id="pfBc">${String(P.bio).length} / 48</small><button type="button" onclick="PF.bio=false;pfDraw()">Cancel</button><button type="button" class="p" onclick="pfSaveBio(this)">Save</button></div></div>`
    :P.bio?`<div class="pf-bio">${esc(P.bio)}${P.self?`<button type="button" class="pf-pen sm" onclick="PF.bio=true;pfDraw()" aria-label="Edit caption">${pfI('pen')}</button>`:''}</div>`
@@ -20530,7 +20534,7 @@ async function pfSaveBday(btn,remove){
 document.addEventListener('click',e=>{const c=e.target.closest&&e.target.closest('.sk-user-card');if(!c||e.target.closest('button,a'))return;const me=pfMe();if(!me)return;try{closeSidebar()}catch(_){}setTimeout(()=>profOpen(me),120)});
 
 
-const PF_GTICK='<svg class="vbd gold" viewBox="0 0 24 24" aria-label="Verified · CEO"><defs><linearGradient id="pfGt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F8E2AC"/><stop offset=".55" stop-color="#E2B874"/><stop offset="1" stop-color="#B88A2E"/></linearGradient></defs><path d="M12 1.5l2.6 2 3.2-.3 1 3.1 2.8 1.6-.9 3.1 1.4 2.9-2.6 1.9-.5 3.2-3.2.4-2 2.6-2.8-1.6-2.8 1.6-2-2.6-3.2-.4-.5-3.2L1.9 14l1.4-2.9-.9-3.1 2.8-1.6 1-3.1 3.2.3z" fill="url(#pfGt)"/><path d="M7.5 12.3l3 3 6-6.3" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const PF_GTICK='<svg class="vbd gold" viewBox="0 0 24 24" aria-label="Verified · CEO"><defs><linearGradient id="pfGt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF1C4"/><stop offset=".35" stop-color="#F0C96E"/><stop offset=".7" stop-color="#D4A341"/><stop offset="1" stop-color="#9C701E"/></linearGradient><radialGradient id="pfGh" cx=".32" cy=".26" r=".6"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset=".5" stop-color="#fff" stop-opacity=".15"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><path d="M12 1.5l2.6 2 3.2-.3 1 3.1 2.8 1.6-.9 3.1 1.4 2.9-2.6 1.9-.5 3.2-3.2.4-2 2.6-2.8-1.6-2.8 1.6-2-2.6-3.2-.4-.5-3.2L1.9 14l1.4-2.9-.9-3.1 2.8-1.6 1-3.1 3.2.3z" fill="url(#pfGt)" stroke="#8A6116" stroke-width=".6" stroke-linejoin="round"/><path d="M12 3.3l2.1 1.6 2.6-.2.8 2.5 2.3 1.3-.7 2.5 1.1 2.3-2.1 1.6-.4 2.6-2.6.3-1.6 2.1-2.3-1.3-2.3 1.3-1.6-2.1-2.6-.3-.4-2.6-2.1-1.6 1.1-2.3-.7-2.5 2.3-1.3.8-2.5 2.6.2z" fill="url(#pfGh)"/><path d="M7.7 12.7l3 3 6-6.3" fill="none" stroke="#6B4A10" stroke-opacity=".45" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.5 12.3l3 3 6-6.3" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const PF_WA='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#25D366" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/><path fill="#fff" d="M17.3 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1l-.9 1.1c-.2.2-.3.2-.6.1a7 7 0 0 1-3.5-3c-.3-.5.3-.4.7-1.3.1-.2 0-.4 0-.5l-.9-2.1c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1.1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5 1.9.8 2.6.9 3.5.7.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3z"/></svg>';
 
 
@@ -20567,11 +20571,6 @@ async function pfBdSave(remove){const b=document.getElementById('pfbdGo');let v=
   const me=(PFP.people||[]).find(x=>x.email===PF.email);if(me)me.bday=v;pfBdClose();pfDraw();showSettingsToast(remove?'Birthday removed':'Birthday saved')}
  catch(err){if(b){b.disabled=false;pfBdLabel()}showSettingsToast(errorText(err))}}
 
-
-function pfCeoPhoto(inp,email){const f=inp.files&&inp.files[0];inp.value='';if(!f)return;const url=URL.createObjectURL(f),img=new Image();
- img.onload=()=>myCropOpen(img,url,async d=>{try{const r=await serverCall('adminSetMember',getAccessToken(),email,'avatar',d);const pp=(PFP.people||[]).find(x=>x.email===email);if(pp)pp.avatar=(r&&r.member&&r.member.avatar)||d;
-   if(typeof ADMIN_LAST!=='undefined'&&ADMIN_LAST&&ADMIN_LAST.members)ADMIN_LAST.members[email]=(r&&r.member)||{};pfDraw();showSettingsToast('CEO photo saved')}catch(err){showSettingsToast(errorText(err))}});
- img.onerror=()=>{URL.revokeObjectURL(url);showSettingsToast('That photo could not be read')};img.src=url}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
