@@ -9645,16 +9645,16 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 .pf-fr button.ceo small,.pf-fr button.tl small,.pf-fr button.sr small,.pf-fr button.ai small{background:linear-gradient(90deg,var(--h2),var(--h3));-webkit-background-clip:text;background-clip:text;color:transparent}
 .pf-fr button.ceo .pf-fa,.pf-fr button.tl .pf-fa,.pf-fr button.sr .pf-fa,.pf-fr button.ai .pf-fa{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--h2)}
 .pf-fr button.ceo .pf-aic,.pf-fr button.tl .pf-aic,.pf-fr button.sr .pf-aic,.pf-fr button.ai .pf-aic{background:linear-gradient(90deg,var(--h1),var(--h2))}
-/* v489 team cards without a badge: a plain blue card like the cover */
-.pf-fr button:not(.ceo):not(.tl):not(.sr):not(.ai){background:linear-gradient(160deg,#2C4FB8,#203C8E 55%,#132457)!important;box-shadow:0 4px 12px rgba(28,60,150,.25)!important}
-.pf-fr button:not(.ceo):not(.tl):not(.sr):not(.ai) b{color:#fff}.pf-fr button:not(.ceo):not(.tl):not(.sr):not(.ai) small{color:#C9D3F5}
-.pf-fr button:not(.ceo):not(.tl):not(.sr):not(.ai) .pf-fa{box-shadow:0 0 0 2px rgba(255,255,255,.85)}
-/* v490 Alexandra on her own in the menu, under Team Tasks */
-.sk-ask{justify-content:flex-start!important;gap:12px!important}
-.sk-ask .sk-gt{flex:1}
-.sk-ask-ic{width:34px;height:34px;border-radius:11px;flex:none;display:grid;place-items:center;background:linear-gradient(#132a73,#132a73) padding-box,conic-gradient(from 200deg,#5B8CFF,#A78BFA,#F3D58E,#5B8CFF) border-box;border:1.5px solid transparent;box-shadow:0 0 12px rgba(122,140,255,.45)}
-.sk-ask-ic svg{width:18px;height:18px;fill:#F3D58E;stroke:none}
-#askNavBtn .sk-gt .ak-rqb{margin-left:8px;vertical-align:1px;display:inline-grid}
+/* v491 team cards without a badge: white with a soft double blue frame */
+.pf-fr button:not(.ceo):not(.tl):not(.sr):not(.ai){background:#fff!important;box-shadow:inset 0 0 0 1.5px #C9D6FF,inset 0 0 0 5px #EEF3FF,0 4px 12px rgba(36,83,214,.12)!important}
+.pf-fr button:not(.ceo):not(.tl):not(.sr):not(.ai) b{color:#141b33}.pf-fr button:not(.ceo):not(.tl):not(.sr):not(.ai) small{color:#5B7FE0}
+.pf-fr button:not(.ceo):not(.tl):not(.sr):not(.ai) .pf-fa{box-shadow:0 0 0 2px #fff,0 0 0 4px #9DB7FF}
+/* v491 Alexandra's menu icon: her photo in a slim gold frame with an AI tag */
+#askNavBtn .sk-ask-ic{position:relative;overflow:visible;background:#0b1236!important;box-shadow:inset 0 0 0 1.5px #F3D58E!important;padding:2px}
+#askNavBtn .sk-ask-av{display:block;width:100%;height:100%;border-radius:inherit;overflow:hidden;display:grid;place-items:center}
+#askNavBtn .sk-ask-av img{width:100%;height:100%;object-fit:cover;display:block}
+#askNavBtn .sk-ask-av svg{width:16px;height:16px;fill:#F3D58E;stroke:none}
+#askNavBtn .sk-ask-ic i{position:absolute;right:-6px;top:-6px;font:900 7.5px/1 Inter,system-ui,sans-serif;font-style:normal;color:#0b1236;background:#F3D58E;border-radius:4px;padding:2px 3px;z-index:2}
 </style>
 </head>
 <body>
@@ -9833,10 +9833,11 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
     <button class="sk-nav-btn" id="campNavBtn" type="button" onclick="openSoon('camp')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h3l6 4V6L7 10z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a7.5 7.5 0 0 1 0 11"/></svg></span><span>Campaign Performance</span><span class="sk-soon">Soon</span></button>
   </nav></div>
 
-  <button class="sk-grp" type="button" data-grp="ai" onclick="navGroup('ai')" aria-expanded="false"><span class="sk-gt"><b>Reports</b><small class="sk-gn"></small></span><svg class="sk-gchev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
-  <div class="sk-grp-body" id="grp-ai"><nav class="sk-nav" aria-label="Reports">
+  <button class="sk-grp" type="button" data-grp="ai" onclick="navGroup('ai')" aria-expanded="false"><span class="sk-gt"><b>AI Reports</b><small class="sk-gn"></small></span><svg class="sk-gchev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+  <div class="sk-grp-body" id="grp-ai"><nav class="sk-nav" aria-label="AI Reports">
     <button class="sk-nav-btn" id="monthsTabBtn" type="button" onclick="switchDashboardTab('months')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16M7 4l-3 3M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/></svg></span><span>Reports Studio</span></button>
     <button class="sk-nav-btn" id="seasonsTabBtn" type="button" onclick="switchDashboardTab('seasons')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/><path d="M14.5 13.2a2.6 2.6 0 1 0 1.8 4.3 3.2 3.2 0 0 1-1.8-4.3z"/></svg></span><span>Seasons Calendar</span></button>
+    <button class="sk-nav-btn" id="askNavBtn" type="button" onclick="openAsk()"><span class="sk-nav-icon sk-ask-ic" aria-hidden="true"><span class="sk-ask-av"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/></svg></span><i>AI</i></span><span>Alexandra</span></button>
   </nav></div>
 
   <button class="sk-grp" type="button" data-grp="tt" onclick="navGroup('tt')" aria-expanded="false"><span class="sk-gt"><b>Team Tasks</b><small class="sk-gn"></small></span><svg class="sk-gchev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
@@ -9847,7 +9848,6 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
     <button class="sk-nav-btn" id="ttLeaveBtn" type="button" onclick="openTasks('leave')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a8 8 0 0 1 8 8H4a8 8 0 0 1 8-8z"/><path d="M12 11v9M9 20h6"/></svg></span><span>Team Leave</span></button>
     <button class="sk-nav-btn" id="ttQuickBtn" type="button" hidden style="display:none" onclick="openTasks('quick')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/></svg></span><span>Quick Requests</span></button>
   </nav></div>
-  <button class="sk-grp sk-ask" id="askNavBtn" type="button" onclick="openAsk()"><span class="sk-ask-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/><path d="M18.5 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg></span><span class="sk-gt"><b>Alexandra</b><small class="sk-gn">AI assistant</small></span></button>
   </div>
 
   <div class="sk-section-label sk-app-label">App</div>
@@ -11855,10 +11855,10 @@ function bbCloseAll(){
 function bbGo(k){bbCloseAll();switchDashboardTab(k);window.scrollTo(0,0)}
 // v179 desktop: an icon rail (the app icon, one button per group, alerts, settings and you) next to a
 // cool silver panel with the pages of the group, always open. The white top bar gets a page search and the account.
-const DK_GRP=[['mp','Media Plan','<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>'],['ps','Performance Snapshots','<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'],['ai','Reports','<path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/>'],['tt','Team Tasks','<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>']];
+const DK_GRP=[['mp','Media Plan','<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>'],['ps','Performance Snapshots','<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'],['ai','AI Reports','<path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/>'],['tt','Team Tasks','<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>']];
 const DK={g:null,act:''};
 const dkSvg=p=>`<svg viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
-function dkBtns(g){const b=document.getElementById('grp-'+g);const l=b?[...b.querySelectorAll('.sk-nav-btn')].filter(x=>!x.hidden&&getComputedStyle(x).display!=='none'):[];if(g==='ai'){const a=document.getElementById('askNavBtn');if(a&&!a.hidden)l.push(a)}return l}
+function dkBtns(g){const b=document.getElementById('grp-'+g);return b?[...b.querySelectorAll('.sk-nav-btn')].filter(x=>!x.hidden&&getComputedStyle(x).display!=='none'):[]}
 function dkTasksOpen(){const o=document.getElementById('tasksOverlay');return !!(o&&o.classList.contains('open'))}
 function dkActive(){
  if(dkTasksOpen()){const v=(typeof TK!=='undefined'&&TK.view)||'team',m={team:'ttTeamBtn',mine:'ttMineBtn',build:'ttBuildBtn',leave:'ttLeaveBtn',quick:'ttQuickBtn'};return document.getElementById(m[v])}
@@ -20067,7 +20067,7 @@ let PERM={data:null,busy:false,edit:{},saving:false,grp:'mp',who:''};
 // Pick a menu group: its pages are the columns, everyone the rows. The last group is sharing.
 const PERM_GROUPS=[['mp','Media Plan',[['overview','DAILY'],['days','DAY BY DAY'],['channel','MONTHLY'],['lab','LAB'],['plans','PLAN HIST.']]],
  ['ps','Snapshots',[['ranks','TOP & BOTTOM 5'],['camp','CAMPAIGN PERF.']]],
- ['ai','Reports',[['months','REPORTS STUDIO'],['seasons','SEASONS'],['ask','ALEXANDRA']]],
+ ['ai','AI Reports',[['months','REPORTS STUDIO'],['seasons','SEASONS'],['ask','ALEXANDRA']]],
  ['tt','Team Tasks',[['team','TEAM BOARD'],['mine','MY TASKS'],['build','BUILDER'],['quick','QUICK'],['leaveview','TEAM LEAVE'],['leave','SET DAYS OFF']]],
  ['app','App',[['notifs','NOTIFI­CATIONS'],['updates','UPDATES'],['about','ABOUT'],['admin','ADMIN']]],
  ['share','Share',[['share','WHATSAPP & IMAGES']]]];
@@ -20578,7 +20578,7 @@ function akBubHot(c){const x=document.getElementById('akBubX');if(!x)return null
 
 // v466 editors: a red dot on Alexandra while someone waits for access; checked on start, every 5 minutes and when HEMERA comes back
 function akReqDot(){const n=AK.editor&&Array.isArray(AK.rq)?AK.rq.length:0;AK.rqN=n;
- const spots=[['#askNavBtn .sk-gt','nf-badge'],['#adminNavBtn','nf-badge'],['.menu-toggle',''],['#akBox .ak-inf',''],['#akBox .ak-bub','']];
+ const spots=[['#askNavBtn','nf-badge'],['.sk-grp[data-grp="ai"]','nf-badge'],['#adminNavBtn','nf-badge'],['.menu-toggle',''],['#akBox .ak-inf',''],['#akBox .ak-bub','']];
  spots.forEach(([q,c])=>document.querySelectorAll(q).forEach(el=>{let b=el.querySelector(':scope>.ak-rqb');if(!b){if(!n)return;b=document.createElement('em');b.className='ak-rqb '+c;const ch=el.querySelector(':scope>.sk-gchev');if(ch)el.insertBefore(b,ch);else el.appendChild(b)}b.hidden=!n;b.textContent=n>9?'9+':String(n);if(n)el.setAttribute('data-rq',n);else el.removeAttribute('data-rq')}))}
 async function akReqPoll(){try{if(!ASK_HEMERA_URL||!akMe().email)return;const w=akWho();if(!(AK.editor||(w&&w.editor)))return;
  const j=await akPost('admin',{op:'reqs'});if(j&&Array.isArray(j.reqs)){AK.editor=true;AK.rq=j.reqs;akReqDot();const el=document.getElementById('akReqW');if(el)el.innerHTML=akReqsHtml(AK.rq)}}catch(e){}}
@@ -20687,6 +20687,10 @@ function pfWaIntl(n){let d=String(n||'').trim();const plus=d.startsWith('+');d=d
 
 // v487 tapping Alexandra among the friends opens her profile page
 function pfOpenAlexandra(){profClose();setTimeout(()=>{if(!document.getElementById('akBox'))openAsk();let n=0;const go=()=>{if(document.getElementById('akAbt')){AK.pgTab='about';akAbout();return}if(++n<25)setTimeout(go,200)};setTimeout(go,350)},300)}
+
+// v491 Alexandra's photo on her menu icon (once the app has it)
+function akNavAv(){const el=document.querySelector('#askNavBtn .sk-ask-av');if(!el)return;try{const d=akBav().data;if(d&&/^data:image\//.test(d)&&!el.querySelector('img'))el.innerHTML='<img src="'+d+'" alt="">'}catch(e){}}
+setTimeout(akNavAv,1500);setTimeout(akNavAv,8000);document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('.menu-toggle'))setTimeout(akNavAv,50)},true);
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
