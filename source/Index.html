@@ -3,9 +3,10 @@
 <head>
   <base target="_top">
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- the fonts load beside the page so a slow connection never holds back the opening screen -->
+  <link rel="preload" as="font" type="font/woff2" href="fonts/kufi-ar.woff2" crossorigin>
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Changa:wght@500;600;700&family=Inter:wght@800&family=Herr+Von+Muellerhoff&family=Space+Grotesk:wght@500;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Changa:wght@500;600;700&family=Inter:wght@800&family=Herr+Von+Muellerhoff&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet"></noscript>
   <script>
@@ -63,7 +64,7 @@ window.addEventListener('load',function(){
         var vw=document.documentElement.clientWidth||window.innerWidth||0, sw=Math.min(screen.width||9999,screen.height||9999);
         if(!wantsDesktop&&(navigator.maxTouchPoints||0)>0&&sw<600&&vw>sw*1.15){
           var vp=document.querySelector('meta[name="viewport"]');
-          if(vp)vp.setAttribute('content','width='+sw+',initial-scale=1,maximum-scale=5');
+          if(vp)vp.setAttribute('content','width='+sw+',initial-scale=1,maximum-scale=1,user-scalable=no');
         }
         if(wantsDesktop&&mobileLike){
           var root=document.documentElement;
@@ -9267,7 +9268,7 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 .ak.dk .ak-tabs{background:#000;border-color:#3E4042}.ak.dk .ak-feat button{background:#242526;border-color:#3E4042}.ak.dk .ak-hl img{background:#000}.ak.dk .ak-plist i{background:#3A3B3C}.ak.dk .ak-plist button{border-color:#3E4042}
 
 /* v436 Alexandra: Arabic in Noto Kufi (Arabic letters only; English stays in Inter) */
-@font-face{font-family:AKufi;font-style:normal;font-weight:100 900;font-display:swap;src:url(fonts/kufi-ar.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+08A0-08FF,U+FB50-FDFF,U+FE70-FEFF,U+200C-200F}
+@font-face{font-family:AKufi;font-style:normal;font-weight:100 900;font-display:block;src:url(fonts/kufi-ar.woff2) format('woff2');unicode-range:U+0600-06FF,U+0750-077F,U+08A0-08FF,U+FB50-FDFF,U+FE70-FEFF,U+200C-200F}
 .ak .ak-m,.ak .ak-in input,.ak .ak-noacc p{font-family:AKufi,Inter,system-ui,sans-serif}
 .ak .ak-m.h,.ak .ak-m.u{line-height:1.7}
 
@@ -9676,6 +9677,15 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 .sal-in.sent{background:#EEF1F7;color:#7A859E}
 /* v497 Admin photos: flex-basis 36px squeezed the 44px circle into an oval */
 .sk-person-avatar.has-emb,.sk-user-avatar.has-emb{flex:none!important}
+/* v501 reactions: the picker floats outside the card; the count sits in its own strip under the tiles */
+.rx-pop.fx{position:fixed;z-index:9000}
+@media (max-width:1099px){html body #dxBody .dc-card.dcH.has-rx>.dc-main{padding-bottom:42px!important}
+#dxBody .dc-card.has-rx .rx-cn{bottom:10px;left:14px}}
+html:not(.desktop-site-mode){touch-action:pan-x pan-y}
+/* v501 team card chips: small and plain */
+.pf-fr .pf-aic{top:6px!important;left:6px!important;font:800 7.5px/1 Inter,system-ui,sans-serif!important;letter-spacing:.04em;padding:2.5px 4px!important;border-radius:4px!important;box-shadow:none!important}
+.pf-fr button.ceo .pf-aic{background:#D9A62E!important}.pf-fr button.tl .pf-aic{background:#2453d6!important}.pf-fr button.sr .pf-aic{background:#8E97AA!important}.pf-fr button.ai .pf-aic{background:#7B6CF6!important}
+.aks-sc.on,.aks-sc.out{will-change:clip-path,opacity}.aks-sc.on img.bg{will-change:transform}
 </style>
 </head>
 <body>
@@ -10801,7 +10811,6 @@ function akStory(){
  tap.addEventListener('contextmenu',e=>e.preventDefault());
  akStoryShow(0);
  
- o.querySelectorAll('.aks-sc img.bg').forEach(im=>{try{im.decode().catch(()=>{})}catch(e){}});
 }
 function akStoryClose(chat){const S=window.AKST;if(S)clearTimeout(S.t);if(S&&S.ret&&chat)akAboutClose();const o=document.getElementById('aksBox');if(o){o.classList.remove('open');setTimeout(()=>o.remove(),300)}window.AKST=null;
  if(chat&&!document.getElementById('akBox'))openAsk()}
@@ -10848,6 +10857,7 @@ async function akStoryShow(i,again){
  const dur=tr==='calm'?1150:tr==='none'?750:T*1.05;
  if(cur&&cur!==now)(ta?ta.finished.catch(()=>{}):new Promise(r=>setTimeout(r,dur))).then(()=>{if(tok!==S.tok)return;cur.classList.remove('out');cur.getAnimations({subtree:true}).forEach(a=>{if(!(a instanceof CSSAnimation))a.cancel()});cur.removeAttribute('style');cur.querySelectorAll('[style]').forEach(n=>n.removeAttribute('style'))});
  S.i=i;
+ {const nx=sc[i+1]&&sc[i+1].querySelector('img.bg');if(nx)setTimeout(()=>{try{nx.decode().catch(()=>{})}catch(e){}},T+100)}
  if(i<AKS.length-1){S.left=AKS_DUR;S.end=Date.now()+AKS_DUR;S.t=setTimeout(()=>akStoryShow(i+1),AKS_DUR)}
 }
 
@@ -11059,9 +11069,8 @@ function akAbout(e,keep){if(e&&e.stopPropagation)e.stopPropagation();try{akPFixM
 ${akIntroHtml()}</div>
   <h4>What she does</h4><div class="ak-does">
    <button type="button" onclick="akPgGo('links')">${akI('links')}<span>Finds <b>sheets, reports</b> and <b>scripts</b></span></button>
-   <button type="button" onclick="akPgGo('off')">${akI('off')}<span>Knows <b>who is off</b> and who covers</span></button>
-   <button type="button" onclick="akPgGo('mail')">${akI('mail')}<span>Shares <b>team emails</b></span></button>
-   <button type="button" onclick="akPgGo('task')">${akI('task')}<span>Shows <b>your tasks</b></span></button></div>
+   <button type="button" onclick="akPgGo('nums')">${akI('chart')}<span>Linked to the <b>dashboard</b>, answers your numbers</span></button>
+   <button type="button" onclick="akPgGo('mail')">${akI('mail')}<span><b>Team emails</b> and <b>leave</b></span></button></div>
   ${AK.canAdd||AK.canTeach?`<h4>Tools</h4>${AK.canAdd?row('add','add','Add a sheet','Put a new sheet in the list'):''}${AK.canTeach?row('teach','teach','Teach the bot','Rules, access and platforms'):''}`:''}
   ${AK.editor?`<div id="akReqW">${akReqsHtml(AK.rq)}</div><h4>Settings</h4><div id="akBotW">${akBotRow(AK.bst||null)}</div>`:''}
   <h4>Chat</h4><button type="button" class="r" role="switch" aria-checked="${akDk()}" onclick="akDkSet(!akDk(),this)"><i>${akI('moon')}</i><span><b>Dark mode</b><small>Only for this chat</small></span><em class="ak-sw${akDk()?' on':''}"></em></button>${row('clear','trash','Clear chat','The chat stays on this device for 24 hours','del')}`;
@@ -11109,6 +11118,7 @@ function akPgGo(id){
  if(id==='clear'){const pg=document.getElementById('akAbt');if(!pg||pg.querySelector('.ak-cf'))return;
   pg.insertAdjacentHTML('beforeend',`<div class="ak-cf" onclick="if(event.target===this)this.remove()"><div class="ak-cfb" role="alertdialog" aria-label="Clear chat"><b>Clear this chat?</b><p>All the messages on this device will be deleted. This cannot be undone.</p><div><button type="button" onclick="this.closest('.ak-cf').remove()">Cancel</button><button type="button" class="del" onclick="this.closest('.ak-cf').remove();akPgGo('clear!')">Clear</button></div></div></div>`);return}
  akAboutClose();
+ if(id==='nums'){setTimeout(()=>{const i=document.getElementById('akQ');if(i&&!AK.busy){i.value="How are today's numbers?";akSend()}},250);return}
  if(id==='clear!'){AK.msgs=[];AK.hist=[];AK.nav={};AK.res=null;AK.resIds=[];AK.ls=[];AK.ts=[];AK.t0=Date.now();try{localStorage.removeItem(AK_KEEP)}catch(e){}const nm=akMe().name.split(' ')[0];akBot(`<p>Hi${nm?' '+akEsc(nm):''}. Pick from the menu or type your question.</p>`);AK.kb=true;akKb();return}
  setTimeout(()=>akMenu(id),200)}
 function closeAsk(){document.documentElement.classList.remove('ak-bubbed');akBubSys(false);if(AKR.on)akRecStop();AK.add=null;AK.teach=false;AK.ask=null;const o=document.getElementById('akBox');if(!o)return;o.classList.remove('open');setTimeout(()=>o.remove(),280)}
@@ -13409,7 +13419,7 @@ function rxWho(date){
  o.innerHTML=`<div class="lyx-card rx-wc"><button type="button" class="lyx-x" aria-label="Close">✕</button><small>REACTIONS · ${d.n}</small><b>${esc(day)}</b>${rows}<p>Press and hold the day to add or change yours.</p></div>`;
  requestAnimationFrame(()=>o.classList.add('open'));
 }
-function rxPaint(){document.querySelectorAll('#dxBody .dc-card[data-rx]').forEach(c=>{const o=c.querySelector('.rx-cn');if(o)o.remove();const h=rxBadge(c.dataset.date);if(h)c.insertAdjacentHTML('afterbegin',h)})}
+function rxPaint(){document.querySelectorAll('#dxBody .dc-card[data-rx]').forEach(c=>{const o=c.querySelector('.rx-cn');if(o)o.remove();const h=rxBadge(c.dataset.date);c.classList.toggle('has-rx',!!h);if(h)c.insertAdjacentHTML('afterbegin',h)})}
 const RX_FACES=['🔥','💪','😐','😓'];
 function rxArm(body){
  if(body.dataset.rxArmed)return;body.dataset.rxArmed='1';
@@ -13426,7 +13436,10 @@ function rxArm(body){
  };
  const open=c=>{fired=true;card=c;const mine=RX.data&&RX.data.days[c.dataset.date]&&RX.data.days[c.dataset.date].mine;
    pop=document.createElement('div');pop.className='rx-pop';pop.innerHTML=RX_FACES.map(f=>`<button type="button" class="${f===mine?'on':''}" data-f="${f}">${f}</button>`).join('');
-   c.appendChild(pop);if(navigator.vibrate)try{navigator.vibrate(18)}catch(e){}};
+   
+   const r=c.getBoundingClientRect();pop.classList.add('fx');pop.style.top=Math.max(8,r.top-22)+'px';pop.style.right=Math.max(8,innerWidth-r.right+10)+'px';
+   pop.addEventListener('click',e=>{const f=e.target.closest('button');if(f){e.stopPropagation();pick(f.dataset.f)}});
+   document.body.appendChild(pop);window.addEventListener('scroll',close,{once:true,capture:true});if(navigator.vibrate)try{navigator.vibrate(18)}catch(e){}};
  body.addEventListener('pointerdown',e=>{if(pop&&!e.target.closest('.rx-pop')){close();return}
    const c=e.target.closest('.dc-card[data-rx]');if(!c||e.target.closest('.rx-pop,.rx-cn'))return;fired=false;x0=e.clientX;y0=e.clientY;clearTimeout(t);t=setTimeout(()=>open(c),450)});
  body.addEventListener('pointermove',e=>{if(t&&(Math.abs(e.clientX-x0)>8||Math.abs(e.clientY-y0)>8)){clearTimeout(t);t=null}
@@ -19083,7 +19096,7 @@ function pfDraw(){
  const RK=['CEO','Media Manager','Team Leader','Senior Media Buyer','Media Buyer'],rk=r=>{const i=RK.indexOf(r);return i<0?9:i};
  const fr=(PFP.people||[]).filter(x=>x.email!==P.email).map(x=>pfPerson(x.email)).sort((a,b)=>rk(a.role)-rk(b.role)||String(a.name).localeCompare(String(b.name)));
  {const i=fr.findIndex(x=>rk(x.role)>3);fr.splice(i<0?fr.length:i,0,{email:'',ai:true,name:'Alexandra',role:'AI assistant'})}
- const friends=`<div class="pf-h">Team${fr.length?' <em>'+fr.length+'</em>':''}</div>`+(fr.length?`<div class="pf-fr">${fr.map(f=>f.ai?`<button type="button" class="ai" onclick="pfOpenAlexandra()"><i class="pf-aic">✦ AI</i><span class="pf-fa">${akAvIn()}</span><b>Alexandra</b><small>AI assistant</small></button>`:`<button type="button" class="${f.role==='CEO'?'ceo':f.role==='Team Leader'?'tl':f.role==='Senior Media Buyer'?'sr':''}" onclick="profOpen('${esc(f.email)}',event)">${f.role==='CEO'?'<i class="pf-aic">♛ CEO</i>':f.role==='Team Leader'?'<i class="pf-aic">★ TL</i>':f.role==='Senior Media Buyer'?'<i class="pf-aic">★★★</i>':''}<span class="pf-fa${f.role==='CEO'?' ceo':''}">${personAv(f.avatar,f.name)}${f.online&&!pfPrivate(f)?'<i></i>':''}</span><b>${esc(String(f.name||f.email).split(' ')[0])}</b>${f.role==='Senior Media Buyer'?'<small>Sr. Buyer</small>':f.role?`<small>${esc(f.role==='CEO'?'Founder':f.role.replace('Senior Media Buyer','Sr. Buyer').replace('Media Buyer','Buyer').replace('Media Manager','Manager'))}</small>`:''}</button>`).join('')}</div>`:`<p class="pf-none">The team shows here.</p>`);
+ const friends=`<div class="pf-h">Team${fr.length?' <em>'+fr.length+'</em>':''}</div>`+(fr.length?`<div class="pf-fr">${fr.map(f=>f.ai?`<button type="button" class="ai" onclick="pfOpenAlexandra()"><i class="pf-aic">AI</i><span class="pf-fa">${akAvIn()}</span><b>Alexandra</b><small>AI assistant</small></button>`:`<button type="button" class="${f.role==='CEO'?'ceo':f.role==='Team Leader'?'tl':f.role==='Senior Media Buyer'?'sr':''}" onclick="profOpen('${esc(f.email)}',event)">${f.role==='CEO'?'<i class="pf-aic">CEO</i>':f.role==='Team Leader'?'<i class="pf-aic">TL</i>':f.role==='Senior Media Buyer'?'<i class="pf-aic">SR</i>':''}<span class="pf-fa${f.role==='CEO'?' ceo':''}">${personAv(f.avatar,f.name)}${f.online&&!pfPrivate(f)?'<i></i>':''}</span><b>${esc(String(f.name||f.email).split(' ')[0])}</b>${f.role==='Senior Media Buyer'?'<small>Sr. Buyer</small>':f.role?`<small>${esc(f.role==='CEO'?'Founder':f.role.replace('Senior Media Buyer','Sr. Buyer').replace('Media Buyer','Buyer').replace('Media Manager','Manager'))}</small>`:''}</button>`).join('')}</div>`:`<p class="pf-none">The team shows here.</p>`);
  const about=`<div class="pf-h">Details</div>${pfLeave(P.email)}${bday}${place}${works}${workson}`;
  const waNum=P.wa==='none'?'':(!P.wa||P.wa==='same')?P.phone:P.wa,waDigits=pfWaIntl(waNum),telDigits=pfWaIntl(P.phone);
  const acts=`<span class="pf-acts"><a class="pf-ac" href="tel:+${telDigits}" aria-label="Call">${pfI('phone')}</a>${waDigits.length>=6?`<a class="pf-ac wa" href="${window.AndroidShare?'whatsapp:\/\/send?phone=':'https:\/\/api.whatsapp.com/send?phone='}${waDigits}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">${PF_WA}</a>`:''}</span>`;
@@ -20676,6 +20689,14 @@ function hmOverlayAsk(){if(document.getElementById('hmOv'))return;const o=docume
  const close=()=>{o.classList.remove('on');setTimeout(()=>o.remove(),250)};
  o.querySelector('.hmov-go').onclick=()=>{try{window.AndroidShare.openOverlaySettings()}catch(e){}close()};o.querySelector('.hmov-no').onclick=close;o.addEventListener('click',e=>{if(e.target===o)close()});
  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('on'))}
+
+
+(function(){if(document.documentElement.classList.contains('desktop-site-mode'))return;const st=e=>{if(!document.documentElement.classList.contains('desktop-site-mode'))e.preventDefault()};
+ ['gesturestart','gesturechange'].forEach(t=>document.addEventListener(t,st,{passive:false}));
+ document.addEventListener('touchmove',e=>{if(e.touches&&e.touches.length>1&&!document.documentElement.classList.contains('desktop-site-mode'))e.preventDefault()},{passive:false})})();
+
+
+try{document.fonts&&document.fonts.load('400 16px AKufi','\u0645\u0631\u062d\u0628\u0627')}catch(e){}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
