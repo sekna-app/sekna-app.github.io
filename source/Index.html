@@ -9832,15 +9832,6 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .cp-lg{margin:12px 2px 0}
     .cp-c2t{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:800;color:#6B7385}.cp-c2t i{width:7px;height:7px;border-radius:2px;background:var(--c)}
     b.g,.cp-rb.g b{color:#13804F}b.w,.cp-rb.w b{color:#B9770E}b.r,.cp-rb.r b{color:#C63A4A}b.o{color:#8A93A8}
-    /* card 1: a slim row */
-    .cp-list.cpv1{gap:8px}
-    .cp-c1{display:flex;align-items:center;gap:10px;width:100%;text-align:left;font:inherit;color:var(--text,#141B33);background:var(--card,#fff);border:0;border-radius:16px;padding:12px 12px 12px 0;box-shadow:0 6px 18px rgba(20,40,110,.07);cursor:pointer;overflow:hidden}
-    .cp-bar1{align-self:stretch;width:4px;border-radius:0 4px 4px 0;background:var(--c);flex:none;margin:-12px 0}
-    .cp-c1m{flex:1;min-width:0}.cp-c1 .cp-nm{margin:0 0 4px;font-size:12.5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-    .cp-c1s{font-size:11px;font-weight:700;color:#8A93A8;font-variant-numeric:tabular-nums}
-    .cp-c1r{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:5px}.cp-c1r>b{font-size:19px;font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-    .cp-c1r .cp-dots{gap:4px}.cp-c1r .cp-dots i{width:8px;height:8px}.cp-c1r .cp-dots small{display:none}
-    /* card 2: ROAS badge */
     .cp-c2,.cp-c3{display:block;width:100%;text-align:left;font:inherit;color:var(--text,#141B33);background:var(--card,#fff);border:0;border-radius:18px;padding:13px 14px;box-shadow:0 8px 22px rgba(20,40,110,.07);cursor:pointer}
     .cp-c2h{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.cp-c2 .cp-nm{margin:4px 0 0;font-size:12.5px}
     .cp-rb{flex:none;text-align:center;border-radius:12px;padding:6px 10px;background:#F1F3F8}.cp-rb b{display:block;font-size:18px;font-weight:900;letter-spacing:-.02em}.cp-rb small{font-size:8.5px;font-weight:800;letter-spacing:.1em;color:#8A93A8}
@@ -9851,30 +9842,18 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .cp-c3{border-left:4px solid var(--c)}
     .cp-c3h{display:flex;justify-content:space-between;align-items:center}.cp-c3 .cp-dots{gap:4px}.cp-c3 .cp-dots i{width:8px;height:8px}.cp-c3 .cp-dots small{display:none}
     .cp-c3 .cp-nm{margin:4px 0 9px;font-size:12.5px}
-    .cp-c3m{display:grid;grid-template-columns:1fr 1fr .7fr 1fr;gap:4px}.cp-c3m small{display:block;font-size:9.5px;font-weight:800;color:#8A93A8;letter-spacing:.04em}
+    .cp-c3m{display:grid;grid-template-columns:1fr .75fr 1fr auto;gap:4px;align-items:end}.cp-c3m small{display:block;font-size:9.5px;font-weight:800;color:#8A93A8;letter-spacing:.04em}
     .cp-c3m b{font-size:14.5px;font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-    .cp-c3m .ro{border-radius:10px;padding:3px 7px;margin:-3px 0 -3px -3px;background:#F1F3F8}.cp-c3m .ro.g{background:#E3F6EC}.cp-c3m .ro.w{background:#FDF1D8}.cp-c3m .ro.r{background:#FBDDE1}
+    .cp-c3m .ro{border-radius:8px;padding:2px 7px;margin:0 -4px -2px 0;background:#F1F3F8;text-align:right}.cp-c3m .ro b{font-size:13px}.cp-c3m .ro small{font-size:8.5px}.cp-c3m .ro.g{background:#E3F6EC}.cp-c3m .ro.w{background:#FDF1D8}.cp-c3m .ro.r{background:#FBDDE1}
     .cp-c3m .ro.g b{color:#13804F}.cp-c3m .ro.w b{color:#B9770E}.cp-c3m .ro.r b{color:#C63A4A}
     /* top 1: slim navy */
-    .cp-h1{padding:14px 14px 12px}.cp-h1t{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-    .cp-h1r{text-align:right}.cp-h1r b{display:block;font-size:28px;font-weight:900;letter-spacing:-.03em;line-height:1}.cp-h1r small{font-size:9px;font-weight:800;letter-spacing:.12em;color:#9FB0E6}
-    .cp-h1 .cp-per{margin-top:10px}.cp-h1 .cp-per button{padding:6px 0;font-size:11px}
+    .cp-h1{padding:12px 14px 10px}.cp-h1 .cp-tot{margin-top:6px;gap:2px 12px}.cp-h1 .cp-tot b{font-size:13.5px}.cp-h1 .cp-sub{margin-top:1px}
+    .cp-c3{padding:11px 13px}.cp-c3 .cp-nm{margin:3px 0 7px}
+    #campPanel .cp-types .mx-tl .channel-icon.ch-ico,#campPanel .cp-types .mx-tl .mx-all{width:32px;height:32px;border-radius:10px;font-size:9px}#campPanel .cp-types .mx-tl .channel-icon.ch-ico svg{width:15px;height:15px}#campPanel .cp-types .mx-tl{font-size:9.5px;gap:3px}.cp-h1t{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+    .cp-h1r{text-align:right}.cp-h1r b{display:block;font-size:25px;font-weight:900;letter-spacing:-.03em;line-height:1}.cp-h1r small{font-size:9px;font-weight:800;letter-spacing:.12em;color:#9FB0E6}
+    .cp-h1 .cp-per{margin-top:8px}.cp-h1 .cp-per button{padding:6px 0;font-size:11px}
     .cp-hero .mx-arrow{margin-left:5px;padding:2px 6px;font-size:10px}.cp-h1r .mx-arrow{display:inline-block;margin:4px 0 0}
     .cp-hf{font-size:10px;color:#9FB0E6;font-weight:600;margin-top:6px}
-    /* top 2: white with a gold line */
-    .cp-h2{background:var(--card,#fff);border-radius:18px;padding:14px;box-shadow:0 10px 26px rgba(20,40,110,.08);position:relative;overflow:hidden}
-    .cp-h2:before{content:'';position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,#203C8E,#E2B874)}
-    .cp-h2t b{font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:22px;color:var(--text,#141B33)}.cp-h2t small{display:block;font-size:11.5px;color:#8A93A8;font-weight:700;margin-top:1px}
-    .cp-h2k,.cp-h3k{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.cp-h2k small,.cp-h3k small{display:block;font-size:9.5px;font-weight:800;letter-spacing:.08em;color:#8A93A8;text-transform:uppercase}
-    .cp-h2k b,.cp-h3k b{font-size:17px;font-weight:900;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--text,#141B33)}.cp-h2k .mx-arrow,.cp-h3k .mx-arrow{display:table;margin-top:3px;padding:2px 6px;font-size:10px}
-    .cp-h2 .cp-hf,.cp-h3 .cp-hf{color:#8A93A8}
-    .cp-h2 .cp-per button{padding:6px 0;font-size:11px}
-    /* top 3: a period pill */
-    .cp-h3{background:var(--card,#fff);border-radius:18px;padding:12px 14px;box-shadow:0 10px 26px rgba(20,40,110,.08)}
-    .cp-h3r{display:flex;justify-content:space-between;align-items:center;gap:8px}.cp-h3r>small{font-size:11px;font-weight:700;color:#8A93A8}
-    .cp-h3p{position:relative;display:inline-flex;align-items:center;gap:6px;background:#203C8E;color:#fff;border-radius:99px;padding:7px 12px;font-size:12px;font-weight:800}
-    .cp-h3p select{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}.cp-h3p .cp-ic{color:#E2B874}
-    .cp-h3 .cp-cus{margin-top:10px}
     /* 30 / 90 / 180: one line each */
     .cp-t3{margin-top:8px}.cp-t3r{display:grid;grid-template-columns:10px 62px 1fr auto auto;gap:8px;align-items:center;padding:8px 0;border-top:1px solid var(--line,#EEF1F6);font-variant-numeric:tabular-nums}
     .cp-t3r:first-child{border-top:0}.cp-t3r i{width:9px;height:9px;border-radius:50%}.cp-t3r span{font-size:11.5px;font-weight:700;color:#6B7385}
@@ -9883,7 +9862,6 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .cp-tr{grid-template-columns:.9fr 1.1fr 1.1fr 64px}
     body.dark-mode .cp-spi button,body.dark-mode .cp-rb,body.dark-mode .cp-c3m .ro{background:#232b38}body.dark-mode .cp-sb{color:#C9D3F5}
     @media (min-width:1100px){
-      html.dk-on:not(.desktop-site-mode) .cp-list.cpv1{grid-template-columns:repeat(2,minmax(0,1fr))}
       html.dk-on:not(.desktop-site-mode) #campPanel .mx-types>small{display:none}
       html.dk-on:not(.desktop-site-mode) #campPanel .mx-tls{display:flex!important;gap:5px;width:auto;flex-wrap:wrap}
       html.dk-on:not(.desktop-site-mode) #campPanel .mx-tl{flex-direction:row;gap:6px;padding:4px 11px 4px 4px;border:1px solid #e1e5ee;background:#fff;border-radius:99px;font-size:11.5px}
@@ -20945,9 +20923,9 @@ try{document.fonts&&document.fonts.load('400 16px AKufi','\u0645\u0631\u062d\u06
 
 
  
-let CP={}, CPS={per:'y',from:'',to:'',types:[],sort:'sp',dir:-1,so:false}, CPX=null, CP_ACC={}, CP_CHS=[], CPV='1', CPH='1';
+let CP={}, CPS={per:'y',from:'',to:'',types:[],sort:'sp',dir:-1,so:false}, CPX=null, CP_ACC={}, CP_CHS=[];
 const CP_CH={'Search Brand':['Search Brand','#2453D6'],'Search Non-Brand':['Non-Brand','#7B5CF0'],'Performance Max':['PMax','#C99A45'],'Demand Gen':['Demand Gen','#1D9CC8'],'Video (YouTube)':['Video','#E05566']};
-const CP_PERS=[['y','Yesterday'],['7','7D'],['30','30D'],['m','Month'],['c','Custom']];
+const CP_PERS=[['y','Yesterday'],['3','3D'],['7','7D'],['30','30D'],['c','Custom']];
 
 const CP_M=[['ro','ROAS'],['sp','Spend',0,1],['va','Value'],['cv','Conv.'],['cpa','CPA',1],['cl','Clicks'],['im','Impr.'],['ctr','CTR'],['cpc','CPC',1],['cvr','Conv. rate'],['aov','Avg. value']];
 const CP_SIC={sp:'<path d="M3 7h18v12H3z"/><path d="M3 11h18M16 15h2"/>',cv:'<circle cx="12" cy="12" r="8"/><path d="M8.5 12.5l2.4 2.4 4.6-5"/>',va:'<path d="M12 3v18M16.5 7.5c-.8-1.3-2.5-2-4.5-2-2.5 0-4 1.2-4 3s1.6 2.6 4 3.2 4.5 1.4 4.5 3.3-1.8 3.2-4.5 3.2c-2.2 0-3.9-.8-4.7-2.2"/>',ro:'<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>'};
@@ -20988,11 +20966,11 @@ function cpCls(m,d){const x=CP_M.find(q=>q[0]===m)||[];if(d==null||!isFinite(d)|
 function cpDelta(v,u){return u?v/u-1:null}
 function cpPer(L){
  const p=CPS.per;
- if(p==='7')return [cpD(L,-6),L];if(p==='30')return [cpD(L,-29),L];if(p==='m')return [L.slice(0,8)+'01',L];
+ if(p==='3')return [cpD(L,-2),L];if(p==='7')return [cpD(L,-6),L];if(p==='30')return [cpD(L,-29),L];
  if(p==='c'&&CPS.from&&CPS.to)return CPS.from<=CPS.to?[CPS.from,CPS.to]:[CPS.to,CPS.from];
  return [L,L];
 }
-function cpPerName(L){const p=CPS.per;return p==='7'?'Last 7 days':p==='30'?'Last 30 days':p==='m'?cpLbl(L,{day:undefined,month:'long'}):p==='c'&&CPS.from&&CPS.to?'Custom':(L===new Date(Date.now()-864e5).toLocaleDateString('en-CA')?'Yesterday':'Latest day')}
+function cpPerName(L){const p=CPS.per;return p==='3'?'Last 3 days':p==='7'?'Last 7 days':p==='30'?'Last 30 days':p==='c'&&CPS.from&&CPS.to?'Custom':(L===new Date(Date.now()-864e5).toLocaleDateString('en-CA')?'Yesterday':'Latest day')}
 
 function cpDot(r,acc){if(!r.sp)return 'o';if(!acc)return 'w';const q=r.ro/acc;return q>=1?'g':q>=.75?'w':'r'}
 function cpTri(rows,ix,L){return [30,90,180].map(n=>{const a=cpD(L,-(n-1)),r=cpSum(rows,a,L);return {n,a,r,c:cpDot(r,cpAccRo(ix,a,L))}})}
@@ -21019,25 +20997,15 @@ function cpSortHtml(){
 }
 function cpCard(x,tri,ch,acc){
  const dot=cpDot(x.r,acc),dots=`<span class="cp-dots" title="Last 30 / 90 / 180 days">${tri.map(t=>`<span><i class="${t.c}"></i><small>${t.n}</small></span>`).join('')}</span>`;
- const on=`onclick="cpOpen(${x.i})"`;
- if(CPV==='2')return `<button type="button" class="cp-c2" style="--c:${ch[1]}" ${on}><div class="cp-c2h"><div><span class="cp-c2t"><i></i>${esc(ch[0])}</span><div class="cp-nm">${esc(x.n)}</div></div><div class="cp-rb ${dot}"><b>${cpX(x.r.ro)}</b><small>ROAS</small></div></div>
-   <div class="cp-c2f"><span>${money(x.r.sp)} <small>spend</small></span><span>${cpN(x.r.cv)} <small>conv.</small></span><span>${money(x.r.va)} <small>value</small></span>${dots}</div></button>`;
- if(CPV==='3')return `<button type="button" class="cp-c3" style="--c:${ch[1]}" ${on}><div class="cp-c3h"><span class="cp-c2t"><i></i>${esc(ch[0])}</span>${dots}</div><div class="cp-nm">${esc(x.n)}</div>
-   <div class="cp-c3m"><div class="ro ${dot}"><small>ROAS</small><b>${cpX(x.r.ro)}</b></div><div><small>Spend</small><b>${money(x.r.sp)}</b></div><div><small>Conv.</small><b>${cpN(x.r.cv)}</b></div><div><small>Value</small><b>${money(x.r.va)}</b></div></div></button>`;
- return `<button type="button" class="cp-c1" style="--c:${ch[1]}" ${on}><i class="cp-bar1"></i><div class="cp-c1m"><div class="cp-nm">${esc(x.n)}</div><div class="cp-c1s"><span class="cp-c2t"><i></i>${esc(ch[0])}</span> · ${money(x.r.sp)} · ${cpN(x.r.cv)} conv. · ${money(x.r.va)}</div></div>
-   <div class="cp-c1r"><b class="${dot}">${cpX(x.r.ro)}</b>${dots}</div></button>`;
+ return `<button type="button" class="cp-c3" style="--c:${ch[1]}" onclick="cpOpen(${x.i})"><div class="cp-c3h"><span class="cp-c2t"><i></i>${esc(ch[0])}</span>${dots}</div><div class="cp-nm">${esc(x.n)}</div>
+   <div class="cp-c3m"><div><small>Spend</small><b>${money(x.r.sp)}</b></div><div><small>Conv.</small><b>${cpN(x.r.cv)}</b></div><div><small>Value</small><b>${money(x.r.va)}</b></div><div class="ro ${dot}"><small>ROAS</small><b>${cpX(x.r.ro)}</b></div></div></button>`;
 }
 function cpHero(L,a,b,show,tot,usual){
  const acct=esc(accountMeta(DASH_DATA||{}).shortLabel||CURRENT_ACCOUNT.toUpperCase()),cus=CPS.per==='c'&&usual;
- const chip=(m,v)=>cus?mxArrow(cpDelta(tot[m],usual[m]),cpCls(m,cpDelta(tot[m],usual[m]))):'';
- const k=[['sp','Spend',money(tot.sp)],['va','Value',money(tot.va)],['ro','ROAS',cpX(tot.ro)]];
+ const chip=m=>cus?mxArrow(cpDelta(tot[m],usual[m]),cpCls(m,cpDelta(tot[m],usual[m]))):'';
  const foot=cus?`<div class="cp-hf">▲▼ vs the usual level: the 12 months before, scaled to the same number of days</div>`:'';
- if(CPH==='2')return `<div class="cp-h2"><div class="cp-h2t"><div><b>${cpPerName(L)}</b><small>${cpRange(a,b)} · ${show.length} campaigns · ${acct}</small></div></div>
-   <div class="cp-h2k">${k.map(([m,l,v])=>`<div><small>${l}</small><b>${v}</b>${chip(m)}</div>`).join('')}</div>${foot}${cpPersHtml(L)}</div>`;
- if(CPH==='3')return `<div class="cp-h3"><div class="cp-h3r"><label class="cp-h3p">${cpIc('<rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M4 10h16"/>')}<select onchange="cpPerPick(this.value)">${CP_PERS.map(([x,l])=>`<option value="${x}"${CPS.per===x?' selected':''}>${x==='y'?cpPerName(L):x==='7'?'Last 7 days':x==='30'?'Last 30 days':x==='m'?'This month':'Custom dates'}</option>`).join('')}</select><span>${cpRange(a,b)} ▾</span></label><small>${show.length} campaigns</small></div>
-   ${cpCusHtml(L)}<div class="cp-h3k">${k.map(([m,l,v])=>`<div><small>${l}</small><b>${v}</b>${chip(m)}</div>`).join('')}</div>${foot}</div>`;
  return `<div class="cp-hero cp-h1"><div class="cp-h1t"><div><div class="cp-k">${cpPerName(L).toUpperCase()} · ${acct}</div><div class="cp-sub">${cpRange(a,b)} · ${show.length} campaigns</div></div><div class="cp-h1r"><b>${cpX(tot.ro)}</b><small>ROAS</small>${chip('ro')}</div></div>
-   <div class="cp-tot"><span>Spend <b>${money(tot.sp)}</b>${chip('sp')}</span><span>Value <b>${money(tot.va)}</b>${chip('va')}</span></div>${foot}${cpPersHtml(L,1)}</div>`;
+   <div class="cp-tot"><span>Spend <b>${money(tot.sp)}</b>${chip('sp')}</span><span>Conv. <b>${cpN(tot.cv)}</b>${chip('cv')}</span><span>Value <b>${money(tot.va)}</b>${chip('va')}</span></div>${foot}${cpPersHtml(L,1)}</div>`;
 }
 function renderCamp(){
  const body=document.getElementById('cpBody');if(!body)return;
@@ -21057,7 +21025,7 @@ function renderCamp(){
  const usual=CPS.per==='c'?cpUsual((s,e)=>cpAdd(pick.map(i=>cpSum(ix[i],s,e))),a,b):null;
  body.innerHTML=cpHero(L,a,b,show,tot,usual)+cpTypesHtml()+
   `<div class="cp-tools">${cpSortHtml()}${show.length?`<button type="button" class="cp-cmpb" onclick="cpOpen(${show[0].i},'cmp')">${cpIc('<path d="M7 4v16M7 4L4 7M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/>')}Compare</button>`:''}</div>`+
-  (show.length?`<div class="cp-list cpv${CPV}">${show.map(x=>cpCard(x,cpTri(ix[x.i],ix,L),cpCh(x.t),acc)).join('')}</div>`:`<div class="cp-wait cp-empty">No spend in this period.</div>`)+
+  (show.length?`<div class="cp-list">${show.map(x=>cpCard(x,cpTri(ix[x.i],ix,L),cpCh(x.t),acc)).join('')}</div>`:`<div class="cp-wait cp-empty">No spend in this period.</div>`)+
   `<div class="cp-lg"><i class="g"></i><i class="w"></i><i class="r"></i>ROAS against the account over the same days · dots: last 30 · 90 · 180 days</div>`+
   `<div class="cp-note">From the campaign tabs of the sheet · data from ${c.first?cpLbl(c.first,{year:'numeric'}):'—'} · read ${d.at?new Date(d.at).toLocaleString('en-GB',{weekday:'short',hour:'2-digit',minute:'2-digit'}):''} · <a href="#" onclick="cpLoad(true);return false">${c.busy?'Reading…':'Read now'}</a></div>`;
 }
