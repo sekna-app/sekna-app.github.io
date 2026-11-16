@@ -9721,7 +9721,7 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
 /* v517 story layers on their own GPU layer (steadier in the Android app) */
 .aks-sc,.aks-sc video.vbg,.aks-sc img.bg{-webkit-backface-visibility:hidden;backface-visibility:hidden}
 .aks-sc video.vbg{transform:translateZ(0)}
-.aks-sc.zm img.bg{transform:none;transform-origin:50% 58%;object-position:50% 40%}
+.aks-sc.zm img.bg{transform:scale(1.7);transform-origin:50% 80%;object-position:50% 50%}
 </style>
 </head>
 <body>
@@ -10884,8 +10884,8 @@ async function akStoryShow(i,again){
  const W=ph.clientWidth,H=ph.clientHeight,full='inset(0 0 0 0)';
  if(!reduce){
   if(now.querySelector('video.vbg')){}
-  // v518 a slow zoom toward SEKNA in her hands
-  else if(AKS[i].zoom)im.animate([{transform:'scale(1)'},{transform:'scale(1.22)'}],{duration:AKS_DUR+T+600,easing:'cubic-bezier(.3,0,.25,1)',fill:'forwards'});
+  // v519 the zoom stays on her hands and the SEKNA cube (the face is out of the frame)
+  else if(AKS[i].zoom)im.animate([{transform:'scale(1.7)'},{transform:'scale(1.95)'}],{duration:AKS_DUR+T+600,easing:'cubic-bezier(.3,0,.25,1)',fill:'forwards'});
   else if(now.classList.contains('fitw'))im.animate([{transform:'scale(1)'},{transform:'scale(1.03)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
   else if(now.querySelector('.aks-vig'))im.animate([{transform:'scale(1)'},{transform:'scale(1.04)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
   else im.animate([{transform:'scale(1.05) translateX(2%)'},{transform:'scale(1.05) translateX(-2%)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
