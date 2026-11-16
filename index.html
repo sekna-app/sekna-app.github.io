@@ -9714,6 +9714,8 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
  try{seen=sessionStorage.getItem('hm_launch')==='1';sessionStorage.setItem('hm_launch','1')}catch(e){}
  var inFrame=false;try{inFrame=window.self!==window.top}catch(e){inFrame=true}
  if(seen||inFrame){sp.remove();return}
+ 
+ try{if(window.AndroidShare&&typeof window.AndroidShare.introStart==='function')window.AndroidShare.introStart()}catch(e){}
  var T=function(f,ms){setTimeout(f,ms)},gone=function(){sp.classList.add('out');T(function(){sp.remove()},300)};
  var rm=false;try{rm=matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
  if(rm){sp.classList.add('rm');T(gone,600);return}
