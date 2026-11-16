@@ -133,6 +133,8 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
 .scr img{position:absolute;left:0;top:0;display:block;width:100%;opacity:0;transition:opacity .7s ease}
 .scr img.on{opacity:1;animation:scroll var(--ld,9s) ease-in-out forwards}
 .scr:hover img.on{animation-play-state:paused}
+.scr video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .7s ease}
+.scr video.on{opacity:1}
 .ltabs{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:40px}
 .ltabs button{position:relative;overflow:hidden;font:inherit;font-size:13px;font-weight:800;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:8px 14px;background:rgba(255,255,255,.04);cursor:pointer;transition:color .2s,background .2s,border-color .2s}
 .ltabs button:hover{color:#fff}
@@ -690,8 +692,9 @@ html.lite .nav img{opacity:1!important}
         <img class="on" src="/get/shots/desk-daily.webp?v=20" alt="Daily Performance on a laptop" loading="lazy">
         <img src="/get/shots/desk-month.webp?v=20" alt="Monthly Progress on a laptop" loading="lazy">
         <img src="/get/shots/desk-seasons.webp?v=21" alt="Seasons Calendar on a laptop" loading="lazy">
+        <video muted playsinline loop preload="none" poster="/icons/alexandra/v/wide.jpg?v=1" src="/icons/alexandra/v/wide.mp4?v=1" aria-label="Alexandra"></video>
       </div></div><div class="base"></div><div class="lap-sh"></div></div>
-      <div class="ltabs" id="lapTabs"><button type="button" class="on">Daily<em></em></button><button type="button">Monthly<em></em></button><button type="button">Seasons<em></em></button></div></div>
+      <div class="ltabs" id="lapTabs"><button type="button" class="on">Daily<em></em></button><button type="button">Monthly<em></em></button><button type="button">Seasons<em></em></button><button type="button">Alexandra<em></em></button></div></div>
       <div class="txt">
         <h2>What is HEMERA?</h2>
         <p class="s">HEMERA turns the media plan into a live dashboard. Every day it shows spend, conversions, conversion value and ROAS against the daily target, split by campaign type, with the projects and keywords behind them.</p>
@@ -864,7 +867,8 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   var cur=0, t=null, D=9000, paused=false, left=D, at=0;
   function show(i){cur=(i+imgs.length)%imgs.length;
     for(var k=0;k<imgs.length;k++){[imgs[k],tabs[k]].forEach(function(e){e.classList.remove('on')})}
-    void imgs[cur].offsetWidth;imgs[cur].classList.add('on');tabs[cur].classList.add('on');left=D;arm()}
+    void imgs[cur].offsetWidth;imgs[cur].classList.add('on');tabs[cur].classList.add('on');left=D;arm();
+    for(var k=0;k<imgs.length;k++)if(imgs[k].tagName==='VIDEO'){var v=imgs[k];if(k===cur){v.preload='auto';try{v.currentTime=0;var pr=v.play();if(pr&&pr.catch)pr.catch(function(){})}catch(e){}}else try{v.pause()}catch(e){}}}
   function arm(){clearTimeout(t);at=Date.now();if(!paused)t=setTimeout(function(){show(cur+1)},left)}
   for(var k=0;k<tabs.length;k++)(function(k){tabs[k].onclick=function(){show(k)}})(k);
   l.addEventListener('mouseenter',function(){paused=true;clearTimeout(t);left-=Date.now()-at;tabs[cur].querySelector('em').style.animationPlayState='paused'});
