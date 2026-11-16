@@ -4,7 +4,7 @@
 const { onRequest } = require('firebase-functions/v2/https');
 const { onMessagePublished } = require('firebase-functions/v2/pubsub');
 const { onSchedule } = require('firebase-functions/v2/scheduler');
-const { buildDashboardData, getMonthCompareData, normalizeAccountKey_, buildForecast, setForecast, buildAssumptions, setAssumptions, buildVsLy, buildSearchTerms, buildSearchTermsDaily, buildActionLog } = require('./dash');
+const { buildDashboardData, getMonthCompareData, normalizeAccountKey_, buildForecast, setForecast, buildAssumptions, setAssumptions, buildVsLy, buildSearchTerms, buildSearchTermsDaily, buildActionLog, buildCampPerf } = require('./dash');
 const { ACCESS, assertAccess, assertAdmin, assertPerm, assertLabView, assertOwner } = require('./access');
 const { fsGet, fsSet, fsAppend, fsList, fsClearList, request, PROJECT_ID } = require('./google');
 const { archiveStatus, archiveMove, archiveProgress } = require('./archive');
@@ -83,7 +83,7 @@ function inReadWindow(w, now) {
 // v263 snapshots: each group of sheets has its own read time. 'media' uses the main window (from/to);
 // 'terms' (AI Max + ST Performance) and 'camp' keep their own times in w.groups; the Action log ('manual')
 // is read only when someone refreshes its page.
-const kindGroup = kind => (kind === 'terms' || kind === 'stdaily') ? 'terms' : kind === 'actlog' ? 'manual' : 'media';
+const kindGroup = kind => (kind === 'terms' || kind === 'stdaily') ? 'terms' : kind === 'actlog' ? 'manual' : kind === 'camp' ? 'camp' : 'media';
 function groupWin(w, g) {
   if (!w || g === 'media') return w;
   if (g === 'manual') return Object.assign({}, w, { on: true, from: '00:00', to: '00:00', never: true });
@@ -108,7 +108,7 @@ async function keptData(kind, key) {
 }
 async function sheetData(kind, key, force) {
   const ttl = kind === 'dash' ? DASH_CACHE_MS : MONTHS_CACHE_MS;
-  const build = () => (kind === 'dash' ? buildDashboardData(key) : kind === 'forecast' ? buildForecast(key) : kind === 'assume' ? buildAssumptions(key) : kind === 'vsly' ? buildVsLy(key) : kind === 'terms' ? buildSearchTerms(key) : kind === 'stdaily' ? buildSearchTermsDaily(key) : kind === 'actlog' ? buildActionLog(key) : getMonthCompareData(key)).then(v => { if (kind === 'dash') sheetReads++; saveSnap(kind, key, v); return v; });
+  const build = () => (kind === 'dash' ? buildDashboardData(key) : kind === 'forecast' ? buildForecast(key) : kind === 'assume' ? buildAssumptions(key) : kind === 'vsly' ? buildVsLy(key) : kind === 'terms' ? buildSearchTerms(key) : kind === 'stdaily' ? buildSearchTermsDaily(key) : kind === 'actlog' ? buildActionLog(key) : kind === 'camp' ? buildCampPerf(key) : getMonthCompareData(key)).then(v => { if (kind === 'dash') sheetReads++; saveSnap(kind, key, v); return v; });
   const ck = kind + ':' + key;
   if (force || inReadWindow(groupWin(await readWindow(), kindGroup(kind)))) return cached(ck, ttl, !!force, build);
   const hit = cache[ck];
@@ -181,6 +181,11 @@ const CALLS = {
     const key = normalizeAccountKey_(args[0]);
     return withAccess(args[2], sheetData('actlog', key, !!args[1]));
   },
+  /** Performance Snapshots → Campaign Performance: every campaign day by day (archive + this month's tab). */
+  async getCampPerf(args) {
+    const key = normalizeAccountKey_(args[0]);
+    return withAccess(args[2], sheetData('camp', key, !!args[1]));
+  },
   /** Weekly Performance → Last year: the month vs last year tables of the month tab. */
   async getMonthVsLy(args) {
     const key = normalizeAccountKey_(args[0]);
@@ -248,7 +253,7 @@ const CALLS = {
     const log = (await fsGet(READ_LOG).catch(() => null)) || { days: {}, month: {} };
     const lp = localParts(w.tz, now), mk = lp.day.slice(0, 7);
     const days = Object.keys(log.days || {}).sort().reverse().slice(0, 3).map(d => ({ day: d, usa: (log.days[d].usa || {}).at || 0, ar: (log.days[d].ar || {}).at || 0, alerted: log.days[d].alerted || 0,
-      tusa: (log.days[d].t_usa || {}).at || 0, tar: (log.days[d].t_ar || {}).at || 0 }));
+      tusa: (log.days[d].t_usa || {}).at || 0, tar: (log.days[d].t_ar || {}).at || 0, cusa: (log.days[d].c_usa || {}).at || 0, car: (log.days[d].c_ar || {}).at || 0 }));
     // If it read all day: every 2 minutes, both accounts, for the days of this month so far.
     const allDay = 720 * WARM_ACCOUNTS.length * +lp.day.slice(8, 10);
     return { window: w, open: inReadWindow(w, now), last, today: lp.day, days, reads: (log.month || {})[mk] || 0, allDay };
@@ -487,6 +492,17 @@ exports.api = onRequest({
         const run = String((d && d.run) || '').slice(0, 10);
         if (!dayLog[tk] && run && run >= yesterday) { dayLog[tk] = { at: now, run }; logChanged = true; }
       } catch (e) { console.error('Terms read ' + key + ': ' + errorText(e)); }
+    }
+    // Campaign performance in its own window: read until yesterday's rows are in, then stop for the day.
+    const cw = groupWin(w, 'camp');
+    if (w.on && inReadWindow(cw, now)) for (const key of WARM_ACCOUNTS) {
+      const ck2 = 'c_' + key;
+      if (dayLog[ck2] && w.stopOnData !== false) continue;
+      try {
+        const d = await sheetData('camp', key, true);
+        const lt = String((d && d.latest) || '');
+        if (!dayLog[ck2] && lt && lt >= yesterday) { dayLog[ck2] = { at: now, date: lt }; logChanged = true; }
+      } catch (e) { console.error('Campaign read ' + key + ': ' + errorText(e)); }
     }
     // This month's reads, and the alert when the window is over and a sheet has no new day.
     if (sheetReads) { const mk = today.slice(0, 7); log.month[mk] = (log.month[mk] || 0) + sheetReads; sheetReads = 0; logChanged = true; }

@@ -1051,6 +1051,53 @@ async function buildActionLog(accountKey) {
   return { v: 1, at: Date.now(), tab: sh.title, date, flagged, rows };
 }
 
+/** Performance Snapshots → Campaign Performance: every campaign, day by day, from the archive tab and this month's tab.
+ *  Sent compact: c = [[name, channel]], d = { 'yyyy-MM-dd': [ci, spend, impr, clicks, conv, value, ci, ...] } (GBP, as in the sheet).
+ *  The last 400 days are kept, enough for 180 days, months and a period before them. */
+async function buildCampPerf(accountKey) {
+  const account = ACCOUNTS[normalizeAccountKey_(accountKey)];
+  const book = await openBook(account);
+  const order = [account.sheets.archive ? 'archive' : 'lastYear', 'thisYear', 'currentMonth'].filter(k => account.sheets[k]);
+  const seen = {}, byMonth = {};
+  for (const k of order) {
+    const sh = await optionalSheet(book, k);
+    if (!sh || seen[sh.sheetId]) continue;
+    seen[sh.sheetId] = 1;
+    const rows = await campaignRows(book, sh);
+    const part = {};
+    rows.forEach(r => {
+      if (!r[0] || !r[1] || !r[2]) return;
+      const d = book.asDate(r[0]);
+      if (!isFinite(d.getTime())) return;
+      const mk = fmt(d, 'yyyy-MM');
+      (part[mk] = part[mk] || []).push([fmt(d, 'yyyy-MM-dd'), String(r[2]).trim(), channelFromCampaign_(r[1], r[2]), toNumber_(r[5]), toNumber_(r[6]), toNumber_(r[7]), toNumber_(r[8]), toNumber_(r[9])]);
+    });
+    // A later tab replaces whole months of an earlier one (this month's tab wins over the archive).
+    Object.keys(part).forEach(mk => { byMonth[mk] = part[mk]; });
+  }
+  const all = [].concat.apply([], Object.keys(byMonth).map(mk => byMonth[mk]));
+  const last = all.reduce((m, x) => x[0] > m ? x[0] : m, '');
+  const from = last ? fmt(new Date(Date.parse(last + 'T12:00:00Z') - 400 * 864e5), 'yyyy-MM-dd') : '';
+  const camps = [], idx = {}, days = {};
+  const r2 = v => Math.round(v * 100) / 100;
+  all.forEach(x => {
+    if (x[0] < from) return;
+    const key = x[1] + '|' + x[2];
+    let ci = idx[key];
+    if (ci === undefined) { ci = idx[key] = camps.length; camps.push([x[1], x[2]]); }
+    const day = days[x[0]] = days[x[0]] || {};
+    const a = day[ci] = day[ci] || [0, 0, 0, 0, 0];
+    for (let i = 0; i < 5; i++) a[i] += x[3 + i];
+  });
+  const d = {};
+  Object.keys(days).sort().forEach(k => {
+    const out = [];
+    Object.keys(days[k]).forEach(ci => { const a = days[k][ci]; if (a.some(v => v)) out.push(+ci, r2(a[0]), Math.round(a[1]), Math.round(a[2]), r2(a[3]), r2(a[4])); });
+    if (out.length) d[k] = out;
+  });
+  return { v: 1, at: Date.now(), latest: last, c: camps, d };
+}
+
 // The settings the Lab can change, with their cells and the values allowed.
 const FORECAST_SET = {
   window: { cell: 'B54', min: 1, max: 60, int: true }, elasticity: { cell: 'B55', min: 0, max: 2 },
@@ -1210,4 +1257,4 @@ async function setAssumptions(accountKey, edits) {
 function forgetArchive() { Object.keys(archiveCache).forEach(k => delete archiveCache[k]); }
 
 module.exports = { ACCOUNTS, buildDashboardData, getMonthCompareData, normalizeAccountKey_, fmt, wallFromInstant, makeAsDate, grid, toNumber_,
-  ssIdOf, openBook, optionalSheet, forgetArchive, buildForecast, setForecast, buildAssumptions, setAssumptions, buildVsLy, buildSearchTerms, buildSearchTermsDaily, buildActionLog };
+  ssIdOf, openBook, optionalSheet, forgetArchive, buildForecast, setForecast, buildAssumptions, setAssumptions, buildVsLy, buildSearchTerms, buildSearchTermsDaily, buildActionLog, buildCampPerf };
