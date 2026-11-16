@@ -20888,23 +20888,83 @@ function akPAdj(i,btn){const post=btn.closest('.ak-post'),box=post&&post.querySe
  
 const akR=(v,d)=>{const n=Number(v);return isFinite(n)?(d?Math.round(n*Math.pow(10,d))/Math.pow(10,d):Math.round(n)):''};
 function akWithin(pr,ms){return Promise.race([pr,new Promise(r=>setTimeout(()=>r(null),ms))])}
-function akDashLines(D,title){if(!D)return '';const L=[],a=D.account||{},m=D.mtd||{},mo=D.month||{},lt=D.latest||{};
+function akDashLines(D,title,K){K=K||1;if(!D)return '';const L=[],a=D.account||{},m=D.mtd||{},mo=D.month||{},lt=D.latest||{};
  L.push('## '+title+': '+(a.label||a.key||'')+' (key '+(a.key||'')+')');
  L.push('Latest day with results: '+(lt.date||'?')+' ('+(lt.dayName||'')+'), day '+(lt.dayNumber||'?')+' of '+(lt.monthName||'')+'. Money is in the account currency.');
- L.push('Month to date: spend '+akR(m.actualSpend)+' of plan '+akR(m.planSpend)+' ('+akR((m.spendAchievement||0)*100,1)+'%), value '+akR(m.actualValue)+' of plan '+akR(m.planValue)+' ('+akR((m.valueAchievement||0)*100,1)+'%), ROAS '+akR(m.actualRoas,2)+' vs target '+akR(m.targetRoas,2)+', budget left '+akR(m.budgetRemaining)+(m.revenueRemaining!=null?', value still to reach '+akR(m.revenueRemaining):''));
- if(mo.planSpend)L.push('Full month plan: spend '+akR(mo.planSpend)+', value '+akR(mo.planValue));
+ L.push('Month to date: spend '+akR(K*(m.actualSpend||0))+' of plan '+akR(K*(m.planSpend||0))+' ('+akR((m.spendAchievement||0)*100,1)+'%), value '+akR(K*(m.actualValue||0))+' of plan '+akR(K*(m.planValue||0))+' ('+akR((m.valueAchievement||0)*100,1)+'%), ROAS '+akR(m.actualRoas,2)+' vs target '+akR(m.targetRoas,2)+', budget left '+akR(K*(m.budgetRemaining||0))+(m.revenueRemaining!=null?', value still to reach '+akR(K*(m.revenueRemaining||0)):''));
+ if(mo.planSpend)L.push('Full month plan: spend '+akR(K*(mo.planSpend||0))+', value '+akR(K*(mo.planValue||0)));
  const dp=D.dayPlan||[];if(dp.length){L.push('Days this month (date day hijri | plan spend/value/conv | actual spend/value/conv/clicks ROAS):');
-  dp.forEach(x=>{const p=x.plan||{},q=x.actual;L.push(x.date+' '+String(x.dayName||'').slice(0,3)+' '+(x.hijri||'')+' | '+akR(p.spend)+'/'+akR(p.value)+'/'+akR(p.conversions)+' | '+(q?akR(q.spend)+'/'+akR(q.value)+'/'+akR(q.conversions)+'/'+akR(q.clicks)+' '+akR(q.roas,2):'no results yet'))})}
- (D.weekly||[]).forEach(w=>L.push('Week '+(w.week||'')+' ('+(w.sourceLabel||'')+', '+(w.days||'')+' days): plan spend '+akR(w.planSpend)+' value '+akR(w.planValue)+' conv '+akR(w.planConversions)+(w.hasActual?' | actual spend '+akR(w.actualSpend)+' value '+akR(w.actualValue)+' conv '+akR(w.actualConversions)+' clicks '+akR(w.actualClicks)+' ROAS '+akR(w.roas,2):' | no results yet')));
- (D.channels||[]).forEach(c=>L.push('Campaign type this month: '+c.channel+' spend '+akR(c.actualSpend)+' of plan '+akR(c.planSpend)+', clicks '+akR(c.clicks)+', conv '+akR(c.conversions,1)+', value '+akR(c.actualValue)+', ROAS '+akR(c.roas,2)));
- (D.dayChannels||[]).forEach(c=>L.push('Campaign type on '+(lt.date||'the latest day')+': '+c.channel+' spend '+akR(c.spend)+' (plan '+akR(c.planSpend)+'), clicks '+akR(c.clicks)+', conv '+akR(c.conversions)+', value '+akR(c.value)+', ROAS '+akR(c.roas,2)));
- (D.history||[]).forEach(h=>L.push('Month '+h.month+(h.hijri?' ('+h.hijri+')':'')+': spend '+akR(h.cost)+', value '+akR(h.value)+', conv '+akR(h.conversions)+(h.partial?' (not finished)':'')));
- if(D.yoy)L.push('Same Hijri day last year as the latest day: spend '+akR(D.yoy.spend)+', clicks '+akR(D.yoy.clicks)+', conv '+akR(D.yoy.conversions)+', value '+akR(D.yoy.value));
- (D.topProjects||[]).forEach(t=>L.push('Top project on '+(D.topProjectsDay||'the latest day')+': '+t.name+' spend '+akR(t.spend)+', conv '+akR(t.conversions)+', value '+akR(t.value)+', ROAS '+akR(t.roas,2)));
+  dp.forEach(x=>{const p=x.plan||{},q=x.actual;L.push(x.date+' '+String(x.dayName||'').slice(0,3)+' '+(x.hijri||'')+' | '+akR(K*(p.spend||0))+'/'+akR(K*(p.value||0))+'/'+akR(p.conversions)+' | '+(q?akR(K*(q.spend||0))+'/'+akR(K*(q.value||0))+'/'+akR(q.conversions)+'/'+akR(q.clicks)+' '+akR(q.roas,2):'no results yet'))})}
+ (D.weekly||[]).forEach(w=>L.push('Week '+(w.week||'')+' ('+(w.sourceLabel||'')+', '+(w.days||'')+' days): plan spend '+akR(K*(w.planSpend||0))+' value '+akR(K*(w.planValue||0))+' conv '+akR(w.planConversions)+(w.hasActual?' | actual spend '+akR(K*(w.actualSpend||0))+' value '+akR(K*(w.actualValue||0))+' conv '+akR(w.actualConversions)+' clicks '+akR(w.actualClicks)+' ROAS '+akR(w.roas,2):' | no results yet')));
+ (D.channels||[]).forEach(c=>L.push('Campaign type this month: '+c.channel+' spend '+akR(K*(c.actualSpend||0))+' of plan '+akR(K*(c.planSpend||0))+', clicks '+akR(c.clicks)+', conv '+akR(c.conversions,1)+', value '+akR(K*(c.actualValue||0))+', ROAS '+akR(c.roas,2)));
+ (D.dayChannels||[]).forEach(c=>L.push('Campaign type on '+(lt.date||'the latest day')+': '+c.channel+' spend '+akR(K*(c.spend||0))+' (plan '+akR(K*(c.planSpend||0))+'), clicks '+akR(c.clicks)+', conv '+akR(c.conversions)+', value '+akR(K*(c.value||0))+', ROAS '+akR(c.roas,2)));
+ (D.history||[]).forEach(h=>L.push('Month '+h.month+(h.hijri?' ('+h.hijri+')':'')+': spend '+akR(K*(h.cost||0))+', value '+akR(K*(h.value||0))+', conv '+akR(h.conversions)+(h.partial?' (not finished)':'')));
+ if(D.yoy)L.push('Same Hijri day last year as the latest day: spend '+akR(K*(D.yoy.spend||0))+', clicks '+akR(D.yoy.clicks)+', conv '+akR(D.yoy.conversions)+', value '+akR(K*(D.yoy.value||0)));
+ (D.topProjects||[]).forEach(t=>L.push('Top project on '+(D.topProjectsDay||'the latest day')+': '+t.name+' spend '+akR(K*(t.spend||0))+', conv '+akR(t.conversions)+', value '+akR(K*(t.value||0))+', ROAS '+akR(t.roas,2)));
  return L.join('\n')}
+
+function akFx(acc){try{const c=(ACC_CUR||{})[acc]||'GBP';return c!=='GBP'&&FX&&FX.rates&&FX.rates[c]>0?FX.rates[c]:1}catch(e){return 1}}
+function akFxSym(acc){try{const c=(ACC_CUR||{})[acc]||'GBP';return akFx(acc)===1?'£':(CUR_LIST[c]||{}).s||'$'}catch(e){return '£'}}
+
+function akPace(D,K){if(!D)return [];const L=[],rows=D.dayPlan||[],m=D.mtd||{},act=rows.filter(x=>x.actual);if(!rows.length||!act.length)return L;
+ const sum=(a,f)=>a.reduce((t,x)=>t+(Number(f(x))||0),0),dim=rows.length,n=act.length,left=dim-n;
+ const S=sum(act,x=>x.actual.spend),V=sum(act,x=>x.actual.value),C=sum(act,x=>x.actual.conversions);
+ const pS=sum(act,x=>x.plan&&x.plan.spend),pV=sum(act,x=>x.plan&&x.plan.value),pC=sum(act,x=>x.plan&&x.plan.conversions);
+ const FS=sum(rows,x=>x.plan&&x.plan.spend),FV=sum(rows,x=>x.plan&&x.plan.value),FC=sum(rows,x=>x.plan&&x.plan.conversions);
+ const rS=sum(rows.filter(x=>!x.actual),x=>x.plan&&x.plan.spend),rV=sum(rows.filter(x=>!x.actual),x=>x.plan&&x.plan.value),rC=sum(rows.filter(x=>!x.actual),x=>x.plan&&x.plan.conversions);
+ const acc=(s,v,c)=>{const cl=x=>Math.max(0,Math.min(1,x)),a=FS>0?cl(1-Math.abs(s/FS-1)):0,b=FV>0?cl(v/FV):0,d=FC>0?cl(c/FC):0;return (a*.4+b*.4+d*.2)*100};
+ const M=v=>akR(K*v),pc=v=>akR(v*100,1)+'%',ro=V&&S?V/S:0,tro=Number(m.targetRoas)||(FS?FV/FS:0);
+ const aS=S+S/n*left,aV=V+V/n*left,aC=C+C/n*left,bS=S+rS,bV=V+rV,bC=C+rC;
+ L.push('## Worked out by HEMERA (exact sums; use these numbers, do not recount)');
+ L.push('Month: '+dim+' days, '+n+' with results, '+left+' left. Month plan: spend '+M(FS)+', value '+M(FV)+', conv '+akR(FC)+', target ROAS '+akR(tro,2)+'.');
+ L.push('So far: spend '+M(S)+' ('+pc(pS?S/pS:0)+' of plan to date), value '+M(V)+' ('+pc(pV?V/pV:0)+'), conv '+akR(C)+' ('+pc(pC?C/pC:0)+'), ROAS '+akR(ro,2)+'. Average a day: spend '+M(S/n)+', value '+M(V/n)+', conv '+akR(C/n,1)+'.');
+ L.push('Plan accuracy so far (spend 40% / value 40% / conv 20%, against the plan to date): '+akR(planAccuracy(D).score*100,1)+'%.');
+ L.push('If the rest of the month runs at the same daily average: month ends at spend '+M(aS)+', value '+M(aV)+', conv '+akR(aC)+', ROAS '+akR(aS?aV/aS:0,2)+', plan accuracy '+akR(acc(aS,aV,aC),1)+'%.');
+ L.push('If the rest of the month follows the plan exactly: spend '+M(bS)+', value '+M(bV)+', conv '+akR(bC)+', plan accuracy '+akR(acc(bS,bV,bC),1)+'%.');
+ if(left>0){const needV=Math.max(0,FV-V)/left,needS=Math.max(0,FS-S)/left;
+  L.push('To reach the full month plan: value needed a day '+M(needV)+' (now '+M(V/n)+'), budget left a day '+M(needS)+' (now spending '+M(S/n)+'). At the current ROAS '+akR(ro,2)+' that value needs spend of '+M(ro?needV/ro:0)+' a day.')}
+ const l7=act.slice(-7),s7=sum(l7,x=>x.actual.spend),v7=sum(l7,x=>x.actual.value),c7=sum(l7,x=>x.actual.conversions),p7s=sum(l7,x=>x.plan&&x.plan.spend),p7v=sum(l7,x=>x.plan&&x.plan.value);
+ L.push('Last '+l7.length+' days: spend '+M(s7)+' ('+pc(p7s?s7/p7s:0)+' of plan), value '+M(v7)+' ('+pc(p7v?v7/p7v:0)+' of plan), conv '+akR(c7)+', ROAS '+akR(s7?v7/s7:0,2)+' vs target '+akR(tro,2)+'.');
+ const r7=s7?v7/s7:0,vs=p7v?v7/p7v:0;
+ L.push('HEMERA signal: '+(r7>=tro*1.05&&vs>=1?'SCALE: ROAS is above target and value beats the plan, so there is room to spend more (raise step by step, about 10-20%, and watch ROAS).':r7<tro*.9?'PULL BACK: ROAS is more than 10% under target, so cut spend on the weakest campaigns first.':'HOLD: ROAS is near target; keep the budget and move money from weak campaigns to strong ones.')+' Explain the numbers behind it.');
+ return L}
+
+async function akCamps(acc,K){const L=[];try{const c=CP[acc]=CP[acc]||{};if(!c.data&&!c.busy){const r=await akWithin(serverCall('getCampPerf',acc,false,getAccessToken()),7000);if(r){c.data=r;c.ix=null}}
+ const d=c.data;if(!d||!d.c||!d.latest)return L;const ix=cpIx(c),Ld=d.latest,M=v=>akR(K*v);
+ const W=[['yday',Ld,Ld],['7d',cpD(Ld,-6),Ld],['30d',cpD(Ld,-29),Ld],['month',Ld.slice(0,8)+'01',Ld],['prev30',cpD(Ld,-59),cpD(Ld,-30)]];
+ L.push('## Campaigns (from the campaign tabs, latest day '+Ld+'). Each line: campaign | type | window: spend/value/conv ROAS. Windows: yday = '+Ld+', 7d, 30d, month = this month so far, prev30 = the 30 days before the 30d.');
+ L.push('Use these lines for any question about a single campaign or the best / worst campaigns. Rank campaigns, not campaign types, when asked about campaigns.');
+ const list=d.c.map((m,i)=>({m,i,w:W.map(w=>cpSum(ix[i],w[1],w[2]))})).filter(x=>x.w[2].sp>0||x.w[4].sp>0).sort((a,b)=>b.w[2].sp-a.w[2].sp).slice(0,80);
+ list.forEach(x=>L.push(x.m[0]+' | '+x.m[1]+' | '+W.map((w,k)=>w[0]+': '+M(x.w[k].sp)+'/'+M(x.w[k].va)+'/'+akR(x.w[k].cv,1)+' '+akR(x.w[k].ro,2)).join(' ; ')));
+ 
+ const F=[];list.forEach(x=>{const a=x.w[1],b=x.w[4],m30=x.w[2],low=/demand|video/i.test(x.m[1]);
+  if(b.sp>0&&a.sp>0&&b.ro>0&&a.ro<b.ro*.7&&a.sp>=Math.max(20,m30.sp/30*3))F.push((low?'(lower priority) ':'')+x.m[0]+' ('+x.m[1]+'): ROAS last 7 days '+akR(a.ro,2)+' vs '+akR(b.ro,2)+' in the 30 days before (-'+akR((1-a.ro/b.ro)*100)+'%), spend 7d '+M(a.sp));
+  if(a.sp>=Math.max(30,m30.sp/30*3)&&a.cv<0.5)F.push((low?'(lower priority) ':'')+x.m[0]+' ('+x.m[1]+'): spent '+M(a.sp)+' in the last 7 days with no conversions');});
+ const T={};list.forEach(x=>{const t=x.m[1],o=T[t]=T[t]||{a:{sp:0,va:0},b:{sp:0,va:0}};o.a.sp+=x.w[1].sp;o.a.va+=x.w[1].va;o.b.sp+=x.w[4].sp;o.b.va+=x.w[4].va});
+ Object.keys(T).forEach(t=>{const o=T[t],ra=o.a.sp?o.a.va/o.a.sp:0,rb=o.b.sp?o.b.va/o.b.sp:0;if(rb>0&&o.a.sp>0&&ra<rb*.8)F.push((/demand|video/i.test(t)?'(lower priority, not a value channel) ':'')+'Campaign type '+t+': ROAS last 7 days '+akR(ra,2)+' vs '+akR(rb,2)+' in the 30 days before (-'+akR((1-ra/rb)*100)+'%)')});
+ L.push('## Things that dropped (worked out by HEMERA: 7 days vs the 30 days before; Demand Gen and Video are lower priority because value is not their main goal)');
+ if(F.length)F.slice(0,25).forEach(f=>L.push('- '+f));else L.push('- Nothing dropped by more than 30% (campaigns) or 20% (types).');
+ }catch(e){}return L}
+
+function akTypeMonths(acc,K){const L=[];try{const ex=MONTH_EXTRA[acc];if(!ex||!ex.months)return L;const ks=Object.keys(ex.months).sort();if(!ks.length)return L;
+ L.push('## Every month by campaign type (month | type: spend/value/conv ROAS). Use it to compare a type across months or years.');
+ ks.forEach(k=>{const m=ex.months[k],ch=m.channels||{},T={};Object.keys(ch).forEach(n=>{const t=typeKey(n),o=T[t]=T[t]||{s:0,v:0,c:0};o.s+=ch[n].spend||0;o.v+=ch[n].value||0;o.c+=ch[n].conversions||0});
+  const parts=Object.keys(T).filter(t=>T[t].s||T[t].v).map(t=>t+': '+akR(K*T[t].s)+'/'+akR(K*T[t].v)+'/'+akR(T[t].c)+' '+akR(T[t].s?T[t].v/T[t].s:0,2));
+  if(parts.length)L.push(k+' ('+(m.days||'?')+' days) | '+parts.join(' ; '))})}catch(e){}return L}
+
+async function akTerms(acc,K){const L=[];try{const c=ST[acc]=ST[acc]||{};if(!c.data&&!c.busy){const r=await akWithin(serverCall('getSearchTerms',acc,false,getAccessToken()),6000);if(r)c.data=r}
+ const d=c.data;if(!d||d.missing||!(d.terms||[]).length)return L;const T=d.terms,M=v=>akR(K*v,2),lab={x:'Wasted',n:'Needs review',f:'Fair',g:'Good'};
+ const by={};T.forEach(t=>{const o=by[t.k]=by[t.k]||{n:0,c:0};o.n++;o.c+=t.cost||0});
+ L.push('## Search terms · AI Max snapshot'+(d.run?' (report run '+d.run+')':'')+'. Results: '+Object.keys(by).map(k=>(lab[k]||k)+' '+by[k].n+' terms, cost '+M(by[k].c)).join(' ; '));
+ const line=t=>t.term+' | cost '+M(t.cost)+', clicks '+akR(t.clicks)+', conv '+akR(t.conv,1)+', value '+M(t.value)+(t.roas!=null?', ROAS '+akR(t.roas,2):'')+' | '+(lab[t.k]||t.label||'');
+ L.push('Most money wasted (add as negatives):');T.filter(t=>t.k==='x').sort((a,b)=>b.cost-a.cost).slice(0,12).forEach(t=>L.push('- '+line(t)));
+ L.push('Best terms (scale up):');T.filter(t=>t.k==='g').sort((a,b)=>(b.value||0)-(a.value||0)).slice(0,12).forEach(t=>L.push('- '+line(t)));
+ }catch(e){}return L}
 async function akCtx(){if(typeof DASH_DATA==='undefined'||!DASH_DATA)return '';const acc=CURRENT_ACCOUNT,L=[];
  L.push('Today (the user’s date): '+ssToday());try{L.push('Currency: open account '+((ACC_CUR||{})[acc]||'USD')+', other account '+((ACC_CUR||{})[acc==='ar'?'usa':'ar']||''))}catch(e){}
- L.push(akDashLines(DASH_DATA,'Account open on screen'));
+ const K=akFx(acc);L.push('Money below is already in the account currency ('+akFxSym(acc)+'). The sheet keeps GBP; HEMERA converted it with today\'s rate'+(K!==1?' ('+akR(K,4)+')':'')+'.');
+ L.push(akDashLines(DASH_DATA,'Account open on screen',K));
+ try{akPace(DASH_DATA,K).forEach(x=>L.push(x))}catch(e){}
  
  try{if(!PFP.people)await akWithin(pfPeopleLoad(),3000);const P=PFP.people||[],me=akMe().email;
   if(P.length){L.push('## The HEMERA team (name | role | email). Answer team questions from this list.');P.forEach(x=>L.push((x.name||'')+' | '+(x.role||'Team member')+' | '+x.email+(x.email===me?' | this is the person asking':'')));
@@ -20912,11 +20972,14 @@ async function akCtx(){if(typeof DASH_DATA==='undefined'||!DASH_DATA)return '';c
  
  try{let ex=MONTH_EXTRA[acc];if(!ex||!ex.days||!Object.keys(ex.days).length){const r=await akWithin(serverCall('getMonthCompareData',acc,getAccessToken()),6000);if(r){MONTH_EXTRA[acc]=r;ex=r}}
   if(ex&&ex.days){const first=((DASH_DATA.dayPlan||[])[0]||{}).date||'9999',ks=Object.keys(ex.days).filter(k=>k<first).sort().slice(-75);
-   if(ks.length){L.push('## Days before this month (date | spend/value/conv/clicks ROAS)');ks.forEach(k=>{const t=dayParts(k,ex,null);if(t)L.push(k+' '+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date(k+'T12:00:00Z').getUTCDay()]+' | '+akR(t.spend)+'/'+akR(t.value)+'/'+akR(t.conversions)+'/'+akR((t.extra||{}).clicks)+' '+(t.spend?akR(t.value/t.spend,2):''))})}}}catch(e){}
+   if(ks.length){L.push('## Days before this month (date | spend/value/conv/clicks ROAS)');ks.forEach(k=>{const t=dayParts(k,ex,null);if(t)L.push(k+' '+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date(k+'T12:00:00Z').getUTCDay()]+' | '+akR(K*t.spend)+'/'+akR(K*t.value)+'/'+akR(t.conversions)+'/'+akR((t.extra||{}).clicks)+' '+(t.spend?akR(t.value/t.spend,2):''))})}}}catch(e){}
  
- try{const o=acc==='ar'?'usa':'ar',c=getAccountCache(o);if(c&&c.data)L.push(akDashLines(c.data,'The other account'));else prefetchOtherAccount()}catch(e){}
+ try{akTypeMonths(acc,K).forEach(x=>L.push(x))}catch(e){}
+ try{const [cm,tm]=await Promise.all([akCamps(acc,K),akTerms(acc,K)]);cm.concat(tm).forEach(x=>L.push(x))}catch(e){}
+ 
+ try{const o=acc==='ar'?'usa':'ar',c=getAccountCache(o);if(c&&c.data)L.push(akDashLines(c.data,'The other account (money in its own currency '+akFxSym(o)+')',akFx(o)));else prefetchOtherAccount()}catch(e){}
  try{const t=ssToday();L.push('## Seasons coming up');ssList().filter(x=>x.to>=t).slice(0,8).forEach(x=>L.push(x.name+': '+x.from+' to '+x.to+' ('+x.len+' days, '+(x.type==='h'?'Hijri':'US')+')'))}catch(e){}
- return L.join('\n').slice(0,60000)}
+ return L.join('\n').slice(0,110000)}
 
 
 function akCardsSplit(t){t=String(t||'');const mm=/\[\[\s*CARDS\s*\]\]?/i.exec(t);if(!mm)return {text:t};const i=mm.index;let cards=null;
