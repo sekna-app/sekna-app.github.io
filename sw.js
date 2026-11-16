@@ -1,7 +1,8 @@
 // HEMERA web app service worker: offline shell + notifications.
 // The page is always fetched fresh when online, so updates appear right away; the
 // cached copy is only used without a network. Dashboard data is never cached here.
-const CACHE = 'sekna-shell-v13';
+const CACHE = 'sekna-shell-v14';
+const MEDIA = 'hemera-media-v2';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './firebase-config.js',
   './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon-64.png', './icons/badge-96.png', './fonts/changa-ar.woff2'];
 
@@ -51,13 +52,16 @@ self.addEventListener('install', event => {
 
 self.addEventListener('activate', event => {
   event.waitUntil(caches.keys()
-    .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+    .then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== MEDIA).map(k => caches.delete(k))))
     .then(() => self.clients.claim()));
 });
 
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   if (event.request.method !== 'GET' || url.origin !== self.location.origin) return;
+  // v515 Alexandra's story videos are kept on the device after the first view (no flash, no download again).
+  // A video asks for byte ranges, so a saved copy is answered with the part it asks for.
+  if (/^\/icons\/alexandra\/v\/[a-z0-9-]+\.mp4$/.test(url.pathname)) { event.respondWith(mediaFromCache(event.request)); return; }
   const nav = event.request.mode === 'navigate';
   // the app page itself (other pages such as the download page keep their own copy)
   const app = nav && (url.pathname === '/' || url.pathname === '/index.html');
@@ -91,3 +95,25 @@ self.addEventListener('fetch', event => {
   }));
   event.waitUntil(net.catch(() => {}));
 });
+
+async function mediaFromCache(req) {
+  const cache = await caches.open(MEDIA), key = new URL(req.url).href;
+  let full = await cache.match(key);
+  if (!full) {
+    try {
+      const res = await fetch(key, { credentials: 'same-origin' });
+      if (res.ok && res.status === 200) { await cache.put(key, res.clone()); full = res; }
+      else return res;
+    } catch (e) { return fetch(req); }
+  }
+  const range = req.headers.get('range');
+  if (!range) return full;
+  const buf = await full.clone().arrayBuffer(), size = buf.byteLength;
+  const m = /bytes=(\d*)-(\d*)/.exec(range) || [];
+  let start = m[1] ? parseInt(m[1], 10) : 0, end = m[2] ? parseInt(m[2], 10) : size - 1;
+  if (!m[1] && m[2]) { start = Math.max(0, size - parseInt(m[2], 10)); end = size - 1; }
+  end = Math.min(end, size - 1);
+  if (start > end) return new Response(null, { status: 416, headers: { 'Content-Range': 'bytes */' + size } });
+  return new Response(buf.slice(start, end + 1), { status: 206, statusText: 'Partial Content', headers: {
+    'Content-Type': 'video/mp4', 'Content-Length': String(end - start + 1), 'Content-Range': 'bytes ' + start + '-' + end + '/' + size, 'Accept-Ranges': 'bytes' } });
+}

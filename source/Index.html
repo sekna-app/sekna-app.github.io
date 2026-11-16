@@ -10812,9 +10812,9 @@ async function akBotAvSave(d){const j=await akAdmQ(d?'botAvSet':'botAvDel',d?{da
  
 const AKS=[
  {img:'alliance',vid:1,cls:'fitw',k:'THE ALLIANCE',h:'Two minds. <em>One light.</em>'},
+ {img:'team',k:'FOR THE TEAM',h:'Sheets, reports and days off, <em>in one chat</em>'},
  {img:'eyes',vid:1,k:'ALEXANDRA',h:'She reads <em>every number</em>'},
  {img:'answers',vid:1,k:'HEMERA',h:'and turns it into <em>answers</em>'},
- {img:'team',k:'FOR THE TEAM',h:'Sheets, reports and days off, <em>in one chat</em>'},
  {img:'flag',k:'ALEXANDRA × HEMERA',h:'Built for <em>HEMERA</em>'},
  {img:'sekna',vid:1,k:'SEKNA',h:'Made at <em>Sekna</em>',cls:'lowfade'},
  {img:'invite',k:'MEET ALEXANDRA',h:'Ask her <em>anything</em>'}];
@@ -10825,7 +10825,7 @@ function akStory(){
  const o=document.createElement('div');o.id='aksBox';o.className='aks';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Meet Alexandra');
  o.innerHTML=`<div class="aks-ph"><div class="aks-bar"><img src="get/logo-white.webp" alt="HEMERA"><button type="button" class="aks-x" aria-label="Close" onclick="akStoryClose()">${akI('x')}</button></div>
   <div class="aks-dots">${AKS.map(()=>'<i></i>').join('')}</div>
-  ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}"><img class="bg" src="icons/alexandra/${s.img}.webp?v=7" decoding="async" alt="">${s.vid?`<video class="vbg" muted playsinline loop preload="none" src="icons/alexandra/v/${s.img}.mp4?v=1"></video>`:''}${s.smoke?'<i class="aks-vig"></i>':''}<div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
+  ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}"><img class="bg" src="icons/alexandra/${s.img}.webp?v=7" decoding="async" alt="">${s.vid?`<video class="vbg" muted playsinline loop preload="none" src="icons/alexandra/v/${s.img}.mp4?v=2"></video>`:''}${s.smoke?'<i class="aks-vig"></i>':''}<div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
   <div class="aks-fx"></div><div class="aks-tap" aria-hidden="true"></div>
   <div class="aks-kb"><button type="button" aria-label="Back" onclick="akStoryStep(-1)"></button><button type="button" aria-label="Next" onclick="akStoryStep(1)"></button></div></div><button type="button" class="aks-arr l" aria-label="Back" onclick="akStoryStep(-1)">‹</button><button type="button" class="aks-arr r" aria-label="Next" onclick="akStoryStep(1)">›</button><button type="button" class="aks-xd" aria-label="Close" onclick="akStoryClose()">${akI('x')}</button>`;
  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));
@@ -10842,6 +10842,8 @@ function akStory(){
  tap.addEventListener('contextmenu',e=>e.preventDefault());
  akStoryShow(0);
  
+ 
+ if(navigator.serviceWorker&&navigator.serviceWorker.controller)setTimeout(()=>{AKS.filter(x=>x.vid).forEach(x=>{fetch('icons/alexandra/v/'+x.img+'.mp4?v=2').catch(()=>{})})},1800);
 }
 function akStoryClose(chat){const S=window.AKST;if(S)clearTimeout(S.t);try{document.querySelectorAll('#aksBox video.vbg').forEach(v=>v.pause())}catch(e){}if(S&&S.ret&&chat)akAboutClose();const o=document.getElementById('aksBox');if(o){o.classList.remove('open');setTimeout(()=>o.remove(),300)}window.AKST=null;
  if(chat&&!document.getElementById('akBox'))openAsk()}
@@ -11066,7 +11068,7 @@ async function akWav(blob){
 }
  
  
-const AK_HL=[[0,'Alliance'],[1,'Numbers'],[2,'Answers'],[3,'The team'],[5,'Sekna'],[6,'Ask her']];
+const AK_HL=[[0,'Alliance'],[1,'The team'],[2,'Numbers'],[3,'Answers'],[5,'Sekna'],[6,'Ask her']];
 const AK_TICK='<span class="ak-ver"><svg viewBox="0 0 24 24"><path class="b" d="M23.6 12.0L23.4 12.7L22.7 13.4L22.1 14.0L21.7 14.6L21.8 15.3L22.0 16.1L22.2 17.0L22.0 17.8L21.5 18.3L20.6 18.6L19.7 18.8L19.1 19.1L18.8 19.7L18.6 20.6L18.3 21.5L17.8 22.0L17.0 22.2L16.1 22.0L15.3 21.8L14.6 21.7L14.0 22.1L13.4 22.7L12.7 23.4L12.0 23.6L11.3 23.4L10.6 22.7L10.0 22.1L9.4 21.7L8.7 21.8L7.9 22.0L7.0 22.2L6.2 22.0L5.7 21.5L5.4 20.6L5.2 19.7L4.9 19.1L4.3 18.8L3.4 18.6L2.5 18.3L2.0 17.8L1.8 17.0L2.0 16.1L2.2 15.3L2.3 14.6L1.9 14.0L1.3 13.4L0.6 12.7L0.4 12.0L0.6 11.3L1.3 10.6L1.9 10.0L2.3 9.4L2.2 8.7L2.0 7.9L1.8 7.0L2.0 6.2L2.5 5.7L3.4 5.4L4.3 5.2L4.9 4.9L5.2 4.3L5.4 3.4L5.7 2.5L6.2 2.0L7.0 1.8L7.9 2.0L8.7 2.2L9.4 2.3L10.0 1.9L10.6 1.3L11.3 0.6L12.0 0.4L12.7 0.6L13.4 1.3L14.0 1.9L14.6 2.3L15.3 2.2L16.1 2.0L17.0 1.8L17.8 2.0L18.3 2.5L18.6 3.4L18.8 4.3L19.1 4.9L19.7 5.2L20.6 5.4L21.5 5.7L22.0 6.2L22.2 7.0L22.0 7.9L21.8 8.7L21.7 9.4L22.1 10.0L22.7 10.6L23.4 11.3Z"/><path class="c" d="M7.4 12.3l3.1 3.1 6.1-6.6"/></svg></span>';
 function akCov(){try{return JSON.parse(localStorage.getItem('hm_ask_bcov')||'null')||{}}catch(e){return {}}}
 function akCovUrl(){const d=akCov().data;return d&&/^data:image\//.test(d)?d:'icons/alexandra/cover.webp?v=1'}
