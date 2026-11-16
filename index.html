@@ -9768,6 +9768,12 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 .pf-cam{position:absolute;left:-2px;bottom:4px;width:30px;height:30px;border-radius:50%;background:#fff;color:#1C3C96;display:grid;place-items:center;box-shadow:0 2px 8px rgba(20,30,80,.25);cursor:pointer;z-index:4}
 .pf-cam .pf-i{width:16px;height:16px;stroke:currentColor}
 @media (prefers-reduced-motion:reduce){.pf-sw:after,.pf-shine .vbd.gold{animation:none}}
+/* v481 friends: one row of small cards you swipe; the CEO's card is gold */
+.pf-fr{gap:8px;padding:4px 2px 10px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+.pf-fr button{width:84px;padding:10px 4px 9px;border-radius:14px;background:#F7F8FC;box-shadow:inset 0 0 0 1px #EEF0F5;scroll-snap-align:start;gap:4px}
+.pf-fr button.ceo{background:linear-gradient(160deg,#FFF6E3,#FFE7B8);box-shadow:inset 0 0 0 1px #F0D9A6}
+.pf-fr .pf-fa{width:46px;height:46px}
+.pf-fr b{max-width:76px;font-size:12px;margin-top:3px}.pf-fr small{max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:-2px}
 </style>
 </head>
 <body>
@@ -19174,7 +19180,7 @@ function pfDraw(){
  const workson=`<div class="pf-h">Works on</div><div class="pf-ha pf-ha2"><span class="pf-hl"><img src="icons/ha-brand.png" alt=""></span><b>Human Appeal <span class="pf-acc"><a href="https:\/\/www.facebook.com/share/1E7ZAjWWC1/" target="_blank" rel="noopener" aria-label="Human Appeal USA">US</a><a href="https:\/\/www.facebook.com/share/1EJVoqDZam/" target="_blank" rel="noopener" aria-label="Human Appeal Arabic">AR</a></span></b></div>`;
  const RK=['CEO','Media Manager','Team Leader','Senior Media Buyer','Media Buyer'],rk=r=>{const i=RK.indexOf(r);return i<0?9:i};
  const fr=(PFP.people||[]).filter(x=>x.email!==P.email).map(x=>pfPerson(x.email)).sort((a,b)=>rk(a.role)-rk(b.role)||String(a.name).localeCompare(String(b.name)));
- const friends=`<div class="pf-h">Friends${fr.length?' <em>'+fr.length+'</em>':''}</div>`+(fr.length?`<div class="pf-fr">${fr.map(f=>`<button type="button" onclick="profOpen('${esc(f.email)}',event)"><span class="pf-fa${f.role==='CEO'?' ceo':''}">${personAv(f.avatar,f.name)}${f.online&&!pfPrivate(f)?'<i></i>':''}</span><b>${esc(String(f.name||f.email).split(' ')[0])}</b>${f.role?`<small>${esc(f.role==='CEO'?'CEO':f.role.replace('Senior Media Buyer','Sr. Buyer').replace('Media Buyer','Buyer').replace('Media Manager','Manager'))}</small>`:''}</button>`).join('')}</div>`:`<p class="pf-none">The team shows here.</p>`);
+ const friends=`<div class="pf-h">Friends${fr.length?' <em>'+fr.length+'</em>':''}</div>`+(fr.length?`<div class="pf-fr">${fr.map(f=>`<button type="button" class="${f.role==='CEO'?'ceo':''}" onclick="profOpen('${esc(f.email)}',event)"><span class="pf-fa${f.role==='CEO'?' ceo':''}">${personAv(f.avatar,f.name)}${f.online&&!pfPrivate(f)?'<i></i>':''}</span><b>${esc(String(f.name||f.email).split(' ')[0])}</b>${f.role?`<small>${esc(f.role==='CEO'?'CEO':f.role.replace('Senior Media Buyer','Sr. Buyer').replace('Media Buyer','Buyer').replace('Media Manager','Manager'))}</small>`:''}</button>`).join('')}</div>`:`<p class="pf-none">The team shows here.</p>`);
  const about=`<div class="pf-h">Details</div>${pfLeave(P.email)}${bday}${place}${works}${workson}
   <div class="pf-h">Links</div><a class="pf-r pf-a" href="https:\/\/sekna.co.uk/" target="_blank" rel="noopener">${pfI('globe')}<div class="pf-t">sekna.co.uk<small>Website</small></div></a>${friends}`;
  const phone=PF.edit?`<div class="pf-r">${pfI('phone')}<div class="pf-t"><input class="pf-in" id="pfPh" type="tel" inputmode="tel" maxlength="22" value="${esc(P.phone)}" placeholder="+20 100 000 0000"><label class="pf-ck"><input type="checkbox" id="pfWaS"${!P.wa||P.wa==='same'?' checked':''} onchange="document.getElementById('pfWaW').hidden=this.checked"> This number is on WhatsApp</label><div id="pfWaW"${!P.wa||P.wa==='same'?' hidden':''}><input class="pf-in" id="pfWa" type="tel" inputmode="tel" maxlength="22" value="${P.wa&&P.wa!=='same'&&P.wa!=='none'?esc(P.wa):''}" placeholder="WhatsApp number (leave empty for none)" style="margin-top:6px"></div><div class="pf-eb"><button type="button" onclick="PF.edit=false;pfDraw()">Cancel</button><button type="button" class="p" onclick="pfSavePhone(this)">Save</button></div></div></div>`

@@ -673,8 +673,8 @@ async function setMemberSelf(email, value, welcomed, extra) {
   });
   return result;
 }
-/** v479 birthdays: in the morning (Cairo), the person gets the gold birthday email and a notification,
- *  and the rest of the team a short note so they can wish them well. Once a year per person. */
+/** v481 birthdays: in the morning (Cairo), only the person whose birthday it is today gets the gold birthday email
+ *  and the notification. Once a year per person. */
 async function birthdays() {
   const p = {};
   new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Cairo', year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'long' })
@@ -696,7 +696,6 @@ async function birthdays() {
     const n = nameOf(email);
     emails.push({ to: email, subject: 'Happy birthday, ' + n + '! 🎂', rawHtml: birthdayMail(n, dayLine) });
     pushes.push({ email, title: 'Happy birthday, ' + n + '! 🎂', body: 'The whole team wishes you a wonderful year ahead.', eventType: 'birthday' });
-    team.filter(t => t.email !== email).forEach(t => pushes.push({ email: t.email, title: 'Today is ' + n + "'s birthday 🎂", body: 'Send ' + n + ' your wishes.', eventType: 'birthday' }));
   });
   await relay({ emails, pushes });
   return due.length;
