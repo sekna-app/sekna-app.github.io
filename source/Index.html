@@ -9565,6 +9565,14 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 .pf-ceo .pf-pic{box-shadow:0 0 0 4px #E2B874,0 0 0 7px rgba(243,213,142,.35),0 10px 26px rgba(184,138,46,.45)!important;border-radius:50%}
 .pf-ceob{display:inline-flex;align-items:center;margin-top:6px;padding:5px 11px;border-radius:99px;background:linear-gradient(135deg,#F3D58E,#C9A24A);color:#1a2a66;font:900 11.5px Inter,system-ui,sans-serif;box-shadow:0 4px 12px rgba(201,162,74,.35)}
 .pf-ceo .pf-sh{box-shadow:0 -1px 0 rgba(226,184,116,.6)}
+/* v476 WhatsApp row, US/AR beside the name, friends with titles, the CEO on the SEKNA cover with a gold tick */
+.pf-wa{width:36px;height:36px;border-radius:11px;background:#E7F9EE;display:grid;place-items:center;flex:none}.pf-wa svg{width:24px;height:24px}
+.pf-ha2 b .pf-acc{display:inline-flex;margin-left:6px;vertical-align:2px;gap:5px}.pf-ha2 b .pf-acc a{min-width:28px;height:22px;border-radius:7px;font-size:10.5px}
+.pf-fr small{font-size:10px;font-weight:700;color:#8A93B5;margin-top:-3px}
+.pf-fa.ceo{box-shadow:0 0 0 2.5px #E2B874}
+.pf-ceo .pf-cv{background:#203C8E url(icons/sekna-cover.webp?v=1) right center/cover no-repeat!important}
+.pf-ceo .pf-cv:after{display:none}
+.pf-pic .vbd.gold{filter:drop-shadow(0 2px 4px rgba(184,138,46,.5))}
 </style>
 </head>
 <body>
@@ -18913,7 +18921,7 @@ const pfI=k=>`<svg class="pf-i" viewBox="0 0 24 24" aria-hidden="true">${PF_IC[k
 function pfDevTz(){try{return Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){return ''}}
 function pfPerson(email){
  const me=pfMe(),P=ACCESS_PROFILE||{},c=(PFP.people||[]).find(x=>x.email===email)||{};
- if(email===me){const m=P.member||{};return Object.assign({friends:[],plats:null,bday:'',seen:Date.now()},c,{email,name:P.name||c.name||'',role:m.role||c.role||'',avatar:m.avatar||c.avatar||0,phone:m.phone||'',bio:m.bio||'',bday:m.bday!==undefined?m.bday:(c.bday||''),tz:pfDevTz(),self:true,online:true})}
+ if(email===me){const m=P.member||{};return Object.assign({friends:[],plats:null,bday:'',seen:Date.now()},c,{email,name:P.name||c.name||'',role:m.role||c.role||'',avatar:m.avatar||c.avatar||0,phone:m.phone||'',wa:m.wa!==undefined?m.wa:(c.wa||''),bio:m.bio||'',bday:m.bday!==undefined?m.bday:(c.bday||''),tz:pfDevTz(),self:true,online:true})}
  const t=(TK.data&&TK.data.people||[]).find(x=>x.email===email),m=(typeof memberOf==='function'&&memberOf(email))||{};
  const o=Object.assign({email,name:'',role:'',avatar:0,phone:'',bio:'',tz:'',bday:'',plats:null,friends:[],seen:0},m,t||{},c,{self:false});
  o.online=o.seen&&Date.now()-o.seen<5*60e3;return o;
@@ -18962,24 +18970,27 @@ function pfDraw(){
   :bp?`<div class="pf-r">${pfI('cake')}<div class="pf-t">${bp.d} ${PF_MON[bp.m-1]}${bp.y&&P.self?' '+bp.y:''}<small>Birthday${P.self?' · the team sees the day and month':''}</small></div>${bdNow?'<span class="pf-st bd">🎂 Today</span>':''}${P.self?`<button type="button" class="pf-pen" onclick="PF.bd=true;pfDraw()" aria-label="Edit birthday">${pfI('pen')}</button>`:''}</div>`
   :P.self?`<div class="pf-r">${pfI('cake')}<div class="pf-t"><button type="button" class="pf-add" onclick="PF.bd=true;pfDraw()">Add your birthday</button><small>So the team can wish you a happy birthday</small></div><button type="button" class="pf-pen" onclick="PF.bd=true;pfDraw()" aria-label="Add birthday">${pfI('pen')}</button></div>`:'';
  const works=`<div class="pf-h">Works at</div><a class="pf-ha pf-a" href="https:\/\/sekna.co.uk/" target="_blank" rel="noopener"><span class="pf-sk">S</span><b>SEKNA<small>${ceo?'Owner · Founder & CEO':'Digital marketing agency'}</small></b><span class="pf-go">›</span></a>
-  <a class="pf-ha pf-a" href="https:\/\/wusul.io/" target="_blank" rel="noopener"><span class="pf-sk pf-wl2">${PF_WUSUL}</span><b>Wusul<small>${ceo?'Owner · by SEKNA':'by SEKNA · bringing in new clients'}</small></b><span class="pf-go">›</span></a>`;
- const workson=`<div class="pf-h">Works on</div><div class="pf-ha pf-ha2"><span class="pf-hl"><img src="icons/ha-brand.png" alt=""></span><b>Human Appeal<small>US &amp; AR accounts</small></b><span class="pf-acc"><a href="https:\/\/www.facebook.com/share/1E7ZAjWWC1/" target="_blank" rel="noopener" aria-label="Human Appeal USA">US</a><a href="https:\/\/www.facebook.com/share/1EJVoqDZam/" target="_blank" rel="noopener" aria-label="Human Appeal Arabic">AR</a></span></div>`;
- const fr=(P.friends||[]).map(e=>pfPerson(e)).filter(x=>x&&x.email);
- const friends=`<div class="pf-h">Friends${fr.length?' <em>'+fr.length+'</em>':''}</div>`+(fr.length?`<div class="pf-fr">${fr.map(f=>`<button type="button" onclick="profOpen('${esc(f.email)}',event)"><span class="pf-fa">${personAv(f.avatar,f.name)}${f.online?'<i></i>':''}</span><b>${esc(String(f.name||f.email).split(' ')[0])}</b></button>`).join('')}</div>`:`<p class="pf-none">${P.self?'Open a teammate\'s profile and tap Add friend.':'No friends added yet.'}</p>`);
- const about=`<div class="pf-h">Details</div>${pfLeave(P.email)}${bday}${place}${works}${workson}${friends}
-  <div class="pf-h">Links</div><a class="pf-r pf-a" href="https:\/\/sekna.co.uk/" target="_blank" rel="noopener">${pfI('globe')}<div class="pf-t">sekna.co.uk<small>Website</small></div></a>`;
- const phone=PF.edit?`<div class="pf-r">${pfI('phone')}<div class="pf-t"><input class="pf-in" id="pfPh" type="tel" inputmode="tel" maxlength="22" value="${esc(P.phone)}" placeholder="+20 100 000 0000"><div class="pf-eb"><button type="button" onclick="PF.edit=false;pfDraw()">Cancel</button><button type="button" class="p" onclick="pfSavePhone(this)">Save</button></div></div></div>`
+  <a class="pf-ha pf-a" href="https:\/\/wusul.io/" target="_blank" rel="noopener"><span class="pf-wl">${PF_WUSUL}</span><b>Wusul<small>${ceo?'Owner · by SEKNA':'by SEKNA · bringing in new clients'}</small></b><span class="pf-go">›</span></a>`;
+ const workson=`<div class="pf-h">Works on</div><div class="pf-ha pf-ha2"><span class="pf-hl"><img src="icons/ha-brand.png" alt=""></span><b>Human Appeal <span class="pf-acc"><a href="https:\/\/www.facebook.com/share/1E7ZAjWWC1/" target="_blank" rel="noopener" aria-label="Human Appeal USA">US</a><a href="https:\/\/www.facebook.com/share/1EJVoqDZam/" target="_blank" rel="noopener" aria-label="Human Appeal Arabic">AR</a></span><small>Media buying for both accounts</small></b></div>`;
+ const RK=['CEO','Media Manager','Team Leader','Senior Media Buyer','Media Buyer'],rk=r=>{const i=RK.indexOf(r);return i<0?9:i};
+ const fr=(PFP.people||[]).filter(x=>x.email!==P.email).map(x=>pfPerson(x.email)).sort((a,b)=>rk(a.role)-rk(b.role)||String(a.name).localeCompare(String(b.name)));
+ const friends=`<div class="pf-h">Friends${fr.length?' <em>'+fr.length+'</em>':''}</div>`+(fr.length?`<div class="pf-fr">${fr.map(f=>`<button type="button" onclick="profOpen('${esc(f.email)}',event)"><span class="pf-fa${f.role==='CEO'?' ceo':''}">${personAv(f.avatar,f.name)}${f.online?'<i></i>':''}</span><b>${esc(String(f.name||f.email).split(' ')[0])}</b>${f.role?`<small>${esc(f.role==='CEO'?'CEO':f.role.replace('Senior Media Buyer','Sr. Buyer').replace('Media Buyer','Buyer').replace('Media Manager','Manager'))}</small>`:''}</button>`).join('')}</div>`:`<p class="pf-none">The team shows here.</p>`);
+ const about=`<div class="pf-h">Details</div>${pfLeave(P.email)}${bday}${place}${works}${workson}
+  <div class="pf-h">Links</div><a class="pf-r pf-a" href="https:\/\/sekna.co.uk/" target="_blank" rel="noopener">${pfI('globe')}<div class="pf-t">sekna.co.uk<small>Website</small></div></a>${friends}`;
+ const phone=PF.edit?`<div class="pf-r">${pfI('phone')}<div class="pf-t"><input class="pf-in" id="pfPh" type="tel" inputmode="tel" maxlength="22" value="${esc(P.phone)}" placeholder="+20 100 000 0000"><label class="pf-ck"><input type="checkbox" id="pfWaS"${!P.wa||P.wa==='same'?' checked':''} onchange="document.getElementById('pfWaW').hidden=this.checked"> This number is on WhatsApp</label><div id="pfWaW"${!P.wa||P.wa==='same'?' hidden':''}><input class="pf-in" id="pfWa" type="tel" inputmode="tel" maxlength="22" value="${P.wa&&P.wa!=='same'?esc(P.wa):''}" placeholder="WhatsApp number (leave empty for none)" style="margin-top:6px"></div><div class="pf-eb"><button type="button" onclick="PF.edit=false;pfDraw()">Cancel</button><button type="button" class="p" onclick="pfSavePhone(this)">Save</button></div></div></div>`
   :P.phone?`<div class="pf-r">${pfI('phone')}<div class="pf-t"><a href="tel:${esc(P.phone.replace(/[^0-9+]/g,''))}">${esc(P.phone)}</a><small>Phone · the team sees it</small></div>${P.self?`<button type="button" class="pf-pen" onclick="PF.edit=true;pfDraw()" aria-label="Edit phone">${pfI('pen')}</button>`:''}</div>`
   :P.self?`<div class="pf-r">${pfI('phone')}<div class="pf-t"><button type="button" class="pf-add" onclick="PF.edit=true;pfDraw()">Add a phone number</button><small>Only the team sees it</small></div><button type="button" class="pf-pen" onclick="PF.edit=true;pfDraw()" aria-label="Add phone">${pfI('pen')}</button></div>`
   :`<div class="pf-r">${pfI('phone')}<div class="pf-t">No phone yet<small>Phone</small></div></div>`;
- const contact=`<div class="pf-h">Contact info</div><a class="pf-r pf-a" href="mailto:${esc(P.email)}">${pfI('mail')}<div class="pf-t">${esc(P.email)}<small>Email</small></div></a>${phone}`;
+ const waNum=P.wa==='same'?P.phone:(P.wa||''),waDigits=String(waNum).replace(/\D/g,'');
+ const wa=!PF.edit&&waDigits.length>=6?`<a class="pf-r pf-a" href="https:\/\/wa.me/${waDigits}" target="_blank" rel="noopener"><span class="pf-wa">${PF_WA}</span><div class="pf-t">Chat on WhatsApp<small>${esc(waNum)}</small></div><span class="pf-go">›</span></a>`:'';
+ const contact=`<div class="pf-h">Contact info</div><a class="pf-r pf-a" href="mailto:${esc(P.email)}">${pfI('mail')}<div class="pf-t">${esc(P.email)}<small>Email</small></div></a>${phone}${wa}`;
  const pk=(Array.isArray(P.plats)&&P.plats.length?P.plats:PF_PLAT_DEF).filter(k=>PF_PLATS[k]);
  const plat=`<div class="pf-h">Ad platforms</div>${pk.map(k=>`<div class="pf-r pf-pl"><span class="pf-plg">${PF_PLATS[k][1]?`<img src="${PF_PLATS[k][1]}" alt="">`:esc(PF_PLATS[k][0].charAt(0))}</span><div class="pf-t">${esc(PF_PLATS[k][0])}<small>${k==='openai'?'Ads in ChatGPT':'Runs campaigns here'}</small></div></div>`).join('')}
   <div class="pf-h">SEKNA platforms</div><a class="pf-r pf-a" href="https:\/\/wusul.io/services/" target="_blank" rel="noopener"><span class="pf-wl">${PF_WUSUL}</span><div class="pf-t">Wusul<small>Audience intelligence · reaching new clients</small></div><span class="pf-go">›</span></a>`;
  const body=PF.tab==='contact'?contact:PF.tab==='plat'?plat:about;
  o.innerHTML=`<div class="pf-card"><button type="button" class="pf-x" onclick="profClose()" aria-label="Close">${pfI('x')}</button>
-  <div class="pf-cv${ver?' v':''}">${ceo?'<i class="pf-crown">'+PF_CROWN+'</i>':''}</div><div class="pf-me"><span class="pf-pic">${personAv(P.avatar,P.name)}${ver?VBADGE:''}${P.online?'<i class="pf-on"></i>':''}</span><div><b>${esc(P.name||P.email.split('@')[0])}</b>${ceo?'<span class="pf-ceob">Founder &amp; CEO · SEKNA &amp; Wusul</span>':P.role?roleBadge(P.role):''}<small class="pf-seen${P.online?' on':''}">${esc(P.self?'Online now':pfAgo(P.seen))}</small></div></div>
-  ${!P.self&&PFP.people&&PFP.people.some(x=>x.email===P.email)?pfFriendBtn(P):''}
+  <div class="pf-cv${ver?' v':''}">${ceo?'<i class="pf-crown">'+PF_CROWN+'</i>':''}</div><div class="pf-me"><span class="pf-pic">${personAv(P.avatar,P.name)}${ceo?PF_GTICK:ver?VBADGE:''}</span><div><b>${esc(P.name||P.email.split('@')[0])}</b>${ceo?'<span class="pf-ceob">Founder &amp; CEO · SEKNA &amp; Wusul</span>':P.role?roleBadge(P.role):''}<small class="pf-seen${P.online?' on':''}">${esc(P.self?'Online now':pfAgo(P.seen))}</small></div></div>
+
   ${PF.bio?`<div class="pf-bio ed"><textarea class="pf-in" id="pfBio" maxlength="48" rows="2" placeholder="Say something about you" oninput="document.getElementById('pfBc').textContent=this.value.length+' / 48'">${esc(P.bio)}</textarea><div class="pf-eb"><small id="pfBc">${String(P.bio).length} / 48</small><button type="button" onclick="PF.bio=false;pfDraw()">Cancel</button><button type="button" class="p" onclick="pfSaveBio(this)">Save</button></div></div>`
    :P.bio?`<div class="pf-bio">${esc(P.bio)}${P.self?`<button type="button" class="pf-pen sm" onclick="PF.bio=true;pfDraw()" aria-label="Edit caption">${pfI('pen')}</button>`:''}</div>`
    :P.self?`<div class="pf-bio"><button type="button" class="pf-add" onclick="PF.bio=true;pfDraw()">+ Add a caption</button></div>`:''}
@@ -18996,8 +19007,9 @@ async function pfSaveBio(btn){
  catch(err){btn.disabled=false;btn.textContent='Save';showSettingsToast(errorText(err))}
 }
 async function pfSavePhone(btn){
- const v=(document.getElementById('pfPh')||{}).value||'';btn.disabled=true;btn.textContent='Saving…';
- try{const r=await serverCall('setMyProfile',getAccessToken(),{phone:v.trim()});ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE||{},{member:(r&&r.member)||{}});
+ const v=(document.getElementById('pfPh')||{}).value||'',same=(document.getElementById('pfWaS')||{}).checked,w=((document.getElementById('pfWa')||{}).value||'').trim();btn.disabled=true;btn.textContent='Saving…';
+ try{const r=await serverCall('setMyProfile',getAccessToken(),{phone:v.trim(),wa:same?(v.trim()?'same':''):w});
+  const pp=(PFP.people||[]).find(x=>x.email===PF.email);if(pp){pp.phone=(r&&r.member&&r.member.phone)||'';pp.wa=(r&&r.member&&r.member.wa)||''}ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE||{},{member:(r&&r.member)||{}});
   const me=(TK.data&&TK.data.people||[]).find(x=>x.email===PF.email);if(me)me.phone=(r&&r.member&&r.member.phone)||'';PF.edit=false;pfDraw();showSettingsToast('Saved')}
  catch(err){btn.disabled=false;btn.textContent='Save';showSettingsToast(errorText(err))}
 }
@@ -20487,6 +20499,10 @@ async function pfSaveBday(btn,remove){
  catch(err){btn.disabled=false;btn.textContent='Save';showSettingsToast(errorText(err))}}
 
 document.addEventListener('click',e=>{const c=e.target.closest&&e.target.closest('.sk-user-card');if(!c||e.target.closest('button,a'))return;const me=pfMe();if(!me)return;try{closeSidebar()}catch(_){}setTimeout(()=>profOpen(me),120)});
+
+
+const PF_GTICK='<svg class="vbd gold" viewBox="0 0 24 24" aria-label="Verified · CEO"><defs><linearGradient id="pfGt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F8E2AC"/><stop offset=".55" stop-color="#E2B874"/><stop offset="1" stop-color="#B88A2E"/></linearGradient></defs><path d="M12 1.5l2.6 2 3.2-.3 1 3.1 2.8 1.6-.9 3.1 1.4 2.9-2.6 1.9-.5 3.2-3.2.4-2 2.6-2.8-1.6-2.8 1.6-2-2.6-3.2-.4-.5-3.2L1.9 14l1.4-2.9-.9-3.1 2.8-1.6 1-3.1 3.2.3z" fill="url(#pfGt)"/><path d="M7.5 12.3l3 3 6-6.3" fill="none" stroke="#1a2a66" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const PF_WA='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#25D366" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/><path fill="#fff" d="M17.3 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1l-.9 1.1c-.2.2-.3.2-.6.1a7 7 0 0 1-3.5-3c-.3-.5.3-.4.7-1.3.1-.2 0-.4 0-.5l-.9-2.1c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1.1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5 1.9.8 2.6.9 3.5.7.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3z"/></svg>';
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>

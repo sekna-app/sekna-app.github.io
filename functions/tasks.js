@@ -83,7 +83,7 @@ async function teamPeople(mem, me) {
     seen[email] = 1;
     const m = mem[email] || {};
     out.push({ email, name: name || m.name || email.split('@')[0], role: m.role === 'Head of Media' ? 'CEO' : (m.role || ''), avatar: m.avatar || 0, phone: m.phone || '', tz: m.tz || '', bio: m.bio || '',
-      bday: m.bday || '', plats: Array.isArray(m.plats) ? m.plats : null, friends: Array.isArray(m.friends) ? m.friends : [], seen: last[email] || 0 });
+      bday: m.bday || '', wa: m.wa || '', plats: Array.isArray(m.plats) ? m.plats : null, friends: Array.isArray(m.friends) ? m.friends : [], seen: last[email] || 0 });
   };
   rows.forEach(r => { if (r.status === 'Approved') add(r.email, r.name); });
   // Only people with an approved device (someone the admin deleted or revoked drops off the
@@ -634,7 +634,9 @@ async function setMemberSelf(email, value, welcomed, extra) {
   let v = value;
   extra = extra || {};
   // v360 the phone the person adds on their profile (the team sees it) and the time zone of their device (for the place on the profile)
-  let phone = extra.phone, tz = extra.tz, bio = extra.bio, bday = extra.bday;
+  let phone = extra.phone, tz = extra.tz, bio = extra.bio, bday = extra.bday, wa = extra.wa;
+  // v476 WhatsApp: 'same' as the phone, another number, or empty for none
+  if (wa !== undefined) { wa = String(wa || '').trim(); if (wa !== 'same') { wa = wa.replace(/[^0-9+ ()-]/g, '').slice(0, 22); if (wa && wa.replace(/\D/g, '').length < 6) throw new Error('That WhatsApp number looks too short.'); } }
   // v475 birthday: YYYY-MM-DD, or MM-DD when the year is kept private
   if (bday !== undefined) {
     bday = String(bday || '').trim();
@@ -661,6 +663,7 @@ async function setMemberSelf(email, value, welcomed, extra) {
     if (tz) m.tz = tz;
     if (bio !== undefined) { if (bio) m.bio = bio; else delete m.bio; }
     if (bday !== undefined) { if (bday) m.bday = bday; else delete m.bday; }
+    if (wa !== undefined) { if (wa) m.wa = wa; else delete m.wa; }
     if (Object.keys(m).length) all[email] = m; else delete all[email];
     result = all[email] || {};
     return all;

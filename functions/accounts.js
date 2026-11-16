@@ -231,7 +231,7 @@ const A = {
     if (name && name !== me.name && await accessMoved()) {
       await saveRows(list => { let ch = false; list.forEach(r => { if (norm(r.email) === email && r.name !== name) { r.name = name; ch = true; } }); return ch ? list : undefined; });
     }
-    const m = await tasks.setMemberSelf(email, p.avatar, !!p.welcome, { phone: p.phone, tz: p.tz, bio: p.bio, bday: p.bday });
+    const m = await tasks.setMemberSelf(email, p.avatar, !!p.welcome, { phone: p.phone, tz: p.tz, bio: p.bio, bday: p.bday, wa: p.wa });
     return { name: name || me.name, member: m };
   },
 
