@@ -9334,7 +9334,7 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 .aks-dots{position:absolute;z-index:30;left:0;right:0;top:calc(52px + env(safe-area-inset-top,0px));display:flex;gap:4px;padding:0 16px}
 .aks-dots i{flex:1;height:2px;border-radius:2px;background:rgba(255,255,255,.2);overflow:hidden}
 .aks-dots i::after{content:"";display:block;height:100%;width:0;background:#F3D58E}
-.aks-dots i.done::after{width:100%}.aks-dots i.now::after{animation:aksFill 3.8s linear forwards}
+.aks-dots i.done::after{width:100%}.aks-dots i.now::after{animation:aksFill var(--aksd,3.8s) linear forwards}
 .aks-dots i:last-child.now::after{animation-duration:1.2s}
 @keyframes aksFill{to{width:100%}}
 .aks-sc{position:absolute;inset:0;overflow:hidden;visibility:hidden}
@@ -9889,6 +9889,7 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
 .aks-sc,.aks-sc video.vbg,.aks-sc img.bg{-webkit-backface-visibility:hidden;backface-visibility:hidden}
 .aks-sc video.vbg{transform:translateZ(0)}
 .aks-sc.zm img.bg{transform:scale(1.7);transform-origin:50% 80%;object-position:50% 50%}
+.aks-sc img.bg.sq{opacity:0}
 </style>
 </head>
 <body>
@@ -10988,16 +10989,16 @@ const AKS=[
  {img:'eyes',vid:1,k:'ALEXANDRA',h:'She reads <em>every number</em>'},
  {img:'answers',vid:1,k:'HEMERA',h:'and turns it into <em>answers</em>'},
  {img:'flag',k:'ALEXANDRA × HEMERA',h:'Built for <em>HEMERA</em>'},
- {img:'sekna2',zoom:1,k:'SEKNA',h:'Made at <em>Sekna</em>',cls:'lowfade'},
+ {img:'sekna-a',seq:['sekna-b','sekna-c'],k:'SEKNA',h:'Made at <em>Sekna</em>',cls:'lowfade'},
  {img:'invite',k:'MEET ALEXANDRA',h:'Ask her <em>anything</em>'}];
-const AKS_TR=['none','sweepD','diag','split','sweepR','sweepL','calm'],AKS_DUR=3800,AKS_T=1050,AKS_E='cubic-bezier(.7,0,.2,1)';
+const AKS_TR=['none','sweepD','diag','split','sweepR','sweepL','calm'],AKS_DUR=3800,AKS_SEQ=6000,AKS_T=1050,AKS_E='cubic-bezier(.7,0,.2,1)';
 function akStoryWords(h){let em=false;return h.split(/(<em>|<\/em>| )/).filter(x=>x&&x!==' ').map(t=>{if(t==='<em>'){em=true;return ''}if(t==='</em>'){em=false;return ''}return `<span>${em?`<em>${t}</em>`:t}</span>`}).filter(Boolean).join(' ')}
 function akStory(){
  document.getElementById('aksBox')?.remove();
  const o=document.createElement('div');o.id='aksBox';o.className='aks';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Meet Alexandra');
  o.innerHTML=`<div class="aks-ph"><div class="aks-bar"><img src="get/logo-white.webp" alt="HEMERA"><button type="button" class="aks-x" aria-label="Close" onclick="akStoryClose()">${akI('x')}</button></div>
   <div class="aks-dots">${AKS.map(()=>'<i></i>').join('')}</div>
-  ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}${s.vid?' hasv':''}${s.zoom?' zm':''}"><img class="bg" src="${s.vid?`icons/alexandra/v/${s.img}.jpg?v=3`:`icons/alexandra/${s.img}.webp?v=7`}" decoding="async" alt="">${s.vid?`<video class="vbg" muted playsinline loop preload="none" poster="icons/alexandra/v/${s.img}.jpg?v=3" src="icons/alexandra/v/${s.img}.mp4?v=3"></video>`:''}${s.smoke?'<i class="aks-vig"></i>':''}<div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
+  ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}${s.vid?' hasv':''}${s.zoom?' zm':''}"><img class="bg" src="${s.vid?`icons/alexandra/v/${s.img}.jpg?v=3`:`icons/alexandra/${s.img}.webp?v=7`}" decoding="async" alt="">${(s.seq||[]).map(q=>`<img class="bg sq" src="icons/alexandra/${q}.webp?v=1" decoding="async" alt="">`).join('')}${s.vid?`<video class="vbg" muted playsinline loop preload="none" poster="icons/alexandra/v/${s.img}.jpg?v=3" src="icons/alexandra/v/${s.img}.mp4?v=3"></video>`:''}${s.smoke?'<i class="aks-vig"></i>':''}<div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
   <div class="aks-fx"></div><div class="aks-tap" aria-hidden="true"></div>
   <div class="aks-kb"><button type="button" aria-label="Back" onclick="akStoryStep(-1)"></button><button type="button" aria-label="Next" onclick="akStoryStep(1)"></button></div></div><button type="button" class="aks-arr l" aria-label="Back" onclick="akStoryStep(-1)">‹</button><button type="button" class="aks-arr r" aria-label="Next" onclick="akStoryStep(1)">›</button><button type="button" class="aks-xd" aria-label="Close" onclick="akStoryClose()">${akI('x')}</button>`;
  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));
@@ -11048,6 +11049,9 @@ async function akStoryShow(i,again){
  if(!reduce){
   if(now.querySelector('video.vbg')){}
   
+  
+  else if(AKS[i].seq){[im,...now.querySelectorAll('img.sq')].forEach((el,k)=>{el.animate([{transform:'scale(1.04)'},{transform:'scale(1.18)'}],{duration:AKS_SEQ+T,easing:'linear',fill:'forwards'});
+   if(k)el.animate([{opacity:0},{opacity:1}],{delay:k*1800,duration:800,easing:'ease-in-out',fill:'both'})})}
   else if(AKS[i].zoom)im.animate([{transform:'scale(1.7)'},{transform:'scale(1.95)'}],{duration:AKS_DUR+T+600,easing:'cubic-bezier(.3,0,.25,1)',fill:'forwards'});
   else if(now.classList.contains('fitw'))im.animate([{transform:'scale(1)'},{transform:'scale(1.03)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
   else if(now.querySelector('.aks-vig'))im.animate([{transform:'scale(1)'},{transform:'scale(1.04)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
@@ -11075,7 +11079,9 @@ async function akStoryShow(i,again){
  {const nv=sc[i+1]&&sc[i+1].querySelector('video.vbg');if(nv&&nv.preload!=='auto'){nv.preload='auto';try{nv.load()}catch(e){}}}
  S.i=i;
  [i+1,i-1].forEach(n=>{const nx=sc[n]&&sc[n].querySelector('img.bg');if(nx&&!nx.dataset.dec){nx.dataset.dec=1;try{nx.decode().catch(()=>{})}catch(e){}}});
- if(i<AKS.length-1){S.left=AKS_DUR;S.end=Date.now()+AKS_DUR;S.t=setTimeout(()=>akStoryShow(i+1),AKS_DUR)}
+ 
+ const dur1=AKS[i].seq?AKS_SEQ:AKS_DUR;S.o.style.setProperty('--aksd',dur1+'ms');
+ if(i<AKS.length-1){S.left=dur1;S.end=Date.now()+dur1;S.t=setTimeout(()=>akStoryShow(i+1),dur1)}
 }
 
 function akStorySeenLocal(){try{return localStorage.getItem('hm_aks_'+akMe().email)==='1'}catch(e){return false}}
