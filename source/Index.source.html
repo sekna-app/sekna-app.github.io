@@ -9663,6 +9663,16 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 /* v493 Alexandra's minimise button: a filled blue circle with a down arrow */
 .ak-min{background:linear-gradient(135deg,#2a4bb3,#16307f)!important;color:#fff!important;box-shadow:0 4px 10px rgba(28,60,150,.3)}
 .ak-min .ak-ic{stroke:#fff;width:18px!important;height:18px!important}
+/* v494 the over-other-apps sheet (Android) */
+.hmov{position:fixed;inset:0;z-index:2147483300;background:rgba(10,18,56,0);display:flex;align-items:flex-end;justify-content:center;transition:background .25s}
+.hmov.on{background:rgba(10,18,56,.55)}
+.hmov-c{width:100%;max-width:460px;background:#fff;border-radius:26px 26px 0 0;padding:26px 22px calc(20px + env(safe-area-inset-bottom,0px));text-align:center;transform:translateY(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);font-family:Inter,system-ui,sans-serif;box-sizing:border-box}
+.hmov.on .hmov-c{transform:none}
+.hmov-av{width:72px;height:72px;border-radius:50%;margin:0 auto;display:grid;place-items:center;overflow:hidden;background:#132a73;box-shadow:0 0 0 3px #fff,0 0 0 5px #A78BFA}
+.hmov-av img{width:100%;height:100%;object-fit:cover}.hmov-av .ak-ic{width:30px;height:30px;fill:#F3D58E;stroke:#F3D58E}
+.hmov-c h3{margin:14px 0 6px;font-size:19px;color:#141b33}.hmov-c p{margin:0 0 18px;font-size:13.5px;line-height:1.5;color:#65676B;font-weight:600}
+.hmov-go{display:block;width:100%;border:0;border-radius:14px;padding:14px;font:900 15px Inter,system-ui,sans-serif;color:#fff;background:linear-gradient(135deg,#2a4bb3,#16307f);cursor:pointer}
+.hmov-no{display:block;width:100%;margin-top:6px;border:0;background:none;padding:10px;font:800 13.5px Inter,system-ui,sans-serif;color:#65676B;cursor:pointer}
 </style>
 </head>
 <body>
@@ -12184,7 +12194,7 @@ function stxStories(d,k){
  // v174 the season's greeting on its day (English only)
  try{const gs=ssGreetNow(k==='usa');if(gs)out.unshift({t:'greet',s:gs,bg:'radial-gradient(circle at 50% 20%,#24387a,#14224a 60%,#0b1530)'})}catch(e){}
  // v173 a season within 15 days: its card as a story (Open goes to Seasons Calendar)
- try{const t=ssToday(),ss=ssList().find(z=>z.from>t&&ssDays(t,z.from)<=15&&SS_ART[z.key]&&(z.type==='h'||k==='usa'));if(ss)out.push({t:'season',k:'REMINDER',s:ss,n:ssDays(t,ss.from),bg:'linear-gradient(170deg,#0e1a46,#14286e 60%,#1a3290)'})}catch(e){}
+ try{const t=ssToday(),recent=new Set((NF.list||[]).filter(x=>x.type==='season'&&Date.now()-x.at<3*864e5).map(x=>nfSeasonKey(x)).filter(Boolean)),ss=ssList().find(z=>z.from>t&&ssDays(t,z.from)<=15&&SS_ART[z.key]&&recent.has(z.key)&&(z.type==='h'||k==='usa'));if(ss)out.push({t:'season',k:'REMINDER',s:ss,n:ssDays(t,ss.from),bg:'linear-gradient(170deg,#0e1a46,#14286e 60%,#1a3290)'})}catch(e){}
  const st=streakOf(d);if(st.n>=3)out.push({t:'streak',bg:'linear-gradient(160deg,#f6a23b,#c2410c)',k:'DAYS IN A ROW ABOVE THE PLAN',big:String(st.n),p:"Conversion value beat the day's plan every day.",days:st.days.slice(-7)});
  return out;
 }
@@ -13660,7 +13670,7 @@ function nfLocalAdd(n){const l=nfLocal();if(l.some(x=>x.id===n.id))return;l.push
 function nfLoad(){
  if(!canDo('notifs'))return;
  if(NF.busy||!getAccessToken())return;NF.busy=true;
- serverCall('myNotifications',getAccessToken()).then(r=>{NF.busy=false;NF.err='';NF.list=nfMerge(Array.isArray(r)?r:[]);nfBadge();nfRender()})
+ serverCall('myNotifications',getAccessToken()).then(r=>{NF.busy=false;NF.err='';NF.list=nfMerge(Array.isArray(r)?r:[]);nfFreshSeed(NF.list);nfBadge();nfRender()})
   .catch(err=>{NF.busy=false;NF.err=errorText(err);nfRender()});
 }
 function localWhen(ms,withDay){
@@ -13738,7 +13748,7 @@ function greetMarkSeen(id){const l=greetSeen();if(!l.includes(id)){l.push(id);st
 function greetAutoShow(){
  if(!getAccessToken()||(typeof canDo==='function'&&!canDo('notifs')))return;
  serverCall('myNotifications',getAccessToken()).then(r=>{
-   const list=Array.isArray(r)?r:[],seen=greetSeen();
+   const list=Array.isArray(r)?r:[];if(nfFreshSeed(list))return;const seen=greetSeen();
    const g=list.filter(x=>(x.type==='greeting'||x.type==='season')&&Date.now()-x.at<24*3600e3&&!seen.includes(x.id)).sort((a,b)=>b.at-a.at)[0];
    if(NF.list===null||!NF.list)NF.list=nfMerge(list);else if(g&&!NF.list.some(x=>x.id===g.id))NF.list=nfMerge(NF.list.concat([g]));
    nfBadge();
@@ -20699,6 +20709,17 @@ function pfOpenAlexandra(){profClose();setTimeout(()=>{if(!document.getElementBy
 // v491 Alexandra's photo on her menu icon (once the app has it)
 function akNavAv(){const el=document.querySelector('#askNavBtn .sk-ask-av');if(!el)return;try{const d=akBav().data;if(d&&/^data:image\//.test(d)&&!el.querySelector('img'))el.innerHTML='<img src="'+d+'" alt="">'}catch(e){}}
 setTimeout(akNavAv,1500);setTimeout(akNavAv,8000);document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('.menu-toggle'))setTimeout(akNavAv,50)},true);
+
+// v494 first run on this device (new install or cleared data): mark what is already there as read and seen
+function nfFreshSeed(list){let fresh=false;try{fresh=localStorage.getItem('sekna_nf_seen')===null&&localStorage.getItem('sekna_greet_seen')===null}catch(e){}
+ if(!fresh)return false;const l=list||[];storeSet('sekna_nf_seen',String(Math.max(Date.now(),...l.map(x=>x.at||0))));
+ storeSet('sekna_greet_seen',JSON.stringify(l.filter(x=>x.type==='greeting'||x.type==='season').map(x=>x.id).slice(-30)));return true}
+// v494 the Android app asks before Alexandra's bubble can show over other apps: a HEMERA-style sheet
+function hmOverlayAsk(){if(document.getElementById('hmOv'))return;const o=document.createElement('div');o.id='hmOv';o.className='hmov';
+ o.innerHTML=`<div class="hmov-c"><span class="hmov-av">${typeof akAvIn==='function'?akAvIn():''}</span><h3>Keep Alexandra with you</h3><p>Let HEMERA show over other apps and Alexandra's bubble stays on your screen when you leave the app. Tap her to chat, drag her to the X to close.</p><button type="button" class="hmov-go">Allow</button><button type="button" class="hmov-no">Not now</button></div>`;
+ const close=()=>{o.classList.remove('on');setTimeout(()=>o.remove(),250)};
+ o.querySelector('.hmov-go').onclick=()=>{try{window.AndroidShare.openOverlaySettings()}catch(e){}close()};o.querySelector('.hmov-no').onclick=close;o.addEventListener('click',e=>{if(e.target===o)close()});
+ document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('on'))}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
