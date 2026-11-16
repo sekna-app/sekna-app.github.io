@@ -9862,6 +9862,8 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
 <script>
 (function(){var sp=document.getElementById('launchSp');if(!sp)return;var seen=false;
  try{seen=sessionStorage.getItem('hm_launch')==='1';sessionStorage.setItem('hm_launch','1')}catch(e){}
+ 
+ try{var dk=new Date().toDateString();if(localStorage.getItem('hm_launch_day')===dk)seen=true;else localStorage.setItem('hm_launch_day',dk)}catch(e){}
  var inFrame=false;try{inFrame=window.self!==window.top}catch(e){inFrame=true}
  if(seen||inFrame){sp.remove();return}
  

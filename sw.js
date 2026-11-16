@@ -1,7 +1,7 @@
 // HEMERA web app service worker: offline shell + notifications.
 // The page is always fetched fresh when online, so updates appear right away; the
 // cached copy is only used without a network. Dashboard data is never cached here.
-const CACHE = 'sekna-shell-v11';
+const CACHE = 'sekna-shell-v12';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './firebase-config.js',
   './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon-64.png', './icons/badge-96.png', './fonts/changa-ar.woff2'];
 
@@ -79,13 +79,13 @@ self.addEventListener('fetch', event => {
     event.respondWith(net.catch(() => cached().then(hit => hit || caches.match('./index.html'))));
     return;
   }
-  // Opening the app on a slow connection: if the page has not come back within 2.5 seconds,
+  // Opening the app on a slow connection: if the page has not come back within 0.9 seconds (v511, was 2.5),
   // the saved copy opens instead, and the download carries on to update it for next time.
   // The opening screen never waits on the internet.
   event.respondWith(new Promise(resolve => {
     let done = false;
     const give = r => { if (!done && r) { done = true; resolve(r); } };
-    const timer = setTimeout(() => cached().then(give), 2500);
+    const timer = setTimeout(() => cached().then(give), 900);
     net.then(res => { clearTimeout(timer); give(res); })
       .catch(() => { clearTimeout(timer); cached().then(hit => { if (hit) give(hit); else if (!done) { done = true; resolve(Response.error()); } }); });
   }));
