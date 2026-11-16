@@ -10989,9 +10989,9 @@ const AKS=[
  {img:'eyes',vid:1,k:'ALEXANDRA',h:'She reads <em>every number</em>'},
  {img:'answers',vid:1,k:'HEMERA',h:'and turns it into <em>answers</em>'},
  {img:'flag',k:'ALEXANDRA × HEMERA',h:'Built for <em>HEMERA</em>'},
- {img:'sekna-a',seq:['sekna-b','sekna-c'],k:'SEKNA',h:'Made at <em>Sekna</em>',cls:'lowfade'},
+ {img:'sekna-a',seq:['sekna-b'],k:'SEKNA',h:'Made at <em>Sekna</em>',cls:'lowfade'},
  {img:'invite',k:'MEET ALEXANDRA',h:'Ask her <em>anything</em>'}];
-const AKS_TR=['none','sweepD','diag','split','sweepR','sweepL','calm'],AKS_DUR=3800,AKS_SEQ=6000,AKS_T=1050,AKS_E='cubic-bezier(.7,0,.2,1)';
+const AKS_TR=['none','sweepD','diag','split','sweepR','sweepL','calm'],AKS_DUR=3800,AKS_SEQ=5000,AKS_T=1050,AKS_E='cubic-bezier(.7,0,.2,1)';
 function akStoryWords(h){let em=false;return h.split(/(<em>|<\/em>| )/).filter(x=>x&&x!==' ').map(t=>{if(t==='<em>'){em=true;return ''}if(t==='</em>'){em=false;return ''}return `<span>${em?`<em>${t}</em>`:t}</span>`}).filter(Boolean).join(' ')}
 function akStory(){
  document.getElementById('aksBox')?.remove();
@@ -11051,7 +11051,7 @@ async function akStoryShow(i,again){
   
   
   else if(AKS[i].seq){[im,...now.querySelectorAll('img.sq')].forEach((el,k)=>{el.animate([{transform:'scale(1.04)'},{transform:'scale(1.18)'}],{duration:AKS_SEQ+T,easing:'linear',fill:'forwards'});
-   if(k)el.animate([{opacity:0},{opacity:1}],{delay:k*1800,duration:800,easing:'ease-in-out',fill:'both'})})}
+   if(k)el.animate([{opacity:0},{opacity:1}],{delay:k*2100,duration:900,easing:'ease-in-out',fill:'both'})})}
   else if(AKS[i].zoom)im.animate([{transform:'scale(1.7)'},{transform:'scale(1.95)'}],{duration:AKS_DUR+T+600,easing:'cubic-bezier(.3,0,.25,1)',fill:'forwards'});
   else if(now.classList.contains('fitw'))im.animate([{transform:'scale(1)'},{transform:'scale(1.03)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
   else if(now.querySelector('.aks-vig'))im.animate([{transform:'scale(1)'},{transform:'scale(1.04)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
