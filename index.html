@@ -9869,6 +9869,17 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
 .ak-ncc b{overflow-wrap:anywhere}
 .ak-ncv{display:block;font:700 11.5px Inter,system-ui,sans-serif;color:#65676B;margin:1px 0 3px;font-variant-numeric:tabular-nums}
 .ak.dk .ak-ncv,body.dark-mode .ak-ncv{color:#B0B3B8}
+/* v513 every title in Alexandra's chat uses the Teach the bot icon style: a white icon in a blue rounded square */
+.ak-q{gap:9px}
+.ak-q>.ak-ic{width:30px!important;height:30px!important;padding:7px;box-sizing:border-box;border-radius:9px;background:#203C8E;color:#fff!important;stroke:#fff;flex:none;stroke-width:1.6}
+.ak-q>b{font-size:14.5px;font-weight:800}
+/* v513 an odd number of cards: the last one runs the full width as a rectangle, number and pill side by side */
+.ak-nc:not(.one) .ak-ncc:last-child:nth-child(odd){grid-column:1/-1;display:grid;grid-template-columns:auto 1fr auto;grid-template-areas:"l l l" "b v p" "e e e";column-gap:10px;align-items:center}
+.ak-nc:not(.one) .ak-ncc:last-child:nth-child(odd) small{grid-area:l}
+.ak-nc:not(.one) .ak-ncc:last-child:nth-child(odd) b{grid-area:b;font-size:24px}
+.ak-nc:not(.one) .ak-ncc:last-child:nth-child(odd) .ak-ncv{grid-area:v;margin:0}
+.ak-nc:not(.one) .ak-ncc:last-child:nth-child(odd) .ak-ncp{grid-area:p;justify-self:end}
+.ak-nc:not(.one) .ak-ncc:last-child:nth-child(odd) em{grid-area:e}
 </style>
 </head>
 <body>
