@@ -9852,7 +9852,6 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
 /* v501 team card chips: small and plain */
 .pf-fr .pf-aic{top:6px!important;left:6px!important;font:800 7.5px/1 Inter,system-ui,sans-serif!important;letter-spacing:.04em;padding:2.5px 4px!important;border-radius:4px!important;box-shadow:none!important}
 .pf-fr button.ceo .pf-aic{background:#D9A62E!important}.pf-fr button.tl .pf-aic{background:#2453d6!important}.pf-fr button.sr .pf-aic{background:#8E97AA!important}.pf-fr button.ai .pf-aic{background:#7B6CF6!important}
-.aks-sc.on,.aks-sc.out{will-change:clip-path,opacity}.aks-sc.on img.bg{will-change:transform}
 </style>
 </head>
 <body>
@@ -11024,7 +11023,7 @@ async function akStoryShow(i,again){
  const dur=tr==='calm'?1150:tr==='none'?750:T*1.05;
  if(cur&&cur!==now)(ta?ta.finished.catch(()=>{}):new Promise(r=>setTimeout(r,dur))).then(()=>{if(tok!==S.tok)return;cur.classList.remove('out');cur.getAnimations({subtree:true}).forEach(a=>{if(!(a instanceof CSSAnimation))a.cancel()});cur.removeAttribute('style');cur.querySelectorAll('[style]').forEach(n=>n.removeAttribute('style'))});
  S.i=i;
- {const nx=sc[i+1]&&sc[i+1].querySelector('img.bg');if(nx)setTimeout(()=>{try{nx.decode().catch(()=>{})}catch(e){}},T+100)}
+ [i+1,i-1].forEach(n=>{const nx=sc[n]&&sc[n].querySelector('img.bg');if(nx&&!nx.dataset.dec){nx.dataset.dec=1;try{nx.decode().catch(()=>{})}catch(e){}}});
  if(i<AKS.length-1){S.left=AKS_DUR;S.end=Date.now()+AKS_DUR;S.t=setTimeout(()=>akStoryShow(i+1),AKS_DUR)}
 }
 
@@ -11251,13 +11250,20 @@ ${akIntroHtml()}</div>
  const ctaIn=`<div class="ak-pgcta ak-pgcta-in"><button type="button" onclick="akAboutClose()">${akI('send')}Message Alexandra</button></div>`,inCta=fb&&(tab==='about'||tab==='platforms');
  if(fb&&tab==='platforms')body=body.replace(/<p class="ak-mu ak-pgnote">These are the platforms you can see\.<\/p>/,'')+ctaIn;
  if(fb&&tab==='about')body=`<div class="ak-fb2"><div class="ak-fbcol"><div class="ak-fbl">${body}</div>${ctaIn}</div><div class="ak-fbr"><h4>Posts</h4>${postsHtml()}</div></div>`;
- pg.innerHTML=`<div class="ak-pgb2"><div class="ak-pgh2"><button type="button" class="ak-bk" aria-label="Back" onclick="akAboutClose()">${akI('back')}</button></div><div class="ak-hero" style="background-image:url(${akCovUrl()})">${AK.editor?`<button type="button" class="ak-covb" onclick="akPrevPick('cov')">${akI('cam')}Edit cover</button>`:''}</div>
+ 
+ const oldBody=keep==='tab'&&pg.querySelector('.ak-pgbody');
+ const html=`<div class="ak-pgb2"><div class="ak-pgh2"><button type="button" class="ak-bk" aria-label="Back" onclick="akAboutClose()">${akI('back')}</button></div><div class="ak-hero" style="background-image:url(${akCovUrl()})">${AK.editor?`<button type="button" class="ak-covb" onclick="akPrevPick('cov')">${akI('cam')}Edit cover</button>`:''}</div>
   <div class="ak-id"><span class="ak-pga">${akAvIn()}<em></em>${AK.editor?`<button type="button" class="ak-pgc" aria-label="Change the bot's photo" onclick="akPrevPick('av')">${akI('cam')}</button>`:''}</span>
    <div class="ak-idn"><h2>Alexandra ${tick}</h2>${AK.editor&&(akBav().data||akCov().data)?`<span class="ak-pgxs">${akBav().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Remove the photo?','The bot goes back to the HEMERA star.','Remove',()=>akBotAvSave(''))">Remove photo</button>`:''}${akCov().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Reset the cover?','The cover goes back to her eye picture.','Reset',akCovReset)">Reset cover</button>`:''}</span>`:''}</div></div>
   <div class="ak-hl">${AK_HL.map(([i,t])=>`<button type="button" onclick="akStoryAt(${i})"><img src="${img(AKS[i].img)}" alt="">${t}</button>`).join('')}</div>
-  <div class="ak-tabs" role="tablist">${[['about','About'],['photos','Photos'],['platforms','Platforms']].map(([k,t])=>`<button type="button" role="tab" aria-selected="${tab===k}" class="${tab===k?'on':''}" onclick="AK.pgTab='${k}';akAbout(null,1)">${t}</button>`).join('')}</div>
+  <div class="ak-tabs" role="tablist">${[['about','About'],['photos','Photos'],['platforms','Platforms']].map(([k,t])=>`<button type="button" role="tab" aria-selected="${tab===k}" class="${tab===k?'on':''}" onclick="AK.pgTab='${k}';akAbout(null,'tab')">${t}</button>`).join('')}</div>
   <div class="ak-pgbody">${body}</div>
   <div class="ak-pgcta"${inCta?' hidden':''}><button type="button" onclick="akAboutClose()">${akI('send')}Message Alexandra</button></div></div>`;
+ if(oldBody){const tmp=document.createElement('div');tmp.innerHTML=html;
+  oldBody.replaceWith(tmp.querySelector('.ak-pgbody'));
+  pg.querySelectorAll('.ak-tabs button').forEach((b,n)=>{const k=['about','photos','platforms'][n];b.classList.toggle('on',k===tab);b.setAttribute('aria-selected',String(k===tab))});
+  const c=pg.querySelector('.ak-pgcta:not(.ak-pgcta-in)');if(c)c.hidden=!!inCta}
+ else pg.innerHTML=html;
  if(!keep){pg.setAttribute('aria-hidden','false');requestAnimationFrame(()=>pg.classList.add('on'))}
  if(tab==='about'&&AK.editor&&ASK_HEMERA_URL){akBotLoad();akReqsLoad()}}
  
@@ -11268,7 +11274,6 @@ const AK_TGI='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcv
 function akIntroHtml(){const tg='<img class="ak-tgi" src="'+AK_TGI+'" alt="">';return `   <div>${akI('rep')}<span>Works at <b>HEMERA</b></span></div>
    <div>${akI('teach')}<span>Taught by <a class="ak-ment" href="#" onclick="event.preventDefault();akOpenOwner(event)">@${akEsc(akOwner().name)}</a></span></div>
    <div><u><svg class="ak-flag2" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="10" rx="2" fill="#0057B7"/><rect y="10" width="30" height="10" rx="2" fill="#FFD700"/><rect y="8" width="30" height="4" fill="#0057B7"/><rect y="10" width="30" height="2" fill="#FFD700"/></svg></u><span>From <b>Alexandria, Egypt</b></span></div>
-   <div>${akI('mic')}<span>Speaks <b>Arabic</b> and <b>English</b></span></div>
    <a href="https:\/\/t.me/Seknaa_bot" target="_blank" rel="noopener">${tg}<span>On Telegram <b>@Seknaa_bot</b></span></a>`}
 function akStoryAt(i){akStory();if(window.AKST)AKST.ret=1;if(i)setTimeout(()=>akStoryShow(i),60)}
 function akPgPlat(k){akAboutClose();setTimeout(()=>{AK.kb=false;akKb();akUser(k);AK.ls=[];akPick('p',k)},250)}
@@ -20698,8 +20703,9 @@ async function akCtx(){if(typeof DASH_DATA==='undefined'||!DASH_DATA)return '';c
  try{const t=ssToday();L.push('## Seasons coming up');ssList().filter(x=>x.to>=t).slice(0,8).forEach(x=>L.push(x.name+': '+x.from+' to '+x.to+' ('+x.len+' days, '+(x.type==='h'?'Hijri':'US')+')'))}catch(e){}
  return L.join('\n').slice(0,60000)}
 
-function akCardsSplit(t){t=String(t||'');const i=t.indexOf('[[CARDS]]');if(i<0)return {text:t};let cards=null;
- try{const j=t.slice(i+9).replace(/```(json)?/g,'').trim();const a=JSON.parse(j.slice(j.indexOf('['),j.lastIndexOf(']')+1));if(Array.isArray(a))cards=a.filter(x=>x&&x.v!=null).slice(0,8)}catch(e){}
+
+function akCardsSplit(t){t=String(t||'');const mm=/\[\[\s*CARDS\s*\]\]?/i.exec(t);if(!mm)return {text:t};const i=mm.index;let cards=null;
+ try{const j=t.slice(i+mm[0].length).replace(/```(json)?/g,'');const o=j.indexOf('{'),c=j.lastIndexOf('}');if(o>=0&&c>o){const a=JSON.parse('['+j.slice(o,c+1)+']');if(Array.isArray(a))cards=a.filter(x=>x&&x.v!=null).slice(0,8)}}catch(e){}
  return {text:t.slice(0,i).trim(),cards:cards&&cards.length?cards:null}}
 function akCardsHtml(cs){const one=cs.length===1;return `<div class="ak-nc${one?' one':''}">${cs.map(c=>{const d=c.d==='up'?'up':c.d==='down'?'dn':'';
  return `<div class="ak-ncc"><small>${akEsc(String(c.l||''))}</small><b>${akEsc(String(c.v))}</b>${c.p?`<span class="ak-ncp ${d}">${akEsc(String(c.p))}</span>`:''}${c.s?`<em>${akEsc(String(c.s))}</em>`:''}</div>`}).join('')}</div><span class="ak-ncs">From the dashboard · ${akEsc((DASH_DATA&&DASH_DATA.account&&DASH_DATA.account.shortLabel)||'')}</span>`}
