@@ -481,6 +481,11 @@ const T = {
         // v475 the ad platforms this person works on (Admin → Positions)
         const list = (Array.isArray(value) ? value : []).map(String).filter((k, i, a) => PLAT_KEYS.indexOf(k) >= 0 && a.indexOf(k) === i);
         if (Array.isArray(value)) m.plats = list; else delete m.plats;
+      } else if (field === 'avatar' && isAdminEmail(a.email) && m.role === 'CEO') {
+        // v478 the HEMERA owner may set the CEO's photo; the CEO can still change it himself
+        const v = String(value || '');
+        if (!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(v) || v.length > 90000) throw new Error('That photo could not be read.');
+        m.avatar = v;
       } else throw new Error('Unknown field'); // v353 the avatar or photo is each person's own choice (setMyAvatar)
       if (Object.keys(m).length) all[email] = m; else delete all[email];
       result = all[email] || {};
