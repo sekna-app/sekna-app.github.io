@@ -12581,7 +12581,7 @@ function notifyAndroidDashboard(d){
      }));
    }
    // v470 the home-screen widgets (value 14 days, streak, next season, clock, Alexandra) get their numbers from here
-   if(typeof window.AndroidShare.onWidgetData==='function'){try{window.AndroidShare.onWidgetData(JSON.stringify(hmWidgetData(d)))}catch(e){}}
+   if(typeof window.AndroidShare.onWidgetData==='function')hmWidgetSend(d);
    if(typeof window.AndroidShare.dashboardReady==='function'){
      window.AndroidShare.dashboardReady();
    }
@@ -20750,6 +20750,17 @@ function hmOverlayAsk(){if(document.getElementById('hmOv'))return;const o=docume
 
 // v501 Alexandra's Arabic font is fetched at start, so her chat never shows the old font first
 try{document.fonts&&document.fonts.load('400 16px AKufi','\u0645\u0631\u062d\u0628\u0627')}catch(e){}
+
+// v509 the widgets get their numbers after the page has drawn, only when something changed, and the photo only when it changed
+// (the app did the widget work while the page waited, on every redraw: that made the app feel heavy)
+let HMW_LAST='',HMW_T=0;
+function hmWidgetSend(d){clearTimeout(HMW_T);HMW_T=setTimeout(()=>{const go=()=>{try{const o=hmWidgetData(d);let av=o.avatar||'';delete o.avatar;
+  const key=JSON.stringify(o);let avk='';try{avk=av?av.length+':'+av.slice(-40):''}catch(e){}
+  let avOld='';try{avOld=localStorage.getItem('hm_w_av')||''}catch(e){}
+  if(key===HMW_LAST&&avk===avOld)return;HMW_LAST=key;
+  if(av&&avk!==avOld){o.avatar=av;try{localStorage.setItem('hm_w_av',avk)}catch(e){}}
+  window.AndroidShare.onWidgetData(JSON.stringify(o))}catch(e){}};
+ if(window.requestIdleCallback)requestIdleCallback(go,{timeout:4000});else go()},1500)}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
