@@ -9802,6 +9802,16 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 .pf-fr button.sr{background:linear-gradient(160deg,#FAFBFD,#E9ECF2)!important;box-shadow:inset 0 0 0 1px #D9DEE8!important}
 .pf-fr button.sr .pf-fa{box-shadow:0 0 0 2px #fff,0 0 0 4px #C0C7D9}
 .pf-srs{display:block;font-style:normal;font-size:9px;line-height:1;color:#D9A62E;letter-spacing:1px;margin-top:1px}
+/* v488 friends: the CEO, Team Leaders and Senior Media Buyers get Alexandra's holographic card in their own colours */
+.pf-fr button.ceo{--h1:#F8E2AC;--h2:#D9A62E;--h3:#B8861F}
+.pf-fr button.tl{--h1:#9DB7FF;--h2:#2453d6;--h3:#5BC0FF}
+.pf-fr button.sr{--h1:#E3E7EF;--h2:#9AA3B5;--h3:#D9A62E}
+.pf-fr button.ai{--h1:#5B8CFF;--h2:#A78BFA;--h3:#F3D58E}
+.pf-fr button.ceo,.pf-fr button.tl,.pf-fr button.sr,.pf-fr button.ai{background:linear-gradient(#fff,#fff) padding-box,conic-gradient(from 200deg,var(--h1),var(--h2),var(--h3),var(--h1)) border-box!important;border:2px solid transparent!important;box-shadow:0 6px 16px rgba(20,30,80,.12)!important}
+.pf-fr button.ceo b,.pf-fr button.tl b,.pf-fr button.sr b{color:#141b33}
+.pf-fr button.ceo small,.pf-fr button.tl small,.pf-fr button.sr small,.pf-fr button.ai small{background:linear-gradient(90deg,var(--h2),var(--h3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.pf-fr button.ceo .pf-fa,.pf-fr button.tl .pf-fa,.pf-fr button.sr .pf-fa,.pf-fr button.ai .pf-fa{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--h2)}
+.pf-fr button.ceo .pf-aic,.pf-fr button.tl .pf-aic,.pf-fr button.sr .pf-aic,.pf-fr button.ai .pf-aic{background:linear-gradient(90deg,var(--h1),var(--h2))}
 </style>
 </head>
 <body>
@@ -19209,7 +19219,7 @@ function pfDraw(){
  const RK=['CEO','Media Manager','Team Leader','Senior Media Buyer','Media Buyer'],rk=r=>{const i=RK.indexOf(r);return i<0?9:i};
  const fr=(PFP.people||[]).filter(x=>x.email!==P.email).map(x=>pfPerson(x.email)).sort((a,b)=>rk(a.role)-rk(b.role)||String(a.name).localeCompare(String(b.name)));
  {const i=fr.findIndex(x=>rk(x.role)>3);fr.splice(i<0?fr.length:i,0,{email:'',ai:true,name:'Alexandra',role:'AI assistant'})}
- const friends=`<div class="pf-h">Friends${fr.length?' <em>'+fr.length+'</em>':''}</div>`+(fr.length?`<div class="pf-fr">${fr.map(f=>f.ai?`<button type="button" class="ai" onclick="pfOpenAlexandra()"><i class="pf-aic">✦ AI</i><span class="pf-fa">${akAvIn()}</span><b>Alexandra</b><small>AI assistant</small></button>`:`<button type="button" class="${f.role==='CEO'?'ceo':f.role==='Team Leader'?'tl':f.role==='Senior Media Buyer'?'sr':''}" onclick="profOpen('${esc(f.email)}',event)">${f.role==='CEO'?'<i class="pf-rib">CEO</i>':f.role==='Team Leader'?'<i class="pf-tls">★</i>':''}<span class="pf-fa${f.role==='CEO'?' ceo':''}">${personAv(f.avatar,f.name)}${f.online&&!pfPrivate(f)?'<i></i>':''}</span><b>${esc(String(f.name||f.email).split(' ')[0])}</b>${f.role==='Senior Media Buyer'?'<small>Sr. Buyer</small><i class="pf-srs">★★★</i>':f.role?`<small>${esc(f.role==='CEO'?'Founder':f.role.replace('Senior Media Buyer','Sr. Buyer').replace('Media Buyer','Buyer').replace('Media Manager','Manager'))}</small>`:''}</button>`).join('')}</div>`:`<p class="pf-none">The team shows here.</p>`);
+ const friends=`<div class="pf-h">Friends${fr.length?' <em>'+fr.length+'</em>':''}</div>`+(fr.length?`<div class="pf-fr">${fr.map(f=>f.ai?`<button type="button" class="ai" onclick="pfOpenAlexandra()"><i class="pf-aic">✦ AI</i><span class="pf-fa">${akAvIn()}</span><b>Alexandra</b><small>AI assistant</small></button>`:`<button type="button" class="${f.role==='CEO'?'ceo':f.role==='Team Leader'?'tl':f.role==='Senior Media Buyer'?'sr':''}" onclick="profOpen('${esc(f.email)}',event)">${f.role==='CEO'?'<i class="pf-aic">♛ CEO</i>':f.role==='Team Leader'?'<i class="pf-aic">★ TL</i>':f.role==='Senior Media Buyer'?'<i class="pf-aic">★★★</i>':''}<span class="pf-fa${f.role==='CEO'?' ceo':''}">${personAv(f.avatar,f.name)}${f.online&&!pfPrivate(f)?'<i></i>':''}</span><b>${esc(String(f.name||f.email).split(' ')[0])}</b>${f.role==='Senior Media Buyer'?'<small>Sr. Buyer</small>':f.role?`<small>${esc(f.role==='CEO'?'Founder':f.role.replace('Senior Media Buyer','Sr. Buyer').replace('Media Buyer','Buyer').replace('Media Manager','Manager'))}</small>`:''}</button>`).join('')}</div>`:`<p class="pf-none">The team shows here.</p>`);
  const about=`<div class="pf-h">Details</div>${pfLeave(P.email)}${bday}${place}${works}${workson}
   <div class="pf-h">Links</div><a class="pf-r pf-a" href="https:\/\/sekna.co.uk/" target="_blank" rel="noopener">${pfI('globe')}<div class="pf-t">sekna.co.uk<small>Website</small></div></a>${friends}`;
  const waNum=P.wa==='none'?'':(!P.wa||P.wa==='same')?P.phone:P.wa,waDigits=pfWaIntl(waNum),telDigits=pfWaIntl(P.phone);
