@@ -83,7 +83,9 @@ async function teamPeople(mem, me) {
     seen[email] = 1;
     const m = mem[email] || {};
     out.push({ email, name: name || m.name || email.split('@')[0], role: m.role === 'Head of Media' ? 'CEO' : (m.role || ''), avatar: m.avatar || 0, phone: m.phone || '', tz: m.tz || '', bio: m.bio || '',
-      bday: m.bday || '', wa: m.wa || '', plats: Array.isArray(m.plats) ? m.plats : null, friends: Array.isArray(m.friends) ? m.friends : [], seen: last[email] || 0 });
+      bday: m.bday || '', wa: m.wa || '', plats: Array.isArray(m.plats) ? m.plats : null, friends: Array.isArray(m.friends) ? m.friends : [],
+      // v477 Senior Media Buyers, Team Leaders and the CEO keep their online status private
+      seen: (me && norm(me.email) === email) || ['Senior Media Buyer', 'Team Leader', 'CEO', 'Head of Media'].indexOf(m.role) < 0 ? (last[email] || 0) : 0 });
   };
   rows.forEach(r => { if (r.status === 'Approved') add(r.email, r.name); });
   // Only people with an approved device (someone the admin deleted or revoked drops off the

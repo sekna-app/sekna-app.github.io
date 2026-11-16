@@ -9562,9 +9562,7 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 .pf-ceo .pf-cv{background:radial-gradient(120% 90% at 80% 0%,rgba(243,213,142,.55),transparent 60%),linear-gradient(135deg,#0b1236,#1b2f7a 55%,#0b1236)!important;position:relative;overflow:hidden}
 .pf-ceo .pf-cv:after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(243,213,142,.08) 0 2px,transparent 2px 22px)}
 .pf-crown{position:absolute;right:66px;top:14px;width:44px;height:44px;z-index:2;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}.pf-crown svg{width:100%;height:100%}
-.pf-ceo .pf-pic{box-shadow:0 0 0 4px #E2B874,0 0 0 7px rgba(243,213,142,.35),0 10px 26px rgba(184,138,46,.45)!important;border-radius:50%}
 .pf-ceob{display:inline-flex;align-items:center;margin-top:6px;padding:5px 11px;border-radius:99px;background:linear-gradient(135deg,#F3D58E,#C9A24A);color:#1a2a66;font:900 11.5px Inter,system-ui,sans-serif;box-shadow:0 4px 12px rgba(201,162,74,.35)}
-.pf-ceo .pf-sh{box-shadow:0 -1px 0 rgba(226,184,116,.6)}
 /* v476 WhatsApp row, US/AR beside the name, friends with titles, the CEO on the SEKNA cover with a gold tick */
 .pf-wa{width:36px;height:36px;border-radius:11px;background:#E7F9EE;display:grid;place-items:center;flex:none}.pf-wa svg{width:24px;height:24px}
 .pf-ha2 b .pf-acc{display:inline-flex;margin-left:6px;vertical-align:2px;gap:5px}.pf-ha2 b .pf-acc a{min-width:28px;height:22px;border-radius:7px;font-size:10.5px}
@@ -9573,6 +9571,28 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 .pf-ceo .pf-cv{background:#203C8E url(icons/sekna-cover.webp?v=1) right center/cover no-repeat!important}
 .pf-ceo .pf-cv:after{display:none}
 .pf-pic .vbd.gold{filter:drop-shadow(0 2px 4px rgba(184,138,46,.5))}
+/* v477 birthday wheels */
+.pfbd{position:fixed;inset:0;z-index:2147483200;background:rgba(10,18,56,0);display:flex;align-items:flex-end;justify-content:center;transition:background .25s}
+.pfbd.on{background:rgba(10,18,56,.5)}
+.pfbd-sh{width:100%;max-width:460px;background:#fff;border-radius:26px 26px 0 0;padding:14px 18px calc(18px + env(safe-area-inset-bottom,0px));box-sizing:border-box;transform:translateY(100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);font-family:Inter,system-ui,sans-serif}
+.pfbd.on .pfbd-sh{transform:none}
+.pfbd-grab{display:block;width:40px;height:5px;border-radius:9px;background:#D7DCE8;margin:0 auto 12px}
+.pfbd-sh h3{margin:0;font-size:18px;color:#141b33}.pfbd-sh>small{display:block;font-size:12px;color:#8A93B5;font-weight:700;margin-top:2px}
+.pfbd-w{display:flex;gap:6px;margin-top:14px;position:relative;height:200px}
+.pfbd-band{position:absolute;left:0;right:0;top:80px;height:40px;border-radius:12px;background:#FFF6E3;box-shadow:inset 0 0 0 1.5px #E2B874;pointer-events:none}
+.pfbd-c{position:relative;height:200px;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;-webkit-mask:linear-gradient(transparent,#000 32%,#000 68%,transparent);mask:linear-gradient(transparent,#000 32%,#000 68%,transparent);overscroll-behavior:contain}
+.pfbd-c::-webkit-scrollbar{display:none}
+.pfbd-pad{display:block;height:80px}
+.pfbd-c span{display:block;height:40px;line-height:40px;text-align:center;scroll-snap-align:center;font-size:16px;font-weight:700;color:#8A93B5;cursor:pointer;transition:color .15s,font-size .15s}
+.pfbd-c span.on{font-size:19px;font-weight:900;color:#141b33}
+.pfbd-c.off span{opacity:.35}
+.pfbd-l{display:flex;gap:6px;font-size:10.5px;font-weight:900;color:#8A93B5;letter-spacing:.12em;margin-top:8px;text-align:center}
+.pfbd-t{display:flex;align-items:center;gap:9px;margin-top:14px;font-size:12.5px;font-weight:700;color:#3a4060;cursor:pointer}
+.pfbd-t input{display:none}.pfbd-t i{flex:none;width:38px;height:22px;border-radius:99px;background:#D7DCE8;position:relative;transition:background .2s}
+.pfbd-t i:after{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.pfbd-t input:checked+i{background:#1C3C96}.pfbd-t input:checked+i:after{left:19px}
+.pfbd-go{display:block;width:100%;margin-top:14px;border:0;border-radius:14px;padding:14px;font:900 14.5px Inter,system-ui,sans-serif;color:#fff;background:linear-gradient(135deg,#2a4bb3,#16307f);cursor:pointer}
+.pfbd-rm{display:block;width:100%;margin-top:8px;border:0;background:none;color:#D13B42;font:800 13px Inter,system-ui,sans-serif;padding:8px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -19001,14 +19021,14 @@ function pfDraw(){
  let place='';if(P.tz&&!/^(UTC|Etc\/)/.test(P.tz)){const nm=PF_TZ[P.tz]||String(P.tz).split('/').pop().replace(/_/g,' ');let tm='';try{tm=new Date().toLocaleTimeString('en-US',{timeZone:P.tz,hour:'numeric',minute:'2-digit'})}catch(e){}place=`<div class="pf-r">${pfI('pin')}<div class="pf-t">${esc(nm)}<small>${P.self?'From this device':'From their device'}${tm?' · '+esc(tm)+' local':''}</small></div></div>`}
  const ceo=P.role==='CEO',bp=pfBdayParts(P.bday),bdNow=pfBdayToday(P.bday);
  const bday=PF.bd?`<div class="pf-r">${pfI('cake')}<div class="pf-t"><input class="pf-in" id="pfBd" type="date" max="${new Date().getFullYear()-14}-12-31" value="${bp&&bp.y?esc(P.bday):''}"><label class="pf-ck"><input type="checkbox" id="pfBdY"${bp&&!bp.y?' checked':''}> Hide the year</label><div class="pf-eb"><button type="button" onclick="PF.bd=false;pfDraw()">Cancel</button>${P.bday?'<button type="button" onclick="pfSaveBday(this,true)">Remove</button>':''}<button type="button" class="p" onclick="pfSaveBday(this)">Save</button></div></div></div>`
-  :bp?`<div class="pf-r">${pfI('cake')}<div class="pf-t">${bp.d} ${PF_MON[bp.m-1]}${bp.y&&P.self?' '+bp.y:''}<small>Birthday${P.self?' · the team sees the day and month':''}</small></div>${bdNow?'<span class="pf-st bd">🎂 Today</span>':''}${P.self?`<button type="button" class="pf-pen" onclick="PF.bd=true;pfDraw()" aria-label="Edit birthday">${pfI('pen')}</button>`:''}</div>`
-  :P.self?`<div class="pf-r">${pfI('cake')}<div class="pf-t"><button type="button" class="pf-add" onclick="PF.bd=true;pfDraw()">Add your birthday</button><small>So the team can wish you a happy birthday</small></div><button type="button" class="pf-pen" onclick="PF.bd=true;pfDraw()" aria-label="Add birthday">${pfI('pen')}</button></div>`:'';
+  :bp?`<div class="pf-r">${pfI('cake')}<div class="pf-t">${bp.d} ${PF_MON[bp.m-1]}${bp.y&&P.self?' '+bp.y:''}<small>Birthday${P.self?' · the team sees the day and month':''}</small></div>${bdNow?'<span class="pf-st bd">🎂 Today</span>':''}${P.self?`<button type="button" class="pf-pen" onclick="pfBdOpen()" aria-label="Edit birthday">${pfI('pen')}</button>`:''}</div>`
+  :P.self?`<div class="pf-r">${pfI('cake')}<div class="pf-t"><button type="button" class="pf-add" onclick="pfBdOpen()">Add your birthday</button><small>So the team can wish you a happy birthday</small></div><button type="button" class="pf-pen" onclick="pfBdOpen()" aria-label="Add birthday">${pfI('pen')}</button></div>`:'';
  const works=`<div class="pf-h">Works at</div><a class="pf-ha pf-a" href="https://sekna.co.uk/" target="_blank" rel="noopener"><span class="pf-sk">S</span><b>SEKNA<small>${ceo?'Owner · Founder & CEO':'Digital marketing agency'}</small></b><span class="pf-go">›</span></a>
   <a class="pf-ha pf-a" href="https://wusul.io/" target="_blank" rel="noopener"><span class="pf-wl">${PF_WUSUL}</span><b>Wusul<small>${ceo?'Owner · by SEKNA':'by SEKNA · bringing in new clients'}</small></b><span class="pf-go">›</span></a>`;
  const workson=`<div class="pf-h">Works on</div><div class="pf-ha pf-ha2"><span class="pf-hl"><img src="icons/ha-brand.png" alt=""></span><b>Human Appeal <span class="pf-acc"><a href="https://www.facebook.com/share/1E7ZAjWWC1/" target="_blank" rel="noopener" aria-label="Human Appeal USA">US</a><a href="https://www.facebook.com/share/1EJVoqDZam/" target="_blank" rel="noopener" aria-label="Human Appeal Arabic">AR</a></span><small>Media buying for both accounts</small></b></div>`;
  const RK=['CEO','Media Manager','Team Leader','Senior Media Buyer','Media Buyer'],rk=r=>{const i=RK.indexOf(r);return i<0?9:i};
  const fr=(PFP.people||[]).filter(x=>x.email!==P.email).map(x=>pfPerson(x.email)).sort((a,b)=>rk(a.role)-rk(b.role)||String(a.name).localeCompare(String(b.name)));
- const friends=`<div class="pf-h">Friends${fr.length?' <em>'+fr.length+'</em>':''}</div>`+(fr.length?`<div class="pf-fr">${fr.map(f=>`<button type="button" onclick="profOpen('${esc(f.email)}',event)"><span class="pf-fa${f.role==='CEO'?' ceo':''}">${personAv(f.avatar,f.name)}${f.online?'<i></i>':''}</span><b>${esc(String(f.name||f.email).split(' ')[0])}</b>${f.role?`<small>${esc(f.role==='CEO'?'CEO':f.role.replace('Senior Media Buyer','Sr. Buyer').replace('Media Buyer','Buyer').replace('Media Manager','Manager'))}</small>`:''}</button>`).join('')}</div>`:`<p class="pf-none">The team shows here.</p>`);
+ const friends=`<div class="pf-h">Friends${fr.length?' <em>'+fr.length+'</em>':''}</div>`+(fr.length?`<div class="pf-fr">${fr.map(f=>`<button type="button" onclick="profOpen('${esc(f.email)}',event)"><span class="pf-fa${f.role==='CEO'?' ceo':''}">${personAv(f.avatar,f.name)}${f.online&&!pfPrivate(f)?'<i></i>':''}</span><b>${esc(String(f.name||f.email).split(' ')[0])}</b>${f.role?`<small>${esc(f.role==='CEO'?'CEO':f.role.replace('Senior Media Buyer','Sr. Buyer').replace('Media Buyer','Buyer').replace('Media Manager','Manager'))}</small>`:''}</button>`).join('')}</div>`:`<p class="pf-none">The team shows here.</p>`);
  const about=`<div class="pf-h">Details</div>${pfLeave(P.email)}${bday}${place}${works}${workson}
   <div class="pf-h">Links</div><a class="pf-r pf-a" href="https://sekna.co.uk/" target="_blank" rel="noopener">${pfI('globe')}<div class="pf-t">sekna.co.uk<small>Website</small></div></a>${friends}`;
  const phone=PF.edit?`<div class="pf-r">${pfI('phone')}<div class="pf-t"><input class="pf-in" id="pfPh" type="tel" inputmode="tel" maxlength="22" value="${esc(P.phone)}" placeholder="+20 100 000 0000"><label class="pf-ck"><input type="checkbox" id="pfWaS"${!P.wa||P.wa==='same'?' checked':''} onchange="document.getElementById('pfWaW').hidden=this.checked"> This number is on WhatsApp</label><div id="pfWaW"${!P.wa||P.wa==='same'?' hidden':''}><input class="pf-in" id="pfWa" type="tel" inputmode="tel" maxlength="22" value="${P.wa&&P.wa!=='same'?esc(P.wa):''}" placeholder="WhatsApp number (leave empty for none)" style="margin-top:6px"></div><div class="pf-eb"><button type="button" onclick="PF.edit=false;pfDraw()">Cancel</button><button type="button" class="p" onclick="pfSavePhone(this)">Save</button></div></div></div>`
@@ -19023,7 +19043,7 @@ function pfDraw(){
   <div class="pf-h">SEKNA platforms</div><a class="pf-r pf-a" href="https://wusul.io/services/" target="_blank" rel="noopener"><span class="pf-wl">${PF_WUSUL}</span><div class="pf-t">Wusul<small>Audience intelligence · reaching new clients</small></div><span class="pf-go">›</span></a>`;
  const body=PF.tab==='contact'?contact:PF.tab==='plat'?plat:about;
  o.innerHTML=`<div class="pf-card"><button type="button" class="pf-x" onclick="profClose()" aria-label="Close">${pfI('x')}</button>
-  <div class="pf-cv${ver?' v':''}">${ceo?'<i class="pf-crown">'+PF_CROWN+'</i>':''}</div><div class="pf-me"><span class="pf-pic">${personAv(P.avatar,P.name)}${ceo?PF_GTICK:ver?VBADGE:''}</span><div><b>${esc(P.name||P.email.split('@')[0])}</b>${ceo?'<span class="pf-ceob">Founder &amp; CEO · SEKNA &amp; Wusul</span>':P.role?roleBadge(P.role):''}<small class="pf-seen${P.online?' on':''}">${esc(P.self?'Online now':pfAgo(P.seen))}</small></div></div>
+  <div class="pf-cv${ver?' v':''}"></div><div class="pf-me"><span class="pf-pic${ceo?' pf-shine':''}">${personAv(P.avatar,P.name)}${ceo?PF_GTICK:ver?VBADGE:''}</span><div><b>${esc(P.name||P.email.split('@')[0])}</b>${P.role?roleBadge(P.role):''}${pfPrivate(P)?'':`<small class="pf-seen${P.online?' on':''}">${esc(P.self?'Online now':pfAgo(P.seen))}</small>`}</div></div>
 
   ${PF.bio?`<div class="pf-bio ed"><textarea class="pf-in" id="pfBio" maxlength="48" rows="2" placeholder="Say something about you" oninput="document.getElementById('pfBc').textContent=this.value.length+' / 48'">${esc(P.bio)}</textarea><div class="pf-eb"><small id="pfBc">${String(P.bio).length} / 48</small><button type="button" onclick="PF.bio=false;pfDraw()">Cancel</button><button type="button" class="p" onclick="pfSaveBio(this)">Save</button></div></div>`
    :P.bio?`<div class="pf-bio">${esc(P.bio)}${P.self?`<button type="button" class="pf-pen sm" onclick="PF.bio=true;pfDraw()" aria-label="Edit caption">${pfI('pen')}</button>`:''}</div>`
@@ -20550,6 +20570,40 @@ document.addEventListener('click',e=>{const c=e.target.closest&&e.target.closest
 // v476 the CEO's gold tick, and the WhatsApp mark
 const PF_GTICK='<svg class="vbd gold" viewBox="0 0 24 24" aria-label="Verified · CEO"><defs><linearGradient id="pfGt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F8E2AC"/><stop offset=".55" stop-color="#E2B874"/><stop offset="1" stop-color="#B88A2E"/></linearGradient></defs><path d="M12 1.5l2.6 2 3.2-.3 1 3.1 2.8 1.6-.9 3.1 1.4 2.9-2.6 1.9-.5 3.2-3.2.4-2 2.6-2.8-1.6-2.8 1.6-2-2.6-3.2-.4-.5-3.2L1.9 14l1.4-2.9-.9-3.1 2.8-1.6 1-3.1 3.2.3z" fill="url(#pfGt)"/><path d="M7.5 12.3l3 3 6-6.3" fill="none" stroke="#1a2a66" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const PF_WA='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#25D366" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/><path fill="#fff" d="M17.3 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1l-.9 1.1c-.2.2-.3.2-.6.1a7 7 0 0 1-3.5-3c-.3-.5.3-.4.7-1.3.1-.2 0-.4 0-.5l-.9-2.1c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1.1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5 1.9.8 2.6.9 3.5.7.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3z"/></svg>';
+
+// v477 Senior Media Buyers, Team Leaders and the CEO keep their online status private
+function pfPrivate(P){return !P.self&&['Senior Media Buyer','Team Leader','CEO'].indexOf(P.role)>=0}
+// v477 birthday wheels: day, month and year, each scrolls and snaps to the gold band
+function pfBdOpen(){
+ const P=pfPerson(PF.email),bp=pfBdayParts(P.bday)||{d:1,m:1,y:0},Y=new Date().getFullYear(),years=[];for(let y=Y-14;y>=Y-80;y--)years.push(y);
+ const keepY=P.bday?!!bp.y:true,y0=bp.y||2000;
+ document.getElementById('pfBdSh')?.remove();
+ const o=document.createElement('div');o.id='pfBdSh';o.className='pfbd';
+ const col=(id,items,cur,w)=>`<div class="pfbd-c" id="${id}" style="flex:${w}" data-n="${items.length}"><i class="pfbd-pad"></i>${items.map((t,i)=>`<span data-i="${i}" class="${i===cur?'on':''}">${t}</span>`).join('')}<i class="pfbd-pad"></i></div>`;
+ const days=[];for(let d=1;d<=31;d++)days.push(d);
+ o.innerHTML=`<div class="pfbd-sh"><i class="pfbd-grab"></i><h3>🎂 When's your birthday?</h3><small>Scroll to your day, month and year</small>
+  <div class="pfbd-w"><b class="pfbd-band"></b>${col('pfbdD',days,bp.d-1,1)}${col('pfbdM',['January','February','March','April','May','June','July','August','September','October','November','December'],bp.m-1,1.7)}${col('pfbdY',years,Math.max(0,years.indexOf(y0)),1.1)}</div>
+  <div class="pfbd-l"><span style="flex:1">DAY</span><span style="flex:1.7">MONTH</span><span style="flex:1.1">YEAR</span></div>
+  <label class="pfbd-t"><input type="checkbox" id="pfbdK"${keepY?' checked':''}><i></i>Keep my birth year (the team only sees day and month)</label>
+  <button type="button" class="pfbd-go" id="pfbdGo">Save</button>${P.bday?'<button type="button" class="pfbd-rm" onclick="pfBdSave(true)">Remove my birthday</button>':''}</div>`;
+ o.addEventListener('click',e=>{if(e.target===o)pfBdClose()});
+ (document.getElementById('pfBox')||document.body).appendChild(o);requestAnimationFrame(()=>o.classList.add('on'));
+ const H=40;
+ o.querySelectorAll('.pfbd-c').forEach(c=>{const on=c.querySelector('span.on');c.scrollTop=on?(+on.dataset.i)*H:0;
+  let t=0;c.addEventListener('scroll',()=>{const i=Math.round(c.scrollTop/H);c.querySelectorAll('span').forEach(x=>x.classList.toggle('on',+x.dataset.i===i));clearTimeout(t);t=setTimeout(pfBdLabel,80)},{passive:true});
+  c.addEventListener('click',e=>{const x=e.target.closest('span');if(x)c.scrollTo({top:(+x.dataset.i)*H,behavior:'smooth'})})});
+ document.getElementById('pfbdK').onchange=pfBdLabel;document.getElementById('pfbdGo').onclick=()=>pfBdSave(false);pfBdLabel()}
+function pfBdPick(){const g=id=>{const c=document.getElementById(id);return c?Math.round(c.scrollTop/40):0};const Y=new Date().getFullYear();
+ let d=g('pfbdD')+1,m=g('pfbdM')+1,y=Y-14-g('pfbdY');const max=new Date(y,m,0).getDate();if(d>max)d=max;return {d,m,y,keep:(document.getElementById('pfbdK')||{}).checked}}
+function pfBdLabel(){const b=document.getElementById('pfbdGo');if(!b)return;const x=pfBdPick();b.textContent='Save · '+x.d+' '+['January','February','March','April','May','June','July','August','September','October','November','December'][x.m-1]+(x.keep?' '+x.y:'');
+ const yc=document.getElementById('pfbdY');if(yc)yc.classList.toggle('off',!x.keep)}
+function pfBdClose(){const o=document.getElementById('pfBdSh');if(!o)return;o.classList.remove('on');setTimeout(()=>o.remove(),260)}
+async function pfBdSave(remove){const b=document.getElementById('pfbdGo');let v='';
+ if(!remove){const x=pfBdPick(),mm=String(x.m).padStart(2,'0'),dd=String(x.d).padStart(2,'0');v=x.keep?x.y+'-'+mm+'-'+dd:mm+'-'+dd}
+ if(b){b.disabled=true;b.textContent='Saving…'}
+ try{const r=await serverCall('setMyProfile',getAccessToken(),{bday:v});ACCESS_PROFILE=Object.assign({},ACCESS_PROFILE||{},{member:(r&&r.member)||{}});
+  const me=(PFP.people||[]).find(x=>x.email===PF.email);if(me)me.bday=v;pfBdClose();pfDraw();showSettingsToast(remove?'Birthday removed':'Birthday saved')}
+ catch(err){if(b){b.disabled=false;pfBdLabel()}showSettingsToast(errorText(err))}}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
