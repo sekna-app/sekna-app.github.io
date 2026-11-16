@@ -19209,7 +19209,7 @@ function pfDraw(){
  const RK=['CEO','Media Manager','Team Leader','Senior Media Buyer','Media Buyer'],rk=r=>{const i=RK.indexOf(r);return i<0?9:i};
  const fr=(PFP.people||[]).filter(x=>x.email!==P.email).map(x=>pfPerson(x.email)).sort((a,b)=>rk(a.role)-rk(b.role)||String(a.name).localeCompare(String(b.name)));
  {const i=fr.findIndex(x=>rk(x.role)>3);fr.splice(i<0?fr.length:i,0,{email:'',ai:true,name:'Alexandra',role:'AI assistant'})}
- const friends=`<div class="pf-h">Friends${fr.length?' <em>'+fr.length+'</em>':''}</div>`+(fr.length?`<div class="pf-fr">${fr.map(f=>f.ai?`<button type="button" class="ai" onclick="profClose();setTimeout(openAsk,300)"><i class="pf-aic">✦ AI</i><span class="pf-fa">${akAvIn()}</span><b>Alexandra</b><small>AI assistant</small></button>`:`<button type="button" class="${f.role==='CEO'?'ceo':f.role==='Team Leader'?'tl':f.role==='Senior Media Buyer'?'sr':''}" onclick="profOpen('${esc(f.email)}',event)">${f.role==='CEO'?'<i class="pf-rib">CEO</i>':f.role==='Team Leader'?'<i class="pf-tls">★</i>':''}<span class="pf-fa${f.role==='CEO'?' ceo':''}">${personAv(f.avatar,f.name)}${f.online&&!pfPrivate(f)?'<i></i>':''}</span><b>${esc(String(f.name||f.email).split(' ')[0])}</b>${f.role==='Senior Media Buyer'?'<small>Sr. Buyer</small><i class="pf-srs">★★★</i>':f.role?`<small>${esc(f.role==='CEO'?'Founder':f.role.replace('Senior Media Buyer','Sr. Buyer').replace('Media Buyer','Buyer').replace('Media Manager','Manager'))}</small>`:''}</button>`).join('')}</div>`:`<p class="pf-none">The team shows here.</p>`);
+ const friends=`<div class="pf-h">Friends${fr.length?' <em>'+fr.length+'</em>':''}</div>`+(fr.length?`<div class="pf-fr">${fr.map(f=>f.ai?`<button type="button" class="ai" onclick="pfOpenAlexandra()"><i class="pf-aic">✦ AI</i><span class="pf-fa">${akAvIn()}</span><b>Alexandra</b><small>AI assistant</small></button>`:`<button type="button" class="${f.role==='CEO'?'ceo':f.role==='Team Leader'?'tl':f.role==='Senior Media Buyer'?'sr':''}" onclick="profOpen('${esc(f.email)}',event)">${f.role==='CEO'?'<i class="pf-rib">CEO</i>':f.role==='Team Leader'?'<i class="pf-tls">★</i>':''}<span class="pf-fa${f.role==='CEO'?' ceo':''}">${personAv(f.avatar,f.name)}${f.online&&!pfPrivate(f)?'<i></i>':''}</span><b>${esc(String(f.name||f.email).split(' ')[0])}</b>${f.role==='Senior Media Buyer'?'<small>Sr. Buyer</small><i class="pf-srs">★★★</i>':f.role?`<small>${esc(f.role==='CEO'?'Founder':f.role.replace('Senior Media Buyer','Sr. Buyer').replace('Media Buyer','Buyer').replace('Media Manager','Manager'))}</small>`:''}</button>`).join('')}</div>`:`<p class="pf-none">The team shows here.</p>`);
  const about=`<div class="pf-h">Details</div>${pfLeave(P.email)}${bday}${place}${works}${workson}
   <div class="pf-h">Links</div><a class="pf-r pf-a" href="https:\/\/sekna.co.uk/" target="_blank" rel="noopener">${pfI('globe')}<div class="pf-t">sekna.co.uk<small>Website</small></div></a>${friends}`;
  const waNum=P.wa==='none'?'':(!P.wa||P.wa==='same')?P.phone:P.wa,waDigits=pfWaIntl(waNum),telDigits=pfWaIntl(P.phone);
@@ -20784,6 +20784,9 @@ function pfWaIntl(n){let d=String(n||'').trim();const plus=d.startsWith('+');d=d
  if(/^[79]\d{7}$/.test(d))return '968'+d;
  if(/^0\d{9,10}$/.test(d))return '20'+d.slice(1);
  return d}
+
+
+function pfOpenAlexandra(){profClose();setTimeout(()=>{if(!document.getElementById('akBox'))openAsk();let n=0;const go=()=>{if(document.getElementById('akAbt')){AK.pgTab='about';akAbout();return}if(++n<25)setTimeout(go,200)};setTimeout(go,350)},300)}
 </script>
 <div id="seknaFileEnd" hidden></div>
 <script>
