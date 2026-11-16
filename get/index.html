@@ -602,6 +602,14 @@ html.lite .nav img{opacity:1!important}
 .gi-l .w{max-width:0;overflow:hidden;white-space:nowrap;margin-left:0;animation:giw .7s ease .75s forwards,giwW .7s cubic-bezier(.6,0,.3,1) .7s forwards}
 @keyframes giwW{to{max-width:260px;margin-left:16px}}
 .gi small{padding-left:.5em}
+
+/* iPhone guide: icons stay inside the screen, the tap lands on the HEMERA icon, and a soft shine passes over the phone */
+.grid3{grid-template-columns:repeat(4,minmax(0,1fr))}
+.grid3 .me3{position:relative;display:block}.grid3 .me3 .tap3{left:50%;top:38%}
+.gl3{position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden;border-radius:inherit}
+.gl3:before{content:"";position:absolute;top:-20%;bottom:-20%;width:38%;left:-60%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.28) 45%,rgba(243,213,142,.22) 55%,transparent);transform:skewX(-16deg);animation:gl3 4.8s ease-in-out infinite 1.2s}
+@keyframes gl3{0%{left:-60%}30%,100%{left:130%}}
+@media (prefers-reduced-motion:reduce){.gl3:before{animation:none;display:none}}
 </style>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Goldline Studio">
@@ -720,10 +728,10 @@ html.lite .nav img{opacity:1!important}
         <p class="s">Add HEMERA to your Home Screen and allow notifications. Four taps in Safari, then it opens full screen from its own icon.</p>
       </div>
       <div class="g3s" id="g3s">
-        <div class="g3f ph3 back" id="g3f"><div class="bk3" aria-hidden="true"></div><div class="sc3"><div class="isl3"></div><div class="stb3" id="g3sb"><span>9:41</span><span class="si3"></span></div>
+        <div class="g3f ph3 back" id="g3f"><div class="bk3" aria-hidden="true"></div><div class="sc3"><i class="gl3" aria-hidden="true"></i><div class="isl3"></div><div class="stb3" id="g3sb"><span>9:41</span><span class="si3"></span></div>
           <div class="k3"><div class="app3"></div><div class="saf3"><div class="url3">🔒 sekna-app.web.app</div><div class="tb3"><span>‹</span><span>›</span><b>⇪</b><span>▭</span><span>⧉</span></div></div><i class="tap3" style="left:50%;top:94%"></i></div>
             <div class="k3"><div class="app3"></div><div class="dim3"></div><div class="sheet3"><div>Copy</div><div>Add Bookmark</div><div class="on">Add to Home Screen</div><div>Find on Page</div></div><i class="tap3" style="left:50%;top:84%"></i></div>
-            <div class="k3"><div class="home3"><div class="grid3"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><span><i class="me"></i>HEMERA</span><i></i><i></i></div></div><i class="tap3" style="left:41%;top:41%"></i></div>
+            <div class="k3"><div class="home3"><div class="grid3"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><span class="me3"><i class="me"></i>HEMERA<i class="tap3"></i></span><i></i><i></i></div></div></div>
             <div class="k3"><div class="app3"></div><div class="dim3"></div><div class="al3"><b>“HEMERA” Would Like to Send You Notifications</b><div><em>Don’t Allow</em><em>Allow</em></div></div><i class="tap3" style="left:67%;top:48%"></i></div>
           
           <div class="k3 lk3" id="g3lk"><div class="dt3" id="g3d"></div><div class="tm3">9:41</div><div class="ns3" id="g3n"></div><div class="lb3"><i>🔦</i><i>📷</i></div><div class="hb3"></div></div>
@@ -806,12 +814,12 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   function radius(){var r=parseFloat(getComputedStyle(stage).getPropertyValue('--r'))||260,pw=parseFloat(getComputedStyle(stage).getPropertyValue('--pw'))||230;return Math.max(r,pw*.58/Math.tan(Math.PI/N))}
   function place(){var r=radius();for(var i=0;i<N;i++)phones[i].style.transform='rotateY('+(i*step)+'deg) translateZ('+r+'px)';show(false)}
   // The front phone shows one of its screens; a long one scrolls down to its end.
-  function playLayer(ph,k){
+  function playLayer(ph,k,ms){
     var ls=ph.querySelectorAll('.ly');
     for(var j=0;j<ls.length;j++)ls[j].classList.toggle('on',j===k);
     var img=ls[k].querySelector('img'), box=ph.querySelector('.scn');if(!img)return;
     var go=function(){var dy=img.clientHeight-box.clientHeight;img.className='';void img.offsetWidth;
-      img.style.setProperty('--dur',dur(img)+'ms');img.style.setProperty('--dy',(-Math.max(0,dy))+'px');if(dy>30&&!/\/(tasks)\.webp/.test(img.src))img.className='sc'};
+      img.style.setProperty('--dur',Math.min(dur(img),ms||1e9)+'ms');img.style.setProperty('--dy',(-Math.max(0,dy))+'px');if(dy>30&&!/\/(tasks)\.webp/.test(img.src))img.className='sc'};
     if(img.complete)go();else img.onload=go;
   }
   function show(anim){
@@ -826,12 +834,13 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
     if(anim){[cap,capD].forEach(function(e){e.classList.remove('swap');void e.offsetWidth;e.classList.add('swap')})}
     // The screen starts once the ring has turned; a two-screen phone switches halfway.
     clearTimeout(lt);var ph=phones[k],n=S[k][0].length;
-    var j=0;lt=setTimeout(function nx(){playLayer(ph,j);var w=layerMs(k,j)+300;j++;if(j<n)lt=setTimeout(nx,w)},anim?900:200);
+    var j=0,slot=Math.max(900,(hold()-(anim?900:200))/n);lt=setTimeout(function nx(){playLayer(ph,j,slot-300);var w=slot;j++;if(j<n)lt=setTimeout(nx,w)},anim?900:200);
   }
   // A long screen gets time to scroll; a short one stays for LAYER.
   function dur(img){return img.naturalHeight/img.naturalWidth>2.4?SCROLL:LAYER}
   function layerMs(k,j){var im=phones[k].querySelectorAll('.ly img')[j];return im&&im.naturalWidth?dur(im):(/tasks|studio|compare/.test(S[k][0][j])?SCROLL:LAYER)}
-  function hold(){var k=((cur%N)+N)%N,t=900+600;if(S[k][0][0]==='ak')return 6500;for(var j=0;j<S[k][0].length;j++)t+=layerMs(k,j)+300;return t}
+  var HOLD={home:4,types:5,plan:5,ak:5,studio:6,'ss-ramadan':7,ranks:5,tasks:7};
+  function hold(){var k=((cur%N)+N)%N,t=900+600;if(HOLD[S[k][0][0]])return HOLD[S[k][0][0]]*1000;for(var j=0;j<S[k][0].length;j++)t+=layerMs(k,j)+300;return t}
   function go(n){cur+=n;show(true)}
   function play(){stop();timer=setTimeout(function next(){go(1);timer=setTimeout(next,hold())},hold())}
   function stop(){if(timer)clearTimeout(timer);timer=null}
