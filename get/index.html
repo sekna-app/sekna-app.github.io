@@ -135,6 +135,14 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
 .scr:hover img.on{animation-play-state:paused}
 .scr video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .7s ease}
 .scr video.on{opacity:1}
+.lap-ak{position:absolute;left:4.5%;top:50%;transform:translateY(-40%);max-width:25%;color:#fff;opacity:0;transition:opacity .7s ease,transform .9s cubic-bezier(.2,.8,.2,1);pointer-events:none;text-shadow:0 2px 14px rgba(3,8,30,.8)}
+.scr video.on+.lap-ak{opacity:1;transform:translateY(-50%)}
+.scr video:after{content:none}
+.lap-ak:before{content:"";position:absolute;left:-40%;top:-60%;bottom:-60%;width:190%;background:radial-gradient(closest-side,rgba(5,10,35,.55),transparent);z-index:-1}
+.lap-ak small{display:block;font-size:clamp(7px,1.1cqw,12px);font-weight:800;letter-spacing:.16em;color:var(--gold)}
+.lap-ak b{display:block;font-size:clamp(11px,3.3cqw,34px);line-height:1.02;font-weight:900;letter-spacing:-.03em;margin:.35em 0 .3em}
+.lap-ak b em{font-style:normal;color:var(--gold)}
+.lap-ak span{display:block;font-size:clamp(7px,1.25cqw,13px);font-weight:600;color:#dfe6ff}
 .ltabs{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:40px}
 .ltabs button{position:relative;overflow:hidden;font:inherit;font-size:13px;font-weight:800;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:8px 14px;background:rgba(255,255,255,.04);cursor:pointer;transition:color .2s,background .2s,border-color .2s}
 .ltabs button:hover{color:#fff}
@@ -693,6 +701,7 @@ html.lite .nav img{opacity:1!important}
         <img src="/get/shots/desk-month.webp?v=20" alt="Monthly Progress on a laptop" loading="lazy">
         <img src="/get/shots/desk-seasons.webp?v=21" alt="Seasons Calendar on a laptop" loading="lazy">
         <video muted playsinline loop preload="none" poster="/icons/alexandra/v/wide.jpg?v=1" src="/icons/alexandra/v/wide.mp4?v=1" aria-label="Alexandra"></video>
+        <div class="lap-ak" aria-hidden="true"><small>MEET ALEXANDRA</small><b>Your AI<br>media<br><em>analyst</em></b><span>Ask about any number, any day.</span></div>
       </div></div><div class="base"></div><div class="lap-sh"></div></div>
       <div class="ltabs" id="lapTabs"><button type="button" class="on">Daily<em></em></button><button type="button">Monthly<em></em></button><button type="button">Seasons<em></em></button><button type="button">Alexandra<em></em></button></div></div>
       <div class="txt">
@@ -863,7 +872,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
 // The laptop: the lid settles open in view, then it shows each page in turn and
 // scrolls it; tap a tab to pick one, hover the screen to pause.
 (function(){
-  var l=document.getElementById('lap'), imgs=document.getElementById('lapScr').children, tabs=document.getElementById('lapTabs').children;
+  var l=document.getElementById('lap'), imgs=document.getElementById('lapScr').querySelectorAll('img,video'), tabs=document.getElementById('lapTabs').children;
   var cur=0, t=null, D=9000, paused=false, left=D, at=0;
   function show(i){cur=(i+imgs.length)%imgs.length;
     for(var k=0;k<imgs.length;k++){[imgs[k],tabs[k]].forEach(function(e){e.classList.remove('on')})}
