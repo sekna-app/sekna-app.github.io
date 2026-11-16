@@ -9885,6 +9885,9 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
 .aks-sc.hasv img.bg{transform:none!important}
 .aks-sc video.vbg.rdy{opacity:1}
 .aks-sc.fitw video.vbg{height:auto;bottom:auto;object-fit:contain;-webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent)}
+/* v517 story layers on their own GPU layer (steadier in the Android app) */
+.aks-sc,.aks-sc video.vbg,.aks-sc img.bg{-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.aks-sc video.vbg{transform:translateZ(0)}
 </style>
 </head>
 <body>
@@ -11027,7 +11030,8 @@ async function akStoryShow(i,again){
  const tok=++S.tok,ph=S.o.querySelector('.aks-ph'),sc=[...ph.querySelectorAll('.aks-sc')],now=sc[i],cur=S.i>=0?sc[S.i]:null,fx=ph.querySelector('.aks-fx');
  
  const im=now.querySelector('img.bg');try{await Promise.race([im.decode(),new Promise(r=>setTimeout(r,im.complete?250:2000))])}catch(e){}if(tok!==S.tok||!window.AKST)return;
- const back=S.i>i,tr=S.i<0?'none':again||back?'calm':AKS_TR[i],T=AKS_T,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+ 
+ const inApp=!!window.AndroidShare,back=S.i>i,tr=S.i<0?'none':inApp?'fade':again||back?'calm':AKS_TR[i],T=AKS_T,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
  
  if(cur&&cur!==now)cur.getAnimations({subtree:true}).forEach(a=>{if(a instanceof CSSAnimation)return;try{a.commitStyles()}catch(e){}a.cancel()});
  sc.forEach(s=>{if(s===now||s===cur)return;s.classList.remove('on','out');s.getAnimations({subtree:true}).forEach(a=>{if(!(a instanceof CSSAnimation))a.cancel()});s.removeAttribute('style');s.querySelectorAll('[style]').forEach(n=>n.removeAttribute('style'))});
@@ -11051,13 +11055,14 @@ async function akStoryShow(i,again){
   if(tr==='diag'){A([{clipPath:'polygon(0% 0%,0% 0%,0% 0%,0% 0%)'},{clipPath:'polygon(0% 0%,100% 0%,100% 0%,0% 100%)',offset:.5},{clipPath:'polygon(0% 0%,100% 0%,100% 100%,0% 100%)'}]);B('aks-beam v',[{transform:`translateX(${-W}px) translateY(${-H*.4}px) rotate(45deg)`,opacity:1},{opacity:1,offset:.85},{transform:`translateX(${W}px) translateY(${H*.4}px) rotate(45deg)`,opacity:0}],{},{left:'50%',top:'-40%',bottom:'-40%'})}
   if(tr==='split'){A([{clipPath:'inset(0 50% 0 50%)'},{clipPath:full}]);[-1,1].forEach(d=>B('aks-beam v',[{transform:'translateX(0)',opacity:1},{opacity:1,offset:.85},{transform:`translateX(${d*W*.58}px)`,opacity:0}],{},{left:'50%',marginLeft:'-15px'}))}
   if(tr==='calm')A([{opacity:0},{opacity:1}],{duration:1100,easing:'cubic-bezier(.25,.1,.25,1)'});
+  if(tr==='fade')A([{opacity:0},{opacity:1}],{duration:450,easing:'ease-out'});
   if(tr==='none')A([{opacity:0},{opacity:1}],{duration:700});
-  const d0=tr==='none'?300:tr==='calm'?550:T*.65;
+  const d0=tr==='none'?300:tr==='fade'?250:tr==='calm'?550:T*.65;
   now.querySelector('.aks-cap small').animate([{opacity:0,letterSpacing:'.5em'},{opacity:1,letterSpacing:'.22em'}],{duration:700,delay:d0-150,fill:'both',easing:'ease-out'});
   now.querySelectorAll('.aks-cap h3 span').forEach((w,k)=>w.animate([{opacity:0,transform:'translateY(14px)'},{opacity:1,transform:'none'}],{duration:520,delay:d0+k*80,fill:'both',easing:'cubic-bezier(.2,.8,.2,1)'}));
   const go=now.querySelector('.aks-go');if(go)go.animate([{opacity:0,transform:'translateY(10px)'},{opacity:1,transform:'none'}],{duration:700,delay:d0+700,fill:'both'});
  }
- const dur=tr==='calm'?1150:tr==='none'?750:T*1.05;
+ const dur=tr==='calm'?1150:tr==='fade'?500:tr==='none'?750:T*1.05;
  if(cur&&cur!==now)(ta?ta.finished.catch(()=>{}):new Promise(r=>setTimeout(r,dur))).then(()=>{if(tok!==S.tok)return;cur.classList.remove('out');cur.getAnimations({subtree:true}).forEach(a=>{if(!(a instanceof CSSAnimation))a.cancel()});cur.removeAttribute('style');cur.querySelectorAll('[style]').forEach(n=>n.removeAttribute('style'))});
  
  
