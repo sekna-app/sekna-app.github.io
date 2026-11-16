@@ -1053,7 +1053,7 @@ async function buildActionLog(accountKey) {
 
 /** Performance Snapshots → Campaign Performance: every campaign, day by day, from the archive tab and this month's tab.
  *  Sent compact: c = [[name, channel]], d = { 'yyyy-MM-dd': [ci, spend, impr, clicks, conv, value, ci, ...] } (GBP, as in the sheet).
- *  The last 400 days are kept, enough for 180 days, months and a period before them. */
+ *  The last 550 days are kept: 180 days and the 12 months before them (the usual level). */
 async function buildCampPerf(accountKey) {
   const account = ACCOUNTS[normalizeAccountKey_(accountKey)];
   const book = await openBook(account);
@@ -1077,7 +1077,7 @@ async function buildCampPerf(accountKey) {
   }
   const all = [].concat.apply([], Object.keys(byMonth).map(mk => byMonth[mk]));
   const last = all.reduce((m, x) => x[0] > m ? x[0] : m, '');
-  const from = last ? fmt(new Date(Date.parse(last + 'T12:00:00Z') - 400 * 864e5), 'yyyy-MM-dd') : '';
+  const from = last ? fmt(new Date(Date.parse(last + 'T12:00:00Z') - 550 * 864e5), 'yyyy-MM-dd') : '';
   const camps = [], idx = {}, days = {};
   const r2 = v => Math.round(v * 100) / 100;
   all.forEach(x => {
