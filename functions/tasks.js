@@ -639,7 +639,7 @@ async function setMemberSelf(email, value, welcomed, extra) {
   // v360 the phone the person adds on their profile (the team sees it) and the time zone of their device (for the place on the profile)
   let phone = extra.phone, tz = extra.tz, bio = extra.bio, bday = extra.bday, wa = extra.wa;
   // v476 WhatsApp: 'same' as the phone, another number, or empty for none
-  if (wa !== undefined) { wa = String(wa || '').trim(); if (wa !== 'same') { wa = wa.replace(/[^0-9+ ()-]/g, '').slice(0, 22); if (wa && wa.replace(/\D/g, '').length < 6) throw new Error('That WhatsApp number looks too short.'); } }
+  if (wa !== undefined) { wa = String(wa || '').trim(); if (wa !== 'same' && wa !== 'none') { wa = wa.replace(/[^0-9+ ()-]/g, '').slice(0, 22); if (wa && wa.replace(/\D/g, '').length < 6) throw new Error('That WhatsApp number looks too short.'); } }
   // v475 birthday: YYYY-MM-DD, or MM-DD when the year is kept private
   if (bday !== undefined) {
     bday = String(bday || '').trim();
