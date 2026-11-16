@@ -9685,6 +9685,23 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
 /* v501 team card chips: small and plain */
 .pf-fr .pf-aic{top:6px!important;left:6px!important;font:800 7.5px/1 Inter,system-ui,sans-serif!important;letter-spacing:.04em;padding:2.5px 4px!important;border-radius:4px!important;box-shadow:none!important}
 .pf-fr button.ceo .pf-aic{background:#D9A62E!important}.pf-fr button.tl .pf-aic{background:#2453d6!important}.pf-fr button.sr .pf-aic{background:#8E97AA!important}.pf-fr button.ai .pf-aic{background:#7B6CF6!important}
+/* v512 Teach the bot · Design 2 */
+.ak-cr.d2 .hd{background:none;color:#141b33;padding:2px 2px 4px;border-radius:0;overflow:visible}
+.ak-cr.d2 .hd:after{display:none}
+.ak-cr.d2 .hd i{width:32px;height:32px;border-radius:10px;background:#203C8E;color:#fff}.ak-cr.d2 .hd i .ak-ic{width:18px;height:18px;stroke-width:1.5}
+.ak-cr.d2 .hd b{font-size:15px;color:#141b33}.ak-cr.d2 .hd small{color:#65676B}
+.ak-cr.d2 .gd{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:8px}
+.ak-cr.d2 .gd button{align-items:center;text-align:center;padding:9px 3px 8px;gap:1px;border-radius:12px}
+.ak-cr.d2 .gd i{width:28px;height:28px;margin:0 0 4px}
+.ak-cr.d2 .gd b{font-size:10.5px;letter-spacing:-.02em;font-weight:800;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ak-cr.d2 .gd small{font-size:10.5px;font-weight:700;color:#65676B;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ak.dk .ak-cr.d2 .hd b{color:#E4E6EB}.ak.dk .ak-cr.d2 .hd small{color:#B0B3B8}
+/* v512 Alexandra's number cards carry HEMERA's blue-to-gold line, like the dashboard cards */
+.ak-ncc{position:relative;overflow:hidden;padding-top:12px}
+.ak-ncc:before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,#203C8E 0%,#3D6BFF 55%,#E2B874 100%)}
+.ak-ncc b{overflow-wrap:anywhere}
+.ak-ncv{display:block;font:700 11.5px Inter,system-ui,sans-serif;color:#65676B;margin:1px 0 3px;font-variant-numeric:tabular-nums}
+.ak.dk .ak-ncv,body.dark-mode .ak-ncv{color:#B0B3B8}
 </style>
 </head>
 <body>
@@ -9695,8 +9712,6 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
 <script>
 (function(){var sp=document.getElementById('launchSp');if(!sp)return;var seen=false;
  try{seen=sessionStorage.getItem('hm_launch')==='1';sessionStorage.setItem('hm_launch','1')}catch(e){}
- // v511 the full intro plays on the first open of the day; later opens go straight in (faster)
- try{var dk=new Date().toDateString();if(localStorage.getItem('hm_launch_day')===dk)seen=true;else localStorage.setItem('hm_launch_day',dk)}catch(e){}
  var inFrame=false;try{inFrame=window.self!==window.top}catch(e){inFrame=true}
  if(seen||inFrame){sp.remove();return}
  // v471 in the Android app the plain opening screen steps aside the moment this intro starts
@@ -11415,7 +11430,10 @@ const AK_TMD={rules:'Rules you taught',refresh:'From the sheet',cats:'Filters an
 function akTeachHtml(sm){
  const d=k=>{if(!sm)return AK_TMD[k];return{rules:sm.rules+' rules',refresh:sm.rows+' rows',cats:sm.cats+' in use',plats:sm.plats+(sm.locked?' · '+sm.locked+' locked':''),access:sm.allowed!=null?(sm.allowed?sm.allowed+' can use it':'Only the editors'):sm.blocked?sm.blocked+' blocked':'Everyone can use it',team:(typeof tkPeople==='function'&&TK.data?tkPeople().length:sm.team)+' people',bc:sm.bc?sm.bc+' scheduled':'Nothing scheduled',usage:sm.msgs7!=null?sm.msgs7+' this week':AK_TMD.usage,debug:AK_TMD.debug}[k]};
  const tm=AK.editor?AK_TM:AK_TM.filter(x=>x[0]==='rules'||x[0]==='refresh');
- return `<div class="ak-cr"><div class="hd"><i>${akI('teach')}</i><div><b>Teach the bot</b><small>Type a rule below, or open a tool</small></div></div><div class="gd">${tm.map(([k,t,ic])=>`<button type="button" onclick="akTm('${k}')"><i>${akI(ic)}</i><b>${t}</b><small>${akEsc(d(k))}</small></button>`).join('')}</div></div>`+AKB('menu');
+ // v512 Design 2 (the owner's pick): a small header and a 4-across grid, each tile an icon, a short name and its number
+ const SH={rules:'Rules',refresh:'Refresh',cats:'Categories',plats:'Platforms',access:'Access',team:'Team',usage:'Usage',debug:'Debug'};
+ const n=k=>{if(!sm)return '';return {rules:sm.rules,refresh:sm.rows,cats:sm.cats,plats:sm.plats,access:sm.allowed!=null?(sm.allowed||'Editors'):sm.blocked?sm.blocked+' off':'All',team:(typeof tkPeople==='function'&&TK.data?tkPeople().length:sm.team),usage:sm.msgs7!=null?sm.msgs7:'',debug:'Model'}[k]};
+ return `<div class="ak-cr d2"><div class="hd"><i>${akI('teach')}</i><div><b>Teach the bot</b><small>Type a rule below, or open a tool</small></div></div><div class="gd">${tm.map(([k,t,ic])=>{const v=n(k);return `<button type="button" onclick="akTm('${k}')" title="${akEsc(t+' · '+d(k))}"><i>${akI(ic)}</i><b>${SH[k]||t}</b>${v!==''&&v!=null?`<small>${akEsc(String(v))}</small>`:''}</button>`}).join('')}</div></div>`+AKB('menu');
 }
 async function akTeach(){
  if(!ASK_HEMERA_URL){akBot('<p>Alexandra is not connected yet.</p>');return}
@@ -12583,7 +12601,7 @@ function notifyAndroidDashboard(d){
      }));
    }
    // v470 the home-screen widgets (value 14 days, streak, next season, clock, Alexandra) get their numbers from here
-   if(typeof window.AndroidShare.onWidgetData==='function')hmWidgetSend(d);
+   if(typeof window.AndroidShare.onWidgetData==='function'){try{window.AndroidShare.onWidgetData(JSON.stringify(hmWidgetData(d)))}catch(e){}}
    if(typeof window.AndroidShare.dashboardReady==='function'){
      window.AndroidShare.dashboardReady();
    }
@@ -20576,6 +20594,10 @@ function akDashLines(D,title){if(!D)return '';const L=[],a=D.account||{},m=D.mtd
 async function akCtx(){if(typeof DASH_DATA==='undefined'||!DASH_DATA)return '';const acc=CURRENT_ACCOUNT,L=[];
  L.push('Today (the user’s date): '+ssToday());try{L.push('Currency: open account '+((ACC_CUR||{})[acc]||'USD')+', other account '+((ACC_CUR||{})[acc==='ar'?'usa':'ar']||''))}catch(e){}
  L.push(akDashLines(DASH_DATA,'Account open on screen'));
+ // v512 the team and their ranks (from HEMERA's Team list), so she can answer "who is the CEO" or "what is my rank"
+ try{if(!PFP.people)await akWithin(pfPeopleLoad(),3000);const P=PFP.people||[],me=akMe().email;
+  if(P.length){L.push('## The HEMERA team (name | role | email). Answer team questions from this list.');P.forEach(x=>L.push((x.name||'')+' | '+(x.role||'Team member')+' | '+x.email+(x.email===me?' | this is the person asking':'')));
+   const mine=P.find(x=>x.email===me);if(mine)L.push('The person asking is '+(mine.name||'')+', role: '+(mine.role||'Team member')+'.')}}catch(e){}
  // the days before this month, from the month history (loaded once)
  try{let ex=MONTH_EXTRA[acc];if(!ex||!ex.days||!Object.keys(ex.days).length){const r=await akWithin(serverCall('getMonthCompareData',acc,getAccessToken()),6000);if(r){MONTH_EXTRA[acc]=r;ex=r}}
   if(ex&&ex.days){const first=((DASH_DATA.dayPlan||[])[0]||{}).date||'9999',ks=Object.keys(ex.days).filter(k=>k<first).sort().slice(-75);
@@ -20590,7 +20612,9 @@ function akCardsSplit(t){t=String(t||'');const mm=/\[\[\s*CARDS\s*\]\]?/i.exec(t
  try{const j=t.slice(i+mm[0].length).replace(/```(json)?/g,'');const o=j.indexOf('{'),c=j.lastIndexOf('}');if(o>=0&&c>o){const a=JSON.parse('['+j.slice(o,c+1)+']');if(Array.isArray(a))cards=a.filter(x=>x&&x.v!=null).slice(0,8)}}catch(e){}
  return {text:t.slice(0,i).trim(),cards:cards&&cards.length?cards:null}}
 function akCardsHtml(cs){const one=cs.length===1;return `<div class="ak-nc${one?' one':''}">${cs.map(c=>{const d=c.d==='up'?'up':c.d==='down'?'dn':'';
- return `<div class="ak-ncc"><small>${akEsc(String(c.l||''))}</small><b>${akEsc(String(c.v))}</b>${c.p?`<span class="ak-ncp ${d}">${akEsc(String(c.p))}</span>`:''}${c.s?`<em>${akEsc(String(c.s))}</em>`:''}</div>`}).join('')}</div><span class="ak-ncs">From the dashboard · ${akEsc((DASH_DATA&&DASH_DATA.account&&DASH_DATA.account.shortLabel)||'')}</span>`}
+ // v512 a comparison ("$41,155 vs $43,568") shows the first figure big and the other under it, so long numbers stay neat
+ const vs=String(c.v).split(/\s+vs\.?\s+/i),big=vs[0],was=vs.length>1?vs.slice(1).join(' vs '):'';
+ return `<div class="ak-ncc"><small>${akEsc(String(c.l||''))}</small><b>${akEsc(big)}</b>${was?`<span class="ak-ncv">vs ${akEsc(was)}</span>`:''}${c.p?`<span class="ak-ncp ${d}">${akEsc(String(c.p))}</span>`:''}${c.s?`<em>${akEsc(String(c.s))}</em>`:''}</div>`}).join('')}</div><span class="ak-ncs">From the dashboard · ${akEsc((DASH_DATA&&DASH_DATA.account&&DASH_DATA.account.shortLabel)||'')}</span>`}
 
 // v462 phones: drag Alexandra's bubble; a short tap still opens the chat. The spot is remembered.
 function akBubClamp(x,y){const w=60,m=8,vw=innerWidth,vh=innerHeight;return[Math.max(m,Math.min(vw-w-m,x)),Math.max(m+20,Math.min(vh-w-m-20,y))]}
@@ -20753,16 +20777,6 @@ function hmOverlayAsk(){if(document.getElementById('hmOv'))return;const o=docume
 // v501 Alexandra's Arabic font is fetched at start, so her chat never shows the old font first
 try{document.fonts&&document.fonts.load('400 16px AKufi','\u0645\u0631\u062d\u0628\u0627')}catch(e){}
 
-// v509 the widgets get their numbers after the page has drawn, only when something changed, and the photo only when it changed
-// (the app did the widget work while the page waited, on every redraw: that made the app feel heavy)
-let HMW_LAST='',HMW_T=0;
-function hmWidgetSend(d){clearTimeout(HMW_T);HMW_T=setTimeout(()=>{const go=()=>{try{const o=hmWidgetData(d);let av=o.avatar||'';delete o.avatar;
-  const key=JSON.stringify(o);let avk='';try{avk=av?av.length+':'+av.slice(-40):''}catch(e){}
-  let avOld='';try{avOld=localStorage.getItem('hm_w_av')||''}catch(e){}
-  if(key===HMW_LAST&&avk===avOld)return;HMW_LAST=key;
-  if(av&&avk!==avOld){o.avatar=av;try{localStorage.setItem('hm_w_av',avk)}catch(e){}}
-  window.AndroidShare.onWidgetData(JSON.stringify(o))}catch(e){}};
- if(window.requestIdleCallback)requestIdleCallback(go,{timeout:4000});else go()},1500)}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
