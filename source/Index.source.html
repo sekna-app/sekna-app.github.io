@@ -9721,6 +9721,7 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
 /* v517 story layers on their own GPU layer (steadier in the Android app) */
 .aks-sc,.aks-sc video.vbg,.aks-sc img.bg{-webkit-backface-visibility:hidden;backface-visibility:hidden}
 .aks-sc video.vbg{transform:translateZ(0)}
+.aks-sc.zm img.bg{transform:none;transform-origin:50% 58%;object-position:50% 40%}
 </style>
 </head>
 <body>
@@ -10824,7 +10825,7 @@ const AKS=[
  {img:'eyes',vid:1,k:'ALEXANDRA',h:'She reads <em>every number</em>'},
  {img:'answers',vid:1,k:'HEMERA',h:'and turns it into <em>answers</em>'},
  {img:'flag',k:'ALEXANDRA × HEMERA',h:'Built for <em>HEMERA</em>'},
- {img:'sekna',vid:1,k:'SEKNA',h:'Made at <em>Sekna</em>',cls:'lowfade'},
+ {img:'sekna2',zoom:1,k:'SEKNA',h:'Made at <em>Sekna</em>',cls:'lowfade'},
  {img:'invite',k:'MEET ALEXANDRA',h:'Ask her <em>anything</em>'}];
 const AKS_TR=['none','sweepD','diag','split','sweepR','sweepL','calm'],AKS_DUR=3800,AKS_T=1050,AKS_E='cubic-bezier(.7,0,.2,1)';
 function akStoryWords(h){let em=false;return h.split(/(<em>|<\/em>| )/).filter(x=>x&&x!==' ').map(t=>{if(t==='<em>'){em=true;return ''}if(t==='</em>'){em=false;return ''}return `<span>${em?`<em>${t}</em>`:t}</span>`}).filter(Boolean).join(' ')}
@@ -10833,7 +10834,7 @@ function akStory(){
  const o=document.createElement('div');o.id='aksBox';o.className='aks';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Meet Alexandra');
  o.innerHTML=`<div class="aks-ph"><div class="aks-bar"><img src="get/logo-white.webp" alt="HEMERA"><button type="button" class="aks-x" aria-label="Close" onclick="akStoryClose()">${akI('x')}</button></div>
   <div class="aks-dots">${AKS.map(()=>'<i></i>').join('')}</div>
-  ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}${s.vid?' hasv':''}"><img class="bg" src="${s.vid?`icons/alexandra/v/${s.img}.jpg?v=3`:`icons/alexandra/${s.img}.webp?v=7`}" decoding="async" alt="">${s.vid?`<video class="vbg" muted playsinline loop preload="none" poster="icons/alexandra/v/${s.img}.jpg?v=3" src="icons/alexandra/v/${s.img}.mp4?v=3"></video>`:''}${s.smoke?'<i class="aks-vig"></i>':''}<div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
+  ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}${s.vid?' hasv':''}${s.zoom?' zm':''}"><img class="bg" src="${s.vid?`icons/alexandra/v/${s.img}.jpg?v=3`:`icons/alexandra/${s.img}.webp?v=7`}" decoding="async" alt="">${s.vid?`<video class="vbg" muted playsinline loop preload="none" poster="icons/alexandra/v/${s.img}.jpg?v=3" src="icons/alexandra/v/${s.img}.mp4?v=3"></video>`:''}${s.smoke?'<i class="aks-vig"></i>':''}<div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
   <div class="aks-fx"></div><div class="aks-tap" aria-hidden="true"></div>
   <div class="aks-kb"><button type="button" aria-label="Back" onclick="akStoryStep(-1)"></button><button type="button" aria-label="Next" onclick="akStoryStep(1)"></button></div></div><button type="button" class="aks-arr l" aria-label="Back" onclick="akStoryStep(-1)">‹</button><button type="button" class="aks-arr r" aria-label="Next" onclick="akStoryStep(1)">›</button><button type="button" class="aks-xd" aria-label="Close" onclick="akStoryClose()">${akI('x')}</button>`;
  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));
@@ -10883,6 +10884,8 @@ async function akStoryShow(i,again){
  const W=ph.clientWidth,H=ph.clientHeight,full='inset(0 0 0 0)';
  if(!reduce){
   if(now.querySelector('video.vbg')){}
+  // v518 a slow zoom toward SEKNA in her hands
+  else if(AKS[i].zoom)im.animate([{transform:'scale(1)'},{transform:'scale(1.22)'}],{duration:AKS_DUR+T+600,easing:'cubic-bezier(.3,0,.25,1)',fill:'forwards'});
   else if(now.classList.contains('fitw'))im.animate([{transform:'scale(1)'},{transform:'scale(1.03)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
   else if(now.querySelector('.aks-vig'))im.animate([{transform:'scale(1)'},{transform:'scale(1.04)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
   else im.animate([{transform:'scale(1.05) translateX(2%)'},{transform:'scale(1.05) translateX(-2%)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
