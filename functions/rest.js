@@ -705,11 +705,20 @@ function greetingEmail(k, rows, head) {
   // Spam filters drop mail from a gmail.com sender that talks about tax in the subject, so that one gets a plain subject.
   return { subject: k === 'tax' ? 'Welcome December · HEMERA' : g[0], title: e(g[0]), html: full, inner };
 }
+/* v507 the sheets are in pounds: a USA row is turned into dollars at the day's rate before it gets the $ sign
+   (AR stays in pounds). If the rate cannot be had, the row keeps pounds with the £ sign rather than a wrong $. */
+async function usdRow(label, t) {
+  let r = 0;
+  try { r = Number(((await fxFresh()).rates || {}).USD) || 0; } catch (e) { console.error('Season USD rate: ' + e.message); }
+  if (!(r > 0)) return { label, sym: '£', t };
+  const m = v => (Number(v) || 0) * r;
+  return { label, sym: '$', t: Object.assign({}, t, { spend: m(t.spend), value: m(t.value), best: t.best ? Object.assign({}, t.best, { spend: m(t.best.spend), value: m(t.best.value) }) : null }) };
+}
 /** Rows for a greeting email: only the tax season (1 Dec) shows last December's USA numbers. */
 async function greetingRows(k, at) {
   if (k !== 'tax') return null;
   const from = seasonLastYear(k, at);
-  try { const t = seasonTotals((await require('./dash').getMonthCompareData('usa')).days, from, SEASON_LEN.tax); return t ? [{ label: 'USA', sym: '$', t }] : []; }
+  try { const t = seasonTotals((await require('./dash').getMonthCompareData('usa')).days, from, SEASON_LEN.tax); return t ? [await usdRow('USA', t)] : []; }
   catch (e) { console.error('Greeting rows: ' + e.message); return []; }
 }
 /** A test email, reporting what happened: Gmail first (with its error if it fails), then the Apps Script relay. */
@@ -728,7 +737,7 @@ async function seasonEmail(s) {
   const accs = s.acc ? [['usa', 'USA', '$']] : [['usa', 'USA', '$'], ['ar', 'AR', '£']];
   const rows = [];
   if (from) for (const [key, label, sym] of accs) {
-    try { const t = seasonTotals((await require('./dash').getMonthCompareData(key)).days, from, len); if (t) rows.push({ label, sym, t }); }
+    try { const t = seasonTotals((await require('./dash').getMonthCompareData(key)).days, from, len); if (t) rows.push(key === 'usa' ? await usdRow(label, t) : { label, sym, t }); }
     catch (e) { console.error('Season email ' + key + ': ' + e.message); }
   }
   const h = seasonEmailHtml(s, k, rows);
