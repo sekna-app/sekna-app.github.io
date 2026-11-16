@@ -9822,6 +9822,11 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 #askNavBtn .sk-ask-av img{width:100%;height:100%;object-fit:cover;display:block}
 #askNavBtn .sk-ask-av svg{width:16px;height:16px;fill:#F3D58E;stroke:none}
 #askNavBtn .sk-ask-ic i{position:absolute;right:-6px;top:-6px;font:900 7.5px/1 Inter,system-ui,sans-serif;font-style:normal;color:#0b1236;background:#F3D58E;border-radius:4px;padding:2px 3px;z-index:2}
+/* v492 photos stay perfect circles everywhere (a tall photo looked oval in Admin) */
+.sk-emb.sk-ph{width:100%;height:100%;aspect-ratio:1/1}
+.sk-person-avatar.has-emb,.sk-user-avatar.has-emb{aspect-ratio:1/1}
+/* v492 Alexandra's minimise button sits next to (i) on the right */
+.ak-min:not([hidden])~.ak-inf{margin-left:2px}
 </style>
 </head>
 <body>
