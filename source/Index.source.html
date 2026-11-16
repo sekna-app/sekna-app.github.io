@@ -9673,6 +9673,7 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 .hmov-c h3{margin:14px 0 6px;font-size:19px;color:#141b33}.hmov-c p{margin:0 0 18px;font-size:13.5px;line-height:1.5;color:#65676B;font-weight:600}
 .hmov-go{display:block;width:100%;border:0;border-radius:14px;padding:14px;font:900 15px Inter,system-ui,sans-serif;color:#fff;background:linear-gradient(135deg,#2a4bb3,#16307f);cursor:pointer}
 .hmov-no{display:block;width:100%;margin-top:6px;border:0;background:none;padding:10px;font:800 13.5px Inter,system-ui,sans-serif;color:#65676B;cursor:pointer}
+.sal-in.sent{background:#EEF1F7;color:#7A859E}
 </style>
 </head>
 <body>
@@ -20024,14 +20025,16 @@ function salHtml(){
  const nx={};(SAL.data.next||[]).forEach(n=>nx[n.k]=n);
  const H=['ramadan','last10','eidfitr','dhulhijjah','arafah','eidadha','ashura'],U=['thanksgiving','givingtuesday','tax','yearend'];
  const sendOf=k=>{const n=nx[k]||{};return n.at?(view==='remind'?new Date(Date.parse(n.at+'T00:00:00Z')-L[k]*864e5).toISOString().slice(0,10):n.at):'9'};
- const keys=(grp==='us'?U:grp==='hijri'?H:H.concat(U)).slice().sort((a,b)=>sendOf(a)<sendOf(b)?-1:1);
+ const _t=new Date(),todayK=_t.getFullYear()+'-'+String(_t.getMonth()+1).padStart(2,'0')+'-'+String(_t.getDate()).padStart(2,'0');
+ const sortOf=k=>{const v=sendOf(k);return v<todayK?'~'+v:v};// alerts already sent go to the bottom
+ const keys=(grp==='us'?U:grp==='hijri'?H:H.concat(U)).slice().sort((a,b)=>sortOf(a)<sortOf(b)?-1:1);
  const short=dk=>salD(dk).replace(/ \d{4}$/,'');
  const inN=dk=>{if(!dk)return '';const t=new Date();const d=Math.round((Date.parse(dk+'T00:00:00Z')-Date.UTC(t.getFullYear(),t.getMonth(),t.getDate()))/864e5);return `<span class="sal-in${d<=7?' soon':''}">${d<=0?'Today':d===1?'Tomorrow':'In '+d+' days'}</span>`};
  const seg=(k,v,opts)=>`<div class="sal-seg sal-${k}">${opts.map(([o,l])=>`<button type="button" class="${v===o?'on':''}" onclick="salSet('${k}','${o}')">${l}</button>`).join('')}</div>`;
  const tag=k=>U.includes(k)?'<em class="sal-tag us">USA</em>':'<em class="sal-tag">USA · AR</em>';
  let rows='';
  if(view==='remind')rows=keys.map(k=>{const n=nx[k]||{},send=n.at?new Date(Date.parse(n.at+'T00:00:00Z')-L[k]*864e5).toISOString().slice(0,10):'';
-   return `<div class="sal-r sal-ri"><img src="${esc('https://sekna-app.web.app/icons/seasons/'+k+'.jpg?v=5')}" alt="" loading="lazy"><div class="sal-t"><b>${SAL_NAMES[k]} ${tag(k)}</b>${inN(send)}<small>${n.at?'Alert '+short(send)+' · starts '+short(n.at):''}</small><button type="button" class="sal-test" onclick="salTest(this,'remind','${k}')">Send me a test</button></div><div class="sal-n"><button type="button" onclick="salStep('${k}',-1)" aria-label="Fewer days">−</button><span><b>${L[k]}</b>${L[k]===1?' day':' days'}</span><button type="button" onclick="salStep('${k}',1)" aria-label="More days">+</button></div></div>`}).join('');
+   return `<div class="sal-r sal-ri"><img src="${esc('https://sekna-app.web.app/icons/seasons/'+k+'.jpg?v=5')}" alt="" loading="lazy"><div class="sal-t"><b>${SAL_NAMES[k]} ${tag(k)}</b>${send&&send<todayK?`<span class="sal-in sent">Sent ${(()=>{const d=Math.round((Date.parse(todayK+'T00:00:00Z')-Date.parse(send+'T00:00:00Z'))/864e5);return d===1?'yesterday':d+' days ago'})()}</span>`:inN(send)}<small>${n.at?'Alert '+short(send)+' · starts '+short(n.at):''}</small><button type="button" class="sal-test" onclick="salTest(this,'remind','${k}')">Send me a test</button></div><div class="sal-n"><button type="button" onclick="salStep('${k}',-1)" aria-label="Fewer days">−</button><span><b>${L[k]}</b>${L[k]===1?' day':' days'}</span><button type="button" onclick="salStep('${k}',1)" aria-label="More days">+</button></div></div>`}).join('');
  else if(view==='splash')rows=keys.filter(k=>SPL_DAYS[k]).map(k=>{const n=nx[k]||{},dev=SAL.dev||'phone';
    return `<div class="sal-sp ${dev}"><button type="button" class="sal-spi" onclick="salSplash('${k}')" aria-label="Preview"><img src="icons/splash/${k}${dev==='desk'?'-d':''}.webp?v=1" alt="" loading="lazy"><span>Preview</span></button><div class="sal-t"><b>${SAL_NAMES[k]} ${tag(k)}</b>${inN(n.at)}<small>${SPL_DAYS[k]}</small><small class="sal-lb">“${SPL_TXT[k]}”</small>${(()=>{const off=!!(((APP_PREFS||{}).splashOff||{})[k]);return `<div class="sal-tg"><button type="button" class="${off?'':'on'}" onclick="salSplashSet('${k}',false)">On</button><button type="button" class="${off?'on off':''}" onclick="salSplashSet('${k}',true)">Off</button></div>`})()}</div>${SCARD_DEF[k]?`<div class="sal-spc"><span class="sal-lb2">Daily card</span>${scardHtml(k,SCARD_DEF[k][2],SCARD_DEF[k][3],dev==='phone')}</div>`:''}</div>`}).join('');
  else rows=keys.map(k=>{const n=nx[k]||{},g=(SAL.data.greet||{})[k]||['',''];
