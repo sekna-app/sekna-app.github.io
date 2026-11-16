@@ -19187,7 +19187,7 @@ function pfDraw(){
   :P.phone?`<div class="pf-r">${pfI('phone')}<div class="pf-t"><a href="tel:${esc(P.phone.replace(/[^0-9+]/g,''))}">${esc(P.phone)}</a><small>Phone · the team sees it</small></div>${P.self?`<button type="button" class="pf-pen" onclick="PF.edit=true;pfDraw()" aria-label="Edit phone">${pfI('pen')}</button>`:''}</div>`
   :P.self?`<div class="pf-r">${pfI('phone')}<div class="pf-t"><button type="button" class="pf-add" onclick="PF.edit=true;pfDraw()">Add a phone number</button><small>Only the team sees it</small></div><button type="button" class="pf-pen" onclick="PF.edit=true;pfDraw()" aria-label="Add phone">${pfI('pen')}</button></div>`
   :`<div class="pf-r">${pfI('phone')}<div class="pf-t">No phone yet<small>Phone</small></div></div>`;
- const waNum=P.wa==='none'?'':(!P.wa||P.wa==='same')?P.phone:P.wa,waDigits=String(waNum).replace(/\D/g,'');
+ const waNum=P.wa==='none'?'':(!P.wa||P.wa==='same')?P.phone:P.wa,waDigits=pfWaIntl(waNum);
  const wa=!PF.edit&&waDigits.length>=6?`<a class="pf-r pf-a" href="https:\/\/wa.me/${waDigits}" target="_blank" rel="noopener"><span class="pf-wa">${PF_WA}</span><div class="pf-t">Chat on WhatsApp<small>${esc(waNum)}</small></div><span class="pf-go">›</span></a>`:'';
  const contact=`<div class="pf-h">Contact info</div><a class="pf-r pf-a" href="mailto:${esc(P.email)}">${pfI('mail')}<div class="pf-t">${esc(P.email)}<small>Email</small></div></a>${phone}${wa}`;
  const pk=(Array.isArray(P.plats)&&P.plats.length?P.plats:PF_PLAT_DEF).filter(k=>PF_PLATS[k]);
@@ -20744,6 +20744,14 @@ async function pfBdSave(remove){const b=document.getElementById('pfbdGo');let v=
   const me=(PFP.people||[]).find(x=>x.email===PF.email);if(me)me.bday=v;pfBdClose();pfDraw();showSettingsToast(remove?'Birthday removed':'Birthday saved')}
  catch(err){if(b){b.disabled=false;pfBdLabel()}showSettingsToast(errorText(err))}}
 
+
+
+function pfWaIntl(n){let d=String(n||'').trim();const plus=d.startsWith('+');d=d.replace(/\D/g,'');if(!d)return '';
+ if(plus)return d;if(d.startsWith('00'))return d.slice(2);
+ if(/^01[0125]\d{8}$/.test(d))return '20'+d.slice(1);
+ if(/^[79]\d{7}$/.test(d))return '968'+d;
+ if(/^0\d{9,10}$/.test(d))return '20'+d.slice(1);
+ return d}
 </script>
 <div id="seknaFileEnd" hidden></div>
 <script>
