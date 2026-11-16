@@ -576,6 +576,32 @@ html.lite .nav img{opacity:1!important}
 @keyframes gid{to{stroke-dashoffset:0}}@keyframes gif{to{opacity:1}}@keyframes giw{to{opacity:1;transform:none}}
 @media (max-width:520px){.gi-l svg{width:56px;height:48px}.gi-l .w b{font-size:40px}}
 @media (prefers-reduced-motion:reduce){.gi{display:none}}
+
+/* Alexandra's live story phone */
+.fr .ly.akm{top:0;background:#0b1236;overflow:hidden}
+.akm-p{position:absolute;inset:0;background:url(/get/shots/ak-story.webp?v=1) center 25%/cover;animation:akmKb 9s ease-in-out infinite alternate}
+.akm::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,13,34,0) 40%,rgba(7,13,34,.95) 86%)}
+@keyframes akmKb{from{transform:scale(1.08) translateX(3%)}to{transform:scale(1.16) translateX(-3%)}}
+.akm-b{position:absolute;top:-10%;bottom:-10%;width:22%;left:-30%;z-index:2;background:linear-gradient(90deg,transparent,rgba(243,213,142,.55),transparent);transform:skewX(-14deg);animation:akmB 4.5s infinite 1s;mix-blend-mode:screen}
+@keyframes akmB{0%{left:-30%}35%,100%{left:120%}}
+.akm-d{position:absolute;top:calc(var(--sbh,22px) + 6px);left:6%;right:6%;display:flex;gap:3px;z-index:4}.akm-d i{flex:1;height:2px;border-radius:2px;background:rgba(255,255,255,.3);overflow:hidden}.akm-d u{display:block;height:100%;background:#fff;width:0}
+.akm-d i:first-child u{width:100%}.akm-d i:nth-child(2) u{animation:akmF 6s linear infinite}@keyframes akmF{to{width:100%}}
+.akm-t{position:absolute;top:calc(var(--sbh,22px) + 16px);left:6%;z-index:4;display:flex;align-items:center;gap:6px;color:#fff;font-weight:800;font-size:calc(var(--pw) * .045)}
+.akm-t span{width:calc(var(--pw) * .1);height:calc(var(--pw) * .1);border-radius:50%;background:url(/get/shots/ak-av.webp?v=1) center/cover;box-shadow:0 0 0 1.5px #fff,0 0 0 3px #A78BFA}
+.akm-c{position:absolute;left:7%;right:7%;bottom:9%;z-index:4;color:#fff}
+.akm-c small{display:block;font-size:calc(var(--pw) * .036);font-weight:900;letter-spacing:.24em;color:#E2B874;animation:akmL 6s infinite}
+.akm-c h3{font:400 calc(var(--pw) * .1)/1.15 "DM Serif Display",Georgia,serif;margin:6px 0 0}.akm-c h3 span{display:inline-block;opacity:0;animation:akmW 6s infinite}.akm-c h3 em{font-style:normal;color:#E2B874}
+.akm-c b{display:inline-block;margin-top:10px;padding:7px 12px;border-radius:99px;background:#fff;color:#0B1640;font-size:calc(var(--pw) * .045);font-weight:900;opacity:0;animation:akmW 6s infinite 1.3s}
+@keyframes akmL{0%{opacity:0;letter-spacing:.5em}12%,90%{opacity:1;letter-spacing:.24em}100%{opacity:0}}
+@keyframes akmW{0%,8%{opacity:0;transform:translateY(12px)}18%,90%{opacity:1;transform:none}100%{opacity:0}}
+.rp:not(.front) .akm *{animation-play-state:paused}
+
+/* the Goldline mark starts in the exact middle of the screen, then the name opens beside it */
+.gi{height:100vh;height:100dvh;bottom:auto}
+.gi-l{gap:0}
+.gi-l .w{max-width:0;overflow:hidden;white-space:nowrap;margin-left:0;animation:giw .7s ease .75s forwards,giwW .7s cubic-bezier(.6,0,.3,1) .7s forwards}
+@keyframes giwW{to{max-width:260px;margin-left:16px}}
+.gi small{padding-left:.5em}
 </style>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Goldline Studio">
@@ -752,6 +778,8 @@ function copyLink(btn){
 }
 
 var NAV={studio:1,compare:1};
+// Alexandra's phone: a live story screen instead of a screenshot
+var AKM='<div class="ly on akm"><div class="akm-p"></div><i class="akm-b"></i><div class="akm-d"><i><u></u></i><i><u></u></i><i><u></u></i><i><u></u></i></div><div class="akm-t"><span></span>Alexandra · AI</div><div class="akm-c"><small>MEET ALEXANDRA</small><h3><span style="animation-delay:.2s">Your</span> <span style="animation-delay:.3s">numbers,</span> <span style="animation-delay:.4s">answered</span> <span style="animation-delay:.5s"><em>in</em></span> <span style="animation-delay:.6s"><em>seconds.</em></span></h3><b>Chat with Alexandra</b></div></div>';
 var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12"><path d="M8 11.5l2.4-3a3.4 3.4 0 0 0-4.8 0zM3.5 6.6a6.4 6.4 0 0 1 9 0l1.6-2a9 9 0 0 0-12.2 0zM.4 2.8l1.6 1.9a10.6 10.6 0 0 1 12 0l1.6-1.9a13.2 13.2 0 0 0-15.2 0z"/></svg><svg viewBox="0 0 27 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="#fff" stroke-opacity=".5"/><rect x="2" y="2" width="17" height="8" rx="1.8"/><rect x="24" y="4" width="2" height="4" rx="1" fill-opacity=".5"/></svg></i></div><div class="isl"></div>';
 // 3D phones on a turning ring: one screen at a time comes to the front, and its
 // two-screen phones switch between their screens.
@@ -759,9 +787,9 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   var S=[[['home'],'Daily Performance','Today against target','Today against target: spend, conversions, value and ROAS, each with its own plan line.'],
          [['types','yoy'],'By Campaign Type','Search, PMax, Demand Gen, Video','Each campaign type for the day, ranked by ROAS, with spend against its plan, then the same day last year.'],
          [['plan','results'],'Day by Day','The media plan and the results','The plan for every day of the month, then each day’s results against it and the month so far.'],
-         [['years'],'Same Hijri day','This day in every past year','How the same Hijri date did last year and every year before, side by side.'],
-         [['ss-ramadan','ss-eidadha','ss-arafah','ss-thanksgiving'],'Seasons Calendar','Hijri and US seasons','Ramadan, Eid, Dhul Hijjah, Ashura and the US giving days, each with its countdown and last year’s numbers.'],
+         [['ak'],'Alexandra','Your AI assistant','Ask her about the numbers, sheets, team emails and leave, in English or Arabic, and get the answer in seconds.'],
          [['studio','compare'],'Reports Studio','One month, or two side by side','Build a report for any month, or compare two months point by point and see which one wins.'],
+         [['ss-ramadan','ss-eidadha','ss-arafah','ss-thanksgiving'],'Seasons Calendar','Hijri and US seasons','Ramadan, Eid, Dhul Hijjah, Ashura and the US giving days, each with its countdown and last year’s numbers.'],
          [['ranks','stperf'],'Top & Bottom 5 · Search Terms','Winners, and the search terms report','The best and the weakest projects and campaigns, then the search terms that convert, waste or need a look.'],
          [['tasks','backup','leave','leave-frozen'],'Team Tasks & Leave','The week board, backups and leave','Every person’s tasks for the week, ticked as they go. When someone is off, their backup takes over. Leave can be frozen for a busy season and opened again.']];
   var N=S.length, step=360/N, cur=0, timer=null, LAYER=2400, SCROLL=4200;
@@ -770,7 +798,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   S.forEach(function(x,i){
     var d=document.createElement('div');d.className='rp';
     d.innerHTML='<div class="ed l"></div><div class="ed r"></div><div class="bk"><img src="/get/logo-white.webp?v=20" alt=""></div><div class="fr"><i class="bt a"></i><i class="bt b"></i><i class="bt c"></i><i class="bt d"></i><div class="scn">'+SB+
-      x[0].map(function(f,k){return '<div class="ly'+(k?'':' on')+'"><img src="/get/shots/'+f+'.webp?v='+20+'" alt="'+x[1]+'"'+(i>1?' loading="lazy"':'')+'>'+(NAV[f]?'<img class="nvb" src="/get/shots/'+f+'-nav.webp?v='+20+'" alt="" loading="lazy">':'')+'</div>'}).join('')+'<i class="hb"></i><i class="gl"></i></div></div>';
+      x[0].map(function(f,k){if(f==='ak')return AKM;return '<div class="ly'+(k?'':' on')+'"><img src="/get/shots/'+f+'.webp?v='+20+'" alt="'+x[1]+'"'+(i>1?' loading="lazy"':'')+'>'+(NAV[f]?'<img class="nvb" src="/get/shots/'+f+'-nav.webp?v='+20+'" alt="" loading="lazy">':'')+'</div>'}).join('')+'<i class="hb"></i><i class="gl"></i></div></div>';
     ring.appendChild(d);
     dots.appendChild(document.createElement('i'));
   });
@@ -781,7 +809,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   function playLayer(ph,k){
     var ls=ph.querySelectorAll('.ly');
     for(var j=0;j<ls.length;j++)ls[j].classList.toggle('on',j===k);
-    var img=ls[k].querySelector('img'), box=ph.querySelector('.scn');
+    var img=ls[k].querySelector('img'), box=ph.querySelector('.scn');if(!img)return;
     var go=function(){var dy=img.clientHeight-box.clientHeight;img.className='';void img.offsetWidth;
       img.style.setProperty('--dur',dur(img)+'ms');img.style.setProperty('--dy',(-Math.max(0,dy))+'px');if(dy>30&&!/\/(tasks)\.webp/.test(img.src))img.className='sc'};
     if(img.complete)go();else img.onload=go;
@@ -803,7 +831,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   // A long screen gets time to scroll; a short one stays for LAYER.
   function dur(img){return img.naturalHeight/img.naturalWidth>2.4?SCROLL:LAYER}
   function layerMs(k,j){var im=phones[k].querySelectorAll('.ly img')[j];return im&&im.naturalWidth?dur(im):(/tasks|studio|compare/.test(S[k][0][j])?SCROLL:LAYER)}
-  function hold(){var k=((cur%N)+N)%N,t=900+600;for(var j=0;j<S[k][0].length;j++)t+=layerMs(k,j)+300;return t}
+  function hold(){var k=((cur%N)+N)%N,t=900+600;if(S[k][0][0]==='ak')return 6500;for(var j=0;j<S[k][0].length;j++)t+=layerMs(k,j)+300;return t}
   function go(n){cur+=n;show(true)}
   function play(){stop();timer=setTimeout(function next(){go(1);timer=setTimeout(next,hold())},hold())}
   function stop(){if(timer)clearTimeout(timer);timer=null}
