@@ -9613,6 +9613,11 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 .pf-ac .pf-i{width:18px;height:18px;stroke:currentColor}
 .pf-ac.wa{background:#25D366;box-shadow:0 4px 10px rgba(37,211,102,.35)}.pf-ac.wa svg{width:22px;height:22px}.pf-ac.wa svg path:first-child{fill:#fff}.pf-ac.wa svg path:last-child{fill:#25D366}
 .pf-acts+.pf-pen{margin-left:6px}
+/* v484 Alexandra among the friends (AI card) */
+.pf-fr button.ai{background:radial-gradient(120% 90% at 80% 0%,rgba(91,140,255,.45),transparent 60%),linear-gradient(160deg,#16307f,#0b1236);box-shadow:inset 0 0 0 1px rgba(122,160,255,.35),0 4px 14px rgba(28,60,150,.25)}
+.pf-fr button.ai b{color:#fff}.pf-fr button.ai small{color:#9DB7FF}
+.pf-fr button.ai .pf-fa{box-shadow:0 0 0 2px #5B8CFF,0 0 12px rgba(91,140,255,.6);background:#132a73;display:grid;place-items:center}
+.pf-fr button.ai .pf-fa img{width:100%;height:100%;object-fit:cover;border-radius:50%}.pf-fr button.ai .pf-fa .ak-ic{width:22px;height:22px;fill:#F3D58E;stroke:#F3D58E;color:#F3D58E}
 </style>
 </head>
 <body>
@@ -19053,7 +19058,8 @@ function pfDraw(){
  const workson=`<div class="pf-h">Works on</div><div class="pf-ha pf-ha2"><span class="pf-hl"><img src="icons/ha-brand.png" alt=""></span><b>Human Appeal <span class="pf-acc"><a href="https://www.facebook.com/share/1E7ZAjWWC1/" target="_blank" rel="noopener" aria-label="Human Appeal USA">US</a><a href="https://www.facebook.com/share/1EJVoqDZam/" target="_blank" rel="noopener" aria-label="Human Appeal Arabic">AR</a></span></b></div>`;
  const RK=['CEO','Media Manager','Team Leader','Senior Media Buyer','Media Buyer'],rk=r=>{const i=RK.indexOf(r);return i<0?9:i};
  const fr=(PFP.people||[]).filter(x=>x.email!==P.email).map(x=>pfPerson(x.email)).sort((a,b)=>rk(a.role)-rk(b.role)||String(a.name).localeCompare(String(b.name)));
- const friends=`<div class="pf-h">Friends${fr.length?' <em>'+fr.length+'</em>':''}</div>`+(fr.length?`<div class="pf-fr">${fr.map(f=>`<button type="button" class="${f.role==='CEO'?'ceo':''}" onclick="profOpen('${esc(f.email)}',event)"><span class="pf-fa${f.role==='CEO'?' ceo':''}">${personAv(f.avatar,f.name)}${f.online&&!pfPrivate(f)?'<i></i>':''}</span><b>${esc(String(f.name||f.email).split(' ')[0])}</b>${f.role?`<small>${esc(f.role==='CEO'?'CEO':f.role.replace('Senior Media Buyer','Sr. Buyer').replace('Media Buyer','Buyer').replace('Media Manager','Manager'))}</small>`:''}</button>`).join('')}</div>`:`<p class="pf-none">The team shows here.</p>`);
+ {const i=fr.findIndex(x=>rk(x.role)>3);fr.splice(i<0?fr.length:i,0,{email:'',ai:true,name:'Alexandra',role:'AI assistant'})}
+ const friends=`<div class="pf-h">Friends${fr.length?' <em>'+fr.length+'</em>':''}</div>`+(fr.length?`<div class="pf-fr">${fr.map(f=>f.ai?`<button type="button" class="ai" onclick="profClose();setTimeout(openAsk,300)"><span class="pf-fa">${akAvIn()}</span><b>Alexandra</b><small>AI assistant</small></button>`:`<button type="button" class="${f.role==='CEO'?'ceo':''}" onclick="profOpen('${esc(f.email)}',event)"><span class="pf-fa${f.role==='CEO'?' ceo':''}">${personAv(f.avatar,f.name)}${f.online&&!pfPrivate(f)?'<i></i>':''}</span><b>${esc(String(f.name||f.email).split(' ')[0])}</b>${f.role?`<small>${esc(f.role==='CEO'?'CEO':f.role.replace('Senior Media Buyer','Sr. Buyer').replace('Media Buyer','Buyer').replace('Media Manager','Manager'))}</small>`:''}</button>`).join('')}</div>`:`<p class="pf-none">The team shows here.</p>`);
  const about=`<div class="pf-h">Details</div>${pfLeave(P.email)}${bday}${place}${works}${workson}
   <div class="pf-h">Links</div><a class="pf-r pf-a" href="https://sekna.co.uk/" target="_blank" rel="noopener">${pfI('globe')}<div class="pf-t">sekna.co.uk<small>Website</small></div></a>${friends}`;
  const waNum=P.wa==='none'?'':(!P.wa||P.wa==='same')?P.phone:P.wa,waDigits=pfWaIntl(waNum),telDigits=pfWaIntl(P.phone);
@@ -20593,7 +20599,8 @@ async function pfSaveBday(btn,remove){
 document.addEventListener('click',e=>{const c=e.target.closest&&e.target.closest('.sk-user-card');if(!c||e.target.closest('button,a'))return;const me=pfMe();if(!me)return;try{closeSidebar()}catch(_){}setTimeout(()=>profOpen(me),120)});
 
 // v476 the CEO's gold tick, and the WhatsApp mark
-const PF_GTICK='<svg class="vbd gold" viewBox="0 0 24 24" aria-label="Verified · CEO"><path d="M12 1.5l2.6 2 3.2-.3 1 3.1 2.8 1.6-.9 3.1 1.4 2.9-2.6 1.9-.5 3.2-3.2.4-2 2.6-2.8-1.6-2.8 1.6-2-2.6-3.2-.4-.5-3.2L1.9 14l1.4-2.9-.9-3.1 2.8-1.6 1-3.1 3.2.3z" fill="#C9962E"/><path d="M7.5 12.3l3 3 6-6.3" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+// v484 the CEO's tick: the blue tick exactly, in bright gold
+const PF_GTICK=VBADGE.replace('class="vbd"','class="vbd gold"').replace('aria-label="Verified"','aria-label="Verified · CEO"').replace('#3D6BFF','#D9A62E');
 const PF_WA='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#25D366" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/><path fill="#fff" d="M17.3 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1l-.9 1.1c-.2.2-.3.2-.6.1a7 7 0 0 1-3.5-3c-.3-.5.3-.4.7-1.3.1-.2 0-.4 0-.5l-.9-2.1c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1.1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5 1.9.8 2.6.9 3.5.7.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3z"/></svg>';
 
 // v477 Senior Media Buyers, Team Leaders and the CEO keep their online status private
