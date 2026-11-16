@@ -10976,7 +10976,7 @@ const AKS=[
  {img:'eyes',vid:1,k:'ALEXANDRA',h:'She reads <em>every number</em>'},
  {img:'answers',vid:1,k:'HEMERA',h:'and turns it into <em>answers</em>'},
  {img:'flag2',vid:1,k:'ALEXANDRA × HEMERA',h:'Built for <em>HEMERA</em>'},
- {img:'sekna2',vid:1,dur:5000,k:'SEKNA',h:'Made at <em>Sekna</em>'},
+ {img:'sekna3',vid:1,dur:5000,k:'SEKNA',h:'Made at <em>Sekna</em>'},
  {img:'invite',vid:1,once:1,k:'MEET ALEXANDRA',h:'Ask her <em>anything</em>'}];
 const AKS_TR=['none','sweepD','diag','split','sweepR','sweepL','calm'],AKS_DUR=3800,AKS_SEQ=5000,AKS_T=1050,AKS_E='cubic-bezier(.7,0,.2,1)';
 function akStoryWords(h){let em=false;return h.split(/(<em>|<\/em>| )/).filter(x=>x&&x!==' ').map(t=>{if(t==='<em>'){em=true;return ''}if(t==='</em>'){em=false;return ''}return `<span>${em?`<em>${t}</em>`:t}</span>`}).filter(Boolean).join(' ')}
