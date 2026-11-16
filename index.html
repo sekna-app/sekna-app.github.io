@@ -9881,7 +9881,8 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
 .ak-nc:not(.one) .ak-ncc:last-child:nth-child(odd) .ak-ncp{grid-area:p;justify-self:end}
 .ak-nc:not(.one) .ak-ncc:last-child:nth-child(odd) em{grid-area:e}
 /* v514 story videos: over the picture, shown once playing */
-.aks-sc video.vbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s ease;pointer-events:none}
+.aks-sc video.vbg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .2s linear;pointer-events:none;background:transparent}
+.aks-sc.hasv img.bg{transform:none!important}
 .aks-sc video.vbg.rdy{opacity:1}
 .aks-sc.fitw video.vbg{height:auto;bottom:auto;object-fit:contain;-webkit-mask-image:linear-gradient(#000 80%,transparent);mask-image:linear-gradient(#000 80%,transparent)}
 </style>
@@ -10992,7 +10993,7 @@ function akStory(){
  const o=document.createElement('div');o.id='aksBox';o.className='aks';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Meet Alexandra');
  o.innerHTML=`<div class="aks-ph"><div class="aks-bar"><img src="get/logo-white.webp" alt="HEMERA"><button type="button" class="aks-x" aria-label="Close" onclick="akStoryClose()">${akI('x')}</button></div>
   <div class="aks-dots">${AKS.map(()=>'<i></i>').join('')}</div>
-  ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}"><img class="bg" src="icons/alexandra/${s.img}.webp?v=7" decoding="async" alt="">${s.vid?`<video class="vbg" muted playsinline loop preload="none" src="icons/alexandra/v/${s.img}.mp4?v=2"></video>`:''}${s.smoke?'<i class="aks-vig"></i>':''}<div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
+  ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}${s.vid?' hasv':''}"><img class="bg" src="${s.vid?`icons/alexandra/v/${s.img}.jpg?v=3`:`icons/alexandra/${s.img}.webp?v=7`}" decoding="async" alt="">${s.vid?`<video class="vbg" muted playsinline loop preload="none" poster="icons/alexandra/v/${s.img}.jpg?v=3" src="icons/alexandra/v/${s.img}.mp4?v=3"></video>`:''}${s.smoke?'<i class="aks-vig"></i>':''}<div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
   <div class="aks-fx"></div><div class="aks-tap" aria-hidden="true"></div>
   <div class="aks-kb"><button type="button" aria-label="Back" onclick="akStoryStep(-1)"></button><button type="button" aria-label="Next" onclick="akStoryStep(1)"></button></div></div><button type="button" class="aks-arr l" aria-label="Back" onclick="akStoryStep(-1)">‹</button><button type="button" class="aks-arr r" aria-label="Next" onclick="akStoryStep(1)">›</button><button type="button" class="aks-xd" aria-label="Close" onclick="akStoryClose()">${akI('x')}</button>`;
  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));
@@ -11010,7 +11011,7 @@ function akStory(){
  akStoryShow(0);
  
  
- if(navigator.serviceWorker&&navigator.serviceWorker.controller)setTimeout(()=>{AKS.filter(x=>x.vid).forEach(x=>{fetch('icons/alexandra/v/'+x.img+'.mp4?v=2').catch(()=>{})})},1800);
+ if(navigator.serviceWorker&&navigator.serviceWorker.controller)setTimeout(()=>{AKS.filter(x=>x.vid).forEach(x=>{fetch('icons/alexandra/v/'+x.img+'.mp4?v=3').catch(()=>{})})},1800);
 }
 function akStoryClose(chat){const S=window.AKST;if(S)clearTimeout(S.t);try{document.querySelectorAll('#aksBox video.vbg').forEach(v=>v.pause())}catch(e){}if(S&&S.ret&&chat)akAboutClose();const o=document.getElementById('aksBox');if(o){o.classList.remove('open');setTimeout(()=>o.remove(),300)}window.AKST=null;
  if(chat&&!document.getElementById('akBox'))openAsk()}
@@ -11040,7 +11041,8 @@ async function akStoryShow(i,again){
  const B=(c,k,op,css)=>el(c,css).animate(k,Object.assign({duration:T,easing:AKS_E,fill:'forwards'},op||{}));
  const W=ph.clientWidth,H=ph.clientHeight,full='inset(0 0 0 0)';
  if(!reduce){
-  if(now.classList.contains('fitw'))im.animate([{transform:'scale(1)'},{transform:'scale(1.03)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
+  if(now.querySelector('video.vbg')){}
+  else if(now.classList.contains('fitw'))im.animate([{transform:'scale(1)'},{transform:'scale(1.03)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
   else if(now.querySelector('.aks-vig'))im.animate([{transform:'scale(1)'},{transform:'scale(1.04)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
   else im.animate([{transform:'scale(1.05) translateX(2%)'},{transform:'scale(1.05) translateX(-2%)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
   if(tr==='sweepD'){A([{clipPath:'inset(0 0 100% 0)'},{clipPath:full}]);B('aks-beam h',[{transform:'translateY(-40px)',opacity:1},{opacity:1,offset:.85},{transform:`translateY(${H+40}px)`,opacity:0}])}
@@ -11058,8 +11060,10 @@ async function akStoryShow(i,again){
  const dur=tr==='calm'?1150:tr==='none'?750:T*1.05;
  if(cur&&cur!==now)(ta?ta.finished.catch(()=>{}):new Promise(r=>setTimeout(r,dur))).then(()=>{if(tok!==S.tok)return;cur.classList.remove('out');cur.getAnimations({subtree:true}).forEach(a=>{if(!(a instanceof CSSAnimation))a.cancel()});cur.removeAttribute('style');cur.querySelectorAll('[style]').forEach(n=>n.removeAttribute('style'))});
  
- sc.forEach((x,n)=>{const v=x.querySelector('video.vbg');if(!v)return;if(n===i){v.classList.remove('rdy');try{v.currentTime=0}catch(e){}v.preload='auto';const on=()=>v.classList.add('rdy');v.addEventListener('playing',on,{once:true});const pr=v.play();if(pr&&pr.catch)pr.catch(()=>{})}});
- if(cur&&cur!==now){const cv=cur.querySelector('video.vbg');if(cv)setTimeout(()=>{try{cv.pause()}catch(e){}},1300)}
+ 
+ 
+ sc.forEach((x,n)=>{const v=x.querySelector('video.vbg');if(!v||n!==i)return;try{v.currentTime=0}catch(e){}v.preload='auto';if(!v.classList.contains('rdy'))v.addEventListener('playing',()=>v.classList.add('rdy'),{once:true});const pr=v.play();if(pr&&pr.catch)pr.catch(()=>{})});
+ if(cur&&cur!==now){const cv=cur.querySelector('video.vbg'),ci=sc.indexOf(cur);if(cv)setTimeout(()=>{const T=window.AKST;if(!T||T.i!==ci)try{cv.pause()}catch(e){}},1300)}
  {const nv=sc[i+1]&&sc[i+1].querySelector('video.vbg');if(nv&&nv.preload!=='auto'){nv.preload='auto';try{nv.load()}catch(e){}}}
  S.i=i;
  [i+1,i-1].forEach(n=>{const nx=sc[n]&&sc[n].querySelector('img.bg');if(nx&&!nx.dataset.dec){nx.dataset.dec=1;try{nx.decode().catch(()=>{})}catch(e){}}});
