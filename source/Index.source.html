@@ -9570,7 +9570,7 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 .pf-fa.ceo{box-shadow:0 0 0 2.5px #E2B874}
 .pf-ceo .pf-cv{background:#203C8E url(icons/sekna-cover.webp?v=1) right center/cover no-repeat!important}
 .pf-ceo .pf-cv:after{display:none}
-.vbd.gold{filter:drop-shadow(0 1.5px 1.5px rgba(107,74,16,.45)) drop-shadow(0 3px 6px rgba(184,138,46,.35))!important}
+.vbd.gold{filter:drop-shadow(0 1px 2px rgba(0,0,0,.25))!important}
 /* v477 birthday wheels */
 .pfbd{position:fixed;inset:0;z-index:2147483200;background:rgba(10,18,56,0);display:flex;align-items:flex-end;justify-content:center;transition:background .25s}
 .pfbd.on{background:rgba(10,18,56,.5)}
@@ -9607,6 +9607,12 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 .pf-fr button.ceo{background:linear-gradient(160deg,#FFF6E3,#FFE7B8);box-shadow:inset 0 0 0 1px #F0D9A6}
 .pf-fr .pf-fa{width:46px;height:46px}
 .pf-fr b{max-width:76px;font-size:12px;margin-top:3px}.pf-fr small{max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:-2px}
+/* v483 call and WhatsApp on the phone row */
+.pf-acts{margin-left:auto;display:flex;gap:6px;flex:none}
+.pf-ac{width:36px;height:36px;border-radius:11px;background:#EEF2FC;display:grid;place-items:center;color:#1C3C96}
+.pf-ac .pf-i{width:18px;height:18px;stroke:currentColor}
+.pf-ac.wa{background:#25D366;box-shadow:0 4px 10px rgba(37,211,102,.35)}.pf-ac.wa svg{width:22px;height:22px}.pf-ac.wa svg path:first-child{fill:#fff}.pf-ac.wa svg path:last-child{fill:#25D366}
+.pf-acts+.pf-pen{margin-left:6px}
 </style>
 </head>
 <body>
@@ -19050,13 +19056,13 @@ function pfDraw(){
  const friends=`<div class="pf-h">Friends${fr.length?' <em>'+fr.length+'</em>':''}</div>`+(fr.length?`<div class="pf-fr">${fr.map(f=>`<button type="button" class="${f.role==='CEO'?'ceo':''}" onclick="profOpen('${esc(f.email)}',event)"><span class="pf-fa${f.role==='CEO'?' ceo':''}">${personAv(f.avatar,f.name)}${f.online&&!pfPrivate(f)?'<i></i>':''}</span><b>${esc(String(f.name||f.email).split(' ')[0])}</b>${f.role?`<small>${esc(f.role==='CEO'?'CEO':f.role.replace('Senior Media Buyer','Sr. Buyer').replace('Media Buyer','Buyer').replace('Media Manager','Manager'))}</small>`:''}</button>`).join('')}</div>`:`<p class="pf-none">The team shows here.</p>`);
  const about=`<div class="pf-h">Details</div>${pfLeave(P.email)}${bday}${place}${works}${workson}
   <div class="pf-h">Links</div><a class="pf-r pf-a" href="https://sekna.co.uk/" target="_blank" rel="noopener">${pfI('globe')}<div class="pf-t">sekna.co.uk<small>Website</small></div></a>${friends}`;
+ const waNum=P.wa==='none'?'':(!P.wa||P.wa==='same')?P.phone:P.wa,waDigits=pfWaIntl(waNum),telDigits=pfWaIntl(P.phone);
+ const acts=`<span class="pf-acts"><a class="pf-ac" href="tel:+${telDigits}" aria-label="Call">${pfI('phone')}</a>${waDigits.length>=6?`<a class="pf-ac wa" href="https://wa.me/${waDigits}" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">${PF_WA}</a>`:''}</span>`;
  const phone=PF.edit?`<div class="pf-r">${pfI('phone')}<div class="pf-t"><input class="pf-in" id="pfPh" type="tel" inputmode="tel" maxlength="22" value="${esc(P.phone)}" placeholder="+20 100 000 0000"><label class="pf-ck"><input type="checkbox" id="pfWaS"${!P.wa||P.wa==='same'?' checked':''} onchange="document.getElementById('pfWaW').hidden=this.checked"> This number is on WhatsApp</label><div id="pfWaW"${!P.wa||P.wa==='same'?' hidden':''}><input class="pf-in" id="pfWa" type="tel" inputmode="tel" maxlength="22" value="${P.wa&&P.wa!=='same'&&P.wa!=='none'?esc(P.wa):''}" placeholder="WhatsApp number (leave empty for none)" style="margin-top:6px"></div><div class="pf-eb"><button type="button" onclick="PF.edit=false;pfDraw()">Cancel</button><button type="button" class="p" onclick="pfSavePhone(this)">Save</button></div></div></div>`
-  :P.phone?`<div class="pf-r">${pfI('phone')}<div class="pf-t"><a href="tel:${esc(P.phone.replace(/[^0-9+]/g,''))}">${esc(P.phone)}</a><small>Phone · the team sees it</small></div>${P.self?`<button type="button" class="pf-pen" onclick="PF.edit=true;pfDraw()" aria-label="Edit phone">${pfI('pen')}</button>`:''}</div>`
+  :P.phone?`<div class="pf-r">${pfI('phone')}<div class="pf-t"><a href="tel:+${telDigits}">${esc(P.phone)}</a><small>Phone · the team sees it</small></div>${acts}${P.self?`<button type="button" class="pf-pen" onclick="PF.edit=true;pfDraw()" aria-label="Edit phone">${pfI('pen')}</button>`:''}</div>`
   :P.self?`<div class="pf-r">${pfI('phone')}<div class="pf-t"><button type="button" class="pf-add" onclick="PF.edit=true;pfDraw()">Add a phone number</button><small>Only the team sees it</small></div><button type="button" class="pf-pen" onclick="PF.edit=true;pfDraw()" aria-label="Add phone">${pfI('pen')}</button></div>`
   :`<div class="pf-r">${pfI('phone')}<div class="pf-t">No phone yet<small>Phone</small></div></div>`;
- const waNum=P.wa==='none'?'':(!P.wa||P.wa==='same')?P.phone:P.wa,waDigits=pfWaIntl(waNum);
- const wa=!PF.edit&&waDigits.length>=6?`<a class="pf-r pf-a" href="https://wa.me/${waDigits}" target="_blank" rel="noopener"><span class="pf-wa">${PF_WA}</span><div class="pf-t">Chat on WhatsApp<small>${esc(waNum)}</small></div><span class="pf-go">›</span></a>`:'';
- const contact=`<div class="pf-h">Contact info</div><a class="pf-r pf-a" href="mailto:${esc(P.email)}">${pfI('mail')}<div class="pf-t">${esc(P.email)}<small>Email</small></div></a>${phone}${wa}`;
+ const contact=`<div class="pf-h">Contact info</div><a class="pf-r pf-a" href="mailto:${esc(P.email)}">${pfI('mail')}<div class="pf-t">${esc(P.email)}<small>Email</small></div></a>${phone}`;
  const pk=(Array.isArray(P.plats)&&P.plats.length?P.plats:PF_PLAT_DEF).filter(k=>PF_PLATS[k]);
  const plat=`<div class="pf-h">Ad platforms</div>${pk.map(k=>`<div class="pf-r pf-pl"><span class="pf-plg">${PF_PLATS[k][1]?`<img src="${PF_PLATS[k][1]}" alt="">`:esc(PF_PLATS[k][0].charAt(0))}</span><div class="pf-t">${esc(PF_PLATS[k][0])}<small>${k==='openai'?'Ads in ChatGPT':'Runs campaigns here'}</small></div></div>`).join('')}
   <div class="pf-h">SEKNA platforms</div><a class="pf-r pf-a" href="https://wusul.io/services/" target="_blank" rel="noopener"><span class="pf-wl">${PF_WUSUL}</span><div class="pf-t">Wusul<small>Audience intelligence · reaching new clients</small></div><span class="pf-go">›</span></a>`;
@@ -20587,7 +20593,7 @@ async function pfSaveBday(btn,remove){
 document.addEventListener('click',e=>{const c=e.target.closest&&e.target.closest('.sk-user-card');if(!c||e.target.closest('button,a'))return;const me=pfMe();if(!me)return;try{closeSidebar()}catch(_){}setTimeout(()=>profOpen(me),120)});
 
 // v476 the CEO's gold tick, and the WhatsApp mark
-const PF_GTICK='<svg class="vbd gold" viewBox="0 0 24 24" aria-label="Verified · CEO"><defs><linearGradient id="pfGt" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFF1C4"/><stop offset=".35" stop-color="#F0C96E"/><stop offset=".7" stop-color="#D4A341"/><stop offset="1" stop-color="#9C701E"/></linearGradient><radialGradient id="pfGh" cx=".32" cy=".26" r=".6"><stop offset="0" stop-color="#fff" stop-opacity=".85"/><stop offset=".5" stop-color="#fff" stop-opacity=".15"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient></defs><path d="M12 1.5l2.6 2 3.2-.3 1 3.1 2.8 1.6-.9 3.1 1.4 2.9-2.6 1.9-.5 3.2-3.2.4-2 2.6-2.8-1.6-2.8 1.6-2-2.6-3.2-.4-.5-3.2L1.9 14l1.4-2.9-.9-3.1 2.8-1.6 1-3.1 3.2.3z" fill="url(#pfGt)" stroke="#8A6116" stroke-width=".6" stroke-linejoin="round"/><path d="M12 3.3l2.1 1.6 2.6-.2.8 2.5 2.3 1.3-.7 2.5 1.1 2.3-2.1 1.6-.4 2.6-2.6.3-1.6 2.1-2.3-1.3-2.3 1.3-1.6-2.1-2.6-.3-.4-2.6-2.1-1.6 1.1-2.3-.7-2.5 2.3-1.3.8-2.5 2.6.2z" fill="url(#pfGh)"/><path d="M7.7 12.7l3 3 6-6.3" fill="none" stroke="#6B4A10" stroke-opacity=".45" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.5 12.3l3 3 6-6.3" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const PF_GTICK='<svg class="vbd gold" viewBox="0 0 24 24" aria-label="Verified · CEO"><path d="M12 1.5l2.6 2 3.2-.3 1 3.1 2.8 1.6-.9 3.1 1.4 2.9-2.6 1.9-.5 3.2-3.2.4-2 2.6-2.8-1.6-2.8 1.6-2-2.6-3.2-.4-.5-3.2L1.9 14l1.4-2.9-.9-3.1 2.8-1.6 1-3.1 3.2.3z" fill="#C9962E"/><path d="M7.5 12.3l3 3 6-6.3" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const PF_WA='<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#25D366" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/><path fill="#fff" d="M17.3 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1l-.9 1.1c-.2.2-.3.2-.6.1a7 7 0 0 1-3.5-3c-.3-.5.3-.4.7-1.3.1-.2 0-.4 0-.5l-.9-2.1c-.2-.5-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1.1 2.8 1.2 3c.1.2 2.1 3.2 5 4.5 1.9.8 2.6.9 3.5.7.6-.1 1.7-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3z"/></svg>';
 
 // v477 Senior Media Buyers, Team Leaders and the CEO keep their online status private
@@ -20629,6 +20635,8 @@ async function pfBdSave(remove){const b=document.getElementById('pfbdGo');let v=
 function pfWaIntl(n){let d=String(n||'').trim();const plus=d.startsWith('+');d=d.replace(/\D/g,'');if(!d)return '';
  if(plus)return d;if(d.startsWith('00'))return d.slice(2);
  if(/^01[0125]\d{8}$/.test(d))return '20'+d.slice(1);
+ if(/^07\d{9}$/.test(d))return '44'+d.slice(1);
+ if(/^020\d{8}$/.test(d))return '44'+d.slice(1);
  if(/^[79]\d{7}$/.test(d))return '968'+d;
  if(/^0\d{9,10}$/.test(d))return '20'+d.slice(1);
  return d}
