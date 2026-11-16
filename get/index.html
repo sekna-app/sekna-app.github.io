@@ -457,7 +457,7 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
 }
 
 /* smoke canvas for the section entrances */
-#glC{position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:0;pointer-events:none}
+#glC{position:fixed;left:0;top:0;width:100%;height:100%;z-index:0;pointer-events:none}
 .wrap{z-index:1}
 /* iPhone guide, desktop: the two notes stay inside the card and off the headline; more blur behind them */
 .g3 .pl3{-webkit-backdrop-filter:blur(18px) saturate(1.3);backdrop-filter:blur(18px) saturate(1.3);background:rgba(18,30,78,.72)}
@@ -940,17 +940,18 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
     var at=(G&&G.dv&&G.dv.length)?G.dv.map(function(e){var r=e.getBoundingClientRect();return [r.left+r.width/2,r.bottom-20]}):[[x,y]];
     at.forEach(function(pt){var m=small?14:26;for(var j=0;j<m;j++){var b=(Math.random()-.5)*Math.PI,u=.6+Math.random()*1.4,side=Math.random()<.5?-1:1;
       smoke.push({x:pt[0]+(Math.random()-.5)*80,y:pt[1]+Math.random()*30,vx:side*u*(.6+Math.random()),vy:-Math.random()*.35,r:30+Math.random()*30,g:.5+Math.random()*.45,l:2600+Math.random()*1800,t:0,c:Math.random()<.78?'120,145,225':'226,184,116'})}})}
-  function size(){W=document.documentElement.clientWidth;small=W<=620;dpr=Math.min(2,window.devicePixelRatio||1);cv.width=innerWidth*dpr;cv.height=innerHeight*dpr;cx.setTransform(dpr,0,0,dpr,0,0)}
+  // the canvas takes its own size (not the window's): with Chrome's page zoom the two differ and the glow was cut off in a box
+  var CW=0,CH=0;function size(){W=document.documentElement.clientWidth;small=W<=620;dpr=Math.min(2,window.devicePixelRatio||1);CW=cv.clientWidth||innerWidth;CH=cv.clientHeight||innerHeight;cv.width=Math.round(CW*dpr);cv.height=Math.round(CH*dpr);cx.setTransform(dpr,0,0,dpr,0,0)}
   function frame(now){
     raf=requestAnimationFrame(frame);
-    var dt=Math.min(50,now-last);last=now;var sy=window.scrollY||0,vh=innerHeight;
+    var dt=Math.min(50,now-last);last=now;var sy=window.scrollY||0,vh=CH||innerHeight;
     for(var gi=0;gi<GR.length;gi++){var G=GR[gi];if(!G.el||G.done)continue;var rc=G.el.getBoundingClientRect();
       if(gi===0?now-t0>250:rc.top<vh*.72){G.done=true;G.el.classList.add('bx-in');(G.it||[]).forEach(function(it){setTimeout(function(){it[0].classList.remove('bx','dv','tx','cd','kk2','fd');it[0].style.removeProperty('--d')},(it[1]+1.9)*1000)});if(gi)storm(W/2,rc.top+rc.height*.5,G)}}
-    cx.clearRect(0,0,innerWidth,vh);if(!smoke.length)return;
+    cx.clearRect(0,0,CW||innerWidth,vh);if(!smoke.length)return;
     var dy0=window.__glSy==null?0:sy-window.__glSy;window.__glSy=sy;
     smoke=smoke.filter(function(p){return (p.t+=dt)<p.l});
     for(var si=0;si<smoke.length;si++){var q=smoke[si];q.y-=dy0;q.x+=q.vx*dt/16;q.y+=q.vy*dt/16;q.vx*=.982;q.vy=q.vy*.982-.004*dt/16;q.r+=q.g*dt/16;
-      cx.globalAlpha=Math.sin(Math.PI*q.t/q.l)*.24;cx.drawImage(sprite(q.c),q.x-q.r,q.y-q.r,q.r*2,q.r*2)}
+      cx.globalAlpha=Math.sin(Math.PI*q.t/q.l)*(q.c==='226,184,116'?.12:.2);cx.drawImage(sprite(q.c),q.x-q.r,q.y-q.r,q.r*2,q.r*2)}
     cx.globalAlpha=1;
   }
   var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(size,120)},{passive:true});
@@ -970,7 +971,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   var cv=L.querySelector('canvas'),c=cv.getContext('2d'),P=[],cur=0,raf,dpr=1,VW=0,VH=0,ready=false,seed=11;
   function rnd(){seed=(seed*16807)%2147483647;return (seed-1)/2147483646}
   function ease(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2}
-  function size(){dpr=Math.min(2,window.devicePixelRatio||1);VW=innerWidth;VH=innerHeight;cv.width=VW*dpr;cv.height=VH*dpr;c.setTransform(dpr,0,0,dpr,0,0)}
+  function size(){dpr=Math.min(2,window.devicePixelRatio||1);VW=cv.clientWidth||innerWidth;VH=cv.clientHeight||innerHeight;cv.width=VW*dpr;cv.height=VH*dpr;c.setTransform(dpr,0,0,dpr,0,0)}
   var im=new Image();im.onload=function(){
     var r=nav.getBoundingClientRect(),w=Math.max(60,Math.round(r.width||148)),h=Math.round(w*202/880),k=document.createElement('canvas');k.width=w;k.height=h;
     var t=k.getContext('2d');t.drawImage(im,0,0,w,h);var d;try{d=t.getImageData(0,0,w,h).data}catch(e){return}
