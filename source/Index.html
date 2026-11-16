@@ -9521,6 +9521,20 @@ html body .yr-t .as-tr.hd span:not(:first-child){text-align:right!important}
 /* v468 sign-up name: one first name in English letters; a space or other letters turn the box red */
 .wl-in.bad{box-shadow:0 0 0 2px #E5484D;background:#FFF1F2;color:#B4232C}
 .wl-err{display:block;margin-top:8px;color:#FF8A93;font-size:12.5px;font-weight:800;line-height:1.4}.wl-err[hidden]{display:none}
+/* v469 hold to record: the bar follows the finger to the left, the bin turns red near the end; the send arrow is not needed */
+.ak-mic{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.ak-rh{display:none;flex:none;font-size:11.5px;font-weight:800;opacity:.85;margin-right:6px;white-space:nowrap}
+.ak-in.hold .ak-rh{display:block}.ak-in.hold .ak-rs2{display:none}
+.ak-in.hold .ak-rw{transform:translateX(var(--dx,0px));transition:transform .05s linear}
+.ak-in.hold .ak-rec.near .ak-rt2{color:#E0245E;transform:scale(1.3)}
+.ak-in.hold .ak-rec.near .ak-rw{background:linear-gradient(135deg,#ef4b78,#c81e4f)}
+.ak-rt2{transition:transform .15s,color .15s;position:relative;z-index:2;background:inherit;border-radius:50%}
+.ak-in.hold .ak-rec{overflow:hidden}
+/* v469 a playing voice note: the played bars glow gold, the bars near the playhead move with the sound */
+.ak-vb>span i{transition:height .08s linear,background .15s}
+.ak-vb>span i.lit{background:#F3D58E}
+.ak-vb>.ak-ic path[d^="M8 5v14"]{stroke:#fff;stroke-width:3}
+.ak-vb.on>.ak-ic{fill:none;stroke:#fff}
 </style>
 </head>
 <body>
@@ -10749,8 +10763,8 @@ function akOpenNow(){
  const o=document.createElement('div');o.id='akBox';o.className='ak'+(akDk()?' dk':'');o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Alexandra');
  o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av ak-tapp" id="akHdAv" role="button" tabindex="0" aria-label="Open Alexandra's profile" onclick="AK.pgTab='about';akAbout(event)">${akAvIn()}</span><div><b>Alexandra <svg class="ak-flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="10" rx="2" fill="#0057B7"/><rect y="10" width="30" height="10" rx="2" fill="#FFD700"/><rect y="8" width="30" height="4" fill="#0057B7"/><rect y="10" width="30" height="2" fill="#FFD700"/></svg><span class="ak-fle">🇺🇦</span></b><small id="akSt">Active now</small></div><button type="button" class="ak-min" hidden aria-label="Minimise" title="Minimise" onclick="akMini(event)">${akI('minus')}</button><button type="button" class="ak-mode" hidden onclick="akModeFlip()"></button><button type="button" class="ak-inf" aria-label="About Alexandra" onclick="AK.pgTab='about';akAbout(event)">${akI('about')}</button></div><div class="ak-pg" id="akAbt" aria-hidden="true"></div>
   <div class="ak-bd" id="akBd"></div><div class="ak-kb" id="akKb"></div>
-  <form class="ak-in" onsubmit="akSend(event)"><button type="button" class="ak-mb" aria-label="Menu" onclick="akToggleKb()">${akI('menu')}</button><input id="akQ" autocomplete="off" maxlength="1500" placeholder="Aa" oninput="akInMode()"><button type="submit" class="ak-snd" aria-label="Send">${akI('plane')}</button><button type="button" class="ak-mic" aria-label="Record a voice message" onclick="akRecStart()">${akI('mic')}</button>
-  <div class="ak-rec" id="akRec"><button type="button" class="ak-rt2" aria-label="Delete" onclick="akRecTrash()">${akI('trash')}</button><div class="ak-rw"><em></em><span id="akRw"></span><b id="akRt">0:00</b></div><button type="button" class="ak-rs2" aria-label="Send" onclick="akRecSend()">${akI('plane')}</button></div></form></div>`;
+  <form class="ak-in" onsubmit="akSend(event)"><button type="button" class="ak-mb" aria-label="Menu" onclick="akToggleKb()">${akI('menu')}</button><input id="akQ" autocomplete="off" maxlength="1500" placeholder="Aa" oninput="akInMode()"><button type="submit" class="ak-snd" aria-label="Send">${akI('plane')}</button><button type="button" class="ak-mic" aria-label="Hold to record a voice message" onpointerdown="akRecHold(event)" oncontextmenu="return false">${akI('mic')}</button>
+  <div class="ak-rec" id="akRec"><button type="button" class="ak-rt2" aria-label="Delete" onclick="akRecTrash()">${akI('trash')}</button><div class="ak-rw"><em></em><small class="ak-rh">‹ Slide to cancel</small><span id="akRw"></span><b id="akRt">0:00</b></div><button type="button" class="ak-rs2" aria-label="Send" onclick="akRecSend()">${akI('plane')}</button></div></form></div>`;
  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));akVv();akInMode();try{avDefs()}catch(e){}
  akRestore();akModeApply();
  try{const w=JSON.parse(localStorage.getItem('hm_ask_who')||'null');if(w&&w.e===akMe().email&&AK.canAdd===undefined){AK.editor=w.editor;AK.canAdd=w.add;AK.canTeach=w.teach}}catch(e){}
@@ -10769,10 +10783,11 @@ async function akRecStart(){
  if(AKR.on||AK.busy)return;if(AK.blocked){akLockIn();return}
  if(!ASK_HEMERA_URL){akBot('<p>Alexandra is not connected yet.</p>');return}
  if(!navigator.mediaDevices||!window.MediaRecorder){showSettingsToast('Voice messages are not supported on this device');return}
- let stream;try{stream=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){showSettingsToast('Allow the microphone to record');return}
+ let stream;try{stream=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){akRecHoldEnd(true);showSettingsToast('Allow the microphone to record');return}
+ if(AKR.hold&&AKR.hold.up){try{stream.getTracks().forEach(x=>x.stop())}catch(e){}akRecHoldEnd(true);showSettingsToast('Hold the mic while you talk');return}
  AKR.on=true;AKR.stream=stream;AKR.chunks=[];AKR.t0=Date.now();
  AKR.rec=new MediaRecorder(stream);AKR.rec.ondataavailable=e=>{if(e.data&&e.data.size)AKR.chunks.push(e.data)};AKR.rec.start(250);
- const f=document.getElementById('akRec');if(f){f.classList.remove('del');f.closest('form').classList.add('rec')}
+ const f=document.getElementById('akRec');if(f){f.classList.remove('del');f.closest('form').classList.add('rec');f.closest('form').classList.toggle('hold',!!AKR.hold)}if(navigator.vibrate)try{navigator.vibrate(15)}catch(e){}
  try{const C=window.AudioContext||window.webkitAudioContext;AKR.ac=new C();const src=AKR.ac.createMediaStreamSource(stream);AKR.an=AKR.ac.createAnalyser();AKR.an.fftSize=256;src.connect(AKR.an)}catch(e){}
  AKR.lv=[];const w=document.getElementById('akRw'),t=document.getElementById('akRt'),buf=new Uint8Array(128);
  const tick=()=>{if(!AKR.on)return;const s=Math.floor((Date.now()-AKR.t0)/1000);if(t)t.textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
@@ -10783,7 +10798,7 @@ async function akRecStart(){
 function akRecStop(){
  AKR.on=false;cancelAnimationFrame(AKR.raf);
  try{AKR.stream.getTracks().forEach(x=>x.stop())}catch(e){}try{AKR.ac&&AKR.ac.close()}catch(e){}
- const f=document.getElementById('akRec');if(f)f.closest('form').classList.remove('rec');
+ const f=document.getElementById('akRec');if(f){f.closest('form').classList.remove('rec','hold');f.style.removeProperty('--dx');f.classList.remove('near')}
 }
 function akRecTrash(){
  if(!AKR.on)return;const f=document.getElementById('akRec');if(f)f.classList.add('del');
@@ -10795,8 +10810,8 @@ function akRecSend(){
  AKR.rec.onstop=async()=>{
    const blob=new Blob(AKR.chunks,{type:AKR.rec.mimeType||'audio/webm'});akRecStop();
    if(secs<1||!blob.size)return;
-   const url=URL.createObjectURL(blob);
-   AK.msgs.push({w:'u',nw:1,html:`<span class="ak-vb" data-u="${url}" onclick="akPlay(this)">${akI('play')}<span>${lv.filter((x,i)=>i%2===0).map(x=>`<i style="height:${Math.round(4+x*16)}px"></i>`).join('')}</span><b>0:${String(secs).padStart(2,'0')}</b></span>`});
+   const vid='v'+Date.now();AKV.urls[vid]=URL.createObjectURL(blob);akVoicePut(vid,blob);
+   AK.msgs.push({w:'u',nw:1,html:`<span class="ak-vb" data-v="${vid}" data-d="${secs}" onclick="akPlay(this)">${akI('play')}<span>${lv.filter((x,i)=>i%2===0).map(x=>`<i data-h="${Math.round(4+x*16)}" style="height:${Math.round(4+x*16)}px"></i>`).join('')}</span><b>0:${String(secs).padStart(2,'0')}</b></span>`});
    AK.kb=false;akKb();AK.busy=true;akDraw();
    try{
      
@@ -10811,7 +10826,44 @@ function akRecSend(){
  };
  try{AKR.rec.stop()}catch(e){akRecStop()}
 }
-function akPlay(el){const u=el.dataset.u;if(!u)return;if(AKR.au&&!AKR.au.paused){AKR.au.pause();return}AKR.au=new Audio(u);AKR.au.play().catch(()=>{})}
+
+const AKV={urls:{},db:null};
+function akVoiceDb(){if(AKV.db)return AKV.db;AKV.db=new Promise((ok,no)=>{try{const r=indexedDB.open('hm_ak_voice',1);r.onupgradeneeded=()=>r.result.createObjectStore('v');r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)}catch(e){no(e)}});return AKV.db}
+async function akVoicePut(id,blob){try{const db=await akVoiceDb();const tx=db.transaction('v','readwrite');tx.objectStore('v').put(blob,id);
+ 
+ const st=tx.objectStore('v'),k=st.getAllKeys();k.onsuccess=()=>{const all=(k.result||[]).sort();all.slice(0,Math.max(0,all.length-30)).forEach(x=>st.delete(x))}}catch(e){}}
+async function akVoiceGet(id){if(AKV.urls[id])return AKV.urls[id];try{const db=await akVoiceDb();const b=await new Promise((ok,no)=>{const r=db.transaction('v').objectStore('v').get(id);r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)});if(b){AKV.urls[id]=URL.createObjectURL(b);return AKV.urls[id]}}catch(e){}return ''}
+function akPlayStop(){const P=AKV.p;if(!P)return;cancelAnimationFrame(P.raf);try{P.au.pause()}catch(e){}const el=P.el;if(el&&el.isConnected){el.classList.remove('on');const ic=el.querySelector(':scope>.ak-ic');if(ic)ic.outerHTML=akI('play');el.querySelectorAll('span i').forEach(i=>{i.classList.remove('lit');i.style.height=(i.dataset.h||i.style.height.replace('px',''))+'px'});const b=el.querySelector('b');if(b&&el.dataset.d)b.textContent='0:'+String(el.dataset.d).padStart(2,'0')}AKV.p=null}
+async function akPlay(el){
+ if(AKV.p&&AKV.p.el===el){akPlayStop();return}akPlayStop();
+ const u=el.dataset.u||(el.dataset.v?await akVoiceGet(el.dataset.v):'');if(!u){showSettingsToast('This voice note is no longer on this device');return}
+ const au=new Audio(u),bars=[...el.querySelectorAll('span i')],b=el.querySelector('b'),P={el,au,raf:0};AKV.p=P;
+ bars.forEach(i=>{if(!i.dataset.h)i.dataset.h=parseInt(i.style.height)||8});
+ el.classList.add('on');const ic=el.querySelector(':scope>.ak-ic');if(ic)ic.outerHTML=akI('pause');
+ 
+ try{const C=window.AudioContext||window.webkitAudioContext;AKV.ac=AKV.ac||new C();if(AKV.ac.state==='suspended')AKV.ac.resume();const src=AKV.ac.createMediaElementSource(au);P.an=AKV.ac.createAnalyser();P.an.fftSize=256;src.connect(P.an);P.an.connect(AKV.ac.destination)}catch(e){P.an=null}
+ const buf=new Uint8Array(128);
+ const tick=()=>{if(AKV.p!==P)return;const d=au.duration&&isFinite(au.duration)?au.duration:+el.dataset.d||1,t=au.currentTime,f=Math.min(1,t/d),n=Math.round(f*bars.length);
+  let lv=.5;if(P.an){P.an.getByteTimeDomainData(buf);let m=0;for(const x of buf)m=Math.max(m,Math.abs(x-128));lv=Math.min(1,m/60)}else lv=.45+.35*Math.abs(Math.sin(t*9));
+  bars.forEach((i,k)=>{const h=+i.dataset.h;i.classList.toggle('lit',k<n);const near=Math.abs(k-n)<4;i.style.height=Math.round(near?Math.max(4,Math.min(22,h*(.55+lv*1.3))):h)+'px'});
+  if(b){const left=Math.max(0,Math.ceil(d-t));b.textContent='0:'+String(left).padStart(2,'0')}
+  P.raf=requestAnimationFrame(tick)};
+ au.onended=()=>akPlayStop();au.onerror=()=>{akPlayStop();showSettingsToast('Could not play this voice note')};
+ au.play().then(()=>{P.raf=requestAnimationFrame(tick)}).catch(()=>{akPlayStop();showSettingsToast('Could not play this voice note')});
+}
+
+function akRecHold(e){if(e.button&&e.button!==0)return;e.preventDefault();if(AKR.on||AK.busy)return;
+ const btn=e.currentTarget;try{btn.setPointerCapture(e.pointerId)}catch(_){}
+ const H=AKR.hold={x0:e.clientX,t0:Date.now(),up:false,gone:false};
+ const mv=ev=>{if(AKR.hold!==H||!AKR.on)return;const dx=Math.min(0,ev.clientX-H.x0),f=document.getElementById('akRec');if(!f)return;f.style.setProperty('--dx',dx+'px');f.classList.toggle('near',dx<-70);
+  if(dx<-110&&!H.gone){H.gone=true;if(navigator.vibrate)try{navigator.vibrate([20,40,20])}catch(_){}akRecTrash();akRecHoldEnd()}};
+ const up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up);if(AKR.hold!==H)return;H.up=true;
+  if(H.gone)return;if(!AKR.on)return;
+  if(Date.now()-AKR.t0<700){akRecTrash();akRecHoldEnd();showSettingsToast('Hold the mic while you talk');return}
+  akRecSend();akRecHoldEnd()};
+ addEventListener('pointermove',mv,{passive:true});addEventListener('pointerup',up);addEventListener('pointercancel',up);
+ akRecStart()}
+function akRecHoldEnd(){AKR.hold=null;const f=document.getElementById('akRec');if(f){f.style.removeProperty('--dx');f.classList.remove('near')}}
 
 async function akB64(blob){const b=new Uint8Array(await blob.arrayBuffer());let s='';for(let i=0;i<b.length;i+=0x8000)s+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000));return btoa(s)}
 async function akWav(blob){
