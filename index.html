@@ -10039,6 +10039,23 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
       html.dk-on:not(.desktop-site-mode) #campPanel .mx-tl.on .mx-all{background:#fff;color:#203c8e}
       html.dk-on:not(.desktop-site-mode) .cp-sp{max-width:420px}
     }
+
+    /* v534 Campaign Performance: totals under the date, one name per card, Custom pop-up, filter designs */
+    .cp-h1t{align-items:center}.cp-h1l{min-width:0}.cp-h1 .cp-tot{margin-top:8px}.cp-h1 .cp-h1r{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;justify-content:flex-end}.cp-h1 .cp-h1r b{display:inline;font-size:27px}.cp-h1 .cp-h1r{max-width:150px}.cp-h1 .cp-h1r .mx-arrow{margin:0 0 0 auto;order:3}
+    .cp-nm2{display:inline-block;vertical-align:1px;font-size:9.5px;font-weight:800;color:#8A93A8;background:#F1F3F8;border-radius:6px;padding:1px 6px;margin-left:2px;white-space:nowrap}
+    .cp-aka{display:inline-block;margin-top:4px;font-size:10.5px;opacity:.75;overflow-wrap:anywhere}
+    .cp-pko{z-index:9500}.cp-pko .pk-head small{display:block}
+    .cp-pko .pk-m.part{border-color:#9FB0E6;background:#EEF2FC}.cp-pko .pk-day.in{background:#E8EDFB;border-color:#E8EDFB;color:#203C8E}.cp-pko .pk-m.anc{box-shadow:0 0 0 2px #E2B874 inset}
+    .cp-pko .pk-calhead .pk-title{flex:1;text-align:center;font-size:14px;font-weight:900;color:#1d2433}.cp-pko .pk-calhead .pk-title small{display:block;font-size:10.5px;color:#8A93A8;font-weight:800}
+    body.dark-mode .cp-pko .pk-day.in{background:#22305e;border-color:#22305e;color:#C9D3F5}body.dark-mode .cp-pko .pk-calhead .pk-title{color:#fff}
+    .cp-pkb{display:flex;align-items:center;gap:8px;width:100%;margin-top:8px;border:1px solid var(--line,#DFE4EF);background:var(--card,#fff);border-radius:12px;padding:10px 12px;font:inherit;font-size:12.5px;font-weight:800;color:var(--text,#141B33);cursor:pointer;text-align:left}.cp-pkb span{flex:1}.cp-pkb b{color:#203C8E;font-size:11.5px}
+    .cp-lb,#campPanel .cp-types>small{display:block;font-size:9px!important;font-weight:700!important;letter-spacing:.12em!important;color:#A9B0C0!important;text-transform:uppercase;margin:0 0 6px 2px}
+    .cp-ar{font-style:normal;margin-left:3px}
+    .cp-lh{display:flex;justify-content:space-between;align-items:center;margin:12px 2px 8px;font-size:11px;font-weight:700;color:#8A93A8}
+    /* the sort tabs under the type tiles */
+    .cp-fb{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0 10px;border-bottom:1px solid var(--line,#E3E7F0)}
+    .cp-tabs{display:flex;gap:16px}.cp-tabs button{border:0;background:none;font:inherit;font-size:12px;font-weight:800;color:#8A93A8;padding:8px 0 9px;margin-bottom:-1px;border-bottom:2px solid transparent;cursor:pointer}.cp-tabs button.on{color:#203C8E;border-bottom-color:#E2B874}
+    body.dark-mode .cp-tabs button.on{color:#fff}body.dark-mode .cp-nm2{background:#232b38}
 </style>
 </head>
 <body>
@@ -11277,7 +11294,7 @@ function akSideDraw(){const o=document.getElementById('akBox');if(!o)return;let 
  R.innerHTML=`<div class="ak-drc" style="background-image:url(${akCovUrl()})"></div><span class="ak-pga ak-tapp" onclick="AK.pgTab='about';akAbout(event)">${akAvIn()}<em></em></span><b class="ak-drn">Alexandra ${AK_TICK}</b><small class="ak-drs">Active now</small>
   <div class="ak-intro">${akIntroHtml()}</div><button type="button" class="ak-drb" onclick="AK.pgTab='about';akAbout(event)">${akI('about')}View profile</button>`}
 addEventListener('resize',()=>{clearTimeout(akModeApply.t);akModeApply.t=setTimeout(akModeApply,150)});
-function openAsk(){if(!ASK_HEMERA_URL)setTimeout(()=>akStoryFirst(false),600);const w=akWho();if(w&&w.ok===false){AK.blocked=true;AK.msgs=[];try{localStorage.removeItem(AK_KEEP)}catch(e){}}akOpenNow();setTimeout(akReqDot,0)}
+function openAsk(){setTimeout(()=>{try{akCtx().catch(()=>{})}catch(e){}},400);if(!ASK_HEMERA_URL)setTimeout(()=>akStoryFirst(false),600);const w=akWho();if(w&&w.ok===false){AK.blocked=true;AK.msgs=[];try{localStorage.removeItem(AK_KEEP)}catch(e){}}akOpenNow();setTimeout(akReqDot,0)}
 setTimeout(()=>{try{akNavLock(false)}catch(e){}},1500);
  
 function akBlockedSay(){AK.kb=false;akKb();akLockIn();if(!AK.msgs.some(m=>akIsNo(m.html)))akBot(akReqSent()?AK_NO_SENT:AK_NO)}
@@ -11541,7 +11558,7 @@ async function akSend(e){
  akUser(q);AK.kb=false;akKb();
  if(!ASK_HEMERA_URL){akBot('<p>Alexandra is not connected yet.</p>');return}
  AK.busy=true;akDraw();
- try{let ctx='';try{ctx=await akCtx()}catch(e){}const j=await akPost('ask',{q,history:AK.hist.slice(-8),ctx});AK.hist.push({role:'user',text:q},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-16);AK.busy=false;try{await akAssets()}catch(e){}akBot(akAnswer(j.answer||'')+(AK.editor&&!ctx?'<p class="ak-oldapi">Editors only: this device could not read the dashboard numbers, so they were not sent with the question.</p>':'')+(AK.editor&&!j.api?'<p class="ak-oldapi">Editors only: the Alexandra script is older than v23, so she cannot read the dashboard numbers yet. Deploy the new HemeraApi.gs as a New version.</p>':''))}
+ try{let ctx='';try{ctx=await akCtx()}catch(e){}const j=await akPost('ask',{q,history:AK.hist.slice(-8),ctx});AK.hist.push({role:'user',text:q},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-16);AK.busy=false;if(!AK.assets){try{await akAssets()}catch(e){}}else setTimeout(()=>akAssets().catch(()=>{}),1500);akBot(akAnswer(j.answer||'')+(AK.editor&&!ctx?'<p class="ak-oldapi">Editors only: this device could not read the dashboard numbers, so they were not sent with the question.</p>':'')+(AK.editor&&!j.api?'<p class="ak-oldapi">Editors only: the Alexandra script is older than v23, so she cannot read the dashboard numbers yet. Deploy the new HemeraApi.gs as a New version.</p>':''))}
  catch(err){AK.busy=false;akBot(`<p>${akEsc(/not connected/.test(err.message)?'Alexandra is not connected yet.':'Something went wrong. Try again.')}</p>`)}
 }
 
@@ -20934,7 +20951,7 @@ async function akCamps(acc,K){const L=[];try{const c=CP[acc]=CP[acc]||{};if(!c.d
  const W=[['yday',Ld,Ld],['7d',cpD(Ld,-6),Ld],['30d',cpD(Ld,-29),Ld],['month',Ld.slice(0,8)+'01',Ld],['prev30',cpD(Ld,-59),cpD(Ld,-30)]];
  L.push('## Campaigns (from the campaign tabs, latest day '+Ld+'). Each line: campaign | type | window: spend/value/conv ROAS. Windows: yday = '+Ld+', 7d, 30d, month = this month so far, prev30 = the 30 days before the 30d.');
  L.push('Use these lines for any question about a single campaign or the best / worst campaigns. Rank campaigns, not campaign types, when asked about campaigns.');
- const list=d.c.map((m,i)=>({m,i,w:W.map(w=>cpSum(ix[i],w[1],w[2]))})).filter(x=>x.w[2].sp>0||x.w[4].sp>0).sort((a,b)=>b.w[2].sp-a.w[2].sp).slice(0,80);
+ const list=d.c.map((m,i)=>({m,i,w:W.map(w=>cpSum(ix[i],w[1],w[2]))})).filter(x=>x.w[2].sp>0||x.w[4].sp>0).sort((a,b)=>b.w[2].sp-a.w[2].sp).slice(0,50);
  list.forEach(x=>L.push(x.m[0]+' | '+x.m[1]+' | '+W.map((w,k)=>w[0]+': '+M(x.w[k].sp)+'/'+M(x.w[k].va)+'/'+akR(x.w[k].cv,1)+' '+akR(x.w[k].ro,2)).join(' ; ')));
  
  const F=[];list.forEach(x=>{const a=x.w[1],b=x.w[4],m30=x.w[2],low=/demand|video/i.test(x.m[1]);
@@ -20946,7 +20963,7 @@ async function akCamps(acc,K){const L=[];try{const c=CP[acc]=CP[acc]||{};if(!c.d
  if(F.length)F.slice(0,25).forEach(f=>L.push('- '+f));else L.push('- Nothing dropped by more than 30% (campaigns) or 20% (types).');
  }catch(e){}return L}
 
-function akTypeMonths(acc,K){const L=[];try{const ex=MONTH_EXTRA[acc];if(!ex||!ex.months)return L;const ks=Object.keys(ex.months).sort();if(!ks.length)return L;
+function akTypeMonths(acc,K){const L=[];try{const ex=MONTH_EXTRA[acc];if(!ex||!ex.months)return L;const ks=Object.keys(ex.months).sort().slice(-25);if(!ks.length)return L;
  L.push('## Every month by campaign type (month | type: spend/value/conv ROAS). Use it to compare a type across months or years.');
  ks.forEach(k=>{const m=ex.months[k],ch=m.channels||{},T={};Object.keys(ch).forEach(n=>{const t=typeKey(n),o=T[t]=T[t]||{s:0,v:0,c:0};o.s+=ch[n].spend||0;o.v+=ch[n].value||0;o.c+=ch[n].conversions||0});
   const parts=Object.keys(T).filter(t=>T[t].s||T[t].v).map(t=>t+': '+akR(K*T[t].s)+'/'+akR(K*T[t].v)+'/'+akR(T[t].c)+' '+akR(T[t].s?T[t].v/T[t].s:0,2));
@@ -20960,7 +20977,12 @@ async function akTerms(acc,K){const L=[];try{const c=ST[acc]=ST[acc]||{};if(!c.d
  L.push('Most money wasted (add as negatives):');T.filter(t=>t.k==='x').sort((a,b)=>b.cost-a.cost).slice(0,12).forEach(t=>L.push('- '+line(t)));
  L.push('Best terms (scale up):');T.filter(t=>t.k==='g').sort((a,b)=>(b.value||0)-(a.value||0)).slice(0,12).forEach(t=>L.push('- '+line(t)));
  }catch(e){}return L}
-async function akCtx(){if(typeof DASH_DATA==='undefined'||!DASH_DATA)return '';const acc=CURRENT_ACCOUNT,L=[];
+async function akCtx(){if(typeof DASH_DATA==='undefined'||!DASH_DATA)return '';const acc=CURRENT_ACCOUNT,k=acc+'|'+(DASH_DATA.generatedAt||DASH_DATA.updatedAt||'');
+ if(AK_CTX.k===k&&Date.now()-AK_CTX.at<120000&&AK_CTX.v)return AK_CTX.v;
+ if(AK_CTX.k===k&&AK_CTX.p)return AK_CTX.p;
+ const p=akCtx0(acc).then(v=>{if(AK_CTX.p===p){AK_CTX.p=null;if(v&&((CP[acc]||{}).data||{}).latest){AK_CTX.v=v;AK_CTX.at=Date.now()}}return v},e=>{AK_CTX.p=null;throw e});AK_CTX={k,p,v:'',at:0};return p}
+let AK_CTX={k:'',p:null,v:'',at:0};
+async function akCtx0(acc){const L=[];
  L.push('Today (the user’s date): '+ssToday());try{L.push('Currency: open account '+((ACC_CUR||{})[acc]||'USD')+', other account '+((ACC_CUR||{})[acc==='ar'?'usa':'ar']||''))}catch(e){}
  const K=akFx(acc);L.push('Money below is already in the account currency ('+akFxSym(acc)+'). The sheet keeps GBP; HEMERA converted it with today\'s rate'+(K!==1?' ('+akR(K,4)+')':'')+'.');
  L.push(akDashLines(DASH_DATA,'Account open on screen',K));
@@ -21204,7 +21226,7 @@ function cpPerName(L){const p=CPS.per;return p==='3'?'Last 3 days':p==='7'?'Last
 
 function cpDot(r,acc){if(!r.sp)return 'o';if(!acc)return 'w';const q=r.ro/acc;return q>=1?'g':q>=.75?'w':'r'}
 function cpTri(rows,ix,L){return [30,90,180].map(n=>{const a=cpD(L,-(n-1)),r=cpSum(rows,a,L);return {n,a,r,c:cpDot(r,cpAccRo(ix,a,L))}})}
-function cpPerPick(p){CPS.per=p;if(p==='c'&&!(CPS.from&&CPS.to)){const d=(CP[CURRENT_ACCOUNT]||{}).data;if(d&&d.latest){CPS.to=d.latest;CPS.from=cpD(d.latest,-13)}}renderCamp();cpDraw()}
+function cpPerPick(p){if(p==='c'){cpPkOpen('main');return}CPS.per=p;renderCamp();cpDraw()}
 function cpDate(k,v){if(!/^\d{4}-\d{2}-\d{2}$/.test(v))return;CPS[k]=v;CPS.per='c';renderCamp();cpDraw()}
 function cpType(i){const n=i<0?'':CP_CHS[i];let t=CPS.types.slice();if(!n)t=[];else t=t.includes(n)?t.filter(x=>x!==n):t.concat(n);if(t.length>=CP_CHS.length)t=[];CPS.types=t;renderCamp()}
 function cpSortOpen(){CPS.so=!CPS.so;renderCamp()}
@@ -21214,7 +21236,7 @@ function cpCusHtml(L,dark){
  const first=(CP[CURRENT_ACCOUNT]||{}).first||'';
  return CPS.per==='c'?`<div class="cp-cus${dark?' dk':''}"><label><small>FROM</small><input type="date" value="${esc(CPS.from)}" min="${first}" max="${L}" onchange="cpDate('from',this.value)"></label><em>→</em><label><small>TO</small><input type="date" value="${esc(CPS.to)}" min="${first}" max="${L}" onchange="cpDate('to',this.value)"></label></div>`:'';
 }
-function cpPersHtml(L,dark){return `<div class="cp-per${dark?' dk':''}">${CP_PERS.map(([k,l])=>`<button type="button" class="${CPS.per===k?'on':''}" onclick="cpPerPick('${k}')">${l}</button>`).join('')}</div>`+cpCusHtml(L,dark)}
+function cpPersHtml(L,dark){return `<div class="cp-per${dark?' dk':''}">${CP_PERS.map(([k,l])=>`<button type="button" class="${CPS.per===k?'on':''}" onclick="cpPerPick('${k}')">${l}</button>`).join('')}</div>`}
 function cpTypesHtml(){
  const t=CPS.types,tiles=CP_CHS.map((n,i)=>`<button type="button" class="mx-tl${t.includes(n)?' on':''}" onclick="cpType(${i})" title="${esc(CHANNEL_SHORT[n]||n)}">${chIco(n)}<span>${esc(MX_TYPE_LABEL[n]||CHANNEL_SHORT[n]||n)}</span></button>`).join('');
  return `<div class="mx-types cp-types"><small>Campaign type</small><div class="mx-tls"><button type="button" class="mx-tl${t.length?'':' on'}" onclick="cpType(-1)"><i class="mx-all">ALL</i><span>All</span></button>${tiles}</div></div>`;
@@ -21227,14 +21249,15 @@ function cpSortHtml(){
 }
 function cpCard(x,tri,ch,acc){
  const dot=cpDot(x.r,acc),dots=`<span class="cp-dots" title="Last 30 / 90 / 180 days">${tri.map(t=>`<span><i class="${t.c}"></i><small>${t.n}</small></span>`).join('')}</span>`;
- return `<button type="button" class="cp-c3" style="--c:${ch[1]}" onclick="cpOpen(${x.i})"><div class="cp-c3h"><span class="cp-c2t"><i></i>${esc(ch[0])}</span>${dots}</div><div class="cp-nm">${esc(x.n)}</div>
+ const nm=cpNames(x.n);
+ return `<button type="button" class="cp-c3" style="--c:${ch[1]}" onclick="cpOpen(${x.i})"><div class="cp-c3h"><span class="cp-c2t"><i></i>${esc(ch[0])}</span>${dots}</div><div class="cp-nm">${esc(nm[0])}${nm.length>1?` <span class="cp-nm2">+${nm.length-1} name</span>`:''}</div>
    <div class="cp-c3m"><div><small>Spend</small><b>${money(x.r.sp)}</b></div><div><small>Conv.</small><b>${cpN(x.r.cv)}</b></div><div><small>Value</small><b>${money(x.r.va)}</b></div><div class="ro ${dot}"><small>ROAS</small><b>${cpX(x.r.ro)}</b></div></div></button>`;
 }
 function cpHero(L,a,b,show,tot,usual){
  const acct=esc(accountMeta(DASH_DATA||{}).shortLabel||CURRENT_ACCOUNT.toUpperCase()),cus=CPS.per==='c'&&usual;
  const chip=m=>cus?mxArrow(cpDelta(tot[m],usual[m]),cpCls(m,cpDelta(tot[m],usual[m]))):'';
  const foot=cus?`<div class="cp-hf">▲▼ vs the usual level: the 12 months before, scaled to the same number of days</div>`:'';
- return `<div class="cp-hero cp-h1"><div class="cp-h1t"><div><div class="cp-k">${cpPerName(L).toUpperCase()} · ${acct}</div><div class="cp-sub">${cpRange(a,b)} · ${show.length} campaigns</div></div><div class="cp-h1r"><b>${cpX(tot.ro)}</b><small>ROAS</small>${chip('ro')}</div></div>
+ return `<div class="cp-hero cp-h1"><div class="cp-h1t"><div class="cp-h1l"><div class="cp-k">${cpPerName(L).toUpperCase()} · ${acct}</div><div class="cp-sub">${cpRange(a,b)} · ${show.length} campaigns</div></div><div class="cp-h1r"><small>ROAS</small><b>${cpX(tot.ro)}</b>${chip('ro')}</div></div>
    <div class="cp-tot"><span>Spend <b>${money(tot.sp)}</b>${chip('sp')}</span><span>Conv. <b>${cpN(tot.cv)}</b>${chip('cv')}</span><span>Value <b>${money(tot.va)}</b>${chip('va')}</span></div>${foot}${cpPersHtml(L,1)}</div>`;
 }
 function renderCamp(){
@@ -21253,8 +21276,7 @@ function renderCamp(){
  const tot=cpAdd(show.map(x=>x.r)),acc=cpAccRo(ix,a,b);
  const pick=d.c.map((m,i)=>i).filter(i=>ok({t:d.c[i][1]}));
  const usual=CPS.per==='c'?cpUsual((s,e)=>cpAdd(pick.map(i=>cpSum(ix[i],s,e))),a,b):null;
- body.innerHTML=cpHero(L,a,b,show,tot,usual)+cpTypesHtml()+
-  `<div class="cp-tools">${cpSortHtml()}${show.length?`<button type="button" class="cp-cmpb" onclick="cpOpen(${show[0].i},'cmp')">${cpIc('<path d="M7 4v16M7 4L4 7M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/>')}Compare</button>`:''}</div>`+
+ body.innerHTML=cpHero(L,a,b,show,tot,usual)+cpBarHtml(show)+
   (show.length?`<div class="cp-list">${show.map(x=>cpCard(x,cpTri(ix[x.i],ix,L),cpCh(x.t),acc)).join('')}</div>`:`<div class="cp-wait cp-empty">No spend in this period.</div>`)+
   `<div class="cp-lg"><i class="g"></i><i class="w"></i><i class="r"></i>ROAS against the account over the same days · dots: last 30 · 90 · 180 days</div>`+
   `<div class="cp-note">From the campaign tabs of the sheet · data from ${c.first?cpLbl(c.first,{year:'numeric'}):'—'} · read ${d.at?new Date(d.at).toLocaleString('en-GB',{weekday:'short',hour:'2-digit',minute:'2-digit'}):''} · <a href="#" onclick="cpLoad(true);return false">${c.busy?'Reading…':'Read now'}</a></div>`;
@@ -21320,7 +21342,7 @@ function cpDraw(){
   const ch2=(k,lo)=>base?cpArrow(cpChg(r[k],base[k]),lo):'';
   const bk=cpBuckets(a,b,CPX.g),vals=bk.map(x=>cpSum(rows,x[0],x[1])[CPX.met]);
   const more=[['cl','Clicks'],['im','Impr.'],['ctr','CTR'],['cpc','CPC',1],['cvr','Conv. rate'],['aov','Avg. value']];
-  html=top(esc(ch[0]).toUpperCase(),esc(m[0]),cpPerName(L)+' · '+cpRange(a,b))+`<div class="cp-in">${cpPersHtml(L)}
+  const nms=cpNames(m[0]);html=top(esc(ch[0]).toUpperCase(),esc(nms[0]),cpPerName(L)+' · '+cpRange(a,b)+(nms.length>1?'<br><span class="cp-aka">Also in the same sheet cell: '+esc(nms.slice(1).join(' · '))+'</span>':''))+`<div class="cp-in">${cpPersHtml(L)}
    <div class="cp-dh"><div class="cp-k2">ROAS</div><div class="cp-big">${cpX(r.ro)} ${ch2('ro')}<small>${bl}</small></div>
    <div class="cp-g4">${[['sp','Spend'],['va','Value'],['cv','Conv.'],['cpa','CPA',1]].map(([k,l,lo])=>`<div><small>${l}</small><b>${cpVal(k,r)}</b>${ch2(k,lo)}</div>`).join('')}</div>
    <div class="cp-shr"><span>Share of the account</span><b>${acc.sp?cpPc(r.sp/acc.sp):'—'} of spend</b><b>${acc.va?cpPc(r.va/acc.va):'—'} of value</b></div></div>
@@ -21355,12 +21377,94 @@ function cpDraw(){
    ${cpPersHtml(L)}
    <div class="cp-ab"><div class="cp-abx a"><small>${two?'CAMPAIGN A':'CAMPAIGN'}</small>${cpPick(CPX.b,CPX.i,'i')}</div>
    ${two?`<div class="cp-abx b"><small>CAMPAIGN B</small>${cpPick(CPX.i,CPX.b,'b')}</div>`:`<div class="cp-pp"><div class="pa"><small>PERIOD A</small><b>${cpRange(a,b)}</b></div><div class="pb"><small>PERIOD B</small><b>${cpRange(ba,bb)}</b></div></div>
-   <select class="cp-sel" onchange="cpSet('pb',this.value)">${pbOpts.map(([k,l])=>`<option value="${k}"${CPX.pb===k?' selected':''}>${l}</option>`).join('')}</select>
-   ${CPX.pb==='c'?`<div class="cp-cus"><label><small>FROM</small><input type="date" value="${esc(CPX.bf||ba)}" min="${first}" max="${L}" onchange="cpSet('bf',this.value);if(!CPX.bt)cpSet('bt','${bb}')"></label><em>→</em><label><small>TO</small><input type="date" value="${esc(CPX.bt||bb)}" min="${first}" max="${L}" onchange="cpSet('bt',this.value);if(!CPX.bf)cpSet('bf','${ba}')"></label></div>`:''}`}</div>
+   <select class="cp-sel" onchange="if(this.value==='c'){cpPkOpen('b')}else cpSet('pb',this.value)">${pbOpts.map(([k,l])=>`<option value="${k}"${CPX.pb===k?' selected':''}>${l}</option>`).join('')}</select>
+   ${CPX.pb==='c'?`<button type="button" class="cp-pkb" onclick="cpPkOpen('b')">${cpIc('<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>')}<span>${cpRange(ba,bb)}</span><b>Change dates</b></button>`:''}`}</div>
    ${rb?`${sum?`<div class="cp-say"><i class="${two||r.ro>=rb.ro?'':'dn'}">${two?(r.ro>=rb.ro?'A':'B'):r.ro>=rb.ro?'▲':'▼'}</i><div>${sum}</div></div>`:''}${tbl}${chart}`:'<div class="cp-wait cp-empty">Pick a second campaign.</div>'}</div>`;
  }
  o.innerHTML=`<div class="cp-sc">${html}</div>`;
  const n=o.querySelector('.cp-sc');if(n&&y)n.scrollTop=y;
+}
+
+ 
+function cpNames(n){n=String(n||'').trim();const pre=(n.match(/^([A-Za-z0-9]{2,})_/)||[])[1];let p=n.split(/\s*[\r\n]+\s*/);if(pre)p=[].concat(...p.map(x=>x.split(new RegExp('\\s+(?='+pre+'_)'))));p=p.map(x=>x.trim()).filter(Boolean);return p.length>1?p:[n]}
+function cpSortTap(k){if(CPS.sort===k)CPS.dir=-CPS.dir;else{CPS.sort=k;CPS.dir=-1}renderCamp()}
+
+function cpBarHtml(show){
+ const cmp=show.length?`<button type="button" class="cp-cmpb" onclick="cpOpen(${show[0].i},'cmp')">${cpIc('<path d="M7 4v16M7 4L4 7M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/>')}Compare</button>`:'';
+ const arrow=`<i class="cp-ar">${CPS.dir<0?'↓':'↑'}</i>`;
+ return cpTypesHtml()+`<div class="cp-fb"><div class="cp-tabs">${CP_SORTS.map(([k,l])=>`<button type="button" class="${CPS.sort===k?'on':''}" onclick="cpSortTap('${k}')">${l}${CPS.sort===k?arrow:''}</button>`).join('')}</div>${cmp}</div>`;
+}
+
+
+let CPK=null;
+function cpPkOpen(t){
+ const c=CP[CURRENT_ACCOUNT]||{},d=c.data;if(!d||!d.latest)return;cpIx(c);
+ const L=d.latest;let a='',b='';
+ if(t==='b'&&CPX){a=CPX.bf;b=CPX.bt}else if(CPS.from&&CPS.to){a=CPS.from;b=CPS.to}
+ CPK={t,tab:a&&b&&a.slice(8)!=='01'?'d':(a?'m':'d'),a,b,anc:'',mon:(b||L).slice(0,7),first:c.first||L,L};
+ let o=document.getElementById('cpPk');
+ if(!o){o=document.createElement('div');o.id='cpPk';o.className='pk-overlay cp-pko';o.onclick=e=>{if(e.target===o)cpPkClose()};o.innerHTML='<div class="pk-card"></div>';document.body.appendChild(o)}
+ cpPkDraw(true);requestAnimationFrame(()=>o.classList.add('open'));
+}
+function cpPkClose(){const o=document.getElementById('cpPk');if(o)o.classList.remove('open');if(CPK&&CPK.t==='b'&&CPX&&!(CPX.bf&&CPX.bt)&&CPX.pb==='c'){CPX.pb='prev';cpDraw()}CPK=null}
+function cpMEnd(m){return cpD(cpD(m+'-28',4).slice(0,8)+'01',-1)}
+function cpPkClamp(x){return x<CPK.first?CPK.first:x>CPK.L?CPK.L:x}
+function cpPkSet(a,b){CPK.a=cpPkClamp(a<b?a:b);CPK.b=cpPkClamp(a<b?b:a)}
+function cpPkTap(kind,k){
+ const s=kind==='m'?k+'-01':k,e=kind==='m'?cpMEnd(k):k;
+ if(CPK.anc&&CPK.ancK===kind){const s0=kind==='m'?CPK.anc+'-01':CPK.anc,e0=kind==='m'?cpMEnd(CPK.anc):CPK.anc;cpPkSet(s<s0?s:s0,e>e0?e:e0);CPK.anc=''}
+ else{cpPkSet(s,e);CPK.anc=k;CPK.ancK=kind}
+ cpPkDraw();
+}
+function cpPkPre(id){
+ const L=CPK.L,m=L.slice(0,7),mb=n=>{const d=new Date(m+'-15T12:00:00Z');d.setUTCMonth(d.getUTCMonth()-n);return d.toISOString().slice(0,7)};
+ const H=(typeof DASH_DATA!=='undefined'&&DASH_DATA&&DASH_DATA.history)||[];
+ if(/^\d+d$/.test(id))cpPkSet(cpD(L,-(parseInt(id)-1)),L);
+ else if(id==='this')cpPkSet(m+'-01',L);
+ else if(id==='last')cpPkSet(mb(1)+'-01',cpMEnd(mb(1)));
+ else if(id==='3m')cpPkSet(mb(2)+'-01',L);
+ else if(id==='6m')cpPkSet(mb(5)+'-01',L);
+ else if(id==='mon')cpPkSet(CPK.mon+'-01',cpMEnd(CPK.mon));
+ else{const nm=id==='ramadan'?'Ramadan':'Dhu Hijjah',r=H.filter(h=>h.hijri===nm&&h.month<=m).map(h=>h.month).sort();if(r.length){const z=r[r.length-1];cpPkSet(z+'-01',cpMEnd(z))}}
+ CPK.anc='';if(CPK.b)CPK.mon=CPK.b.slice(0,7);cpPkDraw();
+}
+function cpPkNav(n){const d=new Date(CPK.mon+'-15T12:00:00Z');d.setUTCMonth(d.getUTCMonth()+n);const x=d.toISOString().slice(0,7);if(x>=CPK.first.slice(0,7)&&x<=CPK.L.slice(0,7)){CPK.mon=x;cpPkDraw(true)}}
+function cpPkTab(t){CPK.tab=t;CPK.anc='';cpPkDraw(true)}
+function cpPkClear(){CPK.a=CPK.b=CPK.anc='';cpPkDraw()}
+function cpPkShow(){
+ if(!CPK||!CPK.a||!CPK.b)return;const {t,a,b}=CPK;
+ if(t==='b'){if(CPX){CPX.bf=a;CPX.bt=b;CPX.pb='c'}CPK=null;cpPkClose();cpDraw();return}
+ CPS.from=a;CPS.to=b;CPS.per='c';CPK=null;cpPkClose();renderCamp();cpDraw();
+}
+function cpPkDraw(full){
+ const o=document.getElementById('cpPk');if(!o||!CPK)return;const card=o.querySelector('.pk-card'),K=CPK;
+ const H=(typeof DASH_DATA!=='undefined'&&DASH_DATA&&DASH_DATA.history)||[],hj=m=>(H.find(h=>h.month===m)||{}).hijri||'';
+ const inR=(s,e)=>K.a&&s<=K.b&&e>=K.a;
+ let body='';
+ if(K.tab==='m'){
+  const y0=+K.first.slice(0,4),y1=+K.L.slice(0,4);
+  for(let y=y0;y<=y1;y++)body+=`<div class="pk-year"><b>${y}</b><div class="pk-mgrid">${Array.from({length:12},(_,i)=>{const m=y+'-'+String(i+1).padStart(2,'0'),nm=new Date(2000,i,1).toLocaleDateString('en-GB',{month:'short'});
+   if(m<K.first.slice(0,7)||m>K.L.slice(0,7))return `<span class="pk-m off">${nm}</span>`;const h=hj(m);
+   const ms=cpPkClamp(m+'-01'),me=cpPkClamp(cpMEnd(m)),full=K.a&&K.a<=ms&&K.b>=me;
+   return `<button type="button" class="pk-m${full?' on':inR(ms,me)?' part':''}${K.anc===m?' anc':''}${SEASONS[h]?' season':''}" onclick="cpPkTap('m','${m}')">${nm}<small>${esc(h)}</small></button>`}).join('')}</div></div>`;
+ } else {
+  const p=K.mon.split('-').map(Number),n=new Date(Date.UTC(p[0],p[1],0)).getUTCDate(),lead=(new Date(Date.UTC(p[0],p[1]-1,1)).getUTCDay()+6)%7;
+  let cells=Array(lead).fill('<span class="pk-day empty"></span>').join('');
+  for(let i=1;i<=n;i++){const k=K.mon+'-'+String(i).padStart(2,'0'),has=k>=K.first&&k<=K.L,on=inR(k,k),edge=on&&(k===K.a||k===K.b);
+   cells+=`<button type="button" class="pk-day${has?'':' off'}${edge?' on':on?' in':''}" ${has?`onclick="cpPkTap('d','${k}')"`:'disabled'}>${i}</button>`}
+  body=`<div class="pk-calhead"><button type="button" onclick="cpPkNav(-1)" ${K.mon>K.first.slice(0,7)?'':'disabled'}>‹</button><b class="pk-title">${new Date(K.mon+'-15T12:00:00Z').toLocaleDateString('en-GB',{month:'long',year:'numeric',timeZone:'UTC'})}${hj(K.mon)?` <small>${esc(hj(K.mon))}</small>`:''}</b><button type="button" onclick="cpPkNav(1)" ${K.mon<K.L.slice(0,7)?'':'disabled'}>›</button></div>
+   <div class="pk-week">${['M','T','W','T','F','S','S'].map(x=>`<span>${x}</span>`).join('')}</div><div class="pk-cal">${cells}</div>`;
+ }
+ const n=K.a?cpDays(K.a,K.b):0;
+ const foot=`<div class="pk-foot"><div class="pk-sum">${n?`<b>${esc(cpRange(K.a,K.b))}</b><small>${K.anc?'Tap another '+(K.tab==='m'?'month':'day')+' to pick everything in between':n+' day'+(n>1?'s':'')}</small>`:'<b>Nothing picked yet</b><small>Tap '+(K.tab==='m'?'months':'days')+'</small>'}</div><button type="button" class="pk-ghost" onclick="cpPkClear()">Clear</button><button type="button" class="pk-apply" ${n?'':'disabled'} onclick="cpPkShow()">Show</button></div>`;
+ const host=card.querySelector('.pk-body');
+ if(!full&&host&&card.dataset.tab===K.tab){const y=host.scrollTop;host.innerHTML=body;host.scrollTop=y;card.querySelector('.pk-foot').outerHTML=foot;return}
+ card.dataset.tab=K.tab;
+ const pres=K.tab==='m'?[['this','This month'],['last','Last month'],['3m','Last 3 months'],['6m','Last 6 months'],['ramadan','Last Ramadan'],['qurbani','Last Qurbani']]:[['14d','Last 14 days'],['60d','Last 60 days'],['90d','Last 90 days'],['mon','Whole month']];
+ card.innerHTML=`<div class="pk-head"><div><small>${K.t==='b'?'Period B':'Custom period'}</small></div><button type="button" class="pk-x" onclick="cpPkClose()" aria-label="Close">✕</button></div>
+  <div class="wx-tabs pk-tabs"><button type="button" class="wx-tab${K.tab==='m'?' on':''}" onclick="cpPkTab('m')">Months</button><button type="button" class="wx-tab${K.tab==='d'?' on':''}" onclick="cpPkTab('d')">Days</button></div>
+  <div class="pk-chips">${pres.map(([id,l])=>`<button type="button" onclick="cpPkPre('${id}')">${l}</button>`).join('')}</div><div class="pk-body">${body}</div>${foot}`;
+ const b=card.querySelector('.pk-body'),on=b&&b.querySelector('.pk-m.on');if(b)b.scrollTop=on?Math.max(0,on.offsetTop-b.offsetTop-120):(K.tab==='m'?b.scrollHeight:0);
 }
 </script>
 <div id="seknaFileEnd" hidden></div>
