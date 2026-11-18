@@ -10052,10 +10052,23 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .cp-lb,#campPanel .cp-types>small{display:block;font-size:9px!important;font-weight:700!important;letter-spacing:.12em!important;color:#A9B0C0!important;text-transform:uppercase;margin:0 0 6px 2px}
     .cp-ar{font-style:normal;margin-left:3px}
     .cp-lh{display:flex;justify-content:space-between;align-items:center;margin:12px 2px 8px;font-size:11px;font-weight:700;color:#8A93A8}
-    /* the sort tabs under the type tiles */
-    .cp-fb{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0 10px;border-bottom:1px solid var(--line,#E3E7F0)}
-    .cp-tabs{display:flex;gap:16px}.cp-tabs button{border:0;background:none;font:inherit;font-size:12px;font-weight:800;color:#8A93A8;padding:8px 0 9px;margin-bottom:-1px;border-bottom:2px solid transparent;cursor:pointer}.cp-tabs button.on{color:#203C8E;border-bottom-color:#E2B874}
-    body.dark-mode .cp-tabs button.on{color:#fff}body.dark-mode .cp-nm2{background:#232b38}
+    body.dark-mode .cp-nm2{background:#232b38}
+
+    /* v543 Campaign Performance top, the owner's pick: numbers in the navy card, then a light period bar, type pills, sort / compare links */
+    .cp-g3h{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:10px}.cp-g3h>div{background:rgba(255,255,255,.08);border-radius:11px;padding:7px 9px;min-width:0}
+    .cp-g3h small{display:block;font-size:9px;color:#9FB0E6;font-weight:800;letter-spacing:.08em}.cp-g3h b{display:block;font-size:15.5px;font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cp-g3h .mx-arrow{margin:3px 0 0;display:inline-block}
+    .cp-pbar{display:flex;background:#E9ECF3;border-radius:12px;padding:3px;margin:12px 0 0}.cp-pbar button{flex:1;border:0;background:none;border-radius:9px;padding:8px 0;font:inherit;font-size:12px;font-weight:800;color:#6B7385;cursor:pointer}.cp-pbar button.on{background:#fff;color:#203C8E;box-shadow:0 2px 6px rgba(20,40,110,.12)}
+    .cp-pls{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:10px -2px 0;padding:1px 2px 2px}.cp-pls::-webkit-scrollbar{display:none}
+    .cp-pl{flex:none;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line,#DFE4EF);background:var(--card,#fff);color:#4b5263;border-radius:99px;padding:5px 12px 5px 6px;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
+    .cp-pl:first-child{padding:7px 14px}.cp-pl .channel-icon.ch-ico{width:20px;height:20px;flex:0 0 20px;border-radius:7px;margin:0}.cp-pl .channel-icon.ch-ico svg{width:12px;height:12px}
+    .cp-pl.on{background:#203C8E;border-color:#203C8E;color:#fff}
+    .cp-lh{position:relative}.cp-lhr{display:flex;gap:14px;align-items:center}.cp-lk{border:0;background:none;padding:4px 0;font:inherit;font-size:12px;font-weight:900;color:#203C8E;cursor:pointer}
+    .cp-smenu{position:absolute;right:0;top:100%;z-index:20;min-width:210px;background:var(--card,#fff);border-radius:14px;padding:6px;box-shadow:0 16px 40px rgba(14,20,38,.22)}
+    .cp-smenu button{display:flex;align-items:center;gap:9px;width:100%;border:0;background:none;border-radius:10px;padding:9px 10px;font:inherit;font-size:13px;font-weight:800;color:var(--text,#141B33);cursor:pointer;text-align:left}.cp-smenu button span{flex:1}.cp-smenu button em{font-style:normal;font-size:10.5px;color:#B0812E}
+    .cp-smenu button.on{background:#F1F4FB;color:#203C8E}
+    @media (min-width:1100px){html.dk-on:not(.desktop-site-mode) #campPanel .cp-pbar{max-width:560px}}
+    .cp-lg{flex-wrap:wrap;gap:3px 5px}.cp-lg i{margin-left:4px}.cp-lg i:first-child{margin-left:0}
+    body.dark-mode .cp-pbar{background:#232b38}body.dark-mode .cp-pbar button.on{background:#2f3a4c;color:#fff}body.dark-mode .cp-pl{background:#1c2330;border-color:#303845;color:#C9D3F5}body.dark-mode .cp-pl.on{background:#3d6bff;border-color:#3d6bff;color:#fff}body.dark-mode .cp-lk{color:#9FB8FF}body.dark-mode .cp-smenu button.on{background:#232b38;color:#fff}
 </style>
 </head>
 <body>
@@ -21228,8 +21241,10 @@ function cpPer(L){
 }
 function cpPerName(L){const p=CPS.per;return p==='3'?'Last 3 days':p==='7'?'Last 7 days':p==='30'?'Last 30 days':p==='c'&&CPS.from&&CPS.to?'Custom':(L===new Date(Date.now()-864e5).toLocaleDateString('en-CA')?'Yesterday':'Latest day')}
 
-function cpDot(r,acc){if(!r.sp)return 'o';if(!acc)return 'w';const q=r.ro/acc;return q>=1?'g':q>=.75?'w':'r'}
-function cpTri(rows,ix,L){return [30,90,180].map(n=>{const a=cpD(L,-(n-1)),r=cpSum(rows,a,L);return {n,a,r,c:cpDot(r,cpAccRo(ix,a,L))}})}
+
+function cpDot(r,acc){if(!r.sp)return 'o';if(r.ro<1)return 'r';return acc&&r.ro<acc?'w':'g'}
+
+function cpTri(rows,ix,L){const st=(rows[0]||[])[0]||'';const t=[30,90,180].map(n=>{const a=cpD(L,-(n-1)),r=cpSum(rows,a,L);return {n,a,r,c:cpDot(r,cpAccRo(ix,a,L))}});for(let k=1;k<3;k++)if(st&&st>=t[k-1].a){t[k].c='o';t[k].nd=1}return t}
 function cpPerPick(p){if(p==='c'){cpPkOpen('main');return}CPS.per=p;renderCamp();cpDraw()}
 function cpDate(k,v){if(!/^\d{4}-\d{2}-\d{2}$/.test(v))return;CPS[k]=v;CPS.per='c';renderCamp();cpDraw()}
 function cpType(i){const n=i<0?'':CP_CHS[i];let t=CPS.types.slice();if(!n)t=[];else t=t.includes(n)?t.filter(x=>x!==n):t.concat(n);if(t.length>=CP_CHS.length)t=[];CPS.types=t;renderCamp()}
@@ -21261,8 +21276,8 @@ function cpHero(L,a,b,show,tot,usual){
  const acct=esc(accountMeta(DASH_DATA||{}).shortLabel||CURRENT_ACCOUNT.toUpperCase()),cus=CPS.per==='c'&&usual;
  const chip=m=>cus?mxArrow(cpDelta(tot[m],usual[m]),cpCls(m,cpDelta(tot[m],usual[m]))):'';
  const foot=cus?`<div class="cp-hf">▲▼ vs the usual level: the 12 months before, scaled to the same number of days</div>`:'';
- return `<div class="cp-hero cp-h1"><div class="cp-h1t"><div class="cp-h1l"><div class="cp-k">${cpPerName(L).toUpperCase()} · ${acct}</div><div class="cp-sub">${cpRange(a,b)} · ${show.length} campaigns</div></div><div class="cp-h1r"><small>ROAS</small><b>${cpX(tot.ro)}</b>${chip('ro')}</div></div>
-   <div class="cp-tot"><span>Spend <b>${money(tot.sp)}</b>${chip('sp')}</span><span>Conv. <b>${cpN(tot.cv)}</b>${chip('cv')}</span><span>Value <b>${money(tot.va)}</b>${chip('va')}</span></div>${foot}${cpPersHtml(L,1)}</div>`;
+ return `<div class="cp-hero cp-h1"><div class="cp-h1t"><div class="cp-h1l"><div class="cp-k">${cpPerName(L).toUpperCase()} · ${acct}</div><div class="cp-sub">${cpRange(a,b)} · ${show.length} campaign${show.length===1?'':'s'}</div></div><div class="cp-h1r"><small>ROAS</small><b>${cpX(tot.ro)}</b>${chip('ro')}</div></div>
+   <div class="cp-g3h"><div><small>SPEND</small><b>${money(tot.sp)}</b>${chip('sp')}</div><div><small>CONV.</small><b>${cpN(tot.cv)}</b>${chip('cv')}</div><div><small>VALUE</small><b>${money(tot.va)}</b>${chip('va')}</div></div>${foot}</div>`;
 }
 function renderCamp(){
  const body=document.getElementById('cpBody');if(!body)return;
@@ -21282,7 +21297,7 @@ function renderCamp(){
  const usual=CPS.per==='c'?cpUsual((s,e)=>cpAdd(pick.map(i=>cpSum(ix[i],s,e))),a,b):null;
  body.innerHTML=cpHero(L,a,b,show,tot,usual)+cpBarHtml(show)+
   (show.length?`<div class="cp-list">${show.map(x=>cpCard(x,cpTri(ix[x.i],ix,L),cpCh(x.t),acc)).join('')}</div>`:`<div class="cp-wait cp-empty">No spend in this period.</div>`)+
-  `<div class="cp-lg"><i class="g"></i><i class="w"></i><i class="r"></i>ROAS against the account over the same days · dots: last 30 · 90 · 180 days</div>`+
+  `<div class="cp-lg"><i class="g"></i>at or above the account <i class="w"></i>below it <i class="r"></i>losing money <i class="o"></i>no data · dots: last 30 · 90 · 180 days</div>`+
   `<div class="cp-note">From the campaign tabs of the sheet · data from ${c.first?cpLbl(c.first,{year:'numeric'}):'—'} · read ${d.at?new Date(d.at).toLocaleString('en-GB',{weekday:'short',hour:'2-digit',minute:'2-digit'}):''} · <a href="#" onclick="cpLoad(true);return false">${c.busy?'Reading…':'Read now'}</a></div>`;
 }
 
@@ -21391,12 +21406,17 @@ function cpDraw(){
 
  
 function cpNames(n){n=String(n||'').trim();const pre=(n.match(/^([A-Za-z0-9]{2,})_/)||[])[1];let p=n.split(/\s*[\r\n]+\s*/);if(pre)p=[].concat(...p.map(x=>x.split(new RegExp('\\s+(?='+pre+'_)'))));p=p.map(x=>x.trim()).filter(Boolean);return p.length>1?p:[n]}
-function cpSortTap(k){if(CPS.sort===k)CPS.dir=-CPS.dir;else{CPS.sort=k;CPS.dir=-1}renderCamp()}
 
+
+function cpSortMenu(){CPS.so=!CPS.so;renderCamp()}
+function cpSortPick(k){if(CPS.sort===k)CPS.dir=-CPS.dir;else{CPS.sort=k;CPS.dir=-1}CPS.so=false;renderCamp()}
 function cpBarHtml(show){
- const cmp=show.length?`<button type="button" class="cp-cmpb" onclick="cpOpen(${show[0].i},'cmp')">${cpIc('<path d="M7 4v16M7 4L4 7M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/>')}Compare</button>`:'';
- const arrow=`<i class="cp-ar">${CPS.dir<0?'↓':'↑'}</i>`;
- return cpTypesHtml()+`<div class="cp-fb"><div class="cp-tabs">${CP_SORTS.map(([k,l])=>`<button type="button" class="${CPS.sort===k?'on':''}" onclick="cpSortTap('${k}')">${l}${CPS.sort===k?arrow:''}</button>`).join('')}</div>${cmp}</div>`;
+ const t=CPS.types,lab=x=>esc(MX_TYPE_LABEL[x]||CHANNEL_SHORT[x]||x),cur=(CP_SORTS.find(x=>x[0]===CPS.sort)||CP_SORTS[0])[1],arr=CPS.dir<0?'↓':'↑';
+ const per=`<div class="cp-pbar">${CP_PERS.map(([k,l])=>`<button type="button" class="${CPS.per===k?'on':''}" onclick="cpPerPick('${k}')">${l}</button>`).join('')}</div>`;
+ const pills=`<div class="cp-pls"><button type="button" class="cp-pl${t.length?'':' on'}" onclick="cpType(-1)">All</button>${CP_CHS.map((n,i)=>`<button type="button" class="cp-pl${t.includes(n)?' on':''}" onclick="cpType(${i})">${chIco(n)}${lab(n)}</button>`).join('')}</div>`;
+ const menu=CPS.so?`<div class="cp-smenu">${CP_SORTS.map(([k,l])=>`<button type="button" class="${CPS.sort===k?'on':''}" onclick="cpSortPick('${k}')">${cpIc(CP_SIC[k])}<span>${l}</span>${CPS.sort===k?`<em>${CPS.dir<0?'High → Low':'Low → High'} ⇅</em>`:''}</button>`).join('')}</div>`:'';
+ const cmp=show.length?`<button type="button" class="cp-lk" onclick="cpOpen(${show[0].i},'cmp')">⇅ Compare</button>`:'';
+ return per+pills+`<div class="cp-lh"><span>${show.length} campaign${show.length===1?'':'s'}</span><span class="cp-lhr"><button type="button" class="cp-lk" onclick="cpSortMenu()">${cur} ${arr}</button>${cmp}${menu}</span></div>`;
 }
 
 
