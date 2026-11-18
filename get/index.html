@@ -590,7 +590,7 @@ html.lite .nav img{opacity:1!important}
 /* Alexandra's live story phone */
 .fr .ly.akm{top:0;background:#0b1236;overflow:hidden}
 .akm-p{position:absolute;inset:0;background:url(/get/shots/ak-story.webp?v=1) center 25%/cover;animation:akmKb 9s ease-in-out infinite alternate}
-.akm::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,13,34,0) 40%,rgba(7,13,34,.95) 86%)}
+.akm::after{display:none;content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,13,34,0) 40%,rgba(7,13,34,.95) 86%)}
 @keyframes akmKb{from{transform:scale(1.08) translateX(3%)}to{transform:scale(1.16) translateX(-3%)}}
 .akm-b{position:absolute;top:-10%;bottom:-10%;width:22%;left:-30%;z-index:2;background:linear-gradient(90deg,transparent,rgba(243,213,142,.55),transparent);transform:skewX(-14deg);animation:akmB 4.5s infinite 1s;mix-blend-mode:screen}
 @keyframes akmB{0%{left:-30%}35%,100%{left:120%}}
@@ -622,7 +622,7 @@ html.lite .nav img{opacity:1!important}
 @keyframes bkSh2{0%{background-position:130% 0}60%,100%{background-position:-60% 0}}
 @media (max-width:980px){.g3 .g3f.back .bk3:after{display:block}}
 @media (prefers-reduced-motion:reduce){.g3f.back .bk3:after{animation:none}}
-.akm-v{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
+.akm-v{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%}.akm-p{object-position:50% 62%;animation:akmZ 9s ease-in-out infinite alternate}@keyframes akmZ{from{transform:scale(1)}to{transform:scale(1.06)}}
 
 /* the Meet Alexandra film: its own section, apart from the phone and laptop mockups */
 .akf{display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;align-items:center}
@@ -834,7 +834,7 @@ function copyLink(btn){
 
 var NAV={studio:1,compare:1};
 // Alexandra's phone: a live story screen instead of a screenshot
-var AKM='<div class="ly on akm"><video class="akm-v" muted playsinline loop autoplay preload="auto" poster="/icons/alexandra/v/numbers.jpg?v=1" src="/icons/alexandra/v/numbers.mp4?v=1"></video><i class="akm-b"></i><div class="akm-d"><i><u></u></i><i><u></u></i><i><u></u></i><i><u></u></i></div><div class="akm-t"><span></span>Alexandra · AI</div><div class="akm-c"><small>MEET ALEXANDRA</small><h3><span style="animation-delay:.2s">Your</span> <span style="animation-delay:.3s">numbers,</span> <span style="animation-delay:.4s">answered</span> <span style="animation-delay:.5s"><em>in</em></span> <span style="animation-delay:.6s"><em>seconds.</em></span></h3><b>Chat with Alexandra</b></div></div>';
+var AKM='<div class="ly on akm"><img class="akm-v akm-p" src="/get/alexandra-poster.webp?v=1" alt="Ask her anything"><i class="akm-b"></i></div>';
 var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12"><path d="M8 11.5l2.4-3a3.4 3.4 0 0 0-4.8 0zM3.5 6.6a6.4 6.4 0 0 1 9 0l1.6-2a9 9 0 0 0-12.2 0zM.4 2.8l1.6 1.9a10.6 10.6 0 0 1 12 0l1.6-1.9a13.2 13.2 0 0 0-15.2 0z"/></svg><svg viewBox="0 0 27 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="#fff" stroke-opacity=".5"/><rect x="2" y="2" width="17" height="8" rx="1.8"/><rect x="24" y="4" width="2" height="4" rx="1" fill-opacity=".5"/></svg></i></div><div class="isl"></div>';
 // 3D phones on a turning ring: one screen at a time comes to the front, and its
 // two-screen phones switch between their screens.
