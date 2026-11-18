@@ -637,8 +637,10 @@ html.lite .nav img{opacity:1!important}
 .akv .pl b{width:74px;height:74px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#0b1640;box-shadow:0 10px 30px rgba(226,184,116,.45);animation:akvP 2.4s ease-in-out infinite}
 .akv .pl b svg{width:28px;height:28px;margin-left:4px}
 .akv .pl span{font-size:13px;font-weight:800;letter-spacing:.08em}
-.akv .tm{position:absolute;z-index:3;top:14px;right:14px;font-size:11px;font-weight:800;padding:4px 9px;border-radius:99px;background:rgba(5,10,31,.6);color:#fff;transition:opacity .35s}
+.akv .tm{position:absolute;z-index:3;top:14px;right:58px;font-size:11px;font-weight:800;padding:4px 9px;border-radius:99px;background:rgba(5,10,31,.6);color:#fff;transition:opacity .35s}
 .akv.on .pl,.akv.on .tm{opacity:0;pointer-events:none}
+.akcc{position:absolute;z-index:4;top:12px;right:12px;width:38px;height:30px;border:0;border-radius:99px;background:rgba(5,10,31,.6);color:#fff;font:800 11px Inter,system-ui,sans-serif;cursor:pointer;display:grid;place-items:center}.akcc span{border:1.5px solid rgba(255,255,255,.8);border-radius:5px;padding:0 4px}.akcc.on span{background:var(--gold2);border-color:var(--gold2);color:#0b1640}
+.akv video::cue{background:rgba(5,10,30,.75);color:#fff;font-size:15px;line-height:1.45}
 @keyframes akvP{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
 @media (max-width:900px){.akf{grid-template-columns:1fr;gap:30px}.akf .txt{text-align:center}.akf ul{justify-content:center}.akf li{justify-content:center}}
 @media (prefers-reduced-motion:reduce){.akv .pl b{animation:none}}
@@ -739,7 +741,7 @@ html.lite .nav img{opacity:1!important}
         <p class="s">Alexandra lives inside HEMERA. She reads every sheet and every number, and answers in Arabic or English, with the figures as clean cards.</p>
         <ul><li><i></i>ROAS, pace and plan accuracy, from the live dashboard</li><li><i></i>The best and worst campaigns, and what dropped</li><li><i></i>Sheets, links, the team and days off</li></ul>
       </div>
-      <div class="akv" id="akv"><video playsinline preload="none" poster="/get/alexandra-story.jpg?v=4" src="/get/alexandra-story.mp4?v=4" aria-label="Meet Alexandra, with sound"></video>
+      <div class="akv" id="akv"><video playsinline preload="none" poster="/get/alexandra-story.jpg?v=4" src="/get/alexandra-story.mp4?v=4" aria-label="Meet Alexandra, with sound"><track kind="subtitles" srclang="ar" label="العربية" src="/get/alexandra-story.ar.vtt?v=2"><track kind="subtitles" srclang="en" label="English" src="/get/alexandra-story.en.vtt?v=2"></video><button type="button" class="akcc" aria-label="Subtitles"><span>CC</span></button>
         <button type="button" class="pl" aria-label="Play with sound"><b><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg></b><span>WATCH WITH SOUND</span></button><span class="tm">0:43 · HD</span></div>
     </div>
   </section>
@@ -1075,6 +1077,9 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
 // the Meet Alexandra film: tap to play with sound; tap again to pause; it stops when scrolled away
 (function(){var w=document.getElementById('akv');if(!w)return;var v=w.querySelector('video');
  function go(){if(v.paused){v.muted=false;w.classList.add('on');var p=v.play();if(p&&p.catch)p.catch(function(){w.classList.remove('on')})}else{v.pause()}}
+ var cc=w.querySelector('.akcc'),tr=v.textTracks,mode='';try{mode=localStorage.getItem('hm_aks_cc')||''}catch(e){}
+ function ccSet(m){mode=m;for(var i=0;i<tr.length;i++)tr[i].mode=(m&&tr[i].language===m)?'showing':'hidden';cc.classList.toggle('on',!!m);cc.firstChild.textContent=m==='ar'?'ع':m==='en'?'EN':'CC';try{localStorage.setItem('hm_aks_cc',m)}catch(e){}}
+ cc.addEventListener('click',function(e){e.stopPropagation();ccSet(mode===''?'ar':mode==='ar'?'en':'')});setTimeout(function(){ccSet(mode)},0);
  w.addEventListener('click',go);v.addEventListener('pause',function(){if(!v.ended)return});v.addEventListener('ended',function(){w.classList.remove('on');try{v.currentTime=0}catch(e){}});
  v.addEventListener('pause',function(){w.classList.remove('on')});v.addEventListener('play',function(){w.classList.add('on')});
  if('IntersectionObserver'in window)new IntersectionObserver(function(es){es.forEach(function(e){if(!e.isIntersecting&&!v.paused)v.pause()})},{threshold:.2}).observe(w);

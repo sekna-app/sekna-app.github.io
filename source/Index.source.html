@@ -9919,6 +9919,15 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     /* v550 the story's sound button, beside the X */
     .aks-snd{margin-left:auto;margin-right:8px;width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;cursor:pointer}.aks-snd .ak-ic{width:17px;height:17px}.aks-snd.off{color:rgba(255,255,255,.6)}
     .aks-snd+.aks-x{margin-left:0}
+
+    /* v558 story subtitles and their CC button */
+    .aks-cc{margin-left:auto;margin-right:8px;width:34px;height:34px;border:0;border-radius:50%;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;cursor:pointer;font:800 10.5px Inter,system-ui,sans-serif}
+    .aks-cc span{border:1.5px solid rgba(255,255,255,.75);border-radius:5px;padding:1px 4px;line-height:1.2;color:rgba(255,255,255,.8)}.aks-cc span.on{background:#F3D58E;border-color:#F3D58E;color:#0a1230}
+    .aks-cc+.aks-snd{margin-left:0}
+    .aks-sub{position:absolute;z-index:24;left:16px;right:16px;bottom:calc(150px + env(safe-area-inset-bottom,0px));display:flex;justify-content:center;pointer-events:none;opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s}
+    .aks-sub.on{opacity:1;transform:none}
+    .aks-sub span{max-width:100%;text-align:center;background:rgba(5,10,30,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);color:#fff;border-radius:10px;padding:7px 12px;font:600 14.5px/1.4 Inter,system-ui,sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.35)}
+    .aks-sub.ar span{font:600 15.5px/1.6 AKufi,'Noto Kufi Arabic',Tahoma,sans-serif}
 </style>
 </head>
 <body>
@@ -11030,10 +11039,10 @@ function akStoryWords(h){let em=false;return h.split(/(<em>|<\/em>| )/).filter(x
 function akStory(){
  document.getElementById('aksBox')?.remove();
  const o=document.createElement('div');o.id='aksBox';o.className='aks';o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Meet Alexandra');
- o.innerHTML=`<div class="aks-ph"><div class="aks-bar"><img src="get/logo-white.webp" alt="HEMERA"><button type="button" class="aks-snd${akSfxOn()?'':' off'}" aria-label="Sound" onclick="akSfxToggle(this)">${akSfxIco()}</button><button type="button" class="aks-x" aria-label="Close" onclick="akStoryClose()">${akI('x')}</button></div>
+ o.innerHTML=`<div class="aks-ph"><div class="aks-bar"><img src="get/logo-white.webp" alt="HEMERA"><button type="button" class="aks-cc" aria-label="Subtitles" onclick="akSubToggle(this)">${akSubLbl()}</button><button type="button" class="aks-snd${akSfxOn()?'':' off'}" aria-label="Sound" onclick="akSfxToggle(this)">${akSfxIco()}</button><button type="button" class="aks-x" aria-label="Close" onclick="akStoryClose()">${akI('x')}</button></div>
   <div class="aks-dots">${AKS.map(()=>'<i></i>').join('')}</div>
   ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}${s.vid?' hasv':''}${s.zoom?' zm':''}"><img class="bg" src="${s.vid?`icons/alexandra/v/${s.img}.jpg?v=3`:`icons/alexandra/${s.img}.webp?v=7`}" decoding="async" alt="">${(s.seq||[]).map(q=>`<img class="bg sq" src="icons/alexandra/${q}.webp?v=2" decoding="async" alt="">`).join('')}${s.vid?`<video class="vbg" muted playsinline preload="none" poster="icons/alexandra/v/${s.img}.jpg?v=3" src="icons/alexandra/v/${s.img}.mp4?v=3"></video>`:''}${s.smoke?'<i class="aks-vig"></i>':''}<div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
-  <div class="aks-fx"></div><div class="aks-tap" aria-hidden="true"></div>
+  <div class="aks-fx"></div><div class="aks-sub" aria-live="polite"></div><div class="aks-tap" aria-hidden="true"></div>
   <div class="aks-kb"><button type="button" aria-label="Back" onclick="akStoryStep(-1)"></button><button type="button" aria-label="Next" onclick="akStoryStep(1)"></button></div></div><button type="button" class="aks-arr l" aria-label="Back" onclick="akStoryStep(-1)">‹</button><button type="button" class="aks-arr r" aria-label="Next" onclick="akStoryStep(1)">›</button><button type="button" class="aks-xd" aria-label="Close" onclick="akStoryClose()">${akI('x')}</button>`;
  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));akSfxCtx();akSndLoad();o.addEventListener('pointerdown',()=>{akSfxCtx();setTimeout(akSndMusic,60)},true);
  window.AKST={o,i:-1,t:null,left:0,end:0,held:false,tok:0};
@@ -11052,7 +11061,7 @@ function akStory(){
  // v515 the story videos are fetched once in the background and kept on the device (the service worker saves them)
  if(navigator.serviceWorker&&navigator.serviceWorker.controller)setTimeout(()=>{AKS.filter(x=>x.vid).forEach(x=>{fetch('icons/alexandra/v/'+x.img+'.mp4?v=3').catch(()=>{})})},1800);
 }
-function akStoryClose(chat){const S=window.AKST;if(S)clearTimeout(S.t);akSfxStop();akSndMusicEnd();try{document.querySelectorAll('#aksBox video.vbg').forEach(v=>v.pause())}catch(e){}if(S&&S.ret&&chat)akAboutClose();const o=document.getElementById('aksBox');if(o){o.classList.remove('open');setTimeout(()=>o.remove(),300)}window.AKST=null;
+function akStoryClose(chat){const S=window.AKST;if(S)clearTimeout(S.t);akSfxStop();akSubStop();akSndMusicEnd();try{document.querySelectorAll('#aksBox video.vbg').forEach(v=>v.pause())}catch(e){}if(S&&S.ret&&chat)akAboutClose();const o=document.getElementById('aksBox');if(o){o.classList.remove('open');setTimeout(()=>o.remove(),300)}window.AKST=null;
  if(chat&&!document.getElementById('akBox'))openAsk()}
 function akStoryStep(d){const S=window.AKST;if(!S)return;const n=S.i+d;if(n<0||n>=AKS.length){if(d<0&&S.i===0)akStoryShow(0,true);return}akStoryShow(n)}
 function akStoryAnims(){const S=window.AKST;return S?S.o.querySelector('.aks-ph').getAnimations({subtree:true}):[]}
@@ -21459,8 +21468,31 @@ const AKSFX_CUE={alliance2:[[.05,'boom']],team2:[[1.4,'air']],eyes3:[[.35,'tick'
 const AKSND_VO={alliance2:[[.35,1]],team2:[[.3,2]],eyes3:[[.35,3]],answers4:[[.6,4]],flag6:[[.55,5]],sekna4:[[.9,6]],invite2:[[.25,7],[4.95,8]]};
 // a line that arrives a moment after its slide opened still plays (the first slide, on a first open)
 function akSndLate(n){const S=window.AKST,dt=(Date.now()-(AKSFX.at||0))/1000;if(!S||S.i<0||dt>1.5||!akSfxOk())return;(AKSND_VO[(AKS[S.i]||{}).img]||[]).forEach(([t,k])=>{if('vo'+k===n&&t+dt<2)akSndVoice(k,Math.max(0,t-dt))})}
-function akSfxSlide(i,tr){akSfxStop();AKSFX.at=Date.now();if(!akSfxOk())return;akSndMusic();(AKSND_VO[(AKS[i]||{}).img]||[]).forEach(([t,k])=>{if(AKSFX.buf['vo'+k])akSndVoice(k,t)});try{if(tr==='beamD')AKSFX_K.beam();else if(tr!=='none')AKSFX_K.whoosh()}catch(e){}
+function akSfxSlide(i,tr){akSfxStop();akSubSlide(i);AKSFX.at=Date.now();if(!akSfxOk())return;akSndMusic();(AKSND_VO[(AKS[i]||{}).img]||[]).forEach(([t,k])=>{if(AKSFX.buf['vo'+k])akSndVoice(k,t)});try{if(tr==='beamD')AKSFX_K.beam();else if(tr!=='none')AKSFX_K.whoosh()}catch(e){}
  (AKSFX_CUE[(AKS[i]||{}).img]||[]).forEach(([t,k])=>AKSFX.t.push(setTimeout(()=>{if(akSfxOk()&&window.AKST&&!AKST.held)try{AKSFX_K[k]()}catch(e){}},t*1000)))}
+
+/* v558 subtitles for Alexandra's voice-over: the CC button cycles Off → Arabic → English (remembered on this device).
+ * Each line shows while she says it, at the same times as her voice (it shows with the sound off too). */
+const AKSUB=[
+ ['Two minds. One light. I’m Alexandra.','عقلين. نور واحد. أنا ألكسندرا.'],
+ ['I know every sheet, every link, and every person on your team.','أنا عارفة كل شيت، وكل لينك، وكل شخص في فريقك.'],
+ ['I read every number, every campaign, every single day.','بقرا كل رقم، وكل حملة، كل يوم.'],
+ ['And I turn them into answers you can act on.','وبحوّلهم لإجابات تقدر تتصرف على أساسها.'],
+ ['Born in Alexandria. Built for HEMERA.','اتولدت في إسكندرية. واتعملت لـ HEMERA.'],
+ ['Made with care, at Sekna.','اتعملت باهتمام، في سكنة.'],
+ ['So go ahead. Ask me anything. Just tap send.','يلا بقى. اسألني أي حاجة. بس دوس إرسال.'],
+ ['I’m Alexandra, your AI media analyst. I’m always here.','أنا ألكسندرا، محللة الميديا بتاعتك بالذكاء الاصطناعي. أنا موجودة دايمًا.']];
+const AKSUB_D=[4.22,4.63,5.10,2.95,3.61,2.23,4.42,4.76];let AKSUB_T=[];
+function akSubMode(){try{const m=localStorage.getItem('hm_aks_cc');return m==='ar'||m==='en'?m:''}catch(e){return ''}}
+function akSubLbl(){const m=akSubMode();return `<span class="${m?'on':''}">${m==='ar'?'ع':m==='en'?'EN':'CC'}</span>`}
+function akSubToggle(b){const m=akSubMode(),n=m===''?'ar':m==='ar'?'en':'';try{localStorage.setItem('hm_aks_cc',n)}catch(e){}if(b)b.innerHTML=akSubLbl();
+ const S=window.AKST,el=S&&S.o.querySelector('.aks-sub');if(!el)return;if(!n){el.classList.remove('on');return}
+ const cur=el.dataset.k;if(cur!==undefined&&cur!==''&&el.dataset.live==='1')akSubShow(+cur)}
+function akSubStop(){AKSUB_T.forEach(clearTimeout);AKSUB_T=[];const el=document.querySelector('#aksBox .aks-sub');if(el){el.classList.remove('on');el.dataset.live='0'}}
+function akSubShow(k){const el=document.querySelector('#aksBox .aks-sub'),m=akSubMode();if(!el)return;el.dataset.k=k;el.dataset.live='1';if(!m){el.classList.remove('on');return}
+ const t=AKSUB[k][m==='ar'?1:0];el.dir=m==='ar'?'rtl':'ltr';el.classList.toggle('ar',m==='ar');el.innerHTML=`<span>${akEsc(t)}</span>`;try{const ph=el.closest('.aks-ph'),cap=ph.querySelector('.aks-sc.on .aks-cap');if(cap){const pr=ph.getBoundingClientRect(),cr=cap.getBoundingClientRect();el.style.bottom=Math.max(120,pr.bottom-cr.top+14)+'px'}}catch(e){}el.classList.add('on')}
+function akSubSlide(i){akSubStop();(AKSND_VO[(AKS[i]||{}).img]||[]).forEach(([t,k])=>{
+ AKSUB_T.push(setTimeout(()=>{if(window.AKST&&AKST.i===i)akSubShow(k-1)},t*1000),setTimeout(()=>{const el=document.querySelector('#aksBox .aks-sub');if(el&&el.dataset.k==String(k-1)){el.classList.remove('on');el.dataset.live='0'}},(t+AKSUB_D[k-1]+.25)*1000))})}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
