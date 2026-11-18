@@ -9940,6 +9940,25 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .pf-bsh .vbd.gold{animation:pfBsh 1.3s var(--shd,.35s) ease-in-out both}
     @keyframes pfBsh{0%{filter:drop-shadow(0 1px 2px rgba(0,0,0,.25)) brightness(1);transform:scale(1)}35%{filter:drop-shadow(0 0 7px rgba(255,226,140,.95)) brightness(1.65);transform:scale(1.22) rotate(-8deg)}70%{filter:drop-shadow(0 0 4px rgba(255,226,140,.6)) brightness(1.25);transform:scale(1.05)}100%{filter:drop-shadow(0 1px 2px rgba(0,0,0,.25)) brightness(1);transform:scale(1)}}
     @media (prefers-reduced-motion:reduce){.pf-bsh .vbd.gold{animation:none}}
+
+    /* v561 Clicks / ROAS card, the owner's pick: a coloured label, a big number, the target under it, the pill at the bottom right */
+    html body .ox-rc .ox-cl.mc{display:grid!important;grid-template-columns:1fr auto;align-items:end!important}
+    html body .ox-rc .ox-cl.mc>svg{display:none!important}
+    html body .ox-rc #mtdClkLine,html body .ox-rc #mtdRoasLine{grid-column:1/3;grid-row:1;font-size:0!important;display:flex!important;flex-direction:column;gap:4px;min-width:0}
+    html body .ox-rc #mtdClkLine:before,html body .ox-rc #mtdRoasLine:before{font:700 12px Inter,system-ui,sans-serif}
+    html body .ox-rc #mtdClkLine:before{content:"\25CF  Clicks";color:#3d6bff}html body .ox-rc #mtdRoasLine:before{content:"\25CF  ROAS";color:#c99a45}
+    html body .ox-rc .ox-cl.mc b{font:900 27px/1 Inter,system-ui,sans-serif!important;letter-spacing:-.03em;color:#141b33!important;font-variant-numeric:tabular-nums;margin:0!important}
+    html body .ox-rc .ox-cl.mc small{font:700 11px Inter,system-ui,sans-serif!important;color:#9aa1b2!important;margin:0!important;white-space:nowrap}
+    html body .ox-rc .ox-cl.mc em{grid-column:2;grid-row:1;font:900 11.5px Inter,system-ui,sans-serif!important;padding:4px 9px!important;border-radius:9px!important;margin:0 0 -1px!important}
+    body.dark-mode .ox-rc .ox-cl.mc b{color:#fff!important}body.dark-mode .ox-rc .ox-cl.mc em{background:rgba(57,226,154,.14)!important;color:#39e29a!important}body.dark-mode .ox-rc .ox-cl.mc em.dn{background:rgba(255,138,152,.14)!important;color:#ff8a98!important}body.dark-mode .ox-rc #mtdClkLine:before{color:#7d9cff}body.dark-mode .ox-rc #mtdRoasLine:before{color:#e2b874}
+
+    /* v561 Sort / Compare, the owner's pick: one slim capsule */
+    .cp-cap{display:inline-flex;align-items:stretch;background:var(--card,#fff);border:1px solid #dfe4ef;border-radius:10px;overflow:hidden;box-shadow:0 3px 10px rgba(20,40,110,.06)}
+    .cp-cap>i{width:1px;background:#e6e9f2}
+    .cp-cap button{display:inline-flex;align-items:center;gap:5px;border:0;background:none;font:800 11.5px Inter,system-ui,sans-serif;color:#203c8e;padding:5px 10px;cursor:pointer;white-space:nowrap}
+    .cp-cap small{font:800 9px Inter,system-ui,sans-serif;letter-spacing:.08em;color:#8a93a8;margin-right:1px}
+    .cp-cap .cp-cb{background:#203c8e;color:#fff}.cp-cap .cp-cb svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2}
+    body.dark-mode .cp-cap{background:#1c2330;border-color:#303845}body.dark-mode .cp-cap>i{background:#303845}body.dark-mode .cp-cap .cp-sbt{color:#9fb8ff}body.dark-mode .cp-cap .cp-cb{background:#3d6bff}
 </style>
 </head>
 <body>
@@ -11556,7 +11575,7 @@ const AK_LOGO={
  snapchat:'<svg viewBox="0 0 24 24"><rect width="24" height="24" rx="6" fill="#FFFC00"/><path d="M12 5c2.6 0 4 2 4 4.3v1.8l1.4-.5c.5 0 .7.6.2.9l-1.6.8c.6 1.6 1.8 2.6 3 3 .3.1.3.5 0 .6-1 .4-1.8.4-2.1.9-.2.4-.4.9-1.3.7-1.3-.3-2 1.5-3.6 1.5s-2.3-1.8-3.6-1.5c-.9.2-1.1-.3-1.3-.7-.3-.5-1.1-.5-2.1-.9-.3-.1-.3-.5 0-.6 1.2-.4 2.4-1.4 3-3l-1.6-.8c-.5-.3-.3-.9.2-.9l1.4.5V9.3C8 7 9.4 5 12 5z" fill="#fff" stroke="#111" stroke-width=".8"/></svg>',
  openai:'<svg viewBox="0 0 24 24"><g fill="none" stroke="#111" stroke-width="1.7"><path d="M12 4.2l6.8 3.9v7.8L12 19.8l-6.8-3.9V8.1z"/><path d="M8.6 6.1l6.8 3.9v7.8M15.4 6.1L8.6 10v7.8M5.2 12l6.8-3.9 6.8 3.9"/></g></svg>'};
 
-['google','microsoft','tiktok','snapchat','openai','adroll','x','teads'].forEach(k=>{AK_LOGO[k]=`<img class="ak-limg" src="icons/alexandra/logo-${k}.png?v=3" alt="">`});AK_LOGO.twitter=AK_LOGO.x;AK_LOGO.googleads=AK_LOGO.google;AK_LOGO.microsoftads=AK_LOGO.bing=AK_LOGO.microsoft;AK_LOGO.tiktokads=AK_LOGO.tiktok;AK_LOGO.snap=AK_LOGO.snapchatads=AK_LOGO.snapchat;AK_LOGO.chatgpt=AK_LOGO.openai;
+['google','microsoft','tiktok','snapchat','openai'].forEach(k=>{AK_LOGO[k]=`<img class="ak-limg" src="icons/alexandra/logo-${k}.png?v=3" alt="">`});AK_LOGO.googleads=AK_LOGO.google;AK_LOGO.microsoftads=AK_LOGO.bing=AK_LOGO.microsoft;AK_LOGO.tiktokads=AK_LOGO.tiktok;AK_LOGO.snap=AK_LOGO.snapchatads=AK_LOGO.snapchat;AK_LOGO.chatgpt=AK_LOGO.openai;
 function akLogo(k){return AK_LOGO[String(k).toLowerCase().replace(/[^a-z]/g,'')]||`<b class="ak-lt">${akEsc(String(k).charAt(0))}</b>`}
 const AK_TYPES=[['sheet','Sheets','links','#1E8E3E','#E7F5EC'],['daily','Daily shots','cam','#1a73e8','#E8F0FE'],['weekly','Weekly shots','off','#C9A24A','#FBF3E2'],['dashboard','Dashboard','dash','#7C4DFF','#F0EBFF'],['all','Everything','all','#1C3C96','#EEF2FC']];
 async function akNeedAssets(){
@@ -13045,7 +13064,7 @@ function renderMtd(d){
  if(roasPlan){
    const delta=roasAch-1;
    roasPlan.innerHTML=Number(m.targetRoas)
-     ?`of ${fmt(m.targetRoas,2)}x`:'';
+     ?`Target ${fmt(m.targetRoas,2)}x`:'';
    const pc=document.getElementById('mtdClicksPct');if(pc){pc.textContent=Number(m.targetRoas)?`${delta>=0?'+':''}${percent(delta)}`:'';pc.className=delta>=0?'up':'dn'}
  }
 
@@ -13060,7 +13079,7 @@ function renderMtd(d){
   text('mtdClk',fmt(kA,0));oxHs('mtdClkPlan',kP?percent(kA/kP):'',kP?fmt(kP,0):'');setProgress('mtdClkBar',kP?kA/kP:0);
   const kt=document.getElementById('mtdClkTick');if(kt){kt.style.display=kP?'':'none';if(kP)kt.style.left=Math.min(100,kE/kP*100)+'%'}
   
-  {const row=document.getElementById('mtdClkRow');if(row){row.hidden=!(kP||kA);text('mtdClk2',kA>=10000?(kA/1000).toFixed(1)+'k':fmt(kA,0));const pl=document.getElementById('mtdClkPlan2');if(pl)pl.textContent=kP?`of ${fmt(kP,0)}`:'';
+  {const row=document.getElementById('mtdClkRow');if(row){row.hidden=!(kP||kA);text('mtdClk2',kA>=10000?(kA/1000).toFixed(1)+'k':fmt(kA,0));const pl=document.getElementById('mtdClkPlan2');if(pl)pl.textContent=kP?`Target ${fmt(kP,0)}`:'';
     const e=document.getElementById('mtdClkPct2');if(e){const pc=pace==null?1:pace||1,r=kP?(kA/kP)/pc:null;e.textContent=kP?percent(kA/kP):'';e.className=r==null?'':r>=.95?'up':'dn'}}}
   if(tile){tile.classList.remove('st-g','st-a','st-r');const pc=pace==null?1:pace||1,r=kP?(kA/kP)/pc:null;if(r!=null&&isFinite(r))tile.classList.add('st-'+(r>=.95?'g':r>=.8?'a':'r'))}}
  text('mtdDayBadge',day&&dim?`Day ${day} of ${dim}`:'');
@@ -19349,7 +19368,7 @@ function pfAgo(ms){if(!ms)return '';const m=Math.round((Date.now()-ms)/60e3);if(
 const PF_MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function pfBdayParts(b){const m=String(b||'').match(/^(?:(\d{4})-)?(\d{2})-(\d{2})$/);return m?{y:m[1]?+m[1]:0,m:+m[2],d:+m[3]}:null}
 function pfBdayToday(b){const x=pfBdayParts(b);if(!x)return false;const n=new Date();return n.getMonth()+1===x.m&&n.getDate()===x.d}
-const PF_PLATS={google:['Google Ads','icons/alexandra/logo-google.png?v=3'],microsoft:['Microsoft Ads','icons/alexandra/logo-microsoft.png?v=3'],openai:['OpenAI','icons/alexandra/logo-openai.png?v=3'],meta:['Meta Ads',''],tiktok:['TikTok Ads','icons/alexandra/logo-tiktok.png?v=3'],snapchat:['Snapchat Ads','icons/alexandra/logo-snapchat.png?v=3'],adroll:['AdRoll','icons/alexandra/logo-adroll.png?v=3'],teads:['Teads','icons/alexandra/logo-teads.png?v=3'],linkedin:['LinkedIn Ads',''],x:['X Ads','icons/alexandra/logo-x.png?v=3']};
+const PF_PLATS={google:['Google Ads','icons/alexandra/logo-google.png?v=3'],microsoft:['Microsoft Ads','icons/alexandra/logo-microsoft.png?v=3'],openai:['OpenAI','icons/alexandra/logo-openai.png?v=3'],meta:['Meta Ads',''],tiktok:['TikTok Ads','icons/alexandra/logo-tiktok.png?v=3'],snapchat:['Snapchat Ads','icons/alexandra/logo-snapchat.png?v=3'],linkedin:['LinkedIn Ads',''],x:['X Ads','']};
 const PF_PLAT_DEF=['google','microsoft','openai'];
 function profOpen(email,ev){
  if(ev){ev.stopPropagation();ev.preventDefault()}
@@ -21292,8 +21311,8 @@ function cpBarHtml(show){
  const per=`<div class="cp-pbar">${CP_PERS.map(([k,l])=>`<button type="button" class="${CPS.per===k?'on':''}" onclick="cpPerPick('${k}')">${l}</button>`).join('')}</div>`;
  const pills=`<div class="cp-pls"><button type="button" class="cp-pl${t.length?'':' on'}" onclick="cpType(-1)">All</button>${CP_CHS.map((n,i)=>`<button type="button" class="cp-pl${t.includes(n)?' on':''}" onclick="cpType(${i})">${chIco(n)}${lab(n)}</button>`).join('')}</div>`;
  const menu=CPS.so?`<div class="cp-smenu">${CP_SORTS.map(([k,l])=>`<button type="button" class="${CPS.sort===k?'on':''}" onclick="cpSortPick('${k}')">${cpIc(CP_SIC[k])}<span>${l}</span>${CPS.sort===k?`<em>${CPS.dir<0?'High → Low':'Low → High'} ⇅</em>`:''}</button>`).join('')}</div>`:'';
- const cmp=show.length?`<button type="button" class="cp-lk" onclick="cpOpen(${show[0].i},'cmp')">⇅ Compare</button>`:'';
- return per+pills+`<div class="cp-lh"><span>${show.length} campaign${show.length===1?'':'s'}</span><span class="cp-lhr"><button type="button" class="cp-lk" onclick="cpSortMenu()">${cur} ${arr}</button>${cmp}${menu}</span></div>`;
+ const cmp=show.length?`<i></i><button type="button" class="cp-cb" onclick="cpOpen(${show[0].i},'cmp')"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="7.5" height="14" rx="2"/><rect x="13.5" y="5" width="7.5" height="14" rx="2"/></svg>Compare</button>`:'';
+ return per+pills+`<div class="cp-lh"><span>${show.length} campaign${show.length===1?'':'s'}</span><span class="cp-lhr"><span class="cp-cap"><button type="button" class="cp-sbt" onclick="cpSortMenu()"><small>SORT</small>${cur} ${arr}</button>${cmp}</span>${menu}</span></div>`;
 }
 
 
