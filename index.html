@@ -9348,7 +9348,7 @@ body.dark-mode .ak-ddn input{background:#0f141c;color:#e8ecf3;border-color:#6d8c
 .aks-cap h3 span{display:inline-block}.aks-cap em{font-style:normal;color:#5fd0ff}
 .aks-go{position:relative;z-index:25;margin-top:16px;border:0;border-radius:99px;padding:11px 18px;font:800 14px Inter,system-ui,sans-serif;color:#0a1230;background:linear-gradient(135deg,#F3D58E,#E2B874);cursor:pointer;box-shadow:0 10px 24px -10px rgba(226,184,116,.7)}
 .aks-fx{position:absolute;inset:0;z-index:10;pointer-events:none;overflow:hidden}
-.aks-beam{position:absolute;opacity:0;will-change:transform,opacity}
+.aks-beam{position:absolute;opacity:0;will-change:transform,opacity}.aks-beam.aks-shaft{background:linear-gradient(90deg,transparent,rgba(95,208,255,.3) 22%,#bfeaff 40%,#fff 50%,#F3D58E 60%,rgba(226,184,116,.3) 78%,transparent);filter:blur(1px);box-shadow:0 0 60px 20px rgba(243,213,142,.45)}.aks-flash{position:absolute;inset:0;opacity:0;pointer-events:none;background:radial-gradient(60% 45% at 50% 30%,rgba(255,244,214,.95),rgba(243,213,142,.35) 45%,transparent 75%)}
 .aks-beam.v{top:-20%;bottom:-20%;width:90px;margin-left:-30px;left:0;background:linear-gradient(90deg,transparent,rgba(95,208,255,.25) 25%,#5fd0ff 42%,#fff 50%,#F3D58E 58%,rgba(226,184,116,.25) 75%,transparent)}
 .aks-beam.h{left:-20%;right:-20%;height:90px;margin-top:-30px;top:0;background:linear-gradient(180deg,transparent,rgba(95,208,255,.25) 25%,#5fd0ff 42%,#fff 50%,#F3D58E 58%,rgba(226,184,116,.25) 75%,transparent)}
 .aks-tap{position:absolute;z-index:20;left:0;right:0;top:calc(64px + env(safe-area-inset-top,0px));bottom:0;touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -11158,7 +11158,7 @@ const AKS=[
  {img:'flag6',vid:1,dur:5500,k:'ALEXANDRA × HEMERA',h:'Built for <em>HEMERA</em>'},
  {img:'sekna4',vid:1,dur:6000,k:'SEKNA',h:'Made at <em>Sekna</em>'},
  {img:'invite',vid:1,once:1,k:'MEET ALEXANDRA',h:'Ask her <em>anything</em>'}];
-const AKS_TR=['none','sweepD','diag','split','sweepR','sweepL','calm'],AKS_DUR=3800,AKS_SEQ=5000,AKS_T=1050,AKS_E='cubic-bezier(.7,0,.2,1)';
+const AKS_TR=['none','sweepD','diag','split','beamD','sweepL','calm'],AKS_DUR=3800,AKS_SEQ=5000,AKS_T=1050,AKS_E='cubic-bezier(.7,0,.2,1)';
 function akStoryWords(h){let em=false;return h.split(/(<em>|<\/em>| )/).filter(x=>x&&x!==' ').map(t=>{if(t==='<em>'){em=true;return ''}if(t==='</em>'){em=false;return ''}return `<span>${em?`<em>${t}</em>`:t}</span>`}).filter(Boolean).join(' ')}
 function akStory(){
  document.getElementById('aksBox')?.remove();
@@ -11224,6 +11224,10 @@ async function akStoryShow(i,again){
   else if(now.querySelector('.aks-vig'))im.animate([{transform:'scale(1)'},{transform:'scale(1.04)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
   else im.animate([{transform:'scale(1.05) translateX(2%)'},{transform:'scale(1.05) translateX(-2%)'}],{duration:AKS_DUR+T,easing:'ease-out',fill:'forwards'});
   if(tr==='sweepD'){A([{clipPath:'inset(0 0 100% 0)'},{clipPath:full}]);B('aks-beam h',[{transform:'translateY(-40px)',opacity:1},{opacity:1,offset:.85},{transform:`translateY(${H+40}px)`,opacity:0}])}
+  
+  if(tr==='beamD'){const T2=1400;A([{clipPath:'inset(0 50% 100% 50%)'},{clipPath:'inset(0 49% 0 49%)',offset:.42},{clipPath:full}],{duration:T2});
+   B('aks-beam v aks-shaft',[{transform:'scaleY(0)',opacity:1},{transform:'scaleY(1)',opacity:1,offset:.4},{transform:'scaleY(1) scaleX(9)',opacity:0}],{duration:T2},{left:'50%',marginLeft:'-45px',top:'0',bottom:'0',transformOrigin:'50% 0'});
+   B('aks-flash',[{opacity:0},{opacity:0,offset:.35},{opacity:.85,offset:.5},{opacity:0}],{duration:T2})}
   if(tr==='sweepL'){A([{clipPath:'inset(0 0 0 100%)'},{clipPath:full}]);B('aks-beam v',[{transform:`translateX(${W+40}px) skewX(-12deg)`,opacity:1},{opacity:1,offset:.85},{transform:'translateX(-60px) skewX(-12deg)',opacity:0}])}
   if(tr==='sweepR'){A([{clipPath:'inset(0 100% 0 0)'},{clipPath:full}]);B('aks-beam v',[{transform:'translateX(-60px) skewX(12deg)',opacity:1},{opacity:1,offset:.85},{transform:`translateX(${W+40}px) skewX(12deg)`,opacity:0}])}
   if(tr==='diag'){A([{clipPath:'polygon(0% 0%,0% 0%,0% 0%,0% 0%)'},{clipPath:'polygon(0% 0%,100% 0%,100% 0%,0% 100%)',offset:.5},{clipPath:'polygon(0% 0%,100% 0%,100% 100%,0% 100%)'}]);B('aks-beam v',[{transform:`translateX(${-W}px) translateY(${-H*.4}px) rotate(45deg)`,opacity:1},{opacity:1,offset:.85},{transform:`translateX(${W}px) translateY(${H*.4}px) rotate(45deg)`,opacity:0}],{},{left:'50%',top:'-40%',bottom:'-40%'})}
