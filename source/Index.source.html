@@ -9908,6 +9908,13 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     #campPanel .cp-pl.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);border-color:transparent;color:#fff;box-shadow:0 6px 14px rgba(61,107,255,.35)}
     .cp-lg{flex-wrap:wrap;gap:3px 5px}.cp-lg i{margin-left:4px}.cp-lg i:first-child{margin-left:0}
     body.dark-mode .cp-pbar{background:#232b38}body.dark-mode .cp-pbar button.on{background:#2f3a4c;color:#fff}body.dark-mode .cp-pl{background:#1c2330;border-color:#303845;color:#C9D3F5}body.dark-mode .cp-pl.on{background:#3d6bff;border-color:#3d6bff;color:#fff}body.dark-mode .cp-lk{color:#9FB8FF}body.dark-mode .cp-smenu button.on{background:#232b38;color:#fff}
+
+    /* v546 Photos: square collage posts, and the full-size view */
+    .ak-post.ak-psq .ak-pimg img,.ak-fbr .ak-post.ak-psq .ak-pimg img,.ak.pgm .ak-fbr .ak-post.ak-psq .ak-pimg img{aspect-ratio:1/1!important;object-position:50% 50%!important;transform:none!important}
+    .ak-pv{position:fixed;inset:0;z-index:2147481000;background:rgba(5,10,28,.92);display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;transition:opacity .22s}.ak-pv.on{opacity:1}
+    @media (min-width:1100px){#akAbt .ak-pgbody>.ak-post.ak-psq{max-width:600px;margin-left:auto;margin-right:auto}}
+    .ak-pv img{max-width:100%;max-height:100%;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+    .ak-pv button{position:absolute;top:calc(14px + env(safe-area-inset-top));right:14px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.15);color:#fff;font-size:17px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -11326,7 +11333,8 @@ ${akIntroHtml()}</div>
   ${AK.editor?`<div id="akReqW">${akReqsHtml(AK.rq)}</div><h4>Settings</h4><div id="akBotW">${akBotRow(AK.bst||null)}</div>`:''}
   <h4>Chat</h4><button type="button" class="r" role="switch" aria-checked="${akDk()}" onclick="akDkSet(!akDk(),this)"><i>${akI('moon')}</i><span><b>Dark mode</b><small>Only for this chat</small></span><em class="ak-sw${akDk()?' on':''}"></em></button>${row('clear','trash','Clear chat','The chat stays on this device for 24 hours','del')}`;
  const RX=[[['like','love'],'1.2K',86,24],[['love','wow'],'948',41,12],[['like','haha'],'2.3K',132,57],[['love','like','care'],'1.7K',64,19],[['love','wow','like'],'3.1K',210,88],[['like','care'],'860',35,9],[['love','haha','like'],'2.6K',118,40]],RE={like:['👍','#1877F2'],love:['❤','#F33E58'],wow:['😮','#F7B125'],haha:['😆','#F7B125'],care:['🤗','#F7B125']},D=['2h','5h','1d','2d','3d','5d','1w'];
- const postsHtml=()=>AKS.map((x,i)=>{const r=RX[i%RX.length],cap=akEsc(x.k.charAt(0)+x.k.slice(1).toLowerCase())+' · '+x.h.replace(/<\/?em>/g,'');return `<article class="ak-post"><header><span class="ak-pga">${akAvIn()}</span><div><b>Alexandra ${tick}</b><small>${D[i]} · 🌐</small></div><span class="ak-pdots">···</span></header><p>${cap}</p>${AK.editor?`<button type="button" class="ak-padj-b" onclick="akPAdj(${i},this)">${akI('pen')}Adjust photo</button>`:''}<button type="button" class="ak-pimg" data-i="${i}" onclick="if(!this.classList.contains('adj'))akStoryAt(${i})"><img src="${img(x.img)}" alt="" loading="lazy" style="${akPFixCss(i)}"></button><div class="ak-prx"><span><i>${r[0].map(k=>`<em class="${k}" style="background:${RE[k][1]}">${RE[k][0]}</em>`).join('')}</i>${r[1]}</span><span>${r[2]} comments · ${r[3]} shares</span></div><div class="ak-pact"><span>${akI('like')}Like</span><span>${akI('cmt')}Comment</span><span>${akI('share')}Share</span></div></article>`}).join('');
+ // v546 the Photos tab: the owner's five square collage posts (tap one to see it full size)
+ const postsHtml=()=>AK_POSTS.map((x,i)=>{const r=RX[i%RX.length];return `<article class="ak-post ak-psq"><header><span class="ak-pga">${akAvIn()}</span><div><b>Alexandra ${tick}</b><small>${D[i]} · 🌐</small></div><span class="ak-pdots">···</span></header><p>${x.c}</p><button type="button" class="ak-pimg" onclick="akPostView(${i})"><img src="icons/alexandra/p/${x.f}.webp?v=1" alt="${akEsc(x.t)}" loading="lazy"></button><div class="ak-prx"><span><i>${r[0].map(k=>`<em class="${k}" style="background:${RE[k][1]}">${RE[k][0]}</em>`).join('')}</i>${r[1]}</span><span>${r[2]} comments · ${r[3]} shares</span></div><div class="ak-pact"><span>${akI('like')}Like</span><span>${akI('cmt')}Comment</span><span>${akI('share')}Share</span></div></article>`}).join('');
  if(tab==='photos')body=postsHtml();
  if(tab==='platforms'){const P=((AK.assets&&AK.assets.platforms)||[]),R=((AK.assets&&AK.assets.rows)||[]);
   body=P.length?`<div class="ak-plist">${P.map(x=>{const n=R.filter(r=>(r.platforms||[]).indexOf(x.key)>=0).length;return `<button type="button" onclick="akPgPlat('${akEsc(x.key)}')"><i>${akLogo(x.key)}</i><span><b>${akEsc(x.key)}</b><small>${n} ${n===1?'sheet':'sheets'}</small></span>${akI('chev')}</button>`}).join('')}</div><p class="ak-mu ak-pgnote">These are the platforms you can see.</p>`:(AK.assets?'<p class="ak-mu ak-pgnote">No platforms to show yet.</p>':(akAssets().then(()=>{const g=document.getElementById('akAbt');const n=g&&g.querySelector('.ak-pgnote');if(AK.pgTab==='platforms'&&n&&n.textContent==='Loading…')akAbout(null,true)}).catch(()=>{}),'<p class="ak-mu ak-pgnote">Loading…</p>'))}
@@ -21382,6 +21390,16 @@ function cpPkDraw(full){
   <div class="pk-chips">${pres.map(([id,l])=>`<button type="button" onclick="cpPkPre('${id}')">${l}</button>`).join('')}</div><div class="pk-body">${body}</div>${foot}`;
  const b=card.querySelector('.pk-body'),on=b&&b.querySelector('.pk-m.on');if(b)b.scrollTop=on?Math.max(0,on.offsetTop-b.offsetTop-120):(K.tab==='m'?b.scrollHeight:0);
 }
+
+// v546 Alexandra's Photos: the owner's five collage posts, with their captions
+const AK_POSTS=[
+ {f:'post1',t:'Alexandra',c:'Meet Alexandra 👋 Eyes on every number, a chart in her hand, and an answer one tap away.'},
+ {f:'post2',t:'Reads every number',c:'Every campaign, every day, every number. She reads them all, so you don’t have to. 📊'},
+ {f:'post3',t:'Connects every dot',c:'Spend, value, campaigns, seasons and the team. She connects every dot into one clear answer. 🔗'},
+ {f:'post4',t:'Ask her anything',c:'ROAS, pace, the best campaign, who’s off tomorrow. Ask her anything, in Arabic or English. 💬'},
+ {f:'post5',t:'She’s in your pocket',c:'HEMERA on your phone, Alexandra in your pocket. Open the chat from any screen. 📱'}];
+function akPostView(i){const x=AK_POSTS[i];if(!x)return;const o=document.createElement('div');o.className='ak-pv';o.innerHTML=`<img src="icons/alexandra/p/${x.f}.webp?v=1" alt=""><button type="button" aria-label="Close">✕</button>`;
+ const close=()=>{o.classList.remove('on');setTimeout(()=>o.remove(),220)};o.onclick=close;document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('on'))}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
