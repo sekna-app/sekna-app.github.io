@@ -10126,6 +10126,15 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .cp-cap small{font:800 9px Inter,system-ui,sans-serif;letter-spacing:.08em;color:#8a93a8;margin-right:1px}
     .cp-cap .cp-cb{background:#203c8e;color:#fff}.cp-cap .cp-cb svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2}
     body.dark-mode .cp-cap{background:#1c2330;border-color:#303845}body.dark-mode .cp-cap>i{background:#303845}body.dark-mode .cp-cap .cp-sbt{color:#9fb8ff}body.dark-mode .cp-cap .cp-cb{background:#3d6bff}
+
+    /* v562 the sort menu, the owner's pick: small, round marks, the order on the picked one */
+    .cp-smenu.cp-sm3{min-width:168px;padding:5px;border-radius:12px}
+    .cp-sm3 button{gap:9px;padding:8px 9px;border-radius:8px;font:700 12.5px Inter,system-ui,sans-serif}
+    .cp-sm3 button.on{background:none;color:var(--text,#141B33)}
+    .cp-sm3 button i{width:14px;height:14px;border-radius:50%;border:1.5px solid #c9cfdc;box-sizing:border-box;flex:none}
+    .cp-sm3 button.on i{border:4.5px solid #203c8e}
+    .cp-sm3 button em{margin-left:auto;font:800 10px Inter,system-ui,sans-serif;color:#203c8e;background:#eef2fc;border-radius:6px;padding:2px 6px}
+    body.dark-mode .cp-sm3 button.on{color:#fff}body.dark-mode .cp-sm3 button.on i{border-color:#7d9cff}body.dark-mode .cp-sm3 button em{background:#22305e;color:#c9d3f5}
 </style>
 </head>
 <body>
@@ -21477,7 +21486,8 @@ function cpBarHtml(show){
  const t=CPS.types,lab=x=>esc(MX_TYPE_LABEL[x]||CHANNEL_SHORT[x]||x),cur=(CP_SORTS.find(x=>x[0]===CPS.sort)||CP_SORTS[0])[1],arr=CPS.dir<0?'↓':'↑';
  const per=`<div class="cp-pbar">${CP_PERS.map(([k,l])=>`<button type="button" class="${CPS.per===k?'on':''}" onclick="cpPerPick('${k}')">${l}</button>`).join('')}</div>`;
  const pills=`<div class="cp-pls"><button type="button" class="cp-pl${t.length?'':' on'}" onclick="cpType(-1)">All</button>${CP_CHS.map((n,i)=>`<button type="button" class="cp-pl${t.includes(n)?' on':''}" onclick="cpType(${i})">${chIco(n)}${lab(n)}</button>`).join('')}</div>`;
- const menu=CPS.so?`<div class="cp-smenu">${CP_SORTS.map(([k,l])=>`<button type="button" class="${CPS.sort===k?'on':''}" onclick="cpSortPick('${k}')">${cpIc(CP_SIC[k])}<span>${l}</span>${CPS.sort===k?`<em>${CPS.dir<0?'High → Low':'Low → High'} ⇅</em>`:''}</button>`).join('')}</div>`:'';
+ 
+ const menu=CPS.so?`<div class="cp-smenu cp-sm3">${CP_SORTS.map(([k,l])=>`<button type="button" class="${CPS.sort===k?'on':''}" onclick="cpSortPick('${k}')"><i></i><span>${l}</span>${CPS.sort===k?`<em>${CPS.dir<0?'↓ High':'↑ Low'}</em>`:''}</button>`).join('')}</div>`:'';
  const cmp=show.length?`<i></i><button type="button" class="cp-cb" onclick="cpOpen(${show[0].i},'cmp')"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="7.5" height="14" rx="2"/><rect x="13.5" y="5" width="7.5" height="14" rx="2"/></svg>Compare</button>`:'';
  return per+pills+`<div class="cp-lh"><span>${show.length} campaign${show.length===1?'':'s'}</span><span class="cp-lhr"><span class="cp-cap"><button type="button" class="cp-sbt" onclick="cpSortMenu()"><small>SORT</small>${cur} ${arr}</button>${cmp}</span>${menu}</span></div>`;
 }
