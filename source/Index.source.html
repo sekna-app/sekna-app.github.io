@@ -11071,7 +11071,7 @@ async function akStoryShow(i,again){
  if(cur&&cur!==now){cur.classList.remove('on');cur.classList.add('out')}
  now.classList.remove('out');now.classList.add('on');fx.innerHTML='';
  ph.querySelectorAll('.aks-dots i').forEach((d,k)=>{d.className=k<i?'done':k===i?'now':''});
- S.o.style.setProperty('--aksbg',`url(icons/alexandra/${AKS[i].img}.webp?v=7)`);
+ S.o.style.setProperty('--aksbg',`url(icons/alexandra/${AKS[i].vid?'v/'+AKS[i].img+'.jpg?v=3':AKS[i].img+'.webp?v=7'})`);
  let ta=null;const A=(k,op)=>(ta=now.animate(k,Object.assign({duration:T,easing:AKS_E,fill:'both'},op||{})));
  const el=(c,css)=>{const d=document.createElement('i');d.className=c;Object.assign(d.style,css||{});fx.appendChild(d);return d};
  const B=(c,k,op,css)=>el(c,css).animate(k,Object.assign({duration:T,easing:AKS_E,fill:'forwards'},op||{}));
@@ -11348,7 +11348,7 @@ ${akIntroHtml()}</div>
  const html=`<div class="ak-pgb2"><div class="ak-pgh2"><button type="button" class="ak-bk" aria-label="Back" onclick="akAboutClose()">${akI('back')}</button></div><div class="ak-hero" style="background-image:url(${akCovUrl()})">${AK.editor?`<button type="button" class="ak-covb" onclick="akPrevPick('cov')">${akI('cam')}Edit cover</button>`:''}</div>
   <div class="ak-id"><span class="ak-pga">${akAvIn()}<em></em>${AK.editor?`<button type="button" class="ak-pgc" aria-label="Change the bot's photo" onclick="akPrevPick('av')">${akI('cam')}</button>`:''}</span>
    <div class="ak-idn"><h2>Alexandra ${tick}</h2>${AK.editor&&(akBav().data||akCov().data)?`<span class="ak-pgxs">${akBav().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Remove the photo?','The bot goes back to the HEMERA star.','Remove',()=>akBotAvSave(''))">Remove photo</button>`:''}${akCov().data?`<button type="button" class="ak-pgx" onclick="akConfirm('Reset the cover?','The cover goes back to her eye picture.','Reset',akCovReset)">Reset cover</button>`:''}</span>`:''}</div></div>
-  <div class="ak-hl">${AK_HL.map(([i,t])=>`<button type="button" onclick="akStoryAt(${i})"><img src="${img(AKS[i].img)}" alt="">${t}</button>`).join('')}</div>
+  <div class="ak-hl">${AK_HL.map(([i,t])=>`<button type="button" onclick="akStoryAt(${i})"><img src="icons/alexandra/h/${AKS[i].img}.webp?v=1" alt="" onerror="this.onerror=null;this.src='icons/alexandra/v/${AKS[i].img}.jpg?v=3'">${t}</button>`).join('')}</div>
   <div class="ak-tabs" role="tablist">${[['about','About'],['photos','Photos'],['platforms','Platforms']].map(([k,t])=>`<button type="button" role="tab" aria-selected="${tab===k}" class="${tab===k?'on':''}" onclick="AK.pgTab='${k}';akAbout(null,'tab')">${t}</button>`).join('')}</div>
   <div class="ak-pgbody">${body}</div>
   <div class="ak-pgcta"${inCta?' hidden':''}><button type="button" onclick="akAboutClose()">${akI('send')}Message Alexandra</button></div></div>`;
