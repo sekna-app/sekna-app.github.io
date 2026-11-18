@@ -11495,7 +11495,7 @@ ${akIntroHtml()}</div>
   <h4>What she does</h4><div class="ak-does">
    <button type="button" onclick="akPgGo('links')">${akI('links')}<span>Finds <b>sheets, reports</b> and <b>scripts</b></span></button>
    <button type="button" onclick="akPgGo('nums')">${akI('chart')}<span>Linked to the <b>dashboard</b>, answers your numbers</span></button>
-   <button type="button" onclick="akPgGo('mail')">${akI('mail')}<span><b>Team emails</b> and <b>leave</b></span></button></div>
+   <button type="button" onclick="akPgGo('off')">${akI('cal')}<span><b>Team days off</b> and who covers</span></button></div>
   ${AK.canAdd||AK.canTeach?`<h4>Tools</h4>${AK.canAdd?row('add','add','Add a sheet','Put a new sheet in the list'):''}${AK.canTeach?row('teach','teach','Teach the bot','Rules, access and platforms'):''}`:''}
   ${AK.editor?`<div id="akReqW">${akReqsHtml(AK.rq)}</div><h4>Settings</h4><div id="akBotW">${akBotRow(AK.bst||null)}</div>`:''}
   <h4>Chat</h4><button type="button" class="r" role="switch" aria-checked="${akDk()}" onclick="akDkSet(!akDk(),this)"><i>${akI('moon')}</i><span><b>Dark mode</b><small>Only for this chat</small></span><em class="ak-sw${akDk()?' on':''}"></em></button>${row('clear','trash','Clear chat','The chat stays on this device for 24 hours','del')}`;
