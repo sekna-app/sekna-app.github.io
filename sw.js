@@ -59,9 +59,10 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
   if (event.request.method !== 'GET' || url.origin !== self.location.origin) return;
+  // v551 and the story's music, voice and sound files (a/*.mp3)
   // v515 Alexandra's story videos are kept on the device after the first view (no flash, no download again).
   // A video asks for byte ranges, so a saved copy is answered with the part it asks for.
-  if (/^\/icons\/alexandra\/v\/[a-z0-9-]+\.mp4$/.test(url.pathname)) { event.respondWith(mediaFromCache(event.request)); return; }
+  if (/^\/icons\/alexandra\/(v\/[a-z0-9-]+\.mp4|a\/[a-z0-9-]+\.mp3)$/.test(url.pathname)) { event.respondWith(mediaFromCache(event.request)); return; }
   const nav = event.request.mode === 'navigate';
   // the app page itself (other pages such as the download page keep their own copy)
   const app = nav && (url.pathname === '/' || url.pathname === '/index.html');

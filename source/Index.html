@@ -11014,8 +11014,8 @@ async function akBotAvSave(d){const j=await akAdmQ(d?'botAvSet':'botAvDel',d?{da
 
  
 const AKS=[
- {img:'alliance2',vid:1,cls:'fitw',k:'THE ALLIANCE',h:'Two minds. <em>One light.</em>'},
- {img:'team2',vid:1,k:'FOR THE TEAM',h:'Every sheet and link, <em>connected to her</em>'},
+ {img:'alliance2',vid:1,dur:4800,cls:'fitw',k:'THE ALLIANCE',h:'Two minds. <em>One light.</em>'},
+ {img:'team2',vid:1,dur:5000,k:'FOR THE TEAM',h:'Every sheet and link, <em>connected to her</em>'},
  {img:'eyes3',vid:1,dur:5300,k:'ALEXANDRA',h:'She reads <em>every number</em>'},
  {img:'answers4',vid:1,dur:5850,k:'HEMERA',h:'and turns it into <em>answers</em>'},
  {img:'flag6',vid:1,dur:5500,k:'ALEXANDRA × HEMERA',h:'Built for <em>HEMERA</em>'},
@@ -11031,7 +11031,7 @@ function akStory(){
   ${AKS.map((s,i)=>`<div class="aks-sc ${s.cls||''}${s.vid?' hasv':''}${s.zoom?' zm':''}"><img class="bg" src="${s.vid?`icons/alexandra/v/${s.img}.jpg?v=3`:`icons/alexandra/${s.img}.webp?v=7`}" decoding="async" alt="">${(s.seq||[]).map(q=>`<img class="bg sq" src="icons/alexandra/${q}.webp?v=2" decoding="async" alt="">`).join('')}${s.vid?`<video class="vbg" muted playsinline preload="none" poster="icons/alexandra/v/${s.img}.jpg?v=3" src="icons/alexandra/v/${s.img}.mp4?v=3"></video>`:''}${s.smoke?'<i class="aks-vig"></i>':''}<div class="aks-cap"><small>${s.k}</small><h3>${akStoryWords(s.h)}</h3>${i===AKS.length-1?`<button type="button" class="aks-go" onclick="akStoryClose(true)">Chat with Alexandra</button>`:''}</div></div>`).join('')}
   <div class="aks-fx"></div><div class="aks-tap" aria-hidden="true"></div>
   <div class="aks-kb"><button type="button" aria-label="Back" onclick="akStoryStep(-1)"></button><button type="button" aria-label="Next" onclick="akStoryStep(1)"></button></div></div><button type="button" class="aks-arr l" aria-label="Back" onclick="akStoryStep(-1)">‹</button><button type="button" class="aks-arr r" aria-label="Next" onclick="akStoryStep(1)">›</button><button type="button" class="aks-xd" aria-label="Close" onclick="akStoryClose()">${akI('x')}</button>`;
- document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));akSfxCtx();o.addEventListener('pointerdown',()=>akSfxCtx(),true);
+ document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));akSfxCtx();akSndLoad();o.addEventListener('pointerdown',()=>{akSfxCtx();setTimeout(akSndMusic,60)},true);
  window.AKST={o,i:-1,t:null,left:0,end:0,held:false,tok:0};
  
  const tap=o.querySelector('.aks-tap');let down=0,hold=null,x=0;
@@ -11048,7 +11048,7 @@ function akStory(){
  
  if(navigator.serviceWorker&&navigator.serviceWorker.controller)setTimeout(()=>{AKS.filter(x=>x.vid).forEach(x=>{fetch('icons/alexandra/v/'+x.img+'.mp4?v=3').catch(()=>{})})},1800);
 }
-function akStoryClose(chat){const S=window.AKST;if(S)clearTimeout(S.t);akSfxStop();try{document.querySelectorAll('#aksBox video.vbg').forEach(v=>v.pause())}catch(e){}if(S&&S.ret&&chat)akAboutClose();const o=document.getElementById('aksBox');if(o){o.classList.remove('open');setTimeout(()=>o.remove(),300)}window.AKST=null;
+function akStoryClose(chat){const S=window.AKST;if(S)clearTimeout(S.t);akSfxStop();akSndMusicEnd();try{document.querySelectorAll('#aksBox video.vbg').forEach(v=>v.pause())}catch(e){}if(S&&S.ret&&chat)akAboutClose();const o=document.getElementById('aksBox');if(o){o.classList.remove('open');setTimeout(()=>o.remove(),300)}window.AKST=null;
  if(chat&&!document.getElementById('akBox'))openAsk()}
 function akStoryStep(d){const S=window.AKST;if(!S)return;const n=S.i+d;if(n<0||n>=AKS.length){if(d<0&&S.i===0)akStoryShow(0,true);return}akStoryShow(n)}
 function akStoryAnims(){const S=window.AKST;return S?S.o.querySelector('.aks-ph').getAnimations({subtree:true}):[]}
@@ -21354,14 +21354,27 @@ function akPostView(i){const x=AK_POSTS[i];if(!x)return;const o=document.createE
  const close=()=>{o.classList.remove('on');setTimeout(()=>o.remove(),220)};o.onclick=close;document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('on'))}
 
  
-const AKSFX={c:null,m:null,n:null,t:[]};
+const AKSFX={c:null,m:null,n:null,t:[],buf:{},mu:null,mg:null,vo:[]};
 function akSfxOn(){try{return localStorage.getItem('hm_aks_snd')!=='0'}catch(e){return true}}
 function akSfxIco(){return akSfxOn()?'<svg viewBox="0 0 24 24" class="ak-ic"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5z" fill="currentColor"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>':'<svg viewBox="0 0 24 24" class="ak-ic"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5z" fill="currentColor"/><path d="M16 9.5l5 5M21 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'}
-function akSfxToggle(b){const on=!akSfxOn();try{localStorage.setItem('hm_aks_snd',on?'1':'0')}catch(e){}if(b){b.classList.toggle('off',!on);b.innerHTML=akSfxIco()}const c=akSfxCtx();if(c&&AKSFX.m)AKSFX.m.gain.setTargetAtTime(on?.8:0,c.currentTime,.05);if(!on)akSfxStop()}
+function akSfxToggle(b){const on=!akSfxOn();try{localStorage.setItem('hm_aks_snd',on?'1':'0')}catch(e){}if(b){b.classList.toggle('off',!on);b.innerHTML=akSfxIco()}const c=akSfxCtx();if(c&&AKSFX.m)AKSFX.m.gain.setTargetAtTime(on?.8:0,c.currentTime,.05);if(!on){akSfxStop();akSndMusicEnd()}else setTimeout(akSndMusic,60)}
 function akSfxCtx(){try{if(!AKSFX.c){const C=window.AudioContext||window.webkitAudioContext;if(!C)return null;const c=new C(),m=c.createGain(),k=c.createDynamicsCompressor();m.gain.value=akSfxOn()?.8:0;m.connect(k);k.connect(c.destination);
  const len=c.sampleRate*2,b=c.createBuffer(1,len,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<len;i++)d[i]=Math.random()*2-1;Object.assign(AKSFX,{c,m,n:b})}
  if(AKSFX.c.state==='suspended')AKSFX.c.resume().catch(()=>{});return AKSFX.c}catch(e){return null}}
-function akSfxStop(){AKSFX.t.forEach(clearTimeout);AKSFX.t=[]}
+function akSfxStop(){AKSFX.t.forEach(clearTimeout);AKSFX.t=[];AKSFX.vo.forEach(v=>{try{v.stop()}catch(e){}});AKSFX.vo=[];akSndDuck(false)}
+function akSndDuck(on){const c=AKSFX.c,g=AKSFX.mg;if(!c||!g)return;try{g.gain.cancelScheduledValues(c.currentTime);g.gain.setTargetAtTime(on?.38:.9,c.currentTime,on?.1:.4)}catch(e){}}
+ 
+const AKSND_F=['music','vo1','vo2','vo3','vo4','vo5','vo6','vo7','vo8','boom','shimmer','whoosh','air','charge','beam','hum','beep','send'];
+const AKSND_G={boom:.75,shimmer:.5,whoosh:.4,air:.28,charge:.5,beam:.75,hum:.3,beep:.4,send:.55};
+function akSndLoad(){const c=AKSFX.c;if(!c||AKSFX.ld)return;AKSFX.ld=1;
+ AKSND_F.forEach(n=>fetch('icons/alexandra/a/'+n+'.mp3?v=1').then(r=>r.arrayBuffer()).then(b=>new Promise((ok,no)=>c.decodeAudioData(b,ok,no))).then(d=>{AKSFX.buf[n]=d;if(n==='music')akSndMusic();akSndLate(n)}).catch(()=>{}))}
+function akSndPlay(n,dt,g,dur){const c=AKSFX.c,d=AKSFX.buf[n];if(!c||!d)return null;const s=c.createBufferSource(),v=c.createGain(),t=c.currentTime+(AKSFX.b||0)+(dt||0);s.buffer=d;v.gain.value=g==null?(AKSND_G[n]||.6):g;s.connect(v);v.connect(AKSFX.m);s.start(t,0,dur||d.duration);return s}
+
+function akSndMusic(){const c=AKSFX.c,d=AKSFX.buf.music;if(!c||!d||AKSFX.mu||!window.AKST||!akSfxOk())return;const s=c.createBufferSource(),g=c.createGain();s.buffer=d;g.gain.setValueAtTime(.0001,c.currentTime);g.gain.exponentialRampToValueAtTime(.9,c.currentTime+1.2);s.connect(g);g.connect(AKSFX.m);s.start();AKSFX.mu=s;AKSFX.mg=g;s.onended=()=>{if(AKSFX.mu===s){AKSFX.mu=null;AKSFX.mg=null}}}
+function akSndMusicEnd(){const c=AKSFX.c,s=AKSFX.mu,g=AKSFX.mg;AKSFX.mu=null;AKSFX.mg=null;if(!c||!s)return;try{g.gain.cancelScheduledValues(c.currentTime);g.gain.setTargetAtTime(.0001,c.currentTime,.25);s.stop(c.currentTime+1.2)}catch(e){}}
+
+function akSndVoice(k,dt){const c=AKSFX.c,d=AKSFX.buf['vo'+k];if(!c||!d)return;const s=akSndPlay('vo'+k,dt,1);if(!s)return;AKSFX.vo.push(s);
+ AKSFX.t.push(setTimeout(()=>akSndDuck(true),Math.max(0,dt*1000-150)),setTimeout(()=>akSndDuck(false),(dt+d.duration)*1000+120))}
 function akSfxOk(){const c=AKSFX.c;return c&&c.state==='running'&&akSfxOn()}
 function akSfxEnv(g,t,a,p,d){g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(p,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+a+d)}
 function akSfxTone(type,f0,f1,dt,dur,p,a,fl){const c=AKSFX.c,t=c.currentTime+(AKSFX.b||0)+(dt||0),o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(f0,t);if(f1!==f0)o.frequency.exponentialRampToValueAtTime(f1,t+dur);
@@ -21369,24 +21382,28 @@ function akSfxTone(type,f0,f1,dt,dur,p,a,fl){const c=AKSFX.c,t=c.currentTime+(AK
 function akSfxNoise(dt,dur,p,type,f0,f1,q,a){const c=AKSFX.c,t=c.currentTime+(AKSFX.b||0)+(dt||0),s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=AKSFX.n;s.loop=true;f.type=type;f.Q.value=q||.8;f.frequency.setValueAtTime(f0,t);f.frequency.exponentialRampToValueAtTime(f1,t+dur);
  akSfxEnv(g,t,a||dur*.5,p,dur-(a||dur*.5));s.connect(f);f.connect(g);g.connect(AKSFX.m);s.start(t,Math.random());s.stop(t+dur+.05)}
 const AKSFX_K={
- whoosh:()=>akSfxNoise(0,.6,.16,'bandpass',350,2600,.9,.35),
+ whoosh:()=>akSndPlay('whoosh')||akSfxNoise(0,.6,.16,'bandpass',350,2600,.9,.35),
+ air:()=>akSndPlay('air')||AKSFX_K.whooshS(),
  whooshS:()=>akSfxNoise(0,.5,.07,'bandpass',500,1800,1,.3),
- boom:()=>{akSfxTone('sine',72,30,0,1.6,.55,.01);akSfxNoise(0,.5,.18,'lowpass',260,90,.7,.01)},
- shimmer:()=>[1568,2093,2637,3136,3951].forEach((f,k)=>akSfxTone('sine',f,f*1.003,k*.07,1.5,.05,.02)),
+ boom:()=>{if(akSndPlay('boom'))return;akSfxTone('sine',72,30,0,1.6,.55,.01);akSfxNoise(0,.5,.18,'lowpass',260,90,.7,.01)},
+ shimmer:()=>akSndPlay('shimmer')||[1568,2093,2637,3136,3951].forEach((f,k)=>akSfxTone('sine',f,f*1.003,k*.07,1.5,.05,.02)),
  tick:()=>{akSfxTone('triangle',1900,1200,0,.06,.16,.002);akSfxNoise(0,.04,.05,'highpass',3500,5000,.7,.002)},
  blips:()=>[880,1175,1568].forEach((f,k)=>akSfxTone('sine',f,f,k*.09,.2,.07,.005)),
- charge:()=>{akSfxTone('sawtooth',90,420,0,1.5,.09,1.3,['lowpass',300,3200]);akSfxNoise(0,1.5,.07,'bandpass',800,4000,2,1.3)},
+ charge:()=>{if(akSndPlay('charge'))return;akSfxTone('sawtooth',90,420,0,1.5,.09,1.3,['lowpass',300,3200]);akSfxNoise(0,1.5,.07,'bandpass',800,4000,2,1.3)},
  zap:()=>{akSfxNoise(0,.3,.14,'highpass',2500,6000,.7,.005);akSfxTone('square',1300,260,0,.22,.04,.005)},
- beam:()=>{akSfxTone('sine',2400,260,0,1.1,.09,.05);akSfxNoise(0,1.1,.17,'bandpass',4200,500,1.2,.15);AKSFX_K.shimmer()},
- hum:()=>{akSfxTone('sawtooth',82,86,0,4.6,.07,3,['lowpass',220,520]);akSfxTone('sine',164,166,0,4.6,.03,3)},
- beep:()=>{akSfxTone('sine',1046,1046,0,.12,.07,.005);akSfxTone('sine',1318,1318,.16,.14,.07,.005)},
- send:()=>{akSfxNoise(0,.35,.1,'bandpass',600,3000,1,.2);akSfxTone('sine',500,1500,0,.25,.07,.01)},
+ beam:()=>{if(akSndPlay('beam'))return;akSfxTone('sine',2400,260,0,1.1,.09,.05);akSfxNoise(0,1.1,.17,'bandpass',4200,500,1.2,.15);AKSFX_K.shimmer()},
+ hum:()=>{if(akSndPlay('hum'))return;akSfxTone('sawtooth',82,86,0,4.6,.07,3,['lowpass',220,520]);akSfxTone('sine',164,166,0,4.6,.03,3)},
+ beep:()=>{if(akSndPlay('beep'))return;akSfxTone('sine',1046,1046,0,.12,.07,.005);akSfxTone('sine',1318,1318,.16,.14,.07,.005)},
+ send:()=>{if(akSndPlay('send'))return;akSfxNoise(0,.35,.1,'bandpass',600,3000,1,.2);akSfxTone('sine',500,1500,0,.25,.07,.01)},
  dots:()=>[0,.15,.3].forEach(d=>akSfxTone('sine',1400,1400,d,.05,.03,.003)),
  pop:()=>akSfxTone('sine',620,1000,0,.1,.13,.004)};
 
-const AKSFX_CUE={alliance2:[[.05,'boom'],[1.3,'shimmer']],team2:[[1.2,'whooshS'],[2.8,'whooshS']],eyes3:[[.35,'tick'],[.6,'blips'],[2.6,'tick']],
+const AKSFX_CUE={alliance2:[[.05,'boom'],[1.3,'shimmer']],team2:[[1.4,'air']],eyes3:[[.35,'tick'],[.6,'blips'],[2.6,'tick']],
  answers4:[[1.7,'charge'],[3.25,'zap']],flag6:[[.7,'shimmer']],sekna4:[[.2,'hum'],[4.2,'beep']],invite2:[[.9,'send'],[2.4,'dots'],[3,'pop'],[3.8,'pop']]};
-function akSfxSlide(i,tr){akSfxStop();if(!akSfxOk())return;try{if(tr==='beamD')AKSFX_K.beam();else if(tr!=='none')AKSFX_K.whoosh()}catch(e){}
+const AKSND_VO={alliance2:[[.35,1]],team2:[[.3,2]],eyes3:[[.35,3]],answers4:[[.6,4]],flag6:[[.55,5]],sekna4:[[.9,6]],invite2:[[.25,7],[4.95,8]]};
+
+function akSndLate(n){const S=window.AKST,dt=(Date.now()-(AKSFX.at||0))/1000;if(!S||S.i<0||dt>1.5||!akSfxOk())return;(AKSND_VO[(AKS[S.i]||{}).img]||[]).forEach(([t,k])=>{if('vo'+k===n&&t+dt<2)akSndVoice(k,Math.max(0,t-dt))})}
+function akSfxSlide(i,tr){akSfxStop();AKSFX.at=Date.now();if(!akSfxOk())return;akSndMusic();(AKSND_VO[(AKS[i]||{}).img]||[]).forEach(([t,k])=>{if(AKSFX.buf['vo'+k])akSndVoice(k,t)});try{if(tr==='beamD')AKSFX_K.beam();else if(tr!=='none')AKSFX_K.whoosh()}catch(e){}
  (AKSFX_CUE[(AKS[i]||{}).img]||[]).forEach(([t,k])=>AKSFX.t.push(setTimeout(()=>{if(akSfxOk()&&window.AKST&&!AKST.held)try{AKSFX_K[k]()}catch(e){}},t*1000)))}
 </script>
 <div id="seknaFileEnd" hidden></div>
