@@ -10412,6 +10412,17 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .aklv-cd.out{animation:aklvCdOut .26s ease both}
     @keyframes aklvCdIn{0%{opacity:0;transform:translateY(-14px) scale(.94);filter:blur(4px)}100%{opacity:1;transform:none;filter:none}}
     @keyframes aklvCdOut{to{opacity:0;transform:translateY(-8px) scale(.96)}}
+
+    /* v591 her ROAS alert: banner on the screen + voice note in the chat */
+    .ak-alb{position:fixed;left:10px;right:10px;top:calc(env(safe-area-inset-top,0px) + 10px);z-index:2147480300;display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.97);border-radius:18px;padding:10px 12px;
+      box-shadow:0 10px 30px rgba(15,29,74,.22);transform:translateY(-130%);transition:transform .35s cubic-bezier(.2,.9,.25,1.1);cursor:pointer;max-width:520px;margin:0 auto}
+    .ak-alb.in{transform:none}
+    .ak-alba{flex:none;width:40px;height:40px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:linear-gradient(135deg,#2a52c9,#1C3C96)}.ak-alba img,.ak-alba svg{width:100%;height:100%;object-fit:cover}
+    .ak-albt{flex:1;min-width:0;display:flex;flex-direction:column}.ak-albt b{font:800 14px Inter,system-ui,sans-serif;color:#141b33}.ak-albt small{font:600 12.5px Inter,system-ui,sans-serif;color:#4b5263;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .ak-albx{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;color:#8a93a6;font-size:12px}
+    .ak-m.h.alert .ak-vb{margin-bottom:6px}
+    .ak-m.h .ak-vb{color:#1C3C96}.ak-m.h .ak-vb span i{background:#1C3C96!important;opacity:.55}.ak-m.h .ak-vb.on span i{opacity:1}.ak-m.h .ak-vb b{color:#1C3C96}
+    .ak-alt{font:600 13.5px/1.6 AKufi,Inter,system-ui,sans-serif}.ak-alt b{color:#1C3C96}
 </style>
 </head>
 <body>
@@ -13233,7 +13244,7 @@ function streakDraw(d){
 function render(d,opts){
  const animate=!(opts&&opts.animate===false);
  RENDER_QUIET=!animate;
- DASH_DATA=d; saveAccountCache(d); document.getElementById('app').classList.remove('loading');
+ DASH_DATA=d; saveAccountCache(d); document.getElementById('app').classList.remove('loading');setTimeout(akRoasAlert,9000);
  labNewDay(d);
  applyAccountBrand(d);
  try{scardHome()}catch(e){}
@@ -22519,6 +22530,34 @@ function akLiveCards(cs){const el=document.getElementById('akLive');if(!el)retur
  cs.forEach((c,i)=>{const d=String(c.direction||'').toLowerCase(),e=document.createElement('div');e.className='aklv-cd';e.style.animationDelay=(i*90)+'ms';
   e.innerHTML=`<small>${akEsc(String(c.label||''))}</small><b>${akEsc(akLiveTx(String(c.value)))}</b>${c.change?`<em class="${d==='up'?'up':d==='down'?'dn':''}">${d==='up'?'▲ ':d==='down'?'▼ ':''}${akEsc(String(c.change))}</em>`:''}`;box.appendChild(e)});
  clearTimeout(AKLV.cdT);AKLV.cdT=setTimeout(()=>{box.querySelectorAll('.aklv-cd').forEach(o=>{o.classList.add('out');setTimeout(()=>o.remove(),260)})},9000)}
+
+ 
+function akWavBlob(b64,rate){const pcm=Uint8Array.from(atob(b64),c=>c.charCodeAt(0)),h=new DataView(new ArrayBuffer(44)),w=(o,t)=>{for(let i=0;i<t.length;i++)h.setUint8(o+i,t.charCodeAt(i))};
+ w(0,'RIFF');h.setUint32(4,36+pcm.length,true);w(8,'WAVE');w(12,'fmt ');h.setUint32(16,16,true);h.setUint16(20,1,true);h.setUint16(22,1,true);h.setUint32(24,rate,true);h.setUint32(28,rate*2,true);h.setUint16(32,2,true);h.setUint16(34,16,true);w(36,'data');h.setUint32(40,pcm.length,true);
+ return {blob:new Blob([h.buffer,pcm],{type:'audio/wav'}),pcm:new Int16Array(pcm.buffer,0,pcm.length>>1)}}
+async function akRoasAlert(){try{
+ if(typeof DASH_DATA==='undefined'||!DASH_DATA||AK.blocked||!AK_SRV)return;const acc=CURRENT_ACCOUNT,day=ssToday(),key='hm_ak_alert_'+acc+'_'+day;
+ if(storeGet(key))return;const tg=+((DASH_DATA.mtd||{}).targetRoas||0);if(!(tg>0))return;
+ const c=CP[acc]=CP[acc]||{};if(!c.data&&!c.busy){const r=await akWithin(serverCall('getCampPerf',acc,false,getAccessToken()),9000);if(r){c.data=r;c.ix=null}}
+ const d=c.data;if(!d||!d.c||!d.latest)return;const ix=cpIx(c),Ld=d.latest,from=cpD(Ld,-6);
+ const rows=d.c.map((m,i)=>({n:m[0],t:m[1],w:cpSum(ix[i],from,Ld)})).filter(x=>!/demand|video/i.test(x.t)&&x.w.sp>0);
+ const tot=rows.reduce((a,x)=>a+x.w.sp,0),K=akFx(acc),sym=akFxSym(acc);
+ const bad=rows.filter(x=>x.w.sp>=Math.max(50,tot*.02)&&x.w.ro<tg).sort((a,b)=>(b.w.sp*(tg-b.w.ro))-(a.w.sp*(tg-a.w.ro))).slice(0,2);
+ storeSet(key,'1');if(!bad.length)return;
+ const nm=x=>String(x.n).replace(/[_|]+/g,' ').replace(/\s+/g,' ').trim().slice(0,48),r2=v=>(Math.round(v*100)/100).toFixed(2);
+ const say='استنى هنا يا نجم! '+bad.map((x,i)=>(i?'وكمان ':'')+'حملة '+nm(x)+' الـ ROAS بتاعها '+r2(x.w.ro)).join('، ')+' في آخر سبع أيام، والهدف '+r2(tg)+'. تحب نشوف السبب؟';
+ const txt='استنى هنا يا نجم! '+bad.map(x=>`<b>${akEsc(nm(x))}</b>: ROAS <b>${r2(x.w.ro)}</b> (spend ${sym}${Math.round(K*x.w.sp).toLocaleString('en-US')})`).join('<br>')+`<br>الهدف <b>${r2(tg)}</b> · آخر ٧ أيام`;
+ let vb='';try{const r=await fetch(AK_SRV.replace(/\/ak\/ask$/,'/ak/tts'),{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),name:akMe().name,text:say})});const j=await r.json();
+  if(j&&j.ok){const rate=+((String(j.mime||'').match(/rate=(\d+)/)||[])[1]||24000),o=akWavBlob(j.data,rate),secs=Math.max(1,Math.round(o.pcm.length/rate)),vid='v'+Date.now();
+   AKV.urls[vid]=URL.createObjectURL(o.blob);akVoicePut(vid,o.blob);const n=26,step=Math.floor(o.pcm.length/n)||1,bars=[];for(let i=0;i<n;i++){let m=0;for(let k=i*step;k<(i+1)*step&&k<o.pcm.length;k+=40)m=Math.max(m,Math.abs(o.pcm[k]));bars.push(Math.round(4+Math.min(1,m/16000)*16))}
+   vb=`<span class="ak-vb" data-v="${vid}" data-d="${secs}" onclick="akPlay(this)">${akI('play')}<span>${bars.map(h=>`<i data-h="${h}" style="height:${h}px"></i>`).join('')}</span><b>${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}</b></span>`}}catch(e){}
+ AK.msgs.push({w:'h',cls:'alert',html:`${vb}<p dir="auto" class="ak-alt">${txt}</p>`,nw:1});try{akSave()}catch(e){}
+ if(document.getElementById('akBox')){akDraw();akSfxLoad().then(()=>akSfx('recv'))}else akAlertBanner(bad.length>1?`${bad.length} campaigns under the ROAS target`:`${nm(bad[0])} is under the ROAS target`,!!vb)
+}catch(e){}}
+function akAlertBanner(line,voice){document.getElementById('akAlb')?.remove();
+ document.body.insertAdjacentHTML('beforeend',`<div class="ak-alb" id="akAlb" role="alert" onclick="this.remove();openAsk()"><span class="ak-alba">${akAvIn()}</span><span class="ak-albt"><b>Alexandra</b><small>${voice?'🎤 Voice message · ':''}${akEsc(line)}</small></span><span class="ak-albx" onclick="event.stopPropagation();this.parentNode.remove()">✕</span></div>`);
+ requestAnimationFrame(()=>document.getElementById('akAlb')?.classList.add('in'));akSfxLoad().then(()=>akSfx('recv'));
+ setTimeout(()=>{const b=document.getElementById('akAlb');if(b){b.classList.remove('in');setTimeout(()=>b.remove(),300)}},7000);try{akReqDot&&setTimeout(akReqDot,0)}catch(e){}}
 </script>
 <div id="seknaFileEnd" hidden></div>
 <script>
