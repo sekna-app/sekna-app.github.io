@@ -10172,6 +10172,19 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .aklv-in input::placeholder{color:rgba(255,255,255,.5)}
     .aklv.cm .aklv-in button{width:42px!important;height:42px!important;background:linear-gradient(135deg,#E9C46A,#C9A24A);color:#0f1d4a}
     .aklv-in button .ak-ic{width:19px;height:19px}
+
+    /* v580 small lyric-style captions below her face, slim sound bars */
+    .aklv-cb{bottom:calc(env(safe-area-inset-bottom,0px) + 112px)!important;gap:10px!important;left:28px!important;right:28px!important}
+    .aklv-cap{min-height:44px!important;font:700 14.5px/1.5 Inter,AKufi,system-ui,sans-serif!important;display:flex;flex-direction:column;gap:2px;justify-content:flex-end}
+    .aklv-cap .lp{font-size:12.5px;font-weight:600;opacity:.42;min-height:19px;unicode-bidi:plaintext}
+    .aklv-cap .lc{unicode-bidi:plaintext}
+    .aklv-cap.nw .lc{animation:aklvLn .32s ease-out}.aklv-cap.nw .lp{animation:aklvLp .32s ease-out}
+    @keyframes aklvLn{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:none}}
+    @keyframes aklvLp{0%{opacity:.9;transform:translateY(10px)}100%{opacity:.42;transform:none}}
+    .aklv-cap b{color:#5ec8ff!important}
+    .aklv-wv{height:16px!important;gap:3px!important}
+    .aklv-wv i{width:2.5px!important;height:calc(var(--h,10px)*.36)!important;opacity:.85}
+    .aklv-sh{background:linear-gradient(180deg,rgba(3,8,26,.5) 0,rgba(3,8,26,0) 15%,rgba(3,8,26,0) 64%,rgba(0,0,0,.6) 78%,rgba(0,0,0,.92) 100%)!important}
 </style>
 </head>
 <body>
@@ -21995,13 +22008,57 @@ const AKLV_URL=AK_SRV.replace(/\/ak\/ask$/,'/ak/live');
 function akLiveHtml(){const v=k=>`<video class="aklv-v" data-s="${k}" src="icons/alexandra/v/voice-${k}.mp4${k==='listen'?'?v=2':''}" muted loop playsinline preload="auto"></video>`;
  return `<div class="aklv" id="akLive" role="dialog" aria-label="Voice chat with Alexandra">${v('listen')}${v('think')}${v('talk')}<video class="aklv-v" data-s="bye" src="icons/alexandra/v/voice-bye.mp4" muted playsinline preload="auto"></video><div class="aklv-sh"></div><div class="aklv-ring"></div>
  <div class="aklv-top"><button type="button" class="aklv-x" aria-label="Close" onclick="akLiveBye()">${akI('down')||'✕'}</button><div class="aklv-nm"><b>Alexandra</b><span id="aklvSt">Connecting…</span></div><button type="button" class="aklv-x aklv-md" id="aklvMd" aria-label="Show the chat" onclick="akLiveMode()">${akI('chat')}</button></div><div class="aklv-log" id="aklvLog"></div>
- <div class="aklv-cb"><div class="aklv-nmg">ALEXANDRA</div><div class="aklv-wv" aria-hidden="true">${'<i></i>'.repeat(17)}</div><div class="aklv-cap" id="aklvCap" dir="auto"></div></div>
+ <div class="aklv-cb"><div class="aklv-cap" id="aklvCap"></div><div class="aklv-wv" aria-hidden="true">${'<i></i>'.repeat(17)}</div></div>
  <div class="aklv-bar"><form class="aklv-in" onsubmit="akLiveType(event)"><input id="aklvQ" autocomplete="off" maxlength="600" placeholder="Ask Alexandra" dir="auto"><button type="submit" aria-label="Send">${akI('plane')}</button></form><button type="button" class="aklv-mu" id="aklvMu" aria-label="Mute the mic" onclick="akLiveMute()">${akI('mic')}</button><button type="button" class="aklv-end" aria-label="End the voice chat" onclick="akLiveBye()">✕</button></div></div>`}
 function akLiveState(st){if(AKLV.st===st)return;AKLV.st=st;const el=document.getElementById('akLive');if(!el)return;
  el.querySelectorAll('.aklv-v').forEach(v=>{const on=v.dataset.s===(st==='connecting'?'listen':st);v.classList.toggle('on',on);if(on){try{v.play().catch(()=>{})}catch(e){}}else if(!v.paused)setTimeout(()=>{if(!v.classList.contains('on'))v.pause()},500)});
  const t={connecting:'Connecting…',listen:AKLV.mute?'Mic is off':'Listening…',think:'Thinking…',talk:'Speaking'}[st]||'';const s=document.getElementById('aklvSt');if(s)s.textContent=t;el.dataset.st=st}
-function akLiveCap(t,user){const c=document.getElementById('aklvCap');if(!c)return;let x=String(t||'').trim();if(x.length>180)x='…'+x.slice(-180);
- c.innerHTML=user?akEsc(x):akEsc(x).replace(/([$£€]\s?)?[\d\u0660-\u0669][\d\u0660-\u0669,.٫٬]*(\s?(?:x|%|٪|k|K|M|ألف|مليون))?/g,m=>`<b>${m}</b>`);c.classList.toggle('u',!!user);akLiveLogDraw()}
+ 
+const AKN=(()=>{const m={},add=(v,...w)=>w.forEach(x=>m[x]=v);
+ add(0,'صفر','زيرو');add(1,'واحد','واحدة');add(2,'اتنين','اثنين','اثنان','اتنان','إثنين','إتنين');add(3,'تلاتة','ثلاثة','تلات','ثلاث');add(4,'أربعة','اربعة','أربع','اربع');add(5,'خمسة','خمس');
+ add(6,'ستة','ست');add(7,'سبعة','سبع');add(8,'تمانية','ثمانية','ثماني','تمن','تماني','ثمان');add(9,'تسعة','تسع');add(10,'عشرة','عشر');
+ add(11,'حداشر','احداشر','إحداشر');add(12,'اتناشر','اطناشر');add(13,'تلاتاشر','تلتاشر');add(14,'اربعتاشر','أربعتاشر','اربعطاشر');add(15,'خمستاشر','خمسطاشر');
+ add(16,'ستاشر','سطاشر');add(17,'سبعتاشر','سبعطاشر');add(18,'تمنتاشر','تمنطاشر');add(19,'تسعتاشر','تسعطاشر');
+ add(20,'عشرين','عشرون');add(30,'تلاتين','ثلاثين','ثلاثون');add(40,'أربعين','اربعين','أربعون');add(50,'خمسين','خمسون');add(60,'ستين','ستون');add(70,'سبعين','سبعون');add(80,'تمانين','ثمانين','ثمانون');add(90,'تسعين','تسعون');
+ add(100,'مية','مائة','مئة','ميه','ميت');add(200,'ميتين','مئتين','مائتين','مئتان','مائتان');add(300,'تلتمية','ثلاثمائة','ثلاثمئة','تلاتمية','تلتميه','ثلثمائة');
+ add(400,'ربعمية','أربعمائة','اربعمائة','أربعمئة','ربعميه','أربعمية','اربعمية');add(500,'خمسمية','خمسمائة','خمسمئة','خمسميه');add(600,'ستمية','ستمائة','ستمئة','ستميه');
+ add(700,'سبعمية','سبعمائة','سبعمئة','سبعميه');add(800,'تمنمية','ثمانمائة','ثمانمئة','تمنميه','ثمنمائة','تمانمية');add(900,'تسعمية','تسعمائة','تسعمئة','تسعميه');
+ const sc={'ألف':1e3,'الف':1e3,'آلاف':1e3,'الاف':1e3,'ألاف':1e3,'ألفين':2e3,'الفين':2e3,'ألفان':2e3,'مليون':1e6,'ملايين':1e6,'مليونين':2e6,'مليار':1e9};
+ const pt={'بوينت':1,'بوينط':1,'فاصل':1,'فاصلة':1,'point':1},half={'ونص':1,'ونصف':1};
+ const amb={'صفر':1,'زيرو':1,'ست':1,'سبع':1,'خمس':1,'عشر':1,'تسع':1,'تمن':1,'تلات':1,'ثلاث':1,'أربع':1,'اربع':1,'ميت':1,'واحد':1,'واحدة':1};
+ const strip=w=>w.replace(/[ً-ْـ]/g,'');
+ const look=w=>{w=strip(w);if(m[w]!=null)return {n:m[w]};if(sc[w]!=null)return {s:sc[w],w};if(pt[w])return {p:1};
+  if(w.length>2&&w[0]==='و'){const r=w.slice(1);if(m[r]!=null)return {n:m[r],and:1};if(sc[r]!=null)return {s:sc[r],w:r,and:1}}return null};
+ const W=/^([^؀-ۿa-z]*)([؀-ۿa-z]+)([^؀-ۿa-z]*)$/i,SP=/^\s+$/;
+ return function(text){const T=String(text).split(/(\s+)/),out=[];let i=0;
+  while(i<T.length){const raw=T[i],mm=raw.match(W),L=mm&&look(mm[2]);
+   if(!L||L.p){out.push(raw);i++;continue}
+   let j=i,run=[],post='',last=i,cv=0;
+   while(j<T.length){const t=T[j];if(SP.test(t)){j++;continue}const q=t.match(W),x=q&&look(q[2]);
+    if(!x||x.p||(run.length&&q[1]))break;
+    
+    if(run.length&&x.n!=null&&((x.n<10&&cv%10)||(x.n>=10&&x.n<100&&x.n%10===0&&cv%100>=10)||(x.n>10&&x.n<20&&cv%100)||(x.n>=100&&cv%1000>=100)))break;
+    cv=x.n!=null?cv+x.n:0;run.push({x,w:q[2]});post=q[3];last=j;j++;if(q[3])break}
+   j=last+1;
+   let dec='';
+   if(!post){let k=j;while(k<T.length&&SP.test(T[k]))k++;const q=k<T.length&&T[k].match(/^([؀-ۿa-z]+)([^؀-ۿa-z]*)$/i);
+    if(q&&pt[strip(q[1])]&&!q[2]){let k2=k+1,d='',p2='',e=k;while(k2<T.length){const t=T[k2];if(SP.test(t)){k2++;continue}const r=t.match(/^([؀-ۿa-z]+)([^؀-ۿa-z]*)$/i),y=r&&look(r[1]);if(!y||y.n==null||y.n>9)break;d+=y.n;e=k2;k2++;if(r[2]){p2=r[2];break}}
+     if(d){dec='.'+d;j=e+1;post=p2}}
+    else if(q&&half[strip(q[1])]){dec='.5';j=k+1;post=q[2]}}
+   if(run.length===1&&!dec&&(amb[strip(run[0].w)]||(run[0].x.n!=null&&run[0].x.n<10))){out.push(raw);i++;continue}
+   let total=0,cur=0;for(const {x} of run){if(x.n!=null)cur+=x.n;else{cur=(cur||1)*x.s;total+=cur;cur=0}}total+=cur;
+   out.push(mm[1]+(run[0].x.and?'و ':'')+total.toLocaleString('en-US')+dec+post);i=j}
+  return out.join('').replace(/(\d)\s?(?:في|ف)\s?(?:المية|المائة|المئة|الميه)/g,'$1%')}})();
+function akLiveTx(t){return AKN(String(t||'').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{20E3}]/gu,'')).replace(/\s+([.،,؟?!])/g,'$1').replace(/\s{2,}/g,' ').trim()}
+ 
+function akLiveLines(x){const w=x.split(/\s+/).filter(Boolean),L=[];let c=[];
+ w.forEach(t=>{c.push(t);const len=c.join(' ').length;if(c.length>=7||len>=40||(/[.،,؟?!:]$/.test(t)&&c.length>=3)){L.push(c.join(' '));c=[]}});if(c.length)L.push(c.join(' '));return L}
+function akLiveCap(t,user){const c=document.getElementById('aklvCap');if(!c)return;const x=akLiveTx(t);
+ const L=akLiveLines(x),n=L.length,cur=n?L[n-1]:'',prev=n>1?L[n-2]:'',hi=user?akEsc:akLiveHi;
+ const key=(user?'u':'b')+n+'|'+(prev.slice(0,12));
+ if(c.dataset.k!==key){c.dataset.k=key;c.innerHTML=`<div class="lp" dir="auto">${hi(prev)}</div><div class="lc" dir="auto">${hi(cur)}</div>`;c.classList.remove('nw');void c.offsetWidth;c.classList.add('nw')}
+ else{const lc=c.querySelector('.lc');if(lc)lc.innerHTML=hi(cur)}
+ c.classList.toggle('u',!!user);akLiveLogDraw()}
 function akB64(u8){let s='';for(let i=0;i<u8.length;i+=0x8000)s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(s)}
 async function akLiveOpen(plain){if(AKLV.ws||AK.blocked)return;
  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.WebSocket||!window.AudioWorkletNode){showSettingsToast('Voice chat does not work on this browser.');return}
@@ -22054,7 +22111,7 @@ function akLivePlay(b64,mime){const ctx=AKLV.ctx;const rate=+((String(mime||'').
  const s=ctx.createBufferSource();s.buffer=buf;s.connect(ctx.destination);const t=Math.max(ctx.currentTime+0.04,AKLV.nextT,AKLV.byeAt||0);s.start(t);AKLV.nextT=t+buf.duration;AKLV.srcs.push(s);
  s.onended=()=>{AKLV.srcs=AKLV.srcs.filter(x=>x!==s)}}
 function akLiveStop(){AKLV.srcs.forEach(s=>{try{s.stop()}catch(e){}});AKLV.srcs=[];AKLV.nextT=0}
-function akLiveTurn(){if(AKLV.me.trim())AKLV.turns.push(['u',AKLV.me.trim()]);if(AKLV.her.trim())AKLV.turns.push(['b',AKLV.her.trim()]);AKLV.me='';AKLV.her='';akLiveLogDraw()}
+function akLiveTurn(){if(AKLV.me.trim())AKLV.turns.push(['u',akLiveTx(AKLV.me)]);if(AKLV.her.trim())AKLV.turns.push(['b',akLiveTx(AKLV.her)]);AKLV.me='';AKLV.her='';akLiveLogDraw()}
 function akLiveMsg(m){
  if(m.setupComplete){AKLV.ready=true;akLiveMic().then(()=>{akLiveState('listen');
    const ar=AK.msgs.slice().reverse().find(x=>x.w==='u'),arab=ar&&/[؀-ۿ]/.test(ar.html||'');
@@ -22104,7 +22161,7 @@ function akLiveMode(on){const el=document.getElementById('akLive');if(!el)return
  const b=document.getElementById('aklvMd');if(b){b.innerHTML=akI(on?'expand':'chat');b.setAttribute('aria-label',on?'Show her face':'Show the chat')}akLiveLogDraw()}
 function akLiveHi(t){return akEsc(t).replace(/([$£€]\s?)?[\d٠-٩][\d٠-٩,.٫٬]*(\s?(?:x|%|٪|k|K|M|ألف|مليون))?/g,m=>`<b>${m}</b>`)}
 function akLiveLogDraw(){const el=document.getElementById('akLive'),L=document.getElementById('aklvLog');if(!el||!L||!el.classList.contains('cm'))return;
- const t=(AKLV.turns||[]).slice();if(AKLV.me&&AKLV.me.trim())t.push(['u',AKLV.me.trim(),1]);if(AKLV.her&&AKLV.her.trim())t.push(['b',AKLV.her.trim(),1]);
+ const t=(AKLV.turns||[]).slice();if(AKLV.me&&AKLV.me.trim())t.push(['u',akLiveTx(AKLV.me),1]);if(AKLV.her&&AKLV.her.trim())t.push(['b',akLiveTx(AKLV.her),1]);
  const near=L.scrollHeight-L.scrollTop-L.clientHeight<80;
  L.innerHTML=t.length?t.map(([w,x,live])=>w==='u'?`<div class="aklv-u${live?' lv':''}" dir="auto">${akEsc(x)}</div>`:`<div class="aklv-b" dir="auto">${akLiveHi(x)}</div>`).join(''):'<div class="aklv-e">Talk to Alexandra, or type below.</div>';
  if(near)L.scrollTop=L.scrollHeight}
