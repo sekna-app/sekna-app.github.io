@@ -10075,6 +10075,10 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .akpl .cap{font:800 13px Inter,system-ui,sans-serif;margin:8px 2px 0}.akpl .cap small{display:block;font:600 11.5px Inter,system-ui,sans-serif;color:#8a93a8}
     .akpl .btns{display:flex;gap:8px;margin-top:10px}.akpl .btns button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:12px;padding:10px;font:800 12.5px Inter,system-ui,sans-serif;cursor:pointer}
     .akpl .wa{background:#25d366;color:#fff}.akpl .wa svg{width:16px;height:16px;fill:#fff}.akpl .lt{background:#f0f2f5;color:#203c8e}.akpl button:disabled{opacity:.6}
+
+    /* v569 Alexandra's answer, word by word */
+    .aks-t{margin:0}.aks-c{display:inline-block;width:7px;height:14px;margin-left:2px;vertical-align:-2px;border-radius:2px;background:#0866FF;animation:aksC .9s steps(2) infinite}
+    @keyframes aksC{50%{opacity:0}}.aks-w{font:600 11.5px Inter,system-ui,sans-serif;color:#8a93a8}
 </style>
 </head>
 <body>
@@ -11590,7 +11594,7 @@ async function akSend(e){
  akUser(q);AK.kb=false;akKb();
  if(!ASK_HEMERA_URL){akBot('<p>Alexandra is not connected yet.</p>');return}
  AK.busy=true;akDraw();
- try{let ctx='';try{ctx=await akCtx()}catch(e){}const j=await akPost('ask',{q,history:AK.hist.slice(-8),ctx});AK.hist.push({role:'user',text:q},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-16);AK.busy=false;if(!AK.assets){try{await akAssets()}catch(e){}}else setTimeout(()=>akAssets().catch(()=>{}),1500);akBot(akAnswer(j.answer||'')+(AK.editor&&!ctx?'<p class="ak-oldapi">Editors only: this device could not read the dashboard numbers, so they were not sent with the question.</p>':'')+(AK.editor&&!j.api?'<p class="ak-oldapi">Editors only: the Alexandra script is older than v23, so she cannot read the dashboard numbers yet. Deploy the new HemeraApi.gs as a New version.</p>':''))}
+ try{let ctx='';try{ctx=await akCtx()}catch(e){}let j=await akAskSrv(q,AK.hist.slice(-8),ctx);if(!j)j=await akPost('ask',{q,history:AK.hist.slice(-8),ctx});AK.hist.push({role:'user',text:q},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-16);AK.busy=false;if(!AK.assets){try{await akAssets()}catch(e){}}else setTimeout(()=>akAssets().catch(()=>{}),1500);if(j.sid){akIxPut(j.sid,`<div class="akst" id="${j.sid}">${akAnswer(j.answer||'')}</div>`);return}akBot(akAnswer(j.answer||'')+(AK.editor&&!ctx?'<p class="ak-oldapi">Editors only: this device could not read the dashboard numbers, so they were not sent with the question.</p>':'')+(AK.editor&&!j.api?'<p class="ak-oldapi">Editors only: the Alexandra script is older than v23, so she cannot read the dashboard numbers yet. Deploy the new HemeraApi.gs as a New version.</p>':''))}
  catch(err){AK.busy=false;akBot(`<p>${akEsc(/not connected/.test(err.message)?'Alexandra is not connected yet.':'Something went wrong. Try again.')}</p>`)}
 }
 // the answer text, with every link turned into a button (sheet, report, script)
@@ -21881,6 +21885,34 @@ async function akPlShare(id,btn){const s=AKPL[id];if(!s||!s.c){akBot('<p>Ask me 
  btn.disabled=true;try{await budSend(s.c,budCaption(s.d),budFile(s.d))}catch(e){showShareToast('Could not share the picture.')}finally{btn.disabled=false}}
 function akPlView(id){const s=AKPL[id];if(!s||!s.c)return;const o=document.createElement('div');o.className='ak-pv';o.innerHTML=`<img src="${s.c.toDataURL('image/jpeg',.9)}" alt=""><button type="button" aria-label="Close">✕</button>`;
  const close=()=>{o.classList.remove('on');setTimeout(()=>o.remove(),220)};o.onclick=close;document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('on'))}
+
+/* v569 Alexandra's questions go to HEMERA's server first: it answers word by word (streaming) and falls back to the
+ * Apps Script when it cannot (not linked yet, the script is older than v26, or the server is busy). The owner's
+ * HEMERA links the two once (a secret only the server and the script know). */
+const AK_SRV='https://europe-west2-human-appeal-media-plan.cloudfunctions.net/api/ak/ask';
+function akSrvOn(){try{return localStorage.getItem('hm_ak_srv')==='1'}catch(e){return false}}
+function akSrvSet(on){try{localStorage.setItem('hm_ak_srv',on?'1':'0')}catch(e){}}
+async function akAskSrv(q,history,ctx){
+ if(Date.now()-(+storeGet('hm_ak_srv_off')||0)<18e5)return null;
+ let r;try{r=await fetch(AK_SRV,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),q,history,ctx,name:akMe().name})})}catch(e){return null}
+ if(!r.ok){storeSet('hm_ak_srv_off',String(Date.now()));return null}
+ if(!/stream/.test(r.headers.get('X-Ak')||'')&&/json/.test(r.headers.get('Content-Type')||'')){const j=await r.json().catch(()=>null);
+  if(!j)return null;if(j.blocked){const e=new Error(j.error||'blocked');e.blocked=true;AK.blocked=true;throw e}
+  if(j.fallback||!j.ok){storeSet('hm_ak_srv_off',String(Date.now()));return null}akSrvSet(true);return {answer:j.answer||'',api:'srv'}}
+ akSrvSet(true);
+ const sid='aks'+Date.now().toString(36);AK.busy=false;akBot(`<div class="akst" id="${sid}"><p class="aks-t"><span class="aks-c"></span></p></div>`);
+ const rd=r.body.getReader(),dec=new TextDecoder();let txt='',raf=0;
+ const paint=()=>{if(raf<0)return;raf=0;const el=document.getElementById(sid);if(!el)return;const cut=txt.search(/\[\[\s*CARDS/i),shown=cut>=0?txt.slice(0,cut):txt;
+  el.innerHTML=`<p class="aks-t">${akEsc(shown).replace(/\n/g,'<br>')}${cut>=0?'<br><span class="aks-w">Making the cards…</span>':'<span class="aks-c"></span>'}</p>`;
+  const b=document.getElementById('akBd');if(b&&b.scrollHeight-b.scrollTop-b.clientHeight<160)b.scrollTop=b.scrollHeight};
+ while(true){const {done,value}=await rd.read();if(done)break;txt+=dec.decode(value,{stream:true});if(!raf)raf=requestAnimationFrame(paint)}
+ if(raf)cancelAnimationFrame(raf);raf=-1;
+ return {answer:txt.trim(),api:'srv',sid}}
+// the owner's HEMERA links the server and the script once (and again if the script lost the secret)
+async function akSrvLink(){try{if(!akOwner()||!ASK_HEMERA_URL)return;const last=+storeGet('hm_ak_link_try')||0;if(Date.now()-last<6*36e5)return;storeSet('hm_ak_link_try',String(Date.now()));
+ const st=await serverCall('akLinkState',getAccessToken());if(st&&st.linked){akSrvSet(true);return}
+ const {secret}=await serverCall('akLink',getAccessToken());await akPost('link',{secret});akSrvSet(true);storeSet('hm_ak_srv_off','0')}catch(e){}}
+setTimeout(akSrvLink,12000);
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>

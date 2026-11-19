@@ -11,6 +11,7 @@ const { archiveStatus, archiveMove, archiveProgress } = require('./archive');
 const tasks = require('./tasks');
 const accounts = require('./accounts');
 const rest = require('./rest');
+const ak = require('./ak');
 const notify = require('./notify');
 
 const VERSION = 'server-1';
@@ -129,6 +130,9 @@ async function withAccess(token, dataPromise) {
 }
 
 const CALLS = {
+  /** Alexandra on this server (owner): is it linked to the Alexandra script, and a new link secret. */
+  async akLinkState(args) { await assertOwner(args[0]); return ak.state(); },
+  async akLink(args) { const a = await assertOwner(args[0]); return ak.link(a.email); },
   /** Alexandra: an admin allowed someone; tell that person. */
   async alexandraAccessGranted([token, email]) {
     await assertAdmin(token);
@@ -447,6 +451,8 @@ exports.api = onRequest({
     // Called by keepWarm. At most once a minute; it only refreshes the shared data.
     if (Date.now() - lastWarm < 60 * 1000) { res.json({ ok: true, skipped: true }); return; }
     lastWarm = Date.now();
+    // The owners' usage email: a test once, then on the last evening of each month.
+    try { const w0 = await readWindow(), um = await ak.usageMail(w0.tz, notify.sendMail, ACCESS.ADMIN_EMAILS, notify.mailReady); if (um) console.log('Usage mail: ' + JSON.stringify(um)); } catch (e) { console.error('Usage mail: ' + e.message); }
     const done = [], latest = {}, days = {};
     const w = await readWindow(), now = Date.now(), open = inReadWindow(w, now);
     const lp = localParts(w.tz, now), today = lp.day, yesterday = localParts(w.tz, now - 864e5).day;
@@ -558,6 +564,8 @@ exports.api = onRequest({
 
   const b = body(req);
   try {
+    // Alexandra's questions, answered here word by word (falls back to the Apps Script in the app)
+    if (route === '/ak/ask') { const who = await assertAccess(b.token); await ak.ask(req, res, b, who); return; }
     if (route === '/call') {
       const fn = String(b.fn || '');
       if (!Object.prototype.hasOwnProperty.call(CALLS, fn)) { res.json({ ok: false, error: 'Unknown request.', fallback: true }); return; }
