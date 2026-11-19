@@ -10256,6 +10256,16 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .ak-m.h.alert .ak-vb{margin-bottom:6px}
     .ak-m.h .ak-vb{color:#1C3C96}.ak-m.h .ak-vb span i{background:#1C3C96!important;opacity:.55}.ak-m.h .ak-vb.on span i{opacity:1}.ak-m.h .ak-vb b{color:#1C3C96}
     .ak-alt{font:600 13.5px/1.6 AKufi,Inter,system-ui,sans-serif}.ak-alt b{color:#1C3C96}
+
+    /* v592 the call as a small circle while she shows you a screen; comparison cards; call summary */
+    .aklv.mini{top:auto!important;left:auto!important;right:14px!important;bottom:calc(env(safe-area-inset-bottom,0px) + 176px)!important;width:96px;height:96px;border-radius:50%;overflow:hidden;cursor:pointer;
+      box-shadow:0 0 0 3px rgba(233,196,106,.85),0 12px 34px rgba(10,20,60,.45);transform:none!important;background:#050b1f}
+    .aklv.mini > :not(.aklv-v){display:none!important}
+    .aklv.mini .aklv-v{inset:auto!important;left:-63px!important;top:-150px!important;width:222px!important;height:395px!important;margin:0!important;clip-path:none!important;transform:none!important;border-radius:0!important}
+    .aklv.mini[data-st="talk"]{animation:aklvMiniT 1s ease-in-out infinite alternate}
+    @keyframes aklvMiniT{to{box-shadow:0 0 0 4px #E9C46A,0 12px 40px rgba(60,120,255,.55)}}
+    .aklv-cd .pv{display:block;font:700 10.5px Inter,system-ui,sans-serif;font-style:normal;color:rgba(255,255,255,.6);margin-top:1px}
+    .ak-sum{margin:4px 0 0;padding-inline-start:18px;font:600 13.5px/1.6 AKufi,Inter,system-ui,sans-serif}.ak-sum li{margin:2px 0}.ak-sum b{color:#1C3C96}
 </style>
 </head>
 <body>
@@ -13077,7 +13087,7 @@ function streakDraw(d){
 function render(d,opts){
  const animate=!(opts&&opts.animate===false);
  RENDER_QUIET=!animate;
- DASH_DATA=d; saveAccountCache(d); document.getElementById('app').classList.remove('loading');setTimeout(akRoasAlert,9000);
+ DASH_DATA=d; saveAccountCache(d); document.getElementById('app').classList.remove('loading');setTimeout(akRoasAlert,9000);setTimeout(akWeekly,16000);
  labNewDay(d);
  applyAccountBrand(d);
  try{scardHome()}catch(e){}
@@ -22081,7 +22091,7 @@ async function akVoPick(v,btn){btn.textContent='…';let j=null;try{j=await akVo
 const AKLV={};
 const AKLV_URL=AK_SRV.replace(/\/ak\/ask$/,'/ak/live');
 function akLiveHtml(){const v=k=>`<video class="aklv-v" data-s="${k}" src="icons/alexandra/v/voice-${k}.mp4?v=4" muted loop playsinline preload="auto"></video>`;
- return `<div class="aklv" id="akLive" role="dialog" aria-label="Voice chat with Alexandra">${v('listen')}${v('think')}${v('talk')}<video class="aklv-v" data-s="bye" src="icons/alexandra/v/voice-bye.mp4" muted playsinline preload="auto"></video><div class="aklv-sh"></div><div class="aklv-ring" onpointerdown="akLiveOrbDown(event)"></div>
+ return `<div class="aklv" id="akLive" role="dialog" aria-label="Voice chat with Alexandra" onclick="if(this.classList.contains('mini')){event.stopPropagation();akLiveMini(false)}">${v('listen')}${v('think')}${v('talk')}<video class="aklv-v" data-s="bye" src="icons/alexandra/v/voice-bye.mp4" muted playsinline preload="auto"></video><div class="aklv-sh"></div><div class="aklv-ring" onpointerdown="akLiveOrbDown(event)"></div>
  <div class="aklv-top"><button type="button" class="aklv-x" aria-label="Close" onclick="akLiveBye()">${akI('down')||'✕'}</button><div class="aklv-nm"><b>Alexandra</b><span class="aklv-tm" id="aklvTm">Calling…</span><small id="aklvSt">Connecting…</small></div><button type="button" class="aklv-x aklv-md" id="aklvMd" aria-label="Show the chat" onclick="akLiveMode()">${akI('chat')}</button></div><div class="aklv-log" id="aklvLog"></div>
  <div class="aklv-cb"><div class="aklv-cap" id="aklvCap"></div><div class="aklv-wv" aria-hidden="true">${'<i></i>'.repeat(17)}</div></div>
  <div class="aklv-bar"><form class="aklv-in" onsubmit="akLiveType(event)"><input id="aklvQ" autocomplete="off" maxlength="600" placeholder="Ask Alexandra" dir="auto"><button type="submit" aria-label="Send">${akI('plane')}</button></form><button type="button" class="aklv-mu" id="aklvMu" aria-label="Mute the mic" onclick="akLiveMute()">${akI('mic')}</button><button type="button" class="aklv-end" aria-label="End the voice chat" onclick="akLiveBye()">✕</button></div></div>`}
@@ -22148,10 +22158,16 @@ const AKLV_TOOLS=[{functionDeclarations:[
  {name:'get_numbers',description:'Get HEMERA dashboard numbers right now (fresh). Use it for any number, campaign, day, month, campaign type, search term or drop that is not in the short summary. topic: what part to read (e.g. "campaigns", "days before this month", "every month by campaign type", "things that dropped", "search terms", "the other account", "team", "seasons"). search: a campaign name, date (YYYY-MM-DD) or word to find.',
   parameters:{type:'OBJECT',properties:{topic:{type:'STRING',description:'Which part of the dashboard to read'},search:{type:'STRING',description:'A name, date or word to look for'}}}},
  {name:'show_cards',description:'Show up to 3 small number cards on the person\'s screen while you say the numbers (for example spend, ROAS, conversions). Call it when you give key numbers.',
-  parameters:{type:'OBJECT',properties:{cards:{type:'ARRAY',items:{type:'OBJECT',properties:{label:{type:'STRING',description:'Short label, e.g. "Spend · yesterday"'},value:{type:'STRING',description:'The number as shown, e.g. "$10,491" or "2.06x"'},change:{type:'STRING',description:'Optional change, e.g. "-12%"'},direction:{type:'STRING',description:'"up", "down" or ""'}},required:['label','value']}}},required:['cards']}}]}];
+  parameters:{type:'OBJECT',properties:{cards:{type:'ARRAY',items:{type:'OBJECT',properties:{label:{type:'STRING',description:'Short label, e.g. "Spend · yesterday"'},value:{type:'STRING',description:'The number as shown, e.g. "$10,491" or "2.06x"'},previous:{type:'STRING',description:'For a comparison: the other period\'s number, e.g. "$9,820"'},change:{type:'STRING',description:'Optional change, e.g. "-12%"'},direction:{type:'STRING',description:'"up", "down" or ""'}},required:['label','value']}}},required:['cards']}},
+ {name:'open_screen',description:'Open a screen in the HEMERA app for the person while you keep talking. screen: "daily", "days", "campaigns", "campaign" (one campaign, give its name), "reports_studio" (months; give month and, to compare, compare_with), "channels", "search_terms", "seasons", "lab".',
+  parameters:{type:'OBJECT',properties:{screen:{type:'STRING'},campaign:{type:'STRING',description:'Campaign name for screen "campaign"'},month:{type:'STRING',description:'Month as YYYY-MM for reports_studio'},compare_with:{type:'STRING',description:'Second month as YYYY-MM to compare with'}},required:['screen']}},
+ {name:'send_plan',description:'Send the budget plan picture of a month into the chat (e.g. "December").',parameters:{type:'OBJECT',properties:{month:{type:'STRING'}},required:['month']}},
+ {name:'send_summary',description:'Send a short written summary of this call into the chat: the key numbers and the things to do. Only when the person asks for it.',parameters:{type:'OBJECT',properties:{points:{type:'ARRAY',items:{type:'STRING'}}},required:['points']}}]}];
 const AKLV_TOOL_RULES=`# Tools in this call
 - The "Dashboard numbers" above are only a short summary. For anything else (a campaign, a day, a month, a campaign type, search terms, what dropped, the other account) call get_numbers first, then answer from what it returns. Never guess a number.
-- When you say key numbers, also call show_cards with them (1 to 3 cards) so the person sees them.`;
+- When you say key numbers, also call show_cards with them (1 to 3 cards) so the person sees them. For a comparison (this month vs last month, this week vs last week) give each card its previous number too.
+- When the person asks to see or open something (a campaign, Reports Studio with some months, the days, the lab), call open_screen and keep talking while it opens. Months are YYYY-MM.
+- "Send me the plan of <month>" → send_plan. "Send me a summary of the call" (now or at the end) → send_summary with 3 to 6 short points in the person's language.`;
 function akLiveSplit(t){const S=[];let cur={h:'Summary',L:[]};String(t||'').split('\n').forEach(l=>{if(/^## /.test(l)){S.push(cur);cur={h:l.slice(3),L:[]}}else cur.L.push(l)});S.push(cur);return S.filter(x=>x.L.join('').trim())}
 const AKLV_BIG=/Days before|Every month|Campaigns \(|Search terms|Things that dropped|HEMERA team|Seasons/i;
 async function akLiveSummary(){let t='';try{t=await Promise.race([akCtx(),new Promise(r=>setTimeout(()=>r(''),1500))])}catch(e){}if(!t)return '';
@@ -22186,7 +22202,7 @@ function akLivePre(){try{if(AK.blocked||!AK_SRV||AKLV.ws||!window.WebSocket)retu
  pre.p.catch(()=>{});AKLV.pre=pre}catch(e){}}
 async function akLiveOpen(){if(AKLV.ws||AK.blocked)return;
  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.WebSocket||!window.AudioWorkletNode){showSettingsToast('Voice chat does not work on this browser.');return}
- document.getElementById('akLive')?.remove();document.body.insertAdjacentHTML('beforeend',akLiveHtml());Object.assign(AKLV,{endSnd:0,t0:0,st:'',want:'',wantAt:0,aud:{},pend:false,herShown:'',orb:+(storeGet('hm_ak_lv_orb')||1)||1,bye:false,byeAt:0,mute:false,turns:[],me:'',her:'',spoke:false,lastVoice:0,wait:false,nextT:0,srcs:[],closed:false,ready:false});
+ document.getElementById('akLive')?.remove();document.body.insertAdjacentHTML('beforeend',akLiveHtml());Object.assign(AKLV,{mini:false,endSnd:0,t0:0,st:'',want:'',wantAt:0,aud:{},pend:false,herShown:'',orb:+(storeGet('hm_ak_lv_orb')||1)||1,bye:false,byeAt:0,mute:false,turns:[],me:'',her:'',spoke:false,lastVoice:0,wait:false,nextT:0,srcs:[],closed:false,ready:false});
  akLiveState('connecting');akLiveMode(akLiveCm());akLiveOrbSet(AKLV.orb||1);requestAnimationFrame(()=>document.getElementById('akLive')?.classList.add('in'));
  const ctx=new (window.AudioContext||window.webkitAudioContext)();AKLV.ctx=ctx;try{ctx.resume()}catch(e){}
  const micP=navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:1}}).then(s=>({s}),e=>({e}));
@@ -22245,7 +22261,8 @@ function akLiveTurn(){AKLV.herShown='';if(AKLV.me.trim())AKLV.turns.push(['u',ak
 function akLiveMsg(m){
  if(m.setupComplete){AKLV.ready=true;AKLV.t0=Date.now();akLiveMic().then(()=>{akLiveState('listen');
    const ar=AK.msgs.slice().reverse().find(x=>x.w==='u'),arab=ar&&/[؀-ۿ]/.test(ar.html||'');
-   AKLV.wait=true;AKLV.ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:`(The person just opened the voice chat. Greet ${String(akMe().name||'them').split(' ')[0]} warmly by first name in one short sentence${arab?' in Egyptian Arabic with an Alexandrian touch (not فصحى)':''}, and ask how you can help.)`}]}],turnComplete:true}}))
+   const tp=AKLV.topic;AKLV.topic='';const fn=String(akMe().name||'them').split(' ')[0];
+   AKLV.wait=true;AKLV.ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:tp?`(${fn} long-pressed the campaign "${tp}" to talk about it. First call get_numbers with search "${tp}". Then greet ${fn} in a few words and say in one or two short sentences how this campaign did in the last 7 days compared with before (spend, value, ROAS), show_cards with its key numbers, and ask what they want to know. Speak Egyptian Arabic with an Alexandrian touch.)`:`(The person just opened the voice chat. Greet ${fn} warmly by first name in one short sentence${arab?' in Egyptian Arabic with an Alexandrian touch (not فصحى)':''}, and ask how you can help.)`}]}],turnComplete:true}}))
   }).catch(()=>akLiveFail('The microphone could not start.'));return}
  if(m.goAway){return}
  if(m.toolCall){akLiveTool(m.toolCall);return}
@@ -22354,14 +22371,14 @@ function akCallCard(sec,tm){const m=Math.floor(sec/60),s=sec%60,len=m?`${m} min$
 
  
 async function akLiveTool(tc){const calls=(tc&&tc.functionCalls)||[];if(!calls.length)return;AKLV.wait=true;
- const res=await Promise.all(calls.map(async f=>{let r;try{if(f.name==='get_numbers')r=await akLiveNumbers(f.args||{});else if(f.name==='show_cards'){akLiveCards((f.args||{}).cards||[]);r={result:'shown'}}else r={result:'unknown tool'}}catch(e){r={result:'error: '+(e&&e.message||e)}}
+ const res=await Promise.all(calls.map(async f=>{let r;try{const A=f.args||{};if(f.name==='get_numbers')r=await akLiveNumbers(A);else if(f.name==='show_cards'){akLiveCards(A.cards||[]);r={result:'shown'}}else if(f.name==='open_screen')r=await akLiveScreen(A);else if(f.name==='send_plan')r=akLivePlan(A);else if(f.name==='send_summary')r=akLiveSumm(A);else r={result:'unknown tool'}}catch(e){r={result:'error: '+(e&&e.message||e)}}
   return {id:f.id,name:f.name,response:r}}));
  const ws=AKLV.ws;if(ws&&ws.readyState===1)try{ws.send(JSON.stringify({toolResponse:{functionResponses:res}}))}catch(e){}}
 function akLiveCards(cs){const el=document.getElementById('akLive');if(!el)return;cs=(Array.isArray(cs)?cs:[]).filter(c=>c&&c.value!=null).slice(0,3);if(!cs.length)return;
  let box=document.getElementById('aklvCards');if(!box){box=document.createElement('div');box.id='aklvCards';box.className='aklv-cards';el.appendChild(box)}
  box.querySelectorAll('.aklv-cd').forEach(o=>{o.classList.add('out');setTimeout(()=>o.remove(),260)});
  cs.forEach((c,i)=>{const d=String(c.direction||'').toLowerCase(),e=document.createElement('div');e.className='aklv-cd';e.style.animationDelay=(i*90)+'ms';
-  e.innerHTML=`<small>${akEsc(String(c.label||''))}</small><b>${akEsc(akLiveTx(String(c.value)))}</b>${c.change?`<em class="${d==='up'?'up':d==='down'?'dn':''}">${d==='up'?'▲ ':d==='down'?'▼ ':''}${akEsc(String(c.change))}</em>`:''}`;box.appendChild(e)});
+  e.innerHTML=`<small>${akEsc(String(c.label||''))}</small><b>${akEsc(akLiveTx(String(c.value)))}</b>${c.previous?`<i class="pv">vs ${akEsc(akLiveTx(String(c.previous)))}</i>`:''}${c.change?`<em class="${d==='up'?'up':d==='down'?'dn':''}">${d==='up'?'▲ ':d==='down'?'▼ ':''}${akEsc(String(c.change))}</em>`:''}`;box.appendChild(e)});
  clearTimeout(AKLV.cdT);AKLV.cdT=setTimeout(()=>{box.querySelectorAll('.aklv-cd').forEach(o=>{o.classList.add('out');setTimeout(()=>o.remove(),260)})},9000)}
 
  
@@ -22391,6 +22408,51 @@ function akAlertBanner(line,voice){document.getElementById('akAlb')?.remove();
  document.body.insertAdjacentHTML('beforeend',`<div class="ak-alb" id="akAlb" role="alert" onclick="this.remove();openAsk()"><span class="ak-alba">${akAvIn()}</span><span class="ak-albt"><b>Alexandra</b><small>${voice?'🎤 Voice message · ':''}${akEsc(line)}</small></span><span class="ak-albx" onclick="event.stopPropagation();this.parentNode.remove()">✕</span></div>`);
  requestAnimationFrame(()=>document.getElementById('akAlb')?.classList.add('in'));akSfxLoad().then(()=>akSfx('recv'));
  setTimeout(()=>{const b=document.getElementById('akAlb');if(b){b.classList.remove('in');setTimeout(()=>b.remove(),300)}},7000);try{akReqDot&&setTimeout(akReqDot,0)}catch(e){}}
+
+ 
+function akLiveMini(on){const el=document.getElementById('akLive');if(!el)return;AKLV.mini=!!on;el.classList.toggle('mini',!!on);
+ if(on){const b=document.getElementById('akBox');if(b&&!b.classList.contains('mini'))try{akMini()}catch(e){}}}
+function akMonthKey(m){m=String(m||'').trim();const keys=((DASH_DATA||{}).history||[]).map(h=>h.month).filter(Boolean).sort();if(/^\d{4}-\d{2}$/.test(m))return keys.includes(m)?m:'';
+ const names=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'],ar=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+ let mi=names.findIndex(n=>m.toLowerCase().includes(n));if(mi<0)mi=ar.findIndex(n=>m.replace('ابريل','أبريل').replace('اغسطس','أغسطس').replace('اكتوبر','أكتوبر').includes(n));if(mi<0)return '';
+ const y=(m.match(/20\d\d/)||[])[0],mm=String(mi+1).padStart(2,'0'),hit=keys.filter(k=>k.slice(5)===mm&&(!y||k.slice(0,4)===y));return hit.length?hit[hit.length-1]:''}
+const AKSCR={daily:'overview',overview:'overview',days:'days',campaigns:'camp',campaign:'camp',reports_studio:'months',months:'months',channels:'channel',search_terms:'terms',seasons:'seasons',lab:'lab',plans:'plans'};
+async function akLiveScreen(a){const sc=String(a.screen||'').toLowerCase().replace(/\s+/g,'_'),tab=AKSCR[sc];if(!tab)return {result:'Unknown screen. Use daily, days, campaigns, campaign, reports_studio, channels, search_terms, seasons or lab.'};
+ if(tab==='lab'&&!canDo('lab'))return {result:'This person cannot open the lab.'};
+ akLiveMini(true);try{switchDashboardTab(tab)}catch(e){return {result:'Could not open it.'}}
+ const wait=ms=>new Promise(r=>setTimeout(r,ms));
+ if(sc==='campaign'&&a.campaign){await wait(700);const acc=CURRENT_ACCOUNT,d=((CP[acc]||{}).data)||{},q=String(a.campaign).toLowerCase().replace(/[^a-z0-9؀-ۿ]+/g,' ').trim(),qs=q.split(' ').filter(Boolean);
+  let best=-1,bs=0;(d.c||[]).forEach((m,i)=>{const n=String(m[0]).toLowerCase().replace(/[^a-z0-9؀-ۿ]+/g,' ');const sc2=qs.filter(w=>n.includes(w)).length/(qs.length||1)+(n.includes(q)?1:0);if(sc2>bs){bs=sc2;best=i}});
+  if(best<0||bs<.5)return {result:'Opened Campaign Performance; could not find a campaign called "'+a.campaign+'".'};try{cpOpen(best)}catch(e){}return {result:'Opened the campaign '+d.c[best][0]+'.'}}
+ if(tab==='months'){await wait(500);const A=akMonthKey(a.month),B=akMonthKey(a.compare_with);try{const ea=document.getElementById('mxA'),eb=document.getElementById('mxB');if(A&&ea)ea.value=A;if(B&&eb)eb.value=B;setMonthMode(B?'compare':'one')}catch(e){}
+  return {result:'Opened Reports Studio'+(A?' on '+A:'')+(B?' compared with '+B:'')+'.'+(a.month&&!A?' Month '+a.month+' is not in the history.':'')}}
+ return {result:'Opened '+sc+'.'}}
+function akLivePlan(a){if(!canDo('lab')||VIEW_AS)return {result:'This person cannot get plan pictures.'};const q='ابعتلي خطة '+String(a.month||'');try{akPlStart(q)}catch(e){return {result:'Could not make the picture.'}}return {result:'The plan picture of '+a.month+' is being sent to the chat.'}}
+function akLiveSumm(a){const P=(Array.isArray(a.points)?a.points:[]).map(x=>akLiveTx(String(x))).filter(Boolean).slice(0,8);if(!P.length)return {result:'Nothing to send.'};
+ AK.msgs.push({w:'h',cls:'',html:`<p class="aklv-log">📝 Call summary</p><ul class="ak-sum">${P.map(x=>`<li dir="auto">${akLiveHi(x)}</li>`).join('')}</ul>`,nw:1});try{akSave()}catch(e){}if(document.getElementById('akBox'))akDraw();return {result:'Sent to the chat.'}}
+
+(function(){let t=0,el=null,x0=0,y0=0;
+ document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest('.cp-c3');if(!b||AK.blocked)return;el=b;x0=e.clientX;y0=e.clientY;clearTimeout(t);
+  t=setTimeout(()=>{if(!el)return;const m=String(el.getAttribute('onclick')||'').match(/cpOpen\((\d+)/);if(!m)return;const d=((CP[CURRENT_ACCOUNT]||{}).data)||{},c=(d.c||[])[+m[1]];if(!c)return;
+   el.dataset.lp='1';if(navigator.vibrate)try{navigator.vibrate(20)}catch(_){}AKLV.topic=String(c[0]);akLiveOpen()},550)},{passive:true});
+ const stop=e=>{if(!el)return;if(e.type==='pointermove'&&Math.hypot(e.clientX-x0,e.clientY-y0)<10)return;clearTimeout(t);el=null};
+ document.addEventListener('pointermove',stop,{passive:true});document.addEventListener('pointerup',stop,{passive:true});document.addEventListener('pointercancel',stop,{passive:true});
+ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('.cp-c3');if(b&&b.dataset.lp){delete b.dataset.lp;e.stopPropagation();e.preventDefault()}},true);
+ document.addEventListener('contextmenu',e=>{if(e.target.closest&&e.target.closest('.cp-c3'))e.preventDefault()})})();
+ 
+async function akWeekly(){try{if(typeof DASH_DATA==='undefined'||!DASH_DATA||AK.blocked||!AK_SRV)return;const now=new Date();if(now.getDay()!==4||now.getHours()<9)return;
+ const acc=CURRENT_ACCOUNT,key='hm_ak_week_'+acc+'_'+ssToday();if(storeGet(key))return;storeSet(key,'1');
+ let cx='';try{cx=await akCtx()}catch(e){}if(!cx)return;
+ const q='(Weekly voice update for Thursday.) Write what you will say out loud, about 45 seconds, in Egyptian Arabic with an Alexandrian touch, no markdown, no lists, no [[CARDS]]: the last 7 days spend, value and ROAS compared with the 7 days before; the best campaign and the worst campaign (with enough spend) and why; then a clear recommendation: should we raise the budget or not, and where. Say numbers simply.';
+ let txt='';try{const r=await fetch(AK_SRV,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),q,history:[],ctx:cx,name:akMe().name})});
+  if(/json/.test(r.headers.get('Content-Type')||'')&&!/stream/.test(r.headers.get('X-Ak')||'')){const j=await r.json();txt=j&&j.ok?String(j.answer||''):''}else txt=await r.text()}catch(e){}
+ txt=akCardsSplit(txt).text.replace(/[*#_`]/g,'').trim();if(txt.length<40){storeSet(key,'');return}
+ let vb='';try{const r=await fetch(AK_SRV.replace(/\/ak\/ask$/,'/ak/tts'),{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),name:akMe().name,text:txt.slice(0,1700)})});const j=await r.json();
+  if(j&&j.ok){const rate=+((String(j.mime||'').match(/rate=(\d+)/)||[])[1]||24000),o=akWavBlob(j.data,rate),secs=Math.max(1,Math.round(o.pcm.length/rate)),vid='v'+Date.now();AKV.urls[vid]=URL.createObjectURL(o.blob);akVoicePut(vid,o.blob);
+   const n=30,step=Math.floor(o.pcm.length/n)||1,bars=[];for(let i=0;i<n;i++){let m=0;for(let k=i*step;k<(i+1)*step&&k<o.pcm.length;k+=40)m=Math.max(m,Math.abs(o.pcm[k]));bars.push(Math.round(4+Math.min(1,m/16000)*16))}
+   vb=`<span class="ak-vb" data-v="${vid}" data-d="${secs}" onclick="akPlay(this)">${akI('play')}<span>${bars.map(h=>`<i data-h="${h}" style="height:${h}px"></i>`).join('')}</span><b>${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}</b></span>`}}catch(e){}
+ AK.msgs.push({w:'h',cls:'alert',html:`<p class="aklv-log">🗓 Weekly update</p>${vb}<p dir="auto" class="ak-alt">${akLiveHi(akLiveTx(txt))}</p>`,nw:1});try{akSave()}catch(e){}
+ if(document.getElementById('akBox')){akDraw();akSfxLoad().then(()=>akSfx('recv'))}else akAlertBanner('Your weekly update is ready',!!vb)}catch(e){}}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
