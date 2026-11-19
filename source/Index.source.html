@@ -22134,7 +22134,8 @@ const AKN=(()=>{const m={},add=(v,...w)=>w.forEach(x=>m[x]=v);
    out.push(mm[1]+(run[0].x.and?'و ':'')+total.toLocaleString('en-US')+dec+post);i=j}
   return out.join('').replace(/(\d)\s?(?:في|ف)\s?(?:المية|المائة|المئة|الميه)/g,'$1%')};
  f.isNum=w=>{const q=String(w).replace(/[^\u0600-\u06FFa-z]/gi,'');return !!(q&&(look(q)||half[strip(q)]))};return f})();
-function akLiveTx(t){return AKN(String(t||'').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{20E3}]/gu,'')).replace(/\s+([.،,؟?!])/g,'$1').replace(/\s{2,}/g,' ').trim()}
+function akLiveCommas(t){return String(t).replace(/(^|[^\d.,])(\d{4,})(?![\d,])/g,(m,p,d)=>d.length===4&&/^(19|20)\d\d$/.test(d)?m:p+(+d).toLocaleString('en-US'))}
+function akLiveTx(t){return akLiveCommas(AKN(String(t||'').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{20E3}]/gu,'')).replace(/\s+([.،,؟?!])/g,'$1').replace(/\s{2,}/g,' ').trim())}
 /* v580 captions like song lyrics on stories: small, one line at a time, the line before fades above it */
 function akLiveLines(x){const w=x.split(/\s+/).filter(Boolean),L=[];let c=[];
  w.forEach(t=>{c.push(t);const len=c.join(' ').length;if(c.length>=7||len>=40||(/[.،,؟?!:]$/.test(t)&&c.length>=3)){L.push(c.join(' '));c=[]}});if(c.length)L.push(c.join(' '));return L}
@@ -22211,7 +22212,7 @@ function akLiveTurn(){AKLV.herShown='';if(AKLV.me.trim())AKLV.turns.push(['u',ak
 function akLiveMsg(m){
  if(m.setupComplete){AKLV.ready=true;akLiveMic().then(()=>{akLiveState('listen');
    const ar=AK.msgs.slice().reverse().find(x=>x.w==='u'),arab=ar&&/[؀-ۿ]/.test(ar.html||'');
-   AKLV.wait=true;AKLV.ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:`(The person just opened the voice chat. Greet ${String(akMe().name||'them').split(' ')[0]} warmly by first name in one short sentence${arab?' in Egyptian Arabic':''}, and ask how you can help.)`}]}],turnComplete:true}}))
+   AKLV.wait=true;AKLV.ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:`(The person just opened the voice chat. Greet ${String(akMe().name||'them').split(' ')[0]} warmly by first name in one short sentence${arab?' in Egyptian Arabic with an Alexandrian touch (not فصحى)':''}, and ask how you can help.)`}]}],turnComplete:true}}))
   }).catch(()=>akLiveFail('The microphone could not start.'));return}
  if(m.goAway){return}
  const c=m.serverContent;if(!c)return;
@@ -22245,7 +22246,7 @@ function akLiveBye(){const el=document.getElementById('akLive'),ws=AKLV.ws;
  const first=String(akMe().name||'').trim().split(/\s+/)[0]||'';akLiveCap('',false);
  AKLV.byeAt=(AKLV.ctx?AKLV.ctx.currentTime:0)+1.45;
  try{v.currentTime=0;v.play()}catch(e){}
- try{ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:`(The person is ending the voice chat now. Say exactly this, warmly, in Egyptian Arabic, and nothing else: "${akByeLine(first)}")`}]}],turnComplete:true}}))}catch(e){}
+ try{ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:`(The person is ending the voice chat now. Say exactly this, warmly, like a girl from Alexandria, and nothing else: "${akByeLine(first)}")`}]}],turnComplete:true}}))}catch(e){}
  let done=false;const fin=()=>{if(done)return;done=true;AKLV.her='';akLiveEnd()};
  const wait=()=>{if(done)return;const left=AKLV.ctx?AKLV.nextT-AKLV.ctx.currentTime:0;if(v.ended&&left<=0.05)fin();else setTimeout(wait,150)};
  v.onended=wait;setTimeout(fin,9000)}
