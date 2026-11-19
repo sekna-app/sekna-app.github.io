@@ -22087,6 +22087,10 @@ function akLiveFail(msg){if(AKLV.closed)return;akLiveClean();const el=document.g
  const s=document.getElementById('aklvSt');if(s)s.textContent='Not connected';akLiveCap(msg,false);
  const b=el.querySelector('.aklv-bar');if(b)b.innerHTML=`<button type="button" class="aklv-again" onclick="akLiveEnd();setTimeout(akLiveOpen,320)">Try again</button><button type="button" class="aklv-end" aria-label="Close" onclick="akLiveEnd()">✕</button>`}
 
+/* v577 she changes her goodbye line each time (never the same one twice in a row) */
+const AK_BYE=['أشوفك قريب','أشوفك بخير','لسه لينا حكايات','لحد ما نتقابل تاني'];
+function akByeLine(first){let last=-1;try{last=+storeGet('hm_ak_bye')}catch(e){}let i=Math.floor(Math.random()*AK_BYE.length);if(i===last)i=(i+1)%AK_BYE.length;try{storeSet('hm_ak_bye',String(i))}catch(e){}
+ return `سلام${first?' يا '+first:''}، ${AK_BYE[i]}`}
 /* v576 goodbye: a kiss and a wave (voice-bye.mp4), and Leda says "سلام يا <first name>، أشوفك قريب" on the "Salaam" in the video */
 function akLiveBye(){const el=document.getElementById('akLive'),ws=AKLV.ws;
  if(!el||AKLV.bye)return;if(!ws||ws.readyState!==1||AKLV.closed){akLiveEnd();return}
@@ -22096,7 +22100,7 @@ function akLiveBye(){const el=document.getElementById('akLive'),ws=AKLV.ws;
  const first=String(akMe().name||'').trim().split(/\s+/)[0]||'';akLiveCap('',false);
  AKLV.byeAt=(AKLV.ctx?AKLV.ctx.currentTime:0)+1.45;
  try{v.currentTime=0;v.play()}catch(e){}
- try{ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:`(The person is ending the voice chat now. Say exactly this, warmly, in Egyptian Arabic, and nothing else: "سلام يا ${first}، أشوفك قريب")`}]}],turnComplete:true}}))}catch(e){}
+ try{ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:`(The person is ending the voice chat now. Say exactly this, warmly, in Egyptian Arabic, and nothing else: "${akByeLine(first)}")`}]}],turnComplete:true}}))}catch(e){}
  let done=false;const fin=()=>{if(done)return;done=true;AKLV.her='';akLiveEnd()};
  const wait=()=>{if(done)return;const left=AKLV.ctx?AKLV.nextT-AKLV.ctx.currentTime:0;if(v.ended&&left<=0.05)fin();else setTimeout(wait,150)};
  v.onended=wait;setTimeout(fin,9000)}
