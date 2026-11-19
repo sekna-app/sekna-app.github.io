@@ -11815,7 +11815,7 @@ function akKb(){
  k.innerHTML=items.map(([id,t])=>`<button type="button" onclick="akMenu('${id}')">${akI(id)}${t}</button>`).join('');
 }
 function akInMode(){const i=document.getElementById('akQ'),f=i&&i.closest('form');if(f)f.classList.toggle('e',!String(i.value||'').trim()&&!AK.img)}
-async function akSend(e){
+async function akSend(e){AKCS.quiet=0;
  if(e)e.preventDefault();
  const i=document.getElementById('akQ');if(AK.blocked){akLockIn();return}const q=String(i&&i.value||'').trim();if((!q&&!AK.img)||AK.busy)return;
  i.value='';
@@ -11881,7 +11881,7 @@ async function akBackTo(t){if(t==='pop'){akTBack();return}if(t==='lpop'){akLBack
  if(t==='team'){if(await akPermsLoad())akPeopleDraw();return}
  if(t==='access'){if(await akPermsLoad())akAccessDraw();return}
 }
-async function akMenu(id){
+async function akMenu(id){AKCS.quiet=Date.now()+6000;akSfxTyping(false);
  if(AK.blocked){akBlockedSay();return}AK.kb=false;akKb();
  if(id==='about'){akUser('About');akBot('<p><b>Alexandra</b> answers from the team sheet: sheets, reports and scripts, who is off and who covers, and team emails.</p><p>Type it any way you like, in Arabic or English.</p>'+AKB('menu'),'wb');return}
  if(id==='task'){akUser('My tasks');await akTeamData();akBot(akTasksHtml()+AKB('menu'),'wb');return}
@@ -22423,7 +22423,7 @@ function akSfxOn(){try{return localStorage.getItem('hm_ak_sfx')!=='0'}catch(e){r
 function akSfxSet(on,btn){try{localStorage.setItem('hm_ak_sfx',on?'1':'0')}catch(e){}if(btn){btn.setAttribute('aria-checked',on);const sw=btn.querySelector('.ak-sw');if(sw)sw.classList.toggle('on',on)}if(!on)akSfxTyping(false);else akSfx('send')}
 function akSfxLoad(){if(AKCS.loading)return AKCS.loading;const C=window.AudioContext||window.webkitAudioContext;if(!C)return Promise.resolve();AKCS.ctx=AKCS.ctx||new C();
  AKCS.loading=Promise.all(['send','recv','typing','rec','delete','photo','end','vsent','ring','join'].map(n=>fetch('icons/alexandra/s/'+n+'.mp3?v=3').then(r=>r.arrayBuffer()).then(a=>new Promise((ok,no)=>AKCS.ctx.decodeAudioData(a,ok,no))).then(b=>{AKCS.buf[n]=b}).catch(()=>{})));return AKCS.loading}
-function akSfx(n,loop){if(!akSfxOn())return null;try{akSfxLoad();const c=AKCS.ctx,b=AKCS.buf[n];if(!c||!b){AKCS.loading&&AKCS.loading.then(()=>{if(n!=='typing'&&n!=='recv'&&n!=='send')return});return null}
+function akSfx(n,loop){if(!akSfxOn())return null;if(AKCS.quiet&&Date.now()<AKCS.quiet&&/^(send|recv|typing)$/.test(n))return null;try{akSfxLoad();const c=AKCS.ctx,b=AKCS.buf[n];if(!c||!b){AKCS.loading&&AKCS.loading.then(()=>{if(n!=='typing'&&n!=='recv'&&n!=='send')return});return null}
  if(c.state==='suspended')c.resume().catch(()=>{});const s=c.createBufferSource(),g=c.createGain();g.gain.value=n==='typing'?.55:.9;s.buffer=b;s.loop=!!loop;s.connect(g);g.connect(c.destination);s.start();return s}catch(e){return null}}
 function akSfxTyping(on){if(on&&!AKCS.typ&&document.getElementById('akBox')){AKCS.typ=akSfx('typing',false)||{stop(){}};if(AKCS.typ){clearInterval(AKCS.tw);AKCS.tw=setInterval(()=>{if(!AK.busy||!document.getElementById('akBox')){clearInterval(AKCS.tw);akSfxTyping(false)}},700)}}else if(!on&&AKCS.typ){try{AKCS.typ.stop()}catch(e){}AKCS.typ=null}}
 document.addEventListener('pointerdown',()=>{if(document.getElementById('akBox')&&akSfxOn())akSfxLoad()},{passive:true});
