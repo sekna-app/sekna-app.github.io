@@ -212,7 +212,7 @@ You are talking out loud with the person, like a phone call. Speak naturally and
 - Give one or two key numbers per answer, not a long list of them.
 - Answer in the language they speak. If they speak Arabic, never use Modern Standard Arabic (فصحى): speak like a warm girl from Alexandria (اسكندرانية), in Egyptian Arabic with an Alexandrian touch:
   - "I" verbs start with ن like Alexandrians do: "نشوفلك" (I'll check for you), "نقولك" (I'll tell you), "نبعتلك".
-  - Use Alexandrian words naturally, not in every sentence: "دهوت / دهيت / دهون" for this, "كدهو" for like this, "يا جدع", "يا معلم", "خالص", "بقى", "أوي".
+  - Use these Alexandrian/Egyptian expressions naturally, one now and then, never in every sentence: "صباح الفل" (good morning), "من عيوني يا سيدي" (agreeing), "عاش يا معلم" (a task is done), "استنى هنا يا نجم" (you found a problem), "إيه الحلاوة دي؟" (a great result), "حاضر يا ريس، ولا يهمك" (an urgent ask), "لأ كده إحنا عندنا كلام تاني" (you found a mistake), "يا سيدي", "يا معلم", "يا لهوي".
   - Keep it light and friendly, never exaggerated.
 - If you are not sure about a number, say so instead of guessing.`;
 async function live(b, who) {
@@ -241,4 +241,34 @@ async function live(b, who) {
   const sys = (VOICE_RULES + '\n\n' + p.base + (ctx ? '\n\n## Dashboard numbers (HEMERA)\n' + ctx : '') + '\n\n=== DATA ===\n' + (p.data || '')).slice(0, 160000);
   return { ok: true, token: j.name, model, voice: c.voice || 'Leda', sys };
 }
-module.exports = { ask, link, state, usageMail, voice, live };
+
+// v583 a chat answer read aloud in her voice (the speaker under each of her messages)
+const ttsCache = new Map();
+async function tts(b, who) {
+  const text = String(b.text || '').replace(/\s+/g, ' ').trim().slice(0, 1800);
+  if (!text) return { ok: false, error: 'Nothing to read.' };
+  const c = await conf(), v = c.voice || 'Leda', k = v + '|' + text;
+  if (ttsCache.has(k)) return ttsCache.get(k);
+  const p = await prep(String(who.email || '').toLowerCase(), String(b.name || who.name || '').trim().slice(0, 60));
+  if (p.blocked) return { ok: false, blocked: true, error: 'You do not have access to Alexandra.' };
+  const keys = (p.keys || []).filter(Boolean);
+  const arab = /[؀-ۿ]/.test(text);
+  const payload = { contents: [{ parts: [{ text: (arab ? 'Read this aloud naturally and warmly, like a friendly girl from Alexandria, in Egyptian Arabic: ' : 'Read this aloud naturally and warmly: ') + text }] }],
+    generationConfig: { responseModalities: ['AUDIO'], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: v } } } } };
+  let r = null;
+  for (let ki = 0; ki < keys.length; ki++) {
+    r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': keys[ki] }, body: JSON.stringify(payload) });
+    if (r.status === 429) continue;
+    break;
+  }
+  if (!r || !r.ok) { const t = r ? await r.text().catch(() => '') : ''; let why = ''; try { why = ((JSON.parse(t).error || {}).message || '').slice(0, 160); } catch (e) {} return { ok: false, error: 'Gemini voice ' + (r ? r.status : '') + (why ? ': ' + why : '') }; }
+  const j = await r.json();
+  const a = ((((j.candidates || [])[0] || {}).content || {}).parts || []).find(x => x.inlineData || x.inline_data);
+  if (!a) return { ok: false, error: 'Gemini sent no audio.' };
+  const d = a.inlineData || a.inline_data;
+  const out = { ok: true, mime: d.mimeType || d.mime_type || 'audio/L16;rate=24000', data: d.data };
+  await count(o => { o.tts = (o.tts || 0) + 1; });
+  if (ttsCache.size > 60) ttsCache.delete(ttsCache.keys().next().value);
+  ttsCache.set(k, out); return out;
+}
+module.exports = { ask, link, state, usageMail, voice, live, tts };

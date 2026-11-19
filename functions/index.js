@@ -570,6 +570,7 @@ exports.api = onRequest({
   try {
     // Alexandra's questions, answered here word by word (falls back to the Apps Script in the app)
     if (route === '/ak/ask') { const who = await assertAccess(b.token); await ak.ask(req, res, b, who); return; }
+    if (route === '/ak/tts') { const who = await assertAccess(b.token); res.json(await ak.tts(b, who)); return; }
     if (route === '/ak/live') { const who = await assertAccess(b.token); res.json(await ak.live(b, who)); return; }
     if (route === '/ak/voice') { const who = await assertOwner(b.token); res.json(await ak.voice(b, who)); return; }
     if (route === '/call') {
