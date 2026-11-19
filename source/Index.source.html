@@ -10295,6 +10295,14 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .ak-acc i{font-style:normal}.ak-acc .y{color:#13804f}.ak-acc .n{color:#c0c5d2}.ak-a2s{display:block;margin-top:6px;color:#6b7385}
     .aklv-act{position:absolute;left:16px;right:16px;top:calc(env(safe-area-inset-top,0px) + 200px);z-index:4;display:flex;justify-content:center}.aklv-act .ak-act2{max-width:340px;width:100%;box-shadow:0 14px 40px rgba(0,0,0,.35)}
     .ak.dk .ak-act2{background:#242526;border-color:#3a3b3c;color:#e4e6eb}
+
+    /* v598 cards: no blur, a short clean slide, a small pulse when a number changes */
+    .aklv-cd{animation:aklvCdIn2 .28s cubic-bezier(.2,.8,.3,1) both!important;filter:none!important;will-change:transform,opacity}
+    .aklv-cd.out{animation:aklvCdOut .2s ease both!important}
+    .aklv-cd.bump b{animation:aklvBump .35s ease}
+    @keyframes aklvCdIn2{0%{opacity:0;transform:translateY(-10px)}100%{opacity:1;transform:none}}
+    @keyframes aklvBump{0%{transform:scale(1)}40%{transform:scale(1.08)}100%{transform:scale(1)}}
+    .aklv-cd{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(8,16,42,.82)!important}
 </style>
 </head>
 <body>
@@ -22356,9 +22364,9 @@ function akLiveShown(){const h=AKLV.her||'',a=AKLV.aud||{};if(!h)return '';if(a.
  // a number is shown whole, not word by word ("ألف" then "1,811")
  while(n<h.length){const m=h.slice(n).match(/^\s+(\S+)/);if(!m||!AKN.isNum(m[1]))break;n+=m[0].length}
  return h.slice(0,n)}
-function akLiveSync(){const x=akLiveShown();if(x===AKLV.herShown)return;AKLV.herShown=x;if(x){akLiveCap(x,false);const cut=Math.max(x.lastIndexOf('.'),x.lastIndexOf('،'),x.lastIndexOf('؟'),x.lastIndexOf('?'),x.lastIndexOf('!'),x.lastIndexOf(','));const done=AKLV.pend&&!akLivePlaying()?x:cut>0?x.slice(0,cut):'';
+function akLiveSync(){const x=akLiveShown();if(x===AKLV.herShown)return;AKLV.herShown=x;if(x){akLiveCap(x,false);let done=x;if(!(AKLV.pend&&!akLivePlaying())){const w=x.trim().split(/\s+/);while(w.length&&(AKN.isNum(w[w.length-1])||/\d$/.test(w[w.length-1])||/^(بوينت|و|فاصل)$/.test(w[w.length-1])))w.pop();done=w.join(' ')}
   // v596 cards only from finished sentences, so a number is never read half-said
-  if(done){const n=(akLiveTx(done).match(/\d[\d,.]*/g)||[]).length;if(n>(AKLV.cdN||0)){AKLV.cdN=n;akLiveAutoCards(done)}}}else{AKLV.cdN=0;akLiveLogDraw()}}
+  if(done){const n=(akLiveTx(done).match(/\d[\d,.]*/g)||[]).length;if(n!==(AKLV.cdN||0)){AKLV.cdN=n;akLiveAutoCards(done)}}}else{AKLV.cdN=0;akLiveLogDraw()}}
 function akLivePlay(b64,mime){const ctx=AKLV.ctx;const rate=+((String(mime||'').match(/rate=(\d+)/)||[])[1]||24000);
  const u8=Uint8Array.from(atob(b64),c=>c.charCodeAt(0)),i16=new Int16Array(u8.buffer,0,u8.length>>1),buf=ctx.createBuffer(1,i16.length,rate),ch=buf.getChannelData(0);
  for(let i=0;i<i16.length;i++)ch[i]=i16[i]/32768;
@@ -22487,12 +22495,16 @@ async function akLiveTool(tc){const calls=(tc&&tc.functionCalls)||[];if(!calls.l
  const res=await Promise.all(calls.map(async f=>{let r;try{const A=f.args||{};if(f.name==='get_numbers')r=await akLiveNumbers(A);else if(f.name==='open_screen')r=akLiveAsked()?await akLiveScreen(A):{result:'Not opened: the person did not ask to open anything. Just answer.'};else if(f.name==='send_plan')r=akLivePlan(A);else if(f.name==='send_summary')r=akLiveSumm(A);else if(f.name==='do_action')r=await akActVoice(A);else r={result:'unknown tool'}}catch(e){r={result:'error: '+(e&&e.message||e)}}
   return {id:f.id,name:f.name,response:r}}));
  const ws=AKLV.ws;if(ws&&ws.readyState===1)try{ws.send(JSON.stringify({toolResponse:{functionResponses:res}}))}catch(e){}}
+/* v598 cards update in place (a card that is already there only changes its number), so nothing flashes */
 function akLiveCards(cs){const el=document.getElementById('akLive');if(!el)return;cs=(Array.isArray(cs)?cs:[]).filter(c=>c&&c.value!=null).slice(0,3);if(!cs.length)return;
  let box=document.getElementById('aklvCards');if(!box){box=document.createElement('div');box.id='aklvCards';box.className='aklv-cards';el.appendChild(box)}
- box.querySelectorAll('.aklv-cd').forEach(o=>{o.classList.add('out');setTimeout(()=>o.remove(),260)});
- cs.forEach((c,i)=>{const d=String(c.direction||'').toLowerCase(),e=document.createElement('div');e.className='aklv-cd';e.style.animationDelay=(i*90)+'ms';
-  e.innerHTML=`<small>${akEsc(String(c.label||''))}</small><b>${akEsc(akLiveTx(String(c.value)))}</b>${c.previous?`<i class="pv">vs ${akEsc(akLiveTx(String(c.previous)))}</i>`:''}${c.change?`<em class="${d==='up'?'up':d==='down'?'dn':''}">${d==='up'?'▲ ':d==='down'?'▼ ':''}${akEsc(String(c.change))}</em>`:''}`;box.appendChild(e)});
- clearTimeout(AKLV.cdT);AKLV.cdT=setTimeout(()=>{box.querySelectorAll('.aklv-cd').forEach(o=>{o.classList.add('out');setTimeout(()=>o.remove(),260)})},9000)}
+ const have=[...box.querySelectorAll('.aklv-cd:not(.out)')],keep=new Set();
+ cs.forEach((c,i)=>{const lab=String(c.label||''),v=akLiveTx(String(c.value));let e=have.find(x=>x.dataset.l===lab);
+  if(e){keep.add(e);const b=e.querySelector('b');if(b&&b.textContent!==v){b.textContent=v;e.classList.remove('bump');void e.offsetWidth;e.classList.add('bump')}return}
+  e=document.createElement('div');e.className='aklv-cd';e.dataset.l=lab;e.style.animationDelay=(have.length?0:i*70)+'ms';
+  e.innerHTML=`<small>${akEsc(lab)}</small><b>${akEsc(v)}</b>`;box.appendChild(e);keep.add(e)});
+ have.forEach(o=>{if(!keep.has(o)){o.classList.add('out');setTimeout(()=>o.remove(),220)}});
+ clearTimeout(AKLV.cdT);AKLV.cdT=setTimeout(()=>{box.querySelectorAll('.aklv-cd').forEach(o=>{o.classList.add('out');setTimeout(()=>o.remove(),220)})},9000)}
 
 /* v591 Alexandra warns by voice when campaigns fall under the account's ROAS target (last 7 days, enough spend; Demand Gen
  * and Video are left out). Once a day per account on this device: a short voice note in her chat (her voice, Leda) and
