@@ -10716,7 +10716,7 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
         <button class="sk-sound" type="button" role="radio" data-sound="default" onclick="selectSound('default')"><span class="sk-sound-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span class="sk-sound-name">Default</span><svg class="sk-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
         <button class="sk-sound" type="button" role="radio" data-sound="human_appeal" onclick="selectSound('human_appeal')"><span class="sk-sound-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span class="sk-sound-name">Human Appeal Chime</span><svg class="sk-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
         <button class="sk-sound" type="button" role="radio" data-sound="gentle_bell" onclick="selectSound('gentle_bell')"><span class="sk-sound-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span class="sk-sound-name">Gentle Bell</span><svg class="sk-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
-        <button class="sk-sound" type="button" role="radio" data-sound="soft_ping" onclick="selectSound('soft_ping')"><span class="sk-sound-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span class="sk-sound-name">Soft Ping</span><svg class="sk-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
+        <button class="sk-sound" type="button" role="radio" data-sound="soft_ping" onclick="selectSound('soft_ping')"><span class="sk-sound-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span class="sk-sound-name">Soft Ping</span><svg class="sk-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button><button class="sk-sound" id="skSoundAk" hidden type="button" role="radio" data-sound="alexandra" onclick="selectSound('alexandra')"><span class="sk-sound-play"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span><span class="sk-sound-name">Alexandra's voice</span><svg class="sk-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
       </div>
       <input type="hidden" id="notificationSoundSetting" value="default">
     </div>
@@ -11995,6 +11995,7 @@ async function akSend(e){
  if(akOwner()&&AKIX_RE.test(q)){akUser(q);AK.kb=false;akKb();akIxStart(q);return}
  if(akPlAsk(q)){akUser(q);AK.kb=false;akKb();akPlStart(q);return}
  if(akOwner()&&AKVO_RE.test(q)){akUser(q);AK.kb=false;akKb();akVoStart();return}
+ if(akOwner()&&AKNF_RE.test(q)){akUser(q);AK.kb=false;akKb();akNotifStart();return}
  if(AK.canTeach&&AK_MEM_RE.test(q)){akMemAsk(q);return}
  const rp=AK.reply;AK.reply=null;akReplyBar();const qa=rp?`(The person is replying to this earlier message: "${rp.t.slice(0,600)}")\n${q}`:q;
  akUser(q,rp&&rp.t);AK.kb=false;akKb();
@@ -21528,7 +21529,8 @@ function hmWidgetData(d){const out={account:(d.account&&d.account.key)||CURRENT_
  return out}
 
 function hmGo(g){g=String(g||'');const [k,v]=[g.split(':')[0],g.slice(g.indexOf(':')+1)];
- if(k==='ak'){akOpenFrom(v==='req'?'req':'chat');if(v==='nums'||v==='sheets'||v==='voice'){let n=0;const go=()=>{const i=document.getElementById('akQ');if(i&&!AK.busy&&ASK_HEMERA_URL){if(v==='nums'){i.value="How are today's numbers?";akSend()}else if(v==='sheets')akMenu('links');else showSettingsToast('Hold the mic while you talk');return}if(++n<25)setTimeout(go,300)};setTimeout(go,700)}return}
+ if(k==='ak'){akOpenFrom(v==='req'?'req':'chat');if(v==='call'||v==='voice'){let n=0;const go=()=>{if(document.getElementById('akBox')&&!AK.blocked&&ASK_HEMERA_URL){akLiveOpen();return}if(++n<25)setTimeout(go,300)};setTimeout(go,600);return}
+ if(v==='nums'||v==='sheets'){let n=0;const go=()=>{const i=document.getElementById('akQ');if(i&&!AK.busy&&ASK_HEMERA_URL){if(v==='nums'){i.value="How are today's numbers?";akSend()}else if(v==='sheets')akMenu('links');else showSettingsToast('Hold the mic while you talk');return}if(++n<25)setTimeout(go,300)};setTimeout(go,700)}return}
  if(k==='ss'){ssOpenSeason(v);return}
  if(k==='tab'){try{switchDashboardTab(v||'overview')}catch(e){}}}
 
@@ -22487,7 +22489,7 @@ function akLivePlay(b64,mime){const ctx=AKLV.ctx;if(AKLV.calling)akLiveRing(fals
 function akLiveStop(){AKLV.srcs.forEach(s=>{try{s.stop()}catch(e){}});AKLV.srcs=[];AKLV.nextT=0;if(AKLV.aud)AKLV.aud.open=false}
 function akLiveTurn(){AKLV.herShown='';AKLV.cdN=0;if(AKLV.me.trim())AKLV.turns.push(['u',akLiveTx(AKLV.me)]);if(AKLV.her.trim())AKLV.turns.push(['b',akLiveTx(AKLV.her)]);AKLV.me='';AKLV.her='';akLiveLogDraw()}
 function akLiveMsg(m){
- if(m.setupComplete){AKLV.ready=true;AKLV.t0=Date.now();akLiveMic().then(()=>{akLiveState('listen');
+ if(m.setupComplete){AKLV.ready=true;AKLV.t0=Date.now();akCallNative(true);akLiveMic().then(()=>{akLiveState('listen');
    const ar=AK.msgs.slice().reverse().find(x=>x.w==='u'),arab=ar&&/[؀-ۿ]/.test(ar.html||'');
    const tp=AKLV.topic,tt=AKLV.topicText;AKLV.topic='';AKLV.topicText='';const fn=String(akMe().name||'them').split(' ')[0];
    AKLV.wait=true;AKLV.ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:tt?tt:tp?`(${fn} long-pressed the campaign "${tp}" to talk about it. First call get_numbers with search "${tp}". Then greet ${fn} in a few words and say in one or two short sentences how this campaign did in the last 7 days compared with before (spend, value, ROAS), and ask what they want to know. Speak Egyptian Arabic with an Alexandrian touch.)`:`(The person just opened the voice chat. Greet ${fn} warmly by first name in one short sentence${arab?' in Egyptian Arabic with an Alexandrian touch (not فصحى)':''}, and ask how you can help.)`}]}],turnComplete:true}}))
@@ -22502,7 +22504,7 @@ function akLiveMsg(m){
  if(c.turnComplete){AKLV.wait=false;AKLV.spoke=false;if(AKLV.aud)AKLV.aud.open=false;if(AKLV.her&&AKLV.aud&&AKLV.aud.start!=null)AKLV.pend=true;else akLiveTurn()}}
 function akLiveMute(){AKLV.mute=!AKLV.mute;const b=document.getElementById('aklvMu');if(b){b.classList.toggle('off',AKLV.mute);b.setAttribute('aria-label',AKLV.mute?'Turn the mic on':'Mute the mic')}
  if(AKLV.stream)AKLV.stream.getAudioTracks().forEach(t=>t.enabled=!AKLV.mute);AKLV.st='';akLiveTick()}
-function akLiveClean(){AKLV.closed=true;akLiveRing(false);clearInterval(AKLV.tick);akLiveStop();try{AKLV.node&&AKLV.node.disconnect();AKLV.src&&AKLV.src.disconnect()}catch(e){}
+function akLiveClean(){AKLV.closed=true;akLiveRing(false);akCallNative(false);clearInterval(AKLV.tick);akLiveStop();try{AKLV.node&&AKLV.node.disconnect();AKLV.src&&AKLV.src.disconnect()}catch(e){}
  try{AKLV.ws&&AKLV.ws.close(1000)}catch(e){}AKLV.ws=null;if(AKLV.stream)AKLV.stream.getTracks().forEach(t=>t.stop());AKLV.stream=null;try{AKLV.ctx&&AKLV.ctx.close()}catch(e){}AKLV.ctx=null;try{AKLV.mctx&&AKLV.mctx.close()}catch(e){}AKLV.mctx=null;
  akLiveTurn();const t=AKLV.turns||[];AKLV.turns=[];const t0=AKLV.t0;AKLV.t0=0;
  if(t.length){const fb=t.findIndex(x=>x[0]==='b');t.forEach(([w,x],i)=>AK.msgs.push(w==='u'?{w:'u',html:`<span dir="auto">${akEsc(x)}</span>`,nw:1}:{w:'h',html:`${i===fb?'<p class="aklv-log">🎙 Voice chat</p>':''}<p dir="auto">${akEsc(x)}</p>`,cls:'',nw:1}));
@@ -22825,6 +22827,26 @@ function akLiveAutoCards(txt){const t=akLiveTx(txt);if(!t)return;const out=[],se
 function akLiveRing(on,answered){const el=document.getElementById('akLive');
  if(on){AKLV.calling=true;if(el)el.classList.add('calling');akSfxLoad().then(()=>{if(!AKLV.calling)return;const go=()=>{if(!AKLV.calling)return;try{AKLV.ringS&&AKLV.ringS.stop()}catch(e){}AKLV.ringS=akSfx('ring')};go();clearInterval(AKLV.ringI);AKLV.ringI=setInterval(go,3000)});return}
  if(!AKLV.calling)return;AKLV.calling=false;clearInterval(AKLV.ringI);try{AKLV.ringS&&AKLV.ringS.stop()}catch(e){}AKLV.ringS=null;if(el)el.classList.remove('calling');if(answered)akSfx('join')}
+
+ 
+function akCallNative(on){try{if(window.AndroidShare&&typeof window.AndroidShare.setCallActive==='function')window.AndroidShare.setCallActive(!!on)}catch(e){}}
+ 
+const AKNF_RE=/صوت (ال)?(اشعار|إشعار|اشعارات|إشعارات|نوتيفيكيشن)|notification (sound|voice)/i;
+const AKNF=[['عندك جديد','Say it softly and slowly, in a deep, warm, calm voice, almost a whisper, like a gentle hello'],['ألكسندرا… عندي حاجة ليك','Say it slowly in a deep, warm, smooth voice with a little smile, short and elegant'],['بص… في جديد','Say it softly in a low, deep, intimate voice, calm and short']];
+const AKNFB={};
+async function akNotifStart(){akBot(`<p>Here are three short lines in my voice for HEMERA's notifications. Tap ▶ to hear each, then <b>Use this</b>.</p><div class="akvo">${AKNF.map(([t],i)=>`<div class="akvo-r" data-n="${i}"><button type="button" class="akvo-p" onclick="akNotifPlay(${i},this)" aria-label="Play">▶</button><span><b dir="auto">${akEsc(t)}</b><i>Notification sound</i></span><button type="button" class="akvo-k" onclick="akNotifUse(${i},this)">Use this</button></div>`).join('')}</div>`)}
+async function akNotifGet(i){if(AKNFB[i])return AKNFB[i];const [t,st]=AKNF[i];const r=await fetch(AK_SRV.replace(/\/ak\/ask$/,'/ak/tts'),{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),name:akMe().name,text:t,style:st})});const j=await r.json();
+ if(!j||!j.ok)throw new Error(j&&j.error||'No voice');const rate=+((String(j.mime||'').match(/rate=(\d+)/)||[])[1]||24000),o=akWavBlob(j.data,rate);
+ const wav=await new Promise(ok=>{const f=new FileReader();f.onload=()=>ok(String(f.result).split(',')[1]);f.readAsDataURL(o.blob)});AKNFB[i]={url:URL.createObjectURL(o.blob),wav};return AKNFB[i]}
+async function akNotifPlay(i,b){b.textContent='…';try{const x=await akNotifGet(i);b.textContent='▶';new Audio(x.url).play()}catch(e){b.textContent='▶';showSettingsToast(String(e&&e.message||'Could not make the voice.'))}}
+async function akNotifUse(i,b){b.textContent='…';try{const x=await akNotifGet(i);const r=await fetch(AK_SRV.replace(/\/ak\/ask$/,'/ak/notif-set'),{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),data:x.wav,mime:'audio/wav',text:AKNF[i][0]})});const j=await r.json();if(!j||!j.ok)throw new Error(j&&j.error||'Could not save');
+ document.querySelectorAll('.akvo-r[data-n]').forEach(r=>{const on=+r.dataset.n===i;r.classList.toggle('on',on);const k=r.querySelector('.akvo-k');if(k)k.textContent=on?'Chosen':'Use this'});try{storeSet('hm_ak_notif_v','')}catch(e){}akNotifSync(true);
+ showSettingsToast('Saved. Phones with the new app use it when "Alexandra’s voice" is picked in Notifications.')}catch(e){b.textContent='Use this';showSettingsToast(String(e&&e.message||'Could not save.'))}}
+
+async function akNotifSync(force){try{const A=window.AndroidShare;if(!A||typeof A.setNotificationVoice!=='function')return;const sb=document.getElementById('skSoundAk');if(sb)sb.hidden=false;
+ const base=AK_SRV.replace(/\/ak\/ask$/,'/ak/notif');const v=await (await fetch(base+'?v=1'+(force?'&t='+Date.now():''))).json();if(!v||!v.ver)return;if(!force&&String(v.ver)===storeGet('hm_ak_notif_v'))return;
+ const j=await (await fetch(base+'?t='+v.ver)).json();if(j&&j.data){A.setNotificationVoice(j.data,String(j.ver));storeSet('hm_ak_notif_v',String(j.ver))}}catch(e){}}
+setTimeout(()=>akNotifSync(false),8000);
 </script>
 <div id="seknaFileEnd" hidden></div>
 <script>

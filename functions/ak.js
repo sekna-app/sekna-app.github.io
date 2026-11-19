@@ -247,13 +247,14 @@ const ttsCache = new Map();
 async function tts(b, who) {
   const text = String(b.text || '').replace(/\s+/g, ' ').trim().slice(0, 1800);
   if (!text) return { ok: false, error: 'Nothing to read.' };
-  const c = await conf(), v = c.voice || 'Leda', k = v + '|' + text;
+  const c = await conf(), v = c.voice || 'Leda', k = v + '|' + (b.style || '') + '|' + text;
   if (ttsCache.has(k)) return ttsCache.get(k);
   const p = await prep(String(who.email || '').toLowerCase(), String(b.name || who.name || '').trim().slice(0, 60));
   if (p.blocked) return { ok: false, blocked: true, error: 'You do not have access to Alexandra.' };
   const keys = (p.keys || []).filter(Boolean);
   const arab = /[؀-ۿ]/.test(text);
-  const payload = { contents: [{ parts: [{ text: (arab ? 'Read this aloud naturally and warmly, like a friendly girl from Alexandria, in Egyptian Arabic: ' : 'Read this aloud naturally and warmly: ') + text }] }],
+  const style = b.style && who.owner ? String(b.style).slice(0, 200) + ': ' : '';
+  const payload = { contents: [{ parts: [{ text: (style || (arab ? 'Read this aloud naturally and warmly, like a friendly girl from Alexandria, in Egyptian Arabic: ' : 'Read this aloud naturally and warmly: ')) + text }] }],
     generationConfig: { responseModalities: ['AUDIO'], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: v } } } } };
   let r = null;
   for (let ki = 0; ki < keys.length; ki++) {
@@ -271,4 +272,15 @@ async function tts(b, who) {
   if (ttsCache.size > 60) ttsCache.delete(ttsCache.keys().next().value);
   ttsCache.set(k, out); return out;
 }
-module.exports = { ask, link, state, usageMail, voice, live, tts };
+
+// v600 the notification sound in her voice: the owner picks one in the chat, every phone app downloads it
+const NOTIF = 'server/ak-notif';
+async function notifSet(b, who) {
+  const data = String(b.data || ''), mime = String(b.mime || 'audio/wav');
+  if (!/^[A-Za-z0-9+/=]+$/.test(data.slice(0, 200)) || data.length > 700000) return { ok: false, error: 'The sound is too big or not valid.' };
+  const ver = Date.now();
+  await fsUpdate(NOTIF, () => ({ data, mime, ver, by: who.email, text: String(b.text || '').slice(0, 120) }));
+  return { ok: true, ver };
+}
+async function notifGet(onlyVer) { const d = (await fsGet(NOTIF).catch(() => null)) || {}; if (!d.data) return { ok: true, ver: 0 }; return onlyVer ? { ok: true, ver: d.ver } : { ok: true, ver: d.ver, mime: d.mime, data: d.data }; }
+module.exports = { ask, link, state, usageMail, voice, live, tts, notifSet, notifGet };
