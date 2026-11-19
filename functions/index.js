@@ -570,6 +570,7 @@ exports.api = onRequest({
   try {
     // Alexandra's questions, answered here word by word (falls back to the Apps Script in the app)
     if (route === '/ak/ask') { const who = await assertAccess(b.token); await ak.ask(req, res, b, who); return; }
+    if (route === '/ak/voice') { const who = await assertOwner(b.token); res.json(await ak.voice(b, who)); return; }
     if (route === '/call') {
       const fn = String(b.fn || '');
       if (!Object.prototype.hasOwnProperty.call(CALLS, fn)) { res.json({ ok: false, error: 'Unknown request.', fallback: true }); return; }

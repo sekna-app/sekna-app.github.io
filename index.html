@@ -10254,6 +10254,14 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .ak-picbar button{border:0;background:#f0f2f5;width:28px;height:28px;border-radius:50%;cursor:pointer;color:#4b5263}
     .ak-upic{display:block;max-width:200px;max-height:240px;border-radius:12px;margin:2px 0 6px auto}
     body.dark-mode .ak-picbar,.ak.dk .ak-picbar{background:#242526}.ak.dk .ak-pic{color:#9fb8ff}
+
+    /* v573 voice samples */
+    .akvo{display:grid;gap:8px;margin-top:10px}.akvo-r{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid #e3e7f0;border-radius:14px;padding:8px 10px}
+    .akvo-r.on{border-color:#C9A24A;box-shadow:0 0 0 3px rgba(201,162,74,.15)}
+    .akvo-p{flex:none;width:38px;height:38px;border-radius:50%;border:0;background:linear-gradient(135deg,#2a52c9,#1C3C96);color:#fff;font-size:14px;cursor:pointer}.akvo-p.w{opacity:.6}
+    .akvo-r span{flex:1;display:flex;flex-direction:column;font:800 14px Inter,system-ui,sans-serif;color:#0f1d4a}.akvo-r i{font:600 12px Inter,system-ui,sans-serif;font-style:normal;color:#6b7385}
+    .akvo-k{border:0;border-radius:999px;padding:7px 14px;font:800 12px Inter,system-ui,sans-serif;background:#eef1f8;color:#1C3C96;cursor:pointer}.akvo-r.on .akvo-k{background:#C9A24A;color:#fff}
+    .ak.dk .akvo-r{background:#242526;border-color:#3a3b3c}.ak.dk .akvo-r span{color:#fff}
 </style>
 </head>
 <body>
@@ -11762,6 +11770,7 @@ async function akSend(e){
  if(AK.teach){akLearn(q);return}
  if(akOwner()&&AKIX_RE.test(q)){akUser(q);AK.kb=false;akKb();akIxStart(q);return}
  if(akPlAsk(q)){akUser(q);AK.kb=false;akKb();akPlStart(q);return}
+ if(akOwner()&&AKVO_RE.test(q)){akUser(q);AK.kb=false;akKb();akVoStart();return}
  if(AK.canTeach&&AK_MEM_RE.test(q)){akMemAsk(q);return}
  akUser(q);AK.kb=false;akKb();
  if(!ASK_HEMERA_URL){akBot('<p>Alexandra is not connected yet.</p>');return}
@@ -22046,6 +22055,29 @@ async function akPicSend(q,im){
   AK.hist.push({role:'user',text:'[photo] '+ask},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-16);AK.busy=false;
   if(j.sid){akIxPut(j.sid,`<div class="akst" id="${j.sid}">${akAnswer(j.answer||'')}</div>`);return}akBot(akAnswer(j.answer||''))}
  catch(err){AK.busy=false;akBot(`<p>${akEsc(err&&err.blocked?'You do not have access to Alexandra.':'Something went wrong. Try again.')}</p>`)}}
+
+ 
+const AKVO_RE=/\b(voices?|voice samples?)\b|الأصوات|الاصوات|عينات الصوت|عينات صوت|صوتها/i;
+const AKVO=[['Kore','Firm and clear'],['Aoede','Light and easy'],['Leda','Young and bright'],['Zephyr','Bright and lively'],['Despina','Smooth and calm'],['Sulafat','Warm and friendly']];
+const AKVO_URL=AK_SRV.replace(/\/ak\/ask$/,'/ak/voice');let akVoAu=null;const akVoBuf={};
+async function akVoPost(o){const r=await fetch(AKVO_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(Object.assign({token:getAccessToken(),name:akMe().name},o))});return r.json()}
+async function akVoStart(){AK.busy=true;akDraw();let j=null;try{j=await akVoPost({})}catch(e){}AK.busy=false;
+ if(!j||!j.ok){akBot('<p>I could not reach HEMERA’s server for the voices. Try again in a minute.</p>');return}
+ akBot(`<p>Here are 6 voices I can speak with. Tap ▶ to hear each one, then pick the one you like.</p><div class="akvo">${AKVO.map(([v,t])=>`<div class="akvo-r${j.picked===v?' on':''}" data-v="${v}"><button type="button" class="akvo-p" onclick="akVoPlay('${v}',this)" aria-label="Play ${v}">▶</button><span><b>${v}</b><i>${t}</i></span><button type="button" class="akvo-k" onclick="akVoPick('${v}',this)">${j.picked===v?'Chosen':'Pick'}</button></div>`).join('')}</div>`)}
+function akVoWav(b64,rate){const pcm=Uint8Array.from(atob(b64),c=>c.charCodeAt(0)),h=new DataView(new ArrayBuffer(44)),w=(o,t)=>{for(let i=0;i<t.length;i++)h.setUint8(o+i,t.charCodeAt(i))};
+ w(0,'RIFF');h.setUint32(4,36+pcm.length,true);w(8,'WAVE');w(12,'fmt ');h.setUint32(16,16,true);h.setUint16(20,1,true);h.setUint16(22,1,true);h.setUint32(24,rate,true);h.setUint32(28,rate*2,true);h.setUint16(32,2,true);h.setUint16(34,16,true);w(36,'data');h.setUint32(40,pcm.length,true);
+ return URL.createObjectURL(new Blob([h.buffer,pcm],{type:'audio/wav'}))}
+async function akVoPlay(v,btn){document.querySelectorAll('.akvo-p').forEach(b=>{b.textContent='▶';b.classList.remove('w')});
+ if(akVoAu){const was=akVoAu.dataset.v;akVoAu.pause();akVoAu=null;if(was===v)return}
+ btn.textContent='…';btn.classList.add('w');
+ try{if(!akVoBuf[v]){const j=await akVoPost({voice:v});if(!j||!j.ok)throw new Error(j&&j.error||'No voice');
+   const m=String(j.mime||'');akVoBuf[v]=/wav|mpeg|ogg|mp3/.test(m)?`data:${m};base64,${j.data}`:akVoWav(j.data,+((m.match(/rate=(\d+)/)||[])[1]||24000))}
+  const a=new Audio(akVoBuf[v]);a.dataset.v=v;akVoAu=a;btn.textContent='❚❚';btn.classList.remove('w');a.onended=()=>{btn.textContent='▶';if(akVoAu===a)akVoAu=null};await a.play()}
+ catch(e){btn.textContent='▶';btn.classList.remove('w');showSettingsToast(String(e&&e.message||'This voice could not play.'))}}
+async function akVoPick(v,btn){btn.textContent='…';let j=null;try{j=await akVoPost({voice:v,pick:true})}catch(e){}
+ if(!j||!j.ok){btn.textContent='Pick';showSettingsToast('Could not save the voice. Try again.');return}
+ document.querySelectorAll('.akvo-r').forEach(r=>{const on=r.dataset.v===v;r.classList.toggle('on',on);r.querySelector('.akvo-k').textContent=on?'Chosen':'Pick'});
+ showSettingsToast(v+' is Alexandra’s voice now.')}
 </script>
 <div id="seknaFileEnd" hidden></div>
 <script>

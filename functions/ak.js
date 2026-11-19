@@ -157,4 +157,37 @@ async function usageMail(tz, sendMail, owners, mailReady) {
   return { kind, sent };
 }
 
-module.exports = { ask, link, state, usageMail };
+
+// v573 voice samples for the owner (Gemini text-to-speech, the same voices Gemini Live speaks with)
+const VOICES = ['Kore', 'Aoede', 'Leda', 'Zephyr', 'Despina', 'Sulafat'];
+const SAMPLE = 'Say warmly and clearly: مرحباً، أنا ألكسندرا. صرف امبارح كان عشرة آلاف دولار، والعائد اتنين ونص. Hi, I am Alexandra, your media assistant. How can I help you today?';
+const voiceCache = {};
+async function voice(b, who) {
+  const v = String(b.voice || '');
+  if (b.pick) {
+    if (!VOICES.includes(v)) return { ok: false, error: 'Unknown voice.' };
+    await fsUpdate(DOC, d => Object.assign({}, d || {}, { voice: v, voiceBy: who.email, voiceAt: Date.now() })); cfg = null;
+    return { ok: true, voice: v };
+  }
+  if (!v) return { ok: true, voices: VOICES, picked: (await conf()).voice || '' };
+  if (!VOICES.includes(v)) return { ok: false, error: 'Unknown voice.' };
+  if (voiceCache[v]) return voiceCache[v];
+  const p = await prep(String(who.email || '').toLowerCase(), String(b.name || who.name || '').trim().slice(0, 60));
+  const keys = (p.keys || []).filter(Boolean);
+  const payload = { contents: [{ parts: [{ text: SAMPLE }] }], generationConfig: { responseModalities: ['AUDIO'], speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: v } } } } };
+  let r = null, j = null;
+  for (let ki = 0; ki < keys.length; ki++) {
+    r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': keys[ki] }, body: JSON.stringify(payload) });
+    if (r.status === 429) continue;
+    break;
+  }
+  if (!r || !r.ok) return { ok: false, error: 'Gemini could not make the voice (' + (r ? r.status : 'no key') + ').' };
+  j = await r.json();
+  const part = (((j.candidates || [])[0] || {}).content || {}).parts || [];
+  const a = part.find(x => x.inlineData || x.inline_data);
+  if (!a) return { ok: false, error: 'Gemini sent no audio.' };
+  const d = a.inlineData || a.inline_data;
+  const out = { ok: true, voice: v, mime: d.mimeType || d.mime_type || 'audio/L16;rate=24000', data: d.data };
+  voiceCache[v] = out; return out;
+}
+module.exports = { ask, link, state, usageMail, voice };
