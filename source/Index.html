@@ -10303,6 +10303,21 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     @keyframes aklvCdIn2{0%{opacity:0;transform:translateY(-10px)}100%{opacity:1;transform:none}}
     @keyframes aklvBump{0%{transform:scale(1)}40%{transform:scale(1.08)}100%{transform:scale(1)}}
     .aklv-cd{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;background:rgba(8,16,42,.82)!important}
+
+    /* v599 calling screen */
+    .aklv-call{display:none;position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,rgba(3,8,26,.78),rgba(3,8,26,.38) 40%,rgba(3,8,26,.55) 70%,rgba(0,0,0,.9));text-align:center;color:#fff;pointer-events:none}
+    .aklv.calling .aklv-call{display:block;animation:aklvCallIn .25s ease both}
+    .aklv-call small{display:block;margin-top:calc(env(safe-area-inset-top,0px) + 92px);font:800 12px Inter,system-ui,sans-serif;letter-spacing:.3em;color:#E9C46A}
+    .aklv-call b{display:block;margin-top:8px;font:800 26px Inter,system-ui,sans-serif}
+    .aklv-dots{display:flex;gap:6px;justify-content:center;margin-top:12px}.aklv-dots i{width:7px;height:7px;border-radius:50%;background:#fff;animation:aklvDot 1.2s ease-in-out infinite}
+    .aklv-dots i:nth-child(2){animation-delay:.2s}.aklv-dots i:nth-child(3){animation-delay:.4s}
+    @keyframes aklvDot{0%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+    .aklv-ringi{position:absolute;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 150px);margin-left:-28px;width:56px;height:56px;border-radius:50%;border:2px solid rgba(233,196,106,.8);display:grid;place-items:center;color:#E9C46A;animation:aklvRing 1.5s ease-out infinite}
+    .aklv-ringi .ak-ic{width:24px;height:24px}
+    @keyframes aklvRing{0%{box-shadow:0 0 0 0 rgba(233,196,106,.45)}100%{box-shadow:0 0 0 26px rgba(233,196,106,0)}}
+    @keyframes aklvCallIn{from{opacity:0}to{opacity:1}}
+    .aklv.calling .aklv-mu{display:none!important}.aklv.calling .aklv-top .aklv-nm,.aklv.calling .aklv-md,.aklv.calling .aklv-cb,.aklv.calling .aklv-log,.aklv.calling .aklv-in,.aklv.calling .aklv-ring,.aklv.calling .aklv-cards{visibility:hidden}
+    .aklv.calling.cm{background:#000}.aklv.calling.cm .aklv-v{inset:0!important;width:100%!important;height:100%!important;margin:0!important;clip-path:none!important;transform:none!important}
 </style>
 </head>
 <body>
@@ -22133,7 +22148,7 @@ async function akVoPick(v,btn){btn.textContent='…';let j=null;try{j=await akVo
 const AKLV={};
 const AKLV_URL=AK_SRV.replace(/\/ak\/ask$/,'/ak/live');
 function akLiveHtml(){const v=k=>`<video class="aklv-v" data-s="${k}" src="icons/alexandra/v/voice-${k}.mp4?v=4" muted loop playsinline preload="auto"></video>`;
- return `<div class="aklv" id="akLive" role="dialog" aria-label="Voice chat with Alexandra" onclick="if(this.classList.contains('mini')){event.stopPropagation();akLiveMini(false)}">${v('listen')}${v('think')}${v('talk')}<video class="aklv-v" data-s="bye" src="icons/alexandra/v/voice-bye.mp4" muted playsinline preload="auto"></video><div class="aklv-sh"></div><div class="aklv-ring" onpointerdown="akLiveOrbDown(event)"></div>
+ return `<div class="aklv" id="akLive" role="dialog" aria-label="Voice chat with Alexandra" onclick="if(this.classList.contains('mini')){event.stopPropagation();akLiveMini(false)}">${v('listen')}${v('think')}${v('talk')}<video class="aklv-v" data-s="bye" src="icons/alexandra/v/voice-bye.mp4" muted playsinline preload="auto"></video><div class="aklv-sh"></div><div class="aklv-ring" onpointerdown="akLiveOrbDown(event)"></div><div class="aklv-call" aria-live="polite"><small>VOICE CALL</small><b>Calling Alexandra</b><div class="aklv-dots"><i></i><i></i><i></i></div><span class="aklv-ringi">${akI('phone')}</span></div>
  <div class="aklv-top"><button type="button" class="aklv-x" aria-label="Close" onclick="akLiveBye()">${akI('down')||'✕'}</button><div class="aklv-nm"><b>Alexandra</b><span class="aklv-tm" id="aklvTm">Calling…</span><small id="aklvSt">Connecting…</small></div><button type="button" class="aklv-x aklv-md" id="aklvMd" aria-label="Show the chat" onclick="akLiveMode()">${akI('chat')}</button></div><div class="aklv-log" id="aklvLog"></div>
  <div class="aklv-cb"><div class="aklv-cap" id="aklvCap"></div><div class="aklv-wv" aria-hidden="true">${'<i></i>'.repeat(17)}</div></div>
  <div class="aklv-bar"><form class="aklv-in" onsubmit="akLiveType(event)"><input id="aklvQ" autocomplete="off" maxlength="600" placeholder="Ask Alexandra" dir="auto"><button type="submit" aria-label="Send">${akI('plane')}</button></form><button type="button" class="aklv-mu" id="aklvMu" aria-label="Mute the mic" onclick="akLiveMute()">${akI('mic')}</button><button type="button" class="aklv-end" aria-label="End the voice chat" onclick="akLiveBye()">✕</button></div></div>`}
@@ -22247,7 +22262,7 @@ function akLivePre(){try{if(AK.blocked||!AK_SRV||AKLV.ws||!window.WebSocket)retu
 async function akLiveOpen(){if(AKLV.ws||AK.blocked)return;
  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.WebSocket||!window.AudioWorkletNode){showSettingsToast('Voice chat does not work on this browser.');return}
  document.getElementById('akLive')?.remove();document.body.insertAdjacentHTML('beforeend',akLiveHtml());Object.assign(AKLV,{recon:0,mini:false,endSnd:0,t0:0,st:'',want:'',wantAt:0,aud:{},pend:false,herShown:'',orb:+(storeGet('hm_ak_lv_orb')||1)||1,bye:false,byeAt:0,mute:false,turns:[],me:'',her:'',spoke:false,lastVoice:0,wait:false,nextT:0,srcs:[],closed:false,ready:false});
- akLiveState('connecting');akLiveMode(akLiveCm());akLiveOrbSet(AKLV.orb||1);requestAnimationFrame(()=>document.getElementById('akLive')?.classList.add('in'));
+ akLiveState('connecting');akLiveMode(akLiveCm());akLiveOrbSet(AKLV.orb||1);requestAnimationFrame(()=>document.getElementById('akLive')?.classList.add('in'));akLiveRing(true);
  const ctx=new (window.AudioContext||window.webkitAudioContext)();AKLV.ctx=ctx;try{ctx.resume()}catch(e){}
  const micP=navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:1}}).then(s=>({s}),e=>({e}));
  const pre=AKLV.pre;AKLV.pre=null;const connP=(pre&&Date.now()-pre.at<230000?pre.p:akLiveConnAny(0)).then(c=>c&&c.ws.readyState===1?c:akLiveConnAny(c?c.lvl:0));
@@ -22278,7 +22293,7 @@ async function akLiveMic(){let ctx=AKLV.ctx;
    const ws=AKLV.ws;if(ws&&ws.readyState===1)ws.send(JSON.stringify({realtimeInput:{audio:{data:akB64(new Uint8Array(pcm.buffer)),mimeType:'audio/pcm;rate=16000'}}}))}};
  AKLV.tick=setInterval(akLiveTick,90)}
 function akLivePlaying(){return AKLV.ctx&&AKLV.ctx.currentTime<AKLV.nextT-0.02}
-function akLiveTick(){if(AKLV.closed)return;akLiveSync();if(AKLV.t0){const s=Math.floor((Date.now()-AKLV.t0)/1000),tm=document.getElementById('aklvTm'),v=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');if(tm&&tm.textContent!==v)tm.textContent=v}if(AKLV.bye)return;const now=performance.now(),play=akLivePlaying();
+function akLiveTick(){if(AKLV.closed)return;if(AKLV.calling&&AKLV.t0&&Date.now()-AKLV.t0>9000)akLiveRing(false,true);akLiveSync();if(AKLV.t0){const s=Math.floor((Date.now()-AKLV.t0)/1000),tm=document.getElementById('aklvTm'),v=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');if(tm&&tm.textContent!==v)tm.textContent=v}if(AKLV.bye)return;const now=performance.now(),play=akLivePlaying();
  if(AKLV.pend&&!play){AKLV.pend=false;AKLV.aud={};akLiveTurn()}
  const w=play?'talk':(AKLV.wait||(AKLV.spoke&&now-AKLV.lastVoice>800))?'think':'listen';
  if(w!==AKLV.want){AKLV.want=w;AKLV.wantAt=now}
@@ -22295,7 +22310,7 @@ function akLiveShown(){const h=AKLV.her||'',a=AKLV.aud||{};if(!h)return '';if(a.
 function akLiveSync(){const x=akLiveShown();if(x===AKLV.herShown)return;AKLV.herShown=x;if(x){akLiveCap(x,false);let done=x;if(!(AKLV.pend&&!akLivePlaying())){const w=x.trim().split(/\s+/);while(w.length&&(AKN.isNum(w[w.length-1])||/\d$/.test(w[w.length-1])||/^(بوينت|و|فاصل)$/.test(w[w.length-1])))w.pop();done=w.join(' ')}
   
   if(done){const n=(akLiveTx(done).match(/\d[\d,.]*/g)||[]).length;if(n!==(AKLV.cdN||0)){AKLV.cdN=n;akLiveAutoCards(done)}}}else{AKLV.cdN=0;akLiveLogDraw()}}
-function akLivePlay(b64,mime){const ctx=AKLV.ctx;const rate=+((String(mime||'').match(/rate=(\d+)/)||[])[1]||24000);
+function akLivePlay(b64,mime){const ctx=AKLV.ctx;if(AKLV.calling)akLiveRing(false,true);const rate=+((String(mime||'').match(/rate=(\d+)/)||[])[1]||24000);
  const u8=Uint8Array.from(atob(b64),c=>c.charCodeAt(0)),i16=new Int16Array(u8.buffer,0,u8.length>>1),buf=ctx.createBuffer(1,i16.length,rate),ch=buf.getChannelData(0);
  for(let i=0;i<i16.length;i++)ch[i]=i16[i]/32768;
  const s=ctx.createBufferSource();s.buffer=buf;s.connect(ctx.destination);if(AKLV.bye&&!AKLV.byeGot){AKLV.byeGot=true;if(AKLV.byeHeld){AKLV.byeHeld=false;AKLV.byeAt=ctx.currentTime+0.06;try{AKLV.byeV.play()}catch(e){}}}
@@ -22320,7 +22335,7 @@ function akLiveMsg(m){
  if(c.turnComplete){AKLV.wait=false;AKLV.spoke=false;if(AKLV.aud)AKLV.aud.open=false;if(AKLV.her&&AKLV.aud&&AKLV.aud.start!=null)AKLV.pend=true;else akLiveTurn()}}
 function akLiveMute(){AKLV.mute=!AKLV.mute;const b=document.getElementById('aklvMu');if(b){b.classList.toggle('off',AKLV.mute);b.setAttribute('aria-label',AKLV.mute?'Turn the mic on':'Mute the mic')}
  if(AKLV.stream)AKLV.stream.getAudioTracks().forEach(t=>t.enabled=!AKLV.mute);AKLV.st='';akLiveTick()}
-function akLiveClean(){AKLV.closed=true;clearInterval(AKLV.tick);akLiveStop();try{AKLV.node&&AKLV.node.disconnect();AKLV.src&&AKLV.src.disconnect()}catch(e){}
+function akLiveClean(){AKLV.closed=true;akLiveRing(false);clearInterval(AKLV.tick);akLiveStop();try{AKLV.node&&AKLV.node.disconnect();AKLV.src&&AKLV.src.disconnect()}catch(e){}
  try{AKLV.ws&&AKLV.ws.close(1000)}catch(e){}AKLV.ws=null;if(AKLV.stream)AKLV.stream.getTracks().forEach(t=>t.stop());AKLV.stream=null;try{AKLV.ctx&&AKLV.ctx.close()}catch(e){}AKLV.ctx=null;try{AKLV.mctx&&AKLV.mctx.close()}catch(e){}AKLV.mctx=null;
  akLiveTurn();const t=AKLV.turns||[];AKLV.turns=[];const t0=AKLV.t0;AKLV.t0=0;
  if(t.length){const fb=t.findIndex(x=>x[0]==='b');t.forEach(([w,x],i)=>AK.msgs.push(w==='u'?{w:'u',html:`<span dir="auto">${akEsc(x)}</span>`,nw:1}:{w:'h',html:`${i===fb?'<p class="aklv-log">🎙 Voice chat</p>':''}<p dir="auto">${akEsc(x)}</p>`,cls:'',nw:1}));
@@ -22328,7 +22343,7 @@ function akLiveClean(){AKLV.closed=true;clearInterval(AKLV.tick);akLiveStop();tr
  if(t0){const d=Math.max(1,Math.round((Date.now()-t0)/1000)),tm=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});AK.msgs.push({w:'h',cls:'call',html:akCallCard(d,tm),nw:1})}
  if(t.length||t0){try{akSave()}catch(e){}akDraw()}}
 function akLiveEnd(){const snd=!AKLV.endSnd;AKLV.endSnd=1;akLiveClean();if(snd)setTimeout(()=>akSfx('end'),180);const el=document.getElementById('akLive');if(el){el.classList.remove('in');setTimeout(()=>el.remove(),280)}}
-function akLiveFail(msg){if(AKLV.closed)return;akLiveClean();const el=document.getElementById('akLive');if(!el)return;akLiveState('listen');
+function akLiveFail(msg){if(AKLV.closed)return;akLiveRing(false);akLiveClean();const el=document.getElementById('akLive');if(!el)return;akLiveState('listen');
  const s=document.getElementById('aklvSt');if(s)s.textContent='Not connected';akLiveCap(msg,false);
  const b=el.querySelector('.aklv-bar');if(b)b.innerHTML=`<button type="button" class="aklv-again" onclick="akLiveEnd();setTimeout(akLiveOpen,320)">Try again</button><button type="button" class="aklv-end" aria-label="Close" onclick="akLiveEnd()">✕</button>`}
 
@@ -22405,7 +22420,7 @@ const AKCS={ctx:null,buf:{},loading:null,typ:null};
 function akSfxOn(){try{return localStorage.getItem('hm_ak_sfx')!=='0'}catch(e){return true}}
 function akSfxSet(on,btn){try{localStorage.setItem('hm_ak_sfx',on?'1':'0')}catch(e){}if(btn){btn.setAttribute('aria-checked',on);const sw=btn.querySelector('.ak-sw');if(sw)sw.classList.toggle('on',on)}if(!on)akSfxTyping(false);else akSfx('send')}
 function akSfxLoad(){if(AKCS.loading)return AKCS.loading;const C=window.AudioContext||window.webkitAudioContext;if(!C)return Promise.resolve();AKCS.ctx=AKCS.ctx||new C();
- AKCS.loading=Promise.all(['send','recv','typing','rec','delete','photo','end','vsent'].map(n=>fetch('icons/alexandra/s/'+n+'.mp3?v=3').then(r=>r.arrayBuffer()).then(a=>new Promise((ok,no)=>AKCS.ctx.decodeAudioData(a,ok,no))).then(b=>{AKCS.buf[n]=b}).catch(()=>{})));return AKCS.loading}
+ AKCS.loading=Promise.all(['send','recv','typing','rec','delete','photo','end','vsent','ring','join'].map(n=>fetch('icons/alexandra/s/'+n+'.mp3?v=3').then(r=>r.arrayBuffer()).then(a=>new Promise((ok,no)=>AKCS.ctx.decodeAudioData(a,ok,no))).then(b=>{AKCS.buf[n]=b}).catch(()=>{})));return AKCS.loading}
 function akSfx(n,loop){if(!akSfxOn())return null;try{akSfxLoad();const c=AKCS.ctx,b=AKCS.buf[n];if(!c||!b){AKCS.loading&&AKCS.loading.then(()=>{if(n!=='typing'&&n!=='recv'&&n!=='send')return});return null}
  if(c.state==='suspended')c.resume().catch(()=>{});const s=c.createBufferSource(),g=c.createGain();g.gain.value=n==='typing'?.55:.9;s.buffer=b;s.loop=!!loop;s.connect(g);g.connect(c.destination);s.start();return s}catch(e){return null}}
 function akSfxTyping(on){if(on&&!AKCS.typ&&document.getElementById('akBox')){AKCS.typ=akSfx('typing',false)||{stop(){}};if(AKCS.typ){clearInterval(AKCS.tw);AKCS.tw=setInterval(()=>{if(!AK.busy||!document.getElementById('akBox')){clearInterval(AKCS.tw);akSfxTyping(false)}},700)}}else if(!on&&AKCS.typ){try{AKCS.typ.stop()}catch(e){}AKCS.typ=null}}
@@ -22638,6 +22653,11 @@ function akLiveAutoCards(txt){const t=akLiveTx(txt);if(!t)return;const out=[],se
   const before=t.slice(Math.max(0,m.index-40),m.index);let lab='';for(const [r,l] of AKLV_KW){if(r.test(before.split(/[.،,؟?!]/).pop()))lab=l}
   if(!lab&&/x$/i.test(num))lab='ROAS';if(!lab||seen[lab])continue;seen[lab]=1;out.push({label:lab,value:lab==='ROAS'?num.replace(/\s*x?$/i,'')+'x':/^\d/.test(num)&&lab==='Spend'||lab==='Value'||lab==='CPA'?(/[$£€]/.test(num)?num:akFxSym(CURRENT_ACCOUNT)+num):num})}
  if(out.length)akLiveCards(out)}
+
+ 
+function akLiveRing(on,answered){const el=document.getElementById('akLive');
+ if(on){AKLV.calling=true;if(el)el.classList.add('calling');akSfxLoad().then(()=>{if(!AKLV.calling)return;const go=()=>{if(!AKLV.calling)return;try{AKLV.ringS&&AKLV.ringS.stop()}catch(e){}AKLV.ringS=akSfx('ring')};go();clearInterval(AKLV.ringI);AKLV.ringI=setInterval(go,3000)});return}
+ if(!AKLV.calling)return;AKLV.calling=false;clearInterval(AKLV.ringI);try{AKLV.ringS&&AKLV.ringS.stop()}catch(e){}AKLV.ringS=null;if(el)el.classList.remove('calling');if(answered)akSfx('join')}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
