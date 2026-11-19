@@ -22225,7 +22225,7 @@ const AKN=(()=>{const m={},add=(v,...w)=>w.forEach(x=>m[x]=v);
  const strip=w=>w.replace(/[ً-ْـ]/g,'');
  const look=w=>{w=strip(w);if(m[w]!=null)return {n:m[w]};if(sc[w]!=null)return {s:sc[w],w};if(pt[w])return {p:1};
   if(w.length>2&&w[0]==='و'){const r=w.slice(1);if(m[r]!=null)return {n:m[r],and:1};if(sc[r]!=null)return {s:sc[r],w:r,and:1}}return null};
- const W=/^([^؀-ۿa-z]*)([؀-ۿa-z]+)([^؀-ۿa-z]*)$/i,SP=/^\s+$/;
+ const W=/^([^\u0621-\u0652\u0640a-z]*)([\u0621-\u0652\u0640a-z]+)([^\u0621-\u0652\u0640a-z]*)$/i,SP=/^\s+$/;
  const f=function(text){const T=String(text).split(/(\s+)/),out=[];let i=0;
   while(i<T.length){const raw=T[i],mm=raw.match(W),L=mm&&look(mm[2]);
    if(!L||L.p){out.push(raw);i++;continue}
@@ -22237,15 +22237,15 @@ const AKN=(()=>{const m={},add=(v,...w)=>w.forEach(x=>m[x]=v);
     cv=x.n!=null?cv+x.n:0;run.push({x,w:q[2]});post=q[3];last=j;j++;if(q[3])break}
    j=last+1;
    let dec='';
-   if(!post){let k=j;while(k<T.length&&SP.test(T[k]))k++;const q=k<T.length&&T[k].match(/^([؀-ۿa-z]+)([^؀-ۿa-z]*)$/i);
-    if(q&&pt[strip(q[1])]&&!q[2]){let k2=k+1,d='',p2='',e=k;while(k2<T.length){const t=T[k2];if(SP.test(t)){k2++;continue}const r=t.match(/^([؀-ۿa-z]+)([^؀-ۿa-z]*)$/i),y=r&&look(r[1]);if(!y||y.n==null||y.n>9)break;d+=y.n;e=k2;k2++;if(r[2]){p2=r[2];break}}
+   if(!post){let k=j;while(k<T.length&&SP.test(T[k]))k++;const q=k<T.length&&T[k].match(/^([\u0621-\u0652\u0640a-z]+)([^\u0621-\u0652\u0640a-z]*)$/i);
+    if(q&&pt[strip(q[1])]&&!q[2]){let k2=k+1,d='',p2='',e=k;while(k2<T.length){const t=T[k2];if(SP.test(t)){k2++;continue}const r=t.match(/^([\u0621-\u0652\u0640a-z]+)([^\u0621-\u0652\u0640a-z]*)$/i),y=r&&look(r[1]);if(!y||y.n==null||y.n>9)break;d+=y.n;e=k2;k2++;if(r[2]){p2=r[2];break}}
      if(d){dec='.'+d;j=e+1;post=p2}}
     else if(q&&half[strip(q[1])]){dec='.5';j=k+1;post=q[2]}}
    if(run.length===1&&!dec&&(amb[strip(run[0].w)]||(run[0].x.n!=null&&run[0].x.n<10))){out.push(raw);i++;continue}
    let total=0,cur=0;for(const {x} of run){if(x.n!=null)cur+=x.n;else{cur=(cur||1)*x.s;total+=cur;cur=0}}total+=cur;
    out.push(mm[1]+(run[0].x.and?'و ':'')+total.toLocaleString('en-US')+dec+post);i=j}
   return out.join('').replace(/(\d)\s?(?:في|ف)\s?(?:المية|المائة|المئة|الميه)/g,'$1%')};
- f.isNum=w=>{const q=String(w).replace(/[^\u0600-\u06FFa-z]/gi,'');return !!(q&&(look(q)||half[strip(q)]))};return f})();
+ f.isNum=w=>{const q=String(w).replace(/[^\u0621-\u0652\u0640a-z]/gi,'');return !!(q&&(look(q)||half[strip(q)]))};return f})();
 function akLiveCommas(t){return String(t).replace(/(^|[^\d.,])(\d{4,})(?![\d,])/g,(m,p,d)=>d.length===4&&/^(19|20)\d\d$/.test(d)?m:p+(+d).toLocaleString('en-US'))}
 function akLiveTx(t){return akLiveCommas(AKN(String(t||'').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{20E3}]/gu,'')).replace(/\s+([.،,؟?!])/g,'$1').replace(/\s{2,}/g,' ').trim())}
 /* v580 captions like song lyrics on stories: small, one line at a time, the line before fades above it */
@@ -22263,18 +22263,16 @@ function akB64(u8){let s='';for(let i=0;i<u8.length;i+=0x8000)s+=String.fromChar
 const AKLV_TOOLS=[{functionDeclarations:[
  {name:'get_numbers',description:'Get HEMERA dashboard numbers right now (fresh). Use it for any number, campaign, day, month, campaign type, search term or drop that is not in the short summary. topic: what part to read (e.g. "campaigns", "days before this month", "every month by campaign type", "things that dropped", "search terms", "the other account", "team", "seasons"). search: a campaign name, date (YYYY-MM-DD) or word to find.',
   parameters:{type:'OBJECT',properties:{topic:{type:'STRING',description:'Which part of the dashboard to read'},search:{type:'STRING',description:'A name, date or word to look for'},account:{type:'STRING',description:'"usa" or "ar" (the Arabic account) when the person asks about the other account; the app switches to it'}}}},
- {name:'show_cards',description:'Show up to 3 small number cards on the person\'s screen while you say the numbers (for example spend, ROAS, conversions). Call it when you give key numbers.',
-  parameters:{type:'OBJECT',properties:{cards:{type:'ARRAY',items:{type:'OBJECT',properties:{label:{type:'STRING',description:'Short label, e.g. "Spend · yesterday"'},value:{type:'STRING',description:'The number as shown, e.g. "$10,491" or "2.06x"'},previous:{type:'STRING',description:'For a comparison: the other period\'s number, e.g. "$9,820"'},change:{type:'STRING',description:'Optional change, e.g. "-12%"'},direction:{type:'STRING',description:'"up", "down" or ""'}},required:['label','value']}}},required:['cards']}},
  {name:'open_screen',description:'Open a screen in the HEMERA app for the person while you keep talking. screen: "daily", "days", "campaigns", "campaign" (one campaign, give its name), "reports_studio" (months; give month and, to compare, compare_with), "channels", "search_terms", "seasons", "lab".',
   parameters:{type:'OBJECT',properties:{screen:{type:'STRING'},campaign:{type:'STRING',description:'Campaign name for screen "campaign"'},month:{type:'STRING',description:'Month as YYYY-MM for reports_studio'},compare_with:{type:'STRING',description:'Second month as YYYY-MM to compare with'}},required:['screen']}},
  {name:'do_action',description:'Do one of the actions listed under "Actions you can do for this person" (task, access, team message, maintenance, activity, reading status). Actions that change something show a Confirm button on the screen first.',
   parameters:{type:'OBJECT',properties:{do:{type:'STRING'},person:{type:'STRING'},title:{type:'STRING'},deadline:{type:'STRING'},note:{type:'STRING'},screen:{type:'STRING'},value:{type:'STRING'},text:{type:'STRING'},push:{type:'BOOLEAN'},on:{type:'BOOLEAN'},reason:{type:'STRING'}},required:['do']}},
  {name:'send_plan',description:'Send the budget plan picture of a month into the chat (e.g. "December").',parameters:{type:'OBJECT',properties:{month:{type:'STRING'}},required:['month']}},
  {name:'send_summary',description:'Send a short written summary of this call into the chat: the key numbers and the things to do. Only when the person asks for it.',parameters:{type:'OBJECT',properties:{points:{type:'ARRAY',items:{type:'STRING'}}},required:['points']}}]}];
-const AKLV_TOOL_RULES=`# Tools in this call
-- The "Dashboard numbers" above are only a short summary. For anything else (a campaign, a day, a month, a campaign type, search terms, what dropped, the other account) call get_numbers first, then answer from what it returns. Never guess a number.
-- When you say key numbers, also call show_cards with them (1 to 3 cards) so the person sees them. For a comparison (this month vs last month, this week vs last week) give each card its previous number too.
-- When the person asks to see or open something (a campaign, Reports Studio with some months, the days, the lab), call open_screen and keep talking while it opens. Months are YYYY-MM.
+const AKLV_TOOL_RULES=`# Tools in this call (be fast)
+- First look in the "Dashboard numbers" summary above: yesterday, this month so far, the plan and the account totals are there. If the answer is there, answer at once with no tool.
+- Only for things that are not in the summary (one campaign, an older day, a month, a campaign type, search terms, what dropped, the other account) call get_numbers once, then answer. Before calling it, say a very short phrase like "ثواني أشوفلك". Never guess a number.
+- open_screen ONLY when the person clearly asks to open or show a screen (افتحي، وريني، اعرضي، open, show). Never open anything on your own.
 - "Send me the plan of <month>" → send_plan. "Send me a summary of the call" (now or at the end) → send_summary with 3 to 6 short points in the person's language.`;
 function akLiveSplit(t){const S=[];let cur={h:'Summary',L:[]};String(t||'').split('\n').forEach(l=>{if(/^## /.test(l)){S.push(cur);cur={h:l.slice(3),L:[]}}else cur.L.push(l)});S.push(cur);return S.filter(x=>x.L.join('').trim())}
 const AKLV_BIG=/Days before|Every month|Campaigns \(|Search terms|Things that dropped|HEMERA team|Seasons/i;
@@ -22358,7 +22356,9 @@ function akLiveShown(){const h=AKLV.her||'',a=AKLV.aud||{};if(!h)return '';if(a.
  // a number is shown whole, not word by word ("ألف" then "1,811")
  while(n<h.length){const m=h.slice(n).match(/^\s+(\S+)/);if(!m||!AKN.isNum(m[1]))break;n+=m[0].length}
  return h.slice(0,n)}
-function akLiveSync(){const x=akLiveShown();if(x===AKLV.herShown)return;AKLV.herShown=x;if(x)akLiveCap(x,false);else akLiveLogDraw()}
+function akLiveSync(){const x=akLiveShown();if(x===AKLV.herShown)return;AKLV.herShown=x;if(x){akLiveCap(x,false);const cut=Math.max(x.lastIndexOf('.'),x.lastIndexOf('،'),x.lastIndexOf('؟'),x.lastIndexOf('?'),x.lastIndexOf('!'),x.lastIndexOf(','));const done=AKLV.pend&&!akLivePlaying()?x:cut>0?x.slice(0,cut):'';
+  // v596 cards only from finished sentences, so a number is never read half-said
+  if(done){const n=(akLiveTx(done).match(/\d[\d,.]*/g)||[]).length;if(n>(AKLV.cdN||0)){AKLV.cdN=n;akLiveAutoCards(done)}}}else{AKLV.cdN=0;akLiveLogDraw()}}
 function akLivePlay(b64,mime){const ctx=AKLV.ctx;const rate=+((String(mime||'').match(/rate=(\d+)/)||[])[1]||24000);
  const u8=Uint8Array.from(atob(b64),c=>c.charCodeAt(0)),i16=new Int16Array(u8.buffer,0,u8.length>>1),buf=ctx.createBuffer(1,i16.length,rate),ch=buf.getChannelData(0);
  for(let i=0;i<i16.length;i++)ch[i]=i16[i]/32768;
@@ -22367,12 +22367,12 @@ function akLivePlay(b64,mime){const ctx=AKLV.ctx;const rate=+((String(mime||'').
  const a=AKLV.aud||(AKLV.aud={});if(!a.open){AKLV.aud={start:t,dur:0,open:true}}AKLV.aud.dur+=buf.duration;
  s.onended=()=>{AKLV.srcs=AKLV.srcs.filter(x=>x!==s)}}
 function akLiveStop(){AKLV.srcs.forEach(s=>{try{s.stop()}catch(e){}});AKLV.srcs=[];AKLV.nextT=0;if(AKLV.aud)AKLV.aud.open=false}
-function akLiveTurn(){AKLV.herShown='';if(AKLV.me.trim())AKLV.turns.push(['u',akLiveTx(AKLV.me)]);if(AKLV.her.trim())AKLV.turns.push(['b',akLiveTx(AKLV.her)]);AKLV.me='';AKLV.her='';akLiveLogDraw()}
+function akLiveTurn(){AKLV.herShown='';AKLV.cdN=0;if(AKLV.me.trim())AKLV.turns.push(['u',akLiveTx(AKLV.me)]);if(AKLV.her.trim())AKLV.turns.push(['b',akLiveTx(AKLV.her)]);AKLV.me='';AKLV.her='';akLiveLogDraw()}
 function akLiveMsg(m){
  if(m.setupComplete){AKLV.ready=true;AKLV.t0=Date.now();akLiveMic().then(()=>{akLiveState('listen');
    const ar=AK.msgs.slice().reverse().find(x=>x.w==='u'),arab=ar&&/[؀-ۿ]/.test(ar.html||'');
    const tp=AKLV.topic,tt=AKLV.topicText;AKLV.topic='';AKLV.topicText='';const fn=String(akMe().name||'them').split(' ')[0];
-   AKLV.wait=true;AKLV.ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:tt?tt:tp?`(${fn} long-pressed the campaign "${tp}" to talk about it. First call get_numbers with search "${tp}". Then greet ${fn} in a few words and say in one or two short sentences how this campaign did in the last 7 days compared with before (spend, value, ROAS), show_cards with its key numbers, and ask what they want to know. Speak Egyptian Arabic with an Alexandrian touch.)`:`(The person just opened the voice chat. Greet ${fn} warmly by first name in one short sentence${arab?' in Egyptian Arabic with an Alexandrian touch (not فصحى)':''}, and ask how you can help.)`}]}],turnComplete:true}}))
+   AKLV.wait=true;AKLV.ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:tt?tt:tp?`(${fn} long-pressed the campaign "${tp}" to talk about it. First call get_numbers with search "${tp}". Then greet ${fn} in a few words and say in one or two short sentences how this campaign did in the last 7 days compared with before (spend, value, ROAS), and ask what they want to know. Speak Egyptian Arabic with an Alexandrian touch.)`:`(The person just opened the voice chat. Greet ${fn} warmly by first name in one short sentence${arab?' in Egyptian Arabic with an Alexandrian touch (not فصحى)':''}, and ask how you can help.)`}]}],turnComplete:true}}))
   }).catch(()=>akLiveFail('The microphone could not start.'));return}
  if(m.goAway){return}
  if(m.toolCall){akLiveTool(m.toolCall);return}
@@ -22484,7 +22484,7 @@ function akCallCard(sec,tm){const m=Math.floor(sec/60),s=sec%60,len=m?`${m} min$
 
 /* v590 her tools in the call: fresh dashboard numbers, and number cards that drop in at the top of the screen */
 async function akLiveTool(tc){const calls=(tc&&tc.functionCalls)||[];if(!calls.length)return;AKLV.wait=true;
- const res=await Promise.all(calls.map(async f=>{let r;try{const A=f.args||{};if(f.name==='get_numbers')r=await akLiveNumbers(A);else if(f.name==='show_cards'){akLiveCards(A.cards||[]);r={result:'shown'}}else if(f.name==='open_screen')r=await akLiveScreen(A);else if(f.name==='send_plan')r=akLivePlan(A);else if(f.name==='send_summary')r=akLiveSumm(A);else if(f.name==='do_action')r=await akActVoice(A);else r={result:'unknown tool'}}catch(e){r={result:'error: '+(e&&e.message||e)}}
+ const res=await Promise.all(calls.map(async f=>{let r;try{const A=f.args||{};if(f.name==='get_numbers')r=await akLiveNumbers(A);else if(f.name==='open_screen')r=akLiveAsked()?await akLiveScreen(A):{result:'Not opened: the person did not ask to open anything. Just answer.'};else if(f.name==='send_plan')r=akLivePlan(A);else if(f.name==='send_summary')r=akLiveSumm(A);else if(f.name==='do_action')r=await akActVoice(A);else r={result:'unknown tool'}}catch(e){r={result:'error: '+(e&&e.message||e)}}
   return {id:f.id,name:f.name,response:r}}));
  const ws=AKLV.ws;if(ws&&ws.readyState===1)try{ws.send(JSON.stringify({toolResponse:{functionResponses:res}}))}catch(e){}}
 function akLiveCards(cs){const el=document.getElementById('akLive');if(!el)return;cs=(Array.isArray(cs)?cs:[]).filter(c=>c&&c.value!=null).slice(0,3);if(!cs.length)return;
@@ -22610,7 +22610,7 @@ async function akDayCall(date){if(AK.blocked)return;const acc=CURRENT_ACCOUNT,K=
  const p=day.plan||{},a=day.actual;
  const info=`Day ${date}${day.dayName?' ('+day.dayName+')':''}${day.hijri?', Hijri '+day.hijri:''}. Plan: spend ${M(p.spend)}, value ${M(p.value)}, conv ${akR(p.conversions)}, ROAS ${akR(p.roas,2)}.`+(a?` Results: spend ${M(a.spend)}, value ${M(a.value)}, conv ${akR(a.conversions)}, ROAS ${akR(a.roas,2)} (spend ${akR((a.spendAchievement||0)*100)}% of plan, value ${akR((a.valueAchievement||0)*100)}% of plan).`:' No results yet.')+
   ` Same date last years: ${line(same(1))}; ${line(same(2))}. Same weekday last year (364 days before): ${line(back(364))}; two years (728 days): ${line(back(728))}.`;
- AKLV.topicText=`(The person long-pressed the day ${date} in the media plan to ask about it. Numbers in ${akFxSym(acc)}: ${info} Greet them in a few words, then in two or three short sentences say ${a?'how the day went against the plan':'whether the planned spend looks reasonable'} compared with the same day in the past years, show_cards with the key numbers (with previous = last year), and ask what they want to know. Speak Egyptian Arabic with an Alexandrian touch.)`;
+ AKLV.topicText=`(The person long-pressed the day ${date} in the media plan to ask about it. Numbers in ${akFxSym(acc)}: ${info} Greet them in a few words, then in two or three short sentences say ${a?'how the day went against the plan':'whether the planned spend looks reasonable'} compared with the same day in the past years, and ask what they want to know. Speak Egyptian Arabic with an Alexandrian touch.)`;
  akLiveOpen()}
 // long press on a plan-view day card
 (function(){let t=0,el=null,x0=0,y0=0;
@@ -22697,6 +22697,15 @@ function akLiveConfirm(html){const el=document.getElementById('akLive');if(!el)r
  b.querySelectorAll('button').forEach(x=>{x.onclick=async()=>{const ok=x.classList.contains('ok');const src=document.getElementById(id);
    if(src){const map={'.ak-a2i':'.ak-a2i','.ak-a2x':'.ak-a2x'};Object.keys(map).forEach(q=>{const a=b.querySelector(q),c=src.querySelector(q);if(a&&c)c.value=a.value});const a=b.querySelector('.ak-a2c input'),c=src.querySelector('.ak-a2c input');if(a&&c)c.checked=a.checked}
    b.remove();if(ok)await akActGo(id);else akActNo(id)}})}
+
+/* v596 she opens a screen only when the person asked for it; number cards come from her own words (no extra step) */
+function akLiveAsked(){const t=((AKLV.me||'')+' '+(((AKLV.turns||[]).filter(x=>x[0]==='u').slice(-1)[0]||[])[1]||'')).toLowerCase();return /افتح|فتح|وريني|ورّيني|ورينى|اعرض|إعرض|اعرضي|ودّيني|وديني|روحي|open|show me|go to/.test(t)}
+const AKLV_KW=[[/صرف|المصروف|spen[dt]|cost/i,'Spend'],[/roas|العائد|الرواس|الروس/i,'ROAS'],[/قيمة|القيمة|ايراد|إيراد|value|revenue|جبنا|دخل/i,'Value'],[/تحويل|كونفرجن|conversion|conv/i,'Conv.'],[/كليك|نقرات|click/i,'Clicks'],[/cpa|تكلفة التحويل/i,'CPA']];
+function akLiveAutoCards(txt){const t=akLiveTx(txt);if(!t)return;const out=[],seen={};const re=/([$£€]\s?)?\d[\d,]*(\.\d+)?\s?(x|%)?/g;let m;
+ while((m=re.exec(t))&&out.length<3){const num=m[0].trim();if(/^\d{1,2}$/.test(num)&&!m[3])continue;if(/^(19|20)\d\d$/.test(num))continue;
+  const before=t.slice(Math.max(0,m.index-40),m.index);let lab='';for(const [r,l] of AKLV_KW){if(r.test(before.split(/[.،,؟?!]/).pop()))lab=l}
+  if(!lab&&/x$/i.test(num))lab='ROAS';if(!lab||seen[lab])continue;seen[lab]=1;out.push({label:lab,value:lab==='ROAS'?num.replace(/\s*x?$/i,'')+'x':/^\d/.test(num)&&lab==='Spend'||lab==='Value'||lab==='CPA'?(/[$£€]/.test(num)?num:akFxSym(CURRENT_ACCOUNT)+num):num})}
+ if(out.length)akLiveCards(out)}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
