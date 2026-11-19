@@ -11690,7 +11690,7 @@ function akRecTrash(){
  setTimeout(()=>{akRecStop();if(f)f.classList.remove('del')},450);
 }
 function akRecSend(){
- if(!AKR.on)return;const secs=Math.max(1,Math.round((Date.now()-AKR.t0)/1000)),lv=AKR.lv.slice();
+ if(!AKR.on)return;akSfx('vsent');const secs=Math.max(1,Math.round((Date.now()-AKR.t0)/1000)),lv=AKR.lv.slice();
  AKR.rec.onstop=async()=>{
    const blob=new Blob(AKR.chunks,{type:AKR.rec.mimeType||'audio/webm'});akRecStop();
    if(secs<1||!blob.size)return;
@@ -22436,7 +22436,7 @@ const AKCS={ctx:null,buf:{},loading:null,typ:null};
 function akSfxOn(){try{return localStorage.getItem('hm_ak_sfx')!=='0'}catch(e){return true}}
 function akSfxSet(on,btn){try{localStorage.setItem('hm_ak_sfx',on?'1':'0')}catch(e){}if(btn){btn.setAttribute('aria-checked',on);const sw=btn.querySelector('.ak-sw');if(sw)sw.classList.toggle('on',on)}if(!on)akSfxTyping(false);else akSfx('send')}
 function akSfxLoad(){if(AKCS.loading)return AKCS.loading;const C=window.AudioContext||window.webkitAudioContext;if(!C)return Promise.resolve();AKCS.ctx=AKCS.ctx||new C();
- AKCS.loading=Promise.all(['send','recv','typing','rec','delete','photo','end'].map(n=>fetch('icons/alexandra/s/'+n+'.mp3?v=1').then(r=>r.arrayBuffer()).then(a=>new Promise((ok,no)=>AKCS.ctx.decodeAudioData(a,ok,no))).then(b=>{AKCS.buf[n]=b}).catch(()=>{})));return AKCS.loading}
+ AKCS.loading=Promise.all(['send','recv','typing','rec','delete','photo','end','vsent'].map(n=>fetch('icons/alexandra/s/'+n+'.mp3?v=2').then(r=>r.arrayBuffer()).then(a=>new Promise((ok,no)=>AKCS.ctx.decodeAudioData(a,ok,no))).then(b=>{AKCS.buf[n]=b}).catch(()=>{})));return AKCS.loading}
 function akSfx(n,loop){if(!akSfxOn())return null;try{akSfxLoad();const c=AKCS.ctx,b=AKCS.buf[n];if(!c||!b){AKCS.loading&&AKCS.loading.then(()=>{if(n!=='typing'&&n!=='recv'&&n!=='send')return});return null}
  if(c.state==='suspended')c.resume().catch(()=>{});const s=c.createBufferSource(),g=c.createGain();g.gain.value=n==='typing'?.55:.9;s.buffer=b;s.loop=!!loop;s.connect(g);g.connect(c.destination);s.start();return s}catch(e){return null}}
 function akSfxTyping(on){if(on&&!AKCS.typ&&document.getElementById('akBox')){AKCS.typ=akSfx('typing',true);if(AKCS.typ){clearInterval(AKCS.tw);AKCS.tw=setInterval(()=>{if(!AK.busy||!document.getElementById('akBox')){clearInterval(AKCS.tw);akSfxTyping(false)}},700)}}else if(!on&&AKCS.typ){try{AKCS.typ.stop()}catch(e){}AKCS.typ=null}}
