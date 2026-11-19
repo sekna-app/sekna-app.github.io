@@ -446,6 +446,10 @@ exports.api = onRequest({
   }
   // Season card look (picture position/size/opacity, title): not private, read by the build to keep it in the code.
   if (route === '/season-cards') { const p = (await fsGet(PREFS_DOC).catch(() => null)) || {}; res.json({ ok: true, card: p.card || {}, glow: p.glow || null }); return; }
+  // Alexandra on the server: is it linked, and how the last question went (no secrets, no names)
+  if (route === '/ak/state') { const st = await ak.state(); res.json({ ok: true, linked: st.linked, waiting: st.waiting, at: st.at, last: st.last }); return; }
+  // A short stream, to check that answers can arrive word by word
+  if (route === '/ak/streamtest') { res.set('Content-Type', 'text/plain; charset=utf-8'); res.set('X-Accel-Buffering', 'no'); if (res.flushHeaders) res.flushHeaders(); for (let i = 0; i < 6; i++) { res.write('part ' + i + ' ' + Date.now() + '\n'); await new Promise(r => setTimeout(r, 400)); } res.end(); return; }
   if (route === '/ping') { res.json({ ok: true, version: VERSION, mail: notify.mailReady() ? 'gmail' : 'apps-script' }); return; }
   if (route === '/warm') {
     // Called by keepWarm. At most once a minute; it only refreshes the shared data.

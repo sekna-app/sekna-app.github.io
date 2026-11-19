@@ -37,6 +37,7 @@ const HM_NUM_RULES = [
 ].join('\n');
 
 let cfg = null, cfgAt = 0;
+const last = { at: 0, step: '', ms: 0, chunks: 0 };
 const preps = {};
 async function conf() { if (cfg && Date.now() - cfgAt < 120000) return cfg; cfg = (await fsGet(DOC).catch(() => null)) || {}; cfgAt = Date.now(); return cfg; }
 async function scriptPost(o) {
@@ -50,7 +51,7 @@ async function link(email) {
   await fsUpdate(DOC, d => Object.assign({}, d || {}, { secret, ok: false, linkedBy: email, at: Date.now() }));
   cfg = null; return { secret };
 }
-async function state() { const c = await conf(); return { linked: !!(c.secret && c.ok), waiting: !!(c.secret && !c.ok), at: c.okAt || null }; }
+async function state() { const c = await conf(); return { linked: !!(c.secret && c.ok), waiting: !!(c.secret && !c.ok), at: c.okAt || null, last }; }
 async function prep(email, name) {
   const k = email + '|' + name, c = preps[k];
   if (c && Date.now() - c.at < 240000) return c.v;
@@ -68,10 +69,12 @@ async function count(f) { const m = month(); await fsUpdate(USE, d => { d = d ||
 /** POST /ak/ask {token, q, history, ctx, name}: streams the answer as plain text (JSON when it cannot). */
 async function ask(req, res, b, who) {
   const email = String(who.email || '').toLowerCase(), name = String(b.name || who.name || '').trim().slice(0, 60);
-  const q0 = String(b.q || '').trim().slice(0, 1500);
+  const q0 = String(b.q || '').trim().slice(0, 1500), t0 = Date.now();
+  Object.assign(last, { at: t0, step: 'start', ms: 0, chunks: 0 });
   if (!q0) { res.json({ ok: true, answer: '' }); return; }
   let p;
-  try { p = await prep(email, name); } catch (e) { res.json({ ok: false, fallback: true, error: e.message }); return; }
+  try { p = await prep(email, name); } catch (e) { last.step = 'prep: ' + e.message; res.json({ ok: false, fallback: true, error: e.message }); return; }
+  last.step = 'prep ok ' + (Date.now() - t0) + 'ms';
   if (p.blocked) { res.json({ ok: false, blocked: true, error: 'You do not have access to Alexandra.' }); return; }
   if (p.paused && !p.editor) { res.json({ ok: true, answer: 'Alexandra is stopped for now. Try again later.', api: 'srv' }); return; }
   const ctx = String(b.ctx || '').slice(0, 120000);
@@ -115,7 +118,7 @@ async function ask(req, res, b, who) {
           const j = JSON.parse(line.slice(5));
           const parts = (((j.candidates || [])[0] || {}).content || {}).parts || [];
           const t = parts.filter(x => !x.thought).map(x => x.text || '').join('');
-          if (t) { any = true; res.write(t); }
+          if (t) { any = true; last.chunks++; if (last.chunks === 1) last.first = Date.now() - t0; res.write(t); }
         } catch (e) {}
       }
     }
@@ -123,6 +126,7 @@ async function ask(req, res, b, who) {
   if (!any) res.write('I could not answer that. Try again.');
   await count(o => { o.n++; });
   await used;
+  last.step = 'done'; last.ms = Date.now() - t0;
   res.end();
 }
 
