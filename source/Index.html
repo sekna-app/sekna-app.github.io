@@ -10097,6 +10097,28 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .ak.dk .akvo-r{background:#242526;border-color:#3a3b3c}.ak.dk .akvo-r span{color:#fff}
 
     .ak-why{font:600 11px Inter,system-ui,sans-serif;color:#8a93a6;margin-top:6px}
+
+    /* v575 voice chat with Alexandra */
+    .ak-lvb{flex:none;width:36px;height:36px;border:0;border-radius:50%;background:linear-gradient(135deg,#2a52c9,#1C3C96);color:#fff;display:none;place-items:center;cursor:pointer;margin-left:2px;box-shadow:0 3px 10px rgba(28,60,150,.3)}
+    .ak-lvb .ak-ic{width:19px;height:19px}.ak-in.e .ak-lvb{display:grid}.ak-in.ak-off .ak-lvb{opacity:.35;pointer-events:none}
+    .aklv{position:fixed;inset:0;z-index:2147480100;background:#050b1f;overflow:hidden;opacity:0;transform:scale(1.03);transition:opacity .28s ease,transform .28s ease}
+    .aklv.in{opacity:1;transform:none}
+    .aklv-v{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .45s ease}.aklv-v.on{opacity:1}
+    .aklv-sh{position:absolute;inset:0;background:linear-gradient(180deg,rgba(3,8,26,.55) 0,rgba(3,8,26,0) 18%,rgba(3,8,26,0) 55%,rgba(3,8,26,.85) 100%);pointer-events:none}
+    .aklv-top{position:absolute;left:0;right:0;top:0;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 0;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;color:#fff}
+    .aklv-x{width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;display:grid;place-items:center;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-size:18px}
+    .aklv-x .ak-ic{width:22px;height:22px}
+    .aklv-nm{text-align:center;display:flex;flex-direction:column;font-family:Inter,system-ui,sans-serif}.aklv-nm b{font-size:17px;font-weight:800}
+    .aklv-nm span{font-size:13px;font-weight:700;color:#E9C46A;margin-top:2px}
+    .aklv-cap{position:absolute;left:20px;right:20px;bottom:calc(env(safe-area-inset-bottom,0px) + 128px);color:#fff;font:700 18px/1.45 Inter,system-ui,sans-serif;text-align:center;text-shadow:0 2px 10px rgba(0,0,0,.6);min-height:26px}
+    .aklv-cap.u{color:rgba(255,255,255,.72);font-weight:600;font-style:italic}
+    .aklv-bar{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 34px);display:flex;justify-content:center;gap:26px}
+    .aklv-bar button{width:64px;height:64px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;color:#fff;font-size:22px;font-weight:800}
+    .aklv-mu{background:rgba(255,255,255,.16);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}.aklv-mu .ak-ic{width:26px;height:26px}
+    .aklv-mu.off{background:#fff;color:#c63a4a}
+    .aklv-end{background:#e5484d;box-shadow:0 6px 20px rgba(229,72,77,.45)}
+    .aklv-bar .aklv-again{width:auto;padding:0 26px;border-radius:999px;background:linear-gradient(135deg,#E9C46A,#C9A24A);color:#0f1d4a;font:800 15px Inter,system-ui,sans-serif}
+    .aklv-log{font:700 12px Inter,system-ui,sans-serif;color:#6b7385}
 </style>
 </head>
 <body>
@@ -11150,7 +11172,7 @@ function openTgBot(){if(!SEKNA_TG_BOT)return;try{const w=window.open(SEKNA_TG_BO
  
 let ASK_HEMERA_URL='https:\/\/script.google.com/macros/s/AKfycbwDgKEmZ54-FxWfyCoYAE-u6HZBcFA7V0c0DpUToVfPfNpo0HMyrPueFgUBtXBH--e1/exec';
 const AK={msgs:[],assets:null,at:0,editor:false,hist:[],busy:false,kb:true,nav:{},add:null};
-const AK_IC={minus:'<path d="M5 12h14"/>',up:'<path d="M6 15l6-6 6 6"/>',expand:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',shrink:'<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>',like:'<path d="M7 11v9H4v-9zM7 11l4-7c1.5 0 2.3 1 2 2.5L12.5 10H19a2 2 0 0 1 2 2.3l-1.2 6A2 2 0 0 1 17.8 20H7"/>',cmt:'<path d="M4 5h16v11H9l-5 4z"/>',share:'<path d="M14 5l7 7-7 7v-4c-5 0-8 1.5-10 5 .5-5 3-9 10-10z"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',bug:'<rect x="8" y="7" width="8" height="12" rx="4"/><path d="M12 7V4M8 11H4M20 11h-4M8 16H5M19 16h-3"/>',filter:'<path d="M4 5h16l-6 8v6l-4-2v-4z"/>',power:'<path d="M12 3v8"/><path d="M6.3 7a8 8 0 1 0 11.4 0"/>',moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',down:'<path d="M6 9l6 6 6-6"/>',check:'<path d="M5 12l5 5 9-10"/>',
+const AK_IC={wave:'<path d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4"/>',minus:'<path d="M5 12h14"/>',up:'<path d="M6 15l6-6 6 6"/>',expand:'<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>',shrink:'<path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/>',like:'<path d="M7 11v9H4v-9zM7 11l4-7c1.5 0 2.3 1 2 2.5L12.5 10H19a2 2 0 0 1 2 2.3l-1.2 6A2 2 0 0 1 17.8 20H7"/>',cmt:'<path d="M4 5h16v11H9l-5 4z"/>',share:'<path d="M14 5l7 7-7 7v-4c-5 0-8 1.5-10 5 .5-5 3-9 10-10z"/>',chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',bug:'<rect x="8" y="7" width="8" height="12" rx="4"/><path d="M12 7V4M8 11H4M20 11h-4M8 16H5M19 16h-3"/>',filter:'<path d="M4 5h16l-6 8v6l-4-2v-4z"/>',power:'<path d="M12 3v8"/><path d="M6.3 7a8 8 0 1 0 11.4 0"/>',moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',down:'<path d="M6 9l6 6 6-6"/>',check:'<path d="M5 12l5 5 9-10"/>',
  spk:'<path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z"/><path d="M18.5 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>',
  back:'<path d="M15 18l-6-6 6-6"/>',plane:'<path d="M4 12l16-8-6 16-2.5-6.5z"/>',cam:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',dash:'<path d="M4 15a8 8 0 0 1 16 0"/><path d="M12 15l4-5"/>',all:'<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',chev:'<path d="M9 6l6 6-6 6"/>',mic:'<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',play:'<path d="M7 5l12 7-12 7z"/>',pause:'<path d="M8 5v14M16 5v14"/>',pen:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>',plat:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>',globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>',folder:'<path d="M3 7h7l2 2h9v10H3z"/>',grid:'<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',link2:'<path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/>',note:'<path d="M5 4h14v12l-4 4H5z"/><path d="M15 20v-4h4"/>',clip:'<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4h6v3H9z"/>',doc:'<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>',hand:'<path d="M8 12l3 3 6-6"/><circle cx="12" cy="12" r="9"/>',trend:'<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',wallet:'<rect x="3" y="6" width="18" height="13" rx="2"/><path d="M16 12h3"/>',bolt:'<path d="M13 3L5 13h6l-1 8 8-10h-6z"/>',search:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/>',teach:'<path d="M12 4a4 4 0 0 0-4 4 3.5 3.5 0 0 0-3 5.5A3.5 3.5 0 0 0 8 19h4V4zM12 4a4 4 0 0 1 4 4 3.5 3.5 0 0 1 3 5.5A3.5 3.5 0 0 1 16 19h-4"/>',x:'<path d="M6 6l12 12M18 6L6 18"/>',users:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20a7 7 0 0 1 14 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14a5 5 0 0 1 6 5"/>',refresh:'<path d="M20 11a8 8 0 1 0-2.3 5.7M20 5v6h-6"/>',star:'<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',unlock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/>',key:'<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/>',megaphone:'<path d="M4 10v4h3l7 5V5L7 10z"/><path d="M18 9a4 4 0 0 1 0 6"/>',home:'<path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/>',rules:'<path d="M6 3h12v18H6z"/><path d="M9 8h6M9 12h6M9 16h4"/>',dup:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V6a2 2 0 0 1 2-2h10"/>',copy:'<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>',send:'<path d="M5 12h14M13 6l6 6-6 6"/>',menu:'<path d="M4 7h16M4 12h16M4 17h16"/>',
  links:'<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 3v18"/>',
@@ -11352,7 +11374,7 @@ function akOpenNow(){
  const o=document.createElement('div');o.id='akBox';o.className='ak'+(akDk()?' dk':'');o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Alexandra');
  o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av ak-tapp" id="akHdAv" role="button" tabindex="0" aria-label="Open Alexandra's profile" onclick="AK.pgTab='about';akAbout(event)">${akAvIn()}</span><div><b>Alexandra <svg class="ak-flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="10" rx="2" fill="#0057B7"/><rect y="10" width="30" height="10" rx="2" fill="#FFD700"/><rect y="8" width="30" height="4" fill="#0057B7"/><rect y="10" width="30" height="2" fill="#FFD700"/></svg><span class="ak-fle">🇺🇦</span></b><small id="akSt">Active now</small></div><button type="button" class="ak-min" hidden aria-label="Minimise" title="Minimise" onclick="akMini(event)">${akI('down')}</button><button type="button" class="ak-mode" hidden onclick="akModeFlip()"></button><button type="button" class="ak-inf" aria-label="About Alexandra" onclick="AK.pgTab='about';akAbout(event)">${akI('about')}</button></div><div class="ak-pg" id="akAbt" aria-hidden="true"></div>
   <div class="ak-bd" id="akBd"></div><div class="ak-kb" id="akKb"></div>
-  <form class="ak-in" onsubmit="akSend(event)"><button type="button" class="ak-mb" aria-label="Menu" onclick="akToggleKb()">${akI('menu')}</button><button type="button" class="ak-pic" aria-label="Send a photo" onclick="akPicPick()">${akI('cam')}</button><input id="akQ" autocomplete="off" maxlength="1500" placeholder="Aa" oninput="akInMode()"><button type="submit" class="ak-snd" aria-label="Send">${akI('plane')}</button><button type="button" class="ak-mic" aria-label="Hold to record a voice message" onpointerdown="akRecHold(event)" oncontextmenu="return false">${akI('mic')}</button>
+  <form class="ak-in" onsubmit="akSend(event)"><button type="button" class="ak-mb" aria-label="Menu" onclick="akToggleKb()">${akI('menu')}</button><button type="button" class="ak-pic" aria-label="Send a photo" onclick="akPicPick()">${akI('cam')}</button><input id="akQ" autocomplete="off" maxlength="1500" placeholder="Aa" oninput="akInMode()"><button type="submit" class="ak-snd" aria-label="Send">${akI('plane')}</button><button type="button" class="ak-mic" aria-label="Hold to record a voice message" onpointerdown="akRecHold(event)" oncontextmenu="return false">${akI('mic')}</button><button type="button" class="ak-lvb" aria-label="Talk with Alexandra" onclick="akLiveOpen()">${akI('wave')}</button>
   <div class="ak-rec" id="akRec"><button type="button" class="ak-rt2" aria-label="Delete" onclick="akRecTrash()">${akI('trash')}</button><div class="ak-rw"><em></em><small class="ak-rh">‹ Slide to cancel</small><span id="akRw"></span><b id="akRt">0:00</b></div><button type="button" class="ak-rs2" aria-label="Send" onclick="akRecSend()">${akI('plane')}</button></div></form></div>`;
  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));akVv();akInMode();try{avDefs()}catch(e){}
  akRestore();akModeApply();
@@ -21913,6 +21935,86 @@ async function akVoPick(v,btn){btn.textContent='…';let j=null;try{j=await akVo
  if(!j||!j.ok){btn.textContent='Pick';showSettingsToast('Could not save the voice. Try again.');return}
  document.querySelectorAll('.akvo-r').forEach(r=>{const on=r.dataset.v===v;r.classList.toggle('on',on);r.querySelector('.akvo-k').textContent=on?'Chosen':'Pick'});
  showSettingsToast(v+' is Alexandra’s voice now.')}
+
+ 
+const AKLV={};
+const AKLV_URL=AK_SRV.replace(/\/ak\/ask$/,'/ak/live');
+function akLiveHtml(){const v=k=>`<video class="aklv-v" data-s="${k}" src="icons/alexandra/v/voice-${k}.mp4" muted loop playsinline autoplay preload="auto"></video>`;
+ return `<div class="aklv" id="akLive" role="dialog" aria-label="Voice chat with Alexandra">${v('listen')}${v('think')}${v('talk')}<div class="aklv-sh"></div>
+ <div class="aklv-top"><button type="button" class="aklv-x" aria-label="Close" onclick="akLiveEnd()">${akI('down')||'✕'}</button><div class="aklv-nm"><b>Alexandra</b><span id="aklvSt">Connecting…</span></div><span></span></div>
+ <div class="aklv-cap" id="aklvCap" dir="auto"></div>
+ <div class="aklv-bar"><button type="button" class="aklv-mu" id="aklvMu" aria-label="Mute the mic" onclick="akLiveMute()">${akI('mic')}</button><button type="button" class="aklv-end" aria-label="End the voice chat" onclick="akLiveEnd()">✕</button></div></div>`}
+function akLiveState(st){if(AKLV.st===st)return;AKLV.st=st;const el=document.getElementById('akLive');if(!el)return;
+ el.querySelectorAll('.aklv-v').forEach(v=>{const on=v.dataset.s===(st==='connecting'?'listen':st);v.classList.toggle('on',on);if(on){try{v.play()}catch(e){}}});
+ const t={connecting:'Connecting…',listen:AKLV.mute?'Mic is off':'Listening…',think:'Thinking…',talk:'Speaking'}[st]||'';const s=document.getElementById('aklvSt');if(s)s.textContent=t;el.dataset.st=st}
+function akLiveCap(t,user){const c=document.getElementById('aklvCap');if(!c)return;const x=String(t||'').trim();c.textContent=x.length>180?'…'+x.slice(-180):x;c.classList.toggle('u',!!user)}
+function akB64(u8){let s='';for(let i=0;i<u8.length;i+=0x8000)s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(s)}
+async function akLiveOpen(){if(AKLV.ws||AK.blocked)return;
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.WebSocket||!window.AudioWorkletNode){showSettingsToast('Voice chat does not work on this browser.');return}
+ document.getElementById('akLive')?.remove();document.body.insertAdjacentHTML('beforeend',akLiveHtml());Object.assign(AKLV,{st:'',mute:false,turns:[],me:'',her:'',spoke:false,lastVoice:0,wait:false,nextT:0,srcs:[],closed:false});
+ akLiveState('connecting');requestAnimationFrame(()=>document.getElementById('akLive')?.classList.add('in'));
+ let stream;try{stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:1}})}
+ catch(e){akLiveFail('Allow the microphone to talk with Alexandra.');return}
+ AKLV.stream=stream;const ctx=new (window.AudioContext||window.webkitAudioContext)();AKLV.ctx=ctx;try{await ctx.resume()}catch(e){}
+ let j=null,cx='';try{cx=await akCtx()}catch(e){}
+ try{const r=await fetch(AKLV_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),name:akMe().name,ctx:cx})});j=await r.json()}catch(e){}
+ if(AKLV.closed)return;
+ if(!j||!j.ok){akLiveFail(j&&j.error?(akOwner()?j.error:'Voice chat is not ready right now. Try again in a minute.'):'Could not reach HEMERA’s server.');return}
+ const ws=new WebSocket('wss:\/\/generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained?access_token='+encodeURIComponent(j.token));
+ ws.binaryType='arraybuffer';AKLV.ws=ws;
+ ws.onopen=()=>ws.send(JSON.stringify({setup:{model:j.model,generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:j.voice||'Leda'}}}},
+  systemInstruction:{parts:[{text:j.sys}]},inputAudioTranscription:{},outputAudioTranscription:{}}}));
+ ws.onmessage=ev=>{let m;try{m=JSON.parse(typeof ev.data==='string'?ev.data:new TextDecoder().decode(ev.data))}catch(e){return}akLiveMsg(m)};
+ ws.onclose=ev=>{if(!AKLV.closed)akLiveFail(ev.code===1000?'The voice chat ended.':(akOwner()&&ev.reason?'Gemini closed the call: '+ev.reason:'The voice chat stopped. Try again.'))};
+ ws.onerror=()=>{};
+}
+async function akLiveMic(){const ctx=AKLV.ctx;
+ const code="class P extends AudioWorkletProcessor{process(i){const c=i[0]&&i[0][0];if(c)this.port.postMessage(c.slice(0));return true}}registerProcessor('akmic',P)";
+ const url=URL.createObjectURL(new Blob([code],{type:'application/javascript'}));await ctx.audioWorklet.addModule(url);URL.revokeObjectURL(url);
+ const src=ctx.createMediaStreamSource(AKLV.stream),node=new AudioWorkletNode(ctx,'akmic'),mute=ctx.createGain();mute.gain.value=0;src.connect(node);node.connect(mute);mute.connect(ctx.destination);AKLV.node=node;AKLV.src=src;
+ const ratio=ctx.sampleRate/16000;let acc=[],pos=0;
+ node.port.onmessage=e=>{const f=e.data;let sum=0;for(let i=0;i<f.length;i++)sum+=f[i]*f[i];const rms=Math.sqrt(sum/f.length);
+  if(rms>0.025&&!AKLV.mute&&!akLivePlaying()){AKLV.lastVoice=performance.now();AKLV.spoke=true}
+  
+  for(;pos<f.length;pos+=ratio){const i=Math.floor(pos);acc.push(AKLV.mute?0:Math.max(-1,Math.min(1,f[i])))}pos-=f.length;
+  if(acc.length>=1600){const n=acc.length,pcm=new Int16Array(n);for(let i=0;i<n;i++)pcm[i]=acc[i]<0?acc[i]*0x8000:acc[i]*0x7fff;acc=[];
+   const ws=AKLV.ws;if(ws&&ws.readyState===1)ws.send(JSON.stringify({realtimeInput:{audio:{data:akB64(new Uint8Array(pcm.buffer)),mimeType:'audio/pcm;rate=16000'}}}))}};
+ AKLV.tick=setInterval(akLiveTick,150)}
+function akLivePlaying(){return AKLV.ctx&&AKLV.ctx.currentTime<AKLV.nextT-0.02}
+function akLiveTick(){if(AKLV.closed)return;const now=performance.now();
+ if(akLivePlaying())akLiveState('talk');
+ else if(AKLV.wait||(AKLV.spoke&&now-AKLV.lastVoice>800))akLiveState('think');
+ else akLiveState('listen')}
+function akLivePlay(b64,mime){const ctx=AKLV.ctx;const rate=+((String(mime||'').match(/rate=(\d+)/)||[])[1]||24000);
+ const u8=Uint8Array.from(atob(b64),c=>c.charCodeAt(0)),i16=new Int16Array(u8.buffer,0,u8.length>>1),buf=ctx.createBuffer(1,i16.length,rate),ch=buf.getChannelData(0);
+ for(let i=0;i<i16.length;i++)ch[i]=i16[i]/32768;
+ const s=ctx.createBufferSource();s.buffer=buf;s.connect(ctx.destination);const t=Math.max(ctx.currentTime+0.04,AKLV.nextT);s.start(t);AKLV.nextT=t+buf.duration;AKLV.srcs.push(s);
+ s.onended=()=>{AKLV.srcs=AKLV.srcs.filter(x=>x!==s)}}
+function akLiveStop(){AKLV.srcs.forEach(s=>{try{s.stop()}catch(e){}});AKLV.srcs=[];AKLV.nextT=0}
+function akLiveTurn(){if(AKLV.me.trim())AKLV.turns.push(['u',AKLV.me.trim()]);if(AKLV.her.trim())AKLV.turns.push(['b',AKLV.her.trim()]);AKLV.me='';AKLV.her=''}
+function akLiveMsg(m){
+ if(m.setupComplete){akLiveMic().then(()=>{akLiveState('listen');
+   const ar=AK.msgs.slice().reverse().find(x=>x.w==='u'),arab=ar&&/[؀-ۿ]/.test(ar.html||'');
+   AKLV.wait=true;AKLV.ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:`(The person just opened the voice chat. Greet ${String(akMe().name||'them').split(' ')[0]} warmly by first name in one short sentence${arab?' in Egyptian Arabic':''}, and ask how you can help.)`}]}],turnComplete:true}}))
+  }).catch(()=>akLiveFail('The microphone could not start.'));return}
+ if(m.goAway){return}
+ const c=m.serverContent;if(!c)return;
+ if(c.interrupted){akLiveStop();if(AKLV.her)AKLV.her+=' …';}
+ if(c.inputTranscription&&c.inputTranscription.text){if(AKLV.her&&!AKLV.me)akLiveTurn();AKLV.me+=c.inputTranscription.text;AKLV.spoke=true;AKLV.lastVoice=performance.now();akLiveCap(AKLV.me,true)}
+ if(c.modelTurn&&c.modelTurn.parts)c.modelTurn.parts.forEach(p=>{const d=p.inlineData||p.inline_data;if(d&&d.data){AKLV.wait=false;AKLV.spoke=false;akLivePlay(d.data,d.mimeType||d.mime_type)}});
+ if(c.outputTranscription&&c.outputTranscription.text){AKLV.her+=c.outputTranscription.text;akLiveCap(AKLV.her,false)}
+ if(c.turnComplete){AKLV.wait=false;AKLV.spoke=false;akLiveTurn()}}
+function akLiveMute(){AKLV.mute=!AKLV.mute;const b=document.getElementById('aklvMu');if(b){b.classList.toggle('off',AKLV.mute);b.setAttribute('aria-label',AKLV.mute?'Turn the mic on':'Mute the mic')}
+ if(AKLV.stream)AKLV.stream.getAudioTracks().forEach(t=>t.enabled=!AKLV.mute);AKLV.st='';akLiveTick()}
+function akLiveClean(){AKLV.closed=true;clearInterval(AKLV.tick);akLiveStop();try{AKLV.node&&AKLV.node.disconnect();AKLV.src&&AKLV.src.disconnect()}catch(e){}
+ try{AKLV.ws&&AKLV.ws.close(1000)}catch(e){}AKLV.ws=null;if(AKLV.stream)AKLV.stream.getTracks().forEach(t=>t.stop());AKLV.stream=null;try{AKLV.ctx&&AKLV.ctx.close()}catch(e){}AKLV.ctx=null;
+ akLiveTurn();const t=AKLV.turns||[];AKLV.turns=[];
+ if(t.length){t.forEach(([w,x],i)=>AK.msgs.push(w==='u'?{w:'u',html:`<span dir="auto">${akEsc(x)}</span>`,nw:1}:{w:'h',html:`${i<2?'<p class="aklv-log">🎙 Voice chat</p>':''}<p dir="auto">${akEsc(x)}</p>`,cls:'',nw:1}));
+  t.forEach(([w,x])=>AK.hist.push({role:w==='u'?'user':'model',text:x}));AK.hist=AK.hist.slice(-16);try{akSave()}catch(e){}akDraw()}}
+function akLiveEnd(){akLiveClean();const el=document.getElementById('akLive');if(el){el.classList.remove('in');setTimeout(()=>el.remove(),280)}}
+function akLiveFail(msg){if(AKLV.closed)return;akLiveClean();const el=document.getElementById('akLive');if(!el)return;akLiveState('listen');
+ const s=document.getElementById('aklvSt');if(s)s.textContent='Not connected';akLiveCap(msg,false);
+ const b=el.querySelector('.aklv-bar');if(b)b.innerHTML=`<button type="button" class="aklv-again" onclick="akLiveEnd();setTimeout(akLiveOpen,320)">Try again</button><button type="button" class="aklv-end" aria-label="Close" onclick="akLiveEnd()">✕</button>`}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>

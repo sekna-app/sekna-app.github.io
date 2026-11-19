@@ -153,7 +153,7 @@ async function usageMail(tz, sendMail, owners, mailReady) {
   const html = `<p style="margin:0 0 12px">${kind === 'test' ? 'This is a test of the monthly usage email. The real one comes on the last day of each month.' : `Here is how much HEMERA used in ${label}.`}</p>
     <p style="margin:0 0 12px">Server cost: ${costLine}</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font:14px Arial,sans-serif">
-    ${row('Alexandra questions on the server', use.n.toLocaleString('en-US'))}${row('Gemini busy (too many at once)', use.limit)}${row('Gemini errors', use.err)}${row('Gemini plan', 'Free tier · no charge')}</table>`;
+    ${row('Alexandra questions on the server', use.n.toLocaleString('en-US'))}${row('Voice chats with Alexandra', (use.voice || 0).toLocaleString('en-US'))}${row('Gemini busy (too many at once)', use.limit)}${row('Gemini errors', use.err)}${row('Gemini plan', 'Free tier · no charge')}</table>`;
   let sent = 0;
   for (const to of owners) { try { await sendMail({ to, subject: (kind === 'test' ? '[Test] ' : '') + 'HEMERA usage · ' + label, title: 'HEMERA usage · ' + label, html }); sent++; } catch (e) { console.error('Usage mail to ' + to + ': ' + e.message); } }
   return { kind, sent };
@@ -192,4 +192,47 @@ async function voice(b, who) {
   const out = { ok: true, voice: v, mime: d.mimeType || d.mime_type || 'audio/L16;rate=24000', data: d.data };
   voiceCache[v] = out; return out;
 }
-module.exports = { ask, link, state, usageMail, voice };
+
+// v575 voice chat (Gemini Live): a one-use token so the app talks to Gemini directly without ever seeing a key
+let liveModel = '', liveModelAt = 0;
+async function pickLiveModel(key) {
+  if (liveModel && Date.now() - liveModelAt < 6 * 36e5) return liveModel;
+  const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=1000', { headers: { 'x-goog-api-key': key } });
+  const j = await r.json().catch(() => ({}));
+  const live = (j.models || []).filter(m => (m.supportedGenerationMethods || []).includes('bidiGenerateContent')).map(m => m.name);
+  const score = n => (/native-audio/.test(n) ? 100 : /live/.test(n) ? 50 : 0) + (/flash/.test(n) ? 10 : 0) + (/latest/.test(n) ? 5 : 0) - (/thinking|lite|exp/.test(n) ? 3 : 0) + (parseFloat((n.match(/gemini-(\d+(?:\.\d+)?)/) || [])[1]) || 0);
+  live.sort((a, b) => score(b) - score(a) || b.localeCompare(a));
+  liveModel = live[0] || 'models/gemini-2.5-flash-native-audio-preview-09-2025'; liveModelAt = Date.now();
+  return liveModel;
+}
+const VOICE_RULES = `# Voice chat
+You are talking out loud with the person, like a phone call. Speak naturally and warmly as Alexandra.
+- Keep each answer short: one to three sentences, unless they ask for more.
+- Never use markdown, lists, symbols, tables or [[CARDS]]. Say numbers the way people say them ("ten thousand four hundred dollars", "two point one").
+- Answer in the language they speak. If they speak Arabic, answer in Egyptian Arabic.
+- If you are not sure about a number, say so instead of guessing.`;
+async function live(b, who) {
+  const email = String(who.email || '').toLowerCase(), name = String(b.name || who.name || '').trim().slice(0, 60);
+  const p = await prep(email, name);
+  if (p.blocked) return { ok: false, blocked: true, error: 'You do not have access to Alexandra.' };
+  if (p.paused && !p.editor) return { ok: false, error: 'Alexandra is stopped for now.' };
+  const keys = (p.keys || []).filter(Boolean);
+  if (!keys.length) return { ok: false, error: 'No Gemini key.' };
+  const now = Date.now();
+  let r = null, why = '', model = '';
+  for (let ki = 0; ki < keys.length; ki++) {
+    try { model = await pickLiveModel(keys[ki]); } catch (e) {}
+    r = await fetch('https://generativelanguage.googleapis.com/v1alpha/auth_tokens', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': keys[ki] },
+      body: JSON.stringify({ uses: 1, expireTime: new Date(now + 30 * 60e3).toISOString(), newSessionExpireTime: new Date(now + 2 * 60e3).toISOString() }) });
+    if (r.status === 429) continue;
+    break;
+  }
+  const j = r ? await r.json().catch(() => ({})) : {};
+  if (!r || !r.ok || !j.name) { why = ((j.error || {}).message || '').slice(0, 200); console.error('Alexandra live token ' + (r && r.status) + ': ' + why); return { ok: false, error: 'Gemini voice ' + (r ? r.status : '') + (why ? ': ' + why : '') }; }
+  await count(o => { o.voice = (o.voice || 0) + 1; });
+  const c = await conf();
+  const ctx = String(b.ctx || '').slice(0, 90000);
+  const sys = (VOICE_RULES + '\n\n' + p.base + (ctx ? '\n\n## Dashboard numbers (HEMERA)\n' + ctx : '') + '\n\n=== DATA ===\n' + (p.data || '')).slice(0, 300000);
+  return { ok: true, token: j.name, model, voice: c.voice || 'Leda', sys };
+}
+module.exports = { ask, link, state, usageMail, voice, live };
