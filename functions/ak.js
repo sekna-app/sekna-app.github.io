@@ -218,6 +218,8 @@ async function live(b, who) {
   if (p.paused && !p.editor) return { ok: false, error: 'Alexandra is stopped for now.' };
   const keys = (p.keys || []).filter(Boolean);
   if (!keys.length) return { ok: false, error: 'No Gemini key.' };
+  // v578 warm-up when the chat opens: the script's data and the model are ready before the voice chat starts
+  if (b.warm) { try { await pickLiveModel(keys[0]); } catch (e) {} return { ok: true, warm: true }; }
   const now = Date.now();
   let r = null, why = '', model = '';
   for (let ki = 0; ki < keys.length; ki++) {
@@ -231,8 +233,8 @@ async function live(b, who) {
   if (!r || !r.ok || !j.name) { why = ((j.error || {}).message || '').slice(0, 200); console.error('Alexandra live token ' + (r && r.status) + ': ' + why); return { ok: false, error: 'Gemini voice ' + (r ? r.status : '') + (why ? ': ' + why : '') }; }
   await count(o => { o.voice = (o.voice || 0) + 1; });
   const c = await conf();
-  const ctx = String(b.ctx || '').slice(0, 90000);
-  const sys = (VOICE_RULES + '\n\n' + p.base + (ctx ? '\n\n## Dashboard numbers (HEMERA)\n' + ctx : '') + '\n\n=== DATA ===\n' + (p.data || '')).slice(0, 300000);
+  const ctx = String(b.ctx || '').slice(0, 40000);
+  const sys = (VOICE_RULES + '\n\n' + p.base + (ctx ? '\n\n## Dashboard numbers (HEMERA)\n' + ctx : '') + '\n\n=== DATA ===\n' + (p.data || '')).slice(0, 160000);
   return { ok: true, token: j.name, model, voice: c.voice || 'Leda', sys };
 }
 module.exports = { ask, link, state, usageMail, voice, live };

@@ -10119,6 +10119,27 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .aklv-end{background:#e5484d;box-shadow:0 6px 20px rgba(229,72,77,.45)}
     .aklv-bar .aklv-again{width:auto;padding:0 26px;border-radius:999px;background:linear-gradient(135deg,#E9C46A,#C9A24A);color:#0f1d4a;font:800 15px Inter,system-ui,sans-serif}
     .aklv-log{font:700 12px Inter,system-ui,sans-serif;color:#6b7385}
+
+    /* v578 voice chat captions (name, sound bars, words with the numbers lit) */
+    .aklv-sh{background:linear-gradient(180deg,rgba(3,8,26,.55) 0,rgba(3,8,26,0) 16%,rgba(3,8,26,0) 42%,rgba(0,0,0,.72) 62%,#000 84%)!important}
+    .aklv-cap{position:static!important;left:auto;right:auto;bottom:auto;text-shadow:none!important;font:800 19px/1.5 Inter,AKufi,system-ui,sans-serif!important;color:#fff!important;min-height:56px;max-width:520px;margin:0 auto}
+    .aklv-cap[dir="auto"]:lang(ar),.aklv-cap{unicode-bidi:plaintext}
+    .aklv-cap b{color:#5ec8ff;font-weight:900}
+    .aklv-cap.u{color:rgba(255,255,255,.66)!important;font-weight:600!important;font-style:normal!important}
+    .aklv-cb{position:absolute;left:22px;right:22px;bottom:calc(env(safe-area-inset-bottom,0px) + 122px);display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+    .aklv-nmg{font:800 13px Inter,system-ui,sans-serif;letter-spacing:.32em;color:#E9C46A;padding-left:.32em}
+    .aklv-wv{display:flex;align-items:center;gap:5px;height:44px}
+    .aklv-wv i{width:5px;border-radius:5px;background:linear-gradient(180deg,#5ec8ff,#E9C46A);height:var(--h,10px);transform:scaleY(.25);transform-origin:center;transition:transform .3s ease;opacity:.9}
+    .aklv-wv i:nth-child(1),.aklv-wv i:nth-child(17){--h:7px;border-radius:50%}.aklv-wv i:nth-child(2),.aklv-wv i:nth-child(16){--h:16px}.aklv-wv i:nth-child(3),.aklv-wv i:nth-child(15){--h:26px}
+    .aklv-wv i:nth-child(4),.aklv-wv i:nth-child(14){--h:34px}.aklv-wv i:nth-child(5),.aklv-wv i:nth-child(13){--h:20px}.aklv-wv i:nth-child(6),.aklv-wv i:nth-child(12){--h:38px}
+    .aklv-wv i:nth-child(7),.aklv-wv i:nth-child(11){--h:28px}.aklv-wv i:nth-child(8),.aklv-wv i:nth-child(10){--h:42px}.aklv-wv i:nth-child(9){--h:44px}
+    .aklv[data-st="talk"] .aklv-wv i{animation:aklvWv .9s ease-in-out infinite alternate}
+    .aklv[data-st="listen"] .aklv-wv i{transform:scaleY(.32)}
+    .aklv[data-st="think"] .aklv-wv i{animation:aklvTh 1.4s ease-in-out infinite}
+    .aklv-wv i:nth-child(odd){animation-delay:-.45s!important}.aklv-wv i:nth-child(3n){animation-delay:-.2s!important}.aklv-wv i:nth-child(4n){animation-delay:-.7s!important}
+    @keyframes aklvWv{0%{transform:scaleY(.3)}100%{transform:scaleY(1)}}
+    @keyframes aklvTh{0%,100%{transform:scaleY(.25);opacity:.5}50%{transform:scaleY(.45);opacity:1}}
+    @media (prefers-reduced-motion:reduce){.aklv-wv i{animation:none!important;transform:scaleY(.5)!important}}
 </style>
 </head>
 <body>
@@ -11362,7 +11383,7 @@ function akSideDraw(){const o=document.getElementById('akBox');if(!o)return;let 
  R.innerHTML=`<div class="ak-drc" style="background-image:url(${akCovUrl()})"></div><span class="ak-pga ak-tapp" onclick="AK.pgTab='about';akAbout(event)">${akAvIn()}<em></em></span><b class="ak-drn">Alexandra ${AK_TICK}</b><small class="ak-drs">Active now</small>
   <div class="ak-intro">${akIntroHtml()}</div><button type="button" class="ak-drb" onclick="AK.pgTab='about';akAbout(event)">${akI('about')}View profile</button>`}
 addEventListener('resize',()=>{clearTimeout(akModeApply.t);akModeApply.t=setTimeout(akModeApply,150)});
-function openAsk(){setTimeout(()=>{try{akCtx().catch(()=>{})}catch(e){}},400);if(!ASK_HEMERA_URL)setTimeout(()=>akStoryFirst(false),600);const w=akWho();if(w&&w.ok===false){AK.blocked=true;AK.msgs=[];try{localStorage.removeItem(AK_KEEP)}catch(e){}}akOpenNow();setTimeout(akReqDot,0)}
+function openAsk(){setTimeout(()=>{try{akCtx().catch(()=>{})}catch(e){}},400);setTimeout(akLiveWarm,900);if(!ASK_HEMERA_URL)setTimeout(()=>akStoryFirst(false),600);const w=akWho();if(w&&w.ok===false){AK.blocked=true;AK.msgs=[];try{localStorage.removeItem(AK_KEEP)}catch(e){}}akOpenNow();setTimeout(akReqDot,0)}
 setTimeout(()=>{try{akNavLock(false)}catch(e){}},1500);
  
 function akBlockedSay(){AK.kb=false;akKb();akLockIn();if(!AK.msgs.some(m=>akIsNo(m.html)))akBot(akReqSent()?AK_NO_SENT:AK_NO)}
@@ -21939,37 +21960,47 @@ async function akVoPick(v,btn){btn.textContent='…';let j=null;try{j=await akVo
  
 const AKLV={};
 const AKLV_URL=AK_SRV.replace(/\/ak\/ask$/,'/ak/live');
-function akLiveHtml(){const v=k=>`<video class="aklv-v" data-s="${k}" src="icons/alexandra/v/voice-${k}.mp4" muted loop playsinline autoplay preload="auto"></video>`;
+function akLiveHtml(){const v=k=>`<video class="aklv-v" data-s="${k}" src="icons/alexandra/v/voice-${k}.mp4" muted loop playsinline preload="auto"></video>`;
  return `<div class="aklv" id="akLive" role="dialog" aria-label="Voice chat with Alexandra">${v('listen')}${v('think')}${v('talk')}<video class="aklv-v" data-s="bye" src="icons/alexandra/v/voice-bye.mp4" muted playsinline preload="auto"></video><div class="aklv-sh"></div>
  <div class="aklv-top"><button type="button" class="aklv-x" aria-label="Close" onclick="akLiveBye()">${akI('down')||'✕'}</button><div class="aklv-nm"><b>Alexandra</b><span id="aklvSt">Connecting…</span></div><span></span></div>
- <div class="aklv-cap" id="aklvCap" dir="auto"></div>
+ <div class="aklv-cb"><div class="aklv-nmg">ALEXANDRA</div><div class="aklv-wv" aria-hidden="true">${'<i></i>'.repeat(17)}</div><div class="aklv-cap" id="aklvCap" dir="auto"></div></div>
  <div class="aklv-bar"><button type="button" class="aklv-mu" id="aklvMu" aria-label="Mute the mic" onclick="akLiveMute()">${akI('mic')}</button><button type="button" class="aklv-end" aria-label="End the voice chat" onclick="akLiveBye()">✕</button></div></div>`}
 function akLiveState(st){if(AKLV.st===st)return;AKLV.st=st;const el=document.getElementById('akLive');if(!el)return;
- el.querySelectorAll('.aklv-v').forEach(v=>{const on=v.dataset.s===(st==='connecting'?'listen':st);v.classList.toggle('on',on);if(on){try{v.play()}catch(e){}}});
+ el.querySelectorAll('.aklv-v').forEach(v=>{const on=v.dataset.s===(st==='connecting'?'listen':st);v.classList.toggle('on',on);if(on){try{v.play().catch(()=>{})}catch(e){}}else if(!v.paused)setTimeout(()=>{if(!v.classList.contains('on'))v.pause()},500)});
  const t={connecting:'Connecting…',listen:AKLV.mute?'Mic is off':'Listening…',think:'Thinking…',talk:'Speaking'}[st]||'';const s=document.getElementById('aklvSt');if(s)s.textContent=t;el.dataset.st=st}
-function akLiveCap(t,user){const c=document.getElementById('aklvCap');if(!c)return;const x=String(t||'').trim();c.textContent=x.length>180?'…'+x.slice(-180):x;c.classList.toggle('u',!!user)}
+function akLiveCap(t,user){const c=document.getElementById('aklvCap');if(!c)return;let x=String(t||'').trim();if(x.length>180)x='…'+x.slice(-180);
+ c.innerHTML=user?akEsc(x):akEsc(x).replace(/([$£€]\s?)?[\d\u0660-\u0669][\d\u0660-\u0669,.٫٬]*(\s?(?:x|%|٪|k|K|M|ألف|مليون))?/g,m=>`<b>${m}</b>`);c.classList.toggle('u',!!user)}
 function akB64(u8){let s='';for(let i=0;i<u8.length;i+=0x8000)s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(s)}
-async function akLiveOpen(){if(AKLV.ws||AK.blocked)return;
+async function akLiveOpen(plain){if(AKLV.ws||AK.blocked)return;
  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.WebSocket||!window.AudioWorkletNode){showSettingsToast('Voice chat does not work on this browser.');return}
- document.getElementById('akLive')?.remove();document.body.insertAdjacentHTML('beforeend',akLiveHtml());Object.assign(AKLV,{st:'',bye:false,byeAt:0,mute:false,turns:[],me:'',her:'',spoke:false,lastVoice:0,wait:false,nextT:0,srcs:[],closed:false});
+ document.getElementById('akLive')?.remove();document.body.insertAdjacentHTML('beforeend',akLiveHtml());Object.assign(AKLV,{st:'',bye:false,byeAt:0,mute:false,turns:[],me:'',her:'',spoke:false,lastVoice:0,wait:false,nextT:0,srcs:[],closed:false,ready:false});
  akLiveState('connecting');requestAnimationFrame(()=>document.getElementById('akLive')?.classList.add('in'));
- let stream;try{stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:1}})}
- catch(e){akLiveFail('Allow the microphone to talk with Alexandra.');return}
- AKLV.stream=stream;const ctx=new (window.AudioContext||window.webkitAudioContext)();AKLV.ctx=ctx;try{await ctx.resume()}catch(e){}
- let j=null,cx='';try{cx=await akCtx()}catch(e){}
- try{const r=await fetch(AKLV_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),name:akMe().name,ctx:cx})});j=await r.json()}catch(e){}
- if(AKLV.closed)return;
+ const ctx=new (window.AudioContext||window.webkitAudioContext)();AKLV.ctx=ctx;try{ctx.resume()}catch(e){}
+ 
+ const micP=navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:1}}).then(s=>({s}),e=>({e}));
+ const tokP=(async()=>{let cx='';try{cx=await Promise.race([akCtx(),new Promise(r=>setTimeout(()=>r(''),1500))])}catch(e){}
+  try{const r=await fetch(AKLV_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),name:akMe().name,ctx:cx})});return await r.json()}catch(e){return null}})();
+ const m=await micP;if(AKLV.closed){if(m.s)m.s.getTracks().forEach(t=>t.stop());return}
+ if(!m.s){akLiveFail('Allow the microphone to talk with Alexandra.');return}AKLV.stream=m.s;
+ const j=await tokP;if(AKLV.closed)return;
  if(!j||!j.ok){akLiveFail(j&&j.error?(akOwner()?j.error:'Voice chat is not ready right now. Try again in a minute.'):'Could not reach HEMERA’s server.');return}
  const ws=new WebSocket('wss:\/\/generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained?access_token='+encodeURIComponent(j.token));
  ws.binaryType='arraybuffer';AKLV.ws=ws;
- ws.onopen=()=>ws.send(JSON.stringify({setup:{model:j.model,generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:j.voice||'Leda'}}}},
-  systemInstruction:{parts:[{text:j.sys}]},inputAudioTranscription:{},outputAudioTranscription:{}}}));
+ const setup={model:j.model,generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:j.voice||'Leda'}}}},
+  systemInstruction:{parts:[{text:j.sys}]},inputAudioTranscription:{},outputAudioTranscription:{}};
+ 
+ if(!plain)setup.realtimeInputConfig={automaticActivityDetection:{endOfSpeechSensitivity:'END_SENSITIVITY_HIGH',silenceDurationMs:450,prefixPaddingMs:120}};
+ ws.onopen=()=>ws.send(JSON.stringify({setup}));
  ws.onmessage=ev=>{let m;try{m=JSON.parse(typeof ev.data==='string'?ev.data:new TextDecoder().decode(ev.data))}catch(e){return}akLiveMsg(m)};
- ws.onclose=ev=>{if(!AKLV.closed)akLiveFail(ev.code===1000?'The voice chat ended.':(akOwner()&&ev.reason?'Gemini closed the call: '+ev.reason:'The voice chat stopped. Try again.'))};
+ ws.onclose=ev=>{if(AKLV.closed)return;
+  if(!AKLV.ready&&!plain&&ev.code!==1000){AKLV.ws=null;try{AKLV.stream.getTracks().forEach(t=>t.stop())}catch(e){}try{AKLV.ctx.close()}catch(e){}AKLV.closed=true;document.getElementById('akLive')?.remove();akLiveOpen(true);return}
+  akLiveFail(ev.code===1000?'The voice chat ended.':(akOwner()&&ev.reason?'Gemini closed the call: '+ev.reason:'The voice chat stopped. Try again.'))};
  ws.onerror=()=>{};
 }
+function akLiveWarm(){try{if(!AK_SRV||AK.blocked)return;const t=+storeGet('hm_ak_lv_warm')||0;if(Date.now()-t<18e4)return;storeSet('hm_ak_lv_warm',String(Date.now()));
+ fetch(AKLV_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),name:akMe().name,warm:true})}).catch(()=>{})}catch(e){}}
 async function akLiveMic(){const ctx=AKLV.ctx;
- const code="class P extends AudioWorkletProcessor{process(i){const c=i[0]&&i[0][0];if(c)this.port.postMessage(c.slice(0));return true}}registerProcessor('akmic',P)";
+ const code="class P extends AudioWorkletProcessor{constructor(){super();this.b=new Float32Array(2048);this.n=0}process(i){const c=i[0]&&i[0][0];if(c){for(let k=0;k<c.length;k++){this.b[this.n++]=c[k];if(this.n===2048){this.port.postMessage(this.b.slice(0));this.n=0}}}return true}}registerProcessor('akmic',P)";
  const url=URL.createObjectURL(new Blob([code],{type:'application/javascript'}));await ctx.audioWorklet.addModule(url);URL.revokeObjectURL(url);
  const src=ctx.createMediaStreamSource(AKLV.stream),node=new AudioWorkletNode(ctx,'akmic'),mute=ctx.createGain();mute.gain.value=0;src.connect(node);node.connect(mute);mute.connect(ctx.destination);AKLV.node=node;AKLV.src=src;
  const ratio=ctx.sampleRate/16000;let acc=[],pos=0;
@@ -21993,7 +22024,7 @@ function akLivePlay(b64,mime){const ctx=AKLV.ctx;const rate=+((String(mime||'').
 function akLiveStop(){AKLV.srcs.forEach(s=>{try{s.stop()}catch(e){}});AKLV.srcs=[];AKLV.nextT=0}
 function akLiveTurn(){if(AKLV.me.trim())AKLV.turns.push(['u',AKLV.me.trim()]);if(AKLV.her.trim())AKLV.turns.push(['b',AKLV.her.trim()]);AKLV.me='';AKLV.her=''}
 function akLiveMsg(m){
- if(m.setupComplete){akLiveMic().then(()=>{akLiveState('listen');
+ if(m.setupComplete){AKLV.ready=true;akLiveMic().then(()=>{akLiveState('listen');
    const ar=AK.msgs.slice().reverse().find(x=>x.w==='u'),arab=ar&&/[؀-ۿ]/.test(ar.html||'');
    AKLV.wait=true;AKLV.ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:`(The person just opened the voice chat. Greet ${String(akMe().name||'them').split(' ')[0]} warmly by first name in one short sentence${arab?' in Egyptian Arabic':''}, and ask how you can help.)`}]}],turnComplete:true}}))
   }).catch(()=>akLiveFail('The microphone could not start.'));return}
