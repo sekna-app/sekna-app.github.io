@@ -10328,6 +10328,12 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .aklv-call b{font-size:28px!important}
     .aklv-num{display:block;margin-top:6px;font:600 16px Inter,system-ui,sans-serif;color:rgba(255,255,255,.85);letter-spacing:.04em;font-variant-numeric:tabular-nums}
     .aklv-rg{display:block;margin-top:10px;font:700 13px Inter,system-ui,sans-serif;color:rgba(255,255,255,.7)}
+
+    /* v608 sources and memory under her answers */
+    .ak-src{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}.ak-src small{font:800 10.5px Inter,system-ui,sans-serif;color:#8a93a6;letter-spacing:.06em;text-transform:uppercase;margin-right:2px}
+    .ak-src a{font:700 11.5px Inter,system-ui,sans-serif;color:#1C3C96;background:#eef1f8;border-radius:99px;padding:4px 10px;text-decoration:none;max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .ak-mem{margin-top:8px!important;font:700 12px Inter,AKufi,system-ui,sans-serif;color:#8a6d1e;background:#fbf4e2;border-radius:10px;padding:6px 10px}
+    .ak.dk .ak-src a{background:#303030;color:#9fb8ff}.ak.dk .ak-mem{background:#3a3220;color:#E9C46A}
 </style>
 </head>
 <body>
@@ -11844,7 +11850,7 @@ async function akSend(e){AKCS.quiet=0;
  akUser(q,rp&&rp.t);AK.kb=false;akKb();
  if(!ASK_HEMERA_URL){akBot('<p>Alexandra is not connected yet.</p>');return}
  AK.busy=true;akDraw();
- try{let ctx='';try{ctx=await akCtx()}catch(e){}let j=await akAskSrv(qa,AK.hist.slice(-8),ctx);if(!j)j=await akPost('ask',{q:qa,history:AK.hist.slice(-8),ctx});AK.hist.push({role:'user',text:q},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-16);AK.busy=false;if(!AK.assets){try{await akAssets()}catch(e){}}else setTimeout(()=>akAssets().catch(()=>{}),1500);if(j.sid){akIxPut(j.sid,`<div class="akst" id="${j.sid}">${akAnswer(j.answer||'')}</div>`);return}akBot(akAnswer(j.answer||'')+(AK.editor&&!ctx?'<p class="ak-oldapi">Editors only: this device could not read the dashboard numbers, so they were not sent with the question.</p>':'')+(AK.editor&&!j.api?'<p class="ak-oldapi">Editors only: the Alexandra script is older than v23, so she cannot read the dashboard numbers yet. Deploy the new HemeraApi.gs as a New version.</p>':''))}
+ try{let ctx='';try{ctx=await akCtx()}catch(e){}let j=await akAskSrv(qa,AK.hist.slice(-8),ctx);if(!j)j=await akPost('ask',{q:qa,history:AK.hist.slice(-8),ctx});AK.hist.push({role:'user',text:q},{role:'model',text:akSmartSplit(j.answer||'').text});AK.hist=AK.hist.slice(-16);AK.busy=false;if(!AK.assets){try{await akAssets()}catch(e){}}else setTimeout(()=>akAssets().catch(()=>{}),1500);if(j.sid){akIxPut(j.sid,`<div class="akst" id="${j.sid}">${akAnswer(j.answer||'')}</div>`);return}akBot(akAnswer(j.answer||'')+(AK.editor&&!ctx?'<p class="ak-oldapi">Editors only: this device could not read the dashboard numbers, so they were not sent with the question.</p>':'')+(AK.editor&&!j.api?'<p class="ak-oldapi">Editors only: the Alexandra script is older than v23, so she cannot read the dashboard numbers yet. Deploy the new HemeraApi.gs as a New version.</p>':''))}
  catch(err){AK.busy=false;akBot(`<p>${akEsc(/not connected/.test(err.message)?'Alexandra is not connected yet.':'Something went wrong. Try again.')}</p>`)}
 }
 
@@ -11852,7 +11858,7 @@ function akLinkKind(u){u=String(u);if(/docs\.google\.com\/spreadsheets/.test(u))
  
 function akUrlKey(u){u=String(u||'');const m=u.match(/\/d\/([\w-]{20,})/);return m?m[1]:u.replace(/[?#].*$/,'').replace(/\/+$/,'').toLowerCase()}
 function akRowByUrl(u){const k=akUrlKey(u);return ((AK.assets&&AK.assets.rows)||[]).find(r=>[r.sheet,r.report,r.script].some(o=>o&&o.url&&akUrlKey(o.url)===k))}
-function akAnswer(t){const as=akActSplit(t);t=as.text;const cs=akCardsSplit(t),act=as.act?akActCard(as.act):'';if(cs.cards)return akAnswer0(cs.text)+akCardsHtml(cs.cards)+act;return akAnswer0(cs.text)+act}
+function akAnswer(t){const sm=akSmartSplit(t);t=sm.text;const as=akActSplit(t);t=as.text;const cs=akCardsSplit(t),act=as.act?akActCard(as.act):'';if(cs.cards)return akAnswer0(cs.text)+akCardsHtml(cs.cards)+act+sm.html;return akAnswer0(cs.text)+act+sm.html}
 function akAnswer0(t){
  const out=[],U=/https?:\/\/[^\s<>"')]+/g;
  String(t).split('\n').forEach(line=>{const urls=line.match(U);
@@ -22097,7 +22103,7 @@ async function akAskSrv(q,history,ctx,image){
  akSrvSet(true);
  const sid='aks'+Date.now().toString(36);AK.busy=false;akBot(`<div class="akst" id="${sid}"><p class="aks-t"><span class="aks-c"></span></p></div>`);
  const rd=r.body.getReader(),dec=new TextDecoder();let txt='',raf=0;
- const paint=()=>{if(raf<0)return;raf=0;const el=document.getElementById(sid);if(!el)return;const cut=txt.search(/\[\[\s*(CARDS|ACTION)/i),shown=cut>=0?txt.slice(0,cut):txt;
+ const paint=()=>{if(raf<0)return;raf=0;const el=document.getElementById(sid);if(!el)return;const cut=txt.search(/\[\[\s*(CARDS|ACTION|SOURCES|REMEMBER|FORGET)/i),shown=cut>=0?txt.slice(0,cut):txt;
   el.innerHTML=`<p class="aks-t">${akEsc(shown).replace(/\n/g,'<br>')}${cut>=0?'<br><span class="aks-w">Making the cards…</span>':'<span class="aks-c"></span>'}</p>`;
   const b=document.getElementById('akBd');if(b&&b.scrollHeight-b.scrollTop-b.clientHeight<160)b.scrollTop=b.scrollHeight};
  while(true){const {done,value}=await rd.read();if(done)break;txt+=dec.decode(value,{stream:true});if(!raf)raf=requestAnimationFrame(paint)}
@@ -22255,7 +22261,7 @@ async function akLiveNumbers(a){a=a||{};let sw='';const want=/ar|arab|عرب/i.t
  return {result:(sw?sw+'\n\n':'')+(txt||'Nothing found.')}}
 function akLiveSetup(j,lvl){const setup={model:j.model,generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:j.voice||'Leda'}}}},
   systemInstruction:{parts:[{text:j.sys+(lvl<3?'\n\n'+AKLV_TOOL_RULES:'')}]},inputAudioTranscription:{},outputAudioTranscription:{}};
- if(lvl<3)setup.tools=AKLV_TOOLS;
+ if(lvl<3)setup.tools=lvl<1?AKLV_TOOLS.concat([{googleSearch:{}}]):AKLV_TOOLS;
  if(lvl<2)setup.realtimeInputConfig={automaticActivityDetection:{endOfSpeechSensitivity:'END_SENSITIVITY_HIGH',silenceDurationMs:380,prefixPaddingMs:160}};
  if(lvl<1)setup.generationConfig.thinkingConfig={thinkingBudget:0};
  return setup}
@@ -22709,6 +22715,18 @@ function akLiveAnswer(){const el=document.getElementById('akLive');if(!el)return
 function akCallerHtml(){const me=akMe()||{},p=((typeof PFP!=='undefined'&&PFP.people)||[]).find(x=>x.email===me.email)||{};
  const name=String(p.name||me.name||'').trim()||'HEMERA',num=String(p.phone||p.wa||'').trim();
  return `<small>CALLING ALEXANDRA</small><b>${akEsc(name)}</b>${num?`<span class="aklv-num" dir="ltr">${akEsc(num)}</span>`:''}<span class="aklv-rg">Ringing…</span><div class="aklv-dots"><i></i><i></i><i></i></div>`}
+
+ 
+function akSmartSplit(t){t=String(t||'');let html='',src=[];
+ const m=/\[\[\s*SOURCES\s*\]\]\s*(\[[\s\S]*?\])\s*$/i.exec(t);if(m){try{src=JSON.parse(m[1])}catch(e){}t=t.slice(0,m.index)}
+ const rem=[...t.matchAll(/\[\[\s*REMEMBER\s*\]\]\s*([^\n]*)/gi)].map(x=>x[1].trim()).filter(Boolean),fg=/\[\[\s*FORGET\s*\]\]/i.test(t);
+ t=t.replace(/\n?\[\[\s*(REMEMBER|FORGET)\s*\]\][^\n]*/gi,'').trim();
+ const ar=/[\u0600-\u06FF]/.test(t);
+ if(rem.length)html+=`<p class="ak-mem" dir="auto">📌 ${ar?'هفتكر ده':'I will remember this'}: ${rem.map(akEsc).join(' · ')}</p>`;
+ else if(fg)html+=`<p class="ak-mem">🗑 ${ar?'نسيته':'Forgotten.'}</p>`;
+ if(src.length)html+='';
+ if(src.length)html+=`<div class="ak-src"><small>${ar?'المصادر':'Sources'}</small>${src.slice(0,5).map(x=>{let d='';try{d=new URL(x.u).hostname.replace(/^www\./,'')}catch(e){}return `<a href="${akEsc(x.u)}" target="_blank" rel="noopener">${akEsc(String(x.t||d).slice(0,40)||d)}</a>`}).join('')}</div>`;
+ return {text:t,html}}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>

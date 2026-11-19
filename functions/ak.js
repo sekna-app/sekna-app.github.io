@@ -87,16 +87,19 @@ async function ask(req, res, b, who) {
     hist = hist.filter(x => !(x.role === 'model' && /مش عندي|ليس لدي|don.t have/i.test(x.parts[0].text)));
     q += '\n\n[HEMERA: the live dashboard numbers are in your instructions under "Dashboard numbers". If this is about performance, answer from them and end with [[CARDS]] and the JSON cards. If the answer has no numbers, do not write [[CARDS]] at all.]';
   }
-  const sys = (ctx ? '# HEMERA mode\n' + HM_NUM_RULES + '\n\n' : '') + p.base + (ctx ? '\n\n## Dashboard numbers (HEMERA)\n' + ctx : '') + '\n\n=== DATA ===\n' + (p.data || '');
-  const payload = { system_instruction: { parts: [{ text: sys }] }, contents: hist.concat([{ role: 'user', parts: (img ? [{ inline_data: { mime_type: img.mime, data: img.data } }] : []).concat([{ text: q }]) }]),
+  const mem = await memGet(email);
+  const sys = (ctx ? '# HEMERA mode\n' + HM_NUM_RULES + '\n\n' : '') + p.base + '\n\n' + SMART_RULES + memText(mem) + (ctx ? '\n\n## Dashboard numbers (HEMERA)\n' + ctx : '') + '\n\n=== DATA ===\n' + (p.data || '');
+  const deep = DEEP_RE.test(q0) || q0.length > 220;
+  const payload = { tools: [{ google_search: {} }, { url_context: {} }], system_instruction: { parts: [{ text: sys }] }, contents: hist.concat([{ role: 'user', parts: (img ? [{ inline_data: { mime_type: img.mime, data: img.data } }] : []).concat([{ text: q }]) }]),
     // v604 faster written answers: a short think for short questions, a capped one otherwise (the photo keeps the script's setting)
-    generationConfig: Object.assign({ temperature: 0.2, maxOutputTokens: 3000 }, p.think ? { thinkingConfig: img ? p.think : Object.assign({}, p.think, { thinkingBudget: Math.min(Number(p.think.thinkingBudget) > 0 ? Number(p.think.thinkingBudget) : 1024, q0.length < 140 ? 256 : 768) }) } : { thinkingConfig: { thinkingBudget: q0.length < 140 ? 256 : 768 } }) };
+    generationConfig: Object.assign({ temperature: 0.2, maxOutputTokens: 3000 }, p.think ? { thinkingConfig: img ? p.think : Object.assign({}, p.think, { thinkingBudget: deep ? 4096 : Math.min(Number(p.think.thinkingBudget) > 0 ? Number(p.think.thinkingBudget) : 1024, q0.length < 140 ? 256 : 768) }) } : { thinkingConfig: { thinkingBudget: deep ? 4096 : q0.length < 140 ? 256 : 768 } }) };
   const url = String(p.url || '').replace(/:generateContent.*$/, ':streamGenerateContent?alt=sse');
   const keys = (p.keys || []).filter(Boolean);
   const used = (async () => { try { const s = (await conf()).secret; await scriptPost({ action: 'used', secret: s, email, name }); } catch (e) {} })();
   let r = null, ki = 0, tries = 0;
   while (ki < keys.length) {
     r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': keys[ki] }, body: JSON.stringify(payload) });
+    if (r.status === 400 && payload.tools) { delete payload.tools; continue; }
     if (r.status === 400 && payload.generationConfig.thinkingConfig && !tries++) { delete payload.generationConfig.thinkingConfig; continue; }
     if (r.status === 429) { ki++; continue; }
     // v574 Gemini busy (500/503): wait a little and try again, twice
@@ -111,7 +114,7 @@ async function ask(req, res, b, who) {
   res.set('X-Ak', 'stream');
   if (res.flushHeaders) res.flushHeaders();
   const dec = new TextDecoder();
-  let buf = '', any = false;
+  let buf = '', any = false, full = '';const srcs = new Map();
   try {
     for await (const chunk of r.body) {
       buf += dec.decode(chunk, { stream: true });
@@ -121,14 +124,17 @@ async function ask(req, res, b, who) {
         if (!line.startsWith('data:')) continue;
         try {
           const j = JSON.parse(line.slice(5));
-          const parts = (((j.candidates || [])[0] || {}).content || {}).parts || [];
+          const cand = (j.candidates || [])[0] || {}, parts = (cand.content || {}).parts || [];
           const t = parts.filter(x => !x.thought).map(x => x.text || '').join('');
-          if (t) { any = true; last.chunks++; if (last.chunks === 1) last.first = Date.now() - t0; res.write(t); }
+          ((cand.groundingMetadata || {}).groundingChunks || []).forEach(g => { const w = g.web || {}; if (w.uri && srcs.size < 6) srcs.set(w.uri, String(w.title || w.domain || '').slice(0, 80)); });
+          if (t) { any = true; full += t; last.chunks++; if (last.chunks === 1) last.first = Date.now() - t0; res.write(t); }
         } catch (e) {}
       }
     }
   } catch (e) { console.error('Alexandra stream: ' + e.message); }
   if (!any) res.write('I could not answer that. Try again.');
+  if (srcs.size) res.write('\n[[SOURCES]] ' + JSON.stringify([...srcs].map(([u, t]) => ({ u, t }))));
+  try { await memLearn(email, full); } catch (e) {}
   await count(o => { o.n++; });
   await used;
   last.step = 'done'; last.ms = Date.now() - t0;
@@ -239,7 +245,8 @@ async function live(b, who) {
   await count(o => { o.voice = (o.voice || 0) + 1; });
   const c = await conf();
   const ctx = String(b.ctx || '').slice(0, 40000);
-  const sys = (VOICE_RULES + '\n\n' + p.base + (ctx ? '\n\n## Dashboard numbers (HEMERA)\n' + ctx : '') + '\n\n=== DATA ===\n' + (p.data || '')).slice(0, 160000);
+  const vmem = memText(await memGet(email));
+  const sys = (VOICE_RULES + vmem + '\n\n' + p.base + (ctx ? '\n\n## Dashboard numbers (HEMERA)\n' + ctx : '') + '\n\n=== DATA ===\n' + (p.data || '')).slice(0, 160000);
   return { ok: true, token: j.name, model, voice: c.voice || 'Leda', sys };
 }
 
@@ -284,4 +291,31 @@ async function notifSet(b, who) {
   return { ok: true, ver };
 }
 async function notifGet(onlyVer) { const d = (await fsGet(NOTIF).catch(() => null)) || {}; if (!d.data) return { ok: true, ver: 0 }; return onlyVer ? { ok: true, ver: d.ver } : { ok: true, ver: d.ver, mime: d.mime, data: d.data }; }
-module.exports = { ask, link, state, usageMail, voice, live, tts, notifSet, notifGet };
+
+// v608 smarter Alexandra: Google Search and links for things outside HEMERA, a memory per person, deeper thinking for analysis
+const DEEP_RE = /ليه|ليش|لماذا|حلل|حلّل|تحليل|اقترح|اقتراح|خطة|استراتيج|قارن|مقارنة|توقع|توقّع|ازاي نحسن|إزاي نحسن|why|analy[sz]e|suggest|recommend|strategy|compare|forecast|plan for|what should/i;
+const SMART_RULES = `# Thinking and sources
+- Think beyond the app when it helps: you may use Google Search (and read links the person sends) for things outside HEMERA, like news, holidays and seasons, donor behaviour, ad platform changes, industry benchmarks or best practice. Say briefly where it comes from.
+- HEMERA numbers (spend, value, ROAS, campaigns, plans) come ONLY from the dashboard data you were given, never from the web. Never guess or round a number differently from the data; if a number is not in the data, say so.
+- Before you answer, check your numbers against the data once more.
+# Memory
+- Under "What you remember" are facts this person told you before. Use them.
+- If the person tells you something worth remembering for later (a preference, a decision, a target, a fact about the team, the accounts or the campaigns), add one last line: [[REMEMBER]] <the fact in one short sentence>. Only for things that matter later; never for passing questions.
+- If they ask you to forget something, add one last line: [[FORGET]] <a few words of what to forget>.`;
+const MEM = 'server/ak-mem';
+let memCache = null, memAt = 0;
+async function memAll() { if (memCache && Date.now() - memAt < 60000) return memCache; memCache = (await fsGet(MEM).catch(() => null)) || {}; memAt = Date.now(); return memCache; }
+async function memGet(email) { try { const a = (await memAll())[email.replace(/\./g, ',')]; return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+function memText(m) { return m.length ? '\n\n## What you remember about this person (from past chats)\n' + m.slice(-40).map(x => '- ' + x.t + (x.at ? ' (' + new Date(x.at).toISOString().slice(0, 10) + ')' : '')).join('\n') : ''; }
+async function memLearn(email, text) {
+  const add = [...String(text).matchAll(/\[\[REMEMBER\]\]\s*([^\n\[]{3,240})/g)].map(m => m[1].trim());
+  const del = [...String(text).matchAll(/\[\[FORGET\]\]\s*([^\n\[]{2,120})/g)].map(m => m[1].trim().toLowerCase());
+  if (!add.length && !del.length) return;
+  const k = email.replace(/\./g, ',');
+  await fsUpdate(MEM, d => { d = d || {}; let a = Array.isArray(d[k]) ? d[k] : [];
+    if (del.length) a = a.filter(x => !del.some(w => w.split(/\s+/).filter(z => z.length > 2).every(z => x.t.toLowerCase().includes(z))));
+    add.forEach(t => { if (!a.some(x => x.t === t)) a.push({ t, at: Date.now() }); });
+    d[k] = a.slice(-60); return d; });
+  memCache = null;
+}
+module.exports = { memGet, memText, ask, link, state, usageMail, voice, live, tts, notifSet, notifGet };
