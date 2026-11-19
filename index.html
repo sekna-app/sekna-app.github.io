@@ -10246,6 +10246,14 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     /* v569 Alexandra's answer, word by word */
     .aks-t{margin:0}.aks-c{display:inline-block;width:7px;height:14px;margin-left:2px;vertical-align:-2px;border-radius:2px;background:#0866FF;animation:aksC .9s steps(2) infinite}
     @keyframes aksC{50%{opacity:0}}.aks-w{font:600 11.5px Inter,system-ui,sans-serif;color:#8a93a8}
+
+    /* v572 photos in Alexandra's chat */
+    .ak-pic{flex:none;width:34px;height:34px;border:0;background:none;color:#1C3C96;display:grid;place-items:center;cursor:pointer;padding:0}.ak-pic .ak-ic{width:22px;height:22px}
+    .ak-picbar{display:flex;align-items:center;gap:10px;margin:0 12px;padding:6px 8px;background:#fff;border-radius:14px;box-shadow:0 4px 14px rgba(20,40,110,.1)}
+    .ak-picbar img{width:44px;height:44px;border-radius:10px;object-fit:cover}.ak-picbar span{flex:1;font:700 12px Inter,system-ui,sans-serif;color:#6b7385}
+    .ak-picbar button{border:0;background:#f0f2f5;width:28px;height:28px;border-radius:50%;cursor:pointer;color:#4b5263}
+    .ak-upic{display:block;max-width:200px;max-height:240px;border-radius:12px;margin:2px 0 6px auto}
+    body.dark-mode .ak-picbar,.ak.dk .ak-picbar{background:#242526}.ak.dk .ak-pic{color:#9fb8ff}
 </style>
 </head>
 <body>
@@ -11501,7 +11509,7 @@ function akOpenNow(){
  const o=document.createElement('div');o.id='akBox';o.className='ak'+(akDk()?' dk':'');o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Alexandra');
  o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av ak-tapp" id="akHdAv" role="button" tabindex="0" aria-label="Open Alexandra's profile" onclick="AK.pgTab='about';akAbout(event)">${akAvIn()}</span><div><b>Alexandra <svg class="ak-flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="10" rx="2" fill="#0057B7"/><rect y="10" width="30" height="10" rx="2" fill="#FFD700"/><rect y="8" width="30" height="4" fill="#0057B7"/><rect y="10" width="30" height="2" fill="#FFD700"/></svg><span class="ak-fle">🇺🇦</span></b><small id="akSt">Active now</small></div><button type="button" class="ak-min" hidden aria-label="Minimise" title="Minimise" onclick="akMini(event)">${akI('down')}</button><button type="button" class="ak-mode" hidden onclick="akModeFlip()"></button><button type="button" class="ak-inf" aria-label="About Alexandra" onclick="AK.pgTab='about';akAbout(event)">${akI('about')}</button></div><div class="ak-pg" id="akAbt" aria-hidden="true"></div>
   <div class="ak-bd" id="akBd"></div><div class="ak-kb" id="akKb"></div>
-  <form class="ak-in" onsubmit="akSend(event)"><button type="button" class="ak-mb" aria-label="Menu" onclick="akToggleKb()">${akI('menu')}</button><input id="akQ" autocomplete="off" maxlength="1500" placeholder="Aa" oninput="akInMode()"><button type="submit" class="ak-snd" aria-label="Send">${akI('plane')}</button><button type="button" class="ak-mic" aria-label="Hold to record a voice message" onpointerdown="akRecHold(event)" oncontextmenu="return false">${akI('mic')}</button>
+  <form class="ak-in" onsubmit="akSend(event)"><button type="button" class="ak-mb" aria-label="Menu" onclick="akToggleKb()">${akI('menu')}</button><button type="button" class="ak-pic" aria-label="Send a photo" onclick="akPicPick()">${akI('cam')}</button><input id="akQ" autocomplete="off" maxlength="1500" placeholder="Aa" oninput="akInMode()"><button type="submit" class="ak-snd" aria-label="Send">${akI('plane')}</button><button type="button" class="ak-mic" aria-label="Hold to record a voice message" onpointerdown="akRecHold(event)" oncontextmenu="return false">${akI('mic')}</button>
   <div class="ak-rec" id="akRec"><button type="button" class="ak-rt2" aria-label="Delete" onclick="akRecTrash()">${akI('trash')}</button><div class="ak-rw"><em></em><small class="ak-rh">‹ Slide to cancel</small><span id="akRw"></span><b id="akRt">0:00</b></div><button type="button" class="ak-rs2" aria-label="Send" onclick="akRecSend()">${akI('plane')}</button></div></form></div>`;
  document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('open'));akVv();akInMode();try{avDefs()}catch(e){}
  akRestore();akModeApply();
@@ -11741,11 +11749,13 @@ function akKb(){
  k.hidden=!AK.kb;
  k.innerHTML=items.map(([id,t])=>`<button type="button" onclick="akMenu('${id}')">${akI(id)}${t}</button>`).join('');
 }
-function akInMode(){const i=document.getElementById('akQ'),f=i&&i.closest('form');if(f)f.classList.toggle('e',!String(i.value||'').trim())}
+function akInMode(){const i=document.getElementById('akQ'),f=i&&i.closest('form');if(f)f.classList.toggle('e',!String(i.value||'').trim()&&!AK.img)}
 async function akSend(e){
  if(e)e.preventDefault();
- const i=document.getElementById('akQ');if(AK.blocked){akLockIn();return}const q=String(i&&i.value||'').trim();if(!q||AK.busy)return;
- i.value='';akInMode();
+ const i=document.getElementById('akQ');if(AK.blocked){akLockIn();return}const q=String(i&&i.value||'').trim();if((!q&&!AK.img)||AK.busy)return;
+ i.value='';
+ if(AK.img){const im=AK.img;AK.img=null;akPicBar();akInMode();akPicSend(q,im);return}
+ akInMode();
 
  if(AK.ask){const a=AK.ask;AK.ask=null;akUser(q);a.fn(q);return}
  if(AK.add){akAddAnswer(q);return}
@@ -21991,10 +22001,10 @@ function akPlView(id){const s=AKPL[id];if(!s||!s.c)return;const o=document.creat
 const AK_SRV='https:\/\/europe-west2-human-appeal-media-plan.cloudfunctions.net/api/ak/ask';
 function akSrvOn(){try{return localStorage.getItem('hm_ak_srv')==='1'}catch(e){return false}}
 function akSrvSet(on){try{localStorage.setItem('hm_ak_srv',on?'1':'0')}catch(e){}}
-async function akAskSrv(q,history,ctx){
+async function akAskSrv(q,history,ctx,image){
  
  if(Date.now()-(+storeGet('hm_ak_srv_off')||0)<12e4)return null;
- let r;try{r=await fetch(AK_SRV,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),q,history,ctx,name:akMe().name})})}catch(e){return null}
+ let r;try{r=await fetch(AK_SRV,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),q,history,ctx,name:akMe().name,image:image||undefined})})}catch(e){return null}
  if(!r.ok){storeSet('hm_ak_srv_off',String(Date.now()));return null}
  if(!/stream/.test(r.headers.get('X-Ak')||'')&&/json/.test(r.headers.get('Content-Type')||'')){const j=await r.json().catch(()=>null);
   if(!j)return null;if(j.blocked){const e=new Error(j.error||'blocked');e.blocked=true;AK.blocked=true;throw e}
@@ -22013,6 +22023,29 @@ async function akSrvLink(){try{if(!akOwner()||!ASK_HEMERA_URL)return;const last=
  const st=await serverCall('akLinkState',getAccessToken());if(st&&st.linked){akSrvSet(true);storeSet('hm_ak_srv_off','0');return}
  const {secret}=await serverCall('akLink',getAccessToken());await akPost('link',{secret});akSrvSet(true);storeSet('hm_ak_srv_off','0')}catch(e){}}
 setTimeout(akSrvLink,12000);
+
+ 
+function akPicPick(){if(AK.blocked||AK.busy)return;let f=document.getElementById('akPicIn');
+ if(!f){f=document.createElement('input');f.type='file';f.accept='image/*';f.id='akPicIn';f.hidden=true;f.onchange=()=>{const x=f.files&&f.files[0];f.value='';if(x)akPicLoad(x)};document.body.appendChild(f)}f.click()}
+function akPicLoad(file){if(!/^image\//.test(file.type||'')){showSettingsToast('Pick a photo.');return}
+ const u=URL.createObjectURL(file),im=new Image();im.onload=()=>{const mx=1400,k=Math.min(1,mx/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);
+  const g=c.getContext('2d');g.fillStyle='#fff';g.fillRect(0,0,c.width,c.height);g.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);
+  const t=document.createElement('canvas'),tk=Math.min(1,260/Math.max(c.width,c.height));t.width=Math.round(c.width*tk);t.height=Math.round(c.height*tk);t.getContext('2d').drawImage(c,0,0,t.width,t.height);
+  AK.img={data:c.toDataURL('image/jpeg',.82).split(',')[1],thumb:t.toDataURL('image/jpeg',.7)};akPicBar();akInMode();document.getElementById('akQ')?.focus()};
+ im.onerror=()=>{URL.revokeObjectURL(u);showSettingsToast('This photo could not be opened.')};im.src=u}
+function akPicBar(){const f=document.querySelector('#akBox .ak-in');if(!f)return;let b=document.getElementById('akPicBar');
+ if(!AK.img){if(b)b.remove();return}
+ if(!b){b=document.createElement('div');b.id='akPicBar';b.className='ak-picbar';f.parentNode.insertBefore(b,f)}
+ b.innerHTML=`<img src="${AK.img.thumb}" alt=""><span>Photo ready · ask about it or just send</span><button type="button" aria-label="Remove the photo" onclick="AK.img=null;akPicBar();akInMode()">✕</button>`}
+async function akPicSend(q,im){
+ AK.msgs.push({w:'u',html:`<img class="ak-upic" src="${im.thumb}" alt="Photo">${q?`<span dir="auto">${akEsc(q)}</span>`:''}`,nw:1});AK.kb=false;akKb();
+ AK.busy=true;akDraw();const ask=q||'Read this photo and tell me what it shows. If it has numbers or a report, explain them briefly.';
+ try{let ctx='';try{ctx=await akCtx()}catch(e){}storeSet('hm_ak_srv_off','0');
+  const j=await akAskSrv(ask,AK.hist.slice(-8),ctx,{mime:'image/jpeg',data:im.data});
+  if(!j){AK.busy=false;akBot('<p>I can read photos only through HEMERA’s server, and it did not answer just now. Try again in a minute.</p>');return}
+  AK.hist.push({role:'user',text:'[photo] '+ask},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-16);AK.busy=false;
+  if(j.sid){akIxPut(j.sid,`<div class="akst" id="${j.sid}">${akAnswer(j.answer||'')}</div>`);return}akBot(akAnswer(j.answer||''))}
+ catch(err){AK.busy=false;akBot(`<p>${akEsc(err&&err.blocked?'You do not have access to Alexandra.':'Something went wrong. Try again.')}</p>`)}}
 </script>
 <div id="seknaFileEnd" hidden></div>
 <script>

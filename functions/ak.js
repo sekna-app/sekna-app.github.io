@@ -70,6 +70,8 @@ async function count(f) { const m = month(); await fsUpdate(USE, d => { d = d ||
 async function ask(req, res, b, who) {
   const email = String(who.email || '').toLowerCase(), name = String(b.name || who.name || '').trim().slice(0, 60);
   const q0 = String(b.q || '').trim().slice(0, 1500), t0 = Date.now();
+  // v572 a photo from the chat (JPEG made smaller in the app), read by Gemini with the question
+  const img = b.image && /^image\/(jpeg|png|webp)$/.test(String(b.image.mime || '')) && typeof b.image.data === 'string' && b.image.data.length < 4e6 && /^[A-Za-z0-9+/=]+$/.test(b.image.data.slice(0, 200)) ? b.image : null;
   Object.assign(last, { at: t0, step: 'start', ms: 0, chunks: 0 });
   if (!q0) { res.json({ ok: true, answer: '' }); return; }
   let p;
@@ -86,7 +88,7 @@ async function ask(req, res, b, who) {
     q += '\n\n[HEMERA: the live dashboard numbers are in your instructions under "Dashboard numbers". If this is about performance, answer from them and end with [[CARDS]] and the JSON cards. If the answer has no numbers, do not write [[CARDS]] at all.]';
   }
   const sys = (ctx ? '# HEMERA mode\n' + HM_NUM_RULES + '\n\n' : '') + p.base + (ctx ? '\n\n## Dashboard numbers (HEMERA)\n' + ctx : '') + '\n\n=== DATA ===\n' + (p.data || '');
-  const payload = { system_instruction: { parts: [{ text: sys }] }, contents: hist.concat([{ role: 'user', parts: [{ text: q }] }]),
+  const payload = { system_instruction: { parts: [{ text: sys }] }, contents: hist.concat([{ role: 'user', parts: (img ? [{ inline_data: { mime_type: img.mime, data: img.data } }] : []).concat([{ text: q }]) }]),
     generationConfig: Object.assign({ temperature: 0.2, maxOutputTokens: 3000 }, p.think ? { thinkingConfig: p.think } : {}) };
   const url = String(p.url || '').replace(/:generateContent.*$/, ':streamGenerateContent?alt=sse');
   const keys = (p.keys || []).filter(Boolean);
