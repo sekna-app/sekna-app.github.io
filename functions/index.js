@@ -571,6 +571,7 @@ exports.api = onRequest({
   try {
     // Alexandra's questions, answered here word by word (falls back to the Apps Script in the app)
     if (route === '/ak/ask') { const who = await assertAccess(b.token); await ak.ask(req, res, b, who); return; }
+    if (route === '/ak/search') { const who = await assertAccess(b.token); res.json(await ak.search(b, who)); return; }
     if (route === '/ak/tts') { const who = await assertAccess(b.token); if (b.style) { try { await assertOwner(b.token); who.owner = true; } catch (e) { b.style = ''; } } res.json(await ak.tts(b, who)); return; }
     if (route === '/ak/notif-set') { const who = await assertOwner(b.token); res.json(await ak.notifSet(b, who)); return; }
     if (route === '/ak/live') { const who = await assertAccess(b.token); res.json(await ak.live(b, who)); return; }

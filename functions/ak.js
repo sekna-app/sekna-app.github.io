@@ -90,7 +90,7 @@ async function ask(req, res, b, who) {
   const mem = await memGet(email);
   const sys = (ctx ? '# HEMERA mode\n' + HM_NUM_RULES + '\n\n' : '') + p.base + '\n\n' + SMART_RULES + memText(mem) + (ctx ? '\n\n## Dashboard numbers (HEMERA)\n' + ctx : '') + '\n\n=== DATA ===\n' + (p.data || '');
   const deep = DEEP_RE.test(q0) || q0.length > 220;
-  const payload = { tools: [{ google_search: {} }, { url_context: {} }], system_instruction: { parts: [{ text: sys }] }, contents: hist.concat([{ role: 'user', parts: (img ? [{ inline_data: { mime_type: img.mime, data: img.data } }] : []).concat([{ text: q }]) }]),
+  const payload = { tools: Date.now() < searchOffUntil ? undefined : [{ google_search: {} }, { url_context: {} }], system_instruction: { parts: [{ text: sys }] }, contents: hist.concat([{ role: 'user', parts: (img ? [{ inline_data: { mime_type: img.mime, data: img.data } }] : []).concat([{ text: q }]) }]),
     // v604 faster written answers: a short think for short questions, a capped one otherwise (the photo keeps the script's setting)
     generationConfig: Object.assign({ temperature: 0.2, maxOutputTokens: 3000 }, p.think ? { thinkingConfig: img ? p.think : Object.assign({}, p.think, { thinkingBudget: deep ? 4096 : Math.min(Number(p.think.thinkingBudget) > 0 ? Number(p.think.thinkingBudget) : 1024, q0.length < 140 ? 256 : 768) }) } : { thinkingConfig: { thinkingBudget: deep ? 4096 : q0.length < 140 ? 256 : 768 } }) };
   const url = String(p.url || '').replace(/:generateContent.*$/, ':streamGenerateContent?alt=sse');
@@ -101,6 +101,7 @@ async function ask(req, res, b, who) {
     r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': keys[ki] }, body: JSON.stringify(payload) });
     if (r.status === 400 && payload.tools) { delete payload.tools; continue; }
     if (r.status === 400 && payload.generationConfig.thinkingConfig && !tries++) { delete payload.generationConfig.thinkingConfig; continue; }
+    if (r.status === 429 && payload.tools && ki + 1 >= keys.length) { delete payload.tools; searchOffUntil = Date.now() + 15 * 60e3; ki = 0; continue; }
     if (r.status === 429) { ki++; continue; }
     // v574 Gemini busy (500/503): wait a little and try again, twice
     if (r.status >= 500 && tries < 3) { tries++; await new Promise(z => setTimeout(z, 900 * tries)); continue; }
@@ -221,7 +222,8 @@ You are talking out loud with the person, like a phone call. Speak naturally and
   - "I" verbs start with ن like Alexandrians do: "نشوفلك" (I'll check for you), "نقولك" (I'll tell you), "نبعتلك".
   - Use these Alexandrian/Egyptian expressions naturally, one now and then, never in every sentence: "صباح الفل" (good morning), "من عيوني يا سيدي" (agreeing), "عاش يا معلم" (a task is done), "استنى هنا يا نجم" (you found a problem), "إيه الحلاوة دي؟" (a great result), "حاضر يا ريس، ولا يهمك" (an urgent ask), "لأ كده إحنا عندنا كلام تاني" (you found a mistake), "يا سيدي", "يا معلم", "يا لهوي".
   - Keep it light and friendly, never exaggerated.
-- If you are not sure about a number, say so instead of guessing.`;
+- If you are not sure about a number, say so instead of guessing.
+- For anything outside HEMERA (news, dates of holidays, platform changes, market facts) never answer from memory: call the search_web tool and say only what it returns; if it finds nothing, say you could not find it.`;
 async function live(b, who) {
   const email = String(who.email || '').toLowerCase(), name = String(b.name || who.name || '').trim().slice(0, 60);
   const p = await prep(email, name);
@@ -318,4 +320,26 @@ async function memLearn(email, text) {
     d[k] = a.slice(-60); return d; });
   memCache = null;
 }
-module.exports = { memGet, memText, ask, link, state, usageMail, voice, live, tts, notifSet, notifGet };
+
+// v609 a search the voice call can ask for: Gemini with Google Search answers in a few lines with its sources (no guessing)
+let searchOffUntil = 0;
+async function search(b, who) {
+  const q = String(b.q || '').trim().slice(0, 400);
+  if (!q) return { ok: false, error: 'No question.' };
+  if (Date.now() < searchOffUntil) return { ok: false, error: 'Google search is resting for a few minutes (daily limit).' };
+  const p = await prep(String(who.email || '').toLowerCase(), String(b.name || who.name || '').trim().slice(0, 60));
+  if (p.blocked) return { ok: false, error: 'No access.' };
+  const keys = (p.keys || []).filter(Boolean), url = String(p.url || '').replace(/:streamGenerateContent.*$/, ':generateContent').replace(/\?alt=sse$/, '');
+  const payload = { tools: [{ google_search: {} }], contents: [{ role: 'user', parts: [{ text: 'Search Google and answer in 2 or 3 short sentences, only facts you found, with dates where it matters. If you find nothing reliable, say so. Question: ' + q }] }],
+    generationConfig: { temperature: 0.1, maxOutputTokens: 600 } };
+  let r = null;
+  for (let ki = 0; ki < keys.length; ki++) { r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': keys[ki] }, body: JSON.stringify(payload) }); if (r.status !== 429) break; }
+  if (!r || r.status === 429) { searchOffUntil = Date.now() + 15 * 60e3; return { ok: false, error: 'Google search is resting for a few minutes (daily limit).' }; }
+  if (!r.ok) return { ok: false, error: 'Search failed (' + r.status + ').' };
+  const j = await r.json(), c = (j.candidates || [])[0] || {};
+  const answer = ((c.content || {}).parts || []).filter(x => !x.thought).map(x => x.text || '').join('').trim();
+  const sources = []; ((c.groundingMetadata || {}).groundingChunks || []).forEach(g => { const w = g.web || {}; if (w.uri && sources.length < 5) sources.push({ u: w.uri, t: String(w.title || '').slice(0, 80) }); });
+  await count(o => { o.search = (o.search || 0) + 1; });
+  return { ok: true, answer: answer || 'Nothing reliable found.', sources };
+}
+module.exports = { search, memGet, memText, ask, link, state, usageMail, voice, live, tts, notifSet, notifGet };

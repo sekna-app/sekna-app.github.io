@@ -22311,11 +22311,13 @@ const AKLV_TOOLS=[{functionDeclarations:[
   parameters:{type:'OBJECT',properties:{screen:{type:'STRING'},campaign:{type:'STRING',description:'Campaign name for screen "campaign"'},month:{type:'STRING',description:'Month as YYYY-MM for reports_studio'},compare_with:{type:'STRING',description:'Second month as YYYY-MM to compare with'}},required:['screen']}},
  {name:'do_action',description:'Do one of the actions listed under "Actions you can do for this person" (task, access, team message, maintenance, activity, reading status). Actions that change something show a Confirm button on the screen first.',
   parameters:{type:'OBJECT',properties:{do:{type:'STRING'},person:{type:'STRING'},title:{type:'STRING'},deadline:{type:'STRING'},note:{type:'STRING'},screen:{type:'STRING'},value:{type:'STRING'},text:{type:'STRING'},push:{type:'BOOLEAN'},on:{type:'BOOLEAN'},reason:{type:'STRING'}},required:['do']}},
+ {name:'search_web',description:'Search Google for anything outside HEMERA (news, dates of holidays and seasons, ad platform changes, market facts). Returns a short answer with its sources; the sources also go to the chat. Say only what it returns.',parameters:{type:'OBJECT',properties:{query:{type:'STRING'}},required:['query']}},
  {name:'send_plan',description:'Send the budget plan picture of a month into the chat (e.g. "December").',parameters:{type:'OBJECT',properties:{month:{type:'STRING'}},required:['month']}},
  {name:'send_summary',description:'Send a short written summary of this call into the chat: the key numbers and the things to do. Only when the person asks for it.',parameters:{type:'OBJECT',properties:{points:{type:'ARRAY',items:{type:'STRING'}}},required:['points']}}]}];
 const AKLV_TOOL_RULES=`# Tools in this call (be fast)
 - First look in the "Dashboard numbers" summary above: yesterday, this month so far, the plan and the account totals are there. If the answer is there, answer at once with no tool.
 - Only for things that are not in the summary (one campaign, an older day, a month, a campaign type, search terms, what dropped, the other account) call get_numbers once, then answer. Before calling it, say a very short phrase like "ثواني أشوفلك". Never guess a number.
+- For outside facts (news, holidays, platform changes) use search_web and say only what it returns; never invent outside facts.
 - open_screen ONLY when the person clearly asks to open or show a screen (افتحي، وريني، اعرضي، open, show). Never open anything on your own.
 - "Send me the plan of <month>" → send_plan. "Send me a summary of the call" (now or at the end) → send_summary with 3 to 6 short points in the person's language.`;
 function akLiveSplit(t){const S=[];let cur={h:'Summary',L:[]};String(t||'').split('\n').forEach(l=>{if(/^## /.test(l)){S.push(cur);cur={h:l.slice(3),L:[]}}else cur.L.push(l)});S.push(cur);return S.filter(x=>x.L.join('').trim())}
@@ -22333,7 +22335,7 @@ async function akLiveNumbers(a){a=a||{};let sw='';const want=/ar|arab|عرب/i.t
  return {result:(sw?sw+'\n\n':'')+(txt||'Nothing found.')}}
 function akLiveSetup(j,lvl){const setup={model:j.model,generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:j.voice||'Leda'}}}},
   systemInstruction:{parts:[{text:j.sys+(lvl<3?'\n\n'+AKLV_TOOL_RULES:'')}]},inputAudioTranscription:{},outputAudioTranscription:{}};
- if(lvl<3)setup.tools=lvl<1?AKLV_TOOLS.concat([{googleSearch:{}}]):AKLV_TOOLS;
+ if(lvl<3)setup.tools=AKLV_TOOLS;
  if(lvl<2)setup.realtimeInputConfig={automaticActivityDetection:{endOfSpeechSensitivity:'END_SENSITIVITY_HIGH',silenceDurationMs:380,prefixPaddingMs:160}};
  if(lvl<1)setup.generationConfig.thinkingConfig={thinkingBudget:0};
  return setup}
@@ -22530,7 +22532,7 @@ function akCallCard(sec,tm){const m=Math.floor(sec/60),s=sec%60,len=m?`${m} min$
 
 /* v590 her tools in the call: fresh dashboard numbers, and number cards that drop in at the top of the screen */
 async function akLiveTool(tc){const calls=(tc&&tc.functionCalls)||[];if(!calls.length)return;AKLV.wait=true;
- const res=await Promise.all(calls.map(async f=>{let r;try{const A=f.args||{};if(f.name==='get_numbers')r=await akLiveNumbers(A);else if(f.name==='open_screen')r=akLiveAsked()?await akLiveScreen(A):{result:'Not opened: the person did not ask to open anything. Just answer.'};else if(f.name==='send_plan')r=akLivePlan(A);else if(f.name==='send_summary')r=akLiveSumm(A);else if(f.name==='do_action')r=await akActVoice(A);else r={result:'unknown tool'}}catch(e){r={result:'error: '+(e&&e.message||e)}}
+ const res=await Promise.all(calls.map(async f=>{let r;try{const A=f.args||{};if(f.name==='get_numbers')r=await akLiveNumbers(A);else if(f.name==='open_screen')r=akLiveAsked()?await akLiveScreen(A):{result:'Not opened: the person did not ask to open anything. Just answer.'};else if(f.name==='send_plan')r=akLivePlan(A);else if(f.name==='send_summary')r=akLiveSumm(A);else if(f.name==='do_action')r=await akActVoice(A);else if(f.name==='search_web')r=await akLiveSearch(A);else r={result:'unknown tool'}}catch(e){r={result:'error: '+(e&&e.message||e)}}
   return {id:f.id,name:f.name,response:r}}));
  const ws=AKLV.ws;if(ws&&ws.readyState===1)try{ws.send(JSON.stringify({toolResponse:{functionResponses:res}}))}catch(e){}}
 /* v598 cards update in place (a card that is already there only changes its number), so nothing flashes */
@@ -22808,6 +22810,14 @@ function akSmartSplit(t){t=String(t||'');let html='',src=[];
  if(src.length)html+='';
  if(src.length)html+=`<div class="ak-src"><small>${ar?'المصادر':'Sources'}</small>${src.slice(0,5).map(x=>{let d='';try{d=new URL(x.u).hostname.replace(/^www\./,'')}catch(e){}return `<a href="${akEsc(x.u)}" target="_blank" rel="noopener">${akEsc(String(x.t||d).slice(0,40)||d)}</a>`}).join('')}</div>`;
  return {text:t,html}}
+
+/* v609 search from the call: a real Google search on the server; she says the short answer, the links go to the chat */
+async function akLiveSearch(a){const q=String(a.query||'').trim();if(!q)return {result:'No question.'};
+ try{const r=await fetch(AK_SRV.replace(/\/ak\/ask$/,'/ak/search'),{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),name:akMe().name,q})});const j=await r.json();
+  if(!j||!j.ok)return {result:(j&&j.error)||'Search did not work. Say you could not search right now.'};
+  const src=(j.sources||[]).slice(0,5);AK.msgs.push({w:'h',cls:'',html:`<p class="aklv-log">🔎 ${akEsc(q)}</p><p dir="auto">${akEsc(j.answer)}</p>${src.length?`<div class="ak-src"><small>Sources</small>${src.map(x=>{let d='';try{d=new URL(x.u).hostname.replace(/^www\./,'')}catch(e){}return `<a href="${akEsc(x.u)}" target="_blank" rel="noopener">${akEsc(String(x.t||d).slice(0,40)||d)}</a>`}).join('')}</div>`:''}`,nw:1});try{akSave()}catch(e){}if(document.getElementById('akBox'))akDraw();
+  return {result:j.answer+(src.length?' (Sources: '+src.map(x=>x.t).join('; ')+'. The links are in the chat.)':'')}}
+ catch(e){return {result:'Search did not work. Say you could not search right now.'}}}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
