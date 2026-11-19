@@ -10396,6 +10396,10 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     /* v587 smooth switch: the new face fades in over the old one */
     .aklv-v{z-index:0}.aklv-v.top{z-index:1}.aklv-v.nofade{transition:none!important}
     .aklv-sh,.aklv-ring,.aklv-top,.aklv-cb,.aklv-bar,.aklv-log{z-index:2}
+
+    /* v589 bars follow your voice while she listens */
+    .aklv[data-st="listen"] .aklv-wv i,.aklv[data-st="connecting"] .aklv-wv i{transform:scaleY(calc(.22 + var(--lv,0) * .9))!important;transition:transform .08s linear!important;animation:none!important}
+    .aklv[data-st="listen"] .aklv-wv i:nth-child(even){transform:scaleY(calc(.22 + var(--lv,0) * .65))!important}
 </style>
 </head>
 <body>
@@ -22324,6 +22328,8 @@ async function akLiveMic(){let ctx=AKLV.ctx;
  node.port.onmessage=e=>{const f=e.data;let sum=0;for(let i=0;i<f.length;i++)sum+=f[i]*f[i];const rms=Math.sqrt(sum/f.length);
   if(rms>0.025&&!AKLV.mute&&!akLivePlaying()){AKLV.lastVoice=performance.now();AKLV.spoke=true}
   
+  {const el=document.getElementById('akLive'),lv=AKLV.mute||akLivePlaying()?0:Math.min(1,rms*9);AKLV.lv=(AKLV.lv||0)*.5+lv*.5;if(el)el.style.setProperty('--lv',AKLV.lv.toFixed(2))}
+  
   if(ratio===1){for(let i=0;i<f.length;i++)acc.push(AKLV.mute?0:Math.max(-1,Math.min(1,f[i])))}
   else{for(;pos<f.length;pos+=ratio){const a=Math.floor(pos),b=Math.min(f.length,Math.floor(pos+ratio));let t=0,c=0;for(let k=a;k<b;k++){t+=f[k];c++}acc.push(AKLV.mute?0:Math.max(-1,Math.min(1,c?t/c:f[a])))}pos-=f.length}
   if(acc.length>=send){const n=acc.length,pcm=new Int16Array(n);for(let i=0;i<n;i++)pcm[i]=acc[i]<0?acc[i]*0x8000:acc[i]*0x7fff;acc=[];
@@ -22334,7 +22340,8 @@ function akLiveTick(){if(AKLV.closed)return;akLiveSync();if(AKLV.t0){const s=Mat
  if(AKLV.pend&&!play){AKLV.pend=false;AKLV.aud={};akLiveTurn()}
  const w=play?'talk':(AKLV.wait||(AKLV.spoke&&now-AKLV.lastVoice>800))?'think':'listen';
  if(w!==AKLV.want){AKLV.want=w;AKLV.wantAt=now}
- if(w==='talk'||AKLV.st==='connecting'||now-AKLV.wantAt>(w==='listen'?650:350))akLiveState(w)}
+ 
+ if(w==='talk'||AKLV.st==='connecting'||now-AKLV.wantAt>(w==='listen'?650:w==='think'?1100:350))akLiveState(w)}
  
 function akLiveShown(){const h=AKLV.her||'',a=AKLV.aud||{};if(!h)return '';if(a.start==null||!AKLV.ctx)return '';
  const play=akLivePlaying();if(!play&&AKLV.pend)return h;
