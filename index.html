@@ -21848,7 +21848,7 @@ async function akIxGo(id){const s=AKIX[id];if(!s||s.phase!=='ask')return;
  if(s.acc!==CURRENT_ACCOUNT){s.phase='err';s.err='Switch back to '+(s.acc==='ar'?'AR':'USA')+' first.';akIxPut(id,akIxHtml(id));return}
  s.phase='run';s.done=0;s.st=s.ch.map(()=> 'wait');s.st[0]='now';akIxPut(id,akIxHtml(id));
  const n=s.ch.length,tick=setInterval(()=>{if(s.done<n-1){s.st[s.done]='done';s.done++;s.st[s.done]='now';akIxPut(id,akIxHtml(id))}},520);
- try{const fresh=await serverCall('assumeSet',s.acc,s.ch.map(c=>({row:c.row,key:c.key,value:c.val})),getAccessToken());clearInterval(tick);
+ try{const fresh=await serverCall('assumeSet',s.acc,s.ch.map(c=>({row:c.row,key:c.key,value:c.val,mark:'red'})),getAccessToken());clearInterval(tick);
   
   const byRow={};akIxRows(fresh||{}).forEach(r=>{byRow[r.row]=r});s.seen=s.ch.map(c=>(byRow[c.row]||{})[c.key]);
   for(let i=s.done;i<n;i++){s.st[i]='done';s.done=i+1;akIxPut(id,akIxHtml(id));await new Promise(r=>setTimeout(r,260))}
@@ -21859,7 +21859,7 @@ async function akIxGo(id){const s=AKIX[id];if(!s||s.phase!=='ask')return;
  }catch(err){clearInterval(tick);s.phase='err';s.err=errorText(err);akIxPut(id,akIxHtml(id))}}
 function ASSUME_CACHE_CLEAR(acc){try{if(typeof FC!=='undefined'&&FC[acc])FC[acc].data=null;if(typeof AS!=='undefined'&&AS[acc])AS[acc].data=null}catch(e){}}
 async function akIxUndo(id){const s=AKIX[id];if(!s||s.phase!=='done')return;s.phase='run';s.done=s.ch.length;akIxPut(id,akIxHtml(id));
- try{await serverCall('assumeSet',s.acc,s.ch.map(c=>({row:c.row,key:c.key,value:c.old})),getAccessToken());s.phase='undone';s.tiles='';akIxPut(id,akIxHtml(id))}
+ try{await serverCall('assumeSet',s.acc,s.ch.map(c=>({row:c.row,key:c.key,value:c.old,mark:'clear'})),getAccessToken());s.phase='undone';s.tiles='';akIxPut(id,akIxHtml(id))}
  catch(err){s.phase='err';s.err=errorText(err);akIxPut(id,akIxHtml(id))}}
 
 function akIxTiles(b,a){if(!b||!a||!b.plan||!a.plan)return '<div class="pt"><span>The plan could not be read again.</span></div>';
@@ -21875,11 +21875,25 @@ function akIxTiles(b,a){if(!b||!a||!b.plan||!a.plan)return '<div class="pt"><spa
  
 const AKMC={};
 function akMcKey(acc,mk){return 'hm_mc_'+acc+'_'+mk}
-function akMcCheck(){try{if(!akOwner()||!DASH_DATA)return;const days=DASH_DATA.dayPlan||[];if(!days.length||days.some(x=>!x.actual))return;
- const mk=days[0].date.slice(0,7),acc=CURRENT_ACCOUNT,k=akMcKey(acc,mk);if(storeGet(k))return;storeSet(k,'shown');
- akRestore();const id='akmc'+acc+mk.replace('-','');AKMC[id]={acc,mk,phase:'card'};AK.msgs.push({w:'h',html:akMcCard(id),cls:'wb',nw:1});akSave();
- setTimeout(()=>{if(!document.getElementById('akBox'))openAsk();else akDraw()},400)}catch(e){}}
-function akMcCard(id){const s=AKMC[id],d=DASH_DATA||{},days=d.dayPlan||[],lbl=monthName(s.mk,true),short=lbl.split(' ')[0],acc=accountMeta(d);
+
+
+function akMcData(acc){return acc===CURRENT_ACCOUNT?DASH_DATA:((getAccountCache(acc)||{}).data||null)}
+function akMcCheck(){try{if(!akOwner()||!DASH_DATA)return;let added=0;
+ ['usa','ar'].forEach(acc=>{const d=akMcData(acc);if(!d){if(acc!==CURRENT_ACCOUNT)try{prefetchOtherAccount()}catch(e){}return}
+  const days=d.dayPlan||[];if(!days.length||days.some(x=>!x.actual))return;
+  const mk=days[0].date.slice(0,7),k=akMcKey(acc,mk);if(storeGet(k))return;storeSet(k,'shown');
+  if(!added)akRestore();const id='akmc'+acc+mk.replace('-','');AKMC[id]={acc,mk,phase:'card',data:d};AK.msgs.push({w:'h',html:akMcCard(id),cls:'wb',nw:1});added++});
+ if(added){akSave();setTimeout(()=>{if(!document.getElementById('akBox'))openAsk();else akDraw()},400)}}catch(e){}}
+function akMcState(id){if(AKMC[id])return AKMC[id];const m=String(id).match(/^akmc(usa|ar)(\d{4})(\d{2})$/);if(!m)return null;
+ const html=(akIxFind(id)||{}).html||'';return AKMC[id]={acc:m[1],mk:m[2]+'-'+m[3],phase:/onclick="akMcGo/.test(html)?'card':'run',data:akMcData(m[1])}}
+async function akMcSwitch(acc,mk){if(acc===CURRENT_ACCOUNT&&DASH_DATA)return true;switchAccount(acc);
+ for(let i=0;i<80;i++){await new Promise(r=>setTimeout(r,300));const d=DASH_DATA,days=(d&&d.dayPlan)||[];
+  if(CURRENT_ACCOUNT===acc&&d&&!document.body.classList.contains('account-changing')&&days[0]&&days[0].date.slice(0,7)===mk&&((d.account||{}).key||acc)===acc)return true}
+ return false}
+function akMcNext(id){const s=AKMC[id],o=s.acc==='ar'?'usa':'ar',m=AK.msgs.find(x=>/id="akmc(usa|ar)\d{6}"/.test(x.html)&&x.html.includes('id="akmc'+o)&&/onclick="akMcGo/.test(x.html));
+ if(!m)return;const oid=(m.html.match(/id="(akmc(?:usa|ar)\d{6})"/)||[])[1];if(!oid)return;
+ setTimeout(()=>akBot(`<p>${o==='ar'?'Human Appeal AR':'Human Appeal USA'} is complete too. Ready for it?</p><div class="akmca"><div class="btns"><button type="button" class="ok" onclick="akMcGo('${oid}')">Close ${o==='ar'?'AR':'USA'} now</button></div></div>`,'wb'),900)}
+function akMcCard(id){const s=akMcState(id),d=s.data||akMcData(s.acc)||{},days=d.dayPlan||[],lbl=monthName(s.mk,true),short=lbl.split(' ')[0],acc=accountMeta(d);
  const live=days.filter(x=>x.actual),sum=(L,f)=>L.reduce((t,x)=>t+(+f(x)||0),0);
  const ps=sum(days,x=>x.plan.spend),pv=sum(days,x=>x.plan.value),as=sum(live,x=>x.actual.spend),av=sum(live,x=>x.actual.value),ro=as?av/as:0,tro=ps?pv/ps:0;
  const wk=[[1,7],[8,14],[15,21],[22,31]].map(([f,t],i)=>{const L=live.filter(x=>x.dayNumber>=f&&x.dayNumber<=t),sp=sum(L,x=>x.actual.spend);return {i:i+1,r:sp?sum(L,x=>x.actual.value)/sp:0}}).sort((x,y)=>y.r-x.r)[0];
@@ -21896,9 +21910,11 @@ function akMcAskHtml(id){const s=AKMC[id];return `<div class="akmca" id="${id}a"
 function akMcSendHtml(id){const s=AKMC[id],n=s.total||0,k=Math.min(s.count||0,n),ppl=(s.people||[]).slice(0,9);
  return `<div class="akmcx" id="${id}x"><div class="pl">✈️</div><div class="cnt">${k} <small>of ${n} people</small></div>${s.final?`<div class="okl">${s.final}</div>`:'<div class="prog"><i style="width:'+(n?k/n*100:0)+'%"></i></div>'}
   <div class="ppl">${ppl.map((p,i)=>`<i class="${i<Math.round(k/n*ppl.length)?'s':''}">${i<Math.round(k/n*ppl.length)?'✓':akEsc(String(p.name||p.email||'?').trim().slice(0,2).toUpperCase())}</i>`).join('')}${n>ppl.length?`<i class="m">+${n-ppl.length}</i>`:''}</div></div>`}
-async function akMcGo(id){const s=AKMC[id];if(!s||s.phase!=='card')return;
- if(s.acc!==CURRENT_ACCOUNT){akBot('<p>Switch back to '+(s.acc==='ar'?'AR':'USA')+' first, then press Close again.</p>');return}
- s.phase='run';akIxPut(id,akMcCard(id));akUser('Close '+monthName(s.mk,true).split(' ')[0]);
+async function akMcGo(id){const s=akMcState(id);if(!s||s.phase!=='card')return;
+ s.phase='run';akIxPut(id,akMcCard(id));akUser('Close '+monthName(s.mk,true).split(' ')[0]+' · '+(s.acc==='ar'?'AR':'USA'));
+ if(s.acc!==CURRENT_ACCOUNT){akBot(`<p>Switching to ${s.acc==='ar'?'Human Appeal AR':'Human Appeal USA'}…</p>`);
+  if(!await akMcSwitch(s.acc,s.mk)){akBot('<p>I could not open that account. Switch to it and press Close again.</p>');s.phase='card';akIxPut(id,akMcCard(id));return}
+  MR.pdf=null;MR.pages=null;MR.m=null}
  s.steps=['now'];s.sub=[];s.prog=10;akBot(akMcStepsHtml(id),'wb');const P=()=>akIxPut(id+'s',akMcStepsHtml(id));
  try{
   
@@ -21928,7 +21944,7 @@ async function akMcSend(id,test){const s=AKMC[id];if(!s||s.sending||!MR.pdf)retu
  try{const r=await serverCall('adminSendMonthlyReport',getAccessToken(),MR.pdf,meta);clearInterval(tick);s.sending=false;
   if(test){s.msg='✅ Test sent to your email. Check it, then send it to the team.';akIxPut(id+'a',akMcAskHtml(id));return}
   s.total=Math.max(s.total,(r.sent||0)+((r.failed||[]).length));s.count=r.sent||0;s.final=`✓ Sent to ${r.sent} ${r.sent===1?'person':'people'}${r.failed&&r.failed.length?' · not sent to '+akEsc(r.failed.join(', ')):''}`;s.sentAll=true;
-  akIxPut(id+'x',akMcSendHtml(id));akIxPut(id+'a',akMcAskHtml(id));
+  akIxPut(id+'x',akMcSendHtml(id));akIxPut(id+'a',akMcAskHtml(id));akMcNext(id);
  }catch(err){clearInterval(tick);s.sending=false;s.msg='⚠️ '+akEsc(errorText(err));akIxPut(id+'a',akMcAskHtml(id));if(!test){s.final='⚠️ Not sent';akIxPut(id+'x',akMcSendHtml(id))}}}
 setInterval(akMcCheck,60000);setTimeout(akMcCheck,9000);
 </script>

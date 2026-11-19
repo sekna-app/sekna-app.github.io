@@ -1,6 +1,6 @@
 // The dashboard data, read from the same Google Sheets with the same rules as Code.gs
 // (getDashboardData and getMonthCompareData). Keep the two in step when one changes.
-const { sheetMeta, batchGet, a1, valuesBatchUpdate, cellLooks } = require('./google');
+const { sheetMeta, batchGet, a1, valuesBatchUpdate, sheetsBatchUpdate, cellLooks } = require('./google');
 
 const DEFAULT_ACCOUNT_KEY = 'usa';
 const ACCOUNTS = {
@@ -1247,10 +1247,18 @@ async function setAssumptions(accountKey, edits) {
     const row = Math.round(Number(e && e.row)), c = COL[e && e.key], x = Number(e && e.value), r = col[row - 40] || [];
     if (!(row > 40 + old0 && row <= 270) || !c || typeof r[1] !== 'number') throw new Error('That cell cannot be changed here.');
     if (!isFinite(x) || x < 0 || x > 100) throw new Error('Use a number from 0 to 100.');
-    return { range: a1(sh.title, c + row), values: [[x]] };
+    return { range: a1(sh.title, c + row), values: [[x]], row, col: c.charCodeAt(0) - 65, mark: e.mark };
   });
   if (!data.length) throw new Error('Nothing to save.');
-  await valuesBatchUpdate(book.id, data);
+  await valuesBatchUpdate(book.id, data.map(d => ({ range: d.range, values: d.values })));
+  // v567 cells changed by Alexandra turn red in the sheet (light red fill, red text); her Undo clears it again.
+  const marks = data.filter(d => d.mark === 'red' || d.mark === 'clear');
+  if (marks.length && sh.sheetId != null) {
+    await sheetsBatchUpdate(book.id, marks.map(d => ({ repeatCell: {
+      range: { sheetId: sh.sheetId, startRowIndex: d.row - 1, endRowIndex: d.row, startColumnIndex: d.col, endColumnIndex: d.col + 1 },
+      cell: { userEnteredFormat: d.mark === 'red' ? { backgroundColor: { red: 0.98, green: 0.8, blue: 0.8 }, textFormat: { foregroundColor: { red: 0.78, green: 0.1, blue: 0.13 }, bold: true } } : {} },
+      fields: 'userEnteredFormat(backgroundColor,textFormat.foregroundColor,textFormat.bold)' } }))).catch(e => console.error('Index colour: ' + e.message));
+  }
   return data.length;
 }
 
