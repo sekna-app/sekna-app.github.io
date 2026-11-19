@@ -22346,11 +22346,12 @@ const AKN=(()=>{const m={},add=(v,...w)=>w.forEach(x=>m[x]=v);
  add(100,'مية','مائة','مئة','ميه','ميت');add(200,'ميتين','مئتين','مائتين','مئتان','مائتان');add(300,'تلتمية','ثلاثمائة','ثلاثمئة','تلاتمية','تلتميه','ثلثمائة');
  add(400,'ربعمية','أربعمائة','اربعمائة','أربعمئة','ربعميه','أربعمية','اربعمية');add(500,'خمسمية','خمسمائة','خمسمئة','خمسميه');add(600,'ستمية','ستمائة','ستمئة','ستميه');
  add(700,'سبعمية','سبعمائة','سبعمئة','سبعميه');add(800,'تمنمية','ثمانمائة','ثمانمئة','تمنميه','ثمنمائة','تمانمية');add(900,'تسعمية','تسعمائة','تسعمئة','تسعميه');
+ const tl={'تلاتلاف':3e3,'تلتلاف':3e3,'أربعتلاف':4e3,'اربعتلاف':4e3,'اربعتلاف':4e3,'خمستلاف':5e3,'ستلاف':6e3,'ستتلاف':6e3,'سبعتلاف':7e3,'تمنتلاف':8e3,'تمانتلاف':8e3,'تسعتلاف':9e3,'عشرتلاف':1e4};
  const sc={'ألف':1e3,'الف':1e3,'آلاف':1e3,'الاف':1e3,'ألاف':1e3,'ألفين':2e3,'الفين':2e3,'ألفان':2e3,'مليون':1e6,'ملايين':1e6,'مليونين':2e6,'مليار':1e9};
  const pt={'بوينت':1,'بوينط':1,'فاصل':1,'فاصلة':1,'point':1},half={'ونص':1,'ونصف':1};
  const amb={'صفر':1,'زيرو':1,'ست':1,'سبع':1,'خمس':1,'عشر':1,'تسع':1,'تمن':1,'تلات':1,'ثلاث':1,'أربع':1,'اربع':1,'ميت':1,'واحد':1,'واحدة':1};
  const strip=w=>w.replace(/[ً-ْـ]/g,'');
- const look=w=>{w=strip(w);if(m[w]!=null)return {n:m[w]};if(sc[w]!=null)return {s:sc[w],w};if(pt[w])return {p:1};
+ const look=w=>{w=strip(w);if(tl[w])return {n:tl[w],big:1};if(w.length>2&&w[0]==='و'&&tl[w.slice(1)])return {n:tl[w.slice(1)],big:1,and:1};if(m[w]!=null)return {n:m[w]};if(sc[w]!=null)return {s:sc[w],w};if(pt[w])return {p:1};
   if(w.length>2&&w[0]==='و'){const r=w.slice(1);if(m[r]!=null)return {n:m[r],and:1};if(sc[r]!=null)return {s:sc[r],w:r,and:1}}return null};
  const W=/^([^\u0621-\u0652\u0640a-z]*)([\u0621-\u0652\u0640a-z]+)([^\u0621-\u0652\u0640a-z]*)$/i,SP=/^\s+$/;
  const f=function(text){const T=String(text).split(/(\s+)/),out=[];let i=0;
@@ -22367,14 +22368,15 @@ const AKN=(()=>{const m={},add=(v,...w)=>w.forEach(x=>m[x]=v);
    if(!post){let k=j;while(k<T.length&&SP.test(T[k]))k++;const q=k<T.length&&T[k].match(/^([\u0621-\u0652\u0640a-z]+)([^\u0621-\u0652\u0640a-z]*)$/i);
     if(q&&pt[strip(q[1])]&&!q[2]){let k2=k+1,d='',p2='',e=k;while(k2<T.length){const t=T[k2];if(SP.test(t)){k2++;continue}const r=t.match(/^([\u0621-\u0652\u0640a-z]+)([^\u0621-\u0652\u0640a-z]*)$/i),y=r&&look(r[1]);if(!y||y.n==null||y.n>9)break;d+=y.n;e=k2;k2++;if(r[2]){p2=r[2];break}}
      if(d){dec='.'+d;j=e+1;post=p2}}
-    else if(q&&half[strip(q[1])]){dec='.5';j=k+1;post=q[2]}}
+    else if(q&&half[strip(q[1])]){const lastS=[...run].reverse().find(r=>r.x.s);if(lastS){run.push({x:{n:lastS.x.s/2},w:'half'});j=k+1;post=q[2]}else{dec='.5';j=k+1;post=q[2]}}
+    else if(q&&/^و?ربع$/.test(strip(q[1]))){const lastS=[...run].reverse().find(r=>r.x.s);if(lastS){run.push({x:{n:lastS.x.s/4},w:'quarter'});j=k+1;post=q[2]}}}
    if(run.length===1&&!dec&&(amb[strip(run[0].w)]||(run[0].x.n!=null&&run[0].x.n<10))){out.push(raw);i++;continue}
-   let total=0,cur=0;for(const {x} of run){if(x.n!=null)cur+=x.n;else{cur=(cur||1)*x.s;total+=cur;cur=0}}total+=cur;
+   let total=0,cur=0;for(const {x} of run){if(x.big){total+=cur;cur=0;total+=x.n}else if(x.n!=null)cur+=x.n;else{cur=(cur||1)*x.s;total+=cur;cur=0}}total+=cur;
    out.push(mm[1]+(run[0].x.and?'و ':'')+total.toLocaleString('en-US')+dec+post);i=j}
   return out.join('').replace(/(\d)\s?(?:في|ف)\s?(?:المية|المائة|المئة|الميه)/g,'$1%')};
  f.isNum=w=>{const q=String(w).replace(/[^\u0621-\u0652\u0640a-z]/gi,'');return !!(q&&(look(q)||half[strip(q)]))};return f})();
 function akLiveCommas(t){return String(t).replace(/(^|[^\d.,])(\d{4,})(?![\d,])/g,(m,p,d)=>d.length===4&&/^(19|20)\d\d$/.test(d)?m:p+(+d).toLocaleString('en-US'))}
-function akLiveTx(t){return akLiveCommas(AKN(String(t||'').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{20E3}]/gu,'')).replace(/\s+([.،,؟?!])/g,'$1').replace(/\s{2,}/g,' ').trim())}
+function akLiveTx(t){return akLiveCommas(AKN(String(t||'').replace(/[\u0660-\u0669]/g,d=>String(d.charCodeAt(0)-0x660)).replace(/[\u066B]/g,'.').replace(/[\u066C]/g,',').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{20E3}]/gu,'')).replace(/\s+([.،,؟?!])/g,'$1').replace(/\s{2,}/g,' ').trim())}
  
 function akLiveLines(x){const w=x.split(/\s+/).filter(Boolean),L=[];let c=[];
  w.forEach(t=>{c.push(t);const len=c.join(' ').length;if(c.length>=7||len>=40||(/[.،,؟?!:]$/.test(t)&&c.length>=3)){L.push(c.join(' '));c=[]}});if(c.length)L.push(c.join(' '));return L}
@@ -22860,7 +22862,7 @@ function akLiveVid(k,t){const el=document.getElementById('akLive');if(!el)return
  let p;try{p=v.play()}catch(e){}if(p&&p.then)p.then(show,show);else show();return v}
 function akLiveAnswer(){const el=document.getElementById('akLive');if(!el)return;const w=el.querySelector('.aklv-v[data-s="cw"]'),a=el.querySelector('.aklv-v[data-s="ca"]');if(!a){AKLV.answering=false;return}
  const d=(w&&w.duration)||1.625,t=w?w.currentTime:0,half=d/2,pos=Math.max(0,Math.min(.8,t<=half?t:d-t));
- AKLV.answering=true;akLiveVid('ca',pos);a.onended=()=>{AKLV.answering=false;AKLV.st='';akLiveTick()};setTimeout(()=>{if(AKLV.answering){AKLV.answering=false;AKLV.st='';akLiveTick()}},6500)}
+ AKLV.answering=true;const av=akLiveVid('ca',pos);try{av.playbackRate=1.7}catch(e){}a.onended=()=>{AKLV.answering=false;AKLV.st='';akLiveTick()};setTimeout(()=>{if(AKLV.answering){AKLV.answering=false;AKLV.st='';akLiveTick()}},6500)}
 </script>
 <div id="seknaFileEnd" hidden></div>
 <script>

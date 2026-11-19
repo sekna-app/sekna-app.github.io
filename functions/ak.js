@@ -89,7 +89,8 @@ async function ask(req, res, b, who) {
   }
   const sys = (ctx ? '# HEMERA mode\n' + HM_NUM_RULES + '\n\n' : '') + p.base + (ctx ? '\n\n## Dashboard numbers (HEMERA)\n' + ctx : '') + '\n\n=== DATA ===\n' + (p.data || '');
   const payload = { system_instruction: { parts: [{ text: sys }] }, contents: hist.concat([{ role: 'user', parts: (img ? [{ inline_data: { mime_type: img.mime, data: img.data } }] : []).concat([{ text: q }]) }]),
-    generationConfig: Object.assign({ temperature: 0.2, maxOutputTokens: 3000 }, p.think ? { thinkingConfig: p.think } : {}) };
+    // v604 faster written answers: a short think for short questions, a capped one otherwise (the photo keeps the script's setting)
+    generationConfig: Object.assign({ temperature: 0.2, maxOutputTokens: 3000 }, p.think ? { thinkingConfig: img ? p.think : Object.assign({}, p.think, { thinkingBudget: Math.min(Number(p.think.thinkingBudget) > 0 ? Number(p.think.thinkingBudget) : 1024, q0.length < 140 ? 256 : 768) }) } : { thinkingConfig: { thinkingBudget: q0.length < 140 ? 256 : 768 } }) };
   const url = String(p.url || '').replace(/:generateContent.*$/, ':streamGenerateContent?alt=sse');
   const keys = (p.keys || []).filter(Boolean);
   const used = (async () => { try { const s = (await conf()).secret; await scriptPost({ action: 'used', secret: s, email, name }); } catch (e) {} })();
