@@ -10005,6 +10005,27 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .cp-abl>.channel-icon.ch-ico{width:26px;height:26px;flex:0 0 26px;border-radius:8px;margin:0}.cp-abl>.channel-icon.ch-ico svg{width:14px;height:14px}
     .cp-pkr-t .cp-pl{padding:5px 12px 5px 6px;border:1px solid var(--line,#DFE4EF);background:var(--card,#fff);color:#4b5263;font-size:12px}.cp-pkr-t .cp-pl:first-child{padding:7px 14px}
     .cp-pkr-t .cp-pl.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);border-color:transparent;color:#fff;box-shadow:0 6px 14px rgba(61,107,255,.35)}
+
+    /* v565 compare: the period list, and the winner-first figures */
+    .cp-pbl{margin-top:12px;background:var(--card,#fff);border-radius:18px;padding:12px 14px 4px;box-shadow:0 6px 16px rgba(20,40,110,.06)}
+    .cp-pbl .k{font:800 9.5px Inter,system-ui,sans-serif;letter-spacing:.1em;color:#8a93a8;margin-bottom:2px}
+    .cp-pbl button{display:flex;align-items:center;gap:10px;width:100%;border:0;border-top:1px solid #f1f3f8;background:none;padding:11px 0;font:inherit;cursor:pointer;text-align:left}.cp-pbl .k+button{border-top:0}
+    .cp-pbl i{width:18px;height:18px;border-radius:50%;border:1.5px solid #c9cfdc;flex:none;box-sizing:border-box}.cp-pbl button.on i{border:5.5px solid #203c8e}
+    .cp-pbl b{flex:1;font:700 13px Inter,system-ui,sans-serif;color:var(--text,#141b33)}.cp-pbl button.on b{color:#203c8e}.cp-pbl small{font:700 11.5px Inter,system-ui,sans-serif;color:#8a93a8;white-space:nowrap}
+    .cp-wc{margin-top:12px;background:var(--card,#fff);border-radius:18px;padding:14px;box-shadow:0 6px 16px rgba(20,40,110,.06)}
+    .cp-wh{display:flex;align-items:center;gap:12px}.cp-wh .bd{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font:900 16px Inter,system-ui,sans-serif;color:#fff;background:#3d6bff;flex:none}.cp-wh .bd.b{background:#e2b874}.cp-wh .bd.n{background:#8a93a8}
+    .cp-wh b{display:block;font:900 15px Inter,system-ui,sans-serif;color:var(--text,#141b33)}.cp-wh small{font:600 12px Inter,system-ui,sans-serif;color:#8a93a8}
+    .cp-ln{width:100%;height:100px;display:block;margin-top:12px;overflow:visible}.cp-ln path{fill:none;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+    .cp-ln .la{stroke:#3d6bff;stroke-width:2.4}.cp-ln .lb{stroke:#e2b874;stroke-width:2.4}.cp-ln .ga{stroke:#3d6bff;stroke-width:7;opacity:.18}.cp-ln .gb{stroke:#e2b874;stroke-width:7;opacity:.22}
+    .cp-wlg{display:flex;gap:12px;flex-wrap:wrap;font:700 11px Inter,system-ui,sans-serif;color:#6b7385;margin-top:8px}.cp-wlg span{display:flex;align-items:center;gap:5px}.cp-wlg i{width:8px;height:8px;border-radius:50%;background:#3d6bff}.cp-wlg i.b{background:#e2b874}.cp-wlg .r{margin-left:auto;color:#a9b0c0}
+    .cp-wl{padding:6px 14px}
+    .cp-wr{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid #f1f3f8;font:700 12.5px Inter,system-ui,sans-serif;color:#6b7385}.cp-wr.h{border:0;padding:6px 0 2px;font-size:10px;letter-spacing:.06em}
+    .cp-wr>span:last-child{display:flex;align-items:center;gap:6px}.cp-wr i{font-style:normal;color:#c9cfdc}
+    .cp-wr b{font:900 13.5px Inter,system-ui,sans-serif;color:var(--text,#141b33);font-variant-numeric:tabular-nums;padding:2px 7px;border-radius:7px}.cp-wr b+i+b{color:#8a93a8;font-weight:800}
+    .cp-wr b.w{background:#eef2fc;color:#203c8e}.cp-wr b+i+b.w{background:#fdf6e7;color:#9a6d1f}
+    .cp-wr.h b{font:800 10px Inter,system-ui,sans-serif;padding:0 7px}.cp-wr.h b.a{color:#3d6bff}.cp-wr.h b.bb{color:#c99a45}
+    .cp-wm{display:block;width:100%;margin:4px 0 8px;border:0;border-radius:12px;background:#f4f6fb;padding:10px;font:800 12px Inter,system-ui,sans-serif;color:#203c8e;cursor:pointer}
+    body.dark-mode .cp-pbl,body.dark-mode .cp-wc{background:#1c2330}body.dark-mode .cp-pbl button,body.dark-mode .cp-wr{border-color:#2a313c}body.dark-mode .cp-wm{background:#232b38;color:#9fb8ff}body.dark-mode .cp-wr b.w{background:#22305e;color:#c9d3f5}body.dark-mode .cp-pbl button.on b{color:#9fb8ff}body.dark-mode .cp-pbl button.on i{border-color:#7d9cff}
 </style>
 </head>
 <body>
@@ -21318,7 +21339,7 @@ function cpDraw(){
   if(two&&(CPX.b<0||CPX.b===CPX.i)){const alt=d.c.map((x,j)=>({j,s:cpSum(ix[j],a,b).sp})).filter(x=>x.j!==CPX.i&&x.s>0).sort((x,y)=>y.s-x.s)[0];CPX.b=alt?alt.j:-1}
   const [ba,bb]=two?[a,b]:cpPerB(a,b),rb=two?(CPX.b>=0?cpSum(ix[CPX.b],a,b):null):cpSum(rows,ba,bb);
   const la=two?'A':cpRange(a,b),lb=two?'B':cpRange(ba,bb);
-  let tbl='',sum='',chart='';
+  let tbl='',sum='',chart='',va=[],vb=[];
   if(rb){
    
    tbl=`<div class="cp-tb"><div class="cp-tr h"><span></span><span>${esc(la)}</span><span>${esc(lb)}</span><span>CHANGE</span></div>${CP_M.map(([k,l])=>{const dd=cpDelta(r[k],rb[k]);
@@ -21329,7 +21350,7 @@ function cpDraw(){
    else if(dr!=null&&isFinite(dr))sum=`ROAS <b>${dr>=0?'up':'down'} ${Math.abs(dr*100).toFixed(0)}%</b>${ds!=null&&isFinite(ds)?` on ${Math.abs(ds*100).toFixed(0)}% ${ds>=0?'more':'less'} spend`:''}. Value per conversion ${money(rb.aov,2)} → ${money(r.aov,2)}.`;
    const bkA=cpBuckets(a,b,'d').slice(-14),off=two?0:cpDays(ba,a)-1;
    const rowsB=two?ix[CPX.b]:rows;
-   const va=bkA.map(x=>cpSum(rows,x[0],x[1])[CPX.met]),vb=bkA.map(x=>cpSum(rowsB,cpD(x[0],-off),cpD(x[1],-off))[CPX.met]);
+   va=bkA.map(x=>cpSum(rows,x[0],x[1]).ro);vb=bkA.map(x=>cpSum(rowsB,cpD(x[0],-off),cpD(x[1],-off)).ro);
    chart=`<div class="cp-box"><div class="cp-bh"><span class="cp-k3">${(CP_M.find(x=>x[0]===CPX.met)||[])[1]} · A <i class="cp-sw a"></i> B <i class="cp-sw b"></i></span></div>${cpMetSel()}${cpBars([va,vb],bkA.map(x=>x[2]),v=>cpVal(CPX.met,{[CPX.met]:v,ro:v}),1)}</div>`;
   }
   const pbOpts=[['prev','The period before'],['lm','Same days last month'],['ly','Same days last year'],['c','Custom dates']];
@@ -21338,10 +21359,8 @@ function cpDraw(){
    <div class="cp-pbar cp-mode"><button type="button" class="${two?'on':''}" onclick="cpSet('cm','camp')">Two campaigns</button><button type="button" class="${two?'':'on'}" onclick="cpSet('cm','per')">Two periods</button></div>
    ${cpPbarHtml()}
    <div class="cp-ab2">${cpAbLine('i',two?'A':'',CPX.i,a,b)}${two?cpAbLine('b','B',CPX.b,a,b):''}</div>
-   ${two?'':`<div class="cp-ab"><div class="cp-pp"><div class="pa"><small>PERIOD A</small><b>${cpRange(a,b)}</b></div><div class="pb"><small>PERIOD B</small><b>${cpRange(ba,bb)}</b></div></div>
-   <select class="cp-sel" onchange="if(this.value==='c'){cpPkOpen('b')}else cpSet('pb',this.value)">${pbOpts.map(([k,l])=>`<option value="${k}"${CPX.pb===k?' selected':''}>${l}</option>`).join('')}</select>
-   ${CPX.pb==='c'?`<button type="button" class="cp-pkb" onclick="cpPkOpen('b')">${cpIc('<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/>')}<span>${cpRange(ba,bb)}</span><b>Change dates</b></button>`:''}</div>`}
-   ${rb?`${cpSplit(r,rb,two)}${chart}`:'<div class="cp-wait cp-empty">Pick a second campaign.</div>'}</div>`;
+   ${two?'':cpPbList(a,b)}
+   ${rb?cpWin(r,rb,two,va,vb,m,two?d.c[CPX.b]:null,[a,b],[ba,bb]):'<div class="cp-wait cp-empty">Pick a second campaign.</div>'}</div>`;
  }
  o.innerHTML=`<div class="cp-sc">${html}</div>`;
  const n=o.querySelector('.cp-sc');if(n&&y)n.scrollTop=y;
@@ -21546,6 +21565,26 @@ function cpPkrList(){const o=document.getElementById('cpPkr');if(!o||!CPPK||!CPX
  o.querySelector('.cp-pkr-t').innerHTML=`<button type="button" class="cp-pl${CPPK.t?'':' on'}" onclick="cpPkrType('')">All</button>`+types.map(t=>`<button type="button" class="cp-pl${CPPK.t===t?' on':''}" onclick="cpPkrType('${esc(t).replace(/'/g,'&#39;')}')">${chIco(t)}${esc(MX_TYPE_LABEL[t]||CHANNEL_SHORT[t]||cpCh(t)[0])}</button>`).join('');
  const q=CPPK.q.trim().toLowerCase(),show=all.filter(x=>(!CPPK.t||x.m[1]===CPPK.t)&&(!q||x.m[0].toLowerCase().includes(q)));
  o.querySelector('.cp-pkr-l').innerHTML=show.length?show.map(x=>`<button type="button" class="cp-pkc${x.j===cur?' on':''}${x.j===other?' dis':''}" style="--c:${cpCh(x.m[1])[1]}" ${x.j===other?'disabled':`onclick="cpPkrGo(${x.j})"`}><b>${esc(cpNames(x.m[0])[0])}</b><small>${esc(cpCh(x.m[1])[0])}${x.j===other?' · in '+(CPPK.key==='b'?'A':'B'):''}</small></button>`).join(''):'<p class="cp-pkr-e">No campaign matches.</p>'}
+
+ 
+function cpPbList(a,b){const n=cpDays(a,b),L=[['prev','The period before'],['lm','Same days last month'],['ly','Same days last year'],['c','Custom dates']];
+ const rng=k=>{if(k==='c')return CPX.pb==='c'&&CPX.bf&&CPX.bt?cpRange(...(CPX.bf<=CPX.bt?[CPX.bf,CPX.bt]:[CPX.bt,CPX.bf])):'Pick ›';const keep=CPX.pb;CPX.pb=k;const r=cpPerB(a,b);CPX.pb=keep;return cpRange(r[0],r[1])};
+ return `<div class="cp-pbl"><div class="k">COMPARE ${esc(cpRange(a,b))} WITH</div>${L.map(([k,l])=>`<button type="button" class="${CPX.pb===k?'on':''}" onclick="${k==='c'?"cpPkOpen('b')":`cpSet('pb','${k}')`}"><i></i><b>${l}</b><small>${esc(rng(k))}</small></button>`).join('')}</div>`}
+function cpLines(va,vb){const all=va.concat(vb).filter(v=>isFinite(v));if(va.length<2||!all.length)return '';let lo=Math.min(...all),hi=Math.max(...all);if(hi-lo<1e-9){hi+=1;lo-=1}
+ const W=358,H=100,p=v=>v.map((x,i)=>[(i*(W-8)/(v.length-1)+4),(H-((isFinite(x)?x:lo)-lo)/(hi-lo)*(H-14)-7)]);
+ const path=q=>'M'+q.map(([x,y])=>x.toFixed(1)+','+y.toFixed(1)).join(' L'),A=p(va),B=p(vb),la=A[A.length-1],lb=B[B.length-1];
+ return `<svg class="cp-ln" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><path d="${path(A)}" class="ga"/><path d="${path(B)}" class="gb"/><path d="${path(A)}" class="la"/><path d="${path(B)}" class="lb"/><circle cx="${la[0]}" cy="${la[1]}" r="3.6" fill="#3d6bff"/><circle cx="${lb[0]}" cy="${lb[1]}" r="3.6" fill="#e2b874"/></svg>`}
+function cpWin(r,rb,two,va,vb,mA,mB,pa,pb){
+ const A=two?'A':'Period A',B=two?'B':'Period B',main=['sp','cl','cv','va','ro'],rest=CP_M.map(x=>x[0]).filter(k=>!main.includes(k));
+ const better=k=>{const x=CP_M.find(q=>q[0]===k)||[],a=+r[k]||0,b=+rb[k]||0;if(x[3]||Math.abs(a-b)<1e-9)return 0;return (x[2]?a<b:a>b)?1:-1};
+ const wins=['va','cv','cl','ro'].map(k=>[k,better(k)]),nm={va:'value',cv:'conv.',cl:'clicks',ro:'ROAS'};
+ const w=r.ro===rb.ro?0:r.ro>rb.ro?1:-1,who=w>0?A:B,ah=wins.filter(([k,v])=>v===w).map(([k])=>nm[k]);
+ const lst=ah.length>1?ah.slice(0,-1).join(', ')+' and '+ah[ah.length-1]:ah[0]||'';
+ const hero=w?`<div class="cp-wh"><span class="bd ${w>0?'a':'b'}">${two?(w>0?'A':'B'):(w>0?'A':'B')}</span><div><b>${esc(who)} wins this period</b><small>${lst?'Ahead on '+esc(lst):'Higher ROAS'} · ROAS ${cpX(Math.max(r.ro,rb.ro))} vs ${cpX(Math.min(r.ro,rb.ro))}</small></div></div>`:`<div class="cp-wh"><span class="bd n">=</span><div><b>Even on ROAS</b><small>Both at ${cpX(r.ro)}</small></div></div>`;
+ const la=two?(cpCh(mA[1])[0]):cpRange(pa[0],pa[1]),lb=two?(mB?cpCh(mB[1])[0]:''):cpRange(pb[0],pb[1]);
+ const row=k=>{const l=(CP_M.find(q=>q[0]===k)||[])[1],bt=better(k);return `<div class="cp-wr"><span>${l}</span><span><b class="${bt>0?'w':''}">${cpVal(k,r)}</b><i>·</i><b class="${bt<0?'w':''}">${cpVal(k,rb)}</b></span></div>`};
+ return `<div class="cp-wc">${hero}${cpLines(va,vb)}<div class="cp-wlg"><span><i class="a"></i>${esc(A)} · ${esc(la)}</span><span><i class="b"></i>${esc(B)} · ${esc(lb)}</span><span class="r">ROAS by day</span></div></div>
+  <div class="cp-wc cp-wl"><div class="cp-wr h"><span></span><span><b class="a">● ${esc(A)}</b><i></i><b class="bb">● ${esc(B)}</b></span></div>${main.map(row).join('')}${CPX.more?rest.map(row).join(''):''}<button type="button" class="cp-wm" onclick="CPX.more=!CPX.more;cpDraw()">${CPX.more?'Fewer figures ‹':'More figures ›'}</button></div>`}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
