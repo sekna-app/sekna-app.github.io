@@ -10234,6 +10234,14 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .akmcx .cnt{font:900 30px Inter,system-ui,sans-serif;color:#141b33}.akmcx .cnt small{font:700 13px Inter,system-ui,sans-serif;color:#8a93a8}.akmcx .okl{font:800 12px Inter,system-ui,sans-serif;color:#13804f;margin-top:2px}
     .akmcx .ppl{display:flex;justify-content:center;margin-top:10px}.akmcx .ppl i{width:30px;height:30px;border-radius:50%;border:2px solid #fff;margin-left:-8px;background:#c9d3f5;font-style:normal;display:grid;place-items:center;font:800 10px Inter,system-ui,sans-serif;color:#203c8e}.akmcx .ppl i:first-child{margin-left:0}.akmcx .ppl i.s{background:#13804f;color:#fff}.akmcx .ppl i.m{background:#eef1f7}
     .ak.dk .akix .rw,.ak.dk .akmcs .stp{border-color:#3E4042}.ak.dk .akix .tl div,.ak.dk .akmc .hl,.ak.dk .akmca .pdf{background:#3A3B3C}.ak.dk .akix .tl b,.ak.dk .akmc .g b,.ak.dk .akmcx .cnt,.ak.dk .akmc .hl b{color:#E4E6EB}.ak.dk .ak-m:has(.akmc){background:#242526}
+
+    /* v568 the plan picture in Alexandra's chat */
+    .ak-m.wb:has(.akpl){max-width:min(92%,380px);width:100%}
+    .akpl .im{display:block;width:100%;border:0;padding:0;background:#eef1f7;border-radius:12px;overflow:hidden;cursor:zoom-in}.akpl .im img{display:block;width:100%;height:auto}
+    .akpl .ld{display:flex;align-items:center;gap:8px;font:700 12.5px Inter,system-ui,sans-serif;color:#6b7385;padding:24px 4px;justify-content:center}
+    .akpl .cap{font:800 13px Inter,system-ui,sans-serif;margin:8px 2px 0}.akpl .cap small{display:block;font:600 11.5px Inter,system-ui,sans-serif;color:#8a93a8}
+    .akpl .btns{display:flex;gap:8px;margin-top:10px}.akpl .btns button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:12px;padding:10px;font:800 12.5px Inter,system-ui,sans-serif;cursor:pointer}
+    .akpl .wa{background:#25d366;color:#fff}.akpl .wa svg{width:16px;height:16px;fill:#fff}.akpl .lt{background:#f0f2f5;color:#203c8e}.akpl button:disabled{opacity:.6}
 </style>
 </head>
 <body>
@@ -11739,6 +11747,7 @@ async function akSend(e){
  if(AK.add){akAddAnswer(q);return}
  if(AK.teach){akLearn(q);return}
  if(akOwner()&&AKIX_RE.test(q)){akUser(q);AK.kb=false;akKb();akIxStart(q);return}
+ if(akPlAsk(q)){akUser(q);AK.kb=false;akKb();akPlStart(q);return}
  if(AK.canTeach&&AK_MEM_RE.test(q)){akMemAsk(q);return}
  akUser(q);AK.kb=false;akKb();
  if(!ASK_HEMERA_URL){akBot('<p>Alexandra is not connected yet.</p>');return}
@@ -14573,30 +14582,35 @@ function budCheck(d){
  if(T.length&&far(ts))out.push(`The campaign types add up to ${M(ts)}, the budget is ${M(tot)}.`);
  return out;
 }
+
+async function budCanvas(d){const host=document.createElement('div');host.className='rp-report rp-bud';host.setAttribute('data-share-ui','');host.innerHTML=budShareHtml(d);document.body.appendChild(host);
+ try{await Promise.all([...host.querySelectorAll('img')].map(i=>i.complete?0:new Promise(r=>{i.onload=i.onerror=r})));
+  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+  const h2c=await ensureHtml2Canvas();return await h2c(host,{backgroundColor:'#f6f8fc',scale:1.7,useCORS:true,allowTaint:true,logging:false,scrollX:0,scrollY:0,windowWidth:1800,windowHeight:2400})}
+ finally{host.remove()}}
+function budCaption(d){
+  
+  const p=d.plan,usd=FX&&FX.rates&&FX.rates.USD>0?FX.rates.USD:null,ar=CURRENT_ACCOUNT==='ar'||!usd,key=fcMonthKey(d);
+  const mo=key?new Date(Date.UTC(+key.slice(0,4),+key.slice(5)-1,15)).toLocaleDateString('en-GB',{month:'short',timeZone:'UTC'})+' '+key.slice(2,4):String(d.month||'');
+  const K=v=>(ar?'£':'$')+fmt(Math.round((ar?v:v*usd)/1000),0)+'K',ro=p.roas!=null?p.roas:p.spend?p.rev/p.spend:null;
+  return withMentions(`📌 ${mo} · HA ${CURRENT_ACCOUNT==='ar'?'AR':'USA'}\n💰 ${K(p.spend)}\n🎯 ${fmt(p.conv,0)} Conv\n💵 ${K(p.rev)} Value\n📈 ${ro!=null?fmt(ro,2)+'x':'—'} ROAS`)}
+function budFile(d){return `HEMERA-Budget-${CURRENT_ACCOUNT==='ar'?'AR':'USA'}-${String(d.month||'').replace(/\s+/g,'-')}.png`}
+async function budSend(canvas,cap,filename){
+  logShareQuiet('budget');copyTextQuietly(cap);
+  if(window.AndroidShare&&typeof window.AndroidShare.shareImage==='function'){window.AndroidShare.shareImage(canvas.toDataURL('image/png'),cap,filename);return}
+  const blob=await canvasToBlob(canvas),file=new File([blob],filename,{type:'image/png'});
+  if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){try{await navigator.share({text:cap,files:[file]});return}catch(e){if(e&&e.name==='AbortError')return}}
+  downloadShareImage(blob,filename);showShareToast('Image saved — share it on WhatsApp')}
 async function budShare(btn){
  const d=(FC[CURRENT_ACCOUNT]||{}).data;if(!d||!d.plan||!labEdit())return;
  if(!canDo('share')){showShareToast('Sharing is turned off for your account.');return}
  
  const off=budCheck(d);
  if(off.length&&!(await askSekna({title:'The numbers don\'t add up',text:off.join(' ')+' Send the picture anyway?',ok:'Send anyway'})))return;
- setShareButtonState(btn,true);const host=document.createElement('div');host.className='rp-report rp-bud';host.setAttribute('data-share-ui','');host.innerHTML=budShareHtml(d);document.body.appendChild(host);
- try{
-  await Promise.all([...host.querySelectorAll('img')].map(i=>i.complete?0:new Promise(r=>{i.onload=i.onerror=r})));
-  await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
-  const h2c=await ensureHtml2Canvas(),canvas=await h2c(host,{backgroundColor:'#f6f8fc',scale:1.7,useCORS:true,allowTaint:true,logging:false,scrollX:0,scrollY:0,windowWidth:1800,windowHeight:2400});
-  
-  const p=d.plan,usd=FX&&FX.rates&&FX.rates.USD>0?FX.rates.USD:null,ar=CURRENT_ACCOUNT==='ar'||!usd,key=fcMonthKey(d);
-  const mo=key?new Date(Date.UTC(+key.slice(0,4),+key.slice(5)-1,15)).toLocaleDateString('en-GB',{month:'short',timeZone:'UTC'})+' '+key.slice(2,4):String(d.month||'');
-  const K=v=>(ar?'£':'$')+fmt(Math.round((ar?v:v*usd)/1000),0)+'K',ro=p.roas!=null?p.roas:p.spend?p.rev/p.spend:null;
-  const cap=withMentions(`📌 ${mo} · HA ${CURRENT_ACCOUNT==='ar'?'AR':'USA'}\n💰 ${K(p.spend)}\n🎯 ${fmt(p.conv,0)} Conv\n💵 ${K(p.rev)} Value\n📈 ${ro!=null?fmt(ro,2)+'x':'—'} ROAS`);
-  const filename=`HEMERA-Budget-${CURRENT_ACCOUNT==='ar'?'AR':'USA'}-${String(d.month||'').replace(/\s+/g,'-')}.png`;
-  logShareQuiet('budget');copyTextQuietly(cap);
-  if(window.AndroidShare&&typeof window.AndroidShare.shareImage==='function'){window.AndroidShare.shareImage(canvas.toDataURL('image/png'),cap,filename);return}
-  const blob=await canvasToBlob(canvas),file=new File([blob],filename,{type:'image/png'});
-  if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){try{await navigator.share({text:cap,files:[file]});return}catch(e){if(e&&e.name==='AbortError')return}}
-  downloadShareImage(blob,filename);showShareToast('Image saved — share it on WhatsApp');
- }catch(e){showShareToast('Could not make the budget image.')}
- finally{host.remove();setShareButtonState(btn,false)}
+ setShareButtonState(btn,true);
+ try{await budSend(await budCanvas(d),budCaption(d),budFile(d))}
+ catch(e){showShareToast('Could not make the budget image.')}
+ finally{setShareButtonState(btn,false)}
 }
  
 let LMP_OPEN=false;
@@ -21947,6 +21961,27 @@ async function akMcSend(id,test){const s=AKMC[id];if(!s||s.sending||!MR.pdf)retu
   akIxPut(id+'x',akMcSendHtml(id));akIxPut(id+'a',akMcAskHtml(id));akMcNext(id);
  }catch(err){clearInterval(tick);s.sending=false;s.msg='⚠️ '+akEsc(errorText(err));akIxPut(id+'a',akMcAskHtml(id));if(!test){s.final='⚠️ Not sent';akIxPut(id+'x',akMcSendHtml(id))}}}
 setInterval(akMcCheck,60000);setTimeout(akMcCheck,9000);
+
+ 
+const AKPL_RE=/\b(plan|budget|screenshot|screen)\b|خط[ةه]|بلان|ميزاني[ةه]|بادج?يت|سكرين/i,AKPL={};
+const AK_MON=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'],AK_MON_AR=['يناير','فبراير','مارس','ابريل','مايو','يونيو','يوليو','اغسطس','سبتمبر','اكتوبر','نوفمبر','ديسمبر'];
+function akPlWant(q){const t=String(q).toLowerCase().replace(/[أإآ]/g,'ا');let m=-1;AK_MON.forEach((x,i)=>{if(new RegExp('\\b'+x).test(t))m=i});AK_MON_AR.forEach((x,i)=>{if(t.includes(x))m=i});return m}
+function akPlAsk(q){return canDo('lab')&&!VIEW_AS&&(AKPL_RE.test(q)&&(/send|ابعت|عايز|ورين|show|share|screenshot|سكرين|صور/i.test(q)||akPlWant(q)>=0))&&!/\bindex\b|انديكس|إنديكس/i.test(q)}
+async function akPlStart(q){AK.busy=true;akDraw();
+ try{const acc=CURRENT_ACCOUNT,d=await serverCall('getForecast',acc,false,getAccessToken());(FC[acc]=FC[acc]||{}).data=d;AK.busy=false;
+  if(!d||d.missing||!d.plan){akBot('<p>I cannot reach the Media Plan Lab tab for this account.</p>');return}
+  const want=akPlWant(q),key=fcMonthKey(d)||'',have=key?+key.slice(5)-1:-1;
+  if(want>=0&&have>=0&&want!==have){akBot(`<p>The Lab is on <b>${akEsc(d.month||'')}</b> right now, not ${akEsc(new Date(Date.UTC(2000,want,1)).toLocaleDateString('en-GB',{month:'long',timeZone:'UTC'}))}. Open Media Plan Lab and pick the month, then ask me again.</p><div class="akpl"><div class="btns"><button type="button" class="lt" onclick="closeAsk();switchDashboardTab('lab')">Open in Lab ›</button></div></div>`,'wb');return}
+  const id='akpl'+Date.now().toString(36);AKPL[id]={acc,d};akBot(`<div class="akpl" id="${id}"><div class="ld"><span class="lab-spin dark"></span> Making the picture…</div></div>`,'wb');
+  const c=await budCanvas(d),blob=await canvasToBlob(c);AKPL[id].c=c;const u=URL.createObjectURL(blob);
+  akIxPut(id,`<div class="akpl" id="${id}"><button type="button" class="im" onclick="akPlView('${id}')"><img src="${u}" data-u="${u}" alt="${akEsc(d.month||'')} plan"></button><div class="cap">${akEsc(d.month||'')} plan · ${acc==='ar'?'AR':'USA'}<small>From Media Plan Lab · ${new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</small></div>
+   <div class="btns"><button type="button" class="wa" onclick="akPlShare('${id}',this)"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.2c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.9s.7-2.1 1-2.4c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.3 0 .5l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.1.1.6-.1 1.3z"/></svg>WhatsApp</button><button type="button" class="lt" onclick="closeAsk();switchDashboardTab('lab')">Open in Lab ›</button></div></div>`);
+ }catch(err){AK.busy=false;const ld=Object.keys(AKPL).reverse().find(k=>!AKPL[k].c&&document.getElementById(k));if(ld){akIxPut(ld,`<div class="akpl" id="${ld}"><p>⚠️ I could not make the picture. ${akEsc(errorText(err))}</p></div>`)}else akBot(`<p>${akEsc(errorText(err))}</p>`)}}
+async function akPlShare(id,btn){const s=AKPL[id];if(!s||!s.c){akBot('<p>Ask me again for the plan and I will make the picture again.</p>');return}
+ if(!canDo('share')){showShareToast('Sharing is turned off for your account.');return}
+ btn.disabled=true;try{await budSend(s.c,budCaption(s.d),budFile(s.d))}catch(e){showShareToast('Could not share the picture.')}finally{btn.disabled=false}}
+function akPlView(id){const s=AKPL[id];if(!s||!s.c)return;const o=document.createElement('div');o.className='ak-pv';o.innerHTML=`<img src="${s.c.toDataURL('image/jpeg',.9)}" alt=""><button type="button" aria-label="Close">✕</button>`;
+ const close=()=>{o.classList.remove('on');setTimeout(()=>o.remove(),220)};o.onclick=close;document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('on'))}
 </script>
 <div id="seknaFileEnd" hidden></div>
 <script>
