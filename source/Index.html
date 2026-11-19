@@ -10277,6 +10277,24 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .ak-rpbar button{border:0;background:#f0f2f5;width:28px;height:28px;border-radius:50%;cursor:pointer;color:#4b5263}
     .ak-rq{display:block;margin:0 0 6px;padding:5px 9px;border-left:3px solid rgba(255,255,255,.7);background:rgba(255,255,255,.14);border-radius:8px;font-size:12px;opacity:.9;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .ak.dk .ak-rpbar{background:#242526}
+
+    /* v594 Alexandra in the day reactions menu */
+    .rx-pop .rx-ak{width:34px;height:34px;padding:0;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:linear-gradient(135deg,#2a52c9,#1C3C96);margin-left:4px;box-shadow:0 0 0 2px #E9C46A}
+    .rx-pop .rx-ak img,.rx-pop .rx-ak svg{width:100%;height:100%;object-fit:cover}
+
+    /* v595 action cards (confirm) in the chat and in a call */
+    .ak-act2{background:#fff;border:1.5px solid #e3e7f0;border-radius:14px;padding:10px 12px;margin-top:8px;font:600 13.5px/1.5 Inter,AKufi,system-ui,sans-serif;color:#141b33;max-width:300px}
+    .ak-act2.ok{border-color:#bfe8cf;background:#f2fbf5;color:#13804f}.ak-act2.no{border-color:#f2d2d6;background:#fdf5f6;color:#b33a4a}
+    .ak-a2t{font-weight:700}.ak-a2t b{color:#1C3C96}.ak-a2w{color:#6b7385}
+    .ak-a2m{margin-top:6px;padding:8px 10px;border-radius:10px;background:#f4f6fb}.ak-a2m p{margin:2px 0 0}
+    .ak-a2b{display:flex;gap:8px;margin-top:10px}.ak-a2b button{flex:1;border:0;border-radius:10px;padding:9px;font:800 13px Inter,system-ui,sans-serif;cursor:pointer}
+    .ak-a2b .no{background:#eef1f8;color:#4b5263}.ak-a2b .ok{background:linear-gradient(135deg,#2a52c9,#1C3C96);color:#fff}.ak-a2b button:disabled{opacity:.5}
+    .ak-a2i,.ak-a2x{width:100%;box-sizing:border-box;margin-top:8px;border:1.5px solid #e3e7f0;border-radius:10px;padding:8px 10px;font:600 13.5px Inter,AKufi,system-ui,sans-serif;resize:vertical}
+    .ak-a2c{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12.5px;color:#4b5263}
+    .ak-acc{overflow-x:auto;margin-top:6px}.ak-acc table{border-collapse:collapse;font-size:12px}.ak-acc th,.ak-acc td{padding:4px 6px;text-align:center;white-space:nowrap;border-bottom:1px solid #eef1f7}.ak-acc td:first-child,.ak-acc th:first-child{text-align:left;font-weight:700}
+    .ak-acc i{font-style:normal}.ak-acc .y{color:#13804f}.ak-acc .n{color:#c0c5d2}.ak-a2s{display:block;margin-top:6px;color:#6b7385}
+    .aklv-act{position:absolute;left:16px;right:16px;top:calc(env(safe-area-inset-top,0px) + 200px);z-index:4;display:flex;justify-content:center}.aklv-act .ak-act2{max-width:340px;width:100%;box-shadow:0 14px 40px rgba(0,0,0,.35)}
+    .ak.dk .ak-act2{background:#242526;border-color:#3a3b3c;color:#e4e6eb}
 </style>
 </head>
 <body>
@@ -11800,7 +11818,7 @@ function akLinkKind(u){u=String(u);if(/docs\.google\.com\/spreadsheets/.test(u))
  
 function akUrlKey(u){u=String(u||'');const m=u.match(/\/d\/([\w-]{20,})/);return m?m[1]:u.replace(/[?#].*$/,'').replace(/\/+$/,'').toLowerCase()}
 function akRowByUrl(u){const k=akUrlKey(u);return ((AK.assets&&AK.assets.rows)||[]).find(r=>[r.sheet,r.report,r.script].some(o=>o&&o.url&&akUrlKey(o.url)===k))}
-function akAnswer(t){const cs=akCardsSplit(t);if(cs.cards)return akAnswer0(cs.text)+akCardsHtml(cs.cards);return akAnswer0(cs.text)}
+function akAnswer(t){const as=akActSplit(t);t=as.text;const cs=akCardsSplit(t),act=as.act?akActCard(as.act):'';if(cs.cards)return akAnswer0(cs.text)+akCardsHtml(cs.cards)+act;return akAnswer0(cs.text)+act}
 function akAnswer0(t){
  const out=[],U=/https?:\/\/[^\s<>"')]+/g;
  String(t).split('\n').forEach(line=>{const urls=line.match(U);
@@ -14060,7 +14078,7 @@ function rxArm(body){
  if(body.dataset.rxArmed)return;body.dataset.rxArmed='1';
  let t=null,card=null,pop=null,x0=0,y0=0,fired=false;
  const close=()=>{if(pop){pop.remove();pop=null}card=null};
- const pick=f=>{const c=card,date=c&&c.dataset.date;close();if(!date)return;
+ const pick=f=>{const c=card,date=c&&c.dataset.date;close();if(!date)return;if(!f){akDayCall(date);return}
    const was=RX.data&&RX.data.days[date]&&RX.data.days[date].mine;
    
    RX.data=RX.data||{days:{}};const d=RX.data.days[date]=RX.data.days[date]||{counts:{},n:0,mine:null};
@@ -14070,7 +14088,7 @@ function rxArm(body){
    serverCall('dayReact',getAccessToken(),CURRENT_ACCOUNT,date,next).then(r=>{if(r&&r.days){RX.data=r;rxPaint()}}).catch(err=>{showSettingsToast(errorText(err))});
  };
  const open=c=>{fired=true;card=c;const mine=RX.data&&RX.data.days[c.dataset.date]&&RX.data.days[c.dataset.date].mine;
-   pop=document.createElement('div');pop.className='rx-pop';pop.innerHTML=RX_FACES.map(f=>`<button type="button" class="${f===mine?'on':''}" data-f="${f}">${f}</button>`).join('');
+   pop=document.createElement('div');pop.className='rx-pop';pop.innerHTML=RX_FACES.map(f=>`<button type="button" class="${f===mine?'on':''}" data-f="${f}">${f}</button>`).join('')+(AK.blocked?'':`<button type="button" class="rx-ak" data-ak="1" aria-label="Ask Alexandra about this day">${akAvIn()}</button>`);
    
    const r=c.getBoundingClientRect();pop.classList.add('fx');pop.style.top=Math.max(8,r.top-22)+'px';pop.style.right=Math.max(8,innerWidth-r.right+10)+'px';
    pop.addEventListener('click',e=>{const f=e.target.closest('button');if(f){e.stopPropagation();pick(f.dataset.f)}});
@@ -21217,6 +21235,7 @@ async function akTerms(acc,K){const L=[];try{const c=ST[acc]=ST[acc]||{};if(!c.d
  const by={};T.forEach(t=>{const o=by[t.k]=by[t.k]||{n:0,c:0};o.n++;o.c+=t.cost||0});
  L.push('## Search terms · AI Max snapshot'+(d.run?' (report run '+d.run+')':'')+'. Results: '+Object.keys(by).map(k=>(lab[k]||k)+' '+by[k].n+' terms, cost '+M(by[k].c)).join(' ; '));
  const line=t=>t.term+' | cost '+M(t.cost)+', clicks '+akR(t.clicks)+', conv '+akR(t.conv,1)+', value '+M(t.value)+(t.roas!=null?', ROAS '+akR(t.roas,2):'')+' | '+(lab[t.k]||t.label||'');
+ L.push('Top 5 terms by cost:');T.slice().sort((a,b)=>(b.cost||0)-(a.cost||0)).slice(0,5).forEach(t=>L.push('- '+line(t)));
  L.push('Most money wasted (add as negatives):');T.filter(t=>t.k==='x').sort((a,b)=>b.cost-a.cost).slice(0,12).forEach(t=>L.push('- '+line(t)));
  L.push('Best terms (scale up):');T.filter(t=>t.k==='g').sort((a,b)=>(b.value||0)-(a.value||0)).slice(0,12).forEach(t=>L.push('- '+line(t)));
  }catch(e){}return L}
@@ -21232,7 +21251,7 @@ async function akCtx0(acc){const L=[];
  try{akPace(DASH_DATA,K).forEach(x=>L.push(x))}catch(e){}
  
  try{if(!PFP.people)await akWithin(pfPeopleLoad(),3000);const P=PFP.people||[],me=akMe().email;
-  if(P.length){L.push('## The HEMERA team (name | role | email). Answer team questions from this list.');P.forEach(x=>L.push((x.name||'')+' | '+(x.role||'Team member')+' | '+x.email+(x.email===me?' | this is the person asking':'')));
+  if(P.length){L.push('## The HEMERA team (name | role | email | phone | birthday | platforms they work on | time zone | about). Answer team questions (birthdays, numbers, roles, platforms) from this list.');P.forEach(x=>L.push((x.name||'')+' | '+(x.role||'Team member')+' | '+x.email+(x.phone?' | phone '+x.phone:'')+(x.wa&&x.wa!==x.phone?' | WhatsApp '+x.wa:'')+(x.bday?' | birthday '+x.bday:'')+(Array.isArray(x.plats)&&x.plats.length?' | works on '+x.plats.length+' platforms: '+x.plats.join(', '):'')+(x.tz?' | time zone '+x.tz:'')+(x.bio?' | about: '+String(x.bio).slice(0,140):'')+(x.email===me?' | this is the person asking':'')));
    const mine=P.find(x=>x.email===me);if(mine)L.push('The person asking is '+(mine.name||'')+', role: '+(mine.role||'Team member')+'.')}}catch(e){}
  
  try{let ex=MONTH_EXTRA[acc];if(!ex||!ex.days||!Object.keys(ex.days).length){const r=await akWithin(serverCall('getMonthCompareData',acc,getAccessToken()),6000);if(r){MONTH_EXTRA[acc]=r;ex=r}}
@@ -21243,7 +21262,10 @@ async function akCtx0(acc){const L=[];
  try{const [cm,tm]=await Promise.all([akCamps(acc,K),akTerms(acc,K)]);cm.concat(tm).forEach(x=>L.push(x))}catch(e){}
  
  try{const o=acc==='ar'?'usa':'ar',c=getAccountCache(o);if(c&&c.data)L.push(akDashLines(c.data,'The other account (money in its own currency '+akFxSym(o)+')',akFx(o)));else prefetchOtherAccount()}catch(e){}
- try{const t=ssToday();L.push('## Seasons coming up');ssList().filter(x=>x.to>=t).slice(0,8).forEach(x=>L.push(x.name+': '+x.from+' to '+x.to+' ('+x.len+' days, '+(x.type==='h'?'Hijri':'US')+')'))}catch(e){}
+ try{const t=ssToday(),all=ssList(),ex=MONTH_EXTRA[acc];L.push('## Seasons coming up (with the same season last year in this account)');all.filter(x=>x.to>=t).slice(0,8).forEach(x=>{let ly='';try{const p=ssPrev(x,all);if(p&&ex&&ex.days){let sp=0,va=0,n=0;for(let d=new Date(p.from+'T12:00:00Z');d.toISOString().slice(0,10)<=p.to;d.setUTCDate(d.getUTCDate()+1)){const r=dayParts(d.toISOString().slice(0,10),ex,null);if(r){sp+=r.spend;va+=r.value;n++}}if(n)ly=' | last year '+p.from+' to '+p.to+': spend '+akR(K*sp)+', value '+akR(K*va)+', ROAS '+akR(sp?va/sp:0,2)+' ('+n+' days with data)'}}catch(e){}L.push(x.name+': '+x.from+' to '+x.to+' ('+x.len+' days, '+(x.type==='h'?'Hijri':'US')+')'+ly)})}catch(e){}
+ try{(await akPlanHist(acc,K)).forEach(x=>L.push(x))}catch(e){}
+ try{akFresh(acc).forEach(x=>L.push(x))}catch(e){}
+ try{const a=akActHelp();if(a)L.push(a)}catch(e){}
  return L.join('\n').slice(0,110000)}
 
 
@@ -22040,7 +22062,7 @@ async function akAskSrv(q,history,ctx,image){
  akSrvSet(true);
  const sid='aks'+Date.now().toString(36);AK.busy=false;akBot(`<div class="akst" id="${sid}"><p class="aks-t"><span class="aks-c"></span></p></div>`);
  const rd=r.body.getReader(),dec=new TextDecoder();let txt='',raf=0;
- const paint=()=>{if(raf<0)return;raf=0;const el=document.getElementById(sid);if(!el)return;const cut=txt.search(/\[\[\s*CARDS/i),shown=cut>=0?txt.slice(0,cut):txt;
+ const paint=()=>{if(raf<0)return;raf=0;const el=document.getElementById(sid);if(!el)return;const cut=txt.search(/\[\[\s*(CARDS|ACTION)/i),shown=cut>=0?txt.slice(0,cut):txt;
   el.innerHTML=`<p class="aks-t">${akEsc(shown).replace(/\n/g,'<br>')}${cut>=0?'<br><span class="aks-w">Making the cards…</span>':'<span class="aks-c"></span>'}</p>`;
   const b=document.getElementById('akBd');if(b&&b.scrollHeight-b.scrollTop-b.clientHeight<160)b.scrollTop=b.scrollHeight};
  while(true){const {done,value}=await rd.read();if(done)break;txt+=dec.decode(value,{stream:true});if(!raf)raf=requestAnimationFrame(paint)}
@@ -22173,6 +22195,8 @@ const AKLV_TOOLS=[{functionDeclarations:[
   parameters:{type:'OBJECT',properties:{cards:{type:'ARRAY',items:{type:'OBJECT',properties:{label:{type:'STRING',description:'Short label, e.g. "Spend · yesterday"'},value:{type:'STRING',description:'The number as shown, e.g. "$10,491" or "2.06x"'},previous:{type:'STRING',description:'For a comparison: the other period\'s number, e.g. "$9,820"'},change:{type:'STRING',description:'Optional change, e.g. "-12%"'},direction:{type:'STRING',description:'"up", "down" or ""'}},required:['label','value']}}},required:['cards']}},
  {name:'open_screen',description:'Open a screen in the HEMERA app for the person while you keep talking. screen: "daily", "days", "campaigns", "campaign" (one campaign, give its name), "reports_studio" (months; give month and, to compare, compare_with), "channels", "search_terms", "seasons", "lab".',
   parameters:{type:'OBJECT',properties:{screen:{type:'STRING'},campaign:{type:'STRING',description:'Campaign name for screen "campaign"'},month:{type:'STRING',description:'Month as YYYY-MM for reports_studio'},compare_with:{type:'STRING',description:'Second month as YYYY-MM to compare with'}},required:['screen']}},
+ {name:'do_action',description:'Do one of the actions listed under "Actions you can do for this person" (task, access, team message, maintenance, activity, reading status). Actions that change something show a Confirm button on the screen first.',
+  parameters:{type:'OBJECT',properties:{do:{type:'STRING'},person:{type:'STRING'},title:{type:'STRING'},deadline:{type:'STRING'},note:{type:'STRING'},screen:{type:'STRING'},value:{type:'STRING'},text:{type:'STRING'},push:{type:'BOOLEAN'},on:{type:'BOOLEAN'},reason:{type:'STRING'}},required:['do']}},
  {name:'send_plan',description:'Send the budget plan picture of a month into the chat (e.g. "December").',parameters:{type:'OBJECT',properties:{month:{type:'STRING'}},required:['month']}},
  {name:'send_summary',description:'Send a short written summary of this call into the chat: the key numbers and the things to do. Only when the person asks for it.',parameters:{type:'OBJECT',properties:{points:{type:'ARRAY',items:{type:'STRING'}}},required:['points']}}]}];
 const AKLV_TOOL_RULES=`# Tools in this call
@@ -22275,8 +22299,8 @@ function akLiveTurn(){AKLV.herShown='';if(AKLV.me.trim())AKLV.turns.push(['u',ak
 function akLiveMsg(m){
  if(m.setupComplete){AKLV.ready=true;AKLV.t0=Date.now();akLiveMic().then(()=>{akLiveState('listen');
    const ar=AK.msgs.slice().reverse().find(x=>x.w==='u'),arab=ar&&/[؀-ۿ]/.test(ar.html||'');
-   const tp=AKLV.topic;AKLV.topic='';const fn=String(akMe().name||'them').split(' ')[0];
-   AKLV.wait=true;AKLV.ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:tp?`(${fn} long-pressed the campaign "${tp}" to talk about it. First call get_numbers with search "${tp}". Then greet ${fn} in a few words and say in one or two short sentences how this campaign did in the last 7 days compared with before (spend, value, ROAS), show_cards with its key numbers, and ask what they want to know. Speak Egyptian Arabic with an Alexandrian touch.)`:`(The person just opened the voice chat. Greet ${fn} warmly by first name in one short sentence${arab?' in Egyptian Arabic with an Alexandrian touch (not فصحى)':''}, and ask how you can help.)`}]}],turnComplete:true}}))
+   const tp=AKLV.topic,tt=AKLV.topicText;AKLV.topic='';AKLV.topicText='';const fn=String(akMe().name||'them').split(' ')[0];
+   AKLV.wait=true;AKLV.ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:tt?tt:tp?`(${fn} long-pressed the campaign "${tp}" to talk about it. First call get_numbers with search "${tp}". Then greet ${fn} in a few words and say in one or two short sentences how this campaign did in the last 7 days compared with before (spend, value, ROAS), show_cards with its key numbers, and ask what they want to know. Speak Egyptian Arabic with an Alexandrian touch.)`:`(The person just opened the voice chat. Greet ${fn} warmly by first name in one short sentence${arab?' in Egyptian Arabic with an Alexandrian touch (not فصحى)':''}, and ask how you can help.)`}]}],turnComplete:true}}))
   }).catch(()=>akLiveFail('The microphone could not start.'));return}
  if(m.goAway){return}
  if(m.toolCall){akLiveTool(m.toolCall);return}
@@ -22385,7 +22409,7 @@ function akCallCard(sec,tm){const m=Math.floor(sec/60),s=sec%60,len=m?`${m} min$
 
  
 async function akLiveTool(tc){const calls=(tc&&tc.functionCalls)||[];if(!calls.length)return;AKLV.wait=true;
- const res=await Promise.all(calls.map(async f=>{let r;try{const A=f.args||{};if(f.name==='get_numbers')r=await akLiveNumbers(A);else if(f.name==='show_cards'){akLiveCards(A.cards||[]);r={result:'shown'}}else if(f.name==='open_screen')r=await akLiveScreen(A);else if(f.name==='send_plan')r=akLivePlan(A);else if(f.name==='send_summary')r=akLiveSumm(A);else r={result:'unknown tool'}}catch(e){r={result:'error: '+(e&&e.message||e)}}
+ const res=await Promise.all(calls.map(async f=>{let r;try{const A=f.args||{};if(f.name==='get_numbers')r=await akLiveNumbers(A);else if(f.name==='show_cards'){akLiveCards(A.cards||[]);r={result:'shown'}}else if(f.name==='open_screen')r=await akLiveScreen(A);else if(f.name==='send_plan')r=akLivePlan(A);else if(f.name==='send_summary')r=akLiveSumm(A);else if(f.name==='do_action')r=await akActVoice(A);else r={result:'unknown tool'}}catch(e){r={result:'error: '+(e&&e.message||e)}}
   return {id:f.id,name:f.name,response:r}}));
  const ws=AKLV.ws;if(ws&&ws.readyState===1)try{ws.send(JSON.stringify({toolResponse:{functionResponses:res}}))}catch(e){}}
 function akLiveCards(cs){const el=document.getElementById('akLive');if(!el)return;cs=(Array.isArray(cs)?cs:[]).filter(c=>c&&c.value!=null).slice(0,3);if(!cs.length)return;
@@ -22487,6 +22511,112 @@ async function akLiveReconnect(c,why){if(AKLV.closed||AKLV.bye)return;AKLV.recon
  if(AKLV.closed){try{n.ws.close(1000)}catch(e){}return}n.own=true;AKLV.ws=n.ws;AKLV.conn=n;n.q.splice(0).forEach(akLiveMsg);
  const last=(AKLV.me||'').trim()||((AKLV.turns||[]).filter(t=>t[0]==='u').slice(-1)[0]||[])[1]||'';AKLV.me='';AKLV.her='';AKLV.pend=false;AKLV.aud={};
  try{n.ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:`(The call dropped for a second and is back. Do not greet again.${last?` The person's last words were: "${last}". If you had not answered yet, answer now.`:' Say in a few words that you are back.'})`}]}],turnComplete:true}}))}catch(e){}}
+
+ 
+async function akPlanHist(acc,K){const L=[];try{if(!canDo('plans'))return L;const c=AKPH[acc]=AKPH[acc]||{};if(!c.v||Date.now()-c.at>6e5){const r=await akWithin(serverCall('getPlanHistory',getAccessToken(),acc),5000);if(Array.isArray(r)){c.v=r;c.at=Date.now()}}
+ const H=(c.v||[]).slice(0,14);if(!H.length)return L;const M=v=>akR(K*(v||0));
+ L.push('## Plan history (closed months: plan vs actual; month | plan spend/value ROAS | actual spend/value ROAS | channels actual spend)');
+ H.forEach(h=>{const p=h.plan||{},a=h.actual||{};L.push(h.month+(h.hijriFrom?' ('+h.hijriFrom+(h.hijriTo&&h.hijriTo!==h.hijriFrom?' – '+h.hijriTo:'')+')':'')+' | plan '+M(p.spend)+'/'+M(p.value)+' '+akR(p.roas,2)+' | actual '+M(a.spend)+'/'+M(a.value)+' '+akR(a.roas,2)+((h.channels||[]).length?' | '+h.channels.slice(0,6).map(c=>c.channel+' '+M(c.spend)).join(', '):''))})}catch(e){}return L}
+const AKPH={};
+function akFresh(acc){const L=['## When each data source was last read (the person\'s time)'];const f=v=>{if(!v)return 'not read yet';const d=new Date(typeof v==='number'?v:String(v).replace(' ','T'));return isNaN(d)?String(v):d.toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})};
+ try{['usa','ar'].forEach(a=>{const d=a===acc?DASH_DATA:(getAccountCache(a)||{}).data;if(d)L.push('Media plan dashboard ('+a.toUpperCase()+'): '+f(d.generatedAtMs||d.generatedAt)+(d.latest&&d.latest.date?', latest day with results '+d.latest.date:''))})}catch(e){}
+ try{const c=(CP[acc]||{}).data;if(c&&c.latest)L.push('Campaign tabs: latest day '+c.latest)}catch(e){}
+ try{const st=(ST[acc]||{}).data;if(st&&!st.missing)L.push('Search terms (AI Max snapshot): '+(st.run?'report run '+st.run:'')+(st.updated?' updated '+st.updated:'')+(st.at?' read '+f(st.at):''))}catch(e){}
+ try{const h=(AKPH[acc]||{}).v;if(h&&h[0])L.push('Plan history: last month saved '+h[0].month+(h[0].savedAt?' on '+f(h[0].savedAt):''))}catch(e){}
+ return L}
+ 
+async function akDayCall(date){if(AK.blocked)return;const acc=CURRENT_ACCOUNT,K=akFx(acc),M=v=>akR(K*(v||0)),day=((DASH_DATA||{}).dayPlan||[]).find(x=>x.date===date)||{};
+ let ex=MONTH_EXTRA[acc];if(!ex||!ex.days)try{const r=await akWithin(serverCall('getMonthCompareData',acc,getAccessToken()),5000);if(r){MONTH_EXTRA[acc]=r;ex=r}}catch(e){}
+ const back=(n)=>{const d=new Date(date+'T12:00:00Z');d.setUTCDate(d.getUTCDate()-n);return d.toISOString().slice(0,10)},same=y=>{const d=new Date(date+'T12:00:00Z');d.setUTCFullYear(d.getUTCFullYear()-y);return d.toISOString().slice(0,10)};
+ const line=k=>{const r=ex&&ex.days?dayParts(k,ex,null):null;return r?k+' ('+['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][new Date(k+'T12:00:00Z').getUTCDay()]+'): spend '+M(r.spend)+', value '+M(r.value)+', conv '+akR(r.conversions)+', ROAS '+akR(r.spend?r.value/r.spend:0,2):k+': no data'};
+ const p=day.plan||{},a=day.actual;
+ const info=`Day ${date}${day.dayName?' ('+day.dayName+')':''}${day.hijri?', Hijri '+day.hijri:''}. Plan: spend ${M(p.spend)}, value ${M(p.value)}, conv ${akR(p.conversions)}, ROAS ${akR(p.roas,2)}.`+(a?` Results: spend ${M(a.spend)}, value ${M(a.value)}, conv ${akR(a.conversions)}, ROAS ${akR(a.roas,2)} (spend ${akR((a.spendAchievement||0)*100)}% of plan, value ${akR((a.valueAchievement||0)*100)}% of plan).`:' No results yet.')+
+  ` Same date last years: ${line(same(1))}; ${line(same(2))}. Same weekday last year (364 days before): ${line(back(364))}; two years (728 days): ${line(back(728))}.`;
+ AKLV.topicText=`(The person long-pressed the day ${date} in the media plan to ask about it. Numbers in ${akFxSym(acc)}: ${info} Greet them in a few words, then in two or three short sentences say ${a?'how the day went against the plan':'whether the planned spend looks reasonable'} compared with the same day in the past years, show_cards with the key numbers (with previous = last year), and ask what they want to know. Speak Egyptian Arabic with an Alexandrian touch.)`;
+ akLiveOpen()}
+
+(function(){let t=0,el=null,x0=0,y0=0;
+ document.addEventListener('pointerdown',e=>{const c=e.target.closest&&e.target.closest('#dxBody .dc-card[data-date]:not([data-rx])');if(!c)return;el=c;x0=e.clientX;y0=e.clientY;clearTimeout(t);
+  t=setTimeout(()=>{if(!el)return;el.dataset.lp='1';if(navigator.vibrate)try{navigator.vibrate(20)}catch(_){}akDayCall(el.dataset.date)},550)},{passive:true});
+ const stop=e=>{if(!el)return;if(e.type==='pointermove'&&Math.hypot(e.clientX-x0,e.clientY-y0)<10)return;clearTimeout(t);el=null};
+ ['pointermove','pointerup','pointercancel'].forEach(n=>document.addEventListener(n,stop,{passive:true}));
+ document.addEventListener('click',e=>{const c=e.target.closest&&e.target.closest('#dxBody .dc-card[data-date]');if(c&&c.dataset.lp){delete c.dataset.lp;e.stopPropagation();e.preventDefault()}},true);
+ document.addEventListener('contextmenu',e=>{if(e.target.closest&&e.target.closest('#dxBody .dc-card[data-date]'))e.preventDefault()})})();
+
+ 
+const AKA_SCR={days:'Media plan (Day by Day)',overview:'Daily',channel:'Channels',plans:'Plan history',ranks:'Top & Bottom / Search terms',camp:'Campaign performance',months:'Reports Studio',seasons:'Seasons',lab:'Lab',ask:'Alexandra',team:'Team',build:'Build tasks',quick:'Quick tasks',leave:'Leave',admin:'Admin'};
+function akActCan(d){const P=ACCESS_PROFILE||{};if(VIEW_AS)return false;return {add_task:tkCan('quick')||tkIsAdmin(),set_access:!!P.owner,show_access:!!P.owner,activity:tkIsAdmin(),team_message:tkIsAdmin(),maintenance:tkIsAdmin(),read_status:tkIsAdmin()}[d]||false}
+function akActHelp(){const L=[];const add=(d,t)=>{if(akActCan(d))L.push(t)};
+ add('add_task','- add a task: {"do":"add_task","person":"name or email","title":"short title","deadline":"YYYY-MM-DD","note":"details"}');
+ add('set_access','- give / remove / lock a screen: {"do":"set_access","person":"...","screen":"days|overview|channel|plans|ranks|camp|months|seasons|lab|ask|team","value":"on|off|lock|view"} (view = Lab read-only). Screens: Media plan = days, Daily = overview, Campaign performance = camp, Reports Studio = months, Plan history = plans, Search terms / Top & Bottom = ranks, Channels = channel.');
+ add('show_access','- show who can see what: {"do":"show_access","person":"optional name"}');
+ add('activity','- the team activity this month (opens, time, shares): {"do":"activity"}');
+ add('team_message','- a message / notification to the whole team: {"do":"team_message","title":"...","text":"...","push":true} (leave text empty to give them a box to write it)');
+ add('maintenance','- close HEMERA for maintenance or open it again: {"do":"maintenance","on":true,"reason":"..."}');
+ add('read_status','- when each sheet / snapshot was last read today: {"do":"read_status"}');
+ return L.length?'## Actions you can do for this person (only when they clearly ask)\nIn the written chat: say in one short line what you will do, then end the answer with [[ACTION]] and exactly one JSON object. In a voice call: use the do_action tool. The app shows a Confirm button for changes.\n'+L.join('\n'):''}
+function akActSplit(t){t=String(t||'');const m=/\[\[\s*ACTION\s*\]\]?/i.exec(t);if(!m)return {text:t};let act=null;try{const j=t.slice(m.index+m[0].length).replace(/```(json)?/g,'');const o=j.indexOf('{'),c=j.indexOf('}',o);
+ let e=c,depth=0;for(let i=o;i<j.length;i++){if(j[i]==='{')depth++;else if(j[i]==='}'){depth--;if(!depth){e=i;break}}}act=JSON.parse(j.slice(o,e+1))}catch(e){}
+ const rest=t.slice(0,m.index).trim(),after=act?'':'';return {text:rest+after,act}}
+async function akPerson(q){q=String(q||'').trim().toLowerCase();if(!q)return null;try{if(!PFP.people)await akWithin(pfPeopleLoad(),4000)}catch(e){}
+ const P=(PFP.people||[]).slice();if(akActCan('set_access')&&AKA.perm)AKA.perm.people.forEach(x=>{if(!P.some(y=>y.email===x.email))P.push(x)});
+ const hit=P.find(x=>String(x.email).toLowerCase()===q)||P.find(x=>String(x.name||'').toLowerCase()===q)||P.find(x=>String(x.name||'').toLowerCase().split(/\s+/).some(w=>w&&q.split(/\s+/).includes(w)))||P.find(x=>String(x.email).toLowerCase().startsWith(q));return hit||null}
+const AKA={perm:null};
+function akActLine(a){const nm=a._p?(a._p.name||a._p.email):(a.person||'');switch(a.do){
+ case 'add_task':return `Add a task for <b>${akEsc(nm)}</b>: “${akEsc(a.title||'')}”${a.deadline?' · due '+akEsc(a.deadline):''}${a.note?'<br><small>'+akEsc(a.note)+'</small>':''}`;
+ case 'set_access':return `${a.value==='off'?'Remove':a.value==='lock'?'Lock':a.value==='view'?'Give view-only':'Give'} <b>${akEsc(AKA_SCR[a.screen]||a.screen)}</b> ${a.value==='off'||a.value==='lock'?'for':'to'} <b>${akEsc(nm)}</b>`;
+ case 'team_message':return `Send to the whole team${a.push!==false?' (with a phone notification)':''}`;
+ case 'maintenance':return a.on===false?'Open HEMERA again for everyone':`Close HEMERA for maintenance${a.reason?': '+akEsc(a.reason):''}`;
+ default:return akEsc(a.do)}}
+function akActCard(a){const id='aka'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),enc=encodeURIComponent(JSON.stringify(a));
+ if(!akActCan(a.do))return `<div class="ak-act2 no" id="${id}">You cannot do this from your account.</div>`;
+ if(['show_access','activity','read_status'].includes(a.do)){setTimeout(()=>akActRun(id,a),60);return `<div class="ak-act2" id="${id}"><span class="ak-a2w">Loading…</span></div>`}
+ if(a.do==='team_message'&&!a.text)return akActMsgBox(id,a);
+ setTimeout(()=>akActPrep(id,a),40);
+ return `<div class="ak-act2" id="${id}" data-a="${enc}"><div class="ak-a2t">${akActLine(a)}</div>${a.do==='team_message'?`<div class="ak-a2m"><b>${akEsc(a.title||'HEMERA')}</b><p dir="auto">${akEsc(a.text||'')}</p></div>`:''}<div class="ak-a2b"><button type="button" class="no" onclick="akActNo('${id}')">Cancel</button><button type="button" class="ok" onclick="akActGo('${id}')">Confirm</button></div></div>`}
+function akActMsgBox(id,a){return `<div class="ak-act2" id="${id}" data-a="${encodeURIComponent(JSON.stringify(a))}"><div class="ak-a2t">Message to the whole team</div><input class="ak-a2i" maxlength="80" placeholder="Title" value="${akEsc(a.title||'')}"><textarea class="ak-a2x" maxlength="1000" rows="3" placeholder="Write the message… ({name} = their first name)" dir="auto"></textarea><label class="ak-a2c"><input type="checkbox" checked> Phone notification</label><div class="ak-a2b"><button type="button" class="no" onclick="akActNo('${id}')">Cancel</button><button type="button" class="ok" onclick="akActGo('${id}')">Send</button></div></div>`}
+async function akActPrep(id,a){if(!a.person)return;const p=await akPerson(a.person);const el=document.getElementById(id);if(!el)return;if(!p){akActPut(id,`<div class="ak-act2 no" id="${id}">I could not find “${akEsc(a.person)}” in the team.</div>`);return}
+ a._p={email:p.email,name:p.name};el.dataset.a=encodeURIComponent(JSON.stringify(a));const t=el.querySelector('.ak-a2t');if(t)t.innerHTML=akActLine(a)}
+function akActPut(id,html){const el=document.getElementById(id);if(el)el.outerHTML=html;const m=AK.msgs.find(x=>String(x.html||'').includes('id="'+id+'"'));
+ if(m){const d=document.createElement('div');d.innerHTML=m.html;const c=d.querySelector('#'+id);if(c){c.outerHTML=html;m.html=d.innerHTML}else m.html=html;try{akSave()}catch(e){}}}
+function akActNo(id){akActPut(id,`<div class="ak-act2 no" id="${id}">Cancelled.</div>`)}
+async function akActGo(id){const el=document.getElementById(id);if(!el)return;let a={};try{a=JSON.parse(decodeURIComponent(el.dataset.a||''))}catch(e){}
+ if(a.do==='team_message'){const ti=el.querySelector('.ak-a2i'),tx=el.querySelector('.ak-a2x'),cb=el.querySelector('.ak-a2c input');if(ti)a.title=ti.value.trim();if(tx)a.text=tx.value.trim();if(cb)a.push=cb.checked;if(!a.text){showSettingsToast('Write the message first.');return}}
+ el.querySelectorAll('button').forEach(b=>b.disabled=true);const r=await akActRun(id,a,true);if(AKLV.ws&&AKLV.ws.readyState===1&&r)try{AKLV.ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:'(Done on the screen: '+r+'. Tell the person in a few words.)'}]}],turnComplete:true}}))}catch(e){}}
+async function akActRun(id,a,confirmed){const T=getAccessToken(),done=(h,txt)=>{akActPut(id,`<div class="ak-act2 ok" id="${id}">${h}</div>`);return txt||''},fail=e=>{akActPut(id,`<div class="ak-act2 no" id="${id}">${akEsc(errorText?errorText(e):String(e&&e.message||e))}</div>`);return 'failed'};
+ if(!akActCan(a.do))return fail('You cannot do this from your account.');
+ try{switch(a.do){
+  case 'add_task':{const p=a._p||await akPerson(a.person);if(!p)return fail('I could not find that person.');let dl=String(a.deadline||'');if(!/^\d{4}-\d{2}-\d{2}$/.test(dl)){const d=new Date();d.setDate(d.getDate()+2);dl=d.toISOString().slice(0,10)}
+   await serverCall('taskSave',T,{kind:'quick',title:String(a.title||'Task').slice(0,140),email:p.email,deadline:dl,data:{msg:String(a.note||'').slice(0,600),qtype:'optimization'}});try{TK.at=0}catch(e){}
+   return done(`✓ Task added for <b>${akEsc(p.name||p.email)}</b>: “${akEsc(a.title||'')}” · due ${dl}`,'task added for '+(p.name||p.email))}
+  case 'set_access':{const p=a._p||await akPerson(a.person);if(!p)return fail('I could not find that person.');const k=String(a.screen||'');if(!AKA_SCR[k])return fail('Unknown screen '+k);
+   const v=a.value==='off'?false:a.value==='lock'?'lock':a.value==='view'&&k==='lab'?'view':true;await serverCall('adminPermsSet',T,{[p.email]:{[k]:v}});AKA.perm=null;
+   return done(`✓ ${akActLine(Object.assign({},a,{_p:p}))}`,'access changed for '+(p.name||p.email))}
+  case 'show_access':{const r=await serverCall('adminPerms',T);AKA.perm=r;let P=r.people||[];if(a.person){const q=String(a.person).toLowerCase();P=P.filter(x=>(x.name||'').toLowerCase().includes(q)||x.email.toLowerCase().includes(q))}
+   const keys=['overview','days','camp','months','plans','channel','ranks','seasons','lab','ask','team'];
+   const cell=v=>v===true?'<i class="y">✓</i>':v==='lock'?'<i class="l">🔒</i>':v==='view'?'<i class="v">👁</i>':'<i class="n">–</i>';
+   const html=`<div class="ak-a2t">Who can see what</div><div class="ak-acc"><table><tr><th></th>${keys.map(k=>`<th>${akEsc((AKA_SCR[k]||k).split(' ')[0])}</th>`).join('')}</tr>${P.slice(0,40).map(x=>`<tr><td>${akEsc((x.name||x.email).split(' ')[0])}${x.owner?' ★':''}${x.perms&&x.perms.blocked?' ⛔':''}</td>${keys.map(k=>`<td>${cell(x.owner?true:(x.perms||{})[k])}</td>`).join('')}</tr>`).join('')}</table></div>`;
+   akActPut(id,`<div class="ak-act2" id="${id}">${html}</div>`);return P.length+' people'}
+  case 'activity':{const r=await serverCall('adminActivity',T);const o=(r.opens||{}).people||[],tm=(r.time||{}).people||[],min=s=>Math.round((s||0)/60);
+   const rows=o.slice().sort((x,y)=>y.n-x.n).slice(0,12).map(x=>{const t=tm.find(y=>y.email===x.email);return `<tr><td>${akEsc((x.name||x.email).split(' ')[0])}</td><td>${x.n}</td><td>${min(t&&t.sec)} min</td></tr>`}).join('');
+   akActPut(id,`<div class="ak-act2" id="${id}"><div class="ak-a2t">Activity · ${akEsc(r.month||'')}</div><div class="ak-acc"><table><tr><th>Person</th><th>Opens</th><th>Time</th></tr>${rows}</table></div><small class="ak-a2s">Opens ${(r.opens||{}).total||0} · time ${min((r.time||{}).total)} min · shares ${Array.isArray(r.shares)?r.shares.length:(r.shares||0)}</small></div>`);return 'activity shown'}
+  case 'read_status':{const r=await serverCall('adminReadWindow',T);const f=ms=>ms?new Date(ms).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'—';const td=(r.days||[]).find(d=>d.day===r.today)||(r.days||[])[0]||{};
+   const rows=[['Media plan USA',f((r.last||{}).usa)],['Media plan AR',f((r.last||{}).ar)],['Search terms USA',f(td.tusa)],['Search terms AR',f(td.tar)],['Campaigns USA',f(td.cusa)],['Campaigns AR',f(td.car)]];
+   akActPut(id,`<div class="ak-act2" id="${id}"><div class="ak-a2t">Reading the sheets · ${r.window&&r.window.on?'window '+akEsc(r.window.from||'')+'–'+akEsc(r.window.to||''):'window off'}${r.open?' · open now':''}</div><div class="ak-acc"><table>${rows.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join('')}</table></div></div>`);return rows.map(x=>x[0]+' '+x[1]).join(', ')}
+  case 'team_message':{if(!confirmed)return '';const r=await serverCall('adminPublishAnnouncement',T,String(a.title||'HEMERA').slice(0,80),String(a.text||'').slice(0,1000),'',a.push!==false);
+   return done(`✓ Sent to the team${r&&r.pushed?' with a phone notification':''}: <b>${akEsc(a.title||'HEMERA')}</b><br><small dir="auto">${akEsc(a.text||'')}</small>`,'message sent to the team')}
+  case 'maintenance':{const on=a.on!==false;await serverCall('adminSetMaintenance',T,on,String(a.reason||'').slice(0,300));return done(on?'✓ HEMERA is closed for maintenance. Only admins can get in.':'✓ HEMERA is open again for everyone.',on?'HEMERA closed for maintenance':'HEMERA opened again')}
+  default:return fail('Unknown action.')}}catch(e){return fail(e)}}
+async function akActVoice(a){if(!a||!a.do)return {result:'No action.'};if(!akActCan(a.do))return {result:'This person is not allowed to do that.'};
+ const html=akActCard(a);AK.msgs.push({w:'h',cls:'',html,nw:1});try{akSave()}catch(e){}if(document.getElementById('akBox'))akDraw();
+ const read=['show_access','activity','read_status'].includes(a.do);
+ if(!read){akLiveConfirm(html)}
+ return {result:read?'Shown in the chat.':'A card with a Confirm button is on the screen now. Tell the person to tap Confirm; do not say it is done until you are told.'}}
+function akLiveConfirm(html){const el=document.getElementById('akLive');if(!el)return;let b=document.getElementById('aklvAct');if(!b){b=document.createElement('div');b.id='aklvAct';b.className='aklv-act';el.appendChild(b)}
+ const id=(html.match(/id="(aka[^"]+)"/)||[])[1];b.innerHTML=html.replace(/id="aka/,'data-x="1" id="akaL');
+ b.querySelectorAll('button').forEach(x=>{x.onclick=async()=>{const ok=x.classList.contains('ok');const src=document.getElementById(id);
+   if(src){const map={'.ak-a2i':'.ak-a2i','.ak-a2x':'.ak-a2x'};Object.keys(map).forEach(q=>{const a=b.querySelector(q),c=src.querySelector(q);if(a&&c)c.value=a.value});const a=b.querySelector('.ak-a2c input'),c=src.querySelector('.ak-a2c input');if(a&&c)c.checked=a.checked}
+   b.remove();if(ok)await akActGo(id);else akActNo(id)}})}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
