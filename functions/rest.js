@@ -476,6 +476,19 @@ const R = {
     return (((await fsGet(LIB_DOC)) || {}).items || []).filter(x => x.acc === acc).sort((a, b) => String(b.month).localeCompare(String(a.month)))
       .map(x => ({ month: x.month, fileName: x.fileName, size: x.size, pages: x.pages, sentAt: x.sentAt, url: API_URL + '/lib/' + x.key }));
   },
+  /** v566 Alexandra's month close: keeps the month's PDF in the report library (Plan History) before the month moves, without emailing it. */
+  async adminSaveReportPdf([token, pdfBase64, meta]) {
+    await assertOwner(token);
+    meta = meta || {};
+    const bytes = Buffer.from(String(pdfBase64 || ''), 'base64');
+    if (!bytes.length) throw new Error('The report is empty.');
+    if (bytes.length > REPORT_MAX_BYTES) throw new Error('The report is too large.');
+    if (!/^\d{4}-\d{2}$/.test(String(meta.month || '')) || !(meta.account === 'usa' || meta.account === 'ar')) throw new Error('Pick the month first.');
+    const fileName = (String(meta.fileName || '').replace(/[^\w.\- ]/g, '').slice(0, 80) || 'HEMERA-Report').replace(/\.pdf$/i, '') + '.pdf';
+    const pages = Math.max(1, Math.min(30, Number(meta.pages) || 1));
+    await libStore(meta.account, meta.month, bytes, fileName, pages);
+    return { ok: true, month: meta.month, fileName, pages, size: bytes.length };
+  },
   /** The month's results PDF (built in the app) to every approved person, or only to the admin as a test. */
   async adminSendMonthlyReport([token, pdfBase64, meta]) {
     meta = meta || {};

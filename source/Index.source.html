@@ -10026,6 +10026,47 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .cp-wr.h b{font:800 10px Inter,system-ui,sans-serif;padding:0 7px}.cp-wr.h b.a{color:#3d6bff}.cp-wr.h b.bb{color:#c99a45}
     .cp-wm{display:block;width:100%;margin:4px 0 8px;border:0;border-radius:12px;background:#f4f6fb;padding:10px;font:800 12px Inter,system-ui,sans-serif;color:#203c8e;cursor:pointer}
     body.dark-mode .cp-pbl,body.dark-mode .cp-wc{background:#1c2330}body.dark-mode .cp-pbl button,body.dark-mode .cp-wr{border-color:#2a313c}body.dark-mode .cp-wm{background:#232b38;color:#9fb8ff}body.dark-mode .cp-wr b.w{background:#22305e;color:#c9d3f5}body.dark-mode .cp-pbl button.on b{color:#9fb8ff}body.dark-mode .cp-pbl button.on i{border-color:#7d9cff}
+
+    /* v566 Alexandra: index changes (Change list + progress, Plan tiles) and the month close (Navy header) */
+    .ak-m.wb:has(.akix),.ak-m.wb:has(.akmc),.ak-m.wb:has(.akmcs),.ak-m.wb:has(.akmca),.ak-m.wb:has(.akmcx){max-width:min(92%,380px);width:100%}
+    .akix .ttl{font:900 13.5px Inter,system-ui,sans-serif;margin:0 0 6px}
+    .akix .rw{display:grid;grid-template-columns:1fr auto;align-items:center;padding:8px 0;border-top:1px solid #f1f3f8}.akix .ttl+.rw{border-top:0}
+    .akix .rw b{font:800 12.5px Inter,system-ui,sans-serif}.akix .rw small{display:block;font:600 10.5px Inter,system-ui,sans-serif;color:#8a93a8}.akix .rw small.bd{grid-column:1/3;color:#c63a4a}
+    .akix .v{font:800 13px Inter,system-ui,sans-serif;display:flex;align-items:center;gap:6px}.akix .v s{color:#a9b0c0;font-weight:700}.akix .v em{font-style:normal;color:#203c8e;background:#eef2fc;border-radius:7px;padding:2px 7px}
+    .akix .ck{width:18px;height:18px;border-radius:50%;background:#13804f;color:#fff;display:grid;place-items:center;font:900 10px Inter,system-ui,sans-serif}.akix .ck.bad{background:#c63a4a}
+    .akix .sp,.akmcs .stp.now .n{border:2px solid #e2b874;border-top-color:transparent;animation:akixSp .8s linear infinite}.akix .sp{width:16px;height:16px;border-radius:50%}
+    @keyframes akixSp{to{transform:rotate(360deg)}}
+    .akix .rw.done em{background:#e3f6ec;color:#13804f}.akix .rw.wait{opacity:.45}.akix .rw.bad em{background:#fde8ea;color:#c63a4a}
+    .akix .rw.done .ck,.akmcs .stp.done .n,.akmcx .ppl i.s{animation:akixPop .35s cubic-bezier(.2,.8,.2,1.4)}@keyframes akixPop{from{transform:scale(.3)}to{transform:none}}
+    .akix .prog,.akmcs .prog,.akmcx .prog{height:5px;border-radius:9px;background:#eef1f7;margin-top:10px;overflow:hidden}.akix .prog i,.akmcs .prog i,.akmcx .prog i{display:block;height:100%;background:linear-gradient(90deg,#3d6bff,#e2b874);transition:width .45s ease}
+    .akix .pt,.akmc .pt,.akmca .pt{display:flex;justify-content:space-between;font:700 11px Inter,system-ui,sans-serif;color:#6b7385;margin-top:7px}
+    .akix .btns,.akmca .btns{display:flex;gap:8px;margin-top:10px}.akix .btns button,.akmca .btns button,.akmc .ok{flex:1;border:0;border-radius:12px;padding:10px;font:800 13px Inter,system-ui,sans-serif;cursor:pointer}
+    .akix .ok,.akmca .ok,.akmc .ok{background:linear-gradient(135deg,#f3d58e,#e2b874);color:#0a1230}.akix .no,.akmca .no{background:#f0f2f5;color:#4b5263}.akmca button:disabled{opacity:.55}
+    .akix .vf{display:flex;align-items:center;gap:8px;background:#e3f6ec;color:#13804f;border-radius:12px;padding:8px 10px;font:800 12px Inter,system-ui,sans-serif;margin-top:8px}.akix .vf.bad{background:#fde8ea;color:#c63a4a}.akix .vf small{font:600 11px Inter,system-ui,sans-serif;margin-left:auto;opacity:.8}
+    .akix .sh{font:800 9.5px Inter,system-ui,sans-serif;letter-spacing:.1em;color:#c99a45;margin:12px 0 4px}
+    .akix .tl{display:grid;grid-template-columns:1fr 1fr;gap:6px}.akix .tl div{background:#f6f7fb;border-radius:12px;padding:8px 10px;animation:akixIn .4s both}.akix .tl div:nth-child(2){animation-delay:.08s}.akix .tl div:nth-child(3){animation-delay:.16s}.akix .tl div:nth-child(4){animation-delay:.24s}
+    @keyframes akixIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+    .akix .tl small{font:800 9px Inter,system-ui,sans-serif;letter-spacing:.08em;color:#8a93a8;display:flex;justify-content:space-between;align-items:center;gap:4px}.akix .tl b{display:block;font:900 15px Inter,system-ui,sans-serif;margin-top:3px;color:#141b33}.akix .tl s{font:700 11px Inter,system-ui,sans-serif;color:#a9b0c0}
+    .akix .pc{font-style:normal;font:800 9.5px Inter,system-ui,sans-serif;border-radius:99px;padding:2px 6px;letter-spacing:0}.akix .pc.up{background:#e3f6ec;color:#13804f}.akix .pc.dn{background:#fde8ea;color:#c63a4a}
+    .akix .chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.akix .chips span{font:800 10.5px Inter,system-ui,sans-serif;border-radius:99px;padding:4px 9px;background:#f0f2f5;color:#4b5263}.akix .chips b{color:#13804f}.akix .chips b.neg{color:#c63a4a}
+    .akix .ac{display:flex;gap:8px;margin-top:10px}.akix .ac button{flex:1;border:0;border-radius:12px;padding:8px;font:800 12px Inter,system-ui,sans-serif;background:#f0f2f5;color:#203c8e;cursor:pointer}
+    .ak-m:has(.akmc){padding:0!important;overflow:hidden;background:#fff}
+    .akmc .tp{background:radial-gradient(120% 200% at 0 0,#2c4fb8,#203c8e 60%,#132457);color:#fff;padding:14px 14px 16px}.akmc .k{font:800 9.5px Inter,system-ui,sans-serif;letter-spacing:.12em;color:#f3d58e}
+    .akmc h3{margin:4px 0 2px;font:900 22px/1.12 'DM Serif Display',Georgia,serif;color:#fff}.akmc .tp p{margin:0;font:600 11.5px Inter,system-ui,sans-serif;color:#c9d3f5}
+    .akmc .dots{display:flex;gap:2px;margin-top:10px}.akmc .dots i{flex:1;height:5px;border-radius:2px;background:#e2b874;animation:akmcD .5s both}.akmc .dots i:nth-child(1){animation-delay:0.025s}.akmc .dots i:nth-child(2){animation-delay:0.050s}.akmc .dots i:nth-child(3){animation-delay:0.075s}.akmc .dots i:nth-child(4){animation-delay:0.100s}.akmc .dots i:nth-child(5){animation-delay:0.125s}.akmc .dots i:nth-child(6){animation-delay:0.150s}.akmc .dots i:nth-child(7){animation-delay:0.175s}.akmc .dots i:nth-child(8){animation-delay:0.200s}.akmc .dots i:nth-child(9){animation-delay:0.225s}.akmc .dots i:nth-child(10){animation-delay:0.250s}.akmc .dots i:nth-child(11){animation-delay:0.275s}.akmc .dots i:nth-child(12){animation-delay:0.300s}.akmc .dots i:nth-child(13){animation-delay:0.325s}.akmc .dots i:nth-child(14){animation-delay:0.350s}.akmc .dots i:nth-child(15){animation-delay:0.375s}.akmc .dots i:nth-child(16){animation-delay:0.400s}.akmc .dots i:nth-child(17){animation-delay:0.425s}.akmc .dots i:nth-child(18){animation-delay:0.450s}.akmc .dots i:nth-child(19){animation-delay:0.475s}.akmc .dots i:nth-child(20){animation-delay:0.500s}.akmc .dots i:nth-child(21){animation-delay:0.525s}.akmc .dots i:nth-child(22){animation-delay:0.550s}.akmc .dots i:nth-child(23){animation-delay:0.575s}.akmc .dots i:nth-child(24){animation-delay:0.600s}.akmc .dots i:nth-child(25){animation-delay:0.625s}.akmc .dots i:nth-child(26){animation-delay:0.650s}.akmc .dots i:nth-child(27){animation-delay:0.675s}.akmc .dots i:nth-child(28){animation-delay:0.700s}.akmc .dots i:nth-child(29){animation-delay:0.725s}.akmc .dots i:nth-child(30){animation-delay:0.750s}.akmc .dots i:nth-child(31){animation-delay:0.775s}
+    @keyframes akmcD{from{opacity:0;transform:scaleY(.2)}to{opacity:1;transform:none}}
+    .akmc .bd{padding:12px 14px 14px}.akmc .g{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.akmc .g small{display:block;font:800 9px Inter,system-ui,sans-serif;letter-spacing:.08em;color:#8a93a8}.akmc .g b{font:900 16px Inter,system-ui,sans-serif;color:#141b33}.akmc .g em{display:block;font-style:normal;font:800 10.5px Inter,system-ui,sans-serif;color:#13804f}.akmc .g em.neg{color:#c63a4a}
+    .akmc .hl{margin-top:10px;font:600 12px Inter,system-ui,sans-serif;color:#4b5263;background:#f4f6fb;border-radius:10px;padding:8px 10px}.akmc .hl b{color:#141b33}
+    .akmc .ok{display:block;width:100%;margin-top:12px}
+    .akmcs .stp{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid #f1f3f8}.akmcs .stp:first-child{border:0}.akmcs .n{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:900 11px Inter,system-ui,sans-serif;flex:none;background:#eef1f7;color:#8a93a8;box-sizing:border-box}
+    .akmcs .stp.done .n{background:#13804f;color:#fff}.akmcs .stp.now .n{background:none;color:transparent}.akmcs .stp.bad .n{background:#c63a4a;color:#fff}
+    .akmcs b{display:block;font:800 13px Inter,system-ui,sans-serif}.akmcs small{font:600 11px Inter,system-ui,sans-serif;color:#8a93a8}.akmcs .stp.done small{color:#13804f}.akmcs .stp.bad small{color:#c63a4a}
+    .akmca p{margin:0}.akmca .pdf{display:flex;align-items:center;gap:10px;background:#f4f6fb;border-radius:12px;padding:9px 10px;margin-top:8px}.akmca .pdf span{width:30px;height:30px;border-radius:7px;background:#e5322d;color:#fff;font:900 9px Inter,system-ui,sans-serif;display:grid;place-items:center;flex:none}
+    .akmca .pdf div{min-width:0}.akmca .pdf b{font:800 12px Inter,system-ui,sans-serif;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.akmca .pdf small{font:600 10.5px Inter,system-ui,sans-serif;color:#8a93a8}
+    .akmcx{text-align:center}.akmcx .pl{font-size:26px;animation:akmcF 1.6s ease-in-out infinite}@keyframes akmcF{0%,100%{transform:translate(0,0)}50%{transform:translate(6px,-5px)}}
+    .akmcx .cnt{font:900 30px Inter,system-ui,sans-serif;color:#141b33}.akmcx .cnt small{font:700 13px Inter,system-ui,sans-serif;color:#8a93a8}.akmcx .okl{font:800 12px Inter,system-ui,sans-serif;color:#13804f;margin-top:2px}
+    .akmcx .ppl{display:flex;justify-content:center;margin-top:10px}.akmcx .ppl i{width:30px;height:30px;border-radius:50%;border:2px solid #fff;margin-left:-8px;background:#c9d3f5;font-style:normal;display:grid;place-items:center;font:800 10px Inter,system-ui,sans-serif;color:#203c8e}.akmcx .ppl i:first-child{margin-left:0}.akmcx .ppl i.s{background:#13804f;color:#fff}.akmcx .ppl i.m{background:#eef1f7}
+    .ak.dk .akix .rw,.ak.dk .akmcs .stp{border-color:#3E4042}.ak.dk .akix .tl div,.ak.dk .akmc .hl,.ak.dk .akmca .pdf{background:#3A3B3C}.ak.dk .akix .tl b,.ak.dk .akmc .g b,.ak.dk .akmcx .cnt,.ak.dk .akmc .hl b{color:#E4E6EB}.ak.dk .ak-m:has(.akmc){background:#242526}
 </style>
 </head>
 <body>
@@ -11535,6 +11576,7 @@ async function akSend(e){
  if(AK.ask){const a=AK.ask;AK.ask=null;akUser(q);a.fn(q);return}
  if(AK.add){akAddAnswer(q);return}
  if(AK.teach){akLearn(q);return}
+ if(akOwner()&&AKIX_RE.test(q)){akUser(q);AK.kb=false;akKb();akIxStart(q);return}
  if(AK.canTeach&&AK_MEM_RE.test(q)){akMemAsk(q);return}
  akUser(q);AK.kb=false;akKb();
  if(!ASK_HEMERA_URL){akBot('<p>Alexandra is not connected yet.</p>');return}
@@ -21645,6 +21687,148 @@ function cpWin(r,rb,two,va,vb,mA,mB,pa,pb){
  const row=k=>{const l=(CP_M.find(q=>q[0]===k)||[])[1],bt=better(k);return `<div class="cp-wr"><span>${l}</span><span><b class="${bt>0?'w':''}">${cpVal(k,r)}</b><i>·</i><b class="${bt<0?'w':''}">${cpVal(k,rb)}</b></span></div>`};
  return `<div class="cp-wc">${hero}${cpLines(va,vb)}<div class="cp-wlg"><span><i class="a"></i>${esc(A)} · ${esc(la)}</span><span><i class="b"></i>${esc(B)} · ${esc(lb)}</span><span class="r">ROAS by day</span></div></div>
   <div class="cp-wc cp-wl"><div class="cp-wr h"><span></span><span><b class="a">● ${esc(A)}</b><i></i><b class="bb">● ${esc(B)}</b></span></div>${main.map(row).join('')}${CPX.more?rest.map(row).join(''):''}<button type="button" class="cp-wm" onclick="CPX.more=!CPX.more;cpDraw()">${CPX.more?'Fewer figures ‹':'More figures ›'}</button></div>`}
+
+/* ===== v566 Alexandra for the owner: change the month's index from the chat, and close the month from the chat =====
+ * Owner only (the two HEMERA owner emails). Index: "Ramadan spend 1.4, Friday spend 1.2, Week 4 conv 1.1".
+ * She finds each row in the Assumptions tab, shows old → new (Change list), and on Confirm writes them one by one,
+ * reads the sheet back to check each one, then shows what changed in the plan (Plan tiles) with Undo. */
+const AKIX_RE=/\b(index|indexes|indices)\b|إنديكس|انديكس|اندكس/i;
+function akOwner(){return !!(ACCESS_PROFILE&&ACCESS_PROFILE.owner)&&!VIEW_AS}
+const AKIX={};
+function akIxFind(id){return AK.msgs.find(m=>String(m.html).includes('id="'+id+'"'))}
+function akIxPut(id,html){const m=akIxFind(id);if(m)m.html=html;const el=document.getElementById(id);if(el)el.outerHTML=html;akSave()}
+function akIxRows(d){const out=[],add=(list,sec)=>(list||[]).forEach(r=>{if(r&&r.row)out.push({row:r.row,name:String(r.name||''),sec,spend:r.spend,value:r.value,conv:r.conv})});
+ add(d.hijri,'Hijri month');add(d.weekday,'Weekday');add(d.weekOfMonth,'Week of month');add(d.special,'Special day');return out}
+function akIxParse(q,rows){
+ const t=' '+String(q).replace(/[،,;\n]+/g,' , ')+' ',hits=[];
+ rows.forEach(r=>{const nm=r.name.trim();if(!nm)return;const pats=[nm.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/\s+/g,'\\s*')];
+  const wn=r.sec==='Week of month'&&(nm.match(/(\d+)/)||[])[1];if(wn)pats.push('\\b(?:week|w)\\s*'+wn+'\\b');
+  if(r.sec==='Weekday')pats.push('\\b'+nm.slice(0,3)+'\\b');
+  pats.forEach(p=>{const re=new RegExp(p,'ig');let m;while((m=re.exec(t)))hits.push({r,i:m.index,e:m.index+m[0].length})})});
+ hits.sort((a,b)=>a.i-b.i||(b.e-b.i)-(a.e-a.i));const keep=[];hits.forEach(h=>{if(!keep.some(k=>h.i<k.e&&h.e>k.i))keep.push(h)});
+ const ch=[],loose=[];
+ keep.forEach((h,j)=>{const seg=t.slice(h.e,j+1<keep.length?keep[j+1].i:t.length);let any=false;
+  const re=/(spend|value|conv(?:ersions?)?|clicks?|صرف|قيمة|تحويلات?)\s*[:=]?\s*(?:to\s*|→\s*)?(\d+(?:\.\d+)?)/ig;let m;
+  while((m=re.exec(seg))){any=true;const w=m[1].toLowerCase(),k=/^(spend|صرف)/.test(w)?'spend':/^(value|قيمة)/.test(w)?'value':/^(conv|تحويل)/.test(w)?'conv':'';
+   if(!k)continue;const v=+m[2],old=h.r[k];if(old==null)continue;const c={row:h.r.row,name:h.r.name,sec:h.r.sec,key:k,old,val:v};
+   const i=ch.findIndex(x=>x.row===c.row&&x.key===k);if(i>=0)ch[i]=c;else ch.push(c)}
+  if(!any&&/\d/.test(seg))loose.push(h.r.name)});
+ return {ch:ch.filter(c=>Math.abs(c.val-c.old)>1e-9),same:ch.filter(c=>Math.abs(c.val-c.old)<=1e-9),loose}}
+const AKIX_K={spend:'Spend',value:'Value',conv:'Conv'};
+function akIxHtml(id){const s=AKIX[id];if(!s)return '';const n=s.ch.length,x2=v=>v==null?'—':(+v).toFixed(2);
+ const rows=s.ch.map((c,i)=>{const st=s.st[i]||'',tail=st==='done'?'<span class="ck">✓</span>':st==='now'?'<span class="sp"></span>':st==='bad'?'<span class="ck bad">!</span>':'';
+  return `<div class="rw ${st}"><div><b>${akEsc(c.name)}</b><small>${akEsc(c.sec)} · ${AKIX_K[c.key]}</small></div><div class="v"><s>${x2(c.old)}</s>→<em>${x2(c.val)}</em>${tail}</div>${st==='bad'?`<small class="bd">The sheet shows ${x2(s.seen&&s.seen[i])}</small>`:''}</div>`}).join('');
+ let foot='';
+ if(s.phase==='ask')foot=`<div class="btns"><button type="button" class="no" onclick="akIxNo('${id}')">Cancel</button><button type="button" class="ok" onclick="akIxGo('${id}')">Confirm ${n} change${n>1?'s':''}</button></div>`;
+ else if(s.phase==='run')foot=`<div class="prog"><i style="width:${Math.round(s.done/n*100)}%"></i></div><div class="pt"><span>${s.done<n?'Saving to the sheet…':'Checking the sheet…'}</span><span>${Math.min(s.done,n)} of ${n}</span></div>`;
+ else if(s.phase==='no')foot='<div class="pt"><span>Cancelled. Nothing was changed.</span></div>';
+ else if(s.phase==='err')foot=`<div class="vf bad">⚠️ ${akEsc(s.err||'Something went wrong.')}</div>`;
+ else if(s.phase==='done'||s.phase==='undone'){const ok=s.st.every(x=>x==='done');
+  foot=`<div class="vf${ok?'':' bad'}">${ok?`✓ Checked in the sheet: all ${n} saved`:`⚠️ ${s.st.filter(x=>x==='bad').length} of ${n} not saved as asked`}<small>read back ${akEsc(s.at||'')}</small></div>${s.tiles||'<div class="pt"><span>Reading the plan…</span></div>'}
+   ${s.phase==='undone'?'<div class="pt"><span>↩ Undone. The old numbers are back.</span></div>':`<div class="ac"><button type="button" onclick="akIxUndo('${id}')">Undo</button><button type="button" onclick="closeAsk();switchDashboardTab('lab')">Open the plan ›</button></div>`}`}
+ return `<div class="akix" id="${id}"><div class="ttl">${n} index change${n>1?'s':''} · ${akEsc(s.month||'')}${s.index?' ('+akEsc(s.index)+' index)':''}</div>${rows}${foot}</div>`}
+async function akIxStart(q){
+ AK.busy=true;akDraw();
+ try{const acc=CURRENT_ACCOUNT,tk=getAccessToken();
+  const [d,fc]=await Promise.all([serverCall('getAssumptions',acc,true,tk),serverCall('getForecast',acc,true,tk).catch(()=>null)]);
+  AK.busy=false;
+  if(!d||d.missing){akBot('<p>I cannot reach the Assumptions tab for this account.</p>');return}
+  const rows=akIxRows(d),p=akIxParse(q,rows);
+  if(!p.ch.length){const names=[...new Set(rows.map(r=>r.name))].slice(0,14).map(akEsc).join(', ');
+   akBot(`<p>${p.same.length?'Those numbers are already in the sheet, so nothing changes.':p.loose.length?'Tell me which number to change for '+akEsc(p.loose.join(', '))+': spend, value or conv.':'I could not find index rows in that message.'}</p><p class="ak-sm">Write it like: <b>Ramadan spend 1.4, Friday spend 1.2, Week 4 conv 1.1</b>. Rows this month: ${names}.</p>`);return}
+  const id='akix'+Date.now().toString(36);AKIX[id]={acc,ch:p.ch,st:[],phase:'ask',month:d.month,index:d.index,before:fc};
+  akBot(akIxHtml(id),'wb');
+ }catch(err){AK.busy=false;akBot(`<p>${akEsc(errorText(err))}</p>`)}}
+function akIxNo(id){const s=AKIX[id];if(!s||s.phase!=='ask')return;s.phase='no';akIxPut(id,akIxHtml(id))}
+async function akIxGo(id){const s=AKIX[id];if(!s||s.phase!=='ask')return;
+ if(s.acc!==CURRENT_ACCOUNT){s.phase='err';s.err='Switch back to '+(s.acc==='ar'?'AR':'USA')+' first.';akIxPut(id,akIxHtml(id));return}
+ s.phase='run';s.done=0;s.st=s.ch.map(()=> 'wait');s.st[0]='now';akIxPut(id,akIxHtml(id));
+ const n=s.ch.length,tick=setInterval(()=>{if(s.done<n-1){s.st[s.done]='done';s.done++;s.st[s.done]='now';akIxPut(id,akIxHtml(id))}},520);
+ try{const fresh=await serverCall('assumeSet',s.acc,s.ch.map(c=>({row:c.row,key:c.key,value:c.val})),getAccessToken());clearInterval(tick);
+  // read back: each row's number must be what was asked
+  const byRow={};akIxRows(fresh||{}).forEach(r=>{byRow[r.row]=r});s.seen=s.ch.map(c=>(byRow[c.row]||{})[c.key]);
+  for(let i=s.done;i<n;i++){s.st[i]='done';s.done=i+1;akIxPut(id,akIxHtml(id));await new Promise(r=>setTimeout(r,260))}
+  s.st=s.ch.map((c,i)=>s.seen[i]!=null&&Math.abs(s.seen[i]-c.val)<1e-6?'done':'bad');
+  s.at=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});s.phase='done';akIxPut(id,akIxHtml(id));
+  if(ASSUME_CACHE_CLEAR)ASSUME_CACHE_CLEAR(s.acc);
+  const after=await serverCall('getForecast',s.acc,true,getAccessToken()).catch(()=>null);s.tiles=akIxTiles(s.before,after);akIxPut(id,akIxHtml(id));
+ }catch(err){clearInterval(tick);s.phase='err';s.err=errorText(err);akIxPut(id,akIxHtml(id))}}
+function ASSUME_CACHE_CLEAR(acc){try{if(typeof FC!=='undefined'&&FC[acc])FC[acc].data=null;if(typeof AS!=='undefined'&&AS[acc])AS[acc].data=null}catch(e){}}
+async function akIxUndo(id){const s=AKIX[id];if(!s||s.phase!=='done')return;s.phase='run';s.done=s.ch.length;akIxPut(id,akIxHtml(id));
+ try{await serverCall('assumeSet',s.acc,s.ch.map(c=>({row:c.row,key:c.key,value:c.old})),getAccessToken());s.phase='undone';s.tiles='';akIxPut(id,akIxHtml(id))}
+ catch(err){s.phase='err';s.err=errorText(err);akIxPut(id,akIxHtml(id))}}
+// Plan tiles: the week whose spend moved most, the two campaign types that moved most, and the month's value
+function akIxTiles(b,a){if(!b||!a||!b.plan||!a.plan)return '<div class="pt"><span>The plan could not be read again.</span></div>';
+ const M=v=>v==null?'—':money(v),pc=(x,y)=>y?(x/y-1):null,pill=d=>d==null||!isFinite(d)?'':`<i class="pc ${d>=0?'up':'dn'}">${d>=0?'+':''}${Math.abs(d)<.0995?(d*100).toFixed(1):Math.round(d*100)}%</i>`,T=[];
+ const wk=(a.weeks||[]).map((w,i)=>({w,o:(b.weeks||[])[i]})).filter(x=>x.o).map(x=>({l:x.w.label,n:x.w.planSpend,o:x.o.planSpend,d:Math.abs((x.w.planSpend||0)-(x.o.planSpend||0))})).sort((x,y)=>y.d-x.d)[0];
+ if(wk&&wk.d>0.5)T.push([String(wk.l).replace(/\s*\d+\s*[:\-–]\s*\d+\s*$/,'')+' spend',wk.n,wk.o]);
+ (a.channels||[]).map(c=>{const o=(b.channels||[]).find(x=>x.name===c.name)||{};return {l:CHANNEL_SHORT[c.name]||c.name,n:c.budget,o:o.budget,d:Math.abs((c.budget||0)-(o.budget||0))}}).filter(x=>x.d>0.5).sort((x,y)=>y.d-x.d).slice(0,2).forEach(x=>T.push([x.l,x.n,x.o]));
+ T.push(['Month value',a.plan.rev,b.plan.rev]);if(T.length<4)T.push(['Month spend',a.plan.spend,b.plan.spend]);
+ const tiles=T.slice(0,4).map(([l,n,o])=>`<div><small>${akEsc(String(l).toUpperCase())}${pill(pc(n,o))}</small><b>${M(n)}</b><s>${M(o)}</s></div>`).join('');
+ const dim=(a.weeks||[]).reduce((t,w)=>t+(w.days||0),0)||30,dd=((a.plan.spend||0)-(b.plan.spend||0))/dim;
+ return `<div class="sh">THE PLAN NOW</div><div class="tl">${tiles}</div><div class="chips"><span>ROAS ${(b.plan.roas||0).toFixed(2)}x → ${(a.plan.roas||0).toFixed(2)}x</span><span>Daily avg <b class="${dd>=0?'':'neg'}">${dd>=0?'+':'−'}${money(Math.abs(dd))}</b></span></div>`}
+
+/* Month close, inside Alexandra's chat (owner only): once every day of the month is in, she opens the chat once
+ * with the month card (Navy header). Close: 1) the month's PDF and results go to Plan History, 2) the month moves to
+ * the history (Total) tab, 3) she asks to send the PDF: Send me first (a test) or Send to team, with a live count. */
+const AKMC={};
+function akMcKey(acc,mk){return 'hm_mc_'+acc+'_'+mk}
+function akMcCheck(){try{if(!akOwner()||!DASH_DATA)return;const days=DASH_DATA.dayPlan||[];if(!days.length||days.some(x=>!x.actual))return;
+ const mk=days[0].date.slice(0,7),acc=CURRENT_ACCOUNT,k=akMcKey(acc,mk);if(storeGet(k))return;storeSet(k,'shown');
+ akRestore();const id='akmc'+acc+mk.replace('-','');AKMC[id]={acc,mk,phase:'card'};AK.msgs.push({w:'h',html:akMcCard(id),cls:'wb',nw:1});akSave();
+ setTimeout(()=>{if(!document.getElementById('akBox'))openAsk();else akDraw()},400)}catch(e){}}
+function akMcCard(id){const s=AKMC[id],d=DASH_DATA||{},days=d.dayPlan||[],lbl=monthName(s.mk,true),short=lbl.split(' ')[0],acc=accountMeta(d);
+ const live=days.filter(x=>x.actual),sum=(L,f)=>L.reduce((t,x)=>t+(+f(x)||0),0);
+ const ps=sum(days,x=>x.plan.spend),pv=sum(days,x=>x.plan.value),as=sum(live,x=>x.actual.spend),av=sum(live,x=>x.actual.value),ro=as?av/as:0,tro=ps?pv/ps:0;
+ const wk=[[1,7],[8,14],[15,21],[22,31]].map(([f,t],i)=>{const L=live.filter(x=>x.dayNumber>=f&&x.dayNumber<=t),sp=sum(L,x=>x.actual.spend);return {i:i+1,r:sp?sum(L,x=>x.actual.value)/sp:0}}).sort((x,y)=>y.r-x.r)[0];
+ const ty=(d.channels||[]).filter(c=>(+c.actualSpend||0)>0).map(c=>({n:CHANNEL_SHORT[c.channel]||c.channel,r:(+c.actualValue||0)/c.actualSpend})).sort((x,y)=>y.r-x.r)[0];
+ const pct=(x,y)=>y?Math.round(x/y*100)+'% of plan':'',vs=tro?((ro/tro-1)>=0?'+':'')+Math.round((ro/tro-1)*100)+'% vs target':'';
+ const btn=s.phase==='card'?`<button type="button" class="ok" onclick="akMcGo('${id}')">Close ${akEsc(short)}</button>`:`<div class="pt"><span>${s.phase==='skip'?'Not closed yet.':'Closing started below ↓'}</span></div>`;
+ return `<div class="akmc" id="${id}"><div class="tp"><div class="k">MONTH COMPLETE · ${akEsc(String(acc.shortLabel||s.acc).toUpperCase())}</div><h3>${akEsc(lbl)} is complete 🎉</h3><p>All ${days.length} days are in</p><div class="dots">${days.map(()=>'<i></i>').join('')}</div></div>
+  <div class="bd"><div class="g"><div><small>SPEND</small><b>${money(as)}</b><em>${pct(as,ps)}</em></div><div><small>VALUE</small><b>${money(av)}</b><em>${pct(av,pv)}</em></div><div><small>ROAS</small><b>${ro.toFixed(2)}x</b><em class="${ro>=tro?'':'neg'}">${vs}</em></div></div>
+  ${wk||ty?`<div class="hl">${wk?`Best week: <b>W${wk.i}</b>`:''}${wk&&ty?' · ':''}${ty?`Best type: <b>${akEsc(ty.n)} ${ty.r.toFixed(1)}x</b>`:''}</div>`:''}${btn}</div></div>`}
+function akMcStepsHtml(id){const s=AKMC[id],st=s.steps||[],L=[['PDF saved in Plan History','The month’s report and results'],['Data moved to the history tab','Clears '+monthName(s.mk,true).split(' ')[0]+' for the new month']];
+ return `<div class="akmcs" id="${id}s">${L.map(([t,sub],i)=>`<div class="stp ${st[i]||''}"><span class="n">${st[i]==='done'?'✓':st[i]==='bad'?'!':i+1}</span><div><b>${st[i]==='now'?(i?'Moving the data…':'Saving the PDF…'):t}</b><small>${akEsc(st[i]==='bad'?(s.err||''):(s.sub&&s.sub[i])||sub)}</small></div></div>`).join('')}${s.prog!=null?`<div class="prog"><i style="width:${s.prog}%"></i></div>`:''}</div>`}
+function akMcAskHtml(id){const s=AKMC[id];return `<div class="akmca" id="${id}a"><p>Do you want to send the PDF to the team?</p><div class="pdf"><span>PDF</span><div><b>${akEsc(s.file||'')}</b><small>${s.pages||0} pages · saved in Plan History</small></div></div>
+  ${s.msg?`<div class="pt"><span>${s.msg}</span></div>`:''}<div class="btns"><button type="button" class="no" onclick="akMcSend('${id}',true)" ${s.sending?'disabled':''}>Send me first</button><button type="button" class="ok" onclick="akMcSend('${id}',false)" ${s.sending||s.sentAll?'disabled':''}>${s.sentAll?'Sent ✓':'Send to team'}</button></div></div>`}
+function akMcSendHtml(id){const s=AKMC[id],n=s.total||0,k=Math.min(s.count||0,n),ppl=(s.people||[]).slice(0,9);
+ return `<div class="akmcx" id="${id}x"><div class="pl">✈️</div><div class="cnt">${k} <small>of ${n} people</small></div>${s.final?`<div class="okl">${s.final}</div>`:'<div class="prog"><i style="width:'+(n?k/n*100:0)+'%"></i></div>'}
+  <div class="ppl">${ppl.map((p,i)=>`<i class="${i<Math.round(k/n*ppl.length)?'s':''}">${i<Math.round(k/n*ppl.length)?'✓':akEsc(String(p.name||p.email||'?').trim().slice(0,2).toUpperCase())}</i>`).join('')}${n>ppl.length?`<i class="m">+${n-ppl.length}</i>`:''}</div></div>`}
+async function akMcGo(id){const s=AKMC[id];if(!s||s.phase!=='card')return;
+ if(s.acc!==CURRENT_ACCOUNT){akBot('<p>Switch back to '+(s.acc==='ar'?'AR':'USA')+' first, then press Close again.</p>');return}
+ s.phase='run';akIxPut(id,akMcCard(id));akUser('Close '+monthName(s.mk,true).split(' ')[0]);
+ s.steps=['now'];s.sub=[];s.prog=10;akBot(akMcStepsHtml(id),'wb');const P=()=>akIxPut(id+'s',akMcStepsHtml(id));
+ try{
+  // 1) the PDF (built like the Monthly Report) and the month's results in Plan History
+  await serverCall('adminSavePlanHistory',getAccessToken(),s.acc);s.prog=25;P();
+  if(!MR.pdf||MR.sig!==mrSig())await mrBuild();if(!MR.pdf)throw new Error((MR.msg||'The PDF could not be made.').replace(/<[^>]+>/g,'').replace(/^⚠️\s*/,''));
+  const m=MR.m||mpData();s.file=`HEMERA-${m.meta.shortLabel}-${m.label.replace(/\s+/g,'-')}-Results.pdf`;s.pages=(MR.pages||[]).length;
+  await serverCall('adminSaveReportPdf',getAccessToken(),MR.pdf,{month:s.mk,account:s.acc,fileName:s.file,pages:s.pages});
+  s.steps=['done','now'];s.sub=[s.pages+' pages · '+s.file];s.prog=55;P();PH.list=null;PH.lib=null;
+  // 2) the month moves to the history tab (the Lab's Close the month)
+  const st=await serverCall('adminArchiveStatus',getAccessToken(),s.acc),me=(st.months||[]).find(x=>x.key===s.mk);
+  if(!me||me.status!=='ready'){s.steps=['done','bad'];s.err=me?(me.status==='archived'?'Already in the history.':me.status==='missing'?'Missing days: '+me.missing.slice(0,6).join(', '):'The month is still running.'):'This month was not found in the sheet.';s.prog=null;P();
+   if(me&&me.status==='archived'){s.steps=['done','done'];s.sub[1]='Already in the history';P();akMcAsk(id)}return}
+  const r=await serverCall('adminArchiveMove',getAccessToken(),s.acc);delete MONTH_EXTRA[s.acc];
+  s.steps=['done','done'];s.sub[1]=fmt(r.rows||me.rows||0,0)+' rows moved to '+((st&&st.archiveName)||'the history');s.prog=100;P();
+  setTimeout(()=>{s.prog=null;P()},900);akMcAsk(id);
+ }catch(err){s.steps=(s.steps||[]).map(x=>x==='now'?'bad':x);if(!s.steps.includes('bad'))s.steps.push('bad');s.err=errorText(err);s.prog=null;P()}}
+function akMcAsk(id){const s=AKMC[id];setTimeout(()=>akBot(akMcAskHtml(id),'wb'),500);
+ if(MR.people===null||!(MR.people||[]).length)serverCall('adminReportRecipients',getAccessToken()).then(r=>{MR.people=(r&&r.people)||[]}).catch(()=>{})}
+async function akMcSend(id,test){const s=AKMC[id];if(!s||s.sending||!MR.pdf)return;
+ const m=MR.m||mpData();s.sending=true;s.msg=test?'Sending it to you…':'';akIxPut(id+'a',akMcAskHtml(id));
+ const meta={testOnly:!!test,title:`HEMERA · ${m.meta.dashboardTitle} · ${m.label} results`,fileName:s.file.replace(/\.pdf$/,''),
+  intro:`Here are the ${m.label} media plan results for ${m.meta.dashboardTitle}. ${mpWords(m)}${m.acc.all!=null?` Plan accuracy reached ${mpPct(m.acc.all)}.`:''} Thank you to the Google Ads team for the hard work this month.`,
+  lines:mpHighlights(m).slice(0,3),pages:s.pages,month:s.mk,account:s.acc};
+ let tick=null;
+ if(!test){akUser('Send to team');s.people=MR.people||[];s.total=s.people.length||1;s.count=0;akBot(akMcSendHtml(id),'wb');
+  tick=setInterval(()=>{if(s.count<s.total-1){s.count++;akIxPut(id+'x',akMcSendHtml(id))}},Math.max(250,Math.min(900,9000/s.total)))}
+ try{const r=await serverCall('adminSendMonthlyReport',getAccessToken(),MR.pdf,meta);clearInterval(tick);s.sending=false;
+  if(test){s.msg='✅ Test sent to your email. Check it, then send it to the team.';akIxPut(id+'a',akMcAskHtml(id));return}
+  s.total=Math.max(s.total,(r.sent||0)+((r.failed||[]).length));s.count=r.sent||0;s.final=`✓ Sent to ${r.sent} ${r.sent===1?'person':'people'}${r.failed&&r.failed.length?' · not sent to '+akEsc(r.failed.join(', ')):''}`;s.sentAll=true;
+  akIxPut(id+'x',akMcSendHtml(id));akIxPut(id+'a',akMcAskHtml(id));
+ }catch(err){clearInterval(tick);s.sending=false;s.msg='⚠️ '+akEsc(errorText(err));akIxPut(id+'a',akMcAskHtml(id));if(!test){s.final='⚠️ Not sent';akIxPut(id+'x',akMcSendHtml(id))}}}
+setInterval(akMcCheck,60000);setTimeout(akMcCheck,9000);
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
