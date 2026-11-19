@@ -10266,6 +10266,17 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     @keyframes aklvMiniT{to{box-shadow:0 0 0 4px #E9C46A,0 12px 40px rgba(60,120,255,.55)}}
     .aklv-cd .pv{display:block;font:700 10.5px Inter,system-ui,sans-serif;font-style:normal;color:rgba(255,255,255,.6);margin-top:1px}
     .ak-sum{margin:4px 0 0;padding-inline-start:18px;font:600 13.5px/1.6 AKufi,Inter,system-ui,sans-serif}.ak-sum li{margin:2px 0}.ak-sum b{color:#1C3C96}
+
+    /* v593 reply to a message */
+    .ak-m{touch-action:pan-y}
+    .ak-m.ak-rpgo{box-shadow:-4px 0 0 #E9C46A}
+    .ak-rpbar{display:flex;align-items:center;gap:10px;margin:0 12px;padding:8px 10px;background:#fff;border-radius:14px;box-shadow:0 4px 14px rgba(20,40,110,.1)}
+    .ak-rpl{width:3px;align-self:stretch;border-radius:3px;background:#1C3C96}
+    .ak-rpt{flex:1;min-width:0;display:flex;flex-direction:column}.ak-rpt b{font:800 12px Inter,system-ui,sans-serif;color:#1C3C96}
+    .ak-rpt small{font:600 12.5px AKufi,Inter,system-ui,sans-serif;color:#6b7385;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .ak-rpbar button{border:0;background:#f0f2f5;width:28px;height:28px;border-radius:50%;cursor:pointer;color:#4b5263}
+    .ak-rq{display:block;margin:0 0 6px;padding:5px 9px;border-left:3px solid rgba(255,255,255,.7);background:rgba(255,255,255,.14);border-radius:8px;font-size:12px;opacity:.9;max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .ak.dk .ak-rpbar{background:#242526}
 </style>
 </head>
 <body>
@@ -11740,7 +11751,7 @@ function akPgGo(id){
  setTimeout(()=>akMenu(id),200)}
 function closeAsk(){document.documentElement.classList.remove('ak-bubbed');akBubSys(false);if(AKR.on)akRecStop();AK.add=null;AK.teach=false;AK.ask=null;const o=document.getElementById('akBox');if(!o)return;o.classList.remove('open');setTimeout(()=>o.remove(),280)}
 function akBot(html,cls){AK.msgs.push({w:'h',html,cls:cls||'',nw:1});akSfx('recv');akDraw()}
-function akUser(t){AK.msgs.push({w:'u',html:`<span dir="auto">${akEsc(t)}</span>`,nw:1});akSfx('send');akDraw()}
+function akUser(t,quote){AK.msgs.push({w:'u',html:`${quote?`<span class="ak-rq" dir="auto">${akEsc(String(quote).slice(0,140))}</span>`:''}<span dir="auto">${akEsc(t)}</span>`,nw:1});akSfx('send');akDraw()}
 // v389 the chat stays on this device for 24 hours from its first message, then starts fresh
 const AK_KEEP='hm_ask_chat';
 function akSave(){clearTimeout(akSave.t);akSave.t=setTimeout(()=>{try{if(!AK.msgs.length)return;AK.t0=AK.t0||Date.now();
@@ -11782,10 +11793,11 @@ async function akSend(e){
  if(akPlAsk(q)){akUser(q);AK.kb=false;akKb();akPlStart(q);return}
  if(akOwner()&&AKVO_RE.test(q)){akUser(q);AK.kb=false;akKb();akVoStart();return}
  if(AK.canTeach&&AK_MEM_RE.test(q)){akMemAsk(q);return}
- akUser(q);AK.kb=false;akKb();
+ const rp=AK.reply;AK.reply=null;akReplyBar();const qa=rp?`(The person is replying to this earlier message: "${rp.t.slice(0,600)}")\n${q}`:q;
+ akUser(q,rp&&rp.t);AK.kb=false;akKb();
  if(!ASK_HEMERA_URL){akBot('<p>Alexandra is not connected yet.</p>');return}
  AK.busy=true;akDraw();
- try{let ctx='';try{ctx=await akCtx()}catch(e){}let j=await akAskSrv(q,AK.hist.slice(-8),ctx);if(!j)j=await akPost('ask',{q,history:AK.hist.slice(-8),ctx});AK.hist.push({role:'user',text:q},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-16);AK.busy=false;if(!AK.assets){try{await akAssets()}catch(e){}}else setTimeout(()=>akAssets().catch(()=>{}),1500);if(j.sid){akIxPut(j.sid,`<div class="akst" id="${j.sid}">${akAnswer(j.answer||'')}</div>`);return}akBot(akAnswer(j.answer||'')+(AK.editor&&!ctx?'<p class="ak-oldapi">Editors only: this device could not read the dashboard numbers, so they were not sent with the question.</p>':'')+(AK.editor&&!j.api?'<p class="ak-oldapi">Editors only: the Alexandra script is older than v23, so she cannot read the dashboard numbers yet. Deploy the new HemeraApi.gs as a New version.</p>':''))}
+ try{let ctx='';try{ctx=await akCtx()}catch(e){}let j=await akAskSrv(qa,AK.hist.slice(-8),ctx);if(!j)j=await akPost('ask',{q:qa,history:AK.hist.slice(-8),ctx});AK.hist.push({role:'user',text:q},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-16);AK.busy=false;if(!AK.assets){try{await akAssets()}catch(e){}}else setTimeout(()=>akAssets().catch(()=>{}),1500);if(j.sid){akIxPut(j.sid,`<div class="akst" id="${j.sid}">${akAnswer(j.answer||'')}</div>`);return}akBot(akAnswer(j.answer||'')+(AK.editor&&!ctx?'<p class="ak-oldapi">Editors only: this device could not read the dashboard numbers, so they were not sent with the question.</p>':'')+(AK.editor&&!j.api?'<p class="ak-oldapi">Editors only: the Alexandra script is older than v23, so she cannot read the dashboard numbers yet. Deploy the new HemeraApi.gs as a New version.</p>':''))}
  catch(err){AK.busy=false;akBot(`<p>${akEsc(/not connected/.test(err.message)?'Alexandra is not connected yet.':'Something went wrong. Try again.')}</p>`)}
 }
 // the answer text, with every link turned into a button (sheet, report, script)
@@ -22228,7 +22240,7 @@ function akB64(u8){let s='';for(let i=0;i<u8.length;i+=0x8000)s+=String.fromChar
  * for a few minutes) and the call itself (mic, screen, greeting) when the voice button is pressed. */
 const AKLV_TOOLS=[{functionDeclarations:[
  {name:'get_numbers',description:'Get HEMERA dashboard numbers right now (fresh). Use it for any number, campaign, day, month, campaign type, search term or drop that is not in the short summary. topic: what part to read (e.g. "campaigns", "days before this month", "every month by campaign type", "things that dropped", "search terms", "the other account", "team", "seasons"). search: a campaign name, date (YYYY-MM-DD) or word to find.',
-  parameters:{type:'OBJECT',properties:{topic:{type:'STRING',description:'Which part of the dashboard to read'},search:{type:'STRING',description:'A name, date or word to look for'}}}},
+  parameters:{type:'OBJECT',properties:{topic:{type:'STRING',description:'Which part of the dashboard to read'},search:{type:'STRING',description:'A name, date or word to look for'},account:{type:'STRING',description:'"usa" or "ar" (the Arabic account) when the person asks about the other account; the app switches to it'}}}},
  {name:'show_cards',description:'Show up to 3 small number cards on the person\'s screen while you say the numbers (for example spend, ROAS, conversions). Call it when you give key numbers.',
   parameters:{type:'OBJECT',properties:{cards:{type:'ARRAY',items:{type:'OBJECT',properties:{label:{type:'STRING',description:'Short label, e.g. "Spend · yesterday"'},value:{type:'STRING',description:'The number as shown, e.g. "$10,491" or "2.06x"'},previous:{type:'STRING',description:'For a comparison: the other period\'s number, e.g. "$9,820"'},change:{type:'STRING',description:'Optional change, e.g. "-12%"'},direction:{type:'STRING',description:'"up", "down" or ""'}},required:['label','value']}}},required:['cards']}},
  {name:'open_screen',description:'Open a screen in the HEMERA app for the person while you keep talking. screen: "daily", "days", "campaigns", "campaign" (one campaign, give its name), "reports_studio" (months; give month and, to compare, compare_with), "channels", "search_terms", "seasons", "lab".',
@@ -22245,12 +22257,14 @@ const AKLV_BIG=/Days before|Every month|Campaigns \(|Search terms|Things that dr
 async function akLiveSummary(){let t='';try{t=await Promise.race([akCtx(),new Promise(r=>setTimeout(()=>r(''),1500))])}catch(e){}if(!t)return '';
  const S=akLiveSplit(t),small=S.filter(x=>!AKLV_BIG.test(x.h)),big=S.filter(x=>AKLV_BIG.test(x.h));
  return (small.map(x=>(x.h==='Summary'?'':'## '+x.h+'\n')+x.L.join('\n')).join('\n').slice(0,14000)+(big.length?'\n\n## More you can read with get_numbers\n'+big.map(x=>'- '+x.h.slice(0,90)).join('\n'):''))}
-async function akLiveNumbers(a){a=a||{};let t='';try{t=await akCtx()}catch(e){}if(!t)return {result:'The dashboard numbers are not loaded on this phone right now.'};
+async function akLiveNumbers(a){a=a||{};let sw='';const want=/ar|arab|عرب/i.test(String(a.account||''))?'ar':/us|america|امريك|أمريك/i.test(String(a.account||''))?'usa':'';
+ if(want&&want!==CURRENT_ACCOUNT){try{switchAccount(want);for(let i=0;i<60&&(CURRENT_ACCOUNT!==want||!DASH_DATA||document.body.classList.contains('account-changing'));i++)await new Promise(r=>setTimeout(r,150))}catch(e){}AK_CTX={k:'',p:null,v:'',at:0};sw='(Switched the app to the '+(want==='ar'?'Arabic (AR)':'USA')+' account.)'}
+ let t='';try{t=await akCtx()}catch(e){}if(!t)return {result:'The dashboard numbers are not loaded on this phone right now.'};
  const S=akLiveSplit(t),topic=String(a.topic||'').toLowerCase(),q=String(a.search||'').trim().toLowerCase(),words=topic.split(/[^a-z0-9؀-ۿ]+/).filter(w=>w.length>2);
  let pick=S;if(words.length){const sc=S.map(x=>({x,n:words.filter(w=>x.h.toLowerCase().includes(w)).length}));const best=Math.max(...sc.map(o=>o.n));if(best>0)pick=sc.filter(o=>o.n===best).map(o=>o.x)}
  let out;if(q){out=[];pick.concat(pick===S?[]:S).forEach(x=>{const L=x.L.filter(l=>l.toLowerCase().includes(q));if(L.length&&!out.some(o=>o.h===x.h))out.push({h:x.h,L})});if(!out.length)out=pick}else out=pick;
- const txt=out.map(x=>'## '+x.h+'\n'+x.L.join('\n')).join('\n\n').slice(0,22000);
- return {result:txt||'Nothing found.',parts:S.map(x=>x.h.slice(0,80))}}
+ const txt=out.map(x=>'## '+x.h+'\n'+x.L.join('\n')).join('\n\n').slice(0,9000);
+ return {result:(sw?sw+'\n\n':'')+(txt||'Nothing found.')}}
 function akLiveSetup(j,lvl){const setup={model:j.model,generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:j.voice||'Leda'}}}},
   systemInstruction:{parts:[{text:j.sys+(lvl<3?'\n\n'+AKLV_TOOL_RULES:'')}]},inputAudioTranscription:{},outputAudioTranscription:{}};
  if(lvl<3)setup.tools=AKLV_TOOLS;
@@ -22265,7 +22279,7 @@ function akLiveConn(lvl){return new Promise(async(ok,no)=>{let cx='';try{cx=lvl>
  ws.binaryType='arraybuffer';const c={ws,j,lvl,ready:false,at:Date.now(),q:[]};
  ws.onopen=()=>ws.send(JSON.stringify({setup:akLiveSetup(j,lvl)}));
  ws.onmessage=ev=>{let m;try{m=JSON.parse(typeof ev.data==='string'?ev.data:new TextDecoder().decode(ev.data))}catch(e){return}if(m.setupComplete&&!c.ready){c.ready=true;ok(c);return}if(c.own)akLiveMsg(m);else c.q.push(m)};
- ws.onclose=ev=>{if(!c.ready){no({code:ev.code,reason:ev.reason});return}if(c.own&&!AKLV.closed)akLiveFail(ev.code===1000?'The voice chat ended.':(akOwner()&&ev.reason?'Gemini closed the call: '+ev.reason:'The voice chat stopped. Try again.'));if(AKLV.pre&&AKLV.pre.c===c)AKLV.pre=null};
+ ws.onclose=ev=>{if(!c.ready){no({code:ev.code,reason:ev.reason});return}if(c.own&&!AKLV.closed&&!AKLV.bye&&ev.code!==1000&&AKLV.conn===c){akLiveReconnect(c,ev.reason);return}if(c.own&&!AKLV.closed)akLiveFail(ev.code===1000?'The voice chat ended.':(akOwner()&&ev.reason?'Gemini closed the call: '+ev.reason:'The voice chat stopped. Try again.'));if(AKLV.pre&&AKLV.pre.c===c)AKLV.pre=null};
  ws.onerror=()=>{}})}
 async function akLiveConnAny(lvl){lvl=lvl||0;for(;;){try{return await akLiveConn(lvl)}catch(e){if(e&&e.fatal||lvl>=3||e&&e.code===1000)throw e;lvl++}}}
 // v590 made ahead: as soon as the chat opens (kept for 4 minutes)
@@ -22274,7 +22288,7 @@ function akLivePre(){try{if(AK.blocked||!AK_SRV||AKLV.ws||!window.WebSocket)retu
  pre.p.catch(()=>{});AKLV.pre=pre}catch(e){}}
 async function akLiveOpen(){if(AKLV.ws||AK.blocked)return;
  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.WebSocket||!window.AudioWorkletNode){showSettingsToast('Voice chat does not work on this browser.');return}
- document.getElementById('akLive')?.remove();document.body.insertAdjacentHTML('beforeend',akLiveHtml());Object.assign(AKLV,{mini:false,endSnd:0,t0:0,st:'',want:'',wantAt:0,aud:{},pend:false,herShown:'',orb:+(storeGet('hm_ak_lv_orb')||1)||1,bye:false,byeAt:0,mute:false,turns:[],me:'',her:'',spoke:false,lastVoice:0,wait:false,nextT:0,srcs:[],closed:false,ready:false});
+ document.getElementById('akLive')?.remove();document.body.insertAdjacentHTML('beforeend',akLiveHtml());Object.assign(AKLV,{recon:0,mini:false,endSnd:0,t0:0,st:'',want:'',wantAt:0,aud:{},pend:false,herShown:'',orb:+(storeGet('hm_ak_lv_orb')||1)||1,bye:false,byeAt:0,mute:false,turns:[],me:'',her:'',spoke:false,lastVoice:0,wait:false,nextT:0,srcs:[],closed:false,ready:false});
  akLiveState('connecting');akLiveMode(akLiveCm());akLiveOrbSet(AKLV.orb||1);requestAnimationFrame(()=>document.getElementById('akLive')?.classList.add('in'));
  const ctx=new (window.AudioContext||window.webkitAudioContext)();AKLV.ctx=ctx;try{ctx.resume()}catch(e){}
  const micP=navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,autoGainControl:true,channelCount:1}}).then(s=>({s}),e=>({e}));
@@ -22531,6 +22545,26 @@ async function akWeekly(){try{if(typeof DASH_DATA==='undefined'||!DASH_DATA||AK.
    vb=`<span class="ak-vb" data-v="${vid}" data-d="${secs}" onclick="akPlay(this)">${akI('play')}<span>${bars.map(h=>`<i data-h="${h}" style="height:${h}px"></i>`).join('')}</span><b>${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}</b></span>`}}catch(e){}
  AK.msgs.push({w:'h',cls:'alert',html:`<p class="aklv-log">🗓 Weekly update</p>${vb}<p dir="auto" class="ak-alt">${akLiveHi(akLiveTx(txt))}</p>`,nw:1});try{akSave()}catch(e){}
  if(document.getElementById('akBox')){akDraw();akSfxLoad().then(()=>akSfx('recv'))}else akAlertBanner('Your weekly update is ready',!!vb)}catch(e){}}
+
+/* v593 swipe a message to the right to reply to it (like WhatsApp): it shows above the box, and Alexandra knows which message you mean */
+function akReplyBar(){const f=document.querySelector('#akBox .ak-in');if(!f)return;let b=document.getElementById('akRpBar');
+ if(!AK.reply){if(b)b.remove();return}if(!b){b=document.createElement('div');b.id='akRpBar';b.className='ak-rpbar';f.parentNode.insertBefore(b,f)}
+ b.innerHTML=`<span class="ak-rpl"></span><span class="ak-rpt"><b>${AK.reply.w==='u'?'You':'Alexandra'}</b><small dir="auto">${akEsc(AK.reply.t.slice(0,120))}</small></span><button type="button" aria-label="Cancel the reply" onclick="AK.reply=null;akReplyBar()">✕</button>`}
+(function(){let el=null,x0=0,y0=0,dx=0,go=false,id=null;
+ document.addEventListener('pointerdown',e=>{const m=e.target.closest&&e.target.closest('#akBd .ak-m');if(!m||e.target.closest('button,a,input,.ak-vb,.ak-upic'))return;el=m;x0=e.clientX;y0=e.clientY;dx=0;go=false;id=e.pointerId},{passive:true});
+ document.addEventListener('pointermove',e=>{if(!el||e.pointerId!==id)return;const x=e.clientX-x0,y=e.clientY-y0;if(!go){if(Math.abs(y)>12){el=null;return}if(x>12&&Math.abs(x)>Math.abs(y)*1.5)go=true;else return}
+  dx=Math.max(0,Math.min(80,x));el.style.transform=`translateX(${dx}px)`;el.style.transition='none';el.classList.toggle('ak-rpgo',dx>55)},{passive:true});
+ const end=()=>{if(!el)return;const m=el;el=null;m.style.transition='transform .2s ease';m.style.transform='';m.classList.remove('ak-rpgo');if(!go||dx<=55)return;
+  const all=[...document.querySelectorAll('#akBd .ak-m')],k=all.indexOf(m),L=AK.msgs.slice(-60),msg=L[k-(all.length-L.length)]||L[k];
+  const t=msg?akMsgText(msg):m.innerText;if(!t)return;AK.reply={w:msg?msg.w:'h',t:t.replace(/\s+/g,' ').trim()};akReplyBar();if(navigator.vibrate)try{navigator.vibrate(12)}catch(e){}document.getElementById('akQ')?.focus()};
+ document.addEventListener('pointerup',end,{passive:true});document.addEventListener('pointercancel',end,{passive:true})})();
+/* v593 a call that drops (Gemini "internal error") reconnects by itself and carries on */
+async function akLiveReconnect(c,why){if(AKLV.closed||AKLV.bye)return;AKLV.recon=(AKLV.recon||0)+1;if(AKLV.recon>3){akLiveFail(akOwner()&&why?'Gemini closed the call: '+why:'The voice chat stopped. Try again.');return}
+ AKLV.ws=null;akLiveStop();const s=document.getElementById('aklvSt');if(s)s.textContent='Reconnecting…';AKLV.wait=true;
+ let n;try{n=await akLiveConnAny(Math.min((c&&c.lvl||0)+1,2))}catch(e){akLiveFail(akOwner()&&why?'Gemini closed the call: '+why:'The voice chat stopped. Try again.');return}
+ if(AKLV.closed){try{n.ws.close(1000)}catch(e){}return}n.own=true;AKLV.ws=n.ws;AKLV.conn=n;n.q.splice(0).forEach(akLiveMsg);
+ const last=(AKLV.me||'').trim()||((AKLV.turns||[]).filter(t=>t[0]==='u').slice(-1)[0]||[])[1]||'';AKLV.me='';AKLV.her='';AKLV.pend=false;AKLV.aud={};
+ try{n.ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:`(The call dropped for a second and is back. Do not greet again.${last?` The person's last words were: "${last}". If you had not answered yet, answer now.`:' Say in a few words that you are back.'})`}]}],turnComplete:true}}))}catch(e){}}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>

@@ -82,7 +82,7 @@ async function ask(req, res, b, who) {
   const ctx = String(b.ctx || '').slice(0, 120000);
   let hist = (Array.isArray(b.history) ? b.history : []).slice(-6).filter(x => x && x.text && (x.role === 'user' || x.role === 'model'))
     .map(x => ({ role: x.role, parts: [{ text: String(x.text).slice(0, 4000) }] }));
-  let q = q0;
+  let q = q0 + '\n\n[HEMERA: this is the written chat. Answer here in writing; never ask the person to call you or move to a voice call.]';
   if (ctx) {
     hist = hist.filter(x => !(x.role === 'model' && /مش عندي|ليس لدي|don.t have/i.test(x.parts[0].text)));
     q += '\n\n[HEMERA: the live dashboard numbers are in your instructions under "Dashboard numbers". If this is about performance, answer from them and end with [[CARDS]] and the JSON cards. If the answer has no numbers, do not write [[CARDS]] at all.]';
