@@ -21992,7 +21992,8 @@ const AK_SRV='https:\/\/europe-west2-human-appeal-media-plan.cloudfunctions.net/
 function akSrvOn(){try{return localStorage.getItem('hm_ak_srv')==='1'}catch(e){return false}}
 function akSrvSet(on){try{localStorage.setItem('hm_ak_srv',on?'1':'0')}catch(e){}}
 async function akAskSrv(q,history,ctx){
- if(Date.now()-(+storeGet('hm_ak_srv_off')||0)<18e5)return null;
+ 
+ if(Date.now()-(+storeGet('hm_ak_srv_off')||0)<12e4)return null;
  let r;try{r=await fetch(AK_SRV,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),q,history,ctx,name:akMe().name})})}catch(e){return null}
  if(!r.ok){storeSet('hm_ak_srv_off',String(Date.now()));return null}
  if(!/stream/.test(r.headers.get('X-Ak')||'')&&/json/.test(r.headers.get('Content-Type')||'')){const j=await r.json().catch(()=>null);
@@ -22009,7 +22010,7 @@ async function akAskSrv(q,history,ctx){
  return {answer:txt.trim(),api:'srv',sid}}
 
 async function akSrvLink(){try{if(!akOwner()||!ASK_HEMERA_URL)return;const last=+storeGet('hm_ak_link_try')||0;if(Date.now()-last<6*36e5)return;storeSet('hm_ak_link_try',String(Date.now()));
- const st=await serverCall('akLinkState',getAccessToken());if(st&&st.linked){akSrvSet(true);return}
+ const st=await serverCall('akLinkState',getAccessToken());if(st&&st.linked){akSrvSet(true);storeSet('hm_ak_srv_off','0');return}
  const {secret}=await serverCall('akLink',getAccessToken());await akPost('link',{secret});akSrvSet(true);storeSet('hm_ak_srv_off','0')}catch(e){}}
 setTimeout(akSrvLink,12000);
 </script>
