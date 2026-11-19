@@ -98,10 +98,12 @@ async function ask(req, res, b, who) {
     r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': keys[ki] }, body: JSON.stringify(payload) });
     if (r.status === 400 && payload.generationConfig.thinkingConfig && !tries++) { delete payload.generationConfig.thinkingConfig; continue; }
     if (r.status === 429) { ki++; continue; }
+    // v574 Gemini busy (500/503): wait a little and try again, twice
+    if (r.status >= 500 && tries < 3) { tries++; await new Promise(z => setTimeout(z, 900 * tries)); continue; }
     break;
   }
   if (!r || r.status === 429) { await count(o => { o.limit++; }); await used; res.json({ ok: true, answer: 'Too many messages right now. Try again in a minute.', api: 'srv' }); return; }
-  if (!r.ok) { const t = await r.text().catch(() => ''); console.error('Alexandra Gemini ' + r.status + ': ' + t.slice(0, 300)); await count(o => { o.err++; }); await used; res.json({ ok: false, fallback: true, error: 'Gemini ' + r.status }); return; }
+  if (!r.ok) { const t = await r.text().catch(() => ''); console.error('Alexandra Gemini ' + r.status + ': ' + t.slice(0, 300)); await count(o => { o.err++; }); await used; let why = ''; try { why = ((JSON.parse(t).error || {}).message || '').slice(0, 160); } catch (e) {} last.step = 'gemini ' + r.status + (img ? ' (photo)' : '') + ': ' + why; res.json({ ok: false, fallback: true, error: 'Gemini ' + r.status + (why ? ': ' + why : '') }); return; }
   res.status(200);
   res.set('Content-Type', 'text/plain; charset=utf-8');
   res.set('X-Accel-Buffering', 'no');

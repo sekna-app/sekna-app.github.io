@@ -10095,6 +10095,8 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .akvo-r span{flex:1;display:flex;flex-direction:column;font:800 14px Inter,system-ui,sans-serif;color:#0f1d4a}.akvo-r i{font:600 12px Inter,system-ui,sans-serif;font-style:normal;color:#6b7385}
     .akvo-k{border:0;border-radius:999px;padding:7px 14px;font:800 12px Inter,system-ui,sans-serif;background:#eef1f8;color:#1C3C96;cursor:pointer}.akvo-r.on .akvo-k{background:#C9A24A;color:#fff}
     .ak.dk .akvo-r{background:#242526;border-color:#3a3b3c}.ak.dk .akvo-r span{color:#fff}
+
+    .ak-why{font:600 11px Inter,system-ui,sans-serif;color:#8a93a6;margin-top:6px}
 </style>
 </head>
 <body>
@@ -21845,12 +21847,12 @@ function akSrvOn(){try{return localStorage.getItem('hm_ak_srv')==='1'}catch(e){r
 function akSrvSet(on){try{localStorage.setItem('hm_ak_srv',on?'1':'0')}catch(e){}}
 async function akAskSrv(q,history,ctx,image){
  
- if(Date.now()-(+storeGet('hm_ak_srv_off')||0)<12e4)return null;
- let r;try{r=await fetch(AK_SRV,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),q,history,ctx,name:akMe().name,image:image||undefined})})}catch(e){return null}
- if(!r.ok){storeSet('hm_ak_srv_off',String(Date.now()));return null}
+ if(!image&&Date.now()-(+storeGet('hm_ak_srv_off')||0)<12e4)return null;
+ AK.srvErr='';let r;try{r=await fetch(AK_SRV,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),q,history,ctx,name:akMe().name,image:image||undefined})})}catch(e){AK.srvErr='no connection';return null}
+ if(!r.ok){AK.srvErr='server '+r.status;if(!image)storeSet('hm_ak_srv_off',String(Date.now()));return null}
  if(!/stream/.test(r.headers.get('X-Ak')||'')&&/json/.test(r.headers.get('Content-Type')||'')){const j=await r.json().catch(()=>null);
   if(!j)return null;if(j.blocked){const e=new Error(j.error||'blocked');e.blocked=true;AK.blocked=true;throw e}
-  if(j.fallback||!j.ok){storeSet('hm_ak_srv_off',String(Date.now()));return null}akSrvSet(true);return {answer:j.answer||'',api:'srv'}}
+  if(j.fallback||!j.ok){AK.srvErr=String(j.error||'');if(!image)storeSet('hm_ak_srv_off',String(Date.now()));return null}akSrvSet(true);return {answer:j.answer||'',api:'srv'}}
  akSrvSet(true);
  const sid='aks'+Date.now().toString(36);AK.busy=false;akBot(`<div class="akst" id="${sid}"><p class="aks-t"><span class="aks-c"></span></p></div>`);
  const rd=r.body.getReader(),dec=new TextDecoder();let txt='',raf=0;
@@ -21882,9 +21884,9 @@ function akPicBar(){const f=document.querySelector('#akBox .ak-in');if(!f)return
 async function akPicSend(q,im){
  AK.msgs.push({w:'u',html:`<img class="ak-upic" src="${im.thumb}" alt="Photo">${q?`<span dir="auto">${akEsc(q)}</span>`:''}`,nw:1});AK.kb=false;akKb();
  AK.busy=true;akDraw();const ask=q||'Read this photo and tell me what it shows. If it has numbers or a report, explain them briefly.';
- try{let ctx='';try{ctx=await akCtx()}catch(e){}storeSet('hm_ak_srv_off','0');
+ try{let ctx='';try{ctx=await akCtx()}catch(e){}
   const j=await akAskSrv(ask,AK.hist.slice(-8),ctx,{mime:'image/jpeg',data:im.data});
-  if(!j){AK.busy=false;akBot('<p>I can read photos only through HEMERA’s server, and it did not answer just now. Try again in a minute.</p>');return}
+  if(!j){AK.busy=false;const er=String(AK.srvErr||'');akBot(`<p>${/Gemini 5\d\d|overload|unavailable/i.test(er)?'Gemini is busy right now. Send the photo again in a minute.':'I could not read the photo this time. Send it again in a minute.'}</p>${akOwner()&&er?`<p class="ak-why">${akEsc(er)}</p>`:''}`);return}
   AK.hist.push({role:'user',text:'[photo] '+ask},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-16);AK.busy=false;
   if(j.sid){akIxPut(j.sid,`<div class="akst" id="${j.sid}">${akAnswer(j.answer||'')}</div>`);return}akBot(akAnswer(j.answer||''))}
  catch(err){AK.busy=false;akBot(`<p>${akEsc(err&&err.blocked?'You do not have access to Alexandra.':'Something went wrong. Try again.')}</p>`)}}
