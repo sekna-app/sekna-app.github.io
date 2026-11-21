@@ -5,7 +5,7 @@ const { sheetMeta, batchGet, a1, valuesBatchUpdate, sheetsBatchUpdate, cellLooks
 const DEFAULT_ACCOUNT_KEY = 'usa';
 const ACCOUNTS = {
   usa: {
-    key: 'usa', label: 'Human Appeal USA', shortLabel: 'USA', dashboardTitle: 'Media Plan USA',
+    key: 'usa', label: 'Human Appeal US', shortLabel: 'USA', dashboardTitle: 'Media Plan USA',
     spreadsheetUrl: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit',
     sheets: {
       mediaPlan: 'https://docs.google.com/spreadsheets/d/1r44q__HyItuJWYHO8DacforL1Pd-f9CpmC5NRA_xGxc/edit#gid=1930420074',
