@@ -10419,6 +10419,21 @@ body.dark-mode .akn-x{background:#1a212c;color:#c3cad8}body.dark-mode .akn-hd>b{
 .akn-hd .akn-av{width:30px;height:30px}
 .akn-go,.akn-go.sm{font-size:11.5px;padding:7px 11px 7px 9px;gap:5px}.akn-go svg{width:14px;height:14px}
 .akn-x{top:50px}
+
+/* v618 calling screen = design 1 "On hold, you're next": her video playing behind (a still first frame until it loads) */
+.aklv.calling,.aklv.calling.cm{background:#05091c url(icons/alexandra/v/voice-callwait.jpg?v=1) center 30%/cover no-repeat!important}
+.aklv.calling .aklv-v[data-s="cw"]{filter:brightness(.62)}
+.aklv-call{background:linear-gradient(180deg,rgba(5,9,28,.85) 0%,rgba(5,9,28,.25) 34%,rgba(5,9,28,.1) 55%,rgba(5,9,28,.92) 82%)!important}
+.aklv-hold{display:inline-flex;align-items:center;gap:7px;margin-top:16px;padding:7px 14px;border-radius:99px;background:rgba(226,184,116,.18);border:1px solid rgba(226,184,116,.5);color:#F3D58E;font:800 12.5px Inter,system-ui,sans-serif}
+.aklv-hold i{width:8px;height:8px;border-radius:50%;background:#E2B874;box-shadow:0 0 0 4px rgba(226,184,116,.25);animation:aklvHp 1.2s ease-in-out infinite}@keyframes aklvHp{50%{opacity:.35}}
+.aklv-hb{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 150px);text-align:center}
+.aklv-mus{display:flex;gap:4px;justify-content:center;align-items:flex-end;height:20px;margin-bottom:12px}
+.aklv-mus i{width:4px;height:30%;border-radius:2px;background:#E2B874;animation:aklvMb .55s ease-in-out infinite alternate}
+.aklv-mus i:nth-child(2){animation-delay:.15s}.aklv-mus i:nth-child(3){animation-delay:.3s}.aklv-mus i:nth-child(4){animation-delay:.05s}.aklv-mus i:nth-child(5){animation-delay:.25s}.aklv-mus i:nth-child(6){animation-delay:.1s}.aklv-mus i:nth-child(7){animation-delay:.35s}
+@keyframes aklvMb{to{height:100%}}
+.aklv-nx{display:block;font:600 15px Inter,system-ui,sans-serif;color:#e6ebf7}
+.aklv-wt{display:block;margin-top:6px;font:600 12.5px Inter,system-ui,sans-serif;color:#9fb0dd;font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){.aklv-mus i,.aklv-hold i{animation:none}}
 </style>
 </head>
 <body>
@@ -22255,7 +22270,7 @@ async function akVoPick(v,btn){btn.textContent='…';let j=null;try{j=await akVo
 const AKLV={};
 const AKLV_URL=AK_SRV.replace(/\/ak\/ask$/,'/ak/live');
 function akLiveHtml(){const v=k=>`<video class="aklv-v" data-s="${k}" src="icons/alexandra/v/voice-${k}.mp4?v=4" muted loop playsinline preload="auto"></video>`;
- return `<div class="aklv" id="akLive" role="dialog" aria-label="Voice chat with Alexandra" onclick="if(this.classList.contains('mini')){event.stopPropagation();akLiveMini(false)}">${v('listen')}${v('think')}${v('talk')}<video class="aklv-v" data-s="bye" src="icons/alexandra/v/voice-bye.mp4" muted playsinline preload="auto"></video><video class="aklv-v" data-s="mute" src="icons/alexandra/v/voice-mute.mp4?v=1" muted playsinline preload="auto"></video><video class="aklv-v" data-s="cw" src="icons/alexandra/v/voice-callwait.mp4?v=1" muted loop playsinline preload="auto"></video><video class="aklv-v" data-s="ca" src="icons/alexandra/v/voice-callans.mp4?v=2" muted playsinline preload="auto"></video><div class="aklv-sh"></div><div class="aklv-ring" onpointerdown="akLiveOrbDown(event)"></div><div class="aklv-call" aria-live="polite">${akCallerHtml()}<span class="aklv-ringi">${akI('phone')}</span></div>
+ return `<div class="aklv" id="akLive" role="dialog" aria-label="Voice chat with Alexandra" onclick="if(this.classList.contains('mini')){event.stopPropagation();akLiveMini(false)}">${v('listen')}${v('think')}${v('talk')}<video class="aklv-v" data-s="bye" src="icons/alexandra/v/voice-bye.mp4" muted playsinline preload="auto"></video><video class="aklv-v" data-s="mute" src="icons/alexandra/v/voice-mute.mp4?v=1" muted playsinline preload="auto"></video><video class="aklv-v" data-s="cw" src="icons/alexandra/v/voice-callwait.mp4?v=1" poster="icons/alexandra/v/voice-callwait.jpg?v=1" muted loop playsinline preload="auto"></video><video class="aklv-v" data-s="ca" src="icons/alexandra/v/voice-callans.mp4?v=2" muted playsinline preload="auto"></video><div class="aklv-sh"></div><div class="aklv-ring" onpointerdown="akLiveOrbDown(event)"></div><div class="aklv-call" aria-live="polite">${akCallerHtml()}<span class="aklv-ringi">${akI('phone')}</span></div>
  <div class="aklv-top"><button type="button" class="aklv-x" aria-label="Close" onclick="akLiveBye()">${akI('down')||'✕'}</button><div class="aklv-nm"><b>Alexandra</b><span class="aklv-tm" id="aklvTm">Calling…</span><small id="aklvSt">Connecting…</small></div><button type="button" class="aklv-x aklv-md" id="aklvMd" aria-label="Show the chat" onclick="akLiveMode()">${akI('chat')}</button></div><div class="aklv-log" id="aklvLog"></div>
  <div class="aklv-cb"><div class="aklv-cap" id="aklvCap"></div><div class="aklv-wv" aria-hidden="true">${'<i></i>'.repeat(17)}</div></div>
  <div class="aklv-bar"><form class="aklv-in" onsubmit="akLiveType(event)"><input id="aklvQ" autocomplete="off" maxlength="600" placeholder="Ask Alexandra" dir="auto"><button type="submit" aria-label="Send">${akI('plane')}</button></form><button type="button" class="aklv-mu" id="aklvMu" aria-label="Mute the mic" onclick="akLiveMute()">${akI('mic')}</button><button type="button" class="aklv-end" aria-label="End the voice chat" onclick="akLiveBye()">✕</button></div></div>`}
@@ -22784,6 +22799,7 @@ function akLiveAutoCards(txt){const t=akLiveTx(txt);if(!t)return;const out=[],se
 
  
 function akLiveRing(on,answered){const el=document.getElementById('akLive');
+ if(on){clearInterval(AKLV.waitI);const w0=Date.now(),wt=()=>{const e=document.getElementById('aklvWt');if(!e)return;const x=Math.floor((Date.now()-w0)/1000);e.textContent='Waiting '+Math.floor(x/60)+':'+String(x%60).padStart(2,'0')};wt();AKLV.waitI=setInterval(wt,1000)}else clearInterval(AKLV.waitI);
  if(on){AKLV.calling=true;if(el)el.classList.add('calling');akLiveVid('cw',0);akSfxLoad().then(()=>{if(!AKLV.calling)return;const go=()=>{if(!AKLV.calling)return;try{AKLV.ringS&&AKLV.ringS.stop()}catch(e){}AKLV.ringS=akSfx('ring')};go();clearInterval(AKLV.ringI);AKLV.ringI=setInterval(go,3000)});return}
  if(!AKLV.calling)return;AKLV.calling=false;clearInterval(AKLV.ringI);try{AKLV.ringS&&AKLV.ringS.stop()}catch(e){}AKLV.ringS=null;if(el)el.classList.remove('calling');if(answered){akSfx('join');akLiveAnswer()}else{AKLV.answering=false}}
 
@@ -22819,7 +22835,8 @@ function akLiveAnswer(){const el=document.getElementById('akLive');if(!el)return
  
 function akCallerHtml(){const me=akMe()||{},p=((typeof PFP!=='undefined'&&PFP.people)||[]).find(x=>x.email===me.email)||{};
  const name=String(p.name||me.name||'').trim()||'HEMERA',num=String(p.phone||p.wa||'').trim();
- return `<small>CALLING ALEXANDRA</small><b>${akEsc(name)}</b>${num?`<span class="aklv-num" dir="ltr">${akEsc(num)}</span>`:''}<span class="aklv-rg">Ringing…</span><div class="aklv-dots"><i></i><i></i><i></i></div>`}
+ return `<small>CALLING ALEXANDRA</small><b>${akEsc(name)}</b>${num?`<span class="aklv-num" dir="ltr">${akEsc(num)}</span>`:''}<span class="aklv-hold"><i></i>On hold · she's on another call</span>
+  <div class="aklv-hb"><div class="aklv-mus">${'<i></i>'.repeat(7)}</div><span class="aklv-nx">You're next in line</span><span class="aklv-wt" id="aklvWt">Waiting 0:00</span></div>`}
 
  
 function akSmartSplit(t){t=String(t||'');let html='',src=[];

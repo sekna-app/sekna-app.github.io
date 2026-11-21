@@ -689,6 +689,33 @@ html.lite .nav img{opacity:1!important}
 .akc-w i:nth-child(2){animation-delay:.1s}.akc-w i:nth-child(3){animation-delay:.25s}.akc-w i:nth-child(4){animation-delay:.05s}.akc-w i:nth-child(5){animation-delay:.3s}.akc-w i:nth-child(6){animation-delay:.15s}.akc-w i:nth-child(7){animation-delay:.2s}
 @keyframes akcB{to{height:100%}}
 .rp:not(.front) .akc *{animation-play-state:paused}
+
+/* v3: the hold screen (design 1) and thinking */
+.akc[data-s=hold] .akc-v{filter:brightness(.62)}
+.akc-hd{position:absolute;top:calc(var(--sbh,22px) + var(--u) * 12);left:0;right:0;z-index:3;text-align:center;transition:opacity .35s}
+.akc-hd small{display:block;font-size:calc(var(--u) * 3.1);font-weight:900;letter-spacing:.24em;color:#E2B874}
+.akc-hd b{display:block;margin-top:calc(var(--u) * 1.6);font-size:calc(var(--u) * 7.6);font-weight:800}
+.akc-hp{display:inline-flex;align-items:center;gap:calc(var(--u) * 1.6);margin-top:calc(var(--u) * 3.6);padding:calc(var(--u) * 1.6) calc(var(--u) * 3.4);border-radius:99px;background:rgba(226,184,116,.18);border:1px solid rgba(226,184,116,.5);color:#F3D58E;font-size:calc(var(--u) * 3.1);font-weight:800}
+.akc-hp i{width:calc(var(--u) * 1.8);height:calc(var(--u) * 1.8);border-radius:50%;background:#E2B874;animation:akcP 1.2s ease-in-out infinite}@keyframes akcP{50%{opacity:.35}}
+.akc-hb{position:absolute;left:0;right:0;bottom:24%;z-index:3;text-align:center;transition:opacity .35s}
+.akc-hb p{margin:0;font-size:calc(var(--u) * 4);font-weight:600;color:#e6ebf7}.akc-hb small{display:block;margin-top:calc(var(--u) * 1.4);font-size:calc(var(--u) * 3.3);color:#9fb0dd;font-variant-numeric:tabular-nums}
+.akc-mu{display:flex;gap:calc(var(--u) * .9);justify-content:center;align-items:flex-end;height:calc(var(--u) * 5);margin-bottom:calc(var(--u) * 2.6)}
+.akc-mu i{width:calc(var(--u) * .9);height:30%;border-radius:2px;background:#E2B874;animation:akcB .55s ease-in-out infinite alternate}
+.akc-mu i:nth-child(2){animation-delay:.15s}.akc-mu i:nth-child(3){animation-delay:.3s}.akc-mu i:nth-child(4){animation-delay:.05s}.akc-mu i:nth-child(5){animation-delay:.25s}.akc-mu i:nth-child(6){animation-delay:.1s}.akc-mu i:nth-child(7){animation-delay:.35s}
+.akc-end{position:absolute;left:50%;bottom:7%;width:calc(var(--u) * 16);height:calc(var(--u) * 16);margin-left:calc(var(--u) * -8);border-radius:50%;background:#e5484d;z-index:3;box-shadow:0 calc(var(--u) * 2) calc(var(--u) * 7) rgba(229,72,77,.5);transition:opacity .35s}
+.akc-end:before,.akc-end:after{content:"";position:absolute;left:30%;right:30%;top:50%;height:calc(var(--u) * .9);margin-top:calc(var(--u) * -.45);background:#fff;border-radius:2px;transform:rotate(45deg)}.akc-end:after{transform:rotate(-45deg)}
+.akc:not([data-s=hold]) .akc-hd,.akc:not([data-s=hold]) .akc-hb,.akc:not([data-s=hold]) .akc-end{opacity:0}
+.akc[data-s=hold] .akc-top,.akc[data-s=hold] .akc-ctl{opacity:0!important}
+.akc .akc-top,.akc .akc-ctl{opacity:1}
+.akc-th{display:none;font-style:normal;margin-left:calc(var(--u) * 1.6);font-size:calc(var(--u) * 3.2);color:#cfd8f5;font-weight:700}
+.akc-th i{display:inline-block;width:calc(var(--u) * 1);height:calc(var(--u) * 1);margin-left:calc(var(--u) * .6);border-radius:50%;background:#cfd8f5;animation:akcP .9s ease-in-out infinite}.akc-th i:nth-child(2){animation-delay:.2s}.akc-th i:nth-child(3){animation-delay:.4s}
+.akc[data-s=think] .akc-th{display:inline}
+.akc[data-s=pick] .akc-cap[data-c=pick],.akc[data-s=you2] .akc-cap[data-c=you2]{display:block}
+.akc[data-s=you2] .akc-card{opacity:1;transform:none}
+.akc-snd{position:absolute;right:5%;top:calc(var(--sbh,22px) + var(--u) * 3);z-index:6;width:calc(var(--u) * 10);height:calc(var(--u) * 10);border-radius:50%;border:0;padding:0;background:rgba(255,255,255,.18);display:grid;place-items:center;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.akc-snd svg{width:58%;height:58%;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.akc-snd svg path:first-child{fill:#fff}
+.akc-snd .w{display:none}.akc-snd.on .w{display:inline}.akc-snd.on .x{display:none}.akc-snd.on{background:#E2B874}
+.rp:not(.front) .akc-snd{display:none}
 </style>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Goldline Studio">
@@ -826,7 +853,7 @@ html.lite .nav img{opacity:1!important}
           <div class="k3"><div class="app3"></div><div class="saf3"><div class="url3">🔒 sekna-app.web.app</div><div class="tb3"><span>‹</span><span>›</span><b>⇪</b><span>▭</span><span>⧉</span></div></div><i class="tap3" style="left:50%;top:94%"></i></div>
             <div class="k3"><div class="app3"></div><div class="dim3"></div><div class="sheet3"><div>Copy</div><div>Add Bookmark</div><div class="on">Add to Home Screen</div><div>Find on Page</div></div><i class="tap3" style="left:50%;top:84%"></i></div>
             <div class="k3"><div class="home3"><div class="grid3"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><span class="me3"><i class="me"></i>HEMERA<i class="tap3"></i></span><i></i><i></i></div></div></div>
-            <div class="k3"><div class="app3"></div><div class="dim3"></div><div class="al3"><b>“HEMERA” Would Like to Send You Notifications</b><div><em>Don’t Allow</em><em>Allow</em></div></div><i class="tap3" style="left:67%;top:48%"></i></div>
+            <div class="k3"><div class="app3" style="bottom:0"></div><div class="dim3"></div><div class="al3"><b>“HEMERA” Would Like to Send You Notifications</b><div><em>Don’t Allow</em><em>Allow</em></div></div><i class="tap3" style="left:67%;top:51.5%"></i></div>
           
           <div class="k3 lk3" id="g3lk"><div class="dt3" id="g3d"></div><div class="tm3">9:41</div><div class="ns3" id="g3n"></div><div class="lb3"><i>🔦</i><i>📷</i></div><div class="hb3"></div></div>
         </div></div>
@@ -881,38 +908,53 @@ function copyLink(btn){
 
 var NAV={studio:1,compare:1};
 // Alexandra's phone: a live story screen instead of a screenshot
-// v2: she calls you. Ringing, she explains a ROAS drop, you say "send it", the plan goes out (10 s).
-var AKM='<div class="ly on akm akc" data-s="ring">'+
- '<video class="akc-v" data-v="ring" muted playsinline preload="none" poster="/get/ak/ring.webp?v=1" src="/get/ak/ring.mp4?v=1"></video>'+
- '<video class="akc-v" data-v="talk" muted playsinline preload="none" poster="/get/ak/talk.webp?v=1" src="/get/ak/talk.mp4?v=1"></video>'+
- '<video class="akc-v" data-v="listen" muted playsinline preload="none" poster="/get/ak/listen.webp?v=1" src="/get/ak/listen.mp4?v=1"></video>'+
+// v3: Ibrahim calls her, she has him on hold, picks up, he asks, she thinks, answers, he says send it, done (12 s).
+var AKM='<div class="ly on akm akc" data-s="hold">'+
+ ['hold','pick','listen','think','talk'].map(function(k){return '<video class="akc-v" data-v="'+k+'" muted playsinline preload="none"'+(k==='hold'?' loop':'')+' poster="/get/ak/'+(k==='hold'?'ring':k)+'.webp?v=1" src="/get/ak/'+(k==='hold'?'ring':k)+'.mp4?v=1"></video>'}).join('')+
  '<i class="akc-sh"></i>'+
- '<div class="akc-in"><span class="akc-av"><i></i><i></i></span><b>Alexandra</b><small>HEMERA AI · ROAS alert</small></div>'+
- '<div class="akc-top"><small>ALEXANDRA</small><b class="akc-tm">00:00</b></div>'+
+ '<div class="akc-hd"><small>CALLING ALEXANDRA</small><b>Ibrahim Amin</b><span class="akc-hp"><i></i>On hold · she\'s on another call</span></div>'+
+ '<div class="akc-hb"><div class="akc-mu"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><p>You\'re next in line</p><small class="akc-wt">Waiting 0:00</small></div>'+
+ '<div class="akc-top"><small>ALEXANDRA</small><b class="akc-tm">00:00</b><em class="akc-th">Thinking<i></i><i></i><i></i></em></div>'+
  '<div class="akc-card"><small>PMAX ROAS · SINCE 2 PM</small><b>1.8x <u>▼</u></b></div>'+
  '<div class="akc-ban"><span class="akc-av"></span><p><b>Plan sent ✓</b>Today\'s plan went to the team on WhatsApp</p></div>'+
+ '<div class="akc-cap" data-c="pick"><p>Hi Ibrahim, sorry for the wait!</p></div>'+
+ '<div class="akc-cap me" data-c="you"><div class="akc-w"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><p>How\'s PMax doing today?</p></div>'+
  '<div class="akc-cap" data-c="a1"><p>PMax dropped to <em>1.8x</em> since 2 PM.</p><p>Want me to send the plan?</p></div>'+
- '<div class="akc-cap me" data-c="you"><div class="akc-w"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><p>Yes, send it to the team.</p></div>'+
+ '<div class="akc-cap me" data-c="you2"><div class="akc-w"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><p>Yes, send it to the team.</p></div>'+
  '<div class="akc-cap" data-c="a2"><p>Done, it\'s with the team now.</p></div>'+
  '<div class="akc-ctl"><i></i><i class="r"></i><i></i></div>'+
- '<div class="akc-rc"><i class="r"></i><i class="g"></i></div>'+
+ '<i class="akc-end"></i>'+
+ '<button type="button" class="akc-snd" aria-label="Sound on" onclick="event.stopPropagation();akcSound(this)"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="w" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/><path class="x" d="M16 9l5 6M21 9l-5 6"/></svg></button>'+
  '</div>';
-// Runs only while her phone is at the front of the ring.
-var AKC={t:[],iv:0};
-function akcStop(){AKC.t.forEach(clearTimeout);AKC.t=[];clearInterval(AKC.iv);document.querySelectorAll('.akc video').forEach(function(v){try{v.pause()}catch(e){}})}
+// Runs only while her phone is at the front of the ring. Sound only after a tap (browsers block it before).
+var AKC={t:[],iv:0,snd:false,ac:null,mu:0};
+function akcStop(){AKC.t.forEach(clearTimeout);AKC.t=[];clearInterval(AKC.iv);clearInterval(AKC.mu);try{speechSynthesis.cancel()}catch(e){}document.querySelectorAll('.akc video').forEach(function(v){try{v.pause()}catch(e){}})}
+function akcTone(f,t,d,g){var c=AKC.ac;if(!c)return;var o=c.createOscillator(),a=c.createGain();o.type='sine';o.frequency.value=f;a.gain.setValueAtTime(0.0001,c.currentTime+t);a.gain.exponentialRampToValueAtTime(g||.06,c.currentTime+t+.03);a.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+t+d);o.connect(a);a.connect(c.destination);o.start(c.currentTime+t);o.stop(c.currentTime+t+d+.05)}
+function akcMusic(on){clearInterval(AKC.mu);if(!on||!AKC.snd)return;var n=[523.25,659.25,783.99,987.77,783.99,659.25],i=0;AKC.mu=setInterval(function(){akcTone(n[i%n.length],0,.55,.035);if(i%3===0)akcTone(n[0]/2,0,1.1,.025);i++},300)}
+function akcVoice(t,her){if(!AKC.snd||!window.speechSynthesis)return;try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t),vs=speechSynthesis.getVoices().filter(function(v){return /^en/i.test(v.lang)});
+ var pick=function(re){for(var i=0;i<vs.length;i++)if(re.test(vs[i].name))return vs[i]};
+ u.voice=her?(pick(/samantha|serena|google uk english female|karen|moira|female|zira|aria|jenny/i)||vs[0]):(pick(/daniel|google uk english male|alex|fred|male|guy|david/i)||vs[0]);
+ u.rate=her?1.08:1.05;u.pitch=her?1.1:.9;u.lang=(u.voice&&u.voice.lang)||'en-US';speechSynthesis.speak(u)}catch(e){}}
+function akcSound(b){AKC.snd=!AKC.snd;document.querySelectorAll('.akc-snd').forEach(function(x){x.classList.toggle('on',AKC.snd);x.setAttribute('aria-label',AKC.snd?'Sound off':'Sound on')});
+ if(AKC.snd){try{AKC.ac=AKC.ac||new (window.AudioContext||window.webkitAudioContext)();AKC.ac.resume()}catch(e){}try{speechSynthesis.getVoices()}catch(e){}
+  var ph=b.closest('.rp');if(ph)akcPlay(ph)}else{akcMusic(false);try{speechSynthesis.cancel()}catch(e){}}}
 function akcPlay(ph){akcStop();var el=ph&&ph.querySelector('.akc');if(!el)return;
  var vids={};el.querySelectorAll('video').forEach(function(v){vids[v.dataset.v]=v;if(v.preload!=='auto'){v.preload='auto';try{v.load()}catch(e){}}});
  function vid(n){for(var k in vids){vids[k].classList.toggle('on',k===n)}var v=vids[n];if(v){try{v.currentTime=0}catch(e){}var p=v.play();if(p&&p.catch)p.catch(function(){})}}
  function words(c){el.querySelectorAll('.akc-cap[data-c="'+c+'"] p').forEach(function(p,j){if(!p.dataset.w){p.innerHTML=p.innerHTML.split(/(<em>.*?<\/em>|\s+)/).filter(function(x){return x&&!/^\s+$/.test(x)}).map(function(w){return '<span>'+w+'</span>'}).join(' ');p.dataset.w=1}
-   p.querySelectorAll('span').forEach(function(sp,i){sp.style.animationDelay=(j*1.15+i*.17)+'s'})})}
+   p.querySelectorAll('span').forEach(function(sp,i){sp.style.animationDelay=(j*1.1+i*.15)+'s'})})}
  function at(ms,f){AKC.t.push(setTimeout(f,ms))}
  function st(x){el.dataset.s=x}
- var sec=0,tm=el.querySelector('.akc-tm');
- st('ring');vid('ring');tm.textContent='00:00';
- at(1700,function(){st('tap')});
- at(2200,function(){st('a1');vid('talk');words('a1');sec=0;AKC.iv=setInterval(function(){sec++;tm.textContent='00:'+(sec<10?'0':'')+sec},1000)});
- at(6200,function(){st('you');vid('listen');words('you')});
- at(7800,function(){st('a2');vid('talk');words('a2')});
+ var sec=0,w=0,tm=el.querySelector('.akc-tm'),wt=el.querySelector('.akc-wt');
+ st('hold');vid('hold');tm.textContent='00:00';wt.textContent='Waiting 0:00';akcMusic(true);
+ AKC.iv=setInterval(function(){w++;wt.textContent='Waiting 0:0'+w},1000);
+ at(2400,function(){clearInterval(AKC.iv);akcMusic(false);if(AKC.snd){akcTone(659.25,0,.18,.08);akcTone(987.77,.14,.3,.08)}st('pick');vid('pick');words('pick');akcVoice('Hi Ibrahim, sorry for the wait!',1);
+   sec=0;AKC.iv=setInterval(function(){sec++;tm.textContent='00:'+(sec<10?'0':'')+sec},1000)});
+ at(3800,function(){st('you');vid('listen');words('you');akcVoice("How's P Max doing today?",0)});
+ at(5200,function(){st('think');vid('think')});
+ at(6200,function(){st('a1');vid('talk');words('a1');akcVoice('P Max dropped to 1.8 x since 2 PM. Want me to send the plan?',1)});
+ at(8900,function(){st('you2');vid('listen');words('you2');akcVoice('Yes, send it to the team.',0)});
+ at(9900,function(){st('a2');vid('talk');words('a2');if(AKC.snd){akcTone(880,0,.15,.06);akcTone(1318.5,.1,.25,.06)}akcVoice("Done, it's with the team now.",1)});
 }
 var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12"><path d="M8 11.5l2.4-3a3.4 3.4 0 0 0-4.8 0zM3.5 6.6a6.4 6.4 0 0 1 9 0l1.6-2a9 9 0 0 0-12.2 0zM.4 2.8l1.6 1.9a10.6 10.6 0 0 1 12 0l1.6-1.9a13.2 13.2 0 0 0-15.2 0z"/></svg><svg viewBox="0 0 27 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="#fff" stroke-opacity=".5"/><rect x="2" y="2" width="17" height="8" rx="1.8"/><rect x="24" y="4" width="2" height="4" rx="1" fill-opacity=".5"/></svg></i></div><div class="isl"></div>';
 // 3D phones on a turning ring: one screen at a time comes to the front, and its
@@ -921,7 +963,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   var S=[[['home'],'Daily Performance','Today against target','Today against target: spend, conversions, value and ROAS, each with its own plan line.'],
          [['types','yoy'],'By Campaign Type','Search, PMax, Demand Gen, Video','Each campaign type for the day, ranked by ROAS, with spend against its plan, then the same day last year.'],
          [['plan','results'],'Day by Day','The media plan and the results','The plan for every day of the month, then each day’s results against it and the month so far.'],
-         [['ak'],'Alexandra','Your AI assistant','Ask her about the numbers, sheets and days off, in English or Arabic, and get the answer in seconds.'],
+         [['ak'],'Alexandra','Your AI assistant','Ask her about the numbers, sheets and days off, and get the answer in seconds.'],
          [['studio','compare'],'Reports Studio','One month, or two side by side','Build a report for any month, or compare two months point by point and see which one wins.'],
          [['ss-ramadan','ss-eidadha','ss-arafah','ss-thanksgiving'],'Seasons Calendar','Hijri and US seasons','Ramadan, Eid, Dhul Hijjah, Ashura and the US giving days, each with its countdown and last year’s numbers.'],
          [['ranks','stperf'],'Top & Bottom 5 · Search Terms','Winners, and the search terms report','The best and the weakest projects and campaigns, then the search terms that convert, waste or need a look.'],
@@ -966,7 +1008,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   // A long screen gets time to scroll; a short one stays for LAYER.
   function dur(img){return img.naturalHeight/img.naturalWidth>2.4?SCROLL:LAYER}
   function layerMs(k,j){var im=phones[k].querySelectorAll('.ly img')[j];return im&&im.naturalWidth?dur(im):(/tasks|studio|compare/.test(S[k][0][j])?SCROLL:LAYER)}
-  var HOLD={home:4,types:5,plan:5,ak:10,studio:6,'ss-ramadan':7,ranks:5,tasks:7};
+  var HOLD={home:4,types:5,plan:5,ak:12,studio:6,'ss-ramadan':7,ranks:5,tasks:7};
   function hold(){var k=((cur%N)+N)%N,t=900+600;if(HOLD[S[k][0][0]])return HOLD[S[k][0][0]]*1000;for(var j=0;j<S[k][0].length;j++)t+=layerMs(k,j)+300;return t}
   function go(n){cur+=n;show(true)}
   function play(){stop();timer=setTimeout(function next(){go(1);timer=setTimeout(next,hold())},hold())}
