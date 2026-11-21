@@ -10389,13 +10389,36 @@ body.dark-mode .akn{background:#11161e;border-color:#2a313c}body.dark-mode .akn-
 body.dark-mode .akn-op,body.dark-mode .akn-own{background:#11161e;border-color:#2a313c;color:#e9eef7}body.dark-mode .akn-op.on{background:#2a2414;border-color:#c99a45}body.dark-mode .akn-ch span{background:#1a2540;color:#9fb6ff}
 .mr-notes.akn{margin:12px 0 0}
 /* in the budget picture: line under the title, the words in the serif quote style */
-.bd-na.ak{background:#fff;border-bottom:1px solid #e6eaf2;padding:11px 20px;gap:12px}
-.bd-na.ak .akn-av{width:36px;height:36px}
-.bd-na.ak p{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:15px;line-height:1.38;color:#14286b}
-.bd-na.ak b{font-family:Inter,sans-serif;font-size:8.5px;letter-spacing:.15em;color:#a8781e;margin-bottom:2px}
+.bd-na.bd-ak{background:#fff;border-bottom:1px solid #e6eaf2;padding:11px 20px;gap:12px}
+.bd-na.bd-ak .akn-av{width:36px;height:36px}
+.bd-na.bd-ak p{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:15px;line-height:1.38;color:#14286b}
+.bd-na.bd-ak b{font-family:Inter,sans-serif;font-size:8.5px;letter-spacing:.15em;color:#a8781e;margin-bottom:2px}
 /* in the PDF notes page */
 .nz-ak{display:flex;gap:14px;align-items:flex-start}.nz-ak .akn-av{width:46px;height:46px}.nz-ak .akn-av svg{width:22px;height:22px}
 .nz-ak p{font-family:"DM Serif Display",Georgia,serif!important;font-weight:400!important;color:#14286b!important;font-size:17px!important;line-height:1.4!important}
+
+/* v616 note header: face, title, and one AI-style button */
+.akn{position:relative}
+.akn-hd{gap:9px}.akn-hd>b{flex:1;min-width:0;font-size:14px;font-weight:800;color:#1d2433;line-height:1.2}
+.akn-hd .akn-av{width:32px;height:32px}
+.akn-go,.akn-go.sm{position:relative;flex:none;display:inline-flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:8px 13px 8px 10px;font:inherit;font-size:12px;font-weight:800;color:#fff;cursor:pointer;
+ background:linear-gradient(#0f1f55,#0f1f55) padding-box,linear-gradient(var(--akg,90deg),#5b8cff,#b07cff,#e2b874,#5b8cff) border-box;border:1.5px solid transparent;background-size:100% 100%,300% 100%;
+ box-shadow:0 4px 14px rgba(91,108,255,.28);animation:aknG 4s linear infinite;white-space:nowrap}
+@keyframes aknG{to{background-position:0 0,300% 0}}
+.akn-go svg{width:15px;height:15px;fill:#F3D58E;flex:none;filter:drop-shadow(0 0 4px rgba(243,213,142,.7))}
+.akn-go span{background:linear-gradient(90deg,#fff,#cfdcff 50%,#fff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.akn-go.busy svg{animation:aknS 1.1s ease-in-out infinite}@keyframes aknS{50%{transform:scale(.7) rotate(30deg);opacity:.6}}
+.akn-go:disabled{opacity:1}
+.akn-x{position:absolute;right:10px;top:52px;width:26px;height:26px;border-radius:50%;border:0;background:#eef1f7;color:#6b7385;font-size:12px;font-weight:900;cursor:pointer;z-index:1;display:grid;place-items:center;padding:0}
+.akn-th{padding-right:36px}
+body.dark-mode .akn-x{background:#1a212c;color:#c3cad8}body.dark-mode .akn-hd>b{color:#e9eef7}
+@media (prefers-reduced-motion:reduce){.akn-go{animation:none}}
+
+.akn-hd>b small{display:block;font-size:9px;font-weight:900;letter-spacing:.14em;color:#a8781e;margin:0 0 1px}
+.akn-hd>b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:14.5px}
+.akn-hd .akn-av{width:30px;height:30px}
+.akn-go,.akn-go.sm{font-size:11.5px;padding:7px 11px 7px 9px;gap:5px}.akn-go svg{width:14px;height:14px}
+.akn-x{top:50px}
 </style>
 </head>
 <body>
@@ -14713,8 +14736,8 @@ function budShareHtml(d){
  const yb=Y.map(r=>`<div>${[[r.s,'s'],[r.v,r.pl?'p':'v']].map(([v,c])=>`<i class="${c}" style="height:${Math.max(2,(v||0)/ymx*84)}px"><b>${$k(v)}</b></i>`).join('')}</div>`).join('');
  const yl=Y.map(r=>`<div class="${r.pl?'pl':''}">${r.y}<small>${x2(r.s?r.v/r.s:null)}</small></div>`).join('');
  const note=String(budNote()).trim();
- return `<div class="bd-c"><div class="bd-hd"><div><small>THIS MONTH'S BUDGET</small><b>${esc(mon)}</b><span class="bd-tag">${mk?`<img src="${mk}" alt=""><i></i>`:''}Media Plan ${CURRENT_ACCOUNT==='ar'?'AR':'USA'}</span></div><img class="bd-lg" src="${esc(logo)}" alt=""></div>
-  ${note?(budNoteBy()==='ak'?`<div class="bd-na ak">${aknFace()}<p><b>Alexandra · HEMERA AI</b>${esc(note)}</p></div>`:`<div class="bd-na"><span>✎</span><p><b>Note from the team</b>${esc(note)}</p></div>`):''}
+ return `<div class="bd-c"><div class="bd-hd"><div><small>THIS MONTH'S BUDGET</small><b>${esc(mon)}</b><span class="bd-tag">${mk?`<img src="${mk}" alt=""><i></i>`:''}Media Plan ${CURRENT_ACCOUNT==='ar'?'AR':'US'}</span></div><img class="bd-lg" src="${esc(logo)}" alt=""></div>
+  ${note?(budNoteBy()==='ak'?`<div class="bd-na bd-ak">${aknFace()}<p><b>Alexandra · HEMERA AI</b>${esc(note)}</p></div>`:`<div class="bd-na"><span>✎</span><p><b>Note from the team</b>${esc(note)}</p></div>`):''}
   <div class="bd-g">
    <div class="bd-p"><div class="bd-k">BUDGET</div><div class="bd-big">${main}</div>${ref?`<div class="bd-ref"><span>${CURRENT_ACCOUNT==='ar'?'USD':'GBP'}</span><b>${ref}</b><small>for reference</small></div>`:''}
     <div class="bd-gl"><div><b>${kk(p.clicks)}</b><small>clicks</small></div><div><b>${kk(p.conv)}</b><small>conv.</small></div><div><b class="v">${$k(p.rev)}</b><small>value</small></div></div>
@@ -14757,7 +14780,7 @@ function budCaption(d){
   const p=d.plan,usd=FX&&FX.rates&&FX.rates.USD>0?FX.rates.USD:null,ar=CURRENT_ACCOUNT==='ar'||!usd,key=fcMonthKey(d);
   const mo=key?new Date(Date.UTC(+key.slice(0,4),+key.slice(5)-1,15)).toLocaleDateString('en-GB',{month:'short',timeZone:'UTC'})+' '+key.slice(2,4):String(d.month||'');
   const K=v=>(ar?'£':'$')+fmt(Math.round((ar?v:v*usd)/1000),0)+'K',ro=p.roas!=null?p.roas:p.spend?p.rev/p.spend:null;
-  return withMentions(`📌 ${mo} · HA ${CURRENT_ACCOUNT==='ar'?'AR':'USA'}\n💰 ${K(p.spend)}\n🎯 ${fmt(p.conv,0)} Conv\n💵 ${K(p.rev)} Value\n📈 ${ro!=null?fmt(ro,2)+'x':'—'} ROAS`)}
+  return withMentions(`📌 ${mo} · HA ${CURRENT_ACCOUNT==='ar'?'AR':'US'}\n💰 ${K(p.spend)}\n🎯 ${fmt(p.conv,0)} Conv\n💵 ${K(p.rev)} Value\n📈 ${ro!=null?fmt(ro,2)+'x':'—'} ROAS`)}
 function budFile(d){return `HEMERA-Budget-${CURRENT_ACCOUNT==='ar'?'AR':'USA'}-${String(d.month||'').replace(/\s+/g,'-')}.png`}
 async function budSend(canvas,cap,filename){
   logShareQuiet('budget');copyTextQuietly(cap);
@@ -22869,16 +22892,19 @@ function aknFace(){const d=akBav().data;return `<span class="akn-av">${d&&/^data
 function aknGet(k){return k==='month'?{t:MR.notes||'',by:MR.notesBy||'me'}:{t:budNote(),by:budNoteBy()}}
 function aknPut(k,t,by){if(k==='month'){MR.notes=t;MR.notesBy=by}else budNoteSet(t,by)}
 function aknHtml(k){const S=AKNT[k],cur=aknGet(k),opts=S.opts||[],mine=cur.by!=='ak';
- const sub=k==='month'?'She reads the month and writes the note':'She reads the plan and writes the note';
- const go=S.busy?`<button type="button" class="akn-go" disabled>Reading…</button>`:opts.length?`<button type="button" class="akn-go sm" onclick="aknRun('${k}',1)">↻ 3 more</button>`:`<button type="button" class="akn-go" onclick="aknRun('${k}')">✨ Write with Alexandra</button>`;
+ const spk='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/></svg>';
+ const go=S.busy?`<button type="button" class="akn-go busy" disabled>${spk}<span>Writing…</span></button>`:opts.length?`<button type="button" class="akn-go" onclick="aknRun('${k}',1)">${spk}<span>3 more</span></button>`:`<button type="button" class="akn-go" onclick="aknRun('${k}')">${spk}<span>Write with Alexandra</span></button>`;
  const list=opts.length?opts:(!mine&&cur.t?[{tag:'CHOSEN',text:cur.t}]:[]);
- return `<div class="akn-hd">${aknFace()}<div><b>Note by Alexandra</b><small>${sub}</small></div>${go}</div>
+ const open=S.busy||S.think||(S.seen||[]).length||opts.length||S.err;
+ return `<div class="akn-hd">${aknFace()}<b><small>HEMERA AI</small>${k==='month'?'Team note':'Note'}</b>${go}</div>
+  ${open&&!S.busy?`<button type="button" class="akn-x" aria-label="Close Alexandra's suggestions" title="Close" onclick="aknClose('${k}')">✕</button>`:''}
   ${S.busy?`<div class="akn-th busy"><i></i><b>Reading the numbers…</b><br>${k==='month'?'Results, the plan, every campaign type and last year.':'The budget, the weeks, the campaign types and last month.'}</div>`:''}
   ${!S.busy&&S.think?`<div class="akn-th"><i></i><b>What I looked at</b><br>${esc(S.think)}</div>`:''}
   ${!S.busy&&(S.seen||[]).length?`<div class="akn-ch">${S.seen.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`:''}
   ${S.err?`<div class="akn-err">⚠️ ${esc(S.err)}</div>`:''}
   ${list.map((o,i)=>`<button type="button" class="akn-op${!mine&&cur.t===o.text?' on':''}" onclick="aknPick('${k}',${opts.length?i:-1})"><i></i><span><em>${esc(o.tag||'')}</em>${esc(o.text)}</span></button>`).join('')}
   <textarea class="akn-own${mine&&cur.t?' on':''}" rows="2" maxlength="${k==='month'?600:160}" placeholder="${list.length?'None of these? Write your own…':k==='month'?'Or write your own, e.g. Gaza Emergency appeal launched on the 9th':'Or write your own, e.g. We raised PMax for the season.'}" oninput="aknOwn('${k}',this)">${mine?esc(cur.t):''}</textarea>`}
+function aknClose(k){AKNT[k]={};aknDraw(k)}
 function aknDraw(k){const el=document.getElementById('akn-'+k);if(el)el.innerHTML=aknHtml(k)}
 function aknPick(k,i){const S=AKNT[k],o=i<0?null:(S.opts||[])[i];const cur=aknGet(k);
  if(!o){aknPut(k,'','me')}else if(cur.by==='ak'&&cur.t===o.text){aknPut(k,'','me')}else aknPut(k,o.text,'ak');
