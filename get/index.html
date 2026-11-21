@@ -908,13 +908,13 @@ function copyLink(btn){
 
 var NAV={studio:1,compare:1};
 // Alexandra's phone: a live story screen instead of a screenshot
-// v3: Ibrahim calls her, she has him on hold, picks up, he asks, she thinks, answers, he says send it, done (12 s).
+// v3: Ibrahim calls her, she has him on hold, picks up, he asks, she answers, he says send it, done (12 s).
 var AKM='<div class="ly on akm akc" data-s="hold">'+
- ['hold','pick','listen','think','talk'].map(function(k){return '<video class="akc-v" data-v="'+k+'" muted playsinline preload="none"'+(k==='hold'?' loop':'')+' poster="/get/ak/'+(k==='hold'?'ring':k)+'.webp?v=1" src="/get/ak/'+(k==='hold'?'ring':k)+'.mp4?v=1"></video>'}).join('')+
+ ['hold','pick','listen','talk'].map(function(k){return '<video class="akc-v" data-v="'+k+'" muted playsinline preload="none"'+(k==='hold'?' loop':'')+' poster="/get/ak/'+(k==='hold'?'ring':k)+'.webp?v=1" src="/get/ak/'+(k==='hold'?'ring':k)+'.mp4?v=1"></video>'}).join('')+
  '<i class="akc-sh"></i>'+
  '<div class="akc-hd"><small>CALLING ALEXANDRA</small><b>Ibrahim Amin</b><span class="akc-hp"><i></i>On hold · she\'s on another call</span></div>'+
  '<div class="akc-hb"><div class="akc-mu"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><p>You\'re next in line</p><small class="akc-wt">Waiting 0:00</small></div>'+
- '<div class="akc-top"><small>ALEXANDRA</small><b class="akc-tm">00:00</b><em class="akc-th">Thinking<i></i><i></i><i></i></em></div>'+
+ '<div class="akc-top"><small>ALEXANDRA</small><b class="akc-tm">00:00</b></div>'+
  '<div class="akc-card"><small>PMAX ROAS · SINCE 2 PM</small><b>1.8x <u>▼</u></b></div>'+
  '<div class="akc-ban"><span class="akc-av"></span><p><b>Plan sent ✓</b>Today\'s plan went to the team on WhatsApp</p></div>'+
  '<div class="akc-cap" data-c="pick"><p>Hi Ibrahim, sorry for the wait!</p></div>'+
@@ -948,13 +948,12 @@ function akcPlay(ph){akcStop();var el=ph&&ph.querySelector('.akc');if(!el)return
  var sec=0,w=0,tm=el.querySelector('.akc-tm'),wt=el.querySelector('.akc-wt');
  st('hold');vid('hold');tm.textContent='00:00';wt.textContent='Waiting 0:00';akcMusic(true);
  AKC.iv=setInterval(function(){w++;wt.textContent='Waiting 0:0'+w},1000);
- at(2400,function(){clearInterval(AKC.iv);akcMusic(false);if(AKC.snd){akcTone(659.25,0,.18,.08);akcTone(987.77,.14,.3,.08)}st('pick');vid('pick');words('pick');akcVoice('Hi Ibrahim, sorry for the wait!',1);
+ at(1600,function(){clearInterval(AKC.iv);akcMusic(false);if(AKC.snd){akcTone(659.25,0,.18,.08);akcTone(987.77,.14,.3,.08)}st('pick');vid('pick');words('pick');akcVoice('Hi Ibrahim, sorry for the wait!',1);
    sec=0;AKC.iv=setInterval(function(){sec++;tm.textContent='00:'+(sec<10?'0':'')+sec},1000)});
- at(3800,function(){st('you');vid('listen');words('you');akcVoice("How's P Max doing today?",0)});
- at(5200,function(){st('think');vid('think')});
- at(6200,function(){st('a1');vid('talk');words('a1');akcVoice('P Max dropped to 1.8 x since 2 PM. Want me to send the plan?',1)});
- at(8900,function(){st('you2');vid('listen');words('you2');akcVoice('Yes, send it to the team.',0)});
- at(9900,function(){st('a2');vid('talk');words('a2');if(AKC.snd){akcTone(880,0,.15,.06);akcTone(1318.5,.1,.25,.06)}akcVoice("Done, it's with the team now.",1)});
+ at(3200,function(){st('you');vid('listen');words('you');akcVoice("How's P Max doing today?",0)});
+ at(4800,function(){st('a1');vid('talk');words('a1');akcVoice('P Max dropped to 1.8 x since 2 PM. Want me to send the plan?',1)});
+ at(8200,function(){st('you2');vid('listen');words('you2');akcVoice('Yes, send it to the team.',0)});
+ at(9600,function(){st('a2');vid('talk');words('a2');if(AKC.snd){akcTone(880,0,.15,.06);akcTone(1318.5,.1,.25,.06)}akcVoice("Done, it's with the team now.",1)});
 }
 var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12"><path d="M8 11.5l2.4-3a3.4 3.4 0 0 0-4.8 0zM3.5 6.6a6.4 6.4 0 0 1 9 0l1.6-2a9 9 0 0 0-12.2 0zM.4 2.8l1.6 1.9a10.6 10.6 0 0 1 12 0l1.6-1.9a13.2 13.2 0 0 0-15.2 0z"/></svg><svg viewBox="0 0 27 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="#fff" stroke-opacity=".5"/><rect x="2" y="2" width="17" height="8" rx="1.8"/><rect x="24" y="4" width="2" height="4" rx="1" fill-opacity=".5"/></svg></i></div><div class="isl"></div>';
 // 3D phones on a turning ring: one screen at a time comes to the front, and its
