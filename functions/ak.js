@@ -342,4 +342,38 @@ async function search(b, who) {
   await count(o => { o.search = (o.search || 0) + 1; });
   return { ok: true, answer: answer || 'Nothing reliable found.', sources };
 }
-module.exports = { search, memGet, memText, ask, link, state, usageMail, voice, live, tts, notifSet, notifGet };
+// Alexandra writes a short note for the budget picture or the monthly report: what she looked at, the numbers she used, and 3 choices.
+async function note(b, who) {
+  const kind = b.kind === 'month' ? 'month' : 'budget', facts = String(b.facts || '').trim().slice(0, 7000);
+  if (!facts) return { ok: false, error: 'No numbers to read.' };
+  const p = await prep(String(who.email || '').toLowerCase(), String(b.name || who.name || '').trim().slice(0, 60));
+  if (p.blocked) return { ok: false, error: 'No access.' };
+  const keys = (p.keys || []).filter(Boolean), url = String(p.url || '').replace(/:streamGenerateContent.*$/, ':generateContent').replace(/\?alt=sse$/, '');
+  const max = kind === 'month' ? 220 : 150;
+  const what = kind === 'month' ? "the note that goes on the notes page of this month's PDF report for the team and managers" : "the one-line note printed under the title of this month's budget picture, sent to the manager on WhatsApp";
+  const prompt = `You are Alexandra, the media analyst of the Human Appeal digital team. Write ${what}.
+Use ONLY the numbers below. Never invent a number, a campaign or a reason. Plain, warm, professional English, short sentences, no emoji, no hashtags.
+Return JSON only:
+{"think":"2 or 3 short sentences in the first person: what you looked at and what stood out",
+ "seen":["up to 6 very short chips with the key numbers you used, e.g. \"$48.2k budget\", \"+18% vs Nov\", \"4.2x ROAS\""],
+ "options":[{"tag":"SHORT","text":"..."},{"tag":"FOR THE MANAGER","text":"..."},{"tag":"<2-word angle in capitals>","text":"..."}]}
+Each option text at most ${max} characters, one or two sentences, different angles, written so a manager understands it at a glance.
+${b.more ? 'Give 3 new options, different from: ' + String(b.more).slice(0, 600) : ''}
+
+NUMBERS:
+${facts}`;
+  const payload = { contents: [{ role: 'user', parts: [{ text: prompt }] }], generationConfig: { temperature: b.more ? 0.9 : 0.5, maxOutputTokens: 1400, responseMimeType: 'application/json', thinkingConfig: { thinkingBudget: 512 } } };
+  let r = null;
+  for (let ki = 0; ki < keys.length; ki++) { r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': keys[ki] }, body: JSON.stringify(payload) }); if (r.status !== 429) break; }
+  if (!r) return { ok: false, error: 'Alexandra is not set up yet.' };
+  if (r.status === 429) return { ok: false, error: 'Too many requests right now. Try again in a minute.' };
+  if (!r.ok) return { ok: false, error: 'Alexandra could not answer (' + r.status + ').' };
+  const j = await r.json(), c = (j.candidates || [])[0] || {};
+  const txt = ((c.content || {}).parts || []).filter(x => !x.thought).map(x => x.text || '').join('').trim();
+  let o = null; try { o = JSON.parse(txt.replace(/^```(?:json)?|```$/g, '').trim()); } catch (e) { const m = txt.match(/\{[\s\S]*\}/); try { o = m && JSON.parse(m[0]); } catch (e2) {} }
+  if (!o || !Array.isArray(o.options) || !o.options.length) return { ok: false, error: 'Alexandra could not write the note. Try again.' };
+  await count(x => { x.note = (x.note || 0) + 1; });
+  return { ok: true, think: String(o.think || '').slice(0, 400), seen: (Array.isArray(o.seen) ? o.seen : []).slice(0, 6).map(x => String(x).slice(0, 30)),
+    options: o.options.slice(0, 3).map(x => ({ tag: String(x.tag || '').toUpperCase().slice(0, 24), text: String(x.text || '').trim().slice(0, max + 20) })).filter(x => x.text) };
+}
+module.exports = { note, search, memGet, memText, ask, link, state, usageMail, voice, live, tts, notifSet, notifGet };

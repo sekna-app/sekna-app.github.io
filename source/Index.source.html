@@ -10361,6 +10361,41 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .ak-swg.go .ak-swa{animation:akSwRing .75s ease}
     @keyframes akSwRing{0%{transform:scale(1)}30%{transform:scale(1.12)}60%{transform:scale(.96)}100%{transform:scale(1)}}
     body.ak-swiping,body.ak-swiping *{-webkit-user-select:none!important;user-select:none!important}
+
+/* v614 Alexandra writes the note (Forecast and Monthly Report) */
+.akn{display:block;margin-top:10px;background:#fff;border:1px solid #e6eaf2;border-radius:16px;padding:12px}
+.akn-hd{display:flex;align-items:center;gap:10px}
+.akn-av{width:36px;height:36px;border-radius:50%;overflow:hidden;flex:none;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#3557c4,#132a73);box-shadow:0 0 0 2px #E2B874}
+.akn-av img{width:100%;height:100%;object-fit:cover;display:block}.akn-av svg{width:18px;height:18px;fill:#F3D58E;stroke:none}
+.akn-hd>div{flex:1;min-width:0}.akn-hd b{display:block;font-size:13.5px;font-weight:800;color:#1d2433}.akn-hd small{display:block;font-size:11px;color:#8a92a6;font-weight:600}
+.akn-go{border:0;border-radius:12px;padding:9px 12px;font:inherit;font-size:12.5px;font-weight:800;color:#fff;background:linear-gradient(135deg,#e2b874,#c99a45);box-shadow:0 4px 12px rgba(201,154,69,.3);white-space:nowrap;cursor:pointer}
+.akn-go.sm{background:#fff;color:#a8781e;border:1.5px solid #ecd9b0;box-shadow:none;padding:7px 10px;font-size:11.5px}
+.akn-go:disabled{opacity:.6}
+.akn-th{margin-top:10px;background:#f4f6fb;border-radius:12px;padding:9px 11px;font-size:12px;color:#4a5368;line-height:1.5}
+.akn-th b{color:#203c8e;font-weight:800}.akn-th i{display:inline-block;width:6px;height:6px;border-radius:50%;background:#22c47c;margin-right:6px;vertical-align:1px}
+.akn-th.busy i{background:#c99a45;animation:aknP 1s ease-in-out infinite}@keyframes aknP{50%{opacity:.25}}
+.akn-ch{margin-top:8px}.akn-ch span{display:inline-block;font-size:10.5px;font-weight:800;background:#eef2fb;color:#203c8e;border-radius:999px;padding:3px 8px;margin:0 4px 4px 0}
+.akn-ch span:nth-child(3n){background:#fdf3df;color:#8a6418}
+.akn-op{display:flex;gap:9px;align-items:flex-start;width:100%;text-align:left;font:inherit;background:#fff;border:1.5px solid #dfe4ee;border-radius:12px;padding:9px 11px;margin-top:7px;cursor:pointer;color:#1d2433}
+.akn-op>i{width:16px;height:16px;border-radius:50%;border:2px solid #c3cad8;flex:none;margin-top:2px;box-sizing:border-box}
+.akn-op span{font-size:12.5px;line-height:1.42}.akn-op em{display:block;font-style:normal;font-size:9.5px;font-weight:900;letter-spacing:.1em;color:#8a92a6;margin-bottom:1px}
+.akn-op.on{border-color:#c99a45;background:#fffaf0;box-shadow:0 0 0 3px rgba(201,154,69,.15)}.akn-op.on>i{border:5px solid #c99a45}
+.akn-own{display:block;width:100%;box-sizing:border-box;margin-top:8px;border:1.5px dashed #c3cad8;border-radius:12px;padding:9px 11px;font:inherit;font-size:12.5px;resize:vertical;background:#fff;color:#1d2433;min-height:40px}
+.akn-own.on{border-style:solid;border-color:#203c8e}
+.akn-own::placeholder{color:#9aa2b4}
+.akn-err{margin-top:8px;font-size:12px;color:#c0392b;font-weight:700}
+.lab-box .akn .akn-own{height:auto!important;min-height:40px!important;resize:vertical}
+body.dark-mode .akn{background:#11161e;border-color:#2a313c}body.dark-mode .akn-hd b{color:#e9eef7}body.dark-mode .akn-th{background:#1a212c;color:#c3cad8}body.dark-mode .akn-th b{color:#9fb6ff}
+body.dark-mode .akn-op,body.dark-mode .akn-own{background:#11161e;border-color:#2a313c;color:#e9eef7}body.dark-mode .akn-op.on{background:#2a2414;border-color:#c99a45}body.dark-mode .akn-ch span{background:#1a2540;color:#9fb6ff}
+.mr-notes.akn{margin:12px 0 0}
+/* in the budget picture: line under the title, the words in the serif quote style */
+.bd-na.ak{background:#fff;border-bottom:1px solid #e6eaf2;padding:11px 20px;gap:12px}
+.bd-na.ak .akn-av{width:36px;height:36px}
+.bd-na.ak p{font-family:"DM Serif Display",Georgia,serif;font-weight:400;font-size:15px;line-height:1.38;color:#14286b}
+.bd-na.ak b{font-family:Inter,sans-serif;font-size:8.5px;letter-spacing:.15em;color:#a8781e;margin-bottom:2px}
+/* in the PDF notes page */
+.nz-ak{display:flex;gap:14px;align-items:flex-start}.nz-ak .akn-av{width:46px;height:46px}.nz-ak .akn-av svg{width:22px;height:22px}
+.nz-ak p{font-family:"DM Serif Display",Georgia,serif!important;font-weight:400!important;color:#14286b!important;font-size:17px!important;line-height:1.4!important}
 </style>
 </head>
 <body>
@@ -14647,7 +14682,7 @@ function fcDraw0(){
   <div class="fc-hero"><small>${esc(String(mon).toUpperCase())} PLAN</small><div class="fc-big">${money(p.spend)}</div><div class="fc-hs">budget → ${money(p.rev)} revenue</div>
    <div class="fc-r3"><div><b>${p.roas!=null?fmt(p.roas,2)+'x':'—'}</b><span>ROAS</span></div><div><b>${fmt(p.conv,0)}</b><span>Conv</span></div><div><b>${fmt(p.clicks,0)}</b><span>Clicks</span></div><div class="dk-pill"><b>${p.cpc!=null?cs()+fmt(cx(p.cpc),2):'—'}</b><span>CPC</span></div><div class="dk-pill"><b>${money(p.aov)}</b><span>Avg gift</span></div><div class="dk-pill"><b>${p.cvr!=null?fmt(p.cvr*100,1)+'%':'—'}</b><span>CVR</span></div><div class="dk-pill"><b>${fcPct(wt.acc)}</b><span>Spent</span></div></div></div>
   <div class="fc-kv"><div><b>${p.cpc!=null?cs()+fmt(cx(p.cpc),2):'—'}</b><span>CPC</span></div><div><b>${money(p.aov)}</b><span>Avg gift</span></div><div><b>${p.cvr!=null?fmt(p.cvr*100,1)+'%':'—'}</b><span>CVR</span></div><div><b>${fcPct(wt.acc)}</b><span>Spent</span></div></div>
-  ${ro?'':`<label class="bd-nt"><small>Note for the picture <em>(optional)</em></small><textarea rows="2" maxlength="160" placeholder="e.g. We raised PMax for the season." oninput="budNoteSet(this.value)">${esc(budNote())}</textarea></label>`}
+  ${ro?'':`<div class="bd-nt akn" id="akn-budget">${aknHtml('budget')}</div>`}
   <div class="fc-folds">
   ${fold('weeks',fcIc('weeks'),'Weeks',`${onPlan} on plan${liveW?' · '+esc(wkInfo(liveW).nm.toLowerCase())+' at '+fcPct(liveW.acc)+' so far':''}`,((d.weeks||[]).map(wk).join('')||'<div class="dx-empty">No weeks yet.</div>')+wkT)}
   ${fold('channels',fcIc('channels'),'Channels',esc(chSum),(chs||'<div class="dx-empty">No channels yet.</div>')+chT)}
@@ -14698,7 +14733,7 @@ function budShareHtml(d){
  const yl=Y.map(r=>`<div class="${r.pl?'pl':''}">${r.y}<small>${x2(r.s?r.v/r.s:null)}</small></div>`).join('');
  const note=String(budNote()).trim();
  return `<div class="bd-c"><div class="bd-hd"><div><small>THIS MONTH'S BUDGET</small><b>${esc(mon)}</b><span class="bd-tag">${mk?`<img src="${mk}" alt=""><i></i>`:''}Media Plan ${CURRENT_ACCOUNT==='ar'?'AR':'USA'}</span></div><img class="bd-lg" src="${esc(logo)}" alt=""></div>
-  ${note?`<div class="bd-na"><span>✎</span><p><b>Note from the team</b>${esc(note)}</p></div>`:''}
+  ${note?(budNoteBy()==='ak'?`<div class="bd-na ak">${aknFace()}<p><b>Alexandra · HEMERA AI</b>${esc(note)}</p></div>`:`<div class="bd-na"><span>✎</span><p><b>Note from the team</b>${esc(note)}</p></div>`):''}
   <div class="bd-g">
    <div class="bd-p"><div class="bd-k">BUDGET</div><div class="bd-big">${main}</div>${ref?`<div class="bd-ref"><span>${CURRENT_ACCOUNT==='ar'?'USD':'GBP'}</span><b>${ref}</b><small>for reference</small></div>`:''}
     <div class="bd-gl"><div><b>${kk(p.clicks)}</b><small>clicks</small></div><div><b>${kk(p.conv)}</b><small>conv.</small></div><div><b class="v">${$k(p.rev)}</b><small>value</small></div></div>
@@ -14719,7 +14754,8 @@ function budStripes(){
 // An optional note for the budget picture, kept on this device for each account and month.
 function budNoteKey(){const d=(FC[CURRENT_ACCOUNT]||{}).data;return 'sekna_budnote_'+CURRENT_ACCOUNT+'_'+((d&&fcMonthKey(d))||'')}
 function budNote(){return storeGet(budNoteKey())||''}
-function budNoteSet(v){storeSet(budNoteKey(),String(v||'').slice(0,160))}
+function budNoteSet(v,by){storeSet(budNoteKey(),String(v||'').slice(0,160));storeSet(budNoteKey()+'_by',by||'me')}
+function budNoteBy(){return storeGet(budNoteKey()+'_by')||'me'}
 function budCheck(d){
  const p=d.plan||{},tot=Number(p.spend)||0,out=[];if(!tot)return out;
  const usd=FX&&FX.rates&&FX.rates.USD>0?FX.rates.USD:null,inUsd=CURRENT_ACCOUNT!=='ar'&&!!usd,M=v=>(inUsd?'$':'£')+fmt((inUsd?v*usd:v),0);
@@ -20344,7 +20380,7 @@ function mpNotesPage(m,notes,pg){
   <div class="rz-bd"><div class="tz-st"><b>KEY TAKEAWAYS</b><span>the big number first</span></div>
    <div class="nz-k">${show.map(c=>`<div class="${c[0]}"><b>${c[1]}</b><p><small>${c[2]}</small>${c[3]}</p></div>`).join('')}</div>
    ${also.length?`<div class="tz-st" style="margin-top:24px"><b>ALSO WORTH KNOWING</b><span></span></div><div class="nz-a">${also.slice(0,6).map(t=>`<p>${esc(t)}</p>`).join('')}</div>`:''}
-   ${team.length?`<div class="nz-team"><small>FROM THE TEAM</small>${team.map(t=>`<p>${esc(t)}</p>`).join('')}</div>`:''}</div>
+   ${team.length?(MR.notesBy==='ak'?`<div class="nz-team nz-ak">${aknFace()}<div><small>ALEXANDRA · HEMERA AI</small>${team.map(t=>`<p>${esc(t)}</p>`).join('')}</div></div>`:`<div class="nz-team"><small>FROM THE TEAM</small>${team.map(t=>`<p>${esc(t)}</p>`).join('')}</div>`):''}</div>
   ${mpFoot(String(pg||6))}</div>`;
 }
 function mpComparePage(m,notes,pg){
@@ -20355,7 +20391,7 @@ function mpComparePage(m,notes,pg){
   <div class="dz-note">Last year: ${esc(lyLab(m))} · ${m.ly.have} of ${m.live.length} days had data.</div>`:'<div class="dz-empty">There is no data for the same Hijri days last year.</div>'}
   ${dHead('NOTES','What stood out this month')}
   <div class="dz-tl">${mpHighlights(m).map((t,i)=>`<div><span>${i+1}</span><p>${esc(t)}</p></div>`).join('')}</div>
-  ${team.length?`<div class="dz-teamcard"><small>FROM THE TEAM</small>${team.map(t=>`<p>${esc(t)}</p>`).join('')}</div>`:''}
+  ${team.length?`<div class="dz-teamcard"><small>${MR.notesBy==='ak'?'ALEXANDRA · HEMERA AI':'FROM THE TEAM'}</small>${team.map(t=>`<p>${esc(t)}</p>`).join('')}</div>`:''}
   ${mpFoot(String(pg||4))}</div>`;
 }
 // PDF last page: a note of thanks to the Google Ads team. Every approved person, in rank order and all the
@@ -20431,7 +20467,7 @@ async function mpCapture(html){
      onclone:doc=>{doc.body.classList.remove('dark-mode','desktop-site-mode','is-sharing');doc.documentElement.classList.remove('desktop-site-mode')}});
  }finally{host.remove()}
 }
-function mrSig(){return [CURRENT_ACCOUNT,(DASH_DATA&&DASH_DATA.generatedAt)||'',MR.notes].join('|')}
+function mrSig(){return [CURRENT_ACCOUNT,(DASH_DATA&&DASH_DATA.generatedAt)||'',MR.notes,MR.notesBy||''].join('|')}
 async function mrBuild(){
  if(MR.busy)return;
  MR.busy='Loading last year…';MR.msg='';drawMonthlyReport();
@@ -20512,7 +20548,7 @@ function drawMonthlyReport(){
    <button type="button" class="mr3-go" onclick="mrBuild()" ${MR.busy?'disabled':''}>${MR.pages?'Rebuild PDF':'Build PDF'}</button>
    ${running?`<p class="mr3-st">Day ${live} of ${days.length} · month in progress</p>`:`<p class="mr3-st">The month is complete · ${days.length} days.</p>`}</div>
    <div class="mr3-in"><small>INSIDE THE REPORT</small>${['Results vs the plan','Week by week','Every campaign type','Last year, same days','Your notes for the team'].map((t,i)=>`<span><u>${String(i+1).padStart(2,'0')}</u>${t}</span>`).join('')}</div></div>
-  ${ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin?`<details class="mr-notes"${MR.notes?' open':''}><summary>Notes for the team (optional)</summary><textarea id="mrNotes" class="mrp-notes" rows="3" placeholder="e.g. Gaza Emergency appeal launched on the 9th" oninput="MR.notes=this.value">${esc(MR.notes)}</textarea></details>`:''}
+  ${ACCESS_PROFILE&&ACCESS_PROFILE.isAdmin?`<div class="mr-notes akn" id="akn-month">${aknHtml('month')}</div>`:''}
   ${MR.busy?`<div class="mrp-busy"><span class="lab-spin dark"></span>${esc(MR.busy)}</div>`:''}
   ${MR.msg?`<div class="mrp-msg">${MR.msg}</div>`:''}
   ${MR.pages?`<div class="mrp-thumbs">${MR.pages.map((s,i)=>`<img src="${s}" alt="Page ${i+1}">`).join('')}</div>
@@ -22897,7 +22933,7 @@ function akSwCall(hit){if(AK.blocked)return;const txt=String(hit.el.innerText||'
  document.addEventListener('click',e=>{const el=e.target.closest&&e.target.closest('[data-ak-sw]');if(el){e.stopPropagation();e.preventDefault()}},true)})();
 /* v612 the owner's pick: a green panel behind the card with her face, "Call Alexandra · about this card" */
 function akSwPill(el){akSwPillOff(true);const p=document.createElement('div');p.id='akSwP';p.className='ak-swg';
- p.innerHTML=`<span class="ak-swa"><img src="icons/alexandra/call-face.webp?v=2" alt=""></span><span class="ak-swt"><b>Call<br>Alexandra</b><small>about this card</small></span>`;document.body.appendChild(p);akSwPillAt(el,0,0)}
+ p.innerHTML=`<span class="ak-swa">${akAvIn()}</span><span class="ak-swt"><b>Call<br>Alexandra</b><small>about this card</small></span>`;document.body.appendChild(p);akSwPillAt(el,0,0)}
 function akSwPillAt(el,k,dx,anim){const p=document.getElementById('akSwP');if(!p)return;const r=el.getBoundingClientRect(),cs=getComputedStyle(el);
  if(p.dataset.l==null){p.dataset.l=r.left-(dx||0);p.dataset.t=r.top}const left=+p.dataset.l,top=+p.dataset.t,w=r.width,h=r.height;p.style.left=left+'px';p.style.top=top+'px';p.style.width=w+'px';p.style.height=h+'px';
  p.style.borderRadius=cs.borderRadius||'18px';p.style.transition=anim?'clip-path .32s cubic-bezier(.2,.8,.2,1)':'none';p.style.clipPath=`inset(0 ${Math.max(0,w-(dx||0))}px 0 0 round ${cs.borderRadius||'18px'})`;
@@ -22908,6 +22944,56 @@ function akSwPillOff(now){const p=document.getElementById('akSwP');if(!p)return;
 
 async function akActInviteCheck(id,em){try{const r=await serverCall('adminOverview',getAccessToken());const hit=((r&&r.rows)||[]).find(x=>String(x.email||'').toLowerCase()===em);
  if(hit)akActPut(id,`<div class="ak-act2 no" id="${id}"><b>${akEsc(em)}</b> is already in HEMERA (${akEsc(hit.status||'')}). No invite sent.</div>`)}catch(e){}}
+
+// v614 Alexandra writes the note: the budget picture (Forecast) and the monthly report.
+const AKNT={budget:{},month:{}};
+function aknFace(){const d=akBav().data;return `<span class="akn-av">${d&&/^data:image\//.test(d)?`<img src="${d}" alt="">`:akI('spk')}</span>`}
+function aknGet(k){return k==='month'?{t:MR.notes||'',by:MR.notesBy||'me'}:{t:budNote(),by:budNoteBy()}}
+function aknPut(k,t,by){if(k==='month'){MR.notes=t;MR.notesBy=by}else budNoteSet(t,by)}
+function aknHtml(k){const S=AKNT[k],cur=aknGet(k),opts=S.opts||[],mine=cur.by!=='ak';
+ const sub=k==='month'?'She reads the month and writes the note':'She reads the plan and writes the note';
+ const go=S.busy?`<button type="button" class="akn-go" disabled>Reading…</button>`:opts.length?`<button type="button" class="akn-go sm" onclick="aknRun('${k}',1)">↻ 3 more</button>`:`<button type="button" class="akn-go" onclick="aknRun('${k}')">✨ Write with Alexandra</button>`;
+ const list=opts.length?opts:(!mine&&cur.t?[{tag:'CHOSEN',text:cur.t}]:[]);
+ return `<div class="akn-hd">${aknFace()}<div><b>Note by Alexandra</b><small>${sub}</small></div>${go}</div>
+  ${S.busy?`<div class="akn-th busy"><i></i><b>Reading the numbers…</b><br>${k==='month'?'Results, the plan, every campaign type and last year.':'The budget, the weeks, the campaign types and last month.'}</div>`:''}
+  ${!S.busy&&S.think?`<div class="akn-th"><i></i><b>What I looked at</b><br>${esc(S.think)}</div>`:''}
+  ${!S.busy&&(S.seen||[]).length?`<div class="akn-ch">${S.seen.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`:''}
+  ${S.err?`<div class="akn-err">⚠️ ${esc(S.err)}</div>`:''}
+  ${list.map((o,i)=>`<button type="button" class="akn-op${!mine&&cur.t===o.text?' on':''}" onclick="aknPick('${k}',${opts.length?i:-1})"><i></i><span><em>${esc(o.tag||'')}</em>${esc(o.text)}</span></button>`).join('')}
+  <textarea class="akn-own${mine&&cur.t?' on':''}" rows="2" maxlength="${k==='month'?600:160}" placeholder="${list.length?'None of these? Write your own…':k==='month'?'Or write your own, e.g. Gaza Emergency appeal launched on the 9th':'Or write your own, e.g. We raised PMax for the season.'}" oninput="aknOwn('${k}',this)">${mine?esc(cur.t):''}</textarea>`}
+function aknDraw(k){const el=document.getElementById('akn-'+k);if(el)el.innerHTML=aknHtml(k)}
+function aknPick(k,i){const S=AKNT[k],o=i<0?null:(S.opts||[])[i];const cur=aknGet(k);
+ if(!o){aknPut(k,'','me')}else if(cur.by==='ak'&&cur.t===o.text){aknPut(k,'','me')}else aknPut(k,o.text,'ak');
+ try{akSfx&&akSfx('send')}catch(e){}aknDraw(k)}
+function aknOwn(k,ta){aknPut(k,ta.value,'me');ta.classList.toggle('on',!!ta.value);document.querySelectorAll('#akn-'+k+' .akn-op.on').forEach(b=>b.classList.remove('on'))}
+function aknFacts(k){
+ if(k==='month'){const m=mpData();if(!m)return '';const r=(a,b)=>b?Math.round(a/b*100)+'%':'—';
+  return [`Account: ${accountMeta(DASH_DATA||{}).label||CURRENT_ACCOUNT}`,`Month: ${m.label||m.month}, day ${m.live.length} of ${m.days.length}${m.live.length<m.days.length?' (month still running, plan figures are for the full month)':' (complete)'}`,
+   `Spent ${mpK(m.a.spend)} of plan ${mpK(m.pt.spend)} (${r(m.a.spend,m.pt.spend)})`,`Conversion value ${mpK(m.a.value)} of plan ${mpK(m.pt.value)} (${r(m.a.value,m.pt.value)})`,
+   `Conversions ${fmt(m.a.conversions,0)} of plan ${fmt(m.pt.conversions,0)}`,`ROAS ${m.a.spend?fmt(m.a.value/m.a.spend,2)+'x':'—'} (plan ${m.pt.roas!=null?fmt(m.pt.roas,2)+'x':'—'})`,
+   'Campaign types: '+m.chans.filter(c=>c.spend>0||c.planSpend>0).map(c=>`${CHANNEL_SHORT[c.name]||c.name} spent ${mpK(c.spend)} of ${mpK(c.planSpend)}, value ${mpK(c.value)}, ROAS ${c.roas!=null?fmt(c.roas,2)+'x':'—'}`).join('; '),
+   m.ly&&m.ly.have&&m.ly.value?`Same Hijri days last year: spend ${mpK(m.ly.spend)}, value ${mpK(m.ly.value)}${m.ly.roas?', ROAS '+fmt(m.ly.roas,2)+'x':''}`:'',
+   ...mpHighlights(m)].filter(Boolean).join('\n')}
+ const d=(FC[CURRENT_ACCOUNT]||{}).data;if(!d||!d.plan)return '';
+ const p=d.plan,usd=FX&&FX.rates&&FX.rates.USD>0?FX.rates.USD:null,inUsd=CURRENT_ACCOUNT!=='ar'&&!!usd,S=inUsd?'$':'£',M=v=>v==null?'—':S+fmt(inUsd?v*usd:v,0),key=fcMonthKey(d);
+ const pk=key?(()=>{const y=+key.slice(0,4),mm=+key.slice(5);return mm===1?`${y-1}-12`:`${y}-${String(mm-1).padStart(2,'0')}`})():'';
+ const H=((DASH_DATA||{}).history||[]),lm=H.find(h=>h.month===pk),mm=key.slice(5),past=H.filter(h=>h.month&&h.month.slice(5)===mm&&h.month<key).slice(-3);
+ return [`Account: ${CURRENT_ACCOUNT==='ar'?'Human Appeal AR':'Human Appeal US'}, currency ${S}`,`Budget plan for ${d.month}: spend ${M(p.spend)}, expected value ${M(p.rev)}, ROAS ${p.roas!=null?fmt(p.roas,2)+'x':'—'}, ${fmt(p.conv,0)} conversions, ${fmt(p.clicks,0)} clicks, CPC ${p.cpc!=null?S+fmt(inUsd?p.cpc*usd:p.cpc,2):'—'}, CVR ${p.cvr!=null?fmt(p.cvr*100,1)+'%':'—'}`,
+  lm?`Last month (${pk}): spend ${M(lm.cost)}, value ${M(lm.value)}, ROAS ${lm.cost?fmt(lm.value/lm.cost,2)+'x':'—'}`:'',
+  'Weeks: '+(d.weeks||[]).filter(w=>w.planSpend>0).map((w,i)=>`W${i+1} (${w.label}) ${M(w.planSpend)} → ${M(w.planRev)}`).join('; '),
+  'Campaign types: '+(d.channels||[]).filter(x=>x.budget>0).sort((a,b)=>b.budget-a.budget).map(x=>`${x.name} ${M(x.budget)} (${Math.round((x.mix||0)*100)}%)`).join('; '),
+  past.length?'Same month past years: '+past.map(h=>`${h.month.slice(0,4)} spend ${M(h.cost)}, value ${M(h.value)}`).join('; '):'',
+  d.engine&&d.engine.rec?'Model note: '+noEmoji(d.engine.rec):''].filter(Boolean).join('\n')}
+async function aknRun(k,more){const S=AKNT[k];if(S.busy)return;
+ S.err='';S.busy=1;aknDraw(k);
+ try{if(k==='month'){await ensureMonthExtras();mvSettle()}
+  const facts=aknFacts(k);if(!facts)throw new Error('There are no numbers to read yet.');
+  if(!akBav().data){akPost('hello').then(j=>akBavSync(j&&j.botAvV)).then(()=>aknDraw(k)).catch(()=>{})}
+  const r=await fetch(AK_SRV.replace(/\/ak\/ask$/,'/ak/note'),{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),name:akMe().name,kind:k,facts,more:more?(S.opts||[]).map(o=>o.text).join(' | '):''})});
+  const j=await r.json().catch(()=>({}));if(!j.ok)throw new Error(j.error||'Alexandra could not write the note.');
+  S.think=j.think;S.seen=j.seen;S.opts=j.options;try{akSfx&&akSfx('recv')}catch(e){}
+ }catch(e){S.err=e&&e.message||'Alexandra could not write the note.'}
+ S.busy=0;aknDraw(k)}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
