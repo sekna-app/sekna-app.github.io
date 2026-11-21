@@ -22695,12 +22695,14 @@ async function akDayCall(date){if(AK.blocked)return;const acc=CURRENT_ACCOUNT,K=
  * show the access, the activity, a message to the team, maintenance, the reading status. Anything that changes
  * something shows a card with Confirm first; only the people allowed to do it in the app can do it here. */
 const AKA_SCR={days:'Media plan (Day by Day)',overview:'Daily',channel:'Channels',plans:'Plan history',ranks:'Top & Bottom / Search terms',camp:'Campaign performance',months:'Reports Studio',seasons:'Seasons',lab:'Lab',ask:'Alexandra',team:'Team',build:'Build tasks',quick:'Quick tasks',leave:'Leave',admin:'Admin'};
-function akActCan(d){const P=ACCESS_PROFILE||{};if(VIEW_AS)return false;return {add_task:tkCan('quick')||tkIsAdmin(),set_access:!!P.owner,show_access:!!P.owner,activity:tkIsAdmin(),team_message:tkIsAdmin(),maintenance:tkIsAdmin(),read_status:tkIsAdmin()}[d]||false}
+function akActCan(d){const P=ACCESS_PROFILE||{};if(VIEW_AS)return false;return {invite:tkIsAdmin(),app_status:tkIsAdmin(),add_task:tkCan('quick')||tkIsAdmin(),set_access:!!P.owner,show_access:!!P.owner,activity:tkIsAdmin(),team_message:tkIsAdmin(),maintenance:tkIsAdmin(),read_status:tkIsAdmin()}[d]||false}
 function akActHelp(){const L=[];const add=(d,t)=>{if(akActCan(d))L.push(t)};
  add('add_task','- add a task: {"do":"add_task","person":"name or email","title":"short title","deadline":"YYYY-MM-DD","note":"details"}');
  add('set_access','- give / remove / lock a screen: {"do":"set_access","person":"...","screen":"days|overview|channel|plans|ranks|camp|months|seasons|lab|ask|team","value":"on|off|lock|view"} (view = Lab read-only). Screens: Media plan = days, Daily = overview, Campaign performance = camp, Reports Studio = months, Plan history = plans, Search terms / Top & Bottom = ranks, Channels = channel.');
  add('show_access','- show who can see what: {"do":"show_access","person":"optional name"}');
- add('activity','- the team activity this month (opens, time, shares): {"do":"activity"}');
+ add('activity','- the team activity: {"do":"activity","range":"today|week|month"} (who opened HEMERA, how many times, time spent, how many snapshots each person shared)');
+ add('invite','- invite a new person to HEMERA by email: {"do":"invite","email":"exact email the person typed"}. Use ONLY an email the person wrote in this chat, letter by letter; never make one up or guess it from a name.');
+ add('app_status','- show HEMERA\'s App status (open or closed for maintenance) with buttons: {"do":"app_status"}');
  add('team_message','- a message / notification to the whole team: {"do":"team_message","title":"...","text":"...","push":true} (leave text empty to give them a box to write it)');
  add('maintenance','- close HEMERA for maintenance or open it again: {"do":"maintenance","on":true,"reason":"..."}');
  add('read_status','- when each sheet / snapshot was last read today: {"do":"read_status"}');
@@ -22716,12 +22718,17 @@ function akActLine(a){const nm=a._p?(a._p.name||a._p.email):(a.person||'');switc
  case 'add_task':return `Add a task for <b>${akEsc(nm)}</b>: “${akEsc(a.title||'')}”${a.deadline?' · due '+akEsc(a.deadline):''}${a.note?'<br><small>'+akEsc(a.note)+'</small>':''}`;
  case 'set_access':return `${a.value==='off'?'Remove':a.value==='lock'?'Lock':a.value==='view'?'Give view-only':'Give'} <b>${akEsc(AKA_SCR[a.screen]||a.screen)}</b> ${a.value==='off'||a.value==='lock'?'for':'to'} <b>${akEsc(nm)}</b>`;
  case 'team_message':return `Send to the whole team${a.push!==false?' (with a phone notification)':''}`;
+ case 'invite':return `Send an invite to <b>${akEsc(a.email||'')}</b>`;
  case 'maintenance':return a.on===false?'Open HEMERA again for everyone':`Close HEMERA for maintenance${a.reason?': '+akEsc(a.reason):''}`;
  default:return akEsc(a.do)}}
 function akActCard(a){const id='aka'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),enc=encodeURIComponent(JSON.stringify(a));
  if(!akActCan(a.do))return `<div class="ak-act2 no" id="${id}">You cannot do this from your account.</div>`;
- if(['show_access','activity','read_status'].includes(a.do)){setTimeout(()=>akActRun(id,a),60);return `<div class="ak-act2" id="${id}"><span class="ak-a2w">Loading…</span></div>`}
+ if(['show_access','activity','read_status','app_status'].includes(a.do)){setTimeout(()=>akActRun(id,a),60);return `<div class="ak-act2" id="${id}"><span class="ak-a2w">Loading…</span></div>`}
  if(a.do==='team_message'&&!a.text)return akActMsgBox(id,a);
+ if(a.do==='invite'){const em=String(a.email||'').trim().toLowerCase();const typed=AK.msgs.slice(-8).some(m=>m.w==='u'&&String(m.html||'').toLowerCase().includes(em));
+  if(!/^[^\s@]+@[^\s@]+\.[a-z]{2,}$/.test(em))return `<div class="ak-act2 no" id="${id}">That is not a full email address. Write the email exactly and I will invite them.</div>`;
+  if(!typed)return `<div class="ak-act2 no" id="${id}">I will only invite an email you wrote yourself. Please type the exact email.</div>`;
+  setTimeout(()=>akActInviteCheck(id,em),40)}
  setTimeout(()=>akActPrep(id,a),40);
  return `<div class="ak-act2" id="${id}" data-a="${enc}"><div class="ak-a2t">${akActLine(a)}</div>${a.do==='team_message'?`<div class="ak-a2m"><b>${akEsc(a.title||'HEMERA')}</b><p dir="auto">${akEsc(a.text||'')}</p></div>`:''}<div class="ak-a2b"><button type="button" class="no" onclick="akActNo('${id}')">Cancel</button><button type="button" class="ok" onclick="akActGo('${id}')">Confirm</button></div></div>`}
 function akActMsgBox(id,a){return `<div class="ak-act2" id="${id}" data-a="${encodeURIComponent(JSON.stringify(a))}"><div class="ak-a2t">Message to the whole team</div><input class="ak-a2i" maxlength="80" placeholder="Title" value="${akEsc(a.title||'')}"><textarea class="ak-a2x" maxlength="1000" rows="3" placeholder="Write the message… ({name} = their first name)" dir="auto"></textarea><label class="ak-a2c"><input type="checkbox" checked> Phone notification</label><div class="ak-a2b"><button type="button" class="no" onclick="akActNo('${id}')">Cancel</button><button type="button" class="ok" onclick="akActGo('${id}')">Send</button></div></div>`}
@@ -22732,6 +22739,7 @@ function akActPut(id,html){const el=document.getElementById(id);if(el)el.outerHT
 function akActNo(id){akActPut(id,`<div class="ak-act2 no" id="${id}">Cancelled.</div>`)}
 async function akActGo(id){const el=document.getElementById(id);if(!el)return;let a={};try{a=JSON.parse(decodeURIComponent(el.dataset.a||''))}catch(e){}
  if(a.do==='team_message'){const ti=el.querySelector('.ak-a2i'),tx=el.querySelector('.ak-a2x'),cb=el.querySelector('.ak-a2c input');if(ti)a.title=ti.value.trim();if(tx)a.text=tx.value.trim();if(cb)a.push=cb.checked;if(!a.text){showSettingsToast('Write the message first.');return}}
+ {const rr=el.querySelector('.ak-a2r');if(rr)a.reason=rr.value.trim()}
  el.querySelectorAll('button').forEach(b=>b.disabled=true);const r=await akActRun(id,a,true);if(AKLV.ws&&AKLV.ws.readyState===1&&r)try{AKLV.ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:'(Done on the screen: '+r+'. Tell the person in a few words.)'}]}],turnComplete:true}}))}catch(e){}}
 async function akActRun(id,a,confirmed){const T=getAccessToken(),done=(h,txt)=>{akActPut(id,`<div class="ak-act2 ok" id="${id}">${h}</div>`);return txt||''},fail=e=>{akActPut(id,`<div class="ak-act2 no" id="${id}">${akEsc(errorText?errorText(e):String(e&&e.message||e))}</div>`);return 'failed'};
  if(!akActCan(a.do))return fail('You cannot do this from your account.');
@@ -22747,14 +22755,20 @@ async function akActRun(id,a,confirmed){const T=getAccessToken(),done=(h,txt)=>{
    const cell=v=>v===true?'<i class="y">✓</i>':v==='lock'?'<i class="l">🔒</i>':v==='view'?'<i class="v">👁</i>':'<i class="n">–</i>';
    const html=`<div class="ak-a2t">Who can see what</div><div class="ak-acc"><table><tr><th></th>${keys.map(k=>`<th>${akEsc((AKA_SCR[k]||k).split(' ')[0])}</th>`).join('')}</tr>${P.slice(0,40).map(x=>`<tr><td>${akEsc((x.name||x.email).split(' ')[0])}${x.owner?' ★':''}${x.perms&&x.perms.blocked?' ⛔':''}</td>${keys.map(k=>`<td>${cell(x.owner?true:(x.perms||{})[k])}</td>`).join('')}</tr>`).join('')}</table></div>`;
    akActPut(id,`<div class="ak-act2" id="${id}">${html}</div>`);return P.length+' people'}
-  case 'activity':{const r=await serverCall('adminActivity',T);const o=(r.opens||{}).people||[],tm=(r.time||{}).people||[],min=s=>Math.round((s||0)/60);
-   const rows=o.slice().sort((x,y)=>y.n-x.n).slice(0,12).map(x=>{const t=tm.find(y=>y.email===x.email);return `<tr><td>${akEsc((x.name||x.email).split(' ')[0])}</td><td>${x.n}</td><td>${min(t&&t.sec)} min</td></tr>`}).join('');
-   akActPut(id,`<div class="ak-act2" id="${id}"><div class="ak-a2t">Activity · ${akEsc(r.month||'')}</div><div class="ak-acc"><table><tr><th>Person</th><th>Opens</th><th>Time</th></tr>${rows}</table></div><small class="ak-a2s">Opens ${(r.opens||{}).total||0} · time ${min((r.time||{}).total)} min · shares ${Array.isArray(r.shares)?r.shares.length:(r.shares||0)}</small></div>`);return 'activity shown'}
+  case 'activity':{const today=ssToday(),rg=String(a.range||'month');let r;
+   if(rg==='today'||rg==='week'){const d=new Date(today+'T12:00:00Z');if(rg==='week')d.setUTCDate(d.getUTCDate()-6);r=await serverCall('adminActivity',T,today.slice(0,7),{from:d.toISOString().slice(0,10),to:today})}else r=await serverCall('adminActivity',T);
+   const o=(r.opens||{}).people||[],tm=(r.time||{}).people||[],sh=((r.shares||{}).people)||[],min=s2=>Math.round((s2||0)/60),em=new Set(o.map(x=>x.email).concat(sh.map(x=>x.email)));
+   const rows=[...em].map(e=>{const a1=o.find(x=>x.email===e)||{},t=tm.find(x=>x.email===e)||{},s1=sh.find(x=>x.email===e)||{};return {name:(a1.name||s1.name||e).split(' ')[0],n:a1.n||0,m:min(t.sec),s:s1.n||0}}).sort((x,y)=>y.n-x.n).slice(0,15);
+   akActPut(id,`<div class="ak-act2" id="${id}"><div class="ak-a2t">Activity · ${rg==='today'?'today':rg==='week'?'last 7 days':akEsc(r.month||'')}</div><div class="ak-acc"><table><tr><th>Person</th><th>Opens</th><th>Time</th><th>Snaps</th></tr>${rows.map(x=>`<tr><td>${akEsc(x.name)}</td><td>${x.n}</td><td>${x.m} min</td><td>${x.s}</td></tr>`).join('')||'<tr><td colspan="4">Nobody yet.</td></tr>'}</table></div><small class="ak-a2s">Opens ${(r.opens||{}).total||0} · time ${min((r.time||{}).total)} min · snapshots ${(r.shares||{}).total||0}</small></div>`);
+   return rows.map(x=>x.name+' '+x.n+' opens, '+x.s+' snaps').join('; ')||'nobody'}
   case 'read_status':{const r=await serverCall('adminReadWindow',T);const f=ms=>ms?new Date(ms).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'—';const td=(r.days||[]).find(d=>d.day===r.today)||(r.days||[])[0]||{};
    const rows=[['Media plan USA',f((r.last||{}).usa)],['Media plan AR',f((r.last||{}).ar)],['Search terms USA',f(td.tusa)],['Search terms AR',f(td.tar)],['Campaigns USA',f(td.cusa)],['Campaigns AR',f(td.car)]];
    akActPut(id,`<div class="ak-act2" id="${id}"><div class="ak-a2t">Reading the sheets · ${r.window&&r.window.on?'window '+akEsc(r.window.from||'')+'–'+akEsc(r.window.to||''):'window off'}${r.open?' · open now':''}</div><div class="ak-acc"><table>${rows.map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join('')}</table></div></div>`);return rows.map(x=>x[0]+' '+x[1]).join(', ')}
   case 'team_message':{if(!confirmed)return '';const r=await serverCall('adminPublishAnnouncement',T,String(a.title||'HEMERA').slice(0,80),String(a.text||'').slice(0,1000),'',a.push!==false);
    return done(`✓ Sent to the team${r&&r.pushed?' with a phone notification':''}: <b>${akEsc(a.title||'HEMERA')}</b><br><small dir="auto">${akEsc(a.text||'')}</small>`,'message sent to the team')}
+  case 'invite':{const em=String(a.email||'').trim().toLowerCase();await serverCall('adminInvite',T,em);return done(`✓ Invite sent to <b>${akEsc(em)}</b>. They get an email to join HEMERA.`,'invite sent to '+em)}
+  case 'app_status':{const st=await serverCall('adminGetAppState',T);const m=(st&&st.maintenance)||{};const on=!!m.on;
+   akActPut(id,`<div class="ak-act2" id="${id}" data-a="${encodeURIComponent(JSON.stringify({do:'maintenance',on:!on,reason:''}))}"><div class="ak-a2t">App status: <b style="color:${on?'#C63A4A':'#13804F'}">${on?'● Closed for maintenance':'● Live'}</b></div>${on&&m.reason?`<small class="ak-a2s">${akEsc(m.reason)}</small>`:''}${on?'':'<input class="ak-a2i ak-a2r" maxlength="300" placeholder="Reason (optional)">'}<div class="ak-a2b"><button type="button" class="no" onclick="akActNo(\'${id}\')">Keep it</button><button type="button" class="ok" onclick="akActGo(\'${id}\')">${on?'Open HEMERA':'Close for maintenance'}</button></div></div>`);return on?'closed':'live'}
   case 'maintenance':{const on=a.on!==false;await serverCall('adminSetMaintenance',T,on,String(a.reason||'').slice(0,300));return done(on?'✓ HEMERA is closed for maintenance. Only admins can get in.':'✓ HEMERA is open again for everyone.',on?'HEMERA closed for maintenance':'HEMERA opened again')}
   default:return fail('Unknown action.')}}catch(e){return fail(e)}}
 async function akActVoice(a){if(!a||!a.do)return {result:'No action.'};if(!akActCan(a.do))return {result:'This person is not allowed to do that.'};
@@ -22874,6 +22888,9 @@ function akSwPillAt(el,k){const p=document.getElementById('akSwP');if(!p)return;
  p.style.opacity=Math.min(1,k*1.4);p.style.transform=`translateX(${Math.min(1,k)*10-10}px) scale(${.85+Math.min(1,k)*.15})`;p.classList.toggle('ready',k>=1)}
 function akSwPillGo(){const p=document.getElementById('akSwP');if(!p)return;p.classList.add('go');p.querySelector('b').textContent='Calling…';setTimeout(()=>akSwPillOff(),700)}
 function akSwPillOff(now){const p=document.getElementById('akSwP');if(!p)return;if(now){p.remove();return}p.style.opacity=0;setTimeout(()=>p.remove(),200)}
+
+async function akActInviteCheck(id,em){try{const r=await serverCall('adminOverview',getAccessToken());const hit=((r&&r.rows)||[]).find(x=>String(x.email||'').toLowerCase()===em);
+ if(hit)akActPut(id,`<div class="ak-act2 no" id="${id}"><b>${akEsc(em)}</b> is already in HEMERA (${akEsc(hit.status||'')}). No invite sent.</div>`)}catch(e){}}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
