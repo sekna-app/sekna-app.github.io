@@ -22815,7 +22815,7 @@ function akSwCall(hit){if(AK.blocked)return;const txt=String(hit.el.innerText||'
  document.addEventListener('click',e=>{const el=e.target.closest&&e.target.closest('[data-ak-sw]');if(el){e.stopPropagation();e.preventDefault()}},true)})();
  
 function akSwPill(el){akSwPillOff(true);const p=document.createElement('div');p.id='akSwP';p.className='ak-swg';
- p.innerHTML=`<span class="ak-swa"><img src="icons/alexandra/call-face.webp?v=1" alt=""></span><span class="ak-swt"><b>Call<br>Alexandra</b><small>about this card</small></span>`;document.body.appendChild(p);akSwPillAt(el,0,0)}
+ p.innerHTML=`<span class="ak-swa"><img src="icons/alexandra/call-face.webp?v=2" alt=""></span><span class="ak-swt"><b>Call<br>Alexandra</b><small>about this card</small></span>`;document.body.appendChild(p);akSwPillAt(el,0,0)}
 function akSwPillAt(el,k,dx,anim){const p=document.getElementById('akSwP');if(!p)return;const r=el.getBoundingClientRect(),cs=getComputedStyle(el);
  if(p.dataset.l==null){p.dataset.l=r.left-(dx||0);p.dataset.t=r.top}const left=+p.dataset.l,top=+p.dataset.t,w=r.width,h=r.height;p.style.left=left+'px';p.style.top=top+'px';p.style.width=w+'px';p.style.height=h+'px';
  p.style.borderRadius=cs.borderRadius||'18px';p.style.transition=anim?'clip-path .32s cubic-bezier(.2,.8,.2,1)':'none';p.style.clipPath=`inset(0 ${Math.max(0,w-(dx||0))}px 0 0 round ${cs.borderRadius||'18px'})`;
