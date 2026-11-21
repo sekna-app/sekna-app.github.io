@@ -645,6 +645,50 @@ html.lite .nav img{opacity:1!important}
 @keyframes akvP{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
 @media (max-width:900px){.akf{grid-template-columns:1fr;gap:30px}.akf .txt{text-align:center}.akf ul{justify-content:center}.akf li{justify-content:center}}
 @media (prefers-reduced-motion:reduce){.akv .pl b{animation:none}}
+
+/* Alexandra's phone v2: she calls you (10 s) */
+.akc{--u:calc(var(--pw) / 100);background:#05091c;color:#fff;font-family:Inter,system-ui,sans-serif}
+.akc-v{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 28%;opacity:0;transition:opacity .35s ease}
+.akc-v.on{opacity:1}
+.akc[data-s=ring] .akc-v,.akc[data-s=tap] .akc-v{filter:brightness(.42) blur(1.5px);transform:scale(1.06)}
+.akc-sh{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.45),transparent 24%,transparent 55%,rgba(0,0,0,.88))}
+.akc-av{display:block;position:relative;width:calc(var(--u) * 26);height:calc(var(--u) * 26);margin:0 auto;border-radius:50%;background:url(/get/shots/ak-av.webp?v=1) center/cover;box-shadow:0 0 0 calc(var(--u) * 1) #E2B874}
+.akc-av i{position:absolute;inset:0;border-radius:50%;border:calc(var(--u) * .8) solid rgba(226,184,116,.7);animation:akcR 1.4s ease-out infinite}.akc-av i+i{animation-delay:.7s}
+@keyframes akcR{from{transform:scale(1);opacity:1}to{transform:scale(1.7);opacity:0}}
+.akc-in{position:absolute;left:0;right:0;top:24%;z-index:3;text-align:center;transition:opacity .35s,transform .35s}
+.akc-in b{display:block;margin-top:calc(var(--u) * 5);font-size:calc(var(--u) * 7.5);font-weight:800}
+.akc-in small{display:block;margin-top:calc(var(--u) * 1);font-size:calc(var(--u) * 3.8);color:#cfd8f5;font-weight:600}
+.akc-rc{position:absolute;left:0;right:0;bottom:9%;z-index:3;display:flex;justify-content:center;gap:calc(var(--u) * 24);transition:opacity .3s}
+.akc-rc i{width:calc(var(--u) * 15);height:calc(var(--u) * 15);border-radius:50%;background:#e5484d;position:relative}
+.akc-rc i.g{background:#2fbf71;animation:akcJ 1s ease-in-out infinite}
+.akc-rc i:after{content:"";position:absolute;inset:28%;background:#fff;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z'/%3E%3C/svg%3E") center/contain no-repeat}
+.akc-rc i.r:after{transform:rotate(135deg)}
+@keyframes akcJ{0%,100%{transform:translateY(0)}50%{transform:translateY(calc(var(--u) * -2))}}
+.akc[data-s=tap] .akc-rc i.g{animation:none;box-shadow:0 0 0 calc(var(--u) * 4) rgba(255,255,255,.35);transform:scale(.9)}
+.akc:not([data-s=ring]):not([data-s=tap]) .akc-in,.akc:not([data-s=ring]):not([data-s=tap]) .akc-rc{opacity:0;transform:scale(.96);pointer-events:none}
+.akc-top{position:absolute;top:calc(var(--sbh,22px) + var(--u) * 3);left:0;right:0;z-index:3;text-align:center;opacity:0;transition:opacity .4s}
+.akc-top small{display:block;font-size:calc(var(--u) * 3);font-weight:900;letter-spacing:.22em;color:#E2B874}.akc-top b{font-size:calc(var(--u) * 3.6);font-weight:700}
+.akc-ctl{position:absolute;left:0;right:0;bottom:5%;z-index:3;display:flex;justify-content:center;gap:calc(var(--u) * 6);opacity:0;transition:opacity .4s}
+.akc-ctl i{width:calc(var(--u) * 11);height:calc(var(--u) * 11);border-radius:50%;background:rgba(255,255,255,.18)}.akc-ctl i.r{background:#e5484d}
+.akc:not([data-s=ring]):not([data-s=tap]) .akc-top,.akc:not([data-s=ring]):not([data-s=tap]) .akc-ctl{opacity:1}
+.akc-card{position:absolute;left:6%;right:6%;top:calc(var(--sbh,22px) + var(--u) * 13);z-index:3;background:#fff;color:#14286b;border-radius:calc(var(--u) * 4);padding:calc(var(--u) * 2.6) calc(var(--u) * 3.4);border-left:calc(var(--u) * 1.4) solid #e5484d;box-shadow:0 calc(var(--u) * 3) calc(var(--u) * 8) rgba(0,0,0,.35);opacity:0;transform:translateY(calc(var(--u) * -4)) scale(.96);transition:opacity .4s,transform .45s cubic-bezier(.2,1.3,.4,1)}
+.akc-card small{display:block;font-size:calc(var(--u) * 2.7);font-weight:900;letter-spacing:.12em;color:#8a92a6}.akc-card b{font-size:calc(var(--u) * 7.5);font-weight:900;color:#c0392b}.akc-card u{text-decoration:none;font-size:calc(var(--u) * 4)}
+.akc[data-s=a1] .akc-card,.akc[data-s=you] .akc-card{opacity:1;transform:none;transition-delay:.5s}
+.akc-ban{position:absolute;left:4%;right:4%;top:calc(var(--sbh,22px) + var(--u) * 2);z-index:4;display:flex;gap:calc(var(--u) * 2.4);align-items:center;background:rgba(255,255,255,.96);color:#1d2433;border-radius:calc(var(--u) * 4);padding:calc(var(--u) * 2.4);box-shadow:0 calc(var(--u) * 3) calc(var(--u) * 10) rgba(0,0,0,.35);opacity:0;transform:translateY(-120%);transition:opacity .3s,transform .5s cubic-bezier(.2,1.2,.4,1)}
+.akc-ban .akc-av{width:calc(var(--u) * 9);height:calc(var(--u) * 9);margin:0;flex:none;box-shadow:none}
+.akc-ban p{margin:0;font-size:calc(var(--u) * 3.1);line-height:1.3}.akc-ban b{display:block;font-size:calc(var(--u) * 3.4);color:#1a8f55}
+.akc[data-s=a2] .akc-ban{opacity:1;transform:none;transition-delay:.3s}
+.akc-cap{position:absolute;left:7%;right:7%;bottom:15%;z-index:3;font-size:calc(var(--u) * 4.6);font-weight:700;line-height:1.35;display:none}
+.akc-cap p{margin:0 0 calc(var(--u) * 1)}.akc-cap em{font-style:normal;color:#7fb2ff}
+.akc-cap span{display:inline-block;opacity:.18;animation:akcWd .25s ease forwards}
+@keyframes akcWd{to{opacity:1}}
+.akc[data-s=a1] .akc-cap[data-c=a1],.akc[data-s=you] .akc-cap[data-c=you],.akc[data-s=a2] .akc-cap[data-c=a2]{display:block}
+.akc-cap.me p{color:#fff}.akc-cap.me{font-size:calc(var(--u) * 4.3)}
+.akc-w{display:flex;gap:calc(var(--u) * .9);align-items:center;height:calc(var(--u) * 6);margin-bottom:calc(var(--u) * 1.4)}
+.akc-w i{width:calc(var(--u) * 1);height:30%;border-radius:2px;background:#7fb2ff;animation:akcB .5s ease-in-out infinite alternate}
+.akc-w i:nth-child(2){animation-delay:.1s}.akc-w i:nth-child(3){animation-delay:.25s}.akc-w i:nth-child(4){animation-delay:.05s}.akc-w i:nth-child(5){animation-delay:.3s}.akc-w i:nth-child(6){animation-delay:.15s}.akc-w i:nth-child(7){animation-delay:.2s}
+@keyframes akcB{to{height:100%}}
+.rp:not(.front) .akc *{animation-play-state:paused}
 </style>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Goldline Studio">
@@ -837,7 +881,39 @@ function copyLink(btn){
 
 var NAV={studio:1,compare:1};
 // Alexandra's phone: a live story screen instead of a screenshot
-var AKM='<div class="ly on akm"><img class="akm-v akm-p" src="/get/alexandra-poster.webp?v=1" alt="Ask her anything"><i class="akm-b"></i></div>';
+// v2: she calls you. Ringing, she explains a ROAS drop, you say "send it", the plan goes out (10 s).
+var AKM='<div class="ly on akm akc" data-s="ring">'+
+ '<video class="akc-v" data-v="ring" muted playsinline preload="none" poster="/get/ak/ring.webp?v=1" src="/get/ak/ring.mp4?v=1"></video>'+
+ '<video class="akc-v" data-v="talk" muted playsinline preload="none" poster="/get/ak/talk.webp?v=1" src="/get/ak/talk.mp4?v=1"></video>'+
+ '<video class="akc-v" data-v="listen" muted playsinline preload="none" poster="/get/ak/listen.webp?v=1" src="/get/ak/listen.mp4?v=1"></video>'+
+ '<i class="akc-sh"></i>'+
+ '<div class="akc-in"><span class="akc-av"><i></i><i></i></span><b>Alexandra</b><small>HEMERA AI · ROAS alert</small></div>'+
+ '<div class="akc-top"><small>ALEXANDRA</small><b class="akc-tm">00:00</b></div>'+
+ '<div class="akc-card"><small>PMAX ROAS · SINCE 2 PM</small><b>1.8x <u>▼</u></b></div>'+
+ '<div class="akc-ban"><span class="akc-av"></span><p><b>Plan sent ✓</b>Today\'s plan went to the team on WhatsApp</p></div>'+
+ '<div class="akc-cap" data-c="a1"><p>PMax dropped to <em>1.8x</em> since 2 PM.</p><p>Want me to send the plan?</p></div>'+
+ '<div class="akc-cap me" data-c="you"><div class="akc-w"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><p>Yes, send it to the team.</p></div>'+
+ '<div class="akc-cap" data-c="a2"><p>Done, it\'s with the team now.</p></div>'+
+ '<div class="akc-ctl"><i></i><i class="r"></i><i></i></div>'+
+ '<div class="akc-rc"><i class="r"></i><i class="g"></i></div>'+
+ '</div>';
+// Runs only while her phone is at the front of the ring.
+var AKC={t:[],iv:0};
+function akcStop(){AKC.t.forEach(clearTimeout);AKC.t=[];clearInterval(AKC.iv);document.querySelectorAll('.akc video').forEach(function(v){try{v.pause()}catch(e){}})}
+function akcPlay(ph){akcStop();var el=ph&&ph.querySelector('.akc');if(!el)return;
+ var vids={};el.querySelectorAll('video').forEach(function(v){vids[v.dataset.v]=v;if(v.preload!=='auto'){v.preload='auto';try{v.load()}catch(e){}}});
+ function vid(n){for(var k in vids){vids[k].classList.toggle('on',k===n)}var v=vids[n];if(v){try{v.currentTime=0}catch(e){}var p=v.play();if(p&&p.catch)p.catch(function(){})}}
+ function words(c){el.querySelectorAll('.akc-cap[data-c="'+c+'"] p').forEach(function(p,j){if(!p.dataset.w){p.innerHTML=p.innerHTML.split(/(<em>.*?<\/em>|\s+)/).filter(function(x){return x&&!/^\s+$/.test(x)}).map(function(w){return '<span>'+w+'</span>'}).join(' ');p.dataset.w=1}
+   p.querySelectorAll('span').forEach(function(sp,i){sp.style.animationDelay=(j*1.15+i*.17)+'s'})})}
+ function at(ms,f){AKC.t.push(setTimeout(f,ms))}
+ function st(x){el.dataset.s=x}
+ var sec=0,tm=el.querySelector('.akc-tm');
+ st('ring');vid('ring');tm.textContent='00:00';
+ at(1700,function(){st('tap')});
+ at(2200,function(){st('a1');vid('talk');words('a1');sec=0;AKC.iv=setInterval(function(){sec++;tm.textContent='00:'+(sec<10?'0':'')+sec},1000)});
+ at(6200,function(){st('you');vid('listen');words('you')});
+ at(7800,function(){st('a2');vid('talk');words('a2')});
+}
 var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg viewBox="0 0 16 12"><path d="M8 11.5l2.4-3a3.4 3.4 0 0 0-4.8 0zM3.5 6.6a6.4 6.4 0 0 1 9 0l1.6-2a9 9 0 0 0-12.2 0zM.4 2.8l1.6 1.9a10.6 10.6 0 0 1 12 0l1.6-1.9a13.2 13.2 0 0 0-15.2 0z"/></svg><svg viewBox="0 0 27 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="#fff" stroke-opacity=".5"/><rect x="2" y="2" width="17" height="8" rx="1.8"/><rect x="24" y="4" width="2" height="4" rx="1" fill-opacity=".5"/></svg></i></div><div class="isl"></div>';
 // 3D phones on a turning ring: one screen at a time comes to the front, and its
 // two-screen phones switch between their screens.
@@ -881,6 +957,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
     clearInterval(window.__dt);var left=Math.ceil(hd/1000),sm=dots.querySelector('small');if(!sm){sm=document.createElement('small');dots.appendChild(sm)}sm.textContent=left+'s';
     window.__dt=setInterval(function(){left=Math.max(0,left-1);sm.textContent=left+'s'},1000);
     capT.textContent=S[k][1];capS.textContent=S[k][2];capD.textContent=S[k][3];
+    if(S[k][0][0]==='ak'){var akp=phones[k];setTimeout(function(){if(phones[((cur%N)+N)%N]===akp)akcPlay(akp)},anim?700:100)}else akcStop();
     if(anim){[cap,capD].forEach(function(e){e.classList.remove('swap');void e.offsetWidth;e.classList.add('swap')})}
     // The screen starts once the ring has turned; a two-screen phone switches halfway.
     clearTimeout(lt);var ph=phones[k],n=S[k][0].length;
@@ -889,7 +966,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   // A long screen gets time to scroll; a short one stays for LAYER.
   function dur(img){return img.naturalHeight/img.naturalWidth>2.4?SCROLL:LAYER}
   function layerMs(k,j){var im=phones[k].querySelectorAll('.ly img')[j];return im&&im.naturalWidth?dur(im):(/tasks|studio|compare/.test(S[k][0][j])?SCROLL:LAYER)}
-  var HOLD={home:4,types:5,plan:5,ak:5,studio:6,'ss-ramadan':7,ranks:5,tasks:7};
+  var HOLD={home:4,types:5,plan:5,ak:10,studio:6,'ss-ramadan':7,ranks:5,tasks:7};
   function hold(){var k=((cur%N)+N)%N,t=900+600;if(HOLD[S[k][0][0]])return HOLD[S[k][0][0]]*1000;for(var j=0;j<S[k][0].length;j++)t+=layerMs(k,j)+300;return t}
   function go(n){cur+=n;show(true)}
   function play(){stop();timer=setTimeout(function next(){go(1);timer=setTimeout(next,hold())},hold())}
