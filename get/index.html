@@ -716,6 +716,28 @@ html.lite .nav img{opacity:1!important}
 .akc-snd svg{width:58%;height:58%;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.akc-snd svg path:first-child{fill:#fff}
 .akc-snd .w{display:none}.akc-snd.on .w{display:inline}.akc-snd.on .x{display:none}.akc-snd.on{background:#E2B874}
 .rp:not(.front) .akc-snd{display:none}
+
+/* Daily Story phone */
+.fr .ly.stm{top:var(--sbh);container-type:inline-size;background:#f4f6fb;overflow:hidden}
+.stm-h{position:absolute;left:0;top:0;width:100%;height:216.4cqw;background:url(/get/shots/home.webp?v=20) top/100% auto no-repeat}
+.stm-r{position:absolute;left:3.1cqw;top:17.4cqw;width:9.2cqw;height:9.2cqw;border-radius:50%;background:conic-gradient(from 200deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5,#962fbf,#d62976,#fa7e1e,#feda75);-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 1cqw),#000 calc(100% - .8cqw));mask:radial-gradient(farthest-side,transparent calc(100% - 1cqw),#000 calc(100% - .8cqw));animation:stmSp 2.4s linear infinite}
+@keyframes stmSp{to{transform:rotate(360deg)}}
+.stm-n{position:absolute;left:9.5cqw;top:15.6cqw;background:#d62976;color:#fff;font:900 2.4cqw/1 Inter,system-ui,sans-serif;padding:.9cqw 1.6cqw;border-radius:99px;box-shadow:0 1cqw 2.4cqw rgba(0,0,0,.25);animation:stmB 1s ease-in-out infinite}
+@keyframes stmB{50%{transform:scale(1.12)}}
+.stm-f{position:absolute;left:7.7cqw;top:22cqw;width:7cqw;height:7cqw;margin:-3.5cqw 0 0 -3.5cqw;border-radius:50%;background:rgba(255,255,255,.6);border:.5cqw solid #fff;box-shadow:0 0 0 2cqw rgba(32,60,142,.15),0 1cqw 3cqw rgba(0,0,0,.25);opacity:0;transform:translate(14cqw,14cqw);transition:opacity .3s,transform .45s ease}
+.stm[data-s="0"] .stm-f{opacity:1;transform:none}.stm.tap .stm-f{transform:scale(.8);box-shadow:0 0 0 4cqw rgba(214,41,118,.25)}
+.stm-st{position:absolute;inset:0;background:#000;transform-origin:7.7cqw 22cqw;transform:scale(.06);opacity:0;border-radius:50%;transition:transform .45s cubic-bezier(.2,.9,.3,1),opacity .2s,border-radius .45s}
+.stm:not([data-s="0"]) .stm-st{transform:none;opacity:1;border-radius:0}
+.stm-i{position:absolute;inset:0;background-size:100% 100%;opacity:0;transition:opacity .25s}
+.stm[data-s="1"] .stm-i[data-i="1"],.stm[data-s="2"] .stm-i[data-i="2"],.stm[data-s="3"] .stm-i[data-i="3"]{opacity:1}
+.stm-hb{position:absolute;left:50%;top:44%;font-size:26cqw;line-height:1;transform:translate(-50%,-50%) scale(0);opacity:0;filter:drop-shadow(0 2cqw 4cqw rgba(0,0,0,.35));pointer-events:none}
+.stm.liked .stm-hb{animation:stmH 1.3s ease both}
+@keyframes stmH{0%{transform:translate(-50%,-50%) scale(0);opacity:0}25%{transform:translate(-50%,-50%) scale(1.2);opacity:1}40%{transform:translate(-50%,-50%) scale(.95)}55%{transform:translate(-50%,-50%) scale(1.05)}80%{opacity:1}100%{transform:translate(-50%,-60%) scale(1);opacity:0}}
+.stm-hs{position:absolute;left:79.1%;top:96%;width:7cqw;height:7cqw;margin:-3.5cqw 0 0 -3.5cqw;opacity:0}
+.stm-hs svg{width:100%;height:100%;fill:#ff3040}
+.stm.liked .stm-hs{opacity:1;animation:stmS .4s cubic-bezier(.2,1.6,.4,1) both .25s}
+@keyframes stmS{from{transform:scale(.3)}to{transform:scale(1)}}
+.rp:not(.front) .stm *{animation-play-state:paused}
 </style>
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Goldline Studio">
@@ -926,6 +948,20 @@ var AKM='<div class="ly on akm akc" data-s="hold">'+
  '<i class="akc-end"></i>'+
  '<button type="button" class="akc-snd" aria-label="Sound on" onclick="event.stopPropagation();akcSound(this)"><svg viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path class="w" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/><path class="x" d="M16 9l5 6M21 9l-5 6"/></svg></button>'+
  '</div>';
+// Daily Story: Daily Performance with the story ring, a tap opens it from the circle, three slides, a like pops on the second (11 s).
+var STM='<div class="ly on stm" data-s="0"><i class="stm-h"></i><span class="stm-r"></span><span class="stm-n">NEW</span><span class="stm-f"></span>'+
+ '<div class="stm-st">'+[1,2,3].map(function(n){return '<i class="stm-i" data-i="'+n+'" style="background-image:url(/get/shots/story-'+n+'.webp?v=1)"></i>'}).join('')+
+ '<span class="stm-hs"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 3 4.5 6.7 4.5c2.1 0 3.6 1.1 5.3 3 1.7-1.9 3.2-3 5.3-3 3.7 0 5.8 3.9 4.3 7.3C19.5 16.4 12 21 12 21z"/></svg></span><span class="stm-hb">❤️</span></div></div>';
+var STMT=[];
+function stmStop(){STMT.forEach(clearTimeout);STMT=[]}
+function stmPlay(ph){stmStop();var el=ph&&ph.querySelector('.stm');if(!el)return;var at=function(ms,f){STMT.push(setTimeout(f,ms))};
+ el.dataset.s='0';el.classList.remove('tap','liked');
+ at(1000,function(){el.classList.add('tap')});
+ at(1450,function(){el.dataset.s='1'});
+ at(4200,function(){el.dataset.s='2'});
+ at(5500,function(){el.classList.add('liked')});
+ at(7200,function(){el.classList.remove('liked');el.dataset.s='3'});
+}
 // Runs only while her phone is at the front of the ring. Sound only after a tap (browsers block it before).
 var AKC={t:[],iv:0,snd:false,ac:null,mu:0};
 function akcStop(){AKC.t.forEach(clearTimeout);AKC.t=[];clearInterval(AKC.iv);clearInterval(AKC.mu);try{speechSynthesis.cancel()}catch(e){}document.querySelectorAll('.akc video').forEach(function(v){try{v.pause()}catch(e){}})}
@@ -961,7 +997,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
 (function(){
   var S=[[['home'],'Daily Performance','Today against target','Today against target: spend, conversions, value and ROAS, each with its own plan line.'],
          [['types','yoy'],'By Campaign Type','Search, PMax, Demand Gen, Video','Each campaign type for the day, ranked by ROAS, with spend against its plan, then the same day last year.'],
-         [['plan','results'],'Day by Day','The media plan and the results','The plan for every day of the month, then each day’s results against it and the month so far.'],
+         [['story'],'Daily Story','The day, as a story','Every morning the account posts its day as a story, like Instagram: ROAS, the best campaign types and the days above plan.'],
          [['ak'],'Alexandra','Your AI assistant','Ask her about the numbers, sheets and days off, and get the answer in seconds.'],
          [['studio','compare'],'Reports Studio','One month, or two side by side','Build a report for any month, or compare two months point by point and see which one wins.'],
          [['ss-ramadan','ss-eidadha','ss-arafah','ss-thanksgiving'],'Seasons Calendar','Hijri and US seasons','Ramadan, Eid, Dhul Hijjah, Ashura and the US giving days, each with its countdown and last year’s numbers.'],
@@ -973,7 +1009,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   S.forEach(function(x,i){
     var d=document.createElement('div');d.className='rp';
     d.innerHTML='<div class="ed l"></div><div class="ed r"></div><div class="bk"><img src="/get/logo-white.webp?v=20" alt=""></div><div class="fr"><i class="bt a"></i><i class="bt b"></i><i class="bt c"></i><i class="bt d"></i><div class="scn">'+SB+
-      x[0].map(function(f,k){if(f==='ak')return AKM;return '<div class="ly'+(k?'':' on')+'"><img src="/get/shots/'+f+'.webp?v='+20+'" alt="'+x[1]+'"'+(i>1?' loading="lazy"':'')+'>'+(NAV[f]?'<img class="nvb" src="/get/shots/'+f+'-nav.webp?v='+20+'" alt="" loading="lazy">':'')+'</div>'}).join('')+'<i class="hb"></i><i class="gl"></i></div></div>';
+      x[0].map(function(f,k){if(f==='ak')return AKM;if(f==='story')return STM;return '<div class="ly'+(k?'':' on')+'"><img src="/get/shots/'+f+'.webp?v='+20+'" alt="'+x[1]+'"'+(i>1?' loading="lazy"':'')+'>'+(NAV[f]?'<img class="nvb" src="/get/shots/'+f+'-nav.webp?v='+20+'" alt="" loading="lazy">':'')+'</div>'}).join('')+'<i class="hb"></i><i class="gl"></i></div></div>';
     ring.appendChild(d);
     dots.appendChild(document.createElement('i'));
   });
@@ -998,6 +1034,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
     clearInterval(window.__dt);var left=Math.ceil(hd/1000),sm=dots.querySelector('small');if(!sm){sm=document.createElement('small');dots.appendChild(sm)}sm.textContent=left+'s';
     window.__dt=setInterval(function(){left=Math.max(0,left-1);sm.textContent=left+'s'},1000);
     capT.textContent=S[k][1];capS.textContent=S[k][2];capD.textContent=S[k][3];
+    if(S[k][0][0]==='story'){var stp=phones[k];setTimeout(function(){if(phones[((cur%N)+N)%N]===stp)stmPlay(stp)},anim?700:100)}else stmStop();
     if(S[k][0][0]==='ak'){var akp=phones[k];setTimeout(function(){if(phones[((cur%N)+N)%N]===akp)akcPlay(akp)},anim?700:100)}else akcStop();
     if(anim){[cap,capD].forEach(function(e){e.classList.remove('swap');void e.offsetWidth;e.classList.add('swap')})}
     // The screen starts once the ring has turned; a two-screen phone switches halfway.
@@ -1007,7 +1044,7 @@ var SB='<div class="sb"><span>9:41</span><i><svg viewBox="0 0 18 12"><rect x="0"
   // A long screen gets time to scroll; a short one stays for LAYER.
   function dur(img){return img.naturalHeight/img.naturalWidth>2.4?SCROLL:LAYER}
   function layerMs(k,j){var im=phones[k].querySelectorAll('.ly img')[j];return im&&im.naturalWidth?dur(im):(/tasks|studio|compare/.test(S[k][0][j])?SCROLL:LAYER)}
-  var HOLD={home:4,types:5,plan:5,ak:12,studio:6,'ss-ramadan':7,ranks:5,tasks:7};
+  var HOLD={home:4,types:5,story:11,ak:12,studio:6,'ss-ramadan':7,ranks:5,tasks:7};
   function hold(){var k=((cur%N)+N)%N,t=900+600;if(HOLD[S[k][0][0]])return HOLD[S[k][0][0]]*1000;for(var j=0;j<S[k][0].length;j++)t+=layerMs(k,j)+300;return t}
   function go(n){cur+=n;show(true)}
   function play(){stop();timer=setTimeout(function next(){go(1);timer=setTimeout(next,hold())},hold())}
