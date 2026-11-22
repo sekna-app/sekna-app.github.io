@@ -344,19 +344,20 @@ async function search(b, who) {
 }
 // Alexandra writes a short note for the budget picture or the monthly report: what she looked at, the numbers she used, and 3 choices.
 async function note(b, who) {
-  const kind = b.kind === 'month' ? 'month' : 'budget', facts = String(b.facts || '').trim().slice(0, 7000);
+  const kind = b.kind === 'month' ? 'month' : b.kind === 'change' ? 'change' : 'budget', facts = String(b.facts || '').trim().slice(0, 7000);
   if (!facts) return { ok: false, error: 'No numbers to read.' };
   const p = await prep(String(who.email || '').toLowerCase(), String(b.name || who.name || '').trim().slice(0, 60));
   if (p.blocked) return { ok: false, error: 'No access.' };
   const keys = (p.keys || []).filter(Boolean), url = String(p.url || '').replace(/:streamGenerateContent.*$/, ':generateContent').replace(/\?alt=sse$/, '');
-  const max = kind === 'month' ? 220 : 150;
-  const what = kind === 'month' ? "the note that goes on the notes page of this month's PDF report for the team and managers" : "the one-line note printed under the title of this month's budget picture, sent to the manager on WhatsApp";
+  const max = kind === 'month' ? 220 : kind === 'change' ? 180 : 150;
+  const what = kind === 'change' ? "a short note on whether a change to a campaign type worked, comparing the days after the change with the same number of days before it, for the team and the manager" : kind === 'month' ? "the note that goes on the notes page of this month's PDF report for the team and managers" : "the one-line note printed under the title of this month's budget picture, sent to the manager on WhatsApp";
   const prompt = `You are Alexandra, the media analyst of the Human Appeal digital team. Write ${what}.
 Use ONLY the numbers below. Never invent a number, a campaign or a reason. Plain, warm, professional English, short sentences, no emoji, no hashtags.
 Return JSON only:
 {"think":"2 or 3 short sentences in the first person: what you looked at and what stood out",
  "seen":["up to 6 very short chips with the key numbers you used, e.g. \"$48.2k budget\", \"+18% vs Nov\", \"4.2x ROAS\""],
- "options":[{"tag":"SHORT","text":"..."},{"tag":"FOR THE MANAGER","text":"..."},{"tag":"<2-word angle in capitals>","text":"..."}]}
+ "options":${kind === 'change' ? '[{"tag":"RECOMMENDATION","text":"what to do next, concrete"},{"tag":"SHORT NOTE","text":"did it work, in one line"},{"tag":"WATCH","text":"what to keep an eye on"}]' : '[{"tag":"SHORT","text":"..."},{"tag":"FOR THE MANAGER","text":"..."},{"tag":"<2-word angle in capitals>","text":"..."}]'}}
+If there are only a few days after the change, say it is early.
 Each option text at most ${max} characters, one or two sentences, different angles, written so a manager understands it at a glance.
 ${b.more ? 'Give 3 new options, different from: ' + String(b.more).slice(0, 600) : ''}
 

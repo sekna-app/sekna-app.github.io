@@ -10603,7 +10603,7 @@ body.dark-mode .akn-x{background:#1a212c;color:#c3cad8}body.dark-mode .akn-hd>b{
 @media (prefers-reduced-motion:reduce){.aklv-mus i,.aklv-hold i{animation:none}}
 
 /* v621 Did it work? */
-.chg{padding:16px!important}#chgPanel .chg{margin-top:4px}#chgPanel .chg-hd b{display:none}#chgPanel .chg-hd small{font-size:12.5px;margin-top:0}
+.chg{padding:16px!important}#chgPanel .chg{margin-top:4px}#chgPanel .chg-hd>div>b{display:none}#chgPanel .chg-hd small{font-size:12.5px;margin-top:0}
 .chg-hd{display:flex;align-items:center;gap:10px}.chg-hd>div{flex:1;min-width:0}
 .chg-hd b{display:block;font:400 22px "DM Serif Display",Georgia,serif;color:#14286b}.chg-hd small{display:block;font-size:12px;font-weight:600;color:#6b7385;margin-top:2px}
 .chg-plus{width:34px;height:34px;border-radius:50%;border:0;background:#eef2fb;color:#203c8e;font-size:18px;font-weight:800;cursor:pointer;flex:none}
@@ -10668,6 +10668,23 @@ body.dark-mode .chg-strip{background:color-mix(in srgb,var(--c) 16%,#11161e)}bod
 .chg-sl{margin-top:10px;display:flex;flex-direction:column;gap:2px}.chg-sl button{display:flex;align-items:center;gap:12px;border:0;background:none;border-radius:12px;padding:9px 6px;font:700 15px Inter,system-ui,sans-serif;color:#141b33;cursor:pointer;text-align:left}
 .chg-sl button.on{background:#eef4fb}.chg-sl button>span:not(.chg-ti){flex:1}.chg-sl em{font-style:normal;color:#1d9cc8;font-weight:900}
 body.dark-mode .chg-form3,body.dark-mode .chg-tp,body.dark-mode .chg-oth{background:#11161e;border-color:#2a313c;color:#e9eef7}body.dark-mode .chg-qc button{background:#1a212c;color:#c3cad8}body.dark-mode .chg-qc button.on{background:#2a4fb8;color:#fff}
+
+/* v625 Did it work?: summary on top, call + pencil in the strip, cards with the main number (the better side glows green), 7-day average when long, Alexandra's note */
+.chg-sum{margin:0;font-size:13.5px;line-height:1.45;font-weight:600;color:#3a4256}.chg-hd .chg-sum b{display:inline;font:800 13.5px Inter,system-ui,sans-serif}.chg-sum b.g{color:#14804a}.chg-sum b.r{color:#c0392b}
+#chgPanel .chg-hd{justify-content:space-between;align-items:flex-start;margin:0 0 2px}#chgPanel .chg-hd>div{display:block}#chgPanel .chg-hd>div>b{display:none}
+body.dark-mode .chg-sum{color:#c3cad8}
+.chg-sb{width:36px;height:36px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;flex:none;background:#fff;color:color-mix(in srgb,var(--c) 70%,#0b1640);box-shadow:0 2px 6px rgba(20,40,107,.08)}
+.chg-sb svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.chg-sb.ph{background:#22c47c;color:#fff}.chg-sb.ph svg,.chg-sb.ph .ak-ic{width:17px;height:17px}
+body.dark-mode .chg-sb{background:#1a212c}body.dark-mode .chg-sb.ph{background:#22c47c}
+.chg-cmp.c3>div{padding:10px 12px}.chg-cmp.c3 b{font-size:9.5px;letter-spacing:.12em}.chg-cmp.c3 strong{display:flex;align-items:center;gap:6px;font-size:24px;font-weight:900;color:#4a5368;margin-top:3px}.chg-cmp.c3 .a strong{color:#14286b}
+.chg-cmp.c3 strong .chg-d{font-size:11px}.chg-cmp.c3 small{margin-top:2px}
+.chg-cmp.c3 .win{background:linear-gradient(160deg,#e9f9f0,#f6fdf9)!important;box-shadow:inset 0 0 0 1.5px #22c47c,0 0 0 4px rgba(34,196,124,.12),0 6px 18px rgba(34,196,124,.18)!important;animation:chgWin 2.4s ease-in-out infinite}
+.chg-cmp.c3 .win b{color:#14804a}.chg-cmp.c3 .win strong{color:#0e5e36!important}
+@keyframes chgWin{50%{box-shadow:inset 0 0 0 1.5px #22c47c,0 0 0 7px rgba(34,196,124,.06),0 6px 22px rgba(34,196,124,.28)}}
+body.dark-mode .chg-cmp.c3 .win{background:linear-gradient(160deg,#10301f,#122619)!important}body.dark-mode .chg-cmp.c3 .win strong{color:#5fd99a!important}
+@media (prefers-reduced-motion:reduce){.chg-cmp.c3 .win{animation:none}}
+.chg-svg .chg-rd{fill:#c3cad8}
+.chg-akn{margin-top:12px}.akn-only{font-size:11px!important;letter-spacing:.16em!important;color:#a8781e!important;margin:0!important}
 </style>
 </head>
 <body>
@@ -23141,23 +23158,24 @@ async function akActInviteCheck(id,em){try{const r=await serverCall('adminOvervi
  if(hit)akActPut(id,`<div class="ak-act2 no" id="${id}"><b>${akEsc(em)}</b> is already in HEMERA (${akEsc(hit.status||'')}). No invite sent.</div>`)}catch(e){}}
 
 
-const AKNT={budget:{},month:{}};
+const AKNT={budget:{},month:{},chg:{}};
 function aknFace(){const d=akBav().data;return `<span class="akn-av">${d&&/^data:image\//.test(d)?`<img src="${d}" alt="">`:akI('spk')}</span>`}
-function aknGet(k){return k==='month'?{t:MR.notes||'',by:MR.notesBy||'me'}:{t:budNote(),by:budNoteBy()}}
-function aknPut(k,t,by){if(k==='month'){MR.notes=t;MR.notesBy=by}else budNoteSet(t,by)}
+function aknChg(){const l=CHG.list||[],mine=l.filter(x=>(x.acc||'usa')===CURRENT_ACCOUNT).sort((a,b)=>a.date<b.date?1:-1);return mine.find(x=>x.id===CHG.sel)||mine[0]||null}
+function aknGet(k){if(k==='chg'){const c=aknChg()||{};return {t:c.note||'',by:c.noteBy||'me'}}return k==='month'?{t:MR.notes||'',by:MR.notesBy||'me'}:{t:budNote(),by:budNoteBy()}}
+function aknPut(k,t,by){if(k==='chg'){const c=aknChg();if(c){c.note=t;c.noteBy=by;clearTimeout(AKNT.chgT);AKNT.chgT=setTimeout(chgSave,900)}return}if(k==='month'){MR.notes=t;MR.notesBy=by}else budNoteSet(t,by)}
 function aknHtml(k){const S=AKNT[k],cur=aknGet(k),opts=S.opts||[],mine=cur.by!=='ak';
  const spk='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/></svg>';
- const go=S.busy?`<button type="button" class="akn-go busy" disabled>${spk}<span>Writing…</span></button>`:opts.length?`<button type="button" class="akn-go" onclick="aknRun('${k}',1)">${spk}<span>3 more</span></button>`:`<button type="button" class="akn-go" onclick="aknRun('${k}')">${spk}<span>Write with Alexandra</span></button>`;
+ const go=S.busy?`<button type="button" class="akn-go busy" disabled>${spk}<span>Writing…</span></button>`:opts.length?`<button type="button" class="akn-go" onclick="aknRun('${k}',1)">${spk}<span>3 more</span></button>`:`<button type="button" class="akn-go" onclick="aknRun('${k}')">${spk}<span>${k==='chg'?'Ask her':'Write with Alexandra'}</span></button>`;
  const list=opts.length?opts:(!mine&&cur.t?[{tag:'CHOSEN',text:cur.t}]:[]);
  const open=S.busy||S.think||(S.seen||[]).length||opts.length||S.err;
- return `<div class="akn-hd">${aknFace()}<b><small>HEMERA AI</small>${k==='month'?'Team note':'Note'}</b>${go}</div>
+ return `<div class="akn-hd">${aknFace()}<b>${k==='chg'?'<small class="akn-only">ALEXANDRA AI</small>':`<small>HEMERA AI</small>${k==='month'?'Team note':'Note'}`}</b>${go}</div>
   ${open&&!S.busy?`<button type="button" class="akn-x" aria-label="Close Alexandra's suggestions" title="Close" onclick="aknClose('${k}')">✕</button>`:''}
-  ${S.busy?`<div class="akn-th busy"><i></i><b>Reading the numbers…</b><br>${k==='month'?'Results, the plan, every campaign type and last year.':'The budget, the weeks, the campaign types and last month.'}</div>`:''}
-  ${!S.busy&&S.think?`<div class="akn-th"><i></i><b>What I looked at</b><br>${esc(S.think)}</div>`:''}
+  ${S.busy?`<div class="akn-th busy"><i></i><b>Reading the numbers…</b><br>${k==='chg'?'Before and after the change, day by day.':k==='month'?'Results, the plan, every campaign type and last year.':'The budget, the weeks, the campaign types and last month.'}</div>`:''}
+  ${!S.busy&&S.think?`<div class="akn-th"><i></i><b>${k==='chg'?'What I see':'What I looked at'}</b><br>${esc(S.think)}</div>`:''}
   ${!S.busy&&(S.seen||[]).length?`<div class="akn-ch">${S.seen.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`:''}
   ${S.err?`<div class="akn-err">⚠️ ${esc(S.err)}</div>`:''}
   ${list.map((o,i)=>`<button type="button" class="akn-op${!mine&&cur.t===o.text?' on':''}" onclick="aknPick('${k}',${opts.length?i:-1})"><i></i><span><em>${esc(o.tag||'')}</em>${esc(o.text)}</span></button>`).join('')}
-  <textarea class="akn-own${mine&&cur.t?' on':''}" rows="2" maxlength="${k==='month'?600:160}" placeholder="${list.length?'None of these? Write your own…':k==='month'?'Or write your own, e.g. Gaza Emergency appeal launched on the 9th':'Or write your own, e.g. We raised PMax for the season.'}" oninput="aknOwn('${k}',this)">${mine?esc(cur.t):''}</textarea>`}
+  <textarea class="akn-own${mine&&cur.t?' on':''}" rows="2" maxlength="${k==='month'?600:k==='chg'?300:160}" placeholder="${list.length?'None of these? Write your own…':k==='chg'?'Or write your own note about this change':k==='month'?'Or write your own, e.g. Gaza Emergency appeal launched on the 9th':'Or write your own, e.g. We raised PMax for the season.'}" oninput="aknOwn('${k}',this)">${mine?esc(cur.t):''}</textarea>`}
 function aknClose(k){AKNT[k]={};aknDraw(k)}
 function aknDraw(k){const el=document.getElementById('akn-'+k);if(el)el.innerHTML=aknHtml(k)}
 function aknPick(k,i){const S=AKNT[k],o=i<0?null:(S.opts||[])[i];const cur=aknGet(k);
@@ -23165,6 +23183,7 @@ function aknPick(k,i){const S=AKNT[k],o=i<0?null:(S.opts||[])[i];const cur=aknGe
  try{akSfx&&akSfx('send')}catch(e){}aknDraw(k)}
 function aknOwn(k,ta){aknPut(k,ta.value,'me');ta.classList.toggle('on',!!ta.value);document.querySelectorAll('#akn-'+k+' .akn-op.on').forEach(b=>b.classList.remove('on'))}
 function aknFacts(k){
+ if(k==='chg')return chgFacts();
  if(k==='month'){const m=mpData();if(!m)return '';const r=(a,b)=>b?Math.round(a/b*100)+'%':'—';
   return [`Account: ${accountMeta(DASH_DATA||{}).label||CURRENT_ACCOUNT}`,`Month: ${m.label||m.month}, day ${m.live.length} of ${m.days.length}${m.live.length<m.days.length?' (month still running, plan figures are for the full month)':' (complete)'}`,
    `Spent ${mpK(m.a.spend)} of plan ${mpK(m.pt.spend)} (${r(m.a.spend,m.pt.spend)})`,`Conversion value ${mpK(m.a.value)} of plan ${mpK(m.pt.value)} (${r(m.a.value,m.pt.value)})`,
@@ -23187,7 +23206,7 @@ async function aknRun(k,more){const S=AKNT[k];if(S.busy)return;
  try{if(k==='month'){await ensureMonthExtras();mvSettle()}
   const facts=aknFacts(k);if(!facts)throw new Error('There are no numbers to read yet.');
   if(!akBav().data){akPost('hello').then(j=>akBavSync(j&&j.botAvV)).then(()=>aknDraw(k)).catch(()=>{})}
-  const r=await fetch(AK_SRV.replace(/\/ak\/ask$/,'/ak/note'),{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),name:akMe().name,kind:k,facts,more:more?(S.opts||[]).map(o=>o.text).join(' | '):''})});
+  const r=await fetch(AK_SRV.replace(/\/ak\/ask$/,'/ak/note'),{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),name:akMe().name,kind:k==='chg'?'change':k,facts,more:more?(S.opts||[]).map(o=>o.text).join(' | '):''})});
   const j=await r.json().catch(()=>({}));if(!j.ok)throw new Error(j.error||'Alexandra could not write the note.');
   S.think=j.think;S.seen=j.seen;S.opts=j.options;try{akSfx&&akSfx('recv')}catch(e){}
  }catch(e){S.err=e&&e.message||'Alexandra could not write the note.'}
@@ -23215,7 +23234,9 @@ function chgLast(ex){const ks=Object.keys(ex.days||{}).sort(),lt=((DASH_DATA||{}
 function chgTypes(ex){const o=[];(ex.channels||[]).forEach(n=>{const t=typeKey(n);if(o.indexOf(t)<0)o.push(t)});return o}
 function chgChart(ex,c,last){const n=Math.max(1,chgDiff(c.date,last)+1),span=Math.max(n,7),from=chgAdd(c.date,-span),pts=[];
  for(let dk=from;dk<=last;dk=chgAdd(dk,1)){const d=chgDay(ex,dk,c.type)||{};const v=CHG.m==='value'?d.value||0:CHG.m==='cpa'?(d.conversions?d.spend/d.conversions:null):(d.spend?(d.value||0)/d.spend:null);pts.push({dk,v})}
- const vals=pts.map(p=>p.v).filter(v=>v!=null);if(!vals.length)return '<div class="chg-empty">No days with data yet.</div>';
+ const long=pts.length>21;if(long){const raw=pts.map(p=>Object.assign({},p));pts.forEach((p,i)=>{let sp=0,va=0,cv=0,k=0;for(let j=Math.max(0,i-6);j<=i;j++){const d=chgDay(ex,raw[j].dk,c.type)||{};sp+=d.spend||0;va+=d.value||0;cv+=d.conversions||0;k++}
+   p.raw=raw[i].v;p.v=CHG.m==='value'?va/k:CHG.m==='cpa'?(cv?sp/cv:null):(sp?va/sp:null)})}
+ const vals=pts.map(p=>p.v).concat(long?pts.map(p=>p.raw):[]).filter(v=>v!=null);if(!vals.length)return '<div class="chg-empty">No days with data yet.</div>';
  const W=320,H=150,P=8,B=128,mx=Math.max(...vals)*1.15||1,mn=0,N=pts.length,x=i=>P+(W-2*P)*(N>1?i/(N-1):.5),y=v=>B-(B-12)*(v-mn)/(mx-mn);
  const ci=pts.findIndex(p=>p.dk===c.date),cx0=ci<0?W-P:x(ci);
  const avg=(a)=>{const v=a.map(p=>p.v).filter(v=>v!=null);return v.length?v.reduce((s,z)=>s+z,0)/v.length:null};
@@ -23227,7 +23248,7 @@ function chgChart(ex,c,last){const n=Math.max(1,chgDiff(c.date,last)+1),span=Mat
   <line x1="${cx0}" y1="0" x2="${cx0}" y2="${B}" stroke="#c99a45" stroke-width="2" stroke-dasharray="4 3"/><text x="${cx0>W-60?cx0-4:cx0+4}" y="11" text-anchor="${cx0>W-60?'end':'start'}" class="chg-ct">CHANGE</text>
   ${bA!=null&&ci>0?`<line x1="${x(Math.max(0,ci-n))}" y1="${y(bA)}" x2="${cx0}" y2="${y(bA)}" stroke="#8a92a6" stroke-dasharray="3 3"/>`:''}
   ${aA!=null?`<line x1="${cx0}" y1="${y(aA)}" x2="${W-P}" y2="${y(aA)}" stroke="#2a4fb8" stroke-dasharray="3 3"/>`:''}
-  <polyline class="chg-pl" points="${line}" fill="none" stroke="#14286b" stroke-width="2.4" stroke-linejoin="round"/>${pts.map((p,i)=>p.v==null?'':`<circle cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="2.4" fill="${i>=ci&&ci>=0?'#2a4fb8':'#14286b'}"/>`).join('')}
+  ${long?pts.map((p,i)=>p.raw==null?'':`<circle cx="${x(i).toFixed(1)}" cy="${y(p.raw).toFixed(1)}" r="1.8" class="chg-rd"/>`).join(''):''}<polyline class="chg-pl" points="${line}" fill="none" stroke="#14286b" stroke-width="${long?2.8:2.4}" stroke-linejoin="round" stroke-linecap="round"/>${long?'':pts.map((p,i)=>p.v==null?'':`<circle cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="2.4" fill="${i>=ci&&ci>=0?'#2a4fb8':'#14286b'}"/>`).join('')}
   <g class="chg-lb">${lab}</g></svg><div class="chg-lg"><span><i class="b"></i>Before avg <b>${fm(bA)}</b></span><span><i class="a"></i>After avg <b>${fm(aA)}</b></span></div>`}
 const CHG_WHAT=['Audience','Bidding','Budget','New ads','Targeting'];
 const CHG_MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -23271,12 +23292,12 @@ function chgDraw(){const el=document.getElementById('chgCard');if(!el)return;
  el.hidden=false;if(!CHG.list){chgLoad();el.innerHTML='<div class="chg-hd"><div><b>Did it work?</b><small>Loading your changes…</small></div></div>';return}
  const ex=MONTH_EXTRA[CURRENT_ACCOUNT];if(!ex){loadMonthExtras();el.innerHTML=`<div class="chg-hd"><div><b>Did it work?</b><small>${MONTH_EXTRA_FAIL&&MONTH_EXTRA_FAIL[CURRENT_ACCOUNT]?'Could not read the days. Pull to refresh.':'Reading the days…'}</small></div></div>`;return}
  const mine=(CHG.list||[]).filter(x=>(x.acc||'usa')===CURRENT_ACCOUNT).sort((a,b)=>a.date<b.date?1:-1);
- const hd=`<div class="chg-hd"><div><b>Did it work?</b></div><button type="button" class="chg-plus" aria-label="Track a change" onclick="chgEdit('')">＋</button></div>`;
+ const hdOf=t=>`<div class="chg-hd"><div><b>Did it work?</b>${t?`<p class="chg-sum">${t}</p>`:''}</div><button type="button" class="chg-plus" aria-label="Track a change" onclick="chgEdit('')">＋</button></div>`;let hd=hdOf('');
  if(CHG.form){el.innerHTML=chgFormHtml(ex);chgWheel();return}
  if(!mine.length){el.innerHTML=hd+`<button type="button" class="chg-add" onclick="chgEdit('')">＋ Track a change</button>`;return}
  const c=mine.find(x=>x.id===CHG.sel)||mine[0],last=chgLast(ex);
  const tabs=mine.length>1?`<div class="chg-tabs">${mine.map(x=>`<button type="button" class="${x.id===c.id?'on':''}" onclick="CHG.sel='${x.id}';chgDraw()"><i style="background:${chgCol(x.type)}"></i>${esc(CHANNEL_SHORT[x.type]||x.type)} · ${esc(chgFmt(x.date))}</button>`).join('')}</div>`:'';
- const col=chgCol(c.type),chips=`<div class="chg-strip" style="--c:${col}">${chgIco(c.type,34,1)}<div><b>${esc(c.type)}${c.what?' · '+esc(c.what):''}</b><small>${esc(chgFmt(c.date,1))} → today</small></div><button type="button" class="chg-edt" onclick="chgEdit('${c.id}')">Edit</button></div>`;
+ const col=chgCol(c.type),chips=`<div class="chg-strip" style="--c:${col}">${chgIco(c.type,34,1)}<div><b>${esc(c.type)}${c.what?' · '+esc(c.what):''}</b><small>${esc(chgFmt(c.date,1))} → today</small></div><button type="button" class="chg-sb ph" aria-label="Call Alexandra about this change" onclick="chgCall()">${akI('phone')}</button><button type="button" class="chg-sb" aria-label="Edit" onclick="chgEdit('${c.id}')"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></button></div>`;
  const n=last&&last>=c.date?chgDiff(c.date,last)+1:0;
  if(!n){el.innerHTML=hd+tabs+`<div class="chg-in chg-top">${chips}</div><div class="chg-in"><div class="chg-ver w"><i>⏳</i><div><b>Starts tomorrow</b><small>The first day after the change comes in with tomorrow's data.</small></div></div></div>`+(CHG.err?`<div class="chg-err">${esc(CHG.err)}</div>`:'');return}
  const bA=chgAdd(c.date,-n),bB=chgAdd(c.date,-1),A=chgSum(ex,c.type,c.date,last),B=chgSum(ex,c.type,bA,bB);
@@ -23284,18 +23305,29 @@ function chgDraw(){const el=document.getElementById('chgCard');if(!el)return;
  const row=(l,b,a,f,good)=>{const d=pc(a,b),z=d!=null&&Math.abs(d)<.005,cls=d==null||z||good===0?'n':(good>0?d>=0:d<=0)?'up':'dn';return `<tr><td>${l}</td><td>${b==null?'—':f(b)}</td><td>${a==null?'—':f(a)}</td><td><span class="chg-d ${cls}">${d==null?'—':z?'0%':(d>=0?'+':'−')+Math.abs(Math.round(d*100))+'%'}</span></td></tr>`};
  const x2=v=>fmt(v,2)+'x',pct=v=>fmt(v*100,2)+'%',num=v=>fmt(v,0);
  const tb=`<table class="chg-tb">${row('ROAS',B.roas,A.roas,x2,1)}${row('Conv. value',B.value,A.value,money,1)}${row('Conversions',B.conversions,A.conversions,num,1)}${row('Spend',B.spend,A.spend,money,0)}${row('CPA',B.cpa,A.cpa,money,-1)}${row('CTR',B.ctr,A.ctr,pct,1)}</table>`;
- const dr=pc(A.roas,B.roas),dv=pc(A.value,B.value),early=n<7,chk=chgFmt(chgAdd(c.date,7),1);
+ const dr=pc(A.roas,B.roas),dv=pc(A.value,B.value),early=n<7,chk=chgFmt(chgAdd(c.date,7),1),win=dr==null||Math.abs(dr)<.005?0:dr>0?1:-1;
+ const P=v=>`${v>=0?'up':'down'} ${Math.abs(Math.round(v*100))}%`;
+ hd=hdOf(dr==null?`Since the ${c.what?esc(c.what.toLowerCase())+' ':''}change on ${esc(chgFmt(c.date))}, ${esc(CHANNEL_SHORT[c.type]||c.type)} has no conversion value on one side yet.`:`Since the ${c.what?esc(c.what.toLowerCase())+' ':''}change on ${esc(chgFmt(c.date))}, ${esc(CHANNEL_SHORT[c.type]||c.type)} ROAS is <b class="${dr>=0?'g':'r'}">${P(dr)}</b> (${fmt(B.roas,2)}x → ${fmt(A.roas,2)}x)${dv!=null?` and value is <b class="${dv>=0?'g':'r'}">${P(dv)}</b>`:''} over ${n} day${n>1?'s':''}.`);
  const ver=dr==null?{c:'w',i:'…',t:'Not enough data yet',s:'Waiting for days with spend on both sides.'}:dr>.05&&!(dv<-.15)?{c:'g',i:'✓',t:early?'Early signs: better':'Better',s:early?`Only ${n} day${n>1?'s':''} after. Check again on ${chk}.`:`ROAS ${dr>=0?'+':'−'}${Math.abs(Math.round(dr*100))}% over ${n} days.`}
   :dr<-.05?{c:'r',i:'!',t:early?'Early signs: worse':'Worse',s:early?`Only ${n} day${n>1?'s':''} after. Check again on ${chk}.`:`ROAS ${Math.round(dr*100)}% over ${n} days.`}
   :{c:'w',i:'≈',t:early?'Early signs: about the same':'About the same',s:early?`Only ${n} day${n>1?'s':''} after. Check again on ${chk}.`:`ROAS within 5% over ${n} days.`};
  el.innerHTML=hd+tabs+`<div class="chg-in chg-top">${chips}</div>
-  <div class="chg-in chg-ch"><div class="chg-chh"><span>${CHG.m==='value'?'VALUE':CHG.m==='cpa'?'CPA':'ROAS'} BY DAY</span><span class="chg-seg">${[['roas','ROAS'],['value','Value'],['cpa','CPA']].map(([k,l])=>`<button type="button" class="${CHG.m===k?'on':''}" onclick="CHG.m='${k}';chgDraw()">${l}</button>`).join('')}</span></div>${chgChart(ex,c,last)}</div>
+  <div class="chg-in chg-ch"><div class="chg-chh"><span>${CHG.m==='value'?'VALUE':CHG.m==='cpa'?'CPA':'ROAS'} ${chgDiff(chgAdd(c.date,-Math.max(n,7)),last)+1>21?'· 7-DAY AVERAGE':'BY DAY'}</span><span class="chg-seg">${[['roas','ROAS'],['value','Value'],['cpa','CPA']].map(([k,l])=>`<button type="button" class="${CHG.m===k?'on':''}" onclick="CHG.m='${k}';chgDraw()">${l}</button>`).join('')}</span></div>${chgChart(ex,c,last)}</div>
   <div class="chg-in">
-  <div class="chg-cmp"><div class="b"><b>BEFORE</b>${esc(chgRange(bA,bB))}<small>${n} day${n>1?'s':''}</small></div><div class="a"><b>AFTER</b>${esc(chgRange(c.date,last))}<small>${n} day${n>1?'s':''}${early?' so far':''}</small></div></div>
-  ${tb}<div class="chg-ver ${ver.c}"><i>${ver.i}</i><div><b>${ver.t}</b><small>${ver.s}</small></div></div></div>
+  <div class="chg-cmp c3"><div class="b${win<0?' win':''}"><b>BEFORE · ${esc(chgRange(bA,bB).toUpperCase())}</b><strong>${B.roas!=null?fmt(B.roas,2)+'x':'—'}</strong><small>ROAS · ${n} day${n>1?'s':''}</small></div><div class="a${win>0?' win':''}"><b>AFTER · ${esc(chgRange(c.date,last).toUpperCase())}</b><strong>${A.roas!=null?fmt(A.roas,2)+'x':'—'}${dr!=null?`<span class="chg-d ${dr>=.005?'up':dr<=-.005?'dn':'n'}">${dr>=0?'+':'−'}${Math.abs(Math.round(dr*100))}%</span>`:''}</strong><small>ROAS · ${n} day${n>1?'s':''}${early?' so far':''}</small></div></div>
+  ${tb}<div class="chg-ver ${ver.c}"><i>${ver.i}</i><div><b>${ver.t}</b><small>${ver.s}</small></div></div>
+  <div class="akn chg-akn" id="akn-chg">${(AKNT.chg.cid&&AKNT.chg.cid!==c.id?(AKNT.chg={cid:c.id}):(AKNT.chg.cid=c.id),aknHtml('chg'))}</div></div>
 
   ${CHG.err?`<div class="chg-err">${esc(CHG.err)}</div>`:''}`;
 }
+
+function chgCall(){const el=document.getElementById('chgCard');if(!el)return;const c=aknChg();
+ akSwCall({el,name:'Did it work? · '+(c?c.type+(c.what?' '+c.what:'')+' change on '+chgFmt(c.date,1):'change'),hint:'Say whether the change worked: compare after with before (ROAS, value, conversions, CPA), say if it is still early, and give one clear recommendation.'})}
+function chgFacts(){const ex=MONTH_EXTRA[CURRENT_ACCOUNT]||{},c=aknChg();if(!c)return '';const last=chgLast(ex);if(!last||last<c.date)return '';
+ const n=chgDiff(c.date,last)+1,bA=chgAdd(c.date,-n),bB=chgAdd(c.date,-1),A=chgSum(ex,c.type,c.date,last),B=chgSum(ex,c.type,bA,bB);
+ const f=t=>`spend ${money(t.spend)}, conversion value ${money(t.value)}, ROAS ${t.roas!=null?fmt(t.roas,2)+'x':'—'}, conversions ${fmt(t.conversions,0)}, CPA ${t.cpa!=null?money(t.cpa):'—'}, CTR ${t.ctr!=null?fmt(t.ctr*100,2)+'%':'—'}, clicks ${fmt(t.clicks,0)}`;
+ const days=[];for(let dk=bA;dk<=last;dk=chgAdd(dk,1)){const d=chgDay(ex,dk,c.type);if(d)days.push(`${dk}${dk>=c.date?' (after)':''}: spend ${Math.round(d.spend)}, value ${Math.round(d.value)}, conv ${fmt(d.conversions,1)}`)}
+ return [`Account: ${CURRENT_ACCOUNT==='ar'?'Human Appeal AR':'Human Appeal US'}`,`Campaign type: ${c.type}`,`What changed: ${c.what||'not said'}, on ${c.date}`,`After the change (${c.date} to ${last}, ${n} days): ${f(A)}`,`Before (${bA} to ${bB}, ${n} days): ${f(B)}`,'Day by day:',...days.slice(-60)].join('\n')}
 </script>
 <div id="seknaFileEnd" hidden></div>
 <script>
