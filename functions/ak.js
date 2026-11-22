@@ -93,7 +93,7 @@ async function xop(b, who, isOwner) {
   const email = String(who.email || '').toLowerCase(), op = String(b.op || '');
   if (op === 'callEnd') { const sec = Math.max(0, Math.min(3600, Math.round(+b.sec || 0))); if (sec) await uuBump(email, (d, w) => { w.sec += sec; d.sec = (d.sec || 0) + sec; }); return { ok: true }; }
   if (op === 'usage') { const u = await uuGet(), k = ekey(email), L = limFor(u, email), d = ((u.d || {})[dayKey()] || {})[k] || {}, w = ((u.w || {})[weekKey()] || {})[k] || {};
-    const out = { ok: true, owner: !!isOwner, me: { q: d.q || 0, msgDay: L.msgDay, sec: w.sec || 0, wq: w.q || 0, callWeek: L.callWeek }, day: dayKey(), week: weekKey() };
+    const out = { ok: true, owner: !!isOwner, me: { q: d.q || 0, msgDay: isOwner ? 0 : L.msgDay, sec: w.sec || 0, wq: w.q || 0, callWeek: isOwner ? 0 : L.callWeek }, day: dayKey(), week: weekKey() };
     if (isOwner) { const rows = {}; Object.keys(u.w || {}).sort().slice(-1).forEach(wk => Object.keys(u.w[wk]).forEach(x => { rows[x] = rows[x] || { q: 0, sec: 0, today: 0 }; rows[x].q += u.w[wk][x].q || 0; rows[x].sec += u.w[wk][x].sec || 0; }));
       Object.keys((u.d || {})[dayKey()] || {}).forEach(x => { rows[x] = rows[x] || { q: 0, sec: 0, today: 0 }; rows[x].today = u.d[dayKey()][x].q || 0; });
       const mk = dayKey().slice(0, 7); let mq = 0, msec = 0; Object.keys(u.d || {}).filter(x => x.slice(0, 7) === mk).forEach(x => Object.values(u.d[x]).forEach(r => { mq += r.q || 0; msec += r.sec || 0; }));
@@ -105,6 +105,16 @@ async function xop(b, who, isOwner) {
       if (b.email) { u.limits.per = u.limits.per || {}; const k = ekey(b.email); u.limits.per[k] = { msgDay: n(b.msgDay), callWeek: n(b.callWeek) }; Object.keys(u.limits.per[k]).forEach(x => u.limits.per[k][x] === undefined && delete u.limits.per[k][x]); }
       else u.limits.base = Object.assign({}, u.limits.base || {}, b.msgDay != null ? { msgDay: n(b.msgDay) } : {}, b.callWeek != null ? { callWeek: n(b.callWeek) } : {}); return u; });
     return xop({ op: 'usage' }, who, true); }
+  if (op === 'stt') { const audio = String(b.audio || ''), mime = /^audio\/(wav|aac|ogg|webm|mp4|mpeg)$/.test(String(b.mime || '')) ? b.mime : 'audio/wav';
+    if (!audio || audio.length > 9e6 || !/^[A-Za-z0-9+/=]+$/.test(audio.slice(0, 200))) return { ok: false, error: 'Could not hear the message.' };
+    const pp = await prep(email, String(b.name || who.name || '').slice(0, 60)); if (pp.blocked) return { ok: false, error: 'No access.' };
+    { const lim = await overLimit(email, 'msg', isOwner); if (lim) return { ok: false, limit: true, error: lim }; }
+    const keys = (pp.keys || []).filter(Boolean), url = String(pp.url || '').replace(/:streamGenerateContent.*$/, ':generateContent').replace(/\?alt=sse$/, '');
+    const payload = { contents: [{ role: 'user', parts: [{ inline_data: { mime_type: mime, data: audio } }, { text: 'Write down exactly what is said in this voice note, in the language and dialect spoken (Egyptian Arabic stays Egyptian, in Arabic letters; English stays English). Only the words, nothing else.' }] }], generationConfig: { temperature: 0, maxOutputTokens: 600, thinkingConfig: { thinkingBudget: 0 } } };
+    let r = null; for (let ki = 0; ki < keys.length; ki++) { r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': keys[ki] }, body: JSON.stringify(payload) }); if (r.status !== 429 && r.status < 500) break; }
+    if (!r || !r.ok) return { ok: false, error: 'Could not hear the message' + (r ? ' (' + r.status + ')' : '') + '.' };
+    const j = await r.json(), t = (((j.candidates || [])[0] || {}).content || {}).parts || [];
+    const text = t.filter(x => !x.thought).map(x => x.text || '').join('').trim(); return text ? { ok: true, text } : { ok: false, error: 'Could not hear the message.' }; }
   if (op === 'notes') { const d = (await fsGet(NOTES).catch(() => null)) || {}; return { ok: true, list: (d.list || []).slice(-150).reverse() }; }
   if (op === 'noteAdd') { const t = String(b.text || '').trim().slice(0, 300); if (!t) return { ok: false };
     await fsUpdate(NOTES, d => { d = d || {}; const l = d.list = d.list || []; if (!l.slice(-30).some(x => x.t === t)) l.push({ id: 'n' + Date.now().toString(36), t, src: String(b.src || 'Chat').slice(0, 60), by: email, at: Date.now(), done: false }); d.list = l.slice(-300); return d; }); return { ok: true }; }
