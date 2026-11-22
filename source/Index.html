@@ -10613,6 +10613,14 @@ body.dark-mode .chg-ver.g{background:#10301f!important}body.dark-mode .chg-ver.r
 .chg-ver.b{background:#eef2fb!important;color:#14286b!important;padding:13px 14px!important}.chg-ver.b small em{font-style:normal;font-weight:800;color:#a8781e}
 .chg-wk{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:9px}.chg-wk i{height:7px;border-radius:4px;background:#d9dff0}.chg-wk i.on{background:linear-gradient(90deg,#e2b874,#c99a45)}
 body.dark-mode .chg-ver.b{background:#16203a!important;color:#e9eef7!important}body.dark-mode .chg-wk i{background:#2a3350}
+
+/* v641 small items (like the week bars): a small pill, her photo sized to the bar, a slim "Call" */
+.ak-swg.sm{gap:6px;padding-left:4px}
+.ak-swg.sm .ak-swa{width:calc(var(--eh) - 8px)!important;height:calc(var(--eh) - 8px)!important;max-width:30px;max-height:30px}
+.ak-swg.sm .ak-swt{flex-direction:row;align-items:center;gap:4px}.ak-swg.sm .ak-swt b{font:600 10.5px/1 Inter,system-ui,sans-serif;letter-spacing:.02em}.ak-swg.sm .ak-swt b{font-size:0}.ak-swg.sm .ak-swt b:before{content:"Call";font:600 10.5px/1 Inter,system-ui,sans-serif}
+.ak-swg.sm .ak-swc small{display:none}.ak-swg.sm .ak-swc i{font-size:11px}
+
+.ak-swg.sm .ak-swa{width:26px!important;height:26px!important}.ak-swg.sm .ak-swr{inset:-2px}
 </style>
 </head>
 <body>
@@ -23074,11 +23082,11 @@ function akSwCall(hit){if(AK.blocked)return;const txt=String((hit.el.closest('#c
  document.addEventListener('pointerup',end,{passive:true});document.addEventListener('pointercancel',end,{passive:true});
  document.addEventListener('click',e=>{const el=e.target.closest&&e.target.closest('[data-ak-sw]');if(el){e.stopPropagation();e.preventDefault()}},true)})();
  
-function akSwPill(el){akSwPillOff(true);const p=document.createElement('div');p.id='akSwP';p.className='ak-swg';
+function akSwPill(el){akSwPillOff(true);const p=document.createElement('div');p.id='akSwP';const eh=el.getBoundingClientRect().height;p.className='ak-swg'+(eh<72?' sm':'');p.style.setProperty('--eh',eh+'px');
  p.innerHTML=`<span class="ak-swa"><i class="ak-swr"></i>${akAvIn()}</span><span class="ak-swt"><b>Call Alexandra</b><em class="ak-swc"><i>›</i><i>›</i><i>›</i><small>keep pulling</small></em></span>`;document.body.appendChild(p);akSwPillAt(el,0,0)}
 function akSwPillAt(el,k,dx,anim){const p=document.getElementById('akSwP');if(!p)return;const r=el.getBoundingClientRect(),cs=getComputedStyle(el);
- if(p.dataset.l==null){p.dataset.l=r.left-(dx||0);p.dataset.t=r.top}const left=+p.dataset.l,top=+p.dataset.t,w=r.width,h=r.height;p.style.left=left+'px';p.style.top=top+'px';p.style.width=w+'px';p.style.height=h+'px';
- p.style.borderRadius=cs.borderRadius||'18px';p.style.transition=anim?'clip-path .32s cubic-bezier(.2,.8,.2,1)':'none';{const X=Math.max(0,dx||0),rr=Math.min(22,X*.35),b=Math.min(14,X*.12);p.style.clipPath=X<1?'inset(0 100% 0 0)':`path('M0 0 H${(X-rr).toFixed(1)} C${(X+b).toFixed(1)} ${(h*.2).toFixed(1)} ${(X+b).toFixed(1)} ${(h*.8).toFixed(1)} ${(X-rr).toFixed(1)} ${h} H0 Z')`}
+ if(p.dataset.l==null){p.dataset.l=r.left-(dx||0);p.dataset.t=r.top}const left=+p.dataset.l,top=+p.dataset.t,w=r.width,isSm=p.classList.contains('sm'),h=isSm?Math.min(r.height,34):r.height;p.style.left=left+'px';p.style.top=top+'px';p.style.width=w+'px';p.style.height=h+'px';
+ p.style.borderRadius=isSm?'12px':(cs.borderRadius||'18px');p.style.transition=anim?'clip-path .32s cubic-bezier(.2,.8,.2,1)':'none';{const X=Math.max(0,dx||0),rr=Math.min(22,X*.35),b=Math.min(14,X*.12);p.style.clipPath=X<1?'inset(0 100% 0 0)':`path('M0 0 H${(X-rr).toFixed(1)} C${(X+b).toFixed(1)} ${(h*.2).toFixed(1)} ${(X+b).toFixed(1)} ${(h*.8).toFixed(1)} ${(X-rr).toFixed(1)} ${h} H0 Z')`}
  p.classList.toggle('ready',k>=1);const sm=p.querySelector('small');if(sm&&!p.classList.contains('go'))sm.textContent=k>=1?'release':'keep pulling';
  p.style.setProperty('--k',Math.min(1,k).toFixed(2))}
 function akSwPillGo(){const p=document.getElementById('akSwP');if(!p)return;p.classList.add('go');const sm=p.querySelector('small');if(sm)sm.textContent='Calling…';setTimeout(()=>akSwPillOff(),760)}
