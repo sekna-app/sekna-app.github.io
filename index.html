@@ -10731,6 +10731,16 @@ body.dark-mode .akn-ot>span i{color:#e9eef7}
 .cp-n p{margin:0;font-family:Poppins,Inter,sans-serif;font-weight:600;font-size:17px;line-height:1.4;color:#14286b}.cp-n small{display:block;font-family:Inter,sans-serif;font-size:11px;font-weight:900;letter-spacing:.18em;color:#6d5ce8;margin-bottom:3px}
 .cp-ch{padding:14px 18px 6px}.cp-ch small{display:block;font-size:11px;font-weight:900;letter-spacing:.16em;color:#8a92a6;margin-bottom:6px}
 .cp-ft{display:flex;justify-content:space-between;padding:12px 22px 16px;font-size:12px;color:#8a92a6;font-weight:700}.cp-ft b{color:#14286b}
+
+/* v634 Alexandra's cards: brushed silver inside a polished silver frame (everywhere she appears) */
+.akn{position:relative;border:0!important;border-radius:18px!important;background:linear-gradient(135deg,#f7f8fb 0%,#e3e7ee 35%,#f8f9fb 55%,#d9dee7 80%,#f3f5f9 100%)!important;box-shadow:inset 0 1px 0 #fff,0 6px 16px rgba(20,40,107,.08)!important}
+.akn:before{content:"";position:absolute;inset:0;border-radius:18px;padding:2px;background:linear-gradient(120deg,#c9ced8,#ffffff 30%,#aab2c0 55%,#f4f6f9 75%,#b8bfcb);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.akn .akn-th{background:rgba(255,255,255,.72)}.akn .akn-op{background:rgba(255,255,255,.85)}.akn .akn-op.on{background:#fffaf0}.akn .akn-own{background:rgba(255,255,255,.7)}
+.akn-rd{position:absolute;top:-10px;right:16px;font:900 9.5px Inter,system-ui,sans-serif;letter-spacing:.14em;color:#5b6479;background:linear-gradient(180deg,#fff,#e6e9ef);border:1px solid #c9ced8;border-radius:99px;padding:3px 10px;white-space:nowrap;z-index:1}
+.chg-akn{margin-top:20px!important}
+body.dark-mode .akn{background:linear-gradient(135deg,#1c222d 0%,#262d3a 35%,#1a2029 55%,#2b3240 80%,#1d232e 100%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)!important}
+body.dark-mode .akn:before{background:linear-gradient(120deg,#4a5263,#9aa3b4 30%,#3c4453 55%,#8790a2 75%,#4a5263)}
+body.dark-mode .akn .akn-th,body.dark-mode .akn .akn-op,body.dark-mode .akn .akn-own{background:rgba(17,22,30,.75)}body.dark-mode .akn-rd{background:linear-gradient(180deg,#2b3240,#1c222d);border-color:#4a5263;color:#c3cad8}
 </style>
 </head>
 <body>
@@ -20326,7 +20336,7 @@ function scrollsSideways(el){
    if(!swipeOn()||e.touches.length!==1||document.body.classList.contains('drawer-open'))return;
    if(document.querySelector('.app-modal-overlay.open'))return;
    const t=e.target;
-   if(!t.closest||!t.closest('.tab-panel')||t.closest('input,textarea,select,button,a,[data-noswipe]')||scrollsSideways(t))return;
+   if(!t.closest||!t.closest('.tab-panel')||t.closest('input,textarea,select,button,a,[data-noswipe]')||scrollsSideways(t)||(typeof akSwFind==='function'&&akSwFind(t)))return;
    ok=true;x0=e.touches[0].clientX;y0=e.touches[0].clientY;t0=Date.now();
  },{passive:true});
  document.addEventListener('touchend',e=>{
@@ -23214,10 +23224,10 @@ function aknGet(k){if(k==='chg'){const c=aknChg()||{};return {t:c.note||'',by:c.
 function aknPut(k,t,by){if(k==='chg'){const c=aknChg();if(c){c.note=t;c.noteBy=by;clearTimeout(AKNT.chgT);AKNT.chgT=setTimeout(chgSave,900)}return}if(k==='month'){MR.notes=t;MR.notesBy=by}else budNoteSet(t,by)}
 function aknHtml(k){const S=AKNT[k],cur=aknGet(k),opts=S.opts||[],mine=cur.by!=='ak';
  const spk='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/></svg>';
- const go=S.busy?`<button type="button" class="akn-go busy" disabled>${spk}<span>Writing…</span></button>`:opts.length?`<button type="button" class="akn-go" onclick="aknRun('${k}',1)">${spk}<span>3 more</span></button>`:`<button type="button" class="akn-go" onclick="aknRun('${k}')">${spk}<span>${k==='chg'?'Ask her':'Write with Alexandra'}</span></button>`;
+ const go=S.busy?`<button type="button" class="akn-go busy" disabled>${spk}<span>Writing…</span></button>`:opts.length?`<button type="button" class="akn-go" onclick="aknRun('${k}',1)">${spk}<span>3 more</span></button>`:`<button type="button" class="akn-go" onclick="aknRun('${k}')">${spk}<span>Ask her</span></button>`;
  const list=opts.length?opts:(!mine&&cur.t?[{tag:'CHOSEN',text:cur.t}]:[]);
  const open=S.busy||S.think||(S.seen||[]).length||opts.length||S.err;
- return `<div class="akn-hd">${k==='chg'?`<span class="akn-orb">${aknFace()}</span><b class="akn-ot"><small>ALEXANDRA AI</small>${chgReadLine()}</b>`:`${aknFace()}<b><small>HEMERA AI</small>${k==='month'?'Team note':'Note'}</b>`}${go}</div>
+ return `<div class="akn-hd"><span class="akn-orb">${aknFace()}</span><b class="akn-ot"><small>ALEXANDRA AI</small></b>${k==='chg'?chgReadLine():''}${go}</div>
   ${open&&!S.busy?`<button type="button" class="akn-x" aria-label="Close Alexandra's suggestions" title="Close" onclick="aknClose('${k}')">✕</button>`:''}
   ${S.busy?`<div class="akn-th busy"><i></i><b>Reading the numbers…</b><br>${k==='chg'?'Before and after the change, day by day.':k==='month'?'Results, the plan, every campaign type and last year.':'The budget, the weeks, the campaign types and last month.'}</div>`:''}
   ${!S.busy&&S.think?`<div class="akn-th"><i></i><b>${k==='chg'?'What I see':'What I looked at'}</b><br>${esc(S.think)}</div>`:''}
@@ -23389,7 +23399,7 @@ async function akChgLines(acc){if(!canDo('chg'))return [];if(!CHG.list){chgLoad(
  return L}
 
 function chgReadLine(){try{const ex=MONTH_EXTRA[CURRENT_ACCOUNT],c=aknChg();if(!ex||!c)return '';const last=chgLast(ex);if(!last||last<c.date)return '';const n=chgDiff(c.date,last)+1;
- return `<span>Read <i>${2*n} days</i> of ${esc(CHANNEL_SHORT[c.type]||c.type)}</span>`}catch(e){return ''}}
+ return `<span class="akn-rd">READ ${2*n} DAYS · ${esc(String(CHANNEL_SHORT[c.type]||c.type).toUpperCase())}</span>`}catch(e){return ''}}
 
 
 function chgPicSvg(ex,c,last,n){const from=chgAdd(c.date,-n),pts=[];for(let dk=from;dk<=last;dk=chgAdd(dk,1)){const d=chgDay(ex,dk,c.type)||{};pts.push({dk,v:d.spend?(d.value||0)/d.spend:null})}
