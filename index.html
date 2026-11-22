@@ -10643,6 +10643,11 @@ body.dark-mode .chg-cmp .b{background:#1a212c}body.dark-mode .chg-cmp .a{backgro
 body.dark-mode .chg-svg .chg-af{fill:#16203a}body.dark-mode .chg-svg .chg-pl{stroke:#9fb6ff}body.dark-mode .chg-chip{background:#1a2540;color:#9fb6ff}body.dark-mode .chg-chip.on{background:#2a4fb8;color:#fff}body.dark-mode .chg-ed{background:#1a212c;color:#c3cad8}
 body.dark-mode .chg-d{background:#1a212c;color:#9aa1b2}body.dark-mode .chg-d.up{background:#12301f;color:#5fd99a}body.dark-mode .chg-d.dn{background:#3a1519;color:#ff8f8f}
 body.dark-mode .chg-seg button{background:#1a2540;color:#9fb6ff}body.dark-mode .chg-seg button.on{background:#2a4fb8;color:#fff}body.dark-mode .chg-plus{background:#1a2540;color:#9fb6ff}
+
+.chg-lg{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px;font-size:11.5px;font-weight:700;color:#6b7385}.chg-lg i{display:inline-block;width:14px;height:0;border-top:2px dashed #8a92a6;vertical-align:middle;margin-right:6px}.chg-lg i.a{border-color:#2a4fb8}.chg-lg b{color:#1d2433;margin-left:2px}
+body.dark-mode .chg-lg b{color:#e9eef7}
+#chgPanel .chg-hd{justify-content:flex-end;margin:-4px 0 -6px}#chgPanel .chg-hd>div{display:none}
+#chgPanel .chg-top{display:flex;align-items:center;gap:8px}#chgPanel .chg-top .chg-chips{flex:1}
 </style>
 </head>
 <body>
@@ -23194,16 +23199,16 @@ function chgChart(ex,c,last){const n=Math.max(1,chgDiff(c.date,last)+1),span=Mat
  const W=320,H=150,P=8,B=128,mx=Math.max(...vals)*1.15||1,mn=0,N=pts.length,x=i=>P+(W-2*P)*(N>1?i/(N-1):.5),y=v=>B-(B-12)*(v-mn)/(mx-mn);
  const ci=pts.findIndex(p=>p.dk===c.date),cx0=ci<0?W-P:x(ci);
  const avg=(a)=>{const v=a.map(p=>p.v).filter(v=>v!=null);return v.length?v.reduce((s,z)=>s+z,0)/v.length:null};
- const bA=avg(pts.slice(Math.max(0,ci-n),ci)),aA=avg(pts.slice(ci));
+ const SB=chgSum(ex,c.type,chgAdd(c.date,-n),chgAdd(c.date,-1)),SA=chgSum(ex,c.type,c.date,last),ag=t=>CHG.m==='value'?(t.n?t.value/t.n:null):CHG.m==='cpa'?t.cpa:t.roas,bA=ag(SB),aA=ag(SA);
  const fm=v=>v==null?'—':CHG.m==='roas'?fmt(v,2)+'x':money(v);
  const line=pts.map((p,i)=>p.v==null?null:`${x(i).toFixed(1)},${y(p.v).toFixed(1)}`).filter(Boolean).join(' ');
  const step=Math.max(1,Math.ceil(N/7)),lab=pts.map((p,i)=>i%step===0||i===ci?`<text x="${x(i).toFixed(1)}" y="${H-3}" text-anchor="middle">${+p.dk.slice(8)}</text>`:'').join('');
  return `<svg class="chg-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><rect class="chg-af" x="${cx0}" y="0" width="${Math.max(0,W-P-cx0)}" height="${B}"/>
-  <line x1="${cx0}" y1="0" x2="${cx0}" y2="${B}" stroke="#c99a45" stroke-width="2" stroke-dasharray="4 3"/><text x="${cx0+4}" y="11" class="chg-ct">CHANGE</text>
-  ${bA!=null&&ci>0?`<line x1="${x(Math.max(0,ci-n))}" y1="${y(bA)}" x2="${cx0}" y2="${y(bA)}" stroke="#8a92a6" stroke-dasharray="3 3"/><text x="${x(Math.max(0,ci-n))+2}" y="${y(bA)-4}" class="chg-av">avg ${fm(bA)}</text>`:''}
-  ${aA!=null?`<line x1="${cx0}" y1="${y(aA)}" x2="${W-P}" y2="${y(aA)}" stroke="#2a4fb8" stroke-dasharray="3 3"/><text x="${W-P-2}" y="${y(aA)-4}" text-anchor="end" class="chg-av b">avg ${fm(aA)}</text>`:''}
+  <line x1="${cx0}" y1="0" x2="${cx0}" y2="${B}" stroke="#c99a45" stroke-width="2" stroke-dasharray="4 3"/><text x="${cx0>W-60?cx0-4:cx0+4}" y="11" text-anchor="${cx0>W-60?'end':'start'}" class="chg-ct">CHANGE</text>
+  ${bA!=null&&ci>0?`<line x1="${x(Math.max(0,ci-n))}" y1="${y(bA)}" x2="${cx0}" y2="${y(bA)}" stroke="#8a92a6" stroke-dasharray="3 3"/>`:''}
+  ${aA!=null?`<line x1="${cx0}" y1="${y(aA)}" x2="${W-P}" y2="${y(aA)}" stroke="#2a4fb8" stroke-dasharray="3 3"/>`:''}
   <polyline class="chg-pl" points="${line}" fill="none" stroke="#14286b" stroke-width="2.4" stroke-linejoin="round"/>${pts.map((p,i)=>p.v==null?'':`<circle cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="2.4" fill="${i>=ci&&ci>=0?'#2a4fb8':'#14286b'}"/>`).join('')}
-  <g class="chg-lb">${lab}</g></svg>`}
+  <g class="chg-lb">${lab}</g></svg><div class="chg-lg"><span><i class="b"></i>Before avg <b>${fm(bA)}</b></span><span><i class="a"></i>After avg <b>${fm(aA)}</b></span></div>`}
 function chgFormHtml(ex){const f=CHG.form,types=chgTypes(ex),last=chgLast(ex);
  return `<div class="chg-form"><label><small>Campaign type</small><select onchange="CHG.form.type=this.value">${types.map(t=>`<option ${t===f.type?'selected':''}>${esc(t)}</option>`).join('')}</select></label>
   <label><small>Day of the change</small><input type="date" value="${esc(f.date)}" ${last?`max="${last}"`:''} onchange="CHG.form.date=this.value"></label>
@@ -23221,7 +23226,7 @@ function chgDraw(){const el=document.getElementById('chgCard');if(!el)return;
  el.hidden=false;if(!CHG.list){chgLoad();el.innerHTML='<div class="chg-hd"><div><b>Did it work?</b><small>Loading your changes…</small></div></div>';return}
  const ex=MONTH_EXTRA[CURRENT_ACCOUNT];if(!ex){loadMonthExtras();el.innerHTML=`<div class="chg-hd"><div><b>Did it work?</b><small>${MONTH_EXTRA_FAIL&&MONTH_EXTRA_FAIL[CURRENT_ACCOUNT]?'Could not read the days. Pull to refresh.':'Reading the days…'}</small></div></div>`;return}
  const mine=(CHG.list||[]).filter(x=>(x.acc||'usa')===CURRENT_ACCOUNT).sort((a,b)=>a.date<b.date?1:-1);
- const hd=`<div class="chg-hd"><div><b>Did it work?</b><small>From the day of the change, against the days before it</small></div><button type="button" class="chg-plus" aria-label="Track a change" onclick="chgEdit('')">＋</button></div>`;
+ const hd=`<div class="chg-hd"><div><b>Did it work?</b></div><button type="button" class="chg-plus" aria-label="Track a change" onclick="chgEdit('')">＋</button></div>`;
  if(CHG.form){el.innerHTML=hd+chgFormHtml(ex);return}
  if(!mine.length){el.innerHTML=hd+`<button type="button" class="chg-add" onclick="chgEdit('')">＋ Track a change</button>`;return}
  const c=mine.find(x=>x.id===CHG.sel)||mine[0],last=chgLast(ex);
@@ -23238,10 +23243,12 @@ function chgDraw(){const el=document.getElementById('chgCard');if(!el)return;
  const ver=dr==null?{c:'w',i:'…',t:'Not enough data yet',s:'Waiting for days with spend on both sides.'}:dr>.05&&!(dv<-.15)?{c:'g',i:'✓',t:early?'Early signs: better':'Better',s:early?`Only ${n} day${n>1?'s':''} after. Check again on ${chk}.`:`ROAS ${dr>=0?'+':'−'}${Math.abs(Math.round(dr*100))}% over ${n} days.`}
   :dr<-.05?{c:'r',i:'!',t:early?'Early signs: worse':'Worse',s:early?`Only ${n} day${n>1?'s':''} after. Check again on ${chk}.`:`ROAS ${Math.round(dr*100)}% over ${n} days.`}
   :{c:'w',i:'≈',t:early?'Early signs: about the same':'About the same',s:early?`Only ${n} day${n>1?'s':''} after. Check again on ${chk}.`:`ROAS within 5% over ${n} days.`};
- el.innerHTML=hd+tabs+`<div class="chg-in">${chips}
+ el.innerHTML=hd+tabs+`<div class="chg-in chg-top">${chips}</div>
+  <div class="chg-in chg-ch"><div class="chg-chh"><span>${CHG.m==='value'?'VALUE':CHG.m==='cpa'?'CPA':'ROAS'} BY DAY</span><span class="chg-seg">${[['roas','ROAS'],['value','Value'],['cpa','CPA']].map(([k,l])=>`<button type="button" class="${CHG.m===k?'on':''}" onclick="CHG.m='${k}';chgDraw()">${l}</button>`).join('')}</span></div>${chgChart(ex,c,last)}</div>
+  <div class="chg-in">
   <div class="chg-cmp"><div class="b"><b>BEFORE</b>${esc(chgRange(bA,bB))}<small>${n} day${n>1?'s':''}</small></div><div class="a"><b>AFTER</b>${esc(chgRange(c.date,last))}<small>${n} day${n>1?'s':''}${early?' so far':''}</small></div></div>
   ${tb}<div class="chg-ver ${ver.c}"><i>${ver.i}</i><div><b>${ver.t}</b><small>${ver.s}</small></div></div></div>
-  <div class="chg-in chg-ch"><div class="chg-chh"><span>${CHG.m==='value'?'VALUE':CHG.m==='cpa'?'CPA':'ROAS'} BY DAY</span><span class="chg-seg">${[['roas','ROAS'],['value','Value'],['cpa','CPA']].map(([k,l])=>`<button type="button" class="${CHG.m===k?'on':''}" onclick="CHG.m='${k}';chgDraw()">${l}</button>`).join('')}</span></div>${chgChart(ex,c,last)}</div>
+
   ${CHG.err?`<div class="chg-err">${esc(CHG.err)}</div>`:''}`;
 }
 </script>
