@@ -10625,6 +10625,30 @@ body.dark-mode .chg-ver.b{background:#16203a!important;color:#e9eef7!important}b
 #dayChannelsGrid .ctd{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 
 .ak-vtx{margin-top:6px}.ak-vtx>summary{cursor:pointer;font:700 11.5px Inter,system-ui,sans-serif;color:#6b7385;list-style:none}.ak-vtx>summary::-webkit-details-marker{display:none}.ak-vtx>summary:before{content:"▸ "}.ak-vtx[open]>summary:before{content:"▾ "}
+
+/* v649 rich cards, A · glass navy, colour by the result */
+.akr{position:relative;border-radius:14px;padding:10px 12px 10px 14px;color:#fff;background:rgba(8,16,42,.86);border:1px solid rgba(255,255,255,.12);box-shadow:0 8px 20px rgba(0,0,0,.18);overflow:hidden;font-family:Inter,system-ui,sans-serif;text-align:left}
+.akr:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:transparent}.akr.r-up:before{background:#5fd99a}.akr.r-dn:before{background:#ff8f8f}.akr.r-eq:before{background:#E2B874}
+.akr small{display:block;font-size:9.5px;font-weight:900;letter-spacing:.14em;color:#E2B874;text-transform:uppercase}
+.akr b{font-weight:900;font-size:22px;line-height:1.15}.akr b.m{font-size:17px}.akr b.n{font-size:14px;display:block}.akr b.o{opacity:.75;font-size:17px}
+.akr-row{display:flex;align-items:baseline;gap:8px;margin-top:3px}.akr-row.sp{justify-content:space-between;align-items:center}.akr-row s{font-size:15px;color:#c9d3f5}.akr-row span{font-size:11px;color:#c9d3f5}
+.akr-p{font-style:normal;font-size:12px;font-weight:800;color:#c9d3f5}.akr-p.up{color:#5fd99a}.akr-p.dn{color:#ff8f8f}.akr-p.eq{color:#E2B874}
+.akr-bar{height:7px;border-radius:9px;background:rgba(255,255,255,.18);margin-top:7px;overflow:hidden}.akr-bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#e2b874,#c99a45)}
+.akr-sp{width:104px;height:26px;flex:none}.akr-sp polyline{fill:none;stroke:#5fd99a;stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}.akr-sp circle{fill:#5fd99a}.akr.r-dn .akr-sp polyline{stroke:#ff8f8f}.akr.r-dn .akr-sp circle{fill:#ff8f8f}
+.akr-s{display:block;font-size:10.5px;font-weight:800;color:#c9d3f5;margin-top:2px}.akr-s.up{color:#5fd99a}.akr-s.dn{color:#ff8f8f}
+.akr-sub{font-size:11px;color:#c9d3f5;font-weight:600}
+.akr-h{display:flex;align-items:center;gap:10px}.akr-h>div{min-width:0}
+.akr-cal{width:44px;flex:none;border-radius:10px;overflow:hidden;background:#fff;text-align:center}.akr-cal i{display:block;font-style:normal;font-size:8.5px;font-weight:900;letter-spacing:.1em;padding:2px 0;background:#c99a45;color:#fff}.akr-cal b{display:block;font-size:18px;color:#14286b;padding:2px 0 3px}
+.akr-em{width:40px;height:40px;flex:none;border-radius:12px;display:grid;place-items:center;font-size:20px;background:rgba(255,255,255,.14)}
+.akr-ly{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:5px}.akr-ly i{display:block;font-style:normal;font-size:9.5px;font-weight:800;color:#c9d3f5}.akr-ly i.g{color:#E2B874}.akr-ly i{background:none!important;padding:0!important;border-radius:0!important}.akr-ly b{font-size:17px}
+.akr-av{width:38px;height:38px;flex:none;border-radius:50%;overflow:hidden;background:#e9c47a;color:#14286b;display:grid;place-items:center;font-weight:900;font-size:13px}.akr-av img{width:100%;height:100%;object-fit:cover}
+.akr-tag{margin-left:auto;flex:none;font-size:10px;font-weight:900;padding:4px 8px;border-radius:99px;background:rgba(255,255,255,.16);color:#E2B874}
+.akr-list{display:grid;gap:8px;margin-top:8px}
+.aklv-rich{position:absolute;left:14px;right:14px;top:calc(env(safe-area-inset-top,0px) + 112px);z-index:3;pointer-events:none;height:130px}
+.aklv.cm .aklv-rich{top:calc(env(safe-area-inset-top,0px) + 64px)}.aklv.calling .aklv-rich{visibility:hidden}
+.aklv-rc{position:absolute;left:0;right:0;top:0;transition:transform .35s cubic-bezier(.2,.8,.3,1),opacity .35s;animation:akrIn .3s cubic-bezier(.2,.8,.3,1) backwards}@keyframes akrIn{from{opacity:0;margin-top:-10px}}
+.aklv-rc[data-b="0"]{transform:translateY(22px);opacity:1;z-index:3}.aklv-rc[data-b="1"]{transform:translateY(11px) scale(.94);opacity:.75;z-index:2}.aklv-rc[data-b="2"]{transform:translateY(0) scale(.88);opacity:.5;z-index:1}
+.aklv-rc .akr{background:rgba(8,16,42,.95)}.aklv-rc:not([data-b="0"]) .akr{max-height:44px;background:rgba(40,52,96,.95);border-color:rgba(255,255,255,.3)}.aklv-rc:not([data-b="0"]) .akr>*{visibility:hidden}.aklv-rc.gone{opacity:0}
 </style>
 </head>
 <body>
@@ -21604,6 +21628,7 @@ async function akCtx0(acc){const L=[];
  try{const t=ssToday(),all=ssList(),ex=MONTH_EXTRA[acc];L.push('## Seasons coming up (with the same season last year in this account)');all.filter(x=>x.to>=t).slice(0,8).forEach(x=>{let ly='';try{const p=ssPrev(x,all);if(p&&ex&&ex.days){let sp=0,va=0,n=0;for(let d=new Date(p.from+'T12:00:00Z');d.toISOString().slice(0,10)<=p.to;d.setUTCDate(d.getUTCDate()+1)){const r=dayParts(d.toISOString().slice(0,10),ex,null);if(r){sp+=r.spend;va+=r.value;n++}}if(n)ly=' | last year '+p.from+' to '+p.to+': spend '+akR(K*sp)+', value '+akR(K*va)+', ROAS '+akR(sp?va/sp:0,2)+' ('+n+' days with data)'}}catch(e){}L.push(x.name+': '+x.from+' to '+x.to+' ('+x.len+' days, '+(x.type==='h'?'Hijri':'US')+')'+ly)})}catch(e){}
  try{(await akPlanHist(acc,K)).forEach(x=>L.push(x))}catch(e){}
  try{akFresh(acc).forEach(x=>L.push(x))}catch(e){}
+ try{L.unshift(akMoneyRule())}catch(e){}
  try{(await akChgLines(acc)).forEach(x=>L.push(x))}catch(e){}
  try{const a=akActHelp();if(a)L.push(a)}catch(e){}
  return L.join('\n').slice(0,110000)}
@@ -21612,7 +21637,7 @@ async function akCtx0(acc){const L=[];
 function akCardsSplit(t){t=String(t||'');const mm=/\[\[\s*CARDS\s*\]\]?/i.exec(t);if(!mm)return {text:t};const i=mm.index;let cards=null;
  try{const j=t.slice(i+mm[0].length).replace(/```(json)?/g,'');const o=j.indexOf('{'),c=j.lastIndexOf('}');if(o>=0&&c>o){const a=JSON.parse('['+j.slice(o,c+1)+']');if(Array.isArray(a))cards=a.filter(x=>x&&x.v!=null).slice(0,8)}}catch(e){}
  return {text:t.slice(0,i).trim(),cards:cards&&cards.length?cards:null}}
-function akCardsHtml(cs){const one=cs.length===1;return `<div class="ak-nc${one?' one':''}">${cs.map(c=>{const d=c.d==='up'?'up':c.d==='down'?'dn':'';
+function akCardsHtml(cs){if(cs.some(c=>c&&c.k))return `<div class="akr-list">${cs.map(c=>akRC(c)).join('')}</div><span class="ak-ncs">From the dashboard · ${akEsc((DASH_DATA&&DASH_DATA.account&&DASH_DATA.account.shortLabel)||'')}</span>`;const one=cs.length===1;return `<div class="ak-nc${one?' one':''}">${cs.map(c=>{const d=c.d==='up'?'up':c.d==='down'?'dn':'';
  
  const vs=String(c.v).split(/\s+vs\.?\s+/i),big=vs[0],was=vs.length>1?vs.slice(1).join(' vs '):'';
  return `<div class="ak-ncc"><small>${akEsc(String(c.l||''))}</small><b>${akEsc(big)}</b>${was?`<span class="ak-ncv">vs ${akEsc(was)}</span>`:''}${c.p?`<span class="ak-ncp ${d}">${akEsc(String(c.p))}</span>`:''}${c.s?`<em>${akEsc(String(c.s))}</em>`:''}</div>`}).join('')}</div><span class="ak-ncs">From the dashboard · ${akEsc((DASH_DATA&&DASH_DATA.account&&DASH_DATA.account.shortLabel)||'')}</span>`}
@@ -22540,6 +22565,7 @@ const AKLV_TOOLS=[{functionDeclarations:[
  {name:'do_action',description:'Do one of the actions listed under "Actions you can do for this person" (task, access, team message, maintenance, activity, reading status). Actions that change something show a Confirm button on the screen first.',
   parameters:{type:'OBJECT',properties:{do:{type:'STRING'},person:{type:'STRING'},title:{type:'STRING'},deadline:{type:'STRING'},note:{type:'STRING'},screen:{type:'STRING'},value:{type:'STRING'},text:{type:'STRING'},push:{type:'BOOLEAN'},on:{type:'BOOLEAN'},reason:{type:'STRING'}},required:['do']}},
  {name:'search_web',description:'Search Google for anything outside HEMERA (news, dates of holidays and seasons, ad platform changes, market facts). Returns a short answer with its sources; the sources also go to the chat. Say only what it returns.',parameters:{type:'OBJECT',properties:{query:{type:'STRING'}},required:['query']}},
+ {name:'show_card',description:'Show one card on the screen while you talk, so the person sees the key number. Use it for the main number of an answer (one card per answer, not more). Fields as in the card kinds: k = cmp (before→after: from,to,p,d), prog (v,of,pct), spark (v,pts,s,d), type (ch,v,s), date (date YYYY-MM-DD,v,s), season (e emoji,l,v,s), ly (ay,a,b,p,d), person (name,role,tag), or plain (l,v,p,d,s). d = up / down / "" for good / bad / so-so.',parameters:{type:'OBJECT',properties:{k:{type:'STRING'},l:{type:'STRING'},v:{type:'STRING'},p:{type:'STRING'},d:{type:'STRING'},s:{type:'STRING'},from:{type:'STRING'},to:{type:'STRING'},of:{type:'STRING'},pct:{type:'NUMBER'},pts:{type:'ARRAY',items:{type:'NUMBER'}},ch:{type:'STRING'},date:{type:'STRING'},e:{type:'STRING'},ay:{type:'STRING'},a:{type:'STRING'},b:{type:'STRING'},name:{type:'STRING'},role:{type:'STRING'},tag:{type:'STRING'}},required:['k']}},
  {name:'send_plan',description:'Send the budget plan picture of a month into the chat (e.g. "December").',parameters:{type:'OBJECT',properties:{month:{type:'STRING'}},required:['month']}},
  {name:'send_summary',description:'Send a short written summary of this call into the chat: the key numbers and the things to do. Only when the person asks for it.',parameters:{type:'OBJECT',properties:{points:{type:'ARRAY',items:{type:'STRING'}}},required:['points']}}]}];
 const AKLV_TOOL_RULES=`# Tools in this call (be fast)
@@ -22547,6 +22573,7 @@ const AKLV_TOOL_RULES=`# Tools in this call (be fast)
 - Only for things that are not in the summary (one campaign, an older day, a month, a campaign type, search terms, what dropped, the other account) call get_numbers once, then answer. Before calling it, say a very short phrase like "ثواني أشوفلك". Never guess a number.
 - For outside facts (news, holidays, platform changes) use search_web and say only what it returns; never invent outside facts.
 - open_screen ONLY when the person clearly asks to open or show a screen (افتحي، وريني، اعرضي، open, show). Never open anything on your own.
+- When you say the main number of an answer, call show_card once with the best kind (cmp for before/after, prog for a target, spark for a trend, type for a campaign type, date when you name a day, season, ly for last year, person for a teammate). Keep talking; do not wait for it.
 - "Send me the plan of <month>" → send_plan. "Send me a summary of the call" (now or at the end) → send_summary with 3 to 6 short points in the person's language.`;
 function akLiveSplit(t){const S=[];let cur={h:'Summary',L:[]};String(t||'').split('\n').forEach(l=>{if(/^## /.test(l)){S.push(cur);cur={h:l.slice(3),L:[]}}else cur.L.push(l)});S.push(cur);return S.filter(x=>x.L.join('').trim())}
 const AKLV_BIG=/Days before|Every month|Campaigns \(|Search terms|Things that dropped|HEMERA team|Seasons/i;
@@ -22758,11 +22785,11 @@ function akCallCard(sec,tm){const m=Math.floor(sec/60),s=sec%60,len=m?`${m} min$
 
  
 async function akLiveTool(tc){const calls=(tc&&tc.functionCalls)||[];if(!calls.length)return;AKLV.wait=true;
- const res=await Promise.all(calls.map(async f=>{let r;try{const A=f.args||{};if(f.name==='get_numbers')r=await akLiveNumbers(A);else if(f.name==='open_screen')r=akLiveAsked()?await akLiveScreen(A):{result:'Not opened: the person did not ask to open anything. Just answer.'};else if(f.name==='send_plan')r=akLivePlan(A);else if(f.name==='send_summary')r=akLiveSumm(A);else if(f.name==='do_action')r=await akActVoice(A);else if(f.name==='search_web')r=await akLiveSearch(A);else r={result:'unknown tool'}}catch(e){r={result:'error: '+(e&&e.message||e)}}
+ const res=await Promise.all(calls.map(async f=>{let r;try{const A=f.args||{};if(f.name==='get_numbers')r=await akLiveNumbers(A);else if(f.name==='open_screen')r=akLiveAsked()?await akLiveScreen(A):{result:'Not opened: the person did not ask to open anything. Just answer.'};else if(f.name==='send_plan')r=akLivePlan(A);else if(f.name==='send_summary')r=akLiveSumm(A);else if(f.name==='do_action')r=await akActVoice(A);else if(f.name==='search_web')r=await akLiveSearch(A);else if(f.name==='show_card'){akLiveRich(A);r={result:'shown'}}else r={result:'unknown tool'}}catch(e){r={result:'error: '+(e&&e.message||e)}}
   return {id:f.id,name:f.name,response:r}}));
  const ws=AKLV.ws;if(ws&&ws.readyState===1)try{ws.send(JSON.stringify({toolResponse:{functionResponses:res}}))}catch(e){}}
  
-function akLiveCards(cs){const el=document.getElementById('akLive');if(!el)return;cs=(Array.isArray(cs)?cs:[]).filter(c=>c&&c.value!=null).slice(0,3);if(!cs.length)return;
+function akLiveCards(cs){if(AKLV.richAt&&Date.now()-AKLV.richAt<8000)return;const el=document.getElementById('akLive');if(!el)return;cs=(Array.isArray(cs)?cs:[]).filter(c=>c&&c.value!=null).slice(0,3);if(!cs.length)return;
  let box=document.getElementById('aklvCards');if(!box){box=document.createElement('div');box.id='aklvCards';box.className='aklv-cards';el.appendChild(box)}
  const have=[...box.querySelectorAll('.aklv-cd:not(.out)')],keep=new Set();
  cs.forEach((c,i)=>{const lab=String(c.label||''),v=akLiveTx(String(c.value));let e=have.find(x=>x.dataset.l===lab);
@@ -23355,6 +23382,30 @@ async function akVoReply(ans){try{await new Promise(r=>setTimeout(r,60));const i
  const vb=`<span class="ak-vb" data-v="${vid}" data-d="${secs}" onclick="akPlay(this)">${akI('play')}<span>${bars.map(h=>`<i data-h="${h}" style="height:${h}px"></i>`).join('')}</span><b>${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}</b></span>`;
  m.html=`${vb}<details class="ak-vtx"><summary>Show text</summary>${m.html}</details>`;try{akSave()}catch(e){}
  if(document.getElementById('akBox')){akDraw();setTimeout(()=>{const b=document.querySelector(`#akBox .ak-vb[data-v="${vid}"]`);if(b)try{akPlay(b)}catch(e){}},250)}}catch(e){}}
+
+
+
+function akRC(c){c=c||{};const k=String(c.k||''),d=c.d==='up'?'up':c.d==='down'?'dn':c.d?'eq':'',E=x=>akEsc(String(x==null?'':x)),L=c.l?`<small>${E(c.l)}</small>`:'';
+ const pill=c.p?`<em class="akr-p ${d}">${E(c.p)}</em>`:'';let body='';
+ if(k==='cmp')body=`${L}<div class="akr-row"><s>${E(c.from)}</s><b>${E(c.to||c.v)}</b>${pill}</div>`;
+ else if(k==='prog'){const p=Math.max(0,Math.min(100,+c.pct||0));body=`${L}<div class="akr-row sp"><b>${E(c.v)}</b><span>${c.of?'of '+E(c.of)+' · ':''}${Math.round(+c.pct||0)}%</span></div><div class="akr-bar"><i style="width:${p}%"></i></div>`}
+ else if(k==='spark'){const pts=(Array.isArray(c.pts)?c.pts:[]).map(Number).filter(isFinite);let svg='';if(pts.length>1){const mn=Math.min(...pts),mx=Math.max(...pts),W=104,H=26,xs=i=>i/(pts.length-1)*W,ys=v=>H-3-(mx>mn?(v-mn)/(mx-mn):.5)*(H-6);svg=`<svg viewBox="0 0 ${W} ${H}" class="akr-sp"><polyline points="${pts.map((v,i)=>xs(i).toFixed(1)+','+ys(v).toFixed(1)).join(' ')}"/><circle cx="${W}" cy="${ys(pts[pts.length-1]).toFixed(1)}" r="2.8"/></svg>`}
+  body=`${L}<div class="akr-row sp"><b>${E(c.v)}</b>${svg}</div>${c.s?`<span class="akr-s ${d}">${d==='up'?'▲ ':d==='dn'?'▼ ':''}${E(c.s)}</span>`:''}`}
+ else if(k==='type'){let ic='';try{ic=chgIco(c.ch||'',30)}catch(e){}body=`<div class="akr-h">${ic}<div>${c.l?`<small>${E(c.l)}</small>`:`<small>${E(String(c.ch||'').toUpperCase())}</small>`}<div><b>${E(c.v)}</b> ${c.s?`<span class="akr-sub">${E(c.s)}</span>`:''}${pill}</div></div></div>`}
+ else if(k==='date'){const t=Date.parse(String(c.date||'')+'T12:00:00Z'),dt=isFinite(t)?new Date(t):null,mo=dt?dt.toLocaleDateString('en-GB',{month:'short',timeZone:'UTC'}).toUpperCase():'',dd=dt?dt.getUTCDate():'';
+  body=`<div class="akr-h"><span class="akr-cal"><i>${mo}</i><b>${dd}</b></span><div>${c.l?`<small>${E(c.l)}</small>`:''}<div><b>${E(c.v)}</b> ${c.s?`<span class="akr-sub">${E(c.s)}</span>`:''}</div></div></div>`}
+ else if(k==='season')body=`<div class="akr-h"><span class="akr-em">${E(c.e||'📅')}</span><div>${L}<div><b class="m">${E(c.v)}</b></div>${c.s?`<span class="akr-sub">${E(c.s)}</span>`:''}</div></div>`;
+ else if(k==='ly')body=`${L}<div class="akr-ly"><div><i>${E(c.ay||'Last year')}</i><b class="o">${E(c.a)}</b></div><div><i class="g">TODAY</i><b>${E(c.b||c.v)} ${pill}</b></div></div>`;
+ else if(k==='person'){const ini=String(c.name||'?').split(/\s+/).map(x=>x[0]||'').join('').slice(0,2).toUpperCase();let av='';try{const P=((typeof PFP!=='undefined'&&PFP.people)||[]).find(x=>String(x.name||'').toLowerCase()===String(c.name||'').toLowerCase());if(P&&P.avatar&&/^data:image|^https?:/.test(P.avatar))av=`<img src="${akEsc(P.avatar)}" alt="">`}catch(e){}
+  body=`<div class="akr-h"><span class="akr-av">${av||ini}</span><div><b class="n">${E(c.name)}</b><span class="akr-sub">${E(c.role||'')}</span></div>${c.tag?`<span class="akr-tag">${E(c.tag)}</span>`:''}</div>`}
+ else body=`${L}<div class="akr-row"><b>${E(c.v)}</b>${pill}</div>${c.s?`<span class="akr-sub">${E(c.s)}</span>`:''}`;
+ return `<div class="akr r-${d||'n'}">${body}</div>`}
+
+function akLiveRich(c){const el=document.getElementById('akLive');if(!el)return;AKLV.richAt=Date.now();let box=document.getElementById('aklvRich');
+ if(!box){box=document.createElement('div');box.id='aklvRich';box.className='aklv-rich';el.appendChild(box)}
+ const old=document.getElementById('aklvCards');if(old)old.innerHTML='';
+ const w=document.createElement('div');w.className='aklv-rc';w.innerHTML=akRC(c);box.appendChild(w);
+ const all=[...box.children];all.forEach((x,i)=>{const back=all.length-1-i;x.dataset.b=back;if(back>2){x.classList.add('gone');setTimeout(()=>x.remove(),300)}});}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>

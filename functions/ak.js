@@ -25,6 +25,7 @@ const HM_NUM_RULES = [
   '  l = short English label with the period; v = the number formatted ($ for money in USD accounts, £ for GBP, x for ROAS, % for shares); p = optional short pill (vs plan or change, like "+12%"); d = "up" when good, "down" when bad, "" when neutral; s = optional short English line.',
   '  One card for a single figure. For a comparison, one card per metric with the change in p. For rankings, one card per item (best first).',
   '  In a comparison card, v is only the newer figure (like "$41,155"); the older one goes in s (like "vs $43,568 · Oct week 1"). Never write "X vs Y" in v.',
+  '  Richer cards: add "k" to a card when it fits better (use them, but only where they help): {"k":"cmp","l":"ROAS · before → after","from":"1.41x","to":"2.00x","p":"+42%","d":"up"} · {"k":"prog","l":"Week 3 · spent of plan","v":"$44.4k","of":"$63.5k","pct":70} · {"k":"spark","l":"ROAS · last 7 days","v":"2.35x","pts":[1.9,2.0,1.8,2.2,2.1,2.4,2.35],"s":"rising since Sunday","d":"up"} · {"k":"type","ch":"Performance Max","l":"PMax · today","v":"9.75x","s":"$12,345 value"} · {"k":"date","date":"2026-11-19","l":"Thursday · 19 Nov","v":"$6,243","s":"spend · 117% of plan"} · {"k":"season","e":"🕋","l":"Arafah · in 3 days","v":"Last year $40.2k","s":"value in one day · 3.1x ROAS"} · {"k":"ly","l":"Value · same Hijri day","ay":"2025","a":"$21.4k","b":"$27.7k","p":"+29%","d":"up"} · {"k":"person","name":"Sara Ahmed","role":"Media Buyer","tag":"On leave"}. "d" is "up" good, "down" bad, "" so-so.',
   '- Season and holiday names are always written in English, also in Arabic answers: Ramadan, Last 10 nights, Eid al-Fitr, Dhul Hijjah, Day of Arafah, Eid al-Adha, Ashura, Thanksgiving, Giving Tuesday, Tax season, Year-end. Never write them in Arabic letters.',
   '- Team questions (who is the CEO, who is the Team Leader, what is my rank, who is in the team) are answered from "The HEMERA team" list in the dashboard numbers. Use the role exactly as written there. Never say the person asking is the assistant.',
   '- Questions that are not about the numbers (sheets, links, team, days off) are answered as before, without cards.',
@@ -91,7 +92,7 @@ async function ask(req, res, b, who) {
     q += '\n\n[HEMERA: the live dashboard numbers are in your instructions under "Dashboard numbers". If this is about performance, answer from them and end with [[CARDS]] and the JSON cards. If the answer has no numbers, do not write [[CARDS]] at all.]';
   }
   const mem = await memGet(email);
-  const sys = (ctx ? '# HEMERA mode\n' + HM_NUM_RULES + '\n\n' : '') + p.base + '\n\n' + SMART_RULES + memText(mem) + (ctx ? '\n\n## Dashboard numbers (HEMERA)\n' + ctx : '') + '\n\n=== DATA ===\n' + (p.data || '');
+  const sys = (ctx ? '# HEMERA mode\n' + HM_NUM_RULES + '\n\n' : '') + p.base + '\n\n' + SMART_RULES + '\n\n' + CHAT_STYLE + memText(mem) + (ctx ? '\n\n## Dashboard numbers (HEMERA)\n' + ctx : '') + '\n\n=== DATA ===\n' + (p.data || '');
   const deep = DEEP_RE.test(q0) || q0.length > 220;
   const payload = { tools: Date.now() < searchOffUntil ? undefined : [{ google_search: {} }, { url_context: {} }], system_instruction: { parts: [{ text: sys }] }, contents: hist.concat([{ role: 'user', parts: (img ? [{ inline_data: { mime_type: img.mime, data: img.data } }] : []).concat([{ text: q }]) }]),
     // v604 faster written answers: a short think for short questions, a capped one otherwise (the photo keeps the script's setting)
@@ -328,6 +329,8 @@ async function notifGet(onlyVer) { const d = (await fsGet(NOTIF).catch(() => nul
 
 // v608 smarter Alexandra: Google Search and links for things outside HEMERA, a memory per person, deeper thinking for analysis
 const DEEP_RE = /ليه|ليش|لماذا|حلل|حلّل|تحليل|اقترح|اقتراح|خطة|استراتيج|قارن|مقارنة|توقع|توقّع|ازاي نحسن|إزاي نحسن|why|analy[sz]e|suggest|recommend|strategy|compare|forecast|plan for|what should/i;
+// v649 the same manners, personality and number style as in calls, written for the chat
+const CHAT_STYLE = '# Talking with the person (the same style as in calls, written)\n' + VOICE_RULES.split('\n').filter(l => !/^# Voice chat|^You are talking out loud|^- Keep each answer short|^- Never use markdown|^- Numbers in Egyptian words|^- For anything outside HEMERA/.test(l)).join('\n').replace(/in the call/g, 'in the chat').replace(/in a call/g, 'in a chat') + '\n- In writing: write numbers with digits (English digits), keep ROAS with its decimals and x, drop cents in money. Keep answers short.';
 const SMART_RULES = `# Thinking and sources
 - Think beyond the app when it helps: you may use Google Search (and read links the person sends) for things outside HEMERA, like news, holidays and seasons, donor behaviour, ad platform changes, industry benchmarks or best practice. Say briefly where it comes from.
 - HEMERA numbers (spend, value, ROAS, campaigns, plans) come ONLY from the dashboard data you were given, never from the web. Never guess or round a number differently from the data; if a number is not in the data, say so.
