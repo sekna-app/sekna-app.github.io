@@ -10697,6 +10697,8 @@ body.dark-mode .chg-cmp.c4 .lose{background:#1a212c;color:#e9eef7}body.dark-mode
 .akn-op span,.akn-th{font-family:"DM Serif Display",Georgia,serif}.akn-op span{font-size:15px;line-height:1.35;font-weight:400;color:#14286b}.akn-op em{font-family:Inter,system-ui,sans-serif}
 .akn-th{font-size:14px;line-height:1.45;color:#2a3350}.akn-th b{font-family:Inter,system-ui,sans-serif;font-size:12px}
 body.dark-mode .akn-op span{color:#e6ebf7}body.dark-mode .akn-th{color:#d8deeb}
+
+.chg-wh,.chg-wh .pfbd-c{overscroll-behavior:contain;touch-action:pan-y}
 </style>
 </head>
 <body>
@@ -14540,7 +14542,7 @@ function rxArm(body){
    setTimeout(()=>{set(0,true);setTimeout(()=>{busy=false;el.classList.remove('spin');set(0,false)},260)},1500)};
  window.haRefresh=()=>{mk();if(busy)return;try{const r=(document.querySelector('.topbar')||document.body).getBoundingClientRect();el.style.left=(r.left+r.width/2)+'px'}catch(e){}el.classList.remove('spin');set(0,false);void el.offsetWidth;set(GO*.6,true);setTimeout(run,180)};
  if(!touch)return;
- window.addEventListener('touchstart',e=>{mk();if(busy||e.touches.length!==1||window.scrollY>0||blocked()||(e.target.closest&&e.target.closest('.ak-bub'))){y0=null;return}y0=e.touches[0].clientY;dy=0},{passive:true});
+ window.addEventListener('touchstart',e=>{mk();if(busy||e.touches.length!==1||window.scrollY>0||blocked()||(e.target.closest&&e.target.closest('.ak-bub,.pfbd-c,.chg-wh,.pfbd'))){y0=null;return}y0=e.touches[0].clientY;dy=0},{passive:true});
  window.addEventListener('touchmove',e=>{if(y0==null)return;const d=e.touches[0].clientY-y0;if(d<=0||window.scrollY>0){if(dy)set(0,true);dy=0;return}
    dy=d*.5;set(dy,false);if(dy>8&&e.cancelable)e.preventDefault()},{passive:false});
  window.addEventListener('touchend',()=>{if(y0==null)return;y0=null;
@@ -23281,7 +23283,7 @@ function chgFormHtml(ex){const f=CHG.form,p=f.date.split('-').map(Number),ys=chg
   <button type="button" class="chg-save" onclick="chgPut()">Save</button>
   <div class="chg-fb">${f.id?`<button type="button" class="chg-del" onclick="chgDel()">Delete</button>`:''}<button type="button" class="chg-cn" onclick="CHG.form=null;chgDraw()">Cancel</button></div></div>`}
 function chgWheel(){const H=40;document.querySelectorAll('#chgCard .chg-wh .pfbd-c').forEach(c=>{const on=c.querySelector('span.on');c.scrollTop=on?(+on.dataset.i)*H:0;
- c.addEventListener('scroll',()=>{const i=Math.round(c.scrollTop/H);c.querySelectorAll('span').forEach(x=>x.classList.toggle('on',+x.dataset.i===i))},{passive:true});
+ let st=0;c.addEventListener('scroll',()=>{const i=Math.round(c.scrollTop/H);c.querySelectorAll('span').forEach(x=>x.classList.toggle('on',+x.dataset.i===i));clearTimeout(st);st=setTimeout(()=>{const j=Math.round(c.scrollTop/H);if(Math.abs(c.scrollTop-j*H)>1)c.scrollTo({top:j*H,behavior:'smooth'})},140)},{passive:true});
  c.addEventListener('click',e=>{const x=e.target.closest('span');if(x)c.scrollTo({top:(+x.dataset.i)*H,behavior:'smooth'})})})}
 function chgWheelRead(){const g=id=>{const c=document.getElementById(id);return c?Math.round(c.scrollTop/40):null};const d=g('chgwD'),m=g('chgwM'),y=g('chgwY');if(d==null||!CHG.form)return;
  const yy=chgYears()[y]||new Date().getFullYear(),mm=m+1,max=new Date(yy,mm,0).getDate(),dd=Math.min(d+1,max);CHG.form.date=`${yy}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`}
