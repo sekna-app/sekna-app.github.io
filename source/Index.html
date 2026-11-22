@@ -22958,6 +22958,7 @@ async function akLiveSearch(a){const q=String(a.query||'').trim();if(!q)return {
 
  
 const AKSW=[
+ ['#chgPanel .chg-top,#chgPanel .chg-cmp','Did it work? (a campaign type change)','Say whether the change worked: compare after with before (ROAS, value, conversions, CPA), say if it is still early, and give one clear recommendation.'],
  ['#pyBody .py-c2','Same Hijri day, past years','Compare this year with that year for the same Hijri day: was the spend sensible, what did we raise, what was different.'],
  ['#overviewPanel .yoy','Same Hijri day last year','Compare today with the same Hijri day last year and the years before.'],
  ['#overviewPanel .sx-hero,#overviewPanel .sx-ftile','Month at a Glance','Are we on pace for this month? At this pace, what will we spend and raise by the end of the month, and should we speed up or slow down?'],
@@ -22973,7 +22974,7 @@ const AKSW=[
  ['#mxBody .mr3,#mxPeriodBtn,#mxBody .mxd-r','Reports Studio','Talk about this month (or this change between periods), and ask which period they want to look at.'],
  ['#ssBody .ss-r','Seasons calendar','Talk about this season in the past years: spend, value, ROAS, and how to prepare this year.']];
 function akSwFind(t){for(const [sel,name,hint] of AKSW){const el=t.closest&&t.closest(sel);if(el)return {el,name,hint}}return null}
-function akSwCall(hit){if(AK.blocked)return;const txt=String(hit.el.innerText||'').replace(/\s+/g,' ').trim().slice(0,600);
+function akSwCall(hit){if(AK.blocked)return;const txt=String((hit.el.closest('#chgCard')||hit.el).innerText||'').replace(/\s+/g,' ').trim().slice(0,600);
  AKLV.topicText=`(The person swiped the "${hit.name}" card on the screen to ask you about it. What the card shows: "${txt}". ${hit.hint} Use get_numbers for any number you need. Greet them in a few words, answer in two or three short sentences, then ask what else they want to know. Speak Egyptian Arabic with an Alexandrian touch.)`;
  akLiveOpen()}
 (function(){let st=null;const TH=70;
@@ -23141,7 +23142,7 @@ function chgDraw(){const el=document.getElementById('chgCard');if(!el)return;
  if(!mine.length){el.innerHTML=hd+`<button type="button" class="chg-add" onclick="chgEdit('')">＋ Track a change</button>`;return}
  const c=mine.find(x=>x.id===CHG.sel)||mine[0],last=chgLast(ex);
  const tabs=mine.length>1?`<div class="chg-tabs">${mine.map(x=>`<button type="button" class="${x.id===c.id?'on':''}" onclick="CHG.sel='${x.id}';chgDraw()"><i style="background:${chgCol(x.type)}"></i>${esc(CHANNEL_SHORT[x.type]||x.type)} · ${esc(chgFmt(x.date))}</button>`).join('')}</div>`:'';
- const col=chgCol(c.type),chips=`<div class="chg-strip" style="--c:${col}">${chgIco(c.type,34,1)}<div><b>${esc(c.type)}${c.what?' · '+esc(c.what):''}</b><small>${esc(chgFmt(c.date,1))} → today</small></div><button type="button" class="chg-sb ph" aria-label="Call Alexandra about this change" onclick="chgCall()">${akI('phone')}</button><button type="button" class="chg-sb" aria-label="Edit" onclick="chgEdit('${c.id}')"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></button></div>`;
+ const col=chgCol(c.type),chips=`<div class="chg-strip" style="--c:${col}">${chgIco(c.type,34,1)}<div><b>${esc(c.type)}${c.what?' · '+esc(c.what):''}</b><small>${esc(chgFmt(c.date,1))} → today</small></div><button type="button" class="chg-sb" aria-label="Edit" onclick="chgEdit('${c.id}')"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></button></div>`;
  const n=last&&last>=c.date?chgDiff(c.date,last)+1:0;
  if(!n){el.innerHTML=hd+tabs+`<div class="chg-in chg-top">${chips}</div><div class="chg-in"><div class="chg-ver w"><i>⏳</i><div><b>Starts tomorrow</b><small>The first day after the change comes in with tomorrow's data.</small></div></div></div>`+(CHG.err?`<div class="chg-err">${esc(CHG.err)}</div>`:'');return}
  const bA=chgAdd(c.date,-n),bB=chgAdd(c.date,-1),A=chgSum(ex,c.type,c.date,last),B=chgSum(ex,c.type,bA,bB);
