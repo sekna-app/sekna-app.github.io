@@ -10436,7 +10436,7 @@ body.dark-mode .akn-x{background:#1a212c;color:#c3cad8}body.dark-mode .akn-hd>b{
 @media (prefers-reduced-motion:reduce){.aklv-mus i,.aklv-hold i{animation:none}}
 
 /* v621 Did it work? */
-.chg{padding:16px!important}
+.chg{padding:16px!important}#chgPanel .chg{margin-top:4px}#chgPanel .chg-hd b{display:none}#chgPanel .chg-hd small{font-size:12.5px;margin-top:0}
 .chg-hd{display:flex;align-items:center;gap:10px}.chg-hd>div{flex:1;min-width:0}
 .chg-hd b{display:block;font:400 22px "DM Serif Display",Georgia,serif;color:#14286b}.chg-hd small{display:block;font-size:12px;font-weight:600;color:#6b7385;margin-top:2px}
 .chg-plus{width:34px;height:34px;border-radius:50%;border:0;background:#eef2fb;color:#203c8e;font-size:18px;font-weight:800;cursor:pointer;flex:none}
@@ -10652,6 +10652,7 @@ body.dark-mode .chg-seg button{background:#1a2540;color:#9fb6ff}body.dark-mode .
     <button class="sk-nav-btn" id="ranksTabBtn" type="button" onclick="switchDashboardTab('ranks')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 6h3a3 3 0 0 1-3 4M7 6H4a3 3 0 0 0 3 4"/></svg></span><span>Top &amp; Bottom 5</span></button>
     <button class="sk-nav-btn" id="termsTabBtn" type="button" onclick="switchDashboardTab('terms')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6"/><path d="M15 15l5 5M8 10.5h5"/></svg></span><span>Search Terms</span><span class="sk-soon sk-new">New</span></button>
     <button class="sk-nav-btn" id="campTabBtn" type="button" onclick="switchDashboardTab('camp')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h3l6 4V6L7 10z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a7.5 7.5 0 0 1 0 11"/></svg></span><span>Campaign Performance</span><span class="sk-soon sk-new">New</span></button>
+    <button class="sk-nav-btn" id="chgTabBtn" type="button" onclick="switchDashboardTab('chg')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18"/><path d="M4 15l3-4 3 2"/><path d="M14 13l3-5 3 2"/><path d="M15 6h4v4"/></svg></span><span>Did it work?</span><span class="sk-soon sk-new">New</span></button>
   </nav></div>
 
   <button class="sk-grp" type="button" data-grp="ai" onclick="navGroup('ai')" aria-expanded="false"><span class="sk-gt"><b>AI Reports</b><small class="sk-gn"></small></span><svg class="sk-gchev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
@@ -11004,7 +11005,6 @@ body.dark-mode .chg-seg button{background:#1a2540;color:#9fb6ff}body.dark-mode .
       <span class="kx-r" id="topAccPct"></span>
     </div>
   </section>
-<section class="card section chg" id="chgCard" hidden></section>
 <section class="card section yoy">
     <div class="section-head">
       <div>
@@ -11243,6 +11243,7 @@ body.dark-mode .chg-seg button{background:#1a2540;color:#9fb6ff}body.dark-mode .
   </div>
 
   <div class="tab-panel" id="termsPanel"><div id="stBody"></div></div>
+  <div class="tab-panel" id="chgPanel"><section class="card section chg" id="chgCard"></section></div>
   <div class="tab-panel" id="campPanel"><div id="cpBody"></div></div>
 
   <div class="share-toast" id="shareToast" role="status" aria-live="polite"></div>
@@ -11445,7 +11446,7 @@ function tbLive(d){
  else{const m=String((d&&d.generatedAt)||'').match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/);if(m){const h=+m[4];when=` · ${h%12||12}:${m[5]} ${h<12?'AM':'PM'}`}}
  el.innerHTML=`<span class="tb-live"><span class="tb-l1"><span class="tb-dot"></span>Live${when}</span>${when&&ms&&tzName()?`<small class="tb-tz">${esc(tzName())}</small>`:''}</span>`;
 }
-const PAGE_NAMES={overview:'Daily Performance',days:'Day by Day Performance',channel:'Monthly Progress',lab:'Media Plan Lab',plans:'Plan Performance History',ranks:'Top & Bottom 5',terms:'Search Terms',camp:'Campaign Performance',months:'Reports Studio',seasons:'Seasons Calendar'};
+const PAGE_NAMES={overview:'Daily Performance',days:'Day by Day Performance',channel:'Monthly Progress',lab:'Media Plan Lab',plans:'Plan Performance History',ranks:'Top & Bottom 5',terms:'Search Terms',camp:'Campaign Performance',chg:'Did it work?',months:'Reports Studio',seasons:'Seasons Calendar'};
 // Page name in DM Serif Display, the last word on a gold highlighter.
 function setPageTitle(){
  const el=document.getElementById('pgTitle');if(!el)return;
@@ -12678,11 +12679,11 @@ function switchAccount(accountKey){
  }
 }
 
-const DASH_TABS=['overview','days','channel','lab','plans','ranks','terms','camp','months','seasons'];
+const DASH_TABS=['overview','days','channel','lab','plans','ranks','terms','camp','chg','months','seasons'];
 let SWIPE_FROM='';
 // The footer names the menu group of the page: Media Plan, Performance Snapshots or AI Report, then the account.
 function setFooter(){
- const g=['ranks','terms','camp'].includes(CURRENT_TAB)?'Performance Snapshots':['months','seasons'].includes(CURRENT_TAB)?'AI Report':'Media Plan';
+ const g=['ranks','terms','camp','chg'].includes(CURRENT_TAB)?'Performance Snapshots':['months','seasons'].includes(CURRENT_TAB)?'AI Report':'Media Plan';
  text('dashboardFooter','HEMERA · '+g+' '+(accountMeta(DASH_DATA||{}).shortLabel||CURRENT_ACCOUNT.toUpperCase()));
  try{tabArrows()}catch(e){} // the menu rights may not be read yet
 }
@@ -14001,7 +14002,7 @@ function renderYoy(x,y){
  </svg><div class="sx-gauge-in" title="${esc(title)}"><b style="color:${color}">${index==null?'—':scorePct.toFixed(1)+'%'}</b><span>${index==null?'No data last year':`${wins}/${valid} metrics better than last year`}</span></div>`;
 
  const hijri=y.mode==='hijri';
- text('yoyTitle',hijri?'Same Hijri Day Last Year':'Same Day Last Year');try{chgDraw()}catch(e){}
+ text('yoyTitle',hijri?'Same Hijri Day Last Year':'Same Day Last Year');
  text('yoySub',hijri&&y.lyDate?`Vs ${y.lyLabel||y.lyDate} · same Hijri day${y.hasData===false?' (no data)':''}`:'Current performance compared with the same date last year.');
  const rowsHost=document.getElementById('yoyRows');
  if(rowsHost)rowsHost.innerHTML=metrics.map(m=>{
@@ -14062,6 +14063,7 @@ function renderExtraTab(d){
  else if(CURRENT_TAB==='ranks')renderRanks(d);
  else if(CURRENT_TAB==='terms')renderTerms();
  else if(CURRENT_TAB==='camp')renderCamp();
+ else if(CURRENT_TAB==='chg')chgDraw();
  else if(CURRENT_TAB==='lab')renderLab();
  else if(CURRENT_TAB==='channel')renderMonthlyReport();
  else if(CURRENT_TAB==='plans')renderPlanHistory();
@@ -15176,7 +15178,7 @@ function loadMonthExtras(){
  if(!(window.google&&google.script&&google.script.run))return;
  MONTH_EXTRA_LOADING[key]=true;MONTH_EXTRA_FAIL[key]=false;
  google.script.run
-  .withSuccessHandler(r=>{MONTH_EXTRA_LOADING[key]=false;MONTH_EXTRA[key]=r||{months:{}};if(key===CURRENT_ACCOUNT)try{chgDraw()}catch(e){}if(CURRENT_TAB==='months'&&key===CURRENT_ACCOUNT)renderMonthCompare();if(CURRENT_TAB==='days'&&DAY_VIEW==='ly'&&key===CURRENT_ACCOUNT&&DASH_DATA)renderDays(DASH_DATA);if(WK_LY&&key===CURRENT_ACCOUNT)drawWeeklyLy(true);if(PY_OPEN&&key===CURRENT_ACCOUNT)renderPastYears()})
+  .withSuccessHandler(r=>{MONTH_EXTRA_LOADING[key]=false;MONTH_EXTRA[key]=r||{months:{}};if(key===CURRENT_ACCOUNT&&CURRENT_TAB==='chg')try{chgDraw()}catch(e){}if(CURRENT_TAB==='months'&&key===CURRENT_ACCOUNT)renderMonthCompare();if(CURRENT_TAB==='days'&&DAY_VIEW==='ly'&&key===CURRENT_ACCOUNT&&DASH_DATA)renderDays(DASH_DATA);if(WK_LY&&key===CURRENT_ACCOUNT)drawWeeklyLy(true);if(PY_OPEN&&key===CURRENT_ACCOUNT)renderPastYears()})
   .withFailureHandler(()=>{MONTH_EXTRA_LOADING[key]=false;MONTH_EXTRA_FAIL[key]=true;if(CURRENT_TAB==='months'&&key===CURRENT_ACCOUNT)renderMonthCompare();if(CURRENT_TAB==='days'&&DAY_VIEW==='ly'&&key===CURRENT_ACCOUNT&&DASH_DATA)renderDays(DASH_DATA)})
   .getMonthCompareData(key,getAccessToken());
 }
@@ -18935,14 +18937,14 @@ function myPerms(){
 }
 // Pages of the side menu and share are on unless Admin → Permissions turned them off.
 const VIEW_KEYS=['overview','days','channel','plans','ranks','camp','months','seasons','ask','team','mine','leaveview','notifs','updates','about','share'];
-function canDo(k){const p=myPerms();if(k==='terms')k='ranks'; // Search Terms follows Top & Bottom 5
+function canDo(k){const p=myPerms();if(k==='terms')k='ranks';if(k==='chg')k='camp'; // Search Terms follows Top & Bottom 5
  if(k==='lab')return p.lab===true||p.lab==='view';return k in p?p[k]===true:VIEW_KEYS.includes(k)}
 // Media Plan Lab: 'view' opens it, but only true can change anything.
 function labEdit(){return myPerms().lab===true}
 // Locked: in the menu with a gold lock, but it opens the lock screen instead of the page.
 function isLocked(k){return myPerms()[k]==='lock'}
 // Each menu button and the permission that shows it.
-const MENU_PERM=[['overviewTabBtn','overview'],['daysTabBtn','days'],['channelTabBtn','channel'],['labTabBtn','lab'],['plansTabBtn','plans'],['ranksTabBtn','ranks'],['termsTabBtn','terms'],['campTabBtn','camp'],['monthsTabBtn','months'],['seasonsTabBtn','seasons'],['askNavBtn','ask'],
+const MENU_PERM=[['overviewTabBtn','overview'],['daysTabBtn','days'],['channelTabBtn','channel'],['labTabBtn','lab'],['plansTabBtn','plans'],['ranksTabBtn','ranks'],['termsTabBtn','terms'],['campTabBtn','camp'],['chgTabBtn','chg'],['monthsTabBtn','months'],['seasonsTabBtn','seasons'],['askNavBtn','ask'],
  ['ttTeamBtn','team'],['ttMineBtn','mine'],['ttBuildBtn','build'],['ttLeaveBtn','leaveview'],['ttQuickBtn','quick'],['nfNavBtn','notifs'],['updatesNavBtn','updates'],['aboutNavBtn','about'],['adminNavBtn','admin']];
 function lockSheet(name){
  let o=document.getElementById('lockSheet');
