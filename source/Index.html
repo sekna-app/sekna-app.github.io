@@ -23542,7 +23542,9 @@ const STXR={};
 function stxAkFacts(d,month){const x=d.latest||{},sym=akFxSym(CURRENT_ACCOUNT),M=v=>money(v),P=(a,b)=>b?Math.round(a/b*100)+'%':'—';
  const L=[`Account: Human Appeal ${CURRENT_ACCOUNT==='ar'?'AR':'US'} (money in ${sym})`];
  if(!month){L.push(`Day: ${x.date} (${x.dayName||''}), day ${x.dayNumber||''} of the month`,`Spend ${M(x.spend)} of plan ${M(x.targetSpend)} (${P(x.spend,x.targetSpend)})`,`Conversion value ${M(x.value)} of plan ${M(x.planValue)} (${P(x.value,x.planValue)})`,`ROAS ${x.spend?fmt(x.value/x.spend,2)+'x':'—'}, conversions ${fmt(x.conversions||0,0)}`);
-  (d.dayChannels||[]).filter(c=>c.spend>0).sort((a,b)=>b.value-a.value).slice(0,5).forEach(c=>L.push(`${c.channel}: spend ${M(c.spend)}, value ${M(c.value)}, ROAS ${fmt(c.roas||0,2)}x`));
+  const ex=MONTH_EXTRA[CURRENT_ACCOUNT];if(!ex)try{loadMonthExtras()}catch(e){}
+  const avg7=ch=>{try{if(!ex)return '';let sp=0,va=0,n=0;for(let i=1;i<=7;i++){const t=new Date(x.date+'T12:00:00Z');t.setUTCDate(t.getUTCDate()-i);const pt=dayParts(t.toISOString().slice(0,10),ex);if(!pt)continue;const nm=Object.keys(pt.channels).find(q=>q===ch||typeKey(q)===typeKey(ch));if(nm){sp+=pt.channels[nm].spend;va+=pt.channels[nm].value;n++}}return sp?`; its 7-day average before: ROAS ${fmt(va/sp,2)}x, spend ${M(sp/n)} a day`:''}catch(e){return ''}};
+  (d.dayChannels||[]).filter(c=>c.spend>0).sort((a,b)=>b.value-a.value).slice(0,6).forEach(c=>L.push(`${c.channel}: spend ${M(c.spend)}, value ${M(c.value)}, ROAS ${fmt(c.roas||0,2)}x, conversions ${fmt(c.conversions||0,0)}${avg7(c.channel)}`));
   try{const rows=(d.dayPlan||[]).filter(r=>r.actual&&r.date<x.date).slice(-30),sp=rows.reduce((t,r)=>t+(+r.actual.spend||0),0),va=rows.reduce((t,r)=>t+(+r.actual.value||0),0);if(sp)L.push(`Average ROAS of the earlier days this month: ${fmt(va/sp,2)}x`)}catch(e){}
   try{const st=streakOf(d);if(st.n>=2)L.push(`${st.n} days in a row above the value plan`)}catch(e){}}
  else{const m=d.mtd||{};L.push(`Month: ${x.monthName||String(x.date||'').slice(0,7)}`,`Spend ${M(m.actualSpend)} of plan ${M(m.targetSpend||m.planSpend)}`,`Value ${M(m.actualValue)} of plan ${M(m.planValue)}`);
@@ -23554,10 +23556,10 @@ function stxAkLoad(s,G){const d=G.d,x=d.latest||{},month=s.t==='akmonth',k=G.k+'
  try{const c=JSON.parse(localStorage.getItem('hm_stxr_'+k)||'null');if(c){STXR[k]=c;return c}}catch(e){}
  STXR[k]='busy';akX({op:'read',acc:G.k,date:x.date,month,facts:stxAkFacts(d,month),name:akMe().name}).then(j=>{if(j&&j.ok&&j.read){STXR[k]=j.read;try{localStorage.setItem('hm_stxr_'+k,JSON.stringify(j.read))}catch(e){}}else STXR[k]='err';
   const g=stxGroup();if(g&&g.list[STX.i]===s)stxShow()}).catch(()=>{STXR[k]='err'});return 'busy'}
-function stxAkLang(){try{return localStorage.getItem('hm_stx_lang')||'en'}catch(e){return 'en'}}
+function stxAkLang(){return 'en'}
 function stxAkFlip(e){if(e)e.stopPropagation();try{localStorage.setItem('hm_stx_lang',stxAkLang()==='en'?'ar':'en')}catch(_){}stxPause(false);stxShow()}
 function stxAkHtml(s,G){const r=stxAkLoad(s,G),lang=stxAkLang(),c=r&&typeof r==='object'?(r[lang]||r.en):null,month=s.t==='akmonth',ar=lang==='ar'&&c;
- const head=`<div class="stxa-h"><span class="stxa-o">${akAvIn()}</span><b>Alexandra</b><small>${month?'month end':'· today'}</small><button type="button" class="stxa-tr" onclick="stxAkFlip(event)">🌐 ${lang==='en'?'عربي':'EN'}</button></div>`;
+ const head=`<div class="stxa-h"><span class="stxa-o">${akAvIn()}</span><b>Alexandra</b><small>${month?'month end':'· today'}</small></div>`;
  if(!c)return `<div class="stxa" style="--img:url(icons/alexandra/story-read.webp?v=2)">${head}<div class="stxa-in"><div class="stxa-k">${month?'MY 3 MOMENTS':'MY READ ON YESTERDAY'}</div><div class="stxa-hl">${r==='err'?'I could not read the day this time.':'Reading the numbers…'}</div></div></div>`;
  const E=x=>esc(String(x==null?'':x));
  const inner=month?`<div class="stxa-k">${ar?'أحسن ٣ لحظات في الشهر':'MY 3 MOMENTS OF THE MONTH'}</div><div class="stxa-hl">${E(c.h)}</div>${(c.moments||[]).slice(0,3).map(m=>`<div class="stxa-why">${E(m.e)} ${E(m.t)}</div>`).join('')}`
