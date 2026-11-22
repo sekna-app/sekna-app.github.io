@@ -10775,6 +10775,11 @@ body.dark-mode .chg-qc{background:#1a1f29}body.dark-mode .chg-qc button{color:#e
 .chg-ver.b{background:#eef2fb;color:#203c8e}.chg-ver.b>i{background:#3d6bff}
 .chg-ver.n{background:#f1f3f8;color:#3a4256}.chg-ver.n>i{background:#9aa2b4}
 body.dark-mode .chg-ver.g{background:#10301f!important}body.dark-mode .chg-ver.r{background:#3a1519!important}body.dark-mode .chg-ver.w{background:#2a2414!important}body.dark-mode .chg-ver.b{background:#16203a;color:#9fb6ff}body.dark-mode .chg-ver.n{background:#1a212c;color:#c3cad8}body.dark-mode .chg-ver small{color:#c3cad8!important}
+
+/* v640 too early: navy text on a light navy tint, the gold 7-day bar under it */
+.chg-ver.b{background:#eef2fb!important;color:#14286b!important;padding:13px 14px!important}.chg-ver.b small em{font-style:normal;font-weight:800;color:#a8781e}
+.chg-wk{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:9px}.chg-wk i{height:7px;border-radius:4px;background:#d9dff0}.chg-wk i.on{background:linear-gradient(90deg,#e2b874,#c99a45)}
+body.dark-mode .chg-ver.b{background:#16203a!important;color:#e9eef7!important}body.dark-mode .chg-wk i{background:#2a3350}
 </style>
 </head>
 <body>
@@ -23401,7 +23406,7 @@ function chgDraw(){const el=document.getElementById('chgCard');if(!el)return;
  const P=v=>`${v>=0?'up':'down'} ${Math.abs(Math.round(v*100))}%`;
  hd=hdOf(`<span class="chg-ba">BEFORE<i></i><b>AFTER</b></span>`);
  const ver=dr==null?{c:'n',i:'…',t:'No conversions yet',s:'Waiting for value on both sides.'}
-  :early?{c:'b',i:`${n}/7`,t:'Too early to judge',s:`Only ${n} of 7 days · answer on ${chk}`}
+  :early?{c:'b',i:'',t:'Too early to judge',s:`${n} of 7 days · answer on <em>${chk}</em>`,bar:`<div class="chg-wk">${[0,1,2,3,4,5,6].map(j=>`<i class="${j<n?'on':''}"></i>`).join('')}</div>`}
   :dr>.05?{c:'g',i:'✓',t:'Better',s:`ROAS +${Math.round(dr*100)}% over ${n} days`}
   :dr<-.05?{c:'r',i:'!',t:'Worse',s:`ROAS −${Math.abs(Math.round(dr*100))}% over ${n} days`}
   :{c:'w',i:'≈',t:'About the same',s:`ROAS within 5% over ${n} days`};
@@ -23409,7 +23414,7 @@ function chgDraw(){const el=document.getElementById('chgCard');if(!el)return;
   <div class="chg-in chg-ch"><div class="chg-chh"><span>${CHG.m==='value'?'VALUE':CHG.m==='cpa'?'CPA':'ROAS'} ${chgDiff(chgAdd(c.date,-Math.max(n,7)),last)+1>60?'· 7-DAY AVERAGE':'BY DAY'}</span><span class="chg-seg">${[['roas','ROAS'],['value','Value'],['cpa','CPA']].map(([k,l])=>`<button type="button" class="${CHG.m===k?'on':''}" onclick="CHG.m='${k}';chgDraw()">${l}</button>`).join('')}</span></div>${chgChart(ex,c,last)}</div>
   <div class="chg-in">
   <div class="chg-cmp c4"><div class="${win<0?'win':'lose'}"><b>BEFORE</b>${esc(chgRange(bA,bB))}<small>${n} day${n>1?'s':''}</small></div><div class="${win>0?'win':'lose'}"><b>AFTER</b>${esc(chgRange(c.date,last))}<small>${n} day${n>1?'s':''}${early?' so far':''}</small></div></div>
-  ${tb}<div class="chg-ver ${ver.c}"><i>${ver.i}</i><div><b>${ver.t}</b><small>${ver.s}</small></div></div>
+  ${tb}<div class="chg-ver ${ver.c}">${ver.i?`<i>${ver.i}</i>`:''}<div${ver.bar?' style="flex:1"':''}><b>${ver.t}</b><small>${ver.s}</small>${ver.bar||''}</div></div>
   <div class="akn chg-akn" id="akn-chg">${(AKNT.chg.cid&&AKNT.chg.cid!==c.id?(AKNT.chg={cid:c.id}):(AKNT.chg.cid=c.id),aknHtml('chg'))}</div></div>
 
   ${CHG.err?`<div class="chg-err">${esc(CHG.err)}</div>`:''}`;
