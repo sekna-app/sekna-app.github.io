@@ -10670,6 +10670,17 @@ body.dark-mode .chg-ver.b{background:#16203a!important;color:#e9eef7!important}b
 .akx-ok{flex:none;border:0;border-radius:99px;padding:4px 10px;font:900 10px Inter,system-ui,sans-serif;background:#fdf6e6;color:#7a5512;cursor:pointer}.akx-ok.d{background:#e9f9f0;color:#14804a}
 .akx-w{padding:20px 4px;color:#8a92a6;font-size:13px;text-align:center}
 .akn-orb.sm{width:34px;height:34px;padding:3px}.akn-orb.sm .akn-av{width:28px!important;height:28px!important}
+
+/* v652 header: small blue arrow next to (i), the usage ring; model menu */
+.ak-min{background:none!important;box-shadow:none!important;width:30px!important;height:30px!important;color:#2a5bd7!important}.ak-min .ak-ic{stroke:#2a5bd7!important;width:20px!important;height:20px!important}
+.ak-lim{width:30px;height:30px;border:0;background:none;padding:3px;margin-left:auto;cursor:pointer;flex:none}.ak-lim[hidden]{display:none}.ak-lim svg{width:24px;height:24px;transform:rotate(-90deg)}
+.ak-lim .t{fill:none;stroke:#dfe4f0;stroke-width:3}.ak-lim .f{fill:none;stroke:#3b6df2;stroke-width:3;stroke-linecap:round;transition:stroke-dashoffset .5s}.ak-lim.w .f{stroke:#c99a45}.ak-lim.h .f{stroke:#e5484d}
+.ak-lim:not([hidden])~.ak-min{margin-left:0!important}
+.ak-mdl{display:inline-flex;align-items:center;gap:6px;color:#fff!important;border:0!important;background:radial-gradient(circle at 20% 20%,#7cc4ff,transparent 55%),radial-gradient(circle at 85% 80%,#c87bff,transparent 55%),#2b3fb8!important}
+.ak-mdl svg{width:14px;height:14px;fill:#fff;flex:none}.ak-mdl i{font-style:normal;opacity:.8}
+.akx-md{display:flex;align-items:center;width:100%;text-align:left;border:0;background:#f4f6fb;border-radius:16px;padding:14px 16px;margin-top:8px;font:inherit;cursor:pointer;color:#1d2433}
+.akx-md span{flex:1}.akx-md b{display:block;font-size:16px}.akx-md small{display:block;font-size:12.5px;color:#6b7385;margin-top:2px}.akx-md i{font-style:normal;color:#2a5bd7;font-weight:900;font-size:18px}.akx-md.on{box-shadow:inset 0 0 0 1.5px #2a5bd7}
+.akx-who{display:inline-flex;align-items:center;gap:8px}.akx-av{width:26px;height:26px;border-radius:50%;overflow:hidden;display:grid;place-items:center;flex:none}.akx-av>*{max-width:100%;max-height:100%}
 </style>
 </head>
 <body>
@@ -11932,7 +11943,7 @@ function akOpenNow(){
  if(!canDo('ask'))return;closeSidebar();
  document.getElementById('akBox')?.remove();
  const o=document.createElement('div');o.id='akBox';o.className='ak'+(akDk()?' dk':'');o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');o.setAttribute('aria-label','Alexandra');
- o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av ak-tapp" id="akHdAv" role="button" tabindex="0" aria-label="Open Alexandra's profile" onclick="AK.pgTab='about';akAbout(event)">${akAvIn()}</span><div><b>Alexandra <svg class="ak-flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="10" rx="2" fill="#0057B7"/><rect y="10" width="30" height="10" rx="2" fill="#FFD700"/><rect y="8" width="30" height="4" fill="#0057B7"/><rect y="10" width="30" height="2" fill="#FFD700"/></svg><span class="ak-fle">🇺🇦</span></b><small id="akSt">Active now</small></div><button type="button" class="ak-min" hidden aria-label="Minimise" title="Minimise" onclick="akMini(event)">${akI('down')}</button><button type="button" class="ak-mode" hidden onclick="akModeFlip()"></button><button type="button" class="ak-inf" aria-label="About Alexandra" onclick="AK.pgTab='about';akAbout(event)">${akI('about')}</button></div><div class="ak-pg" id="akAbt" aria-hidden="true"></div>
+ o.innerHTML=`<div class="ak-card"><div class="ak-hd"><button type="button" class="ak-bk" aria-label="Back" onclick="closeAsk()">${akI('back')}</button><span class="ak-av ak-tapp" id="akHdAv" role="button" tabindex="0" aria-label="Open Alexandra's profile" onclick="AK.pgTab='about';akAbout(event)">${akAvIn()}</span><div><b>Alexandra <svg class="ak-flag" viewBox="0 0 30 20" aria-hidden="true"><rect width="30" height="10" rx="2" fill="#0057B7"/><rect y="10" width="30" height="10" rx="2" fill="#FFD700"/><rect y="8" width="30" height="4" fill="#0057B7"/><rect y="10" width="30" height="2" fill="#FFD700"/></svg><span class="ak-fle">🇺🇦</span></b><small id="akSt">Active now</small></div><button type="button" class="ak-lim" id="akLim" aria-label="Your usage today" onclick="akXSheet('usage')" hidden><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" class="t"/><circle cx="12" cy="12" r="9" class="f" stroke-dasharray="56.5" stroke-dashoffset="56.5"/></svg></button><button type="button" class="ak-min" hidden aria-label="Minimise" title="Minimise" onclick="akMini(event)">${akI('down')}</button><button type="button" class="ak-mode" hidden onclick="akModeFlip()"></button><button type="button" class="ak-inf" aria-label="About Alexandra" onclick="AK.pgTab='about';akAbout(event)">${akI('about')}</button></div><div class="ak-pg" id="akAbt" aria-hidden="true"></div>
   <div class="ak-bd" id="akBd"></div><div class="ak-kb" id="akKb"></div>
   <form class="ak-in" onsubmit="akSend(event)"><button type="button" class="ak-mb" aria-label="Menu" onclick="akToggleKb()">${akI('menu')}</button><button type="button" class="ak-pic" aria-label="Send a photo" onclick="akPicPick()">${akI('cam')}</button><input id="akQ" autocomplete="off" maxlength="1500" placeholder="Aa" oninput="akInMode()"><button type="submit" class="ak-snd" aria-label="Send">${akI('plane')}</button><button type="button" class="ak-mic" aria-label="Hold to record a voice message" onpointerdown="akRecHold(event)" oncontextmenu="return false">${akI('mic')}</button><button type="button" class="ak-lvb" aria-label="Talk with Alexandra" onclick="akLiveOpen()">${akI('wave')}</button>
   <div class="ak-rec" id="akRec"><button type="button" class="ak-rt2" aria-label="Delete" onclick="akRecTrash()">${akI('trash')}</button><div class="ak-rw"><em></em><small class="ak-rh">‹ Slide to cancel</small><span id="akRw"></span><b id="akRt">0:00</b></div><button type="button" class="ak-rs2" aria-label="Send" onclick="akRecSend()">${akI('plane')}</button></div></form></div>`;
@@ -12158,7 +12169,7 @@ function akSave(){clearTimeout(akSave.t);akSave.t=setTimeout(()=>{try{if(!AK.msg
 function akRestore(){if(AK.msgs.length)return;try{const o=JSON.parse(localStorage.getItem(AK_KEEP)||'null');if(!o)return;
  if(Date.now()-(o.t0||0)>864e5){localStorage.removeItem(AK_KEEP);return}
  AK.t0=o.t0;AK.msgs=o.msgs||[];AK.hist=o.hist||[];AK.nav=o.nav||{};AK.resIds=o.res||[]}catch(e){}}
-function akDraw(){akSave();
+function akDraw(){akSave();try{akLimRing()}catch(e){}
  const b=document.getElementById('akBd');if(!b)return;
  const L=AK.msgs.slice(-60);
  b.innerHTML=L.map((m,i)=>{const nx=L[i+1],last=!nx||nx.w!==m.w,first=i===0||L[i-1].w!==m.w;
@@ -12171,11 +12182,11 @@ function akToggleKb(){if(AK.blocked){AK.kb=false;akKb();return}AK.kb=!AK.kb;akKb
 function akKb(){
  const k=document.getElementById('akKb');if(!k)return;if(AK.blocked){k.hidden=true;k.innerHTML='';return}
  // v400 one line you swipe (م١), in this order; About moved to the (i) in the top bar
- const items=[['links','Sheets & links']];
+ const items=[['model',akModel()[0]],['links','Sheets & links']];
  if(AK.canAdd)items.push(['add','Add a sheet']);if(AK.canTeach)items.push(['teach','Teach the bot']);
  items.push(['off','Team days off'],['mail','Team emails'],['task','My tasks']);
  k.hidden=!AK.kb;
- k.innerHTML=items.map(([id,t])=>`<button type="button" onclick="akMenu('${id}')">${akI(id)}${t}</button>`).join('');
+ k.innerHTML=items.map(([id,t])=>id==='model'?`<button type="button" class="ak-mdl" onclick="akModelSheet()"><svg viewBox="0 0 24 24"><path d="M12 2.5l1.9 5.6 5.6 1.9-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9z"/></svg>${t}<i>⌄</i></button>`:`<button type="button" onclick="akMenu('${id}')">${akI(id)}${t}</button>`).join('');
 }
 function akInMode(){const i=document.getElementById('akQ'),f=i&&i.closest('form');if(f)f.classList.toggle('e',!String(i.value||'').trim()&&!AK.img)}
 async function akSend(e){AKCS.quiet=0;
@@ -23548,12 +23559,25 @@ function akXSheet(kind){const pg=document.body;document.querySelector('.akx-sh')
  const B=o.querySelector('.akx-b'),ago=t=>{const m=Math.round((Date.now()-t)/6e4);return m<60?m+'m ago':m<1440?Math.round(m/60)+'h ago':new Date(t).toLocaleDateString('en-GB',{day:'numeric',month:'short'})};
  if(kind==='notes')akX({op:'notes'}).then(j=>{const l=j.list||[];B.innerHTML=l.length?`<div class="akx-sec">HER RECOMMENDATIONS</div>`+l.map(x=>`<div class="akx-n"><span class="akn-orb sm">${aknFace()}</span><div><b>${akEsc(x.t)}</b><small>${akEsc(x.src||'')} · ${ago(x.at)}</small></div><button type="button" class="akx-ok ${x.done?'d':''}" onclick="akX({op:'noteSet',id:'${x.id}',done:${!x.done}}).then(()=>akXSheet('notes'))">${x.done?'DONE':'OPEN'}</button></div>`).join(''):'<div class="akx-w">No notes yet. Her recommendations from chats and calls show here.</div>'}).catch(()=>B.innerHTML='<div class="akx-w">Could not load.</div>');
  if(kind==='log')akX({op:'log'}).then(j=>{const l=j.list||[];B.innerHTML=l.length?`<div class="akx-sec">LOG</div>`+l.map(x=>`<div class="akx-n"><div><b>${akEsc(x.t)}</b><small>asked by ${akEsc(String(x.by||'').split('@')[0])} · ${ago(x.at)}</small></div></div>`).join(''):'<div class="akx-w">Nothing yet.</div>'}).catch(()=>B.innerHTML='<div class="akx-w">Could not load.</div>');
- if(kind==='usage')akX({op:'usage'}).then(j=>{const m=j.me||{},bar=(t,pct,l,r)=>`<div class="akx-bx"><div class="akx-t">${t}<span>${l}</span></div><div class="akx-br"><i style="width:${Math.min(100,pct)}%"></i></div><div class="akx-r">${r}</div></div>`;
+ if(kind==='usage')akX({op:'usage'}).then(j=>{AKLIM.j=j;AKLIM.at=Date.now();akLimPaint();const m=j.me||{},bar=(t,pct,l,r)=>`<div class="akx-bx"><div class="akx-t">${t}<span>${l}</span></div><div class="akx-br"><i style="width:${Math.min(100,pct)}%"></i></div><div class="akx-r">${r}</div></div>`;
   let h=`<div class="akx-sec">YOUR USAGE</div>`+bar('Today',m.msgDay?m.q/m.msgDay*100:0,m.msgDay?Math.round(m.q/m.msgDay*100)+'% used':m.q+' messages',`${m.q} of ${m.msgDay||'∞'} messages · resets at midnight`)+bar('Calls this week',m.callWeek?m.sec/60/m.callWeek*100:0,`${Math.round(m.sec/60)} of ${m.callWeek||'∞'} min`,'Resets Thursday');
   if(j.owner){const ppl=(typeof PFP!=='undefined'&&PFP.people)||[],nm=e=>{const p=ppl.find(x=>String(x.email).toLowerCase()===e);return p&&p.name||e.split('@')[0]};
-   h+=`<div class="akx-sec">TEAM · THIS WEEK</div>`+(j.team||[]).sort((a,b)=>b.q-a.q).map(x=>{const pct=x.msgDay?Math.round(x.today/x.msgDay*100):0;return `<div class="akx-bx"><div class="akx-t">${akEsc(nm(x.email))}<span>${x.today} today · ${x.q} this week · ${Math.round(x.sec/60)} min calls</span></div><div class="akx-br"><i class="${pct>=80?'hot':''}" style="width:${Math.min(100,pct)}%"></i></div><div class="akx-r">Limit ${x.msgDay}/day · ${x.callWeek} min/week</div></div>`}).join('')+
+   h+=`<div class="akx-sec">TEAM · THIS WEEK</div>`+(j.team||[]).sort((a,b)=>b.q-a.q).map(x=>{const pct=x.msgDay?Math.round(x.today/x.msgDay*100):0,pp=ppl.find(y=>String(y.email).toLowerCase()===x.email)||{};let av='';try{av=personAv(pp.avatar,pp.name||nm(x.email))}catch(e){}return `<div class="akx-bx"><div class="akx-t"><span class="akx-who"><span class="akx-av">${av}</span>${akEsc(nm(x.email))}</span><span>${x.today} today · ${x.q} this week · ${Math.round(x.sec/60)} min calls</span></div><div class="akx-br"><i class="${pct>=80?'hot':''}" style="width:${Math.min(100,pct)}%"></i></div><div class="akx-r">Limit ${x.msgDay}/day · ${x.callWeek} min/week</div></div>`}).join('')+
     `<div class="akx-sec">LIMITS FOR EVERYONE</div><div class="akx-lim"><label>Messages a day<input type="number" min="0" id="akxM" value="${j.limits.msgDay}"></label><label>Call minutes a week<input type="number" min="0" id="akxC" value="${j.limits.callWeek}"></label><button type="button" onclick="akX({op:'usageSet',msgDay:document.getElementById('akxM').value,callWeek:document.getElementById('akxC').value}).then(()=>{showSettingsToast('Saved');akXSheet('usage')})">Save</button></div><div class="akx-r" style="text-align:left">0 = no limit · you have no limit · this month: ${j.month.q} messages, ${j.month.min} call minutes, about $${j.month.cost}</div>`}
   B.innerHTML=h}).catch(()=>B.innerHTML='<div class="akx-w">Could not load.</div>')}
+
+// v652 the usage ring at the top of the chat (like Claude): today's messages against the limit; tap for Usage
+const AKLIM={at:0,j:null};
+function akLimPaint(){const b=document.getElementById('akLim');if(!b)return;const j=AKLIM.j;if(!j||!j.me){b.hidden=true;return}const m=j.me,pct=m.msgDay?Math.min(1,m.q/m.msgDay):0;
+ b.hidden=false;const f=b.querySelector('.f');f.style.strokeDashoffset=(56.5*(1-pct)).toFixed(1);b.classList.toggle('w',pct>=.7&&pct<.9);b.classList.toggle('h',pct>=.9);b.title=m.msgDay?`${m.q} of ${m.msgDay} messages today`:`${m.q} messages today`}
+function akLimRing(force){akLimPaint();if(!force&&Date.now()-AKLIM.at<20000)return;AKLIM.at=Date.now();akX({op:'usage'}).then(j=>{if(j&&j.ok){AKLIM.j=j;akLimPaint()}}).catch(()=>{})}
+// v652 the model menu (look only: all three answer with the same, best model)
+const AK_MODELS=[['Alexandra Max','For deep analysis and planning'],['Alexandra','For everyday questions'],['Alexandra Swift','Fastest for quick answers']];
+function akModel(){let i=0;try{i=+localStorage.getItem('hm_ak_model')||0}catch(e){}return AK_MODELS[i]||AK_MODELS[0]}
+function akModelSheet(){document.querySelector('.akx-sh')?.remove();let cur=0;try{cur=+localStorage.getItem('hm_ak_model')||0}catch(e){}
+ const o=document.createElement('div');o.className='akx-sh';o.onclick=e=>{if(e.target===o)o.remove()};
+ o.innerHTML=`<div class="akx-c"><div class="akx-h"><span style="width:34px"></span><b>Select model</b><button type="button" onclick="this.closest('.akx-sh').remove()" aria-label="Close">✕</button></div>${AK_MODELS.map(([n,d],i)=>`<button type="button" class="akx-md${i===cur?' on':''}" data-i="${i}"><span><b>${n}</b><small>${d}</small></span>${i===cur?'<i>✓</i>':''}</button>`).join('')}</div>`;
+ o.addEventListener('click',e=>{const b=e.target.closest('.akx-md');if(!b)return;try{localStorage.setItem('hm_ak_model',b.dataset.i)}catch(_){}o.remove();try{akKb()}catch(_){}try{akSfx('send')}catch(_){}});document.body.appendChild(o)}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
