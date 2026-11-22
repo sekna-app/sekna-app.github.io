@@ -10696,6 +10696,15 @@ body.dark-mode .chg-cmpl{background:#1a212c;color:#c3cad8}
 body.dark-mode .chg-cmp.c4 .lose{background:#1a212c;color:#e9eef7}body.dark-mode .chg-cmp.c4 .win{background:#10301f;color:#e9eef7}body.dark-mode .chg-cmp.c4 .win b{color:#5fd99a}
 
 .chg-wh,.chg-wh .pfbd-c{overscroll-behavior:contain;touch-action:pan-y}
+
+/* v630 BEFORE ◆ AFTER label; Alexandra's AI buttons with the aurora glow everywhere */
+.chg-ba{display:inline-flex;align-items:center;font:800 13px Inter,system-ui,sans-serif;letter-spacing:.22em;color:#8a92a6;margin-top:6px}.chg-ba b{color:#14286b}.chg-ba i{display:inline-block;width:7px;height:7px;background:#c99a45;transform:rotate(45deg);margin:0 12px 1px}
+body.dark-mode .chg-ba b{color:#e9eef7}
+.akn-go,.akn-go.sm{border:0!important;background:radial-gradient(circle at var(--ax,20%) 20%,rgba(124,196,255,.95),transparent 55%),radial-gradient(circle at var(--bx,85%) 80%,rgba(200,123,255,.95),transparent 55%),#2b3fb8!important;box-shadow:0 6px 16px rgba(60,80,220,.35)!important;animation:aknAu 6s ease-in-out infinite alternate!important}
+.akn-go span{background:none!important;color:#fff!important;-webkit-background-clip:border-box!important;background-clip:border-box!important}.akn-go svg{fill:#fff!important;filter:drop-shadow(0 0 4px rgba(255,255,255,.6))!important}
+@property --ax{syntax:'<percentage>';inherits:false;initial-value:20%}@property --bx{syntax:'<percentage>';inherits:false;initial-value:85%}
+@keyframes aknAu{0%{--ax:15%;--bx:90%}50%{--ax:45%;--bx:60%}100%{--ax:80%;--bx:20%}}
+@media (prefers-reduced-motion:reduce){.akn-go{animation:none!important}}
 </style>
 </head>
 <body>
@@ -21674,6 +21683,7 @@ async function akCtx0(acc){const L=[];
  try{const t=ssToday(),all=ssList(),ex=MONTH_EXTRA[acc];L.push('## Seasons coming up (with the same season last year in this account)');all.filter(x=>x.to>=t).slice(0,8).forEach(x=>{let ly='';try{const p=ssPrev(x,all);if(p&&ex&&ex.days){let sp=0,va=0,n=0;for(let d=new Date(p.from+'T12:00:00Z');d.toISOString().slice(0,10)<=p.to;d.setUTCDate(d.getUTCDate()+1)){const r=dayParts(d.toISOString().slice(0,10),ex,null);if(r){sp+=r.spend;va+=r.value;n++}}if(n)ly=' | last year '+p.from+' to '+p.to+': spend '+akR(K*sp)+', value '+akR(K*va)+', ROAS '+akR(sp?va/sp:0,2)+' ('+n+' days with data)'}}catch(e){}L.push(x.name+': '+x.from+' to '+x.to+' ('+x.len+' days, '+(x.type==='h'?'Hijri':'US')+')'+ly)})}catch(e){}
  try{(await akPlanHist(acc,K)).forEach(x=>L.push(x))}catch(e){}
  try{akFresh(acc).forEach(x=>L.push(x))}catch(e){}
+ try{(await akChgLines(acc)).forEach(x=>L.push(x))}catch(e){}
  try{const a=akActHelp();if(a)L.push(a)}catch(e){}
  return L.join('\n').slice(0,110000)}
 
@@ -23319,7 +23329,7 @@ function chgDraw(){const el=document.getElementById('chgCard');if(!el)return;
  const tb=`<table class="chg-tb">${row('ROAS',B.roas,A.roas,x2,1)}${row('Conv. value',B.value,A.value,money,1)}${row('Conversions',B.conversions,A.conversions,num,1)}${row('Spend',B.spend,A.spend,money,0)}${row('CPA',B.cpa,A.cpa,money,-1)}${row('CTR',B.ctr,A.ctr,pct,1)}</table>`;
  const dr=pc(A.roas,B.roas),dv=pc(A.value,B.value),early=n<7,chk=chgFmt(chgAdd(c.date,7),1),win=dr==null||Math.abs(dr)<.005?0:dr>0?1:-1;
  const P=v=>`${v>=0?'up':'down'} ${Math.abs(Math.round(v*100))}%`;
- hd=hdOf(`<span class="chg-cmpl">${n} day${n>1?'s':''} before <i>vs</i> ${n} day${n>1?'s':''} after</span>`);
+ hd=hdOf(`<span class="chg-ba">BEFORE<i></i><b>AFTER</b></span>`);
  const ver=dr==null?{c:'w',i:'…',t:'Not enough data yet',s:'Waiting for days with spend on both sides.'}:dr>.05&&!(dv<-.15)?{c:'g',i:'✓',t:early?'Early signs: better':'Better',s:early?`Only ${n} day${n>1?'s':''} after. Check again on ${chk}.`:`ROAS ${dr>=0?'+':'−'}${Math.abs(Math.round(dr*100))}% over ${n} days.`}
   :dr<-.05?{c:'r',i:'!',t:early?'Early signs: worse':'Worse',s:early?`Only ${n} day${n>1?'s':''} after. Check again on ${chk}.`:`ROAS ${Math.round(dr*100)}% over ${n} days.`}
   :{c:'w',i:'≈',t:early?'Early signs: about the same':'About the same',s:early?`Only ${n} day${n>1?'s':''} after. Check again on ${chk}.`:`ROAS within 5% over ${n} days.`};
@@ -23340,6 +23350,16 @@ function chgFacts(){const ex=MONTH_EXTRA[CURRENT_ACCOUNT]||{},c=aknChg();if(!c)r
  const f=t=>`spend ${money(t.spend)}, conversion value ${money(t.value)}, ROAS ${t.roas!=null?fmt(t.roas,2)+'x':'—'}, conversions ${fmt(t.conversions,0)}, CPA ${t.cpa!=null?money(t.cpa):'—'}, CTR ${t.ctr!=null?fmt(t.ctr*100,2)+'%':'—'}, clicks ${fmt(t.clicks,0)}`;
  const days=[];for(let dk=bA;dk<=last;dk=chgAdd(dk,1)){const d=chgDay(ex,dk,c.type);if(d)days.push(`${dk}${dk>=c.date?' (after)':''}: spend ${Math.round(d.spend)}, value ${Math.round(d.value)}, conv ${fmt(d.conversions,1)}`)}
  return [`Account: ${CURRENT_ACCOUNT==='ar'?'Human Appeal AR':'Human Appeal US'}`,`Campaign type: ${c.type}`,`What changed: ${c.what||'not said'}, on ${c.date}`,`After the change (${c.date} to ${last}, ${n} days): ${f(A)}`,`Before (${bA} to ${bB}, ${n} days): ${f(B)}`,'Day by day:',...days.slice(-60)].join('\n')}
+
+
+async function akChgLines(acc){if(!canDo('chg'))return [];if(!CHG.list){chgLoad();for(let i=0;i<20&&!CHG.list;i++)await new Promise(r=>setTimeout(r,100))}
+ const l=(CHG.list||[]).filter(x=>(x.acc||'usa')===acc);if(!l.length)return ['## "Did it work?" page (Performance Snapshots): no changes tracked yet in this account.'];
+ const ex=MONTH_EXTRA[acc],last=ex?chgLast(ex):'',L=['## Changes the team tracks on the "Did it work?" page (Performance Snapshots). Each compares the days from the change to the last day with data against the same number of days just before it:'];
+ l.sort((a,b)=>a.date<b.date?1:-1).forEach(c=>{let t=`- ${c.type}${c.what?' · '+c.what:''}, changed on ${c.date}`;
+  if(ex&&last&&last>=c.date){const n=chgDiff(c.date,last)+1,A=chgSum(ex,c.type,c.date,last),B=chgSum(ex,c.type,chgAdd(c.date,-n),chgAdd(c.date,-1)),f=x=>`spend ${money(x.spend)}, value ${money(x.value)}, ROAS ${x.roas!=null?fmt(x.roas,2)+'x':'—'}, conversions ${fmt(x.conversions,0)}, CPA ${x.cpa!=null?money(x.cpa):'—'}`;
+   t+=`. ${n} days each side. Before: ${f(B)}. After: ${f(A)}.`}else if(!ex)t+=' (the day-by-day numbers are not loaded yet)';else t+=' (no day after the change has data yet)';
+  if(c.note)t+=` Note chosen${c.noteBy==='ak'?' (written by you)':''}: "${c.note}"`;L.push(t)});
+ return L}
 </script>
 <div id="seknaFileEnd" hidden></div>
 <script>
