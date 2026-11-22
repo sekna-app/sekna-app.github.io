@@ -10621,6 +10621,8 @@ body.dark-mode .chg-ver.b{background:#16203a!important;color:#e9eef7!important}b
 .ak-swg.sm .ak-swc small{display:none}.ak-swg.sm .ak-swc i{font-size:11px}
 
 .ak-swg.sm .ak-swa{width:26px!important;height:26px!important}.ak-swg.sm .ak-swr{inset:-2px}
+
+#dayChannelsGrid .ctd{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 </style>
 </head>
 <body>
@@ -14617,7 +14619,7 @@ function dayChannelCards(d){
  return rows.map((c,i)=>{
    const k=Math.min(Math.max(CHANNEL_ORDER.indexOf(c.channel),0),4);
    const plan=Number(c.planSpend)||0, r=plan?c.spend/plan:null;
-   return `<div class="ctd k${k}"><div class="ctd-h"><b>${chIco(c.channel)}${esc(CHANNEL_SHORT[c.channel]||c.channel)}</b><span class="ctd-rk">${i+1}</span></div>
+   return `<div class="ctd k${k}" data-ch="${esc(c.channel)}"><div class="ctd-h"><b>${chIco(c.channel)}${esc(CHANNEL_SHORT[c.channel]||c.channel)}</b><span class="ctd-rk">${i+1}</span></div>
     <div class="ctd-roas">${c.roas!=null?fmt(c.roas,2)+'x':'—'}<small>ROAS</small></div>
     <div class="ctd-sp"><span>Spend <b>${money(c.spend)}</b></span><span>${r!=null?Math.round(r*100)+'% of plan':'No plan'}</span></div>
     <div class="ctd-bar"><span style="width:${r!=null?Math.min(100,r*100).toFixed(1):0}%"></span></div>
@@ -22565,6 +22567,7 @@ function akLiveSetup(j,lvl){const setup={model:j.model,generationConfig:{respons
  return setup}
 
 function akLiveConn(lvl){return new Promise(async(ok,no)=>{let cx='';try{cx=lvl>=3?await Promise.race([akCtx(),new Promise(r=>setTimeout(()=>r(''),1500))]):await akLiveSummary()}catch(e){}
+ cx=akMoneyRule()+'\n\n'+cx;
  let j=null;try{const r=await fetch(AKLV_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),name:akMe().name,ctx:cx})});j=await r.json()}catch(e){}
  if(!j||!j.ok){no({fatal:true,j});return}
  const ws=new WebSocket('wss:\/\/generativelanguage.googleapis.com/ws/google.ai.generativelanguage.v1alpha.GenerativeService.BidiGenerateContentConstrained?access_token='+encodeURIComponent(j.token));
@@ -23317,6 +23320,27 @@ async function chgShare(btn){if(!canDo('share')){showShareToast('Sharing is turn
 setTimeout(function chkBav(){try{if(!ACCESS_PROFILE||!ACCESS_PROFILE.email||!canDo('ask')||(typeof AK!=='undefined'&&AK.blocked)){setTimeout(chkBav,20000);return}
  const d=new Date().toISOString().slice(0,10);if(localStorage.getItem('hm_bav_day')===d&&akBav().data)return;
  akPost('hello').then(j=>{try{localStorage.setItem('hm_bav_day',d)}catch(e){}return akBavSync(j&&j.botAvV)}).catch(()=>{})}catch(e){}},9000);
+
+
+function akMoneyRule(){const acc=CURRENT_ACCOUNT,code=(ACC_CUR||{})[acc]||(acc==='ar'?'GBP':'USD'),sym=akFxSym(acc),nm=code==='USD'?'US dollars':code==='GBP'?'British pounds':code;
+ return `## Money and ROAS (read this first)
+- The person is looking at ${acc==='ar'?'Human Appeal AR':'Human Appeal US'}. Its money is in ${nm} (${sym}). Every amount in the numbers below is already in ${nm}. Say every amount in ${code==='USD'?'dollars (دولار)':code==='GBP'?'pounds (جنيه استرليني)':nm}${code==='USD'?' and never say pounds, sterling or استرليني':''}.
+- Say ROAS as a multiple with "x" (إكس), the way the team says it: 1.42 is "واحد إكس وأربعين" / "one point four two x", 2.1 is "اتنين إكس وعشرة". Never say it as a percentage or as "pounds per pound".`}
+
+async function akTypeCall(ch){if(!MONTH_EXTRA[CURRENT_ACCOUNT]){try{loadMonthExtras()}catch(e){}for(let i=0;i<20&&!MONTH_EXTRA[CURRENT_ACCOUNT];i++)await new Promise(r=>setTimeout(r,100))}
+ const d=DASH_DATA||{},L=d.latest||{},dk=L.date,c=(d.dayChannels||[]).find(x=>x.channel===ch)||{},ex=MONTH_EXTRA[CURRENT_ACCOUNT];
+ const f=x=>x?`spend ${money(x.spend||0)}, conversion value ${money(x.value||0)}, ROAS ${x.spend?fmt((x.value||0)/x.spend,2)+'x':'—'}, conversions ${fmt(x.conversions||0,0)}, CPA ${x.conversions?money((x.spend||0)/x.conversions):'—'}`:'';
+ let ly='';try{const lk=hijriDayInYear(dk,1);if(lk&&ex){const p=dayParts(lk,ex);if(p){const nm=Object.keys(p.channels).find(n=>n===ch||typeKey(n)===typeKey(ch));ly=nm?`Same Hijri day last year (${lk}): ${f(p.channels[nm])}.`:`Same Hijri day last year (${lk}): this type had no spend.`}}else if(!ex)loadMonthExtras()}catch(e){}
+ const others=(d.dayChannels||[]).filter(x=>x.channel!==ch&&x.spend>0).map(x=>CHANNEL_SHORT[x.channel]||x.channel).join(', ');
+ AKLV.topicText=`(The person long-pressed the "${ch}" card in Daily Performance → By Campaign Type to ask you about it. Today (${dk}): ${f(c)}.${ly?' '+ly:' Use get_numbers for the same Hijri day last year.'} Greet them in a few words, then compare this type today with the same day last year in two or three short sentences (what went up or down and by how much, ROAS said as x), add one useful detail you think matters (like its share of today's spend, or if CPA moved a lot), then ask if they want the same for the other types${others?' ('+others+')':''}. Speak Egyptian Arabic with an Alexandrian touch.)`;
+ akLiveOpen()}
+(function(){let t=0,el=null,x0=0,y0=0;
+ document.addEventListener('pointerdown',e=>{const b=e.target.closest&&e.target.closest('#dayChannelsGrid .ctd[data-ch]');if(!b||(typeof AK!=='undefined'&&AK.blocked))return;el=b;x0=e.clientX;y0=e.clientY;clearTimeout(t);
+  t=setTimeout(()=>{if(!el)return;el.dataset.lp='1';if(navigator.vibrate)try{navigator.vibrate(20)}catch(_){}akTypeCall(el.dataset.ch);el=null},550)},{passive:true});
+ const stop=e=>{if(!el)return;if(e.type==='pointermove'&&Math.hypot(e.clientX-x0,e.clientY-y0)<10)return;clearTimeout(t);el=null};
+ document.addEventListener('pointermove',stop,{passive:true});document.addEventListener('pointerup',stop,{passive:true});document.addEventListener('pointercancel',stop,{passive:true});
+ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('#dayChannelsGrid .ctd');if(b&&b.dataset.lp){delete b.dataset.lp;e.stopPropagation();e.preventDefault()}},true);
+ document.addEventListener('contextmenu',e=>{if(e.target.closest&&e.target.closest('#dayChannelsGrid .ctd'))e.preventDefault()})})();
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
