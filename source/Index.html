@@ -10623,6 +10623,8 @@ body.dark-mode .chg-ver.b{background:#16203a!important;color:#e9eef7!important}b
 .ak-swg.sm .ak-swa{width:26px!important;height:26px!important}.ak-swg.sm .ak-swr{inset:-2px}
 
 #dayChannelsGrid .ctd{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+
+.ak-vtx{margin-top:6px}.ak-vtx>summary{cursor:pointer;font:700 11.5px Inter,system-ui,sans-serif;color:#6b7385;list-style:none}.ak-vtx>summary::-webkit-details-marker{display:none}.ak-vtx>summary:before{content:"▸ "}.ak-vtx[open]>summary:before{content:"▾ "}
 </style>
 </head>
 <body>
@@ -12040,7 +12042,7 @@ ${akIntroHtml()}</div>
    <button type="button" onclick="akPgGo('off')">${akI('cal')}<span><b>Team days off</b> and who covers</span></button></div>
   ${AK.canAdd||AK.canTeach?`<h4>Tools</h4>${AK.canAdd?row('add','add','Add a sheet','Put a new sheet in the list'):''}${AK.canTeach?row('teach','teach','Teach the bot','Rules, access and platforms'):''}`:''}
   ${AK.editor?`<div id="akReqW">${akReqsHtml(AK.rq)}</div><h4>Settings</h4><div id="akBotW">${akBotRow(AK.bst||null)}</div>`:''}
-  <h4>Chat</h4><button type="button" class="r" role="switch" aria-checked="${akDk()}" onclick="akDkSet(!akDk(),this)"><i>${akI('moon')}</i><span><b>Dark mode</b><small>Only for this chat</small></span><em class="ak-sw${akDk()?' on':''}"></em></button><button type="button" class="r" role="switch" aria-checked="${akSfxOn()}" onclick="akSfxSet(!akSfxOn(),this)"><i>${akI('speaker')}</i><span><b>Chat sounds</b><small>Typing, sent, photo, voice and call sounds</small></span><em class="ak-sw${akSfxOn()?' on':''}"></em></button>${row('clear','trash','Clear chat','The chat stays on this device for 24 hours','del')}`;
+  <h4>Chat</h4><button type="button" class="r" role="switch" aria-checked="${akDk()}" onclick="akDkSet(!akDk(),this)"><i>${akI('moon')}</i><span><b>Dark mode</b><small>Only for this chat</small></span><em class="ak-sw${akDk()?' on':''}"></em></button><button type="button" class="r" role="switch" aria-checked="${akSfxOn()}" onclick="akSfxSet(!akSfxOn(),this)"><i>${akI('speaker')}</i><span><b>Chat sounds</b><small>Typing, sent, photo, voice and call sounds</small></span><em class="ak-sw${akSfxOn()?' on':''}"></em></button><button type="button" class="r" role="switch" aria-checked="${akVrOn()}" onclick="akVrSet(!akVrOn(),this)"><i>${akI('mic')}</i><span><b>Reply with voice</b><small>She answers with a voice note; the text stays one tap away</small></span><em class="ak-sw${akVrOn()?' on':''}"></em></button>${row('clear','trash','Clear chat','The chat stays on this device for 24 hours','del')}`;
  const RX=[[['like','love'],'1.2K',86,24],[['love','wow'],'948',41,12],[['like','haha'],'2.3K',132,57],[['love','like','care'],'1.7K',64,19],[['love','wow','like'],'3.1K',210,88],[['like','care'],'860',35,9],[['love','haha','like'],'2.6K',118,40]],RE={like:['👍','#1877F2'],love:['❤','#F33E58'],wow:['😮','#F7B125'],haha:['😆','#F7B125'],care:['🤗','#F7B125']},D=['2h','5h','1d','2d','3d','5d','1w'];
  
  const postsHtml=()=>AK_POSTS.map((x,i)=>{const r=RX[i%RX.length];return `<article class="ak-post ak-psq"><header><span class="ak-pga">${akAvIn()}</span><div><b>Alexandra ${tick}</b><small>${D[i]} · 🌐</small></div><span class="ak-pdots">···</span></header><p>${x.c}</p><button type="button" class="ak-pimg" onclick="akPostView(${i})"><img src="icons/alexandra/p/${x.f}.webp?v=1" alt="${akEsc(x.t)}" loading="lazy"></button><div class="ak-prx"><span><i>${r[0].map(k=>`<em class="${k}" style="background:${RE[k][1]}">${RE[k][0]}</em>`).join('')}</i>${r[1]}</span><span>${r[2]} comments · ${r[3]} shares</span></div><div class="ak-pact"><span>${akI('like')}Like</span><span>${akI('cmt')}Comment</span><span>${akI('share')}Share</span></div></article>`}).join('');
@@ -12144,7 +12146,7 @@ async function akSend(e){AKCS.quiet=0;
  akUser(q,rp&&rp.t);AK.kb=false;akKb();
  if(!ASK_HEMERA_URL){akBot('<p>Alexandra is not connected yet.</p>');return}
  AK.busy=true;akDraw();
- try{let ctx='';try{ctx=await akCtx()}catch(e){}let j=await akAskSrv(qa,AK.hist.slice(-8),ctx);if(!j)j=await akPost('ask',{q:qa,history:AK.hist.slice(-8),ctx});AK.hist.push({role:'user',text:q},{role:'model',text:akSmartSplit(j.answer||'').text});AK.hist=AK.hist.slice(-16);AK.busy=false;if(!AK.assets){try{await akAssets()}catch(e){}}else setTimeout(()=>akAssets().catch(()=>{}),1500);if(j.sid){akIxPut(j.sid,`<div class="akst" id="${j.sid}">${akAnswer(j.answer||'')}</div>`);return}akBot(akAnswer(j.answer||'')+(AK.editor&&!ctx?'<p class="ak-oldapi">Editors only: this device could not read the dashboard numbers, so they were not sent with the question.</p>':'')+(AK.editor&&!j.api?'<p class="ak-oldapi">Editors only: the Alexandra script is older than v23, so she cannot read the dashboard numbers yet. Deploy the new HemeraApi.gs as a New version.</p>':''))}
+ try{let ctx='';try{ctx=await akCtx()}catch(e){}let j=await akAskSrv(qa,AK.hist.slice(-8),ctx);if(!j)j=await akPost('ask',{q:qa,history:AK.hist.slice(-8),ctx});AK.hist.push({role:'user',text:q},{role:'model',text:akSmartSplit(j.answer||'').text});AK.hist=AK.hist.slice(-16);AK.busy=false;if(!AK.assets){try{await akAssets()}catch(e){}}else setTimeout(()=>akAssets().catch(()=>{}),1500);if(j.sid){akIxPut(j.sid,`<div class="akst" id="${j.sid}">${akAnswer(j.answer||'')}</div>`);if(akVrOn())akVoReply(j.answer||'');return}akBot(akAnswer(j.answer||'')+(AK.editor&&!ctx?'<p class="ak-oldapi">Editors only: this device could not read the dashboard numbers, so they were not sent with the question.</p>':'')+(AK.editor&&!j.api?'<p class="ak-oldapi">Editors only: the Alexandra script is older than v23, so she cannot read the dashboard numbers yet. Deploy the new HemeraApi.gs as a New version.</p>':''));if(akVrOn())akVoReply(j.answer||'')}
  catch(err){AK.busy=false;akBot(`<p>${akEsc(/not connected/.test(err.message)?'Alexandra is not connected yet.':'Something went wrong. Try again.')}</p>`)}
 }
 
@@ -22434,7 +22436,7 @@ async function akPicSend(q,im){
   const j=await akAskSrv(ask,AK.hist.slice(-8),ctx,{mime:'image/jpeg',data:im.data});
   if(!j){AK.busy=false;const er=String(AK.srvErr||'');akBot(`<p>${/Gemini 5\d\d|overload|unavailable/i.test(er)?'Gemini is busy right now. Send the photo again in a minute.':'I could not read the photo this time. Send it again in a minute.'}</p>${akOwner()&&er?`<p class="ak-why">${akEsc(er)}</p>`:''}`);return}
   AK.hist.push({role:'user',text:'[photo] '+ask},{role:'model',text:j.answer||''});AK.hist=AK.hist.slice(-16);AK.busy=false;
-  if(j.sid){akIxPut(j.sid,`<div class="akst" id="${j.sid}">${akAnswer(j.answer||'')}</div>`);return}akBot(akAnswer(j.answer||''))}
+  if(j.sid){akIxPut(j.sid,`<div class="akst" id="${j.sid}">${akAnswer(j.answer||'')}</div>`);if(akVrOn())akVoReply(j.answer||'');return}akBot(akAnswer(j.answer||''));if(akVrOn())akVoReply(j.answer||'')}
  catch(err){AK.busy=false;akBot(`<p>${akEsc(err&&err.blocked?'You do not have access to Alexandra.':'Something went wrong. Try again.')}</p>`)}}
 
  
@@ -23341,6 +23343,18 @@ async function akTypeCall(ch){if(!MONTH_EXTRA[CURRENT_ACCOUNT]){try{loadMonthExt
  document.addEventListener('pointermove',stop,{passive:true});document.addEventListener('pointerup',stop,{passive:true});document.addEventListener('pointercancel',stop,{passive:true});
  document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('#dayChannelsGrid .ctd');if(b&&b.dataset.lp){delete b.dataset.lp;e.stopPropagation();e.preventDefault()}},true);
  document.addEventListener('contextmenu',e=>{if(e.target.closest&&e.target.closest('#dayChannelsGrid .ctd'))e.preventDefault()})})();
+
+
+function akVrOn(){try{return localStorage.getItem('hm_ak_vrep')==='1'}catch(e){return false}}
+function akVrSet(on,btn){try{localStorage.setItem('hm_ak_vrep',on?'1':'0')}catch(e){}if(btn){btn.setAttribute('aria-checked',on);const sw=btn.querySelector('.ak-sw');if(sw)sw.classList.toggle('on',on)}}
+async function akVoReply(ans){try{await new Promise(r=>setTimeout(r,60));const i=AK.msgs.length-1,m=AK.msgs[i];if(!m||m.w!=='h')return;
+ let t=akSmartSplit(ans).text;t=akActSplit(t).text;t=akCardsSplit(t).text;t=String(t).replace(/<[^>]+>/g,' ').replace(/[*_#`>|]/g,' ').replace(/\s+/g,' ').trim().slice(0,1700);if(!t)return;
+ const r=await fetch(AK_SRV.replace(/\/ak\/ask$/,'/ak/tts'),{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),name:akMe().name,text:t})});const j=await r.json();if(!j||!j.ok)return;
+ const rate=+((String(j.mime||'').match(/rate=(\d+)/)||[])[1]||24000),o=akWavBlob(j.data,rate),secs=Math.max(1,Math.round(o.pcm.length/rate)),vid='v'+Date.now();
+ AKV.urls[vid]=URL.createObjectURL(o.blob);akVoicePut(vid,o.blob);const n=26,step=Math.floor(o.pcm.length/n)||1,bars=[];for(let k=0;k<n;k++){let mx=0;for(let q=k*step;q<(k+1)*step&&q<o.pcm.length;q+=40)mx=Math.max(mx,Math.abs(o.pcm[q]));bars.push(Math.round(4+Math.min(1,mx/16000)*16))}
+ const vb=`<span class="ak-vb" data-v="${vid}" data-d="${secs}" onclick="akPlay(this)">${akI('play')}<span>${bars.map(h=>`<i data-h="${h}" style="height:${h}px"></i>`).join('')}</span><b>${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}</b></span>`;
+ m.html=`${vb}<details class="ak-vtx"><summary>Show text</summary>${m.html}</details>`;try{akSave()}catch(e){}
+ if(document.getElementById('akBox')){akDraw();setTimeout(()=>{const b=document.querySelector(`#akBox .ak-vb[data-v="${vid}"]`);if(b)try{akPlay(b)}catch(e){}},250)}}catch(e){}}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
