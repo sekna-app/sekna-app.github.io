@@ -10685,6 +10685,18 @@ body.dark-mode .chg-cmp.c3 .win{background:linear-gradient(160deg,#10301f,#12261
 @media (prefers-reduced-motion:reduce){.chg-cmp.c3 .win{animation:none}}
 .chg-svg .chg-rd{fill:#c3cad8}
 .chg-akn{margin-top:12px}.akn-only{font-size:11px!important;letter-spacing:.16em!important;color:#a8781e!important;margin:0!important}
+
+/* v626 summary line, plain cards (the better period green, the other grey), Alexandra's words in her own font */
+.chg-cmpl{display:inline-flex;align-items:center;gap:6px;font:800 13px Inter,system-ui,sans-serif;color:#4a5368;background:#f1f3f8;border-radius:99px;padding:7px 13px;margin-top:4px}.chg-cmpl i{font-style:normal;font-weight:900;color:#c99a45}
+body.dark-mode .chg-cmpl{background:#1a212c;color:#c3cad8}
+.chg-cmp.c4>div{border-radius:12px;padding:9px 11px;font-size:14px;color:#1d2433;font-weight:600;box-shadow:none}
+.chg-cmp.c4 b{display:block;font-size:10.5px;font-weight:900;letter-spacing:.1em;color:#6b7385;margin-bottom:2px}.chg-cmp.c4 small{display:block;font-size:10.5px;color:#8a92a6;margin-top:3px}
+.chg-cmp.c4 .lose{background:#f1f3f8}
+.chg-cmp.c4 .win{background:#e9f9f0;box-shadow:inset 0 0 0 1.5px #22c47c,0 4px 14px rgba(34,196,124,.18)}.chg-cmp.c4 .win b{color:#14804a}
+body.dark-mode .chg-cmp.c4 .lose{background:#1a212c;color:#e9eef7}body.dark-mode .chg-cmp.c4 .win{background:#10301f;color:#e9eef7}body.dark-mode .chg-cmp.c4 .win b{color:#5fd99a}
+.akn-op span,.akn-th{font-family:"DM Serif Display",Georgia,serif}.akn-op span{font-size:15px;line-height:1.35;font-weight:400;color:#14286b}.akn-op em{font-family:Inter,system-ui,sans-serif}
+.akn-th{font-size:14px;line-height:1.45;color:#2a3350}.akn-th b{font-family:Inter,system-ui,sans-serif;font-size:12px}
+body.dark-mode .akn-op span{color:#e6ebf7}body.dark-mode .akn-th{color:#d8deeb}
 </style>
 </head>
 <body>
@@ -23234,7 +23246,7 @@ function chgLast(ex){const ks=Object.keys(ex.days||{}).sort(),lt=((DASH_DATA||{}
 function chgTypes(ex){const o=[];(ex.channels||[]).forEach(n=>{const t=typeKey(n);if(o.indexOf(t)<0)o.push(t)});return o}
 function chgChart(ex,c,last){const n=Math.max(1,chgDiff(c.date,last)+1),span=Math.max(n,7),from=chgAdd(c.date,-span),pts=[];
  for(let dk=from;dk<=last;dk=chgAdd(dk,1)){const d=chgDay(ex,dk,c.type)||{};const v=CHG.m==='value'?d.value||0:CHG.m==='cpa'?(d.conversions?d.spend/d.conversions:null):(d.spend?(d.value||0)/d.spend:null);pts.push({dk,v})}
- const long=pts.length>21;if(long){const raw=pts.map(p=>Object.assign({},p));pts.forEach((p,i)=>{let sp=0,va=0,cv=0,k=0;for(let j=Math.max(0,i-6);j<=i;j++){const d=chgDay(ex,raw[j].dk,c.type)||{};sp+=d.spend||0;va+=d.value||0;cv+=d.conversions||0;k++}
+ const long=pts.length>60;if(long){const raw=pts.map(p=>Object.assign({},p));pts.forEach((p,i)=>{let sp=0,va=0,cv=0,k=0;for(let j=Math.max(0,i-6);j<=i;j++){const d=chgDay(ex,raw[j].dk,c.type)||{};sp+=d.spend||0;va+=d.value||0;cv+=d.conversions||0;k++}
    p.raw=raw[i].v;p.v=CHG.m==='value'?va/k:CHG.m==='cpa'?(cv?sp/cv:null):(sp?va/sp:null)})}
  const vals=pts.map(p=>p.v).concat(long?pts.map(p=>p.raw):[]).filter(v=>v!=null);if(!vals.length)return '<div class="chg-empty">No days with data yet.</div>';
  const W=320,H=150,P=8,B=128,mx=Math.max(...vals)*1.15||1,mn=0,N=pts.length,x=i=>P+(W-2*P)*(N>1?i/(N-1):.5),y=v=>B-(B-12)*(v-mn)/(mx-mn);
@@ -23307,14 +23319,14 @@ function chgDraw(){const el=document.getElementById('chgCard');if(!el)return;
  const tb=`<table class="chg-tb">${row('ROAS',B.roas,A.roas,x2,1)}${row('Conv. value',B.value,A.value,money,1)}${row('Conversions',B.conversions,A.conversions,num,1)}${row('Spend',B.spend,A.spend,money,0)}${row('CPA',B.cpa,A.cpa,money,-1)}${row('CTR',B.ctr,A.ctr,pct,1)}</table>`;
  const dr=pc(A.roas,B.roas),dv=pc(A.value,B.value),early=n<7,chk=chgFmt(chgAdd(c.date,7),1),win=dr==null||Math.abs(dr)<.005?0:dr>0?1:-1;
  const P=v=>`${v>=0?'up':'down'} ${Math.abs(Math.round(v*100))}%`;
- hd=hdOf(dr==null?`Since the ${c.what?esc(c.what.toLowerCase())+' ':''}change on ${esc(chgFmt(c.date))}, ${esc(CHANNEL_SHORT[c.type]||c.type)} has no conversion value on one side yet.`:`Since the ${c.what?esc(c.what.toLowerCase())+' ':''}change on ${esc(chgFmt(c.date))}, ${esc(CHANNEL_SHORT[c.type]||c.type)} ROAS is <b class="${dr>=0?'g':'r'}">${P(dr)}</b> (${fmt(B.roas,2)}x → ${fmt(A.roas,2)}x)${dv!=null?` and value is <b class="${dv>=0?'g':'r'}">${P(dv)}</b>`:''} over ${n} day${n>1?'s':''}.`);
+ hd=hdOf(`<span class="chg-cmpl">${n} day${n>1?'s':''} before <i>vs</i> ${n} day${n>1?'s':''} after</span>`);
  const ver=dr==null?{c:'w',i:'…',t:'Not enough data yet',s:'Waiting for days with spend on both sides.'}:dr>.05&&!(dv<-.15)?{c:'g',i:'✓',t:early?'Early signs: better':'Better',s:early?`Only ${n} day${n>1?'s':''} after. Check again on ${chk}.`:`ROAS ${dr>=0?'+':'−'}${Math.abs(Math.round(dr*100))}% over ${n} days.`}
   :dr<-.05?{c:'r',i:'!',t:early?'Early signs: worse':'Worse',s:early?`Only ${n} day${n>1?'s':''} after. Check again on ${chk}.`:`ROAS ${Math.round(dr*100)}% over ${n} days.`}
   :{c:'w',i:'≈',t:early?'Early signs: about the same':'About the same',s:early?`Only ${n} day${n>1?'s':''} after. Check again on ${chk}.`:`ROAS within 5% over ${n} days.`};
  el.innerHTML=hd+tabs+`<div class="chg-in chg-top">${chips}</div>
-  <div class="chg-in chg-ch"><div class="chg-chh"><span>${CHG.m==='value'?'VALUE':CHG.m==='cpa'?'CPA':'ROAS'} ${chgDiff(chgAdd(c.date,-Math.max(n,7)),last)+1>21?'· 7-DAY AVERAGE':'BY DAY'}</span><span class="chg-seg">${[['roas','ROAS'],['value','Value'],['cpa','CPA']].map(([k,l])=>`<button type="button" class="${CHG.m===k?'on':''}" onclick="CHG.m='${k}';chgDraw()">${l}</button>`).join('')}</span></div>${chgChart(ex,c,last)}</div>
+  <div class="chg-in chg-ch"><div class="chg-chh"><span>${CHG.m==='value'?'VALUE':CHG.m==='cpa'?'CPA':'ROAS'} ${chgDiff(chgAdd(c.date,-Math.max(n,7)),last)+1>60?'· 7-DAY AVERAGE':'BY DAY'}</span><span class="chg-seg">${[['roas','ROAS'],['value','Value'],['cpa','CPA']].map(([k,l])=>`<button type="button" class="${CHG.m===k?'on':''}" onclick="CHG.m='${k}';chgDraw()">${l}</button>`).join('')}</span></div>${chgChart(ex,c,last)}</div>
   <div class="chg-in">
-  <div class="chg-cmp c3"><div class="b${win<0?' win':''}"><b>BEFORE · ${esc(chgRange(bA,bB).toUpperCase())}</b><strong>${B.roas!=null?fmt(B.roas,2)+'x':'—'}</strong><small>ROAS · ${n} day${n>1?'s':''}</small></div><div class="a${win>0?' win':''}"><b>AFTER · ${esc(chgRange(c.date,last).toUpperCase())}</b><strong>${A.roas!=null?fmt(A.roas,2)+'x':'—'}${dr!=null?`<span class="chg-d ${dr>=.005?'up':dr<=-.005?'dn':'n'}">${dr>=0?'+':'−'}${Math.abs(Math.round(dr*100))}%</span>`:''}</strong><small>ROAS · ${n} day${n>1?'s':''}${early?' so far':''}</small></div></div>
+  <div class="chg-cmp c4"><div class="${win<0?'win':'lose'}"><b>BEFORE</b>${esc(chgRange(bA,bB))}<small>${n} day${n>1?'s':''}</small></div><div class="${win>0?'win':'lose'}"><b>AFTER</b>${esc(chgRange(c.date,last))}<small>${n} day${n>1?'s':''}${early?' so far':''}</small></div></div>
   ${tb}<div class="chg-ver ${ver.c}"><i>${ver.i}</i><div><b>${ver.t}</b><small>${ver.s}</small></div></div>
   <div class="akn chg-akn" id="akn-chg">${(AKNT.chg.cid&&AKNT.chg.cid!==c.id?(AKNT.chg={cid:c.id}):(AKNT.chg.cid=c.id),aknHtml('chg'))}</div></div>
 
