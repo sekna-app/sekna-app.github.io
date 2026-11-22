@@ -10600,6 +10600,14 @@ body.dark-mode .chg-seg button{color:#e9eef7!important}
 .chg-qc{background:#eef1f7;border-radius:16px;padding:5px;gap:4px!important}.chg-qc button{background:transparent!important;color:#1d2433!important;transition:background .25s,color .25s,box-shadow .25s}
 .chg-qc button.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%)!important;color:#fff!important;box-shadow:0 8px 18px rgba(61,107,255,.4)}
 body.dark-mode .chg-qc{background:#1a1f29}body.dark-mode .chg-qc button{color:#e9eef7!important}
+
+/* v639 verdict card (A, soft tint): better, worse, about the same, too early, no conversions, starts tomorrow */
+.chg-ver{gap:11px!important;padding:12px!important;border-radius:14px!important}.chg-ver>i{width:34px!important;height:34px!important;font-size:12.5px!important;letter-spacing:-.02em}
+.chg-ver b{font-size:14px!important}.chg-ver small{font-size:11.5px!important;color:#4a5368!important}
+.chg-ver.g{background:#e9f9f0!important;color:#14804a}.chg-ver.r{background:#fdecee!important;color:#c0392b}.chg-ver.w{background:#fdf6e6!important;color:#7a5512}.chg-ver.w>i{background:#c99a45!important}
+.chg-ver.b{background:#eef2fb;color:#203c8e}.chg-ver.b>i{background:#3d6bff}
+.chg-ver.n{background:#f1f3f8;color:#3a4256}.chg-ver.n>i{background:#9aa2b4}
+body.dark-mode .chg-ver.g{background:#10301f!important}body.dark-mode .chg-ver.r{background:#3a1519!important}body.dark-mode .chg-ver.w{background:#2a2414!important}body.dark-mode .chg-ver.b{background:#16203a;color:#9fb6ff}body.dark-mode .chg-ver.n{background:#1a212c;color:#c3cad8}body.dark-mode .chg-ver small{color:#c3cad8!important}
 </style>
 </head>
 <body>
@@ -23216,7 +23224,7 @@ function chgDraw(){const el=document.getElementById('chgCard');if(!el)return;
  const tabs=mine.length>1?`<div class="chg-tabs">${mine.map(x=>`<button type="button" class="${x.id===c.id?'on':''}" onclick="CHG.sel='${x.id}';chgDraw()"><i style="background:${chgCol(x.type)}"></i>${esc(CHANNEL_SHORT[x.type]||x.type)} · ${esc(chgFmt(x.date))}</button>`).join('')}</div>`:'';
  const col=chgCol(c.type),chips=`<div class="chg-strip" style="--c:${col}">${chgIco(c.type,34,1)}<div><b>${esc(c.type)}${c.what?' · '+esc(c.what):''}</b><small>${esc(chgFmt(c.date,1))} → today</small></div><button type="button" class="chg-sb" aria-label="Edit" onclick="chgEdit('${c.id}')"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></button></div>`;
  const n=last&&last>=c.date?chgDiff(c.date,last)+1:0;
- if(!n){el.innerHTML=hd+tabs+`<div class="chg-in chg-top">${chips}</div><div class="chg-in"><div class="chg-ver w"><i>⏳</i><div><b>Starts tomorrow</b><small>The first day after the change comes in with tomorrow's data.</small></div></div></div>`+(CHG.err?`<div class="chg-err">${esc(CHG.err)}</div>`:'');return}
+ if(!n){el.innerHTML=hd+tabs+`<div class="chg-in chg-top">${chips}</div><div class="chg-in"><div class="chg-ver n"><i>⏳</i><div><b>Starts tomorrow</b><small>The first day after the change comes in tomorrow</small></div></div></div>`+(CHG.err?`<div class="chg-err">${esc(CHG.err)}</div>`:'');return}
  const bA=chgAdd(c.date,-n),bB=chgAdd(c.date,-1),A=chgSum(ex,c.type,c.date,last),B=chgSum(ex,c.type,bA,bB);
  const pc=(a,b)=>a!=null&&b?a/b-1:null;
  const row=(l,b,a,f,good)=>{const d=pc(a,b),z=d!=null&&Math.abs(d)<.005,cls=d==null||z||good===0?'n':(good>0?d>=0:d<=0)?'up':'dn';return `<tr><td>${l}</td><td>${b==null?'—':f(b)}</td><td>${a==null?'—':f(a)}</td><td><span class="chg-d ${cls}">${d==null?'—':z?'0%':(d>=0?'+':'−')+Math.abs(Math.round(d*100))+'%'}</span></td></tr>`};
@@ -23225,9 +23233,11 @@ function chgDraw(){const el=document.getElementById('chgCard');if(!el)return;
  const dr=pc(A.roas,B.roas),dv=pc(A.value,B.value),early=n<7,chk=chgFmt(chgAdd(c.date,7),1),win=dr==null||Math.abs(dr)<=.05?0:dr>0?1:-1;
  const P=v=>`${v>=0?'up':'down'} ${Math.abs(Math.round(v*100))}%`;
  hd=hdOf(`<span class="chg-ba">BEFORE<i></i><b>AFTER</b></span>`);
- const ver=dr==null?{c:'w',i:'…',t:'Not enough data yet',s:'Waiting for days with spend on both sides.'}:dr>.05&&!(dv<-.15)?{c:'g',i:'✓',t:early?'Early signs: better':'Better',s:early?`Only ${n} day${n>1?'s':''} after. Check again on ${chk}.`:`ROAS ${dr>=0?'+':'−'}${Math.abs(Math.round(dr*100))}% over ${n} days.`}
-  :dr<-.05?{c:'r',i:'!',t:early?'Early signs: worse':'Worse',s:early?`Only ${n} day${n>1?'s':''} after. Check again on ${chk}.`:`ROAS ${Math.round(dr*100)}% over ${n} days.`}
-  :{c:'w',i:'≈',t:early?'Early signs: about the same':'About the same',s:early?`Only ${n} day${n>1?'s':''} after. Check again on ${chk}.`:`ROAS within 5% over ${n} days.`};
+ const ver=dr==null?{c:'n',i:'…',t:'No conversions yet',s:'Waiting for value on both sides.'}
+  :early?{c:'b',i:`${n}/7`,t:'Too early to judge',s:`Only ${n} of 7 days · answer on ${chk}`}
+  :dr>.05?{c:'g',i:'✓',t:'Better',s:`ROAS +${Math.round(dr*100)}% over ${n} days`}
+  :dr<-.05?{c:'r',i:'!',t:'Worse',s:`ROAS −${Math.abs(Math.round(dr*100))}% over ${n} days`}
+  :{c:'w',i:'≈',t:'About the same',s:`ROAS within 5% over ${n} days`};
  el.innerHTML=hd+tabs+`<div class="chg-in chg-top">${chips}</div>
   <div class="chg-in chg-ch"><div class="chg-chh"><span>${CHG.m==='value'?'VALUE':CHG.m==='cpa'?'CPA':'ROAS'} ${chgDiff(chgAdd(c.date,-Math.max(n,7)),last)+1>60?'· 7-DAY AVERAGE':'BY DAY'}</span><span class="chg-seg">${[['roas','ROAS'],['value','Value'],['cpa','CPA']].map(([k,l])=>`<button type="button" class="${CHG.m===k?'on':''}" onclick="CHG.m='${k}';chgDraw()">${l}</button>`).join('')}</span></div>${chgChart(ex,c,last)}</div>
   <div class="chg-in">
