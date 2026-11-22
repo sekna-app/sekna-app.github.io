@@ -570,12 +570,13 @@ exports.api = onRequest({
   const b = body(req);
   try {
     // Alexandra's questions, answered here word by word (falls back to the Apps Script in the app)
-    if (route === '/ak/ask') { const who = await assertAccess(b.token); await ak.ask(req, res, b, who); return; }
+    if (route === '/ak/ask') { const who = await assertAccess(b.token); try { await assertOwner(b.token); who.owner = true; } catch (e) {} await ak.ask(req, res, b, who); return; }
     if (route === '/ak/note') { const who = await assertAccess(b.token); res.json(await ak.note(b, who)); return; }
     if (route === '/ak/search') { const who = await assertAccess(b.token); res.json(await ak.search(b, who)); return; }
     if (route === '/ak/tts') { const who = await assertAccess(b.token); if (b.style) { try { await assertOwner(b.token); who.owner = true; } catch (e) { b.style = ''; } } res.json(await ak.tts(b, who)); return; }
     if (route === '/ak/notif-set') { const who = await assertOwner(b.token); res.json(await ak.notifSet(b, who)); return; }
-    if (route === '/ak/live') { const who = await assertAccess(b.token); res.json(await ak.live(b, who)); return; }
+    if (route === '/ak/x') { const who = await assertAccess(b.token); let own = false; try { await assertOwner(b.token); own = true; } catch (e) {} res.json(await ak.xop(b, who, own)); return; }
+    if (route === '/ak/live') { const who = await assertAccess(b.token); if (!b.warm) { try { await assertOwner(b.token); who.owner = true; } catch (e) {} } res.json(await ak.live(b, who)); return; }
     if (route === '/ak/voice') { const who = await assertOwner(b.token); res.json(await ak.voice(b, who)); return; }
     if (route === '/call') {
       const fn = String(b.fn || '');

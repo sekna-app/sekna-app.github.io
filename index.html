@@ -10816,6 +10816,27 @@ body.dark-mode .chg-ver.b{background:#16203a!important;color:#e9eef7!important}b
 .aklv-rc{position:absolute;left:0;right:0;top:0;transition:transform .35s cubic-bezier(.2,.8,.3,1),opacity .35s;animation:akrIn .3s cubic-bezier(.2,.8,.3,1) backwards}@keyframes akrIn{from{opacity:0;margin-top:-10px}}
 .aklv-rc[data-b="0"]{transform:translateY(22px);opacity:1;z-index:3}.aklv-rc[data-b="1"]{transform:translateY(11px) scale(.94);opacity:.75;z-index:2}.aklv-rc[data-b="2"]{transform:translateY(0) scale(.88);opacity:.5;z-index:1}
 .aklv-rc .akr{background:rgba(8,16,42,.95)}.aklv-rc:not([data-b="0"]) .akr{max-height:44px;background:rgba(40,52,96,.95);border-color:rgba(255,255,255,.3)}.aklv-rc:not([data-b="0"]) .akr>*{visibility:hidden}.aklv-rc.gone{opacity:0}
+
+/* v651 show on screen */
+#akPt{position:fixed;inset:0;z-index:2147480050;pointer-events:none;transition:opacity .35s}#akPt.out{opacity:0}
+.akpt-r{position:fixed;border:3px solid #E2B874;border-radius:16px;box-shadow:0 0 0 6px rgba(226,184,116,.28),0 0 24px rgba(226,184,116,.7);animation:akptP 1.4s ease-in-out infinite;transition:left .15s,top .15s,width .15s,height .15s}
+@keyframes akptP{50%{box-shadow:0 0 0 10px rgba(226,184,116,.12),0 0 30px rgba(226,184,116,.85)}}
+.akpt-b{position:fixed;max-width:250px;display:flex;align-items:center;gap:7px;padding:6px 12px 6px 6px;border-radius:99px;font:800 12px Inter,system-ui,sans-serif;color:#fff;box-shadow:0 8px 18px rgba(0,0,0,.3);background:radial-gradient(circle at 15% 20%,rgba(124,196,255,.95),transparent 55%),radial-gradient(circle at 80% 90%,rgba(200,123,255,.9),transparent 55%),#2b3fb8}
+.akpt-o{width:24px;height:24px;border-radius:50%;overflow:hidden;flex:none;box-shadow:0 0 0 2px #E2B874}.akpt-o img,.akpt-o svg{width:100%;height:100%;object-fit:cover}
+/* v651 her settings sheets (white, Claude style) */
+.akx-sh{position:fixed;inset:0;z-index:2147480300;background:rgba(10,18,56,.4);display:flex;align-items:flex-end}
+.akx-c{width:100%;max-height:88%;overflow:auto;background:#fff;border-radius:22px 22px 0 0;padding:14px 16px calc(18px + env(safe-area-inset-bottom,0px));font-family:Inter,system-ui,sans-serif;color:#1d2433}
+.akx-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.akx-h b{font-size:17px}.akx-h button{width:34px;height:34px;border-radius:50%;border:0;background:#f1f3f8;font-size:15px;cursor:pointer;color:#4a5368}
+.akx-sec{font-size:11px;font-weight:900;letter-spacing:.12em;color:#8a92a6;text-align:left;margin:14px 2px 8px}
+.akx-bx{background:#f4f6fb;border-radius:16px;padding:12px 14px;margin-bottom:9px}.akx-t{display:flex;justify-content:space-between;gap:8px;font-weight:800;font-size:13.5px}.akx-t span{color:#6b7385;font-weight:600;font-size:11.5px;text-align:right}
+.akx-br{height:8px;border-radius:9px;background:#dfe4f0;margin:9px 0 6px;overflow:hidden}.akx-br i{display:block;height:100%;border-radius:9px;background:#3b6df2}.akx-br i.hot{background:#e5484d}
+.akx-r{color:#8a92a6;font-size:11px;text-align:right}
+.akx-lim{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end;margin-bottom:6px}.akx-lim label{font-size:11px;font-weight:800;color:#6b7385}.akx-lim input{display:block;width:100%;box-sizing:border-box;margin-top:4px;border:1.5px solid #d5dbe6;border-radius:10px;padding:8px;font:700 14px Inter,system-ui,sans-serif}
+.akx-lim button{border:0;border-radius:10px;padding:10px 14px;font:800 13px Inter,system-ui,sans-serif;color:#fff;background:#203c8e;cursor:pointer}
+.akx-n{display:flex;align-items:center;gap:10px;padding:10px 2px;border-top:1px solid #eef1f7}.akx-n>div{flex:1;min-width:0}.akx-n b{display:block;font-size:13px;color:#14286b}.akx-n small{font-size:11px;color:#8a92a6}
+.akx-ok{flex:none;border:0;border-radius:99px;padding:4px 10px;font:900 10px Inter,system-ui,sans-serif;background:#fdf6e6;color:#7a5512;cursor:pointer}.akx-ok.d{background:#e9f9f0;color:#14804a}
+.akx-w{padding:20px 4px;color:#8a92a6;font-size:13px;text-align:center}
+.akn-orb.sm{width:34px;height:34px;padding:3px}.akn-orb.sm .akn-av{width:28px!important;height:28px!important}
 </style>
 </head>
 <body>
@@ -12233,6 +12254,7 @@ ${akIntroHtml()}</div>
    <button type="button" onclick="akPgGo('off')">${akI('cal')}<span><b>Team days off</b> and who covers</span></button></div>
   ${AK.canAdd||AK.canTeach?`<h4>Tools</h4>${AK.canAdd?row('add','add','Add a sheet','Put a new sheet in the list'):''}${AK.canTeach?row('teach','teach','Teach the bot','Rules, access and platforms'):''}`:''}
   ${AK.editor?`<div id="akReqW">${akReqsHtml(AK.rq)}</div><h4>Settings</h4><div id="akBotW">${akBotRow(AK.bst||null)}</div>`:''}
+  <h4>Alexandra</h4><button type="button" class="r" onclick="akXSheet('notes')"><i>${akI('teach')}</i><span><b>Alexandra's notes</b><small>Her recommendations, Done or Open</small></span></button><button type="button" class="r" onclick="akXSheet('usage')"><i>${akI('chart')}</i><span><b>Usage</b><small>${akOwner()?'Yours and the team, and the limits':'How much you used today and this week'}</small></span></button>${akOwner()?`<button type="button" class="r" onclick="akXSheet('log')"><i>${akI('links')}</i><span><b>What she did</b><small>Everything she sent or changed · only you</small></span></button>`:''}
   <h4>Chat</h4><button type="button" class="r" role="switch" aria-checked="${akDk()}" onclick="akDkSet(!akDk(),this)"><i>${akI('moon')}</i><span><b>Dark mode</b><small>Only for this chat</small></span><em class="ak-sw${akDk()?' on':''}"></em></button><button type="button" class="r" role="switch" aria-checked="${akSfxOn()}" onclick="akSfxSet(!akSfxOn(),this)"><i>${akI('speaker')}</i><span><b>Chat sounds</b><small>Typing, sent, photo, voice and call sounds</small></span><em class="ak-sw${akSfxOn()?' on':''}"></em></button><button type="button" class="r" role="switch" aria-checked="${akVrOn()}" onclick="akVrSet(!akVrOn(),this)"><i>${akI('mic')}</i><span><b>Reply with voice</b><small>She answers with a voice note; the text stays one tap away</small></span><em class="ak-sw${akVrOn()?' on':''}"></em></button>${row('clear','trash','Clear chat','The chat stays on this device for 24 hours','del')}`;
  const RX=[[['like','love'],'1.2K',86,24],[['love','wow'],'948',41,12],[['like','haha'],'2.3K',132,57],[['love','like','care'],'1.7K',64,19],[['love','wow','like'],'3.1K',210,88],[['like','care'],'860',35,9],[['love','haha','like'],'2.6K',118,40]],RE={like:['👍','#1877F2'],love:['❤','#F33E58'],wow:['😮','#F7B125'],haha:['😆','#F7B125'],care:['🤗','#F7B125']},D=['2h','5h','1d','2d','3d','5d','1w'];
  
@@ -22732,6 +22754,8 @@ const AKLV_TOOLS=[{functionDeclarations:[
  {name:'do_action',description:'Do one of the actions listed under "Actions you can do for this person" (task, access, team message, maintenance, activity, reading status). Actions that change something show a Confirm button on the screen first.',
   parameters:{type:'OBJECT',properties:{do:{type:'STRING'},person:{type:'STRING'},title:{type:'STRING'},deadline:{type:'STRING'},note:{type:'STRING'},screen:{type:'STRING'},value:{type:'STRING'},text:{type:'STRING'},push:{type:'BOOLEAN'},on:{type:'BOOLEAN'},reason:{type:'STRING'}},required:['do']}},
  {name:'search_web',description:'Search Google for anything outside HEMERA (news, dates of holidays and seasons, ad platform changes, market facts). Returns a short answer with its sources; the sources also go to the chat. Say only what it returns.',parameters:{type:'OBJECT',properties:{query:{type:'STRING'}},required:['query']}},
+ {name:'save_note',description:'Save one concrete recommendation to your notes (the team sees them in your profile with Done / Open). Only for a real recommendation the team should act on.',parameters:{type:'OBJECT',properties:{text:{type:'STRING'}},required:['text']}},
+ {name:'show_on_screen',description:'ONLY when the person asks you to show them the screen or the app (اعرضي الشاشة، اعرضي التطبيق، وريني). Opens the screen and puts a gold ring on the exact number you are talking about. screen: daily, days, channels, campaigns, reports_studio, search_terms, seasons, lab. value: the number exactly as the app shows it (like "$6,243" or "4.43x"). label: the card name (like "Daily Spend", "ROAS"). say: a few words to show next to it.',parameters:{type:'OBJECT',properties:{screen:{type:'STRING'},value:{type:'STRING'},label:{type:'STRING'},say:{type:'STRING'}},required:['screen']}},
  {name:'show_card',description:'Show one card on the screen while you talk, so the person sees the key number. Use it for the main number of an answer (one card per answer, not more). Fields as in the card kinds: k = cmp (before→after: from,to,p,d), prog (v,of,pct), spark (v,pts,s,d), type (ch,v,s), date (date YYYY-MM-DD,v,s), season (e emoji,l,v,s), ly (ay,a,b,p,d), person (name,role,tag), or plain (l,v,p,d,s). d = up / down / "" for good / bad / so-so.',parameters:{type:'OBJECT',properties:{k:{type:'STRING'},l:{type:'STRING'},v:{type:'STRING'},p:{type:'STRING'},d:{type:'STRING'},s:{type:'STRING'},from:{type:'STRING'},to:{type:'STRING'},of:{type:'STRING'},pct:{type:'NUMBER'},pts:{type:'ARRAY',items:{type:'NUMBER'}},ch:{type:'STRING'},date:{type:'STRING'},e:{type:'STRING'},ay:{type:'STRING'},a:{type:'STRING'},b:{type:'STRING'},name:{type:'STRING'},role:{type:'STRING'},tag:{type:'STRING'}},required:['k']}},
  {name:'send_plan',description:'Send the budget plan picture of a month into the chat (e.g. "December").',parameters:{type:'OBJECT',properties:{month:{type:'STRING'}},required:['month']}},
  {name:'send_summary',description:'Send a short written summary of this call into the chat: the key numbers and the things to do. Only when the person asks for it.',parameters:{type:'OBJECT',properties:{points:{type:'ARRAY',items:{type:'STRING'}}},required:['points']}}]}];
@@ -22740,6 +22764,8 @@ const AKLV_TOOL_RULES=`# Tools in this call (be fast)
 - Only for things that are not in the summary (one campaign, an older day, a month, a campaign type, search terms, what dropped, the other account) call get_numbers once, then answer. Before calling it, say a very short phrase like "ثواني أشوفلك". Never guess a number.
 - For outside facts (news, holidays, platform changes) use search_web and say only what it returns; never invent outside facts.
 - open_screen ONLY when the person clearly asks to open or show a screen (افتحي، وريني، اعرضي، open, show). Never open anything on your own.
+- If the person asks you to show the screen or the app (اعرضي الشاشة، اعرضي التطبيق)، call show_on_screen with the screen and the exact number as the app shows it, then explain it.
+- When you give a concrete recommendation, call save_note with it in a few words.
 - When you say the main number of an answer, call show_card once with the best kind (cmp for before/after, prog for a target, spark for a trend, type for a campaign type, date when you name a day, season, ly for last year, person for a teammate). Keep talking; do not wait for it.
 - "Send me the plan of <month>" → send_plan. "Send me a summary of the call" (now or at the end) → send_summary with 3 to 6 short points in the person's language.`;
 function akLiveSplit(t){const S=[];let cur={h:'Summary',L:[]};String(t||'').split('\n').forEach(l=>{if(/^## /.test(l)){S.push(cur);cur={h:l.slice(3),L:[]}}else cur.L.push(l)});S.push(cur);return S.filter(x=>x.L.join('').trim())}
@@ -22786,7 +22812,7 @@ async function akLiveOpen(){if(AKLV.ws||AK.blocked)return;
  const pre=AKLV.pre;AKLV.pre=null;const connP=(pre&&Date.now()-pre.at<230000?pre.p:akLiveConnAny(0)).then(c=>c&&c.ws.readyState===1?c:akLiveConnAny(c?c.lvl:0));
  const m=await micP;if(AKLV.closed){if(m.s)m.s.getTracks().forEach(t=>t.stop());connP.then(c=>{try{c.ws.close(1000)}catch(e){}},()=>{});return}
  if(!m.s){akLiveFail('Allow the microphone to talk with Alexandra.');connP.then(c=>{try{c.ws.close(1000)}catch(e){}},()=>{});return}AKLV.stream=m.s;
- let c;try{c=await connP}catch(e){if(AKLV.closed)return;const j=e&&e.j;akLiveFail(j&&j.error?(akOwner()?j.error:'Voice chat is not ready right now. Try again in a minute.'):e&&e.reason&&akOwner()?'Gemini closed the call: '+e.reason:'Could not reach HEMERA’s server.');return}
+ let c;try{c=await connP}catch(e){if(AKLV.closed)return;const j=e&&e.j;akLiveFail(j&&j.error?(akOwner()||j.limit?j.error:'Voice chat is not ready right now. Try again in a minute.'):e&&e.reason&&akOwner()?'Gemini closed the call: '+e.reason:'Could not reach HEMERA’s server.');return}
  if(AKLV.closed){try{c.ws.close(1000)}catch(e){}return}
  c.own=true;AKLV.ws=c.ws;AKLV.conn=c;c.q.splice(0).forEach(akLiveMsg);akLiveMsg({setupComplete:{}});
  setTimeout(akLivePreSoon,1500)}
@@ -22860,6 +22886,7 @@ function akLiveClean(){AKLV.closed=true;akLiveRing(false);akCallNative(false);cl
  akLiveTurn();const t=AKLV.turns||[];AKLV.turns=[];const t0=AKLV.t0;AKLV.t0=0;
  if(t.length){const fb=t.findIndex(x=>x[0]==='b');t.forEach(([w,x],i)=>AK.msgs.push(w==='u'?{w:'u',html:`<span dir="auto">${akEsc(x)}</span>`,nw:1}:{w:'h',html:`${i===fb?'<p class="aklv-log">🎙 Voice chat</p>':''}<p dir="auto">${akEsc(x)}</p>`,cls:'',nw:1}));
   t.forEach(([w,x])=>AK.hist.push({role:w==='u'?'user':'model',text:x}));AK.hist=AK.hist.slice(-16)}
+ if(t0){akX({op:'callEnd',sec:Math.round((Date.now()-t0)/1000)}).catch(()=>{})}
  if(t0){const d=Math.max(1,Math.round((Date.now()-t0)/1000)),tm=new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});AK.msgs.push({w:'h',cls:'call',html:akCallCard(d,tm),nw:1})}
  if(t.length||t0){try{akSave()}catch(e){}akDraw()}}
 function akLiveEnd(){const snd=!AKLV.endSnd;AKLV.endSnd=1;akLiveClean();if(snd)setTimeout(()=>akSfx('end'),180);const el=document.getElementById('akLive');if(el){el.classList.remove('in');setTimeout(()=>el.remove(),280)}}
@@ -22952,7 +22979,7 @@ function akCallCard(sec,tm){const m=Math.floor(sec/60),s=sec%60,len=m?`${m} min$
 
  
 async function akLiveTool(tc){const calls=(tc&&tc.functionCalls)||[];if(!calls.length)return;AKLV.wait=true;
- const res=await Promise.all(calls.map(async f=>{let r;try{const A=f.args||{};if(f.name==='get_numbers')r=await akLiveNumbers(A);else if(f.name==='open_screen')r=akLiveAsked()?await akLiveScreen(A):{result:'Not opened: the person did not ask to open anything. Just answer.'};else if(f.name==='send_plan')r=akLivePlan(A);else if(f.name==='send_summary')r=akLiveSumm(A);else if(f.name==='do_action')r=await akActVoice(A);else if(f.name==='search_web')r=await akLiveSearch(A);else if(f.name==='show_card'){akLiveRich(A);r={result:'shown'}}else r={result:'unknown tool'}}catch(e){r={result:'error: '+(e&&e.message||e)}}
+ const res=await Promise.all(calls.map(async f=>{let r;try{const A=f.args||{};if(f.name==='get_numbers')r=await akLiveNumbers(A);else if(f.name==='open_screen')r=akLiveAsked()?await akLiveScreen(A):{result:'Not opened: the person did not ask to open anything. Just answer.'};else if(f.name==='send_plan')r=akLivePlan(A);else if(f.name==='send_summary')r=akLiveSumm(A);else if(f.name==='do_action')r=await akActVoice(A);else if(f.name==='search_web')r=await akLiveSearch(A);else if(f.name==='show_card'){akLiveRich(A);r={result:'shown'}}else if(f.name==='save_note'){akNoteAdd(A.text,'Call');r={result:'saved'}}else if(f.name==='show_on_screen')r=akLiveAsked()?await akLivePoint(A):{result:'Not shown: the person did not ask to see the screen. Just answer.'};else r={result:'unknown tool'}}catch(e){r={result:'error: '+(e&&e.message||e)}}
   return {id:f.id,name:f.name,response:r}}));
  const ws=AKLV.ws;if(ws&&ws.readyState===1)try{ws.send(JSON.stringify({toolResponse:{functionResponses:res}}))}catch(e){}}
  
@@ -23138,7 +23165,7 @@ async function akActGo(id){const el=document.getElementById(id);if(!el)return;le
  if(a.do==='team_message'){const ti=el.querySelector('.ak-a2i'),tx=el.querySelector('.ak-a2x'),cb=el.querySelector('.ak-a2c input');if(ti)a.title=ti.value.trim();if(tx)a.text=tx.value.trim();if(cb)a.push=cb.checked;if(!a.text){showSettingsToast('Write the message first.');return}}
  {const rr=el.querySelector('.ak-a2r');if(rr)a.reason=rr.value.trim()}
  el.querySelectorAll('button').forEach(b=>b.disabled=true);const r=await akActRun(id,a,true);if(AKLV.ws&&AKLV.ws.readyState===1&&r)try{AKLV.ws.send(JSON.stringify({clientContent:{turns:[{role:'user',parts:[{text:'(Done on the screen: '+r+'. Tell the person in a few words.)'}]}],turnComplete:true}}))}catch(e){}}
-async function akActRun(id,a,confirmed){const T=getAccessToken(),done=(h,txt)=>{akActPut(id,`<div class="ak-act2 ok" id="${id}">${h}</div>`);return txt||''},fail=e=>{akActPut(id,`<div class="ak-act2 no" id="${id}">${akEsc(errorText?errorText(e):String(e&&e.message||e))}</div>`);return 'failed'};
+async function akActRun(id,a,confirmed){const T=getAccessToken(),done=(h,txt)=>{akActPut(id,`<div class="ak-act2 ok" id="${id}">${h}</div>`);try{akXLog(String(h).replace(/<[^>]+>/g,'').replace(/^✓\s*/,'').slice(0,200))}catch(e){}return txt||''},fail=e=>{akActPut(id,`<div class="ak-act2 no" id="${id}">${akEsc(errorText?errorText(e):String(e&&e.message||e))}</div>`);return 'failed'};
  if(!akActCan(a.do))return fail('You cannot do this from your account.');
  try{switch(a.do){
   case 'add_task':{const p=a._p||await akPerson(a.person);if(!p)return fail('I could not find that person.');let dl=String(a.deadline||'');if(!/^\d{4}-\d{2}-\d{2}$/.test(dl)){const d=new Date();d.setDate(d.getDate()+2);dl=d.toISOString().slice(0,10)}
@@ -23233,8 +23260,10 @@ function akCallerHtml(){const me=akMe()||{},p=((typeof PFP!=='undefined'&&PFP.pe
 function akSmartSplit(t){t=String(t||'');let html='',src=[];
  const m=/\[\[\s*SOURCES\s*\]\]\s*(\[[\s\S]*?\])\s*$/i.exec(t);if(m){try{src=JSON.parse(m[1])}catch(e){}t=t.slice(0,m.index)}
  const rem=[...t.matchAll(/\[\[\s*REMEMBER\s*\]\]\s*([^\n]*)/gi)].map(x=>x[1].trim()).filter(Boolean),fg=/\[\[\s*FORGET\s*\]\]/i.test(t);
- t=t.replace(/\n?\[\[\s*(REMEMBER|FORGET)\s*\]\][^\n]*/gi,'').trim();
+ const todo=[...t.matchAll(/\[\[\s*TODO\s*\]\]\s*([^\n]*)/gi)].map(x=>x[1].trim()).filter(Boolean);todo.forEach(x=>akNoteAdd(x,'Chat'));
+ t=t.replace(/\n?\[\[\s*(REMEMBER|FORGET|TODO)\s*\]\][^\n]*/gi,'').trim();
  const ar=/[\u0600-\u06FF]/.test(t);
+ if(todo.length)html+=`<p class="ak-mem" dir="auto">📝 ${ar?'اتسجلت في ملاحظاتي':'Saved to my notes'}: ${todo.map(akEsc).join(' · ')}</p>`;
  if(rem.length)html+=`<p class="ak-mem" dir="auto">📌 ${ar?'هفتكر ده':'I will remember this'}: ${rem.map(akEsc).join(' · ')}</p>`;
  else if(fg)html+=`<p class="ak-mem">🗑 ${ar?'نسيته':'Forgotten.'}</p>`;
  if(src.length)html+='';
@@ -23573,6 +23602,43 @@ function akLiveRich(c){const el=document.getElementById('akLive');if(!el)return;
  const old=document.getElementById('aklvCards');if(old)old.innerHTML='';
  const w=document.createElement('div');w.className='aklv-rc';w.innerHTML=akRC(c);box.appendChild(w);
  const all=[...box.children];all.forEach((x,i)=>{const back=all.length-1-i;x.dataset.b=back;if(back>2){x.classList.add('gone');setTimeout(()=>x.remove(),300)}});}
+
+
+function akX(b){return fetch(AK_SRV.replace(/\/ak\/ask$/,'/ak/x'),{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(Object.assign({token:getAccessToken()},b))}).then(r=>r.json())}
+function akNoteAdd(t,src){t=String(t||'').trim();if(t)akX({op:'noteAdd',text:t,src}).catch(()=>{})}
+function akXLog(t){t=String(t||'').trim();if(t)akX({op:'logAdd',text:t}).catch(()=>{})}
+
+function akNum(x){return String(x||'').toLowerCase().replace(/[\s,]/g,'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d))}
+function akFindOnScreen(value,label){const root=document.querySelector('.tab-panel.active')||document.body,vis=e=>{const r=e.getBoundingClientRect();return r.width>0&&r.height>0&&getComputedStyle(e).visibility!=='hidden'};
+ const leaves=[...root.querySelectorAll('b,strong,span,div,em,td,small')].filter(e=>e.children.length===0&&vis(e));
+ let hit=null;const v=akNum(value).replace(/^[$£€]/,''),lb=String(label||'').toLowerCase().trim();
+ if(v){const cands=leaves.filter(e=>akNum(e.textContent).replace(/^[$£€]/,'')===v);if(!cands.length)cands.push(...leaves.filter(e=>akNum(e.textContent).includes(v)&&e.textContent.length<24));
+  if(lb&&cands.length>1){const withL=cands.find(e=>{let p=e;for(let i=0;i<5&&p;i++,p=p.parentElement)if(String(p.textContent).toLowerCase().includes(lb))return true});if(withL)hit=withL}
+  if(!hit)hit=cands[0]||null}
+ if(!hit&&lb)hit=leaves.find(e=>e.textContent.toLowerCase().trim()===lb)||leaves.find(e=>e.textContent.toLowerCase().includes(lb)&&e.textContent.length<40)||null;
+ if(!hit)return null;let box=hit;for(let p=hit.parentElement,i=0;p&&i<6;p=p.parentElement,i++){const r=p.getBoundingClientRect();if(r.height>innerHeight*.5||r.width>innerWidth*.98)break;box=p;if(/\b(card|k4card|ox-tile|ctd|kx|ccd|cp-c3|dc-card|wx-seg|st-card|mr3|ss-r|ox-cl|stp-mt|fc-hero)\b/.test(p.className||''))break}
+ return box}
+async function akLivePoint(a){const r=await akLiveScreen({screen:a.screen||'daily'});if(r&&/Unknown|cannot|Could not/.test(r.result||''))return r;
+ await new Promise(x=>setTimeout(x,900));const el=akFindOnScreen(a.value,a.label);if(!el)return {result:'Opened the screen, but could not find that number on it. Say where it is instead.'};
+ el.scrollIntoView({block:'center',behavior:'smooth'});await new Promise(x=>setTimeout(x,450));
+ document.getElementById('akPt')?.remove();const o=document.createElement('div');o.id='akPt';o.setAttribute('data-share-ui','');
+ o.innerHTML=`<i class="akpt-r"></i>${a.say?`<span class="akpt-b"><span class="akpt-o">${akAvIn()}</span>${akEsc(String(a.say).slice(0,80))}</span>`:''}`;document.body.appendChild(o);
+ const place=()=>{if(!el.isConnected){o.remove();return}const r=el.getBoundingClientRect(),ring=o.querySelector('.akpt-r'),b=o.querySelector('.akpt-b');ring.style.cssText=`left:${r.left-6}px;top:${r.top-6}px;width:${r.width+12}px;height:${r.height+12}px`;if(b){const bt=r.top-46<70?r.bottom+10:r.top-46;b.style.cssText=`left:${Math.max(10,Math.min(innerWidth-260,r.left))}px;top:${bt}px`}};
+ place();const iv=setInterval(place,120);setTimeout(()=>{clearInterval(iv);o.classList.add('out');setTimeout(()=>o.remove(),400)},9000);
+ return {result:'Showing it with a ring: '+(el.textContent||'').replace(/\s+/g,' ').trim().slice(0,90)}}
+
+function akXSheet(kind){const pg=document.body;document.querySelector('.akx-sh')?.remove();
+ const o=document.createElement('div');o.className='akx-sh';o.onclick=e=>{if(e.target===o)o.remove()};
+ o.innerHTML=`<div class="akx-c"><div class="akx-h"><button type="button" onclick="akXSheet('${kind}')" aria-label="Refresh">↻</button><b>${kind==='notes'?"Alexandra's notes":kind==='usage'?'Usage':'What she did'}</b><button type="button" onclick="this.closest('.akx-sh').remove()" aria-label="Close">✕</button></div><div class="akx-b"><div class="akx-w">Loading…</div></div></div>`;pg.appendChild(o);
+ const B=o.querySelector('.akx-b'),ago=t=>{const m=Math.round((Date.now()-t)/6e4);return m<60?m+'m ago':m<1440?Math.round(m/60)+'h ago':new Date(t).toLocaleDateString('en-GB',{day:'numeric',month:'short'})};
+ if(kind==='notes')akX({op:'notes'}).then(j=>{const l=j.list||[];B.innerHTML=l.length?`<div class="akx-sec">HER RECOMMENDATIONS</div>`+l.map(x=>`<div class="akx-n"><span class="akn-orb sm">${aknFace()}</span><div><b>${akEsc(x.t)}</b><small>${akEsc(x.src||'')} · ${ago(x.at)}</small></div><button type="button" class="akx-ok ${x.done?'d':''}" onclick="akX({op:'noteSet',id:'${x.id}',done:${!x.done}}).then(()=>akXSheet('notes'))">${x.done?'DONE':'OPEN'}</button></div>`).join(''):'<div class="akx-w">No notes yet. Her recommendations from chats and calls show here.</div>'}).catch(()=>B.innerHTML='<div class="akx-w">Could not load.</div>');
+ if(kind==='log')akX({op:'log'}).then(j=>{const l=j.list||[];B.innerHTML=l.length?`<div class="akx-sec">LOG</div>`+l.map(x=>`<div class="akx-n"><div><b>${akEsc(x.t)}</b><small>asked by ${akEsc(String(x.by||'').split('@')[0])} · ${ago(x.at)}</small></div></div>`).join(''):'<div class="akx-w">Nothing yet.</div>'}).catch(()=>B.innerHTML='<div class="akx-w">Could not load.</div>');
+ if(kind==='usage')akX({op:'usage'}).then(j=>{const m=j.me||{},bar=(t,pct,l,r)=>`<div class="akx-bx"><div class="akx-t">${t}<span>${l}</span></div><div class="akx-br"><i style="width:${Math.min(100,pct)}%"></i></div><div class="akx-r">${r}</div></div>`;
+  let h=`<div class="akx-sec">YOUR USAGE</div>`+bar('Today',m.msgDay?m.q/m.msgDay*100:0,m.msgDay?Math.round(m.q/m.msgDay*100)+'% used':m.q+' messages',`${m.q} of ${m.msgDay||'∞'} messages · resets at midnight`)+bar('Calls this week',m.callWeek?m.sec/60/m.callWeek*100:0,`${Math.round(m.sec/60)} of ${m.callWeek||'∞'} min`,'Resets Thursday');
+  if(j.owner){const ppl=(typeof PFP!=='undefined'&&PFP.people)||[],nm=e=>{const p=ppl.find(x=>String(x.email).toLowerCase()===e);return p&&p.name||e.split('@')[0]};
+   h+=`<div class="akx-sec">TEAM · THIS WEEK</div>`+(j.team||[]).sort((a,b)=>b.q-a.q).map(x=>{const pct=x.msgDay?Math.round(x.today/x.msgDay*100):0;return `<div class="akx-bx"><div class="akx-t">${akEsc(nm(x.email))}<span>${x.today} today · ${x.q} this week · ${Math.round(x.sec/60)} min calls</span></div><div class="akx-br"><i class="${pct>=80?'hot':''}" style="width:${Math.min(100,pct)}%"></i></div><div class="akx-r">Limit ${x.msgDay}/day · ${x.callWeek} min/week</div></div>`}).join('')+
+    `<div class="akx-sec">LIMITS FOR EVERYONE</div><div class="akx-lim"><label>Messages a day<input type="number" min="0" id="akxM" value="${j.limits.msgDay}"></label><label>Call minutes a week<input type="number" min="0" id="akxC" value="${j.limits.callWeek}"></label><button type="button" onclick="akX({op:'usageSet',msgDay:document.getElementById('akxM').value,callWeek:document.getElementById('akxC').value}).then(()=>{showSettingsToast('Saved');akXSheet('usage')})">Save</button></div><div class="akx-r" style="text-align:left">0 = no limit · you have no limit · this month: ${j.month.q} messages, ${j.month.min} call minutes, about $${j.month.cost}</div>`}
+  B.innerHTML=h}).catch(()=>B.innerHTML='<div class="akx-w">Could not load.</div>')}
 </script>
 <div id="seknaFileEnd" hidden></div>
 <script>

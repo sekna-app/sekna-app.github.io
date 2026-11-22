@@ -10,6 +10,7 @@ const DOC = 'server/alexandra', USE = 'server/ak-usage';
 const HM_NUM_RULES = [
   'IMPORTANT: this section overrides any earlier instruction that says you only help with sheets and links, or that tells you to send people to a teammate for numbers. In HEMERA you DO have the numbers below and you answer from them.',
   'You are also a sharp media-buying analyst. The lines below are the live numbers from the HEMERA dashboard for the account the person has open (and the other account when it is loaded).',
+  '- When you give a concrete recommendation (something the team should do), add one line [[TODO]] followed by that action in a few words, so it is saved to your notes. Only for real recommendations.',
   '- If the person says something is not important to them or not to mention it again, save that with [[REMEMBER]] and never bring it up again.',
   '- With the person: ask how they are only in the first call of the day. On their birthday, congratulate them. If they are on leave today (team leave data), wish them a happy leave ("أجازة سعيدة"). When thanked, answer simply with their first name ("على إيه يا إبراهيم"). If you did not understand, apologise gently and ask one short question. Take a joke and answer with a light one. Say "مش عارفة" honestly when you do not know. Say "ثواني" while you fetch something and never stay silent long without saying you are looking. If they say "استني" stop and wait; "كملي" go on; "قولي تاني" repeat; "مش فاهم" say it again more simply. If asked who you are: you are Alexandra, from the SEKNA team. Talk about the team as "إحنا". End with "كلمني في أي وقت" now and then. When corrected correctly, say "عندك حق" and keep it for next time. You can send a picture when asked, read a screenshot and point out a mistake in it, understand emojis, and give public news only from search with the source. In writing you may add one emoji now and then.',
   '- If an Islamic occasion or a US giving day is today or tomorrow (see Seasons coming up), mention it and its usual effect. When numbers confirm something you predicted before (your memory), say "زي ما توقعت"; when you predict something, add it with [[REMEMBER]].',
@@ -71,6 +72,48 @@ async function prep(email, name) {
 function month() { return new Date().toISOString().slice(0, 7); }
 async function count(f) { const m = month(); await fsUpdate(USE, d => { d = d || {}; const o = d[m] = d[m] || { n: 0, limit: 0, err: 0 }; f(o); return d; }).catch(() => {}); }
 
+
+// v651 usage per person, limits, Alexandra's notes and her log
+const UU = 'server/ak-users-usage', NOTES = 'server/ak-notes', ALOG = 'server/ak-log';
+const LIM_DEF = { msgDay: 80, callWeek: 60 }; // messages per day, call minutes per week
+const ekey = e => String(e || '').toLowerCase().replace(/\./g, ',');
+const dayKey = () => new Date(Date.now() + 4 * 36e5).toISOString().slice(0, 10); // Muscat day
+function weekKey() { const d = new Date(Date.now() + 4 * 36e5); const back = (d.getUTCDay() + 7 - 4) % 7; d.setUTCDate(d.getUTCDate() - back); return d.toISOString().slice(0, 10); } // weeks start Thursday
+async function uuGet() { return (await fsGet(UU).catch(() => null)) || {}; }
+function limFor(u, email) { const per = ((u.limits || {}).per || {})[ekey(email)] || {}; const base = Object.assign({}, LIM_DEF, (u.limits || {}).base || {}); return { msgDay: per.msgDay != null ? per.msgDay : base.msgDay, callWeek: per.callWeek != null ? per.callWeek : base.callWeek }; }
+async function uuBump(email, f) { const d = dayKey(), w = weekKey(), k = ekey(email);
+  await fsUpdate(UU, u => { u = u || {}; u.d = u.d || {}; u.w = u.w || {}; const dd = u.d[d] = u.d[d] || {}, ww = u.w[w] = u.w[w] || {};
+    f(dd[k] = dd[k] || { q: 0 }, ww[k] = ww[k] || { sec: 0, q: 0 });
+    Object.keys(u.d).sort().slice(0, -35).forEach(x => delete u.d[x]); Object.keys(u.w).sort().slice(0, -10).forEach(x => delete u.w[x]); return u; }).catch(() => {}); }
+async function overLimit(email, kind, owner) { if (owner) return ''; const u = await uuGet(), L = limFor(u, email), k = ekey(email);
+  if (kind === 'msg') { const n = (((u.d || {})[dayKey()] || {})[k] || {}).q || 0; if (L.msgDay > 0 && n >= L.msgDay) return 'You reached today\'s limit of ' + L.msgDay + ' messages with Alexandra. It resets at midnight (Muscat time).'; }
+  if (kind === 'call') { const sec = (((u.w || {})[weekKey()] || {})[k] || {}).sec || 0; if (L.callWeek > 0 && sec >= L.callWeek * 60) return 'You used this week\'s ' + L.callWeek + ' call minutes with Alexandra. They reset on Thursday.'; }
+  return ''; }
+async function xop(b, who, isOwner) {
+  const email = String(who.email || '').toLowerCase(), op = String(b.op || '');
+  if (op === 'callEnd') { const sec = Math.max(0, Math.min(3600, Math.round(+b.sec || 0))); if (sec) await uuBump(email, (d, w) => { w.sec += sec; d.sec = (d.sec || 0) + sec; }); return { ok: true }; }
+  if (op === 'usage') { const u = await uuGet(), k = ekey(email), L = limFor(u, email), d = ((u.d || {})[dayKey()] || {})[k] || {}, w = ((u.w || {})[weekKey()] || {})[k] || {};
+    const out = { ok: true, owner: !!isOwner, me: { q: d.q || 0, msgDay: L.msgDay, sec: w.sec || 0, wq: w.q || 0, callWeek: L.callWeek }, day: dayKey(), week: weekKey() };
+    if (isOwner) { const rows = {}; Object.keys(u.w || {}).sort().slice(-1).forEach(wk => Object.keys(u.w[wk]).forEach(x => { rows[x] = rows[x] || { q: 0, sec: 0, today: 0 }; rows[x].q += u.w[wk][x].q || 0; rows[x].sec += u.w[wk][x].sec || 0; }));
+      Object.keys((u.d || {})[dayKey()] || {}).forEach(x => { rows[x] = rows[x] || { q: 0, sec: 0, today: 0 }; rows[x].today = u.d[dayKey()][x].q || 0; });
+      const mk = dayKey().slice(0, 7); let mq = 0, msec = 0; Object.keys(u.d || {}).filter(x => x.slice(0, 7) === mk).forEach(x => Object.values(u.d[x]).forEach(r => { mq += r.q || 0; msec += r.sec || 0; }));
+      out.team = Object.keys(rows).map(x => Object.assign({ email: x.replace(/,/g, '.') }, rows[x], limFor(u, x.replace(/,/g, '.'))));
+      out.limits = Object.assign({}, LIM_DEF, (u.limits || {}).base || {}); out.month = { q: mq, min: Math.round(msec / 60), cost: Math.round((mq * 0.0025 + msec / 60 * 0.015) * 100) / 100 }; }
+    return out; }
+  if (op === 'usageSet') { if (!isOwner) return { ok: false, error: 'Owner only.' };
+    await fsUpdate(UU, u => { u = u || {}; u.limits = u.limits || {}; const n = v => v === '' || v == null ? undefined : Math.max(0, Math.min(10000, Math.round(+v)));
+      if (b.email) { u.limits.per = u.limits.per || {}; const k = ekey(b.email); u.limits.per[k] = { msgDay: n(b.msgDay), callWeek: n(b.callWeek) }; Object.keys(u.limits.per[k]).forEach(x => u.limits.per[k][x] === undefined && delete u.limits.per[k][x]); }
+      else u.limits.base = Object.assign({}, u.limits.base || {}, b.msgDay != null ? { msgDay: n(b.msgDay) } : {}, b.callWeek != null ? { callWeek: n(b.callWeek) } : {}); return u; });
+    return xop({ op: 'usage' }, who, true); }
+  if (op === 'notes') { const d = (await fsGet(NOTES).catch(() => null)) || {}; return { ok: true, list: (d.list || []).slice(-150).reverse() }; }
+  if (op === 'noteAdd') { const t = String(b.text || '').trim().slice(0, 300); if (!t) return { ok: false };
+    await fsUpdate(NOTES, d => { d = d || {}; const l = d.list = d.list || []; if (!l.slice(-30).some(x => x.t === t)) l.push({ id: 'n' + Date.now().toString(36), t, src: String(b.src || 'Chat').slice(0, 60), by: email, at: Date.now(), done: false }); d.list = l.slice(-300); return d; }); return { ok: true }; }
+  if (op === 'noteSet') { await fsUpdate(NOTES, d => { d = d || {}; (d.list || []).forEach(x => { if (x.id === b.id) { x.done = !!b.done; x.doneBy = email; x.doneAt = Date.now(); } }); return d; }); return xop({ op: 'notes' }, who, isOwner); }
+  if (op === 'logAdd') { const t = String(b.text || '').trim().slice(0, 240); if (t) await fsUpdate(ALOG, d => { d = d || {}; const l = d.list = d.list || []; l.push({ t, by: email, at: Date.now() }); d.list = l.slice(-400); return d; }).catch(() => {}); return { ok: true }; }
+  if (op === 'log') { if (!isOwner) return { ok: false, error: 'Owner only.' }; const d = (await fsGet(ALOG).catch(() => null)) || {}; return { ok: true, list: (d.list || []).slice(-200).reverse() }; }
+  return { ok: false, error: 'Unknown.' };
+}
+
 /** POST /ak/ask {token, q, history, ctx, name}: streams the answer as plain text (JSON when it cannot). */
 async function ask(req, res, b, who) {
   const email = String(who.email || '').toLowerCase(), name = String(b.name || who.name || '').trim().slice(0, 60);
@@ -84,6 +127,8 @@ async function ask(req, res, b, who) {
   last.step = 'prep ok ' + (Date.now() - t0) + 'ms';
   if (p.blocked) { res.json({ ok: false, blocked: true, error: 'You do not have access to Alexandra.' }); return; }
   if (p.paused && !p.editor) { res.json({ ok: true, answer: 'Alexandra is stopped for now. Try again later.', api: 'srv' }); return; }
+  { const lim = await overLimit(email, 'msg', who.owner); if (lim) { res.json({ ok: true, answer: lim, api: 'srv', limit: true }); return; } }
+  uuBump(email, (d, w) => { d.q++; w.q++; });
   const ctx = String(b.ctx || '').slice(0, 120000);
   let hist = (Array.isArray(b.history) ? b.history : []).slice(-6).filter(x => x && x.text && (x.role === 'user' || x.role === 'model'))
     .map(x => ({ role: x.role, parts: [{ text: String(x.text).slice(0, 4000) }] }));
@@ -265,6 +310,7 @@ async function live(b, who) {
   const p = await prep(email, name);
   if (p.blocked) return { ok: false, blocked: true, error: 'You do not have access to Alexandra.' };
   if (p.paused && !p.editor) return { ok: false, error: 'Alexandra is stopped for now.' };
+  { const lim = await overLimit(email, 'call', who.owner); if (lim) return { ok: false, limit: true, error: lim }; }
   const keys = (p.keys || []).filter(Boolean);
   if (!keys.length) return { ok: false, error: 'No Gemini key.' };
   // v578 warm-up when the chat opens: the script's data and the model are ready before the voice chat starts
@@ -415,4 +461,4 @@ ${facts}`;
   return { ok: true, think: String(o.think || '').slice(0, 400), seen: (Array.isArray(o.seen) ? o.seen : []).slice(0, 6).map(x => String(x).slice(0, 30)),
     options: o.options.slice(0, 3).map(x => ({ tag: String(x.tag || '').toUpperCase().slice(0, 24), text: String(x.text || '').trim().slice(0, max + 20) })).filter(x => x.text) };
 }
-module.exports = { note, search, memGet, memText, ask, link, state, usageMail, voice, live, tts, notifSet, notifGet };
+module.exports = { xop, note, search, memGet, memText, ask, link, state, usageMail, voice, live, tts, notifSet, notifGet };
