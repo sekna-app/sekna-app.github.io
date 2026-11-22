@@ -22784,8 +22784,8 @@ async function akRoasAlert(){try{
  const bad=rows.filter(x=>x.w.sp>=Math.max(50,tot*.02)&&x.w.ro<tg).sort((a,b)=>(b.w.sp*(tg-b.w.ro))-(a.w.sp*(tg-a.w.ro))).slice(0,2);
  storeSet(key,'1');if(!bad.length)return;
  const nm=x=>String(x.n).replace(/[_|]+/g,' ').replace(/\s+/g,' ').trim().slice(0,48),r2=v=>(Math.round(v*100)/100).toFixed(2);
- const say='استنى هنا يا نجم! '+bad.map((x,i)=>(i?'وكمان ':'')+'حملة '+nm(x)+' الـ ROAS بتاعها '+r2(x.w.ro)).join('، ')+' في آخر سبع أيام، والهدف '+r2(tg)+'. تحب نشوف السبب؟';
- const txt='استنى هنا يا نجم! '+bad.map(x=>`<b>${akEsc(nm(x))}</b>: ROAS <b>${r2(x.w.ro)}</b> (spend ${sym}${Math.round(K*x.w.sp).toLocaleString('en-US')})`).join('<br>')+`<br>الهدف <b>${r2(tg)}</b> · آخر ٧ أيام`;
+ const say='فيه حاجة محتاجين نبص عليها: '+bad.map((x,i)=>(i?'وكمان ':'')+'حملة '+nm(x)+' الـ ROAS بتاعها '+r2(x.w.ro)).join('، ')+' في آخر سبع أيام، والهدف '+r2(tg)+'. تحب نشوف السبب؟';
+ const txt='فيه حاجة محتاجين نبص عليها: '+bad.map(x=>`<b>${akEsc(nm(x))}</b>: ROAS <b>${r2(x.w.ro)}</b> (spend ${sym}${Math.round(K*x.w.sp).toLocaleString('en-US')})`).join('<br>')+`<br>الهدف <b>${r2(tg)}</b> · آخر ٧ أيام`;
  let vb='';try{const r=await fetch(AK_SRV.replace(/\/ak\/ask$/,'/ak/tts'),{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),name:akMe().name,text:say})});const j=await r.json();
   if(j&&j.ok){const rate=+((String(j.mime||'').match(/rate=(\d+)/)||[])[1]||24000),o=akWavBlob(j.data,rate),secs=Math.max(1,Math.round(o.pcm.length/rate)),vid='v'+Date.now();
    AKV.urls[vid]=URL.createObjectURL(o.blob);akVoicePut(vid,o.blob);const n=26,step=Math.floor(o.pcm.length/n)||1,bars=[];for(let i=0;i<n;i++){let m=0;for(let k=i*step;k<(i+1)*step&&k<o.pcm.length;k+=40)m=Math.max(m,Math.abs(o.pcm[k]));bars.push(Math.round(4+Math.min(1,m/16000)*16))}
