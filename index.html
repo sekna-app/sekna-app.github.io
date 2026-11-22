@@ -10647,7 +10647,27 @@ body.dark-mode .chg-seg button{background:#1a2540;color:#9fb6ff}body.dark-mode .
 .chg-lg{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px;font-size:11.5px;font-weight:700;color:#6b7385}.chg-lg i{display:inline-block;width:14px;height:0;border-top:2px dashed #8a92a6;vertical-align:middle;margin-right:6px}.chg-lg i.a{border-color:#2a4fb8}.chg-lg b{color:#1d2433;margin-left:2px}
 body.dark-mode .chg-lg b{color:#e9eef7}
 #chgPanel .chg-hd{justify-content:flex-end;margin:-4px 0 -6px}#chgPanel .chg-hd>div{display:none}
-#chgPanel .chg-top{display:flex;align-items:center;gap:8px}#chgPanel .chg-top .chg-chips{flex:1}
+#chgPanel .chg-top{display:block}
+
+/* v624 Did it work?: light strip on top, 3-step form, type sheet */
+.chg-ti{display:inline-grid;place-items:center;border-radius:10px;flex:none}.chg-ti svg,.chg-ti img{display:block}
+.chg-top{padding:0!important;overflow:hidden}
+.chg-strip{display:flex;align-items:center;gap:11px;padding:12px 14px;background:color-mix(in srgb,var(--c) 10%,#fff);border-left:4px solid var(--c)}
+.chg-strip>div{flex:1;min-width:0}.chg-strip b{display:block;font-size:14.5px;font-weight:800;color:color-mix(in srgb,var(--c) 70%,#0b1640)}.chg-strip small{display:block;font-size:12px;font-weight:600;color:#6b7385;margin-top:2px}
+.chg-edt{border:0;background:none;font:800 13px Inter,system-ui,sans-serif;color:color-mix(in srgb,var(--c) 70%,#0b1640);cursor:pointer;padding:6px 2px}
+body.dark-mode .chg-strip{background:color-mix(in srgb,var(--c) 16%,#11161e)}body.dark-mode .chg-strip b,body.dark-mode .chg-edt{color:color-mix(in srgb,var(--c) 55%,#fff)}
+.chg-form3{background:#fff;border:1px solid #eef1f7;border-radius:16px;padding:12px 14px 10px;margin-top:4px}
+.chg-st{display:flex;align-items:center;gap:8px;font-size:10.5px;font-weight:900;letter-spacing:.12em;color:#8a92a6;margin:12px 0 8px}.chg-st:first-child{margin-top:2px}
+.chg-st b{display:inline-grid;place-items:center;width:19px;height:19px;border-radius:50%;background:#14286b;color:#fff;letter-spacing:0;font-size:10.5px}
+.chg-tp{display:flex;align-items:center;gap:10px;width:100%;border:1.5px solid #dfe4ee;background:#fff;border-radius:14px;padding:8px 12px 8px 8px;font:800 14px Inter,system-ui,sans-serif;color:#1d2433;cursor:pointer;text-align:left}.chg-tp>span:not(.chg-ti){flex:1}.chg-tp em{font-style:normal;color:#8a92a6}
+.chg-wh{margin-top:0}.chg-wh .pfbd-c span{font-size:13.5px}.chg-wh .pfbd-c span.on{font-size:15.5px}.chg-whl{margin-top:4px}
+.chg-qc{display:flex;flex-wrap:wrap;gap:6px}.chg-qc button{border:0;border-radius:99px;padding:8px 12px;font:800 12px Inter,system-ui,sans-serif;background:#f1f3f8;color:#4a5368;cursor:pointer}.chg-qc button.on{background:#203c8e;color:#fff}
+.chg-oth{width:100%;box-sizing:border-box;margin-top:8px;border:1.5px solid #d5dbe6;border-radius:11px;padding:10px 11px;font:600 13.5px Inter,system-ui,sans-serif;color:#1d2433;background:#fff}
+.chg-save{display:block;width:100%;margin-top:14px;border:0;border-radius:14px;padding:13px;font:900 14px Inter,system-ui,sans-serif;color:#fff;background:linear-gradient(135deg,#2a4bb3,#16307f);cursor:pointer}
+.chg-form3 .chg-fb{display:flex;justify-content:center;gap:16px;margin-top:4px}.chg-cn{border:0;background:none;font:800 13px Inter,system-ui,sans-serif;color:#6b7385;padding:8px;cursor:pointer}.chg-form3 .chg-del{margin:0}
+.chg-sl{margin-top:10px;display:flex;flex-direction:column;gap:2px}.chg-sl button{display:flex;align-items:center;gap:12px;border:0;background:none;border-radius:12px;padding:9px 6px;font:700 15px Inter,system-ui,sans-serif;color:#141b33;cursor:pointer;text-align:left}
+.chg-sl button.on{background:#eef4fb}.chg-sl button>span:not(.chg-ti){flex:1}.chg-sl em{font-style:normal;color:#1d9cc8;font-weight:900}
+body.dark-mode .chg-form3,body.dark-mode .chg-tp,body.dark-mode .chg-oth{background:#11161e;border-color:#2a313c;color:#e9eef7}body.dark-mode .chg-qc button{background:#1a212c;color:#c3cad8}body.dark-mode .chg-qc button.on{background:#2a4fb8;color:#fff}
 </style>
 </head>
 <body>
@@ -23209,15 +23229,40 @@ function chgChart(ex,c,last){const n=Math.max(1,chgDiff(c.date,last)+1),span=Mat
   ${aA!=null?`<line x1="${cx0}" y1="${y(aA)}" x2="${W-P}" y2="${y(aA)}" stroke="#2a4fb8" stroke-dasharray="3 3"/>`:''}
   <polyline class="chg-pl" points="${line}" fill="none" stroke="#14286b" stroke-width="2.4" stroke-linejoin="round"/>${pts.map((p,i)=>p.v==null?'':`<circle cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="2.4" fill="${i>=ci&&ci>=0?'#2a4fb8':'#14286b'}"/>`).join('')}
   <g class="chg-lb">${lab}</g></svg><div class="chg-lg"><span><i class="b"></i>Before avg <b>${fm(bA)}</b></span><span><i class="a"></i>After avg <b>${fm(aA)}</b></span></div>`}
-function chgFormHtml(ex){const f=CHG.form,types=chgTypes(ex),last=chgLast(ex);
- return `<div class="chg-form"><label><small>Campaign type</small><select onchange="CHG.form.type=this.value">${types.map(t=>`<option ${t===f.type?'selected':''}>${esc(t)}</option>`).join('')}</select></label>
-  <label><small>Day of the change</small><input type="date" value="${esc(f.date)}" ${last?`max="${last}"`:''} onchange="CHG.form.date=this.value"></label>
-  <label class="w"><small>What changed</small><input type="text" maxlength="80" value="${esc(f.what||'')}" placeholder="e.g. Audience, bidding, budget, new ads" oninput="CHG.form.what=this.value"></label>
-  <div class="chg-fb">${f.id?`<button type="button" class="chg-del" onclick="chgDel()">Delete</button>`:''}<button type="button" class="pk-ghost" onclick="CHG.form=null;chgDraw()">Cancel</button><button type="button" class="lab-go" onclick="chgPut()">Save</button></div></div>`}
+const CHG_WHAT=['Audience','Bidding','Budget','New ads','Targeting'];
+const CHG_MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function chgIco(n,sz,light){const col=chgCol(n);let h=String(chIco(n)||'').replace(/^<span[^>]*>|<\/span>\s*$/g,'');
+ h=h.replace('<img ',`<img style="width:60%;height:60%;object-fit:contain;${light?'':'filter:brightness(0) invert(1)'}" `).replace('<svg ','<svg style="width:58%;height:58%" ');
+ return `<span class="chg-ti" style="width:${sz}px;height:${sz}px;background:${light?col+'22':col};color:${light?col:'#fff'}">${h}</span>`}
+function chgYears(){const y=new Date().getFullYear(),o=[];for(let i=y-2;i<=y;i++)o.push(i);return o}
+function chgFormHtml(ex){const f=CHG.form,p=f.date.split('-').map(Number),ys=chgYears(),days=[];for(let d=1;d<=31;d++)days.push(d);
+ const col=(id,items,cur,w)=>`<div class="pfbd-c" id="${id}" style="flex:${w}"><i class="pfbd-pad"></i>${items.map((t,i)=>`<span data-i="${i}" class="${i===cur?'on':''}">${t}</span>`).join('')}<i class="pfbd-pad"></i></div>`;
+ const other=f.other||(f.what&&CHG_WHAT.indexOf(f.what)<0);
+ return `<div class="chg-form3">
+  <div class="chg-st"><b>1</b>TYPE</div><button type="button" class="chg-tp" onclick="chgTypeSheet()">${chgIco(f.type,30)}<span>${esc(f.type||'Pick a type')}</span><em>⌄</em></button>
+  <div class="chg-st"><b>2</b>DAY</div><div class="pfbd-w chg-wh"><b class="pfbd-band"></b>${col('chgwD',days,p[2]-1,1)}${col('chgwM',CHG_MON,p[1]-1,1.2)}${col('chgwY',ys,Math.max(0,ys.indexOf(p[0])),1.1)}</div>
+  <div class="pfbd-l chg-whl"><span style="flex:1">DAY</span><span style="flex:1.2">MONTH</span><span style="flex:1.1">YEAR</span></div>
+  <div class="chg-st"><b>3</b>WHAT CHANGED</div><div class="chg-qc">${CHG_WHAT.map(w=>`<button type="button" class="${!other&&f.what===w?'on':''}" onclick="chgWhat('${w}')">${w}</button>`).join('')}<button type="button" class="${other?'on':''}" onclick="chgWhat('')">✎ Other</button></div>
+  ${other?`<input class="chg-oth" type="text" maxlength="80" value="${esc(CHG_WHAT.indexOf(f.what)<0?f.what||'':'')}" placeholder="What changed?" oninput="CHG.form.what=this.value">`:''}
+  <button type="button" class="chg-save" onclick="chgPut()">Save</button>
+  <div class="chg-fb">${f.id?`<button type="button" class="chg-del" onclick="chgDel()">Delete</button>`:''}<button type="button" class="chg-cn" onclick="CHG.form=null;chgDraw()">Cancel</button></div></div>`}
+function chgWheel(){const H=40;document.querySelectorAll('#chgCard .chg-wh .pfbd-c').forEach(c=>{const on=c.querySelector('span.on');c.scrollTop=on?(+on.dataset.i)*H:0;
+ c.addEventListener('scroll',()=>{const i=Math.round(c.scrollTop/H);c.querySelectorAll('span').forEach(x=>x.classList.toggle('on',+x.dataset.i===i))},{passive:true});
+ c.addEventListener('click',e=>{const x=e.target.closest('span');if(x)c.scrollTo({top:(+x.dataset.i)*H,behavior:'smooth'})})})}
+function chgWheelRead(){const g=id=>{const c=document.getElementById(id);return c?Math.round(c.scrollTop/40):null};const d=g('chgwD'),m=g('chgwM'),y=g('chgwY');if(d==null||!CHG.form)return;
+ const yy=chgYears()[y]||new Date().getFullYear(),mm=m+1,max=new Date(yy,mm,0).getDate(),dd=Math.min(d+1,max);CHG.form.date=`${yy}-${String(mm).padStart(2,'0')}-${String(dd).padStart(2,'0')}`}
+function chgWhat(w){chgWheelRead();if(!w){CHG.form.other=true;if(CHG_WHAT.indexOf(CHG.form.what)>=0)CHG.form.what=''}else{CHG.form.other=false;CHG.form.what=w}chgDraw();if(!w)setTimeout(()=>document.querySelector('#chgCard .chg-oth')?.focus(),50)}
+function chgTypeSheet(){chgWheelRead();const ex=MONTH_EXTRA[CURRENT_ACCOUNT]||{},types=chgTypes(ex);document.getElementById('chgTs')?.remove();
+ const o=document.createElement('div');o.id='chgTs';o.className='pfbd';
+ o.innerHTML=`<div class="pfbd-sh"><i class="pfbd-grab"></i><h3>Campaign type</h3><div class="chg-sl">${types.map((t,i)=>`<button type="button" class="${t===CHG.form.type?'on':''}" data-i="${i}">${chgIco(t,34)}<span>${esc(t)}</span>${t===CHG.form.type?'<em>✓</em>':''}</button>`).join('')}</div></div>`;
+ o.addEventListener('click',e=>{const b=e.target.closest('.chg-sl button');if(b){CHG.form.type=types[+b.dataset.i];chgTsClose();chgDraw();return}if(e.target===o)chgTsClose()});
+ document.body.appendChild(o);requestAnimationFrame(()=>o.classList.add('on'))}
+function chgTsClose(){const o=document.getElementById('chgTs');if(!o)return;o.classList.remove('on');setTimeout(()=>o.remove(),260)}
 function chgEdit(id){const ex=MONTH_EXTRA[CURRENT_ACCOUNT]||{},c=(CHG.list||[]).find(x=>x.id===id);const types=chgTypes(ex);
  CHG.form=c?Object.assign({},c):{id:'',acc:CURRENT_ACCOUNT,type:types.find(t=>/demand/i.test(t))||types[0]||'',date:chgLast(ex)||new Date().toISOString().slice(0,10),what:''};chgDraw()}
-function chgPut(){const f=CHG.form;if(!f||!f.type||!/^\d{4}-\d{2}-\d{2}$/.test(f.date)){showShareToast('Pick a campaign type and a day.');return}
- const l=(CHG.list||[]).slice();if(f.id){const i=l.findIndex(x=>x.id===f.id);if(i>=0)l[i]=Object.assign({},l[i],f)}else{f.id='c'+Date.now().toString(36);f.acc=CURRENT_ACCOUNT;f.at=Date.now();l.unshift(f)}
+function chgPut(){chgWheelRead();const f=CHG.form;if(!f||!f.type||!/^\d{4}-\d{2}-\d{2}$/.test(f.date)){showShareToast('Pick a campaign type and a day.');return}
+ const l=(CHG.list||[]).slice();if(f.id){const i=l.findIndex(x=>x.id===f.id);if(i>=0){l[i]=Object.assign({},l[i],f);delete l[i].other}}else{f.id='c'+Date.now().toString(36);f.acc=CURRENT_ACCOUNT;f.at=Date.now();delete f.other;l.unshift(f)}
  CHG.list=l;CHG.sel=f.id;CHG.form=null;chgDraw();chgSave()}
 async function chgDel(){const f=CHG.form;if(!f||!f.id)return;if(!await askSekna({title:'Delete this change?',text:`${f.type} · ${chgFmt(f.date,1)} stops being tracked for everyone.`,ok:'Delete'}))return;
  CHG.list=(CHG.list||[]).filter(x=>x.id!==f.id);CHG.form=null;CHG.sel='';chgDraw();chgSave()}
@@ -23227,13 +23272,13 @@ function chgDraw(){const el=document.getElementById('chgCard');if(!el)return;
  const ex=MONTH_EXTRA[CURRENT_ACCOUNT];if(!ex){loadMonthExtras();el.innerHTML=`<div class="chg-hd"><div><b>Did it work?</b><small>${MONTH_EXTRA_FAIL&&MONTH_EXTRA_FAIL[CURRENT_ACCOUNT]?'Could not read the days. Pull to refresh.':'Reading the days…'}</small></div></div>`;return}
  const mine=(CHG.list||[]).filter(x=>(x.acc||'usa')===CURRENT_ACCOUNT).sort((a,b)=>a.date<b.date?1:-1);
  const hd=`<div class="chg-hd"><div><b>Did it work?</b></div><button type="button" class="chg-plus" aria-label="Track a change" onclick="chgEdit('')">＋</button></div>`;
- if(CHG.form){el.innerHTML=hd+chgFormHtml(ex);return}
+ if(CHG.form){el.innerHTML=chgFormHtml(ex);chgWheel();return}
  if(!mine.length){el.innerHTML=hd+`<button type="button" class="chg-add" onclick="chgEdit('')">＋ Track a change</button>`;return}
  const c=mine.find(x=>x.id===CHG.sel)||mine[0],last=chgLast(ex);
  const tabs=mine.length>1?`<div class="chg-tabs">${mine.map(x=>`<button type="button" class="${x.id===c.id?'on':''}" onclick="CHG.sel='${x.id}';chgDraw()"><i style="background:${chgCol(x.type)}"></i>${esc(CHANNEL_SHORT[x.type]||x.type)} · ${esc(chgFmt(x.date))}</button>`).join('')}</div>`:'';
- const chips=`<div class="chg-chips"><span class="chg-chip on"><i style="background:${chgCol(c.type)}"></i>${esc(c.type)}</span><span class="chg-chip">📅 ${esc(chgFmt(c.date,1))}</span>${c.what?`<span class="chg-chip">${esc(c.what)}</span>`:''}<button type="button" class="chg-ed" aria-label="Edit" onclick="chgEdit('${c.id}')">✎</button></div>`;
+ const col=chgCol(c.type),chips=`<div class="chg-strip" style="--c:${col}">${chgIco(c.type,34,1)}<div><b>${esc(c.type)}${c.what?' · '+esc(c.what):''}</b><small>${esc(chgFmt(c.date,1))} → today</small></div><button type="button" class="chg-edt" onclick="chgEdit('${c.id}')">Edit</button></div>`;
  const n=last&&last>=c.date?chgDiff(c.date,last)+1:0;
- if(!n){el.innerHTML=hd+tabs+`<div class="chg-in">${chips}<div class="chg-ver w"><i>⏳</i><div><b>Starts tomorrow</b><small>The first day after the change comes in with tomorrow's data.</small></div></div></div>`+(CHG.err?`<div class="chg-err">${esc(CHG.err)}</div>`:'');return}
+ if(!n){el.innerHTML=hd+tabs+`<div class="chg-in chg-top">${chips}</div><div class="chg-in"><div class="chg-ver w"><i>⏳</i><div><b>Starts tomorrow</b><small>The first day after the change comes in with tomorrow's data.</small></div></div></div>`+(CHG.err?`<div class="chg-err">${esc(CHG.err)}</div>`:'');return}
  const bA=chgAdd(c.date,-n),bB=chgAdd(c.date,-1),A=chgSum(ex,c.type,c.date,last),B=chgSum(ex,c.type,bA,bB);
  const pc=(a,b)=>a!=null&&b?a/b-1:null;
  const row=(l,b,a,f,good)=>{const d=pc(a,b),z=d!=null&&Math.abs(d)<.005,cls=d==null||z||good===0?'n':(good>0?d>=0:d<=0)?'up':'dn';return `<tr><td>${l}</td><td>${b==null?'—':f(b)}</td><td>${a==null?'—':f(a)}</td><td><span class="chg-d ${cls}">${d==null?'—':z?'0%':(d>=0?'+':'−')+Math.abs(Math.round(d*100))+'%'}</span></td></tr>`};
