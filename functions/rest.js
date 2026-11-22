@@ -248,6 +248,22 @@ const R = {
     });
     return { ok: true };
   },
+  /** "Did it work?": the changes the team tracks (campaign type, day, what changed), shared by everyone. */
+  async changesGet([token]) {
+    await assertAccess(token);
+    const d = await fsGet('server/changes').catch(() => null);
+    if (!d) return { list: [{ id: 'dg-2026-11-20', acc: 'usa', type: 'Demand Gen', date: '2026-11-20', what: 'Audience', at: Date.now() }] };
+    return { list: Array.isArray(d.list) ? d.list : [] };
+  },
+  async changesSet([token, list]) {
+    const who = await assertAccess(token);
+    const clean = (Array.isArray(list) ? list : []).slice(0, 60).map(x => ({
+      id: String(x && x.id || '').replace(/[^\w-]/g, '').slice(0, 40) || ('c' + Date.now().toString(36)),
+      acc: x && x.acc === 'ar' ? 'ar' : 'usa', type: String(x && x.type || '').slice(0, 60), date: /^\d{4}-\d{2}-\d{2}$/.test(String(x && x.date)) ? x.date : '',
+      what: String(x && x.what || '').slice(0, 80), by: String(x && x.by || who.email || '').slice(0, 120), at: +(x && x.at) || Date.now() })).filter(x => x.type && x.date);
+    await fsSet('server/changes', { list: clean, at: Date.now() });
+    return { list: clean };
+  },
   /** The team for the month's thank-you story: everyone approved, with position and emblem. */
   async storyTeam([token]) {
     await assertAccess(token);

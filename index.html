@@ -120,7 +120,7 @@ window.addEventListener('load',function(){
     logUsage:{w:20000,tk:1,k:'sekna_rest_fb'},adminActivity:{w:30000,tk:1,k:'sekna_rest_fb'},adminResetActivity:{w:60000,tk:1,k:'sekna_rest_fb'},
     submitIdea:{w:30000,tk:1,k:'sekna_rest_fb'},myNotifications:{w:20000,tk:1,k:'sekna_rest_fb'},adminCelebrate:{w:30000,tk:1,k:'sekna_rest_fb'},myCelebration:{w:15000,tk:1,k:'sekna_rest_fb'},celebratedMonths:{w:15000,tk:1,k:'sekna_rest_fb'},celebrationLatest:{w:15000,tk:1,k:'sekna_rest_fb'},celebrationSeen:{w:15000,tk:1,k:'sekna_rest_fb'},celebrationReact:{w:15000,tk:1,k:'sekna_rest_fb'},dayReactions:{w:15000,tk:1,k:'sekna_rest_fb'},dayReact:{w:15000,tk:1,k:'sekna_rest_fb'},fxRates:{w:20000,tk:1,k:'sekna_rest_fb'},adminFxTime:{w:20000,tk:1,k:'sekna_rest_fb'},adminFxTimeSet:{w:20000,tk:1,k:'sekna_rest_fb'},myIdeas:{w:20000,tk:1,k:'sekna_rest_fb'},adminIdeas:{w:20000,tk:1,k:'sekna_rest_fb'},adminIdeaUpdate:{w:30000,tk:1,k:'sekna_rest_fb'},
     adminSavePlanHistory:{w:60000,tk:1,k:'sekna_rest_fb'},getPlanHistory:{w:20000,tk:1,k:'sekna_rest_fb'},webPushSubscribe:{w:30000,tk:1,k:'sekna_rest_fb'},
-    adminReportRecipients:{w:30000,tk:1,k:'sekna_rest_fb'},adminSendMonthlyReport:{w:300000,tk:1,k:'sekna_rest_fb'},adminSaveReportPdf:{w:120000,tk:1,k:'sekna_rest_fb'},reportLib:{w:30000,tk:1,k:'sekna_rest_fb'},storyLog:{w:20000,tk:1,k:'sekna_rest_fb'},adminStoryStats:{w:30000,tk:1,k:'sekna_rest_fb'},adminSeasonTestEmail:{w:90000,tk:1,k:'sekna_rest_fb'},adminSeasonTestGreeting:{w:30000,tk:1,k:'sekna_rest_fb'},adminSeasonLeads:{w:30000,tk:1,k:'sekna_rest_fb'},adminSeasonLeadsSet:{w:30000,tk:1,k:'sekna_rest_fb'},storyTeam:{w:20000,tk:1,k:'sekna_rest_fb'},adminRestMove:{w:120000,tk:2},adminRestMoveStatus:{w:20000,tk:2}
+    adminReportRecipients:{w:30000,tk:1,k:'sekna_rest_fb'},adminSendMonthlyReport:{w:300000,tk:1,k:'sekna_rest_fb'},adminSaveReportPdf:{w:120000,tk:1,k:'sekna_rest_fb'},reportLib:{w:30000,tk:1,k:'sekna_rest_fb'},storyLog:{w:20000,tk:1,k:'sekna_rest_fb'},adminStoryStats:{w:30000,tk:1,k:'sekna_rest_fb'},adminSeasonTestEmail:{w:90000,tk:1,k:'sekna_rest_fb'},adminSeasonTestGreeting:{w:30000,tk:1,k:'sekna_rest_fb'},adminSeasonLeads:{w:30000,tk:1,k:'sekna_rest_fb'},adminSeasonLeadsSet:{w:30000,tk:1,k:'sekna_rest_fb'},storyTeam:{w:20000,tk:1,k:'sekna_rest_fb'},changesGet:{w:20000,tk:1,k:'sekna_rest_fb'},changesSet:{w:20000,tk:1,k:'sekna_rest_fb'},adminRestMove:{w:120000,tk:2},adminRestMoveStatus:{w:20000,tk:2}
    };
    var SRV=window.SEKNA_SERVER={primary:FB_PRIMARY,mode:'appsscript',since:0,reason:'',hold:0,ms:0};
    function load(k){try{return localStorage.getItem(k)}catch(e){return null}}
@@ -10601,6 +10601,48 @@ body.dark-mode .akn-x{background:#1a212c;color:#c3cad8}body.dark-mode .akn-hd>b{
 .aklv-nx{display:block;font:600 15px Inter,system-ui,sans-serif;color:#e6ebf7}
 .aklv-wt{display:block;margin-top:6px;font:600 12.5px Inter,system-ui,sans-serif;color:#9fb0dd;font-variant-numeric:tabular-nums}
 @media (prefers-reduced-motion:reduce){.aklv-mus i,.aklv-hold i{animation:none}}
+
+/* v621 Did it work? */
+.chg{padding:16px!important}
+.chg-hd{display:flex;align-items:center;gap:10px}.chg-hd>div{flex:1;min-width:0}
+.chg-hd b{display:block;font:400 22px "DM Serif Display",Georgia,serif;color:#14286b}.chg-hd small{display:block;font-size:12px;font-weight:600;color:#6b7385;margin-top:2px}
+.chg-plus{width:34px;height:34px;border-radius:50%;border:0;background:#eef2fb;color:#203c8e;font-size:18px;font-weight:800;cursor:pointer;flex:none}
+.chg-tabs{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin-top:10px}.chg-tabs::-webkit-scrollbar{display:none}
+.chg-tabs button{flex:none;display:inline-flex;align-items:center;gap:6px;border:1.5px solid #dfe4ee;background:#fff;border-radius:99px;padding:6px 11px;font:700 11.5px Inter,system-ui,sans-serif;color:#4a5368;cursor:pointer}.chg-tabs button.on{border-color:#203c8e;color:#203c8e}
+.chg-tabs i,.chg-chip i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.chg-in{background:#fff;border:1px solid #eef1f7;border-radius:16px;padding:12px;margin-top:10px}
+.chg-chips{display:flex;flex-wrap:wrap;align-items:center;gap:5px}
+.chg-chip{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:800;border-radius:99px;padding:6px 11px;background:#eef2fb;color:#203c8e}.chg-chip.on{background:#203c8e;color:#fff}
+.chg-ed{margin-left:auto;width:30px;height:30px;border-radius:50%;border:0;background:#f1f3f8;color:#4a5368;cursor:pointer;font-size:13px}
+.chg-cmp{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.chg-cmp>div{border-radius:12px;padding:9px 11px;font-size:14px;color:#1d2433;font-weight:600}
+.chg-cmp .b{background:#f1f3f8}.chg-cmp .a{background:#eaf0ff;box-shadow:inset 0 0 0 1.5px #2a4fb8}
+.chg-cmp b{display:block;font-size:10.5px;font-weight:900;letter-spacing:.1em;color:#6b7385;margin-bottom:2px}.chg-cmp .a b{color:#2a4fb8}.chg-cmp small{display:block;font-size:10.5px;color:#8a92a6;margin-top:3px}
+.chg-tb{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px}.chg-tb td{padding:8px 2px;border-top:1px solid #eef1f7;color:#1d2433}
+.chg-tb td:nth-child(2),.chg-tb td:nth-child(3){text-align:right;font-weight:700;color:#4a5368;font-variant-numeric:tabular-nums}.chg-tb td:nth-child(3){color:#14286b;font-weight:800}.chg-tb td:last-child{text-align:right;width:62px}
+.chg-d{display:inline-block;font-size:11px;font-weight:900;padding:2px 7px;border-radius:7px;background:#f1f3f8;color:#6b7385}.chg-d.up{background:#e3f6ea;color:#14804a}.chg-d.dn{background:#fde5e7;color:#c0392b}
+.chg-ver{display:flex;gap:10px;align-items:center;border-radius:14px;padding:10px 12px;margin-top:10px}.chg-ver>i{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:900;color:#fff;flex:none}
+.chg-ver b{font-size:13.5px}.chg-ver small{display:block;font-size:11px;color:#4a5368;font-weight:600;margin-top:1px}
+.chg-ver.g{background:linear-gradient(135deg,#e3f6ea,#f3fbf6);color:#14804a}.chg-ver.g>i{background:#22c47c}
+.chg-ver.r{background:linear-gradient(135deg,#fde5e7,#fff5f6);color:#c0392b}.chg-ver.r>i{background:#e5484d}
+.chg-ver.w{background:linear-gradient(135deg,#fdf3df,#fffaf0);color:#8a6418}.chg-ver.w>i{background:#c99a45}
+.chg-chh{display:flex;justify-content:space-between;align-items:center;gap:8px}.chg-chh>span:first-child{font-size:10px;font-weight:900;letter-spacing:.14em;color:#8a92a6}
+.chg-seg{display:inline-flex;gap:3px}.chg-seg button{border:0;border-radius:99px;padding:5px 10px;font:800 11px Inter,system-ui,sans-serif;background:#eef2fb;color:#203c8e;cursor:pointer}.chg-seg button.on{background:#203c8e;color:#fff}
+.chg-svg{display:block;width:100%;height:170px;margin-top:8px;overflow:visible}
+.chg-svg .chg-ct{font:900 9px Inter,system-ui,sans-serif;fill:#a8781e}.chg-svg .chg-av{font:800 9px Inter,system-ui,sans-serif;fill:#6b7385}.chg-svg .chg-av.b{fill:#2a4fb8}.chg-lb{font:700 9px Inter,system-ui,sans-serif;fill:#8a92a6}
+.chg-add{width:100%;margin-top:10px;border:1.5px dashed #c3cad8;background:none;border-radius:14px;padding:12px;font:800 13px Inter,system-ui,sans-serif;color:#203c8e;cursor:pointer}
+.chg-form{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px;background:#fff;border:1px solid #eef1f7;border-radius:16px;padding:12px}
+.chg-form label{display:block}.chg-form label.w{grid-column:1/-1}.chg-form small{display:block;font-size:11px;font-weight:800;color:#6b7385;margin-bottom:4px}
+.chg-form select,.chg-form input{width:100%;box-sizing:border-box;border:1.5px solid #d5dbe6;border-radius:11px;padding:9px 10px;font:600 13.5px Inter,system-ui,sans-serif;background:#fff;color:#1d2433}
+.chg-fb{grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end;align-items:center}.chg-del{margin-right:auto;border:0;background:none;color:#c0392b;font:800 12.5px Inter,system-ui,sans-serif;cursor:pointer}
+.chg-err,.chg-empty{margin-top:8px;font-size:12px;color:#8a6418;font-weight:700}
+body.dark-mode .chg-in,body.dark-mode .chg-form,body.dark-mode .chg-tabs button{background:#11161e;border-color:#2a313c}body.dark-mode .chg-hd b{color:#e9eef7}body.dark-mode .chg-tb td{color:#e9eef7;border-color:#2a313c}body.dark-mode .chg-tb td:nth-child(3){color:#9fb6ff}
+body.dark-mode .chg-cmp .b{background:#1a212c}body.dark-mode .chg-cmp .a{background:#16203a}body.dark-mode .chg-cmp>div{color:#e9eef7}body.dark-mode .chg-form select,body.dark-mode .chg-form input{background:#0b0f15;border-color:#2a313c;color:#e9eef7}
+
+.chg-in{position:relative}.chg-chips{padding-right:38px}.chg-ed{position:absolute;right:12px;top:12px;margin:0}
+.chg-svg .chg-af{fill:#eaf0ff}
+body.dark-mode .chg-svg .chg-af{fill:#16203a}body.dark-mode .chg-svg .chg-pl{stroke:#9fb6ff}body.dark-mode .chg-chip{background:#1a2540;color:#9fb6ff}body.dark-mode .chg-chip.on{background:#2a4fb8;color:#fff}body.dark-mode .chg-ed{background:#1a212c;color:#c3cad8}
+body.dark-mode .chg-d{background:#1a212c;color:#9aa1b2}body.dark-mode .chg-d.up{background:#12301f;color:#5fd99a}body.dark-mode .chg-d.dn{background:#3a1519;color:#ff8f8f}
+body.dark-mode .chg-seg button{background:#1a2540;color:#9fb6ff}body.dark-mode .chg-seg button.on{background:#2a4fb8;color:#fff}body.dark-mode .chg-plus{background:#1a2540;color:#9fb6ff}
 </style>
 </head>
 <body>
@@ -11128,6 +11170,7 @@ body.dark-mode .akn-x{background:#1a212c;color:#c3cad8}body.dark-mode .akn-hd>b{
       <span class="kx-r" id="topAccPct"></span>
     </div>
   </section>
+<section class="card section chg" id="chgCard" hidden></section>
 <section class="card section yoy">
     <div class="section-head">
       <div>
@@ -14113,7 +14156,7 @@ function renderYoy(x,y){
  </svg><div class="sx-gauge-in" title="${esc(title)}"><b style="color:${color}">${index==null?'—':scorePct.toFixed(1)+'%'}</b><span>${index==null?'No data last year':`${wins}/${valid} metrics better than last year`}</span></div>`;
 
  const hijri=y.mode==='hijri';
- text('yoyTitle',hijri?'Same Hijri Day Last Year':'Same Day Last Year');
+ text('yoyTitle',hijri?'Same Hijri Day Last Year':'Same Day Last Year');try{chgDraw()}catch(e){}
  text('yoySub',hijri&&y.lyDate?`Vs ${y.lyLabel||y.lyDate} · same Hijri day${y.hasData===false?' (no data)':''}`:'Current performance compared with the same date last year.');
  const rowsHost=document.getElementById('yoyRows');
  if(rowsHost)rowsHost.innerHTML=metrics.map(m=>{
@@ -15276,7 +15319,7 @@ function loadMonthExtras(){
  if(!(window.google&&google.script&&google.script.run))return;
  MONTH_EXTRA_LOADING[key]=true;MONTH_EXTRA_FAIL[key]=false;
  google.script.run
-  .withSuccessHandler(r=>{MONTH_EXTRA_LOADING[key]=false;MONTH_EXTRA[key]=r||{months:{}};if(CURRENT_TAB==='months'&&key===CURRENT_ACCOUNT)renderMonthCompare();if(CURRENT_TAB==='days'&&DAY_VIEW==='ly'&&key===CURRENT_ACCOUNT&&DASH_DATA)renderDays(DASH_DATA);if(WK_LY&&key===CURRENT_ACCOUNT)drawWeeklyLy(true);if(PY_OPEN&&key===CURRENT_ACCOUNT)renderPastYears()})
+  .withSuccessHandler(r=>{MONTH_EXTRA_LOADING[key]=false;MONTH_EXTRA[key]=r||{months:{}};if(key===CURRENT_ACCOUNT)try{chgDraw()}catch(e){}if(CURRENT_TAB==='months'&&key===CURRENT_ACCOUNT)renderMonthCompare();if(CURRENT_TAB==='days'&&DAY_VIEW==='ly'&&key===CURRENT_ACCOUNT&&DASH_DATA)renderDays(DASH_DATA);if(WK_LY&&key===CURRENT_ACCOUNT)drawWeeklyLy(true);if(PY_OPEN&&key===CURRENT_ACCOUNT)renderPastYears()})
   .withFailureHandler(()=>{MONTH_EXTRA_LOADING[key]=false;MONTH_EXTRA_FAIL[key]=true;if(CURRENT_TAB==='months'&&key===CURRENT_ACCOUNT)renderMonthCompare();if(CURRENT_TAB==='days'&&DAY_VIEW==='ly'&&key===CURRENT_ACCOUNT&&DASH_DATA)renderDays(DASH_DATA)})
   .getMonthCompareData(key,getAccessToken());
 }
@@ -23122,6 +23165,83 @@ async function aknRun(k,more){const S=AKNT[k];if(S.busy)return;
   S.think=j.think;S.seen=j.seen;S.opts=j.options;try{akSfx&&akSfx('recv')}catch(e){}
  }catch(e){S.err=e&&e.message||'Alexandra could not write the note.'}
  S.busy=0;aknDraw(k)}
+
+
+
+const CHG={list:null,sel:'',m:'roas',form:null,busy:false,err:''};
+const CHG_COL={'search brand':'#7b5cf0','search non-brand':'#2453d6','performance max':'#c99a45','demand gen':'#1d9cc8','video (youtube)':'#d33b4f'};
+function chgCol(n){return CHG_COL[String(n||'').toLowerCase()]||(/demand/i.test(n)?'#1d9cc8':/video|youtube/i.test(n)?'#d33b4f':/max/i.test(n)?'#c99a45':'#2453d6')}
+function chgAdd(dk,n){const d=new Date(dk+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)}
+function chgDiff(a,b){return Math.round((Date.parse(b+'T12:00:00Z')-Date.parse(a+'T12:00:00Z'))/864e5)}
+function chgFmt(dk,wd){return new Date(dk+'T12:00:00Z').toLocaleDateString('en-GB',Object.assign({day:'numeric',month:'short',timeZone:'UTC'},wd?{weekday:'short'}:{}))}
+function chgRange(a,b){const x=chgFmt(a),y=chgFmt(b);if(a===b)return x;const [d1,m1]=x.split(' '),[d2,m2]=y.split(' ');return m1===m2?`${d1}–${d2} ${m2}`:`${x} – ${y}`}
+function chgLoad(){if(CHG.list||CHG.busy)return;CHG.busy=true;
+ serverCall('changesGet',getAccessToken()).then(r=>{CHG.list=(r&&r.list)||[];try{localStorage.setItem('hm_chg',JSON.stringify(CHG.list))}catch(e){}})
+  .catch(()=>{try{CHG.list=JSON.parse(localStorage.getItem('hm_chg')||'null')}catch(e){}if(!CHG.list)CHG.list=[{id:'dg-2026-11-20',acc:'usa',type:'Demand Gen',date:'2026-11-20',what:'Audience'}]})
+  .finally(()=>{CHG.busy=false;chgDraw()})}
+function chgSave(){const l=CHG.list||[];try{localStorage.setItem('hm_chg',JSON.stringify(l))}catch(e){}
+ serverCall('changesSet',getAccessToken(),l).then(r=>{if(r&&r.list)CHG.list=r.list;CHG.err='';chgDraw()}).catch(e=>{CHG.err='Saved on this phone only: '+errorText(e);chgDraw()})}
+function chgDay(ex,dk,type){const p=dayParts(dk,ex);if(!p)return null;const nm=Object.keys(p.channels).find(n=>n===type||typeKey(n)===type||n.toLowerCase()===String(type).toLowerCase());return nm?p.channels[nm]:{spend:0,impressions:0,clicks:0,conversions:0,value:0}}
+function chgSum(ex,type,a,b){const t={spend:0,impressions:0,clicks:0,conversions:0,value:0,n:0};for(let dk=a;dk<=b;dk=chgAdd(dk,1)){const c=chgDay(ex,dk,type);if(!c)continue;t.n++;Object.keys(c).forEach(k=>{if(k in t)t[k]+=c[k]||0})}
+ t.roas=t.spend?t.value/t.spend:null;t.cpa=t.conversions?t.spend/t.conversions:null;t.ctr=t.impressions?t.clicks/t.impressions:null;return t}
+function chgLast(ex){const ks=Object.keys(ex.days||{}).sort(),lt=((DASH_DATA||{}).latest||{}).date;let k=ks[ks.length-1]||'';if(lt&&k>lt)k=lt;return k}
+function chgTypes(ex){const o=[];(ex.channels||[]).forEach(n=>{const t=typeKey(n);if(o.indexOf(t)<0)o.push(t)});return o}
+function chgChart(ex,c,last){const n=Math.max(1,chgDiff(c.date,last)+1),span=Math.max(n,7),from=chgAdd(c.date,-span),pts=[];
+ for(let dk=from;dk<=last;dk=chgAdd(dk,1)){const d=chgDay(ex,dk,c.type)||{};const v=CHG.m==='value'?d.value||0:CHG.m==='cpa'?(d.conversions?d.spend/d.conversions:null):(d.spend?(d.value||0)/d.spend:null);pts.push({dk,v})}
+ const vals=pts.map(p=>p.v).filter(v=>v!=null);if(!vals.length)return '<div class="chg-empty">No days with data yet.</div>';
+ const W=320,H=150,P=8,B=128,mx=Math.max(...vals)*1.15||1,mn=0,N=pts.length,x=i=>P+(W-2*P)*(N>1?i/(N-1):.5),y=v=>B-(B-12)*(v-mn)/(mx-mn);
+ const ci=pts.findIndex(p=>p.dk===c.date),cx0=ci<0?W-P:x(ci);
+ const avg=(a)=>{const v=a.map(p=>p.v).filter(v=>v!=null);return v.length?v.reduce((s,z)=>s+z,0)/v.length:null};
+ const bA=avg(pts.slice(Math.max(0,ci-n),ci)),aA=avg(pts.slice(ci));
+ const fm=v=>v==null?'—':CHG.m==='roas'?fmt(v,2)+'x':money(v);
+ const line=pts.map((p,i)=>p.v==null?null:`${x(i).toFixed(1)},${y(p.v).toFixed(1)}`).filter(Boolean).join(' ');
+ const step=Math.max(1,Math.ceil(N/7)),lab=pts.map((p,i)=>i%step===0||i===ci?`<text x="${x(i).toFixed(1)}" y="${H-3}" text-anchor="middle">${+p.dk.slice(8)}</text>`:'').join('');
+ return `<svg class="chg-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><rect class="chg-af" x="${cx0}" y="0" width="${Math.max(0,W-P-cx0)}" height="${B}"/>
+  <line x1="${cx0}" y1="0" x2="${cx0}" y2="${B}" stroke="#c99a45" stroke-width="2" stroke-dasharray="4 3"/><text x="${cx0+4}" y="11" class="chg-ct">CHANGE</text>
+  ${bA!=null&&ci>0?`<line x1="${x(Math.max(0,ci-n))}" y1="${y(bA)}" x2="${cx0}" y2="${y(bA)}" stroke="#8a92a6" stroke-dasharray="3 3"/><text x="${x(Math.max(0,ci-n))+2}" y="${y(bA)-4}" class="chg-av">avg ${fm(bA)}</text>`:''}
+  ${aA!=null?`<line x1="${cx0}" y1="${y(aA)}" x2="${W-P}" y2="${y(aA)}" stroke="#2a4fb8" stroke-dasharray="3 3"/><text x="${W-P-2}" y="${y(aA)-4}" text-anchor="end" class="chg-av b">avg ${fm(aA)}</text>`:''}
+  <polyline class="chg-pl" points="${line}" fill="none" stroke="#14286b" stroke-width="2.4" stroke-linejoin="round"/>${pts.map((p,i)=>p.v==null?'':`<circle cx="${x(i).toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="2.4" fill="${i>=ci&&ci>=0?'#2a4fb8':'#14286b'}"/>`).join('')}
+  <g class="chg-lb">${lab}</g></svg>`}
+function chgFormHtml(ex){const f=CHG.form,types=chgTypes(ex),last=chgLast(ex);
+ return `<div class="chg-form"><label><small>Campaign type</small><select onchange="CHG.form.type=this.value">${types.map(t=>`<option ${t===f.type?'selected':''}>${esc(t)}</option>`).join('')}</select></label>
+  <label><small>Day of the change</small><input type="date" value="${esc(f.date)}" ${last?`max="${last}"`:''} onchange="CHG.form.date=this.value"></label>
+  <label class="w"><small>What changed</small><input type="text" maxlength="80" value="${esc(f.what||'')}" placeholder="e.g. Audience, bidding, budget, new ads" oninput="CHG.form.what=this.value"></label>
+  <div class="chg-fb">${f.id?`<button type="button" class="chg-del" onclick="chgDel()">Delete</button>`:''}<button type="button" class="pk-ghost" onclick="CHG.form=null;chgDraw()">Cancel</button><button type="button" class="lab-go" onclick="chgPut()">Save</button></div></div>`}
+function chgEdit(id){const ex=MONTH_EXTRA[CURRENT_ACCOUNT]||{},c=(CHG.list||[]).find(x=>x.id===id);const types=chgTypes(ex);
+ CHG.form=c?Object.assign({},c):{id:'',acc:CURRENT_ACCOUNT,type:types.find(t=>/demand/i.test(t))||types[0]||'',date:chgLast(ex)||new Date().toISOString().slice(0,10),what:''};chgDraw()}
+function chgPut(){const f=CHG.form;if(!f||!f.type||!/^\d{4}-\d{2}-\d{2}$/.test(f.date)){showShareToast('Pick a campaign type and a day.');return}
+ const l=(CHG.list||[]).slice();if(f.id){const i=l.findIndex(x=>x.id===f.id);if(i>=0)l[i]=Object.assign({},l[i],f)}else{f.id='c'+Date.now().toString(36);f.acc=CURRENT_ACCOUNT;f.at=Date.now();l.unshift(f)}
+ CHG.list=l;CHG.sel=f.id;CHG.form=null;chgDraw();chgSave()}
+async function chgDel(){const f=CHG.form;if(!f||!f.id)return;if(!await askSekna({title:'Delete this change?',text:`${f.type} · ${chgFmt(f.date,1)} stops being tracked for everyone.`,ok:'Delete'}))return;
+ CHG.list=(CHG.list||[]).filter(x=>x.id!==f.id);CHG.form=null;CHG.sel='';chgDraw();chgSave()}
+function chgDraw(){const el=document.getElementById('chgCard');if(!el)return;
+ if(!DASH_DATA){el.hidden=true;return}
+ el.hidden=false;if(!CHG.list){chgLoad();el.innerHTML='<div class="chg-hd"><div><b>Did it work?</b><small>Loading your changes…</small></div></div>';return}
+ const ex=MONTH_EXTRA[CURRENT_ACCOUNT];if(!ex){loadMonthExtras();el.innerHTML=`<div class="chg-hd"><div><b>Did it work?</b><small>${MONTH_EXTRA_FAIL&&MONTH_EXTRA_FAIL[CURRENT_ACCOUNT]?'Could not read the days. Pull to refresh.':'Reading the days…'}</small></div></div>`;return}
+ const mine=(CHG.list||[]).filter(x=>(x.acc||'usa')===CURRENT_ACCOUNT).sort((a,b)=>a.date<b.date?1:-1);
+ const hd=`<div class="chg-hd"><div><b>Did it work?</b><small>From the day of the change, against the days before it</small></div><button type="button" class="chg-plus" aria-label="Track a change" onclick="chgEdit('')">＋</button></div>`;
+ if(CHG.form){el.innerHTML=hd+chgFormHtml(ex);return}
+ if(!mine.length){el.innerHTML=hd+`<button type="button" class="chg-add" onclick="chgEdit('')">＋ Track a change</button>`;return}
+ const c=mine.find(x=>x.id===CHG.sel)||mine[0],last=chgLast(ex);
+ const tabs=mine.length>1?`<div class="chg-tabs">${mine.map(x=>`<button type="button" class="${x.id===c.id?'on':''}" onclick="CHG.sel='${x.id}';chgDraw()"><i style="background:${chgCol(x.type)}"></i>${esc(CHANNEL_SHORT[x.type]||x.type)} · ${esc(chgFmt(x.date))}</button>`).join('')}</div>`:'';
+ const chips=`<div class="chg-chips"><span class="chg-chip on"><i style="background:${chgCol(c.type)}"></i>${esc(c.type)}</span><span class="chg-chip">📅 ${esc(chgFmt(c.date,1))}</span>${c.what?`<span class="chg-chip">${esc(c.what)}</span>`:''}<button type="button" class="chg-ed" aria-label="Edit" onclick="chgEdit('${c.id}')">✎</button></div>`;
+ const n=last&&last>=c.date?chgDiff(c.date,last)+1:0;
+ if(!n){el.innerHTML=hd+tabs+`<div class="chg-in">${chips}<div class="chg-ver w"><i>⏳</i><div><b>Starts tomorrow</b><small>The first day after the change comes in with tomorrow's data.</small></div></div></div>`+(CHG.err?`<div class="chg-err">${esc(CHG.err)}</div>`:'');return}
+ const bA=chgAdd(c.date,-n),bB=chgAdd(c.date,-1),A=chgSum(ex,c.type,c.date,last),B=chgSum(ex,c.type,bA,bB);
+ const pc=(a,b)=>a!=null&&b?a/b-1:null;
+ const row=(l,b,a,f,good)=>{const d=pc(a,b),z=d!=null&&Math.abs(d)<.005,cls=d==null||z||good===0?'n':(good>0?d>=0:d<=0)?'up':'dn';return `<tr><td>${l}</td><td>${b==null?'—':f(b)}</td><td>${a==null?'—':f(a)}</td><td><span class="chg-d ${cls}">${d==null?'—':z?'0%':(d>=0?'+':'−')+Math.abs(Math.round(d*100))+'%'}</span></td></tr>`};
+ const x2=v=>fmt(v,2)+'x',pct=v=>fmt(v*100,2)+'%',num=v=>fmt(v,0);
+ const tb=`<table class="chg-tb">${row('ROAS',B.roas,A.roas,x2,1)}${row('Conv. value',B.value,A.value,money,1)}${row('Conversions',B.conversions,A.conversions,num,1)}${row('Spend',B.spend,A.spend,money,0)}${row('CPA',B.cpa,A.cpa,money,-1)}${row('CTR',B.ctr,A.ctr,pct,1)}</table>`;
+ const dr=pc(A.roas,B.roas),dv=pc(A.value,B.value),early=n<7,chk=chgFmt(chgAdd(c.date,7),1);
+ const ver=dr==null?{c:'w',i:'…',t:'Not enough data yet',s:'Waiting for days with spend on both sides.'}:dr>.05&&!(dv<-.15)?{c:'g',i:'✓',t:early?'Early signs: better':'Better',s:early?`Only ${n} day${n>1?'s':''} after. Check again on ${chk}.`:`ROAS ${dr>=0?'+':'−'}${Math.abs(Math.round(dr*100))}% over ${n} days.`}
+  :dr<-.05?{c:'r',i:'!',t:early?'Early signs: worse':'Worse',s:early?`Only ${n} day${n>1?'s':''} after. Check again on ${chk}.`:`ROAS ${Math.round(dr*100)}% over ${n} days.`}
+  :{c:'w',i:'≈',t:early?'Early signs: about the same':'About the same',s:early?`Only ${n} day${n>1?'s':''} after. Check again on ${chk}.`:`ROAS within 5% over ${n} days.`};
+ el.innerHTML=hd+tabs+`<div class="chg-in">${chips}
+  <div class="chg-cmp"><div class="b"><b>BEFORE</b>${esc(chgRange(bA,bB))}<small>${n} day${n>1?'s':''}</small></div><div class="a"><b>AFTER</b>${esc(chgRange(c.date,last))}<small>${n} day${n>1?'s':''}${early?' so far':''}</small></div></div>
+  ${tb}<div class="chg-ver ${ver.c}"><i>${ver.i}</i><div><b>${ver.t}</b><small>${ver.s}</small></div></div></div>
+  <div class="chg-in chg-ch"><div class="chg-chh"><span>${CHG.m==='value'?'VALUE':CHG.m==='cpa'?'CPA':'ROAS'} BY DAY</span><span class="chg-seg">${[['roas','ROAS'],['value','Value'],['cpa','CPA']].map(([k,l])=>`<button type="button" class="${CHG.m===k?'on':''}" onclick="CHG.m='${k}';chgDraw()">${l}</button>`).join('')}</span></div>${chgChart(ex,c,last)}</div>
+  ${CHG.err?`<div class="chg-err">${esc(CHG.err)}</div>`:''}`;
+}
 </script>
 <div id="seknaFileEnd" hidden></div>
 <script>
