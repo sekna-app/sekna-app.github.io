@@ -10538,6 +10538,16 @@ body.dark-mode .chg-ba b{color:#e9eef7}
 @property --ax{syntax:'<percentage>';inherits:false;initial-value:20%}@property --bx{syntax:'<percentage>';inherits:false;initial-value:85%}
 @keyframes aknAu{0%{--ax:15%;--bx:90%}50%{--ax:45%;--bx:60%}100%{--ax:80%;--bx:20%}}
 @media (prefers-reduced-motion:reduce){.akn-go{animation:none!important}}
+
+/* v631 Alexandra's part: the AI orb */
+.akn-orb{width:50px;height:50px;border-radius:50%;padding:4px;flex:none;display:grid;place-items:center;background:radial-gradient(circle at 30% 25%,#7cc4ff,transparent 60%),radial-gradient(circle at 75% 80%,#c87bff,transparent 60%),#2b3fb8;box-shadow:0 0 0 6px rgba(124,140,255,.15),0 0 24px rgba(124,140,255,.5);animation:aknOrb 3s ease-in-out infinite}
+.akn-orb .akn-av{width:42px!important;height:42px!important;box-shadow:none!important;background:none}.akn-orb .akn-av img{mix-blend-mode:luminosity;opacity:.92}
+@keyframes aknOrb{50%{box-shadow:0 0 0 8px rgba(124,140,255,.1),0 0 32px rgba(160,124,255,.6)}}
+.akn-hd>b.akn-ot{white-space:nowrap;min-width:0}.akn-ot>span{white-space:normal;line-height:1.3}.chg-akn .akn-x{top:78px}
+.akn-ot small{display:block!important;font-size:13px!important;font-weight:900!important;letter-spacing:.14em!important;white-space:nowrap;margin:0!important;background:linear-gradient(90deg,#4f6bff,#9b6bff,#c99a45);-webkit-background-clip:text;background-clip:text;color:transparent!important}
+.akn-ot>span{display:block;font-size:10.5px;font-weight:600;color:#8a92a6;margin-top:2px;letter-spacing:0}.akn-ot>span i{font-style:normal;font-weight:800;color:#14286b}
+body.dark-mode .akn-ot>span i{color:#e9eef7}
+@media (prefers-reduced-motion:reduce){.akn-orb{animation:none}}
 </style>
 </head>
 <body>
@@ -23023,7 +23033,7 @@ function aknHtml(k){const S=AKNT[k],cur=aknGet(k),opts=S.opts||[],mine=cur.by!==
  const go=S.busy?`<button type="button" class="akn-go busy" disabled>${spk}<span>Writing…</span></button>`:opts.length?`<button type="button" class="akn-go" onclick="aknRun('${k}',1)">${spk}<span>3 more</span></button>`:`<button type="button" class="akn-go" onclick="aknRun('${k}')">${spk}<span>${k==='chg'?'Ask her':'Write with Alexandra'}</span></button>`;
  const list=opts.length?opts:(!mine&&cur.t?[{tag:'CHOSEN',text:cur.t}]:[]);
  const open=S.busy||S.think||(S.seen||[]).length||opts.length||S.err;
- return `<div class="akn-hd">${aknFace()}<b>${k==='chg'?'<small class="akn-only">ALEXANDRA AI</small>':`<small>HEMERA AI</small>${k==='month'?'Team note':'Note'}`}</b>${go}</div>
+ return `<div class="akn-hd">${k==='chg'?`<span class="akn-orb">${aknFace()}</span><b class="akn-ot"><small>ALEXANDRA AI</small>${chgReadLine()}</b>`:`${aknFace()}<b><small>HEMERA AI</small>${k==='month'?'Team note':'Note'}</b>`}${go}</div>
   ${open&&!S.busy?`<button type="button" class="akn-x" aria-label="Close Alexandra's suggestions" title="Close" onclick="aknClose('${k}')">✕</button>`:''}
   ${S.busy?`<div class="akn-th busy"><i></i><b>Reading the numbers…</b><br>${k==='chg'?'Before and after the change, day by day.':k==='month'?'Results, the plan, every campaign type and last year.':'The budget, the weeks, the campaign types and last month.'}</div>`:''}
   ${!S.busy&&S.think?`<div class="akn-th"><i></i><b>${k==='chg'?'What I see':'What I looked at'}</b><br>${esc(S.think)}</div>`:''}
@@ -23193,6 +23203,9 @@ async function akChgLines(acc){if(!canDo('chg'))return [];if(!CHG.list){chgLoad(
    t+=`. ${n} days each side. Before: ${f(B)}. After: ${f(A)}.`}else if(!ex)t+=' (the day-by-day numbers are not loaded yet)';else t+=' (no day after the change has data yet)';
   if(c.note)t+=` Note chosen${c.noteBy==='ak'?' (written by you)':''}: "${c.note}"`;L.push(t)});
  return L}
+
+function chgReadLine(){try{const ex=MONTH_EXTRA[CURRENT_ACCOUNT],c=aknChg();if(!ex||!c)return '';const last=chgLast(ex);if(!last||last<c.date)return '';const n=chgDiff(c.date,last)+1;
+ return `<span>Read <i>${2*n} days</i> of ${esc(CHANNEL_SHORT[c.type]||c.type)}</span>`}catch(e){return ''}}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
