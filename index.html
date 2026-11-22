@@ -10113,7 +10113,7 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     html body .ox-rc .ox-cl.mc>svg{display:none!important}
     html body .ox-rc #mtdClkLine,html body .ox-rc #mtdRoasLine{grid-column:1/3;grid-row:1;font-size:0!important;display:flex!important;flex-direction:column;gap:4px;min-width:0}
     html body .ox-rc #mtdClkLine:before,html body .ox-rc #mtdRoasLine:before{font:700 12px Inter,system-ui,sans-serif}
-    html body .ox-rc #mtdClkLine:before{content:"\25CF  Clicks";color:#3d6bff}html body .ox-rc #mtdRoasLine:before{content:"\25CF  ROAS";color:#c99a45}
+    html body .ox-rc #mtdClkLine:before{content:"\25CF  Clicks";color:#c99a45}html body .ox-rc #mtdRoasLine:before{content:"\25CF  ROAS";color:#c99a45}
     html body .ox-rc .ox-cl.mc b{font:900 27px/1 Inter,system-ui,sans-serif!important;letter-spacing:-.03em;color:#141b33!important;font-variant-numeric:tabular-nums;margin:0!important}
     html body .ox-rc .ox-cl.mc small{font:700 11px Inter,system-ui,sans-serif!important;color:#9aa1b2!important;margin:0!important;white-space:nowrap}
     html body .ox-rc .ox-cl.mc em{grid-column:2;grid-row:1;font:900 11.5px Inter,system-ui,sans-serif!important;padding:4px 9px!important;border-radius:9px!important;margin:0 0 -1px!important}
@@ -10509,7 +10509,7 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     html body .ox-rc .ox-cl.mc em{grid-column:auto!important;grid-row:auto!important;font:800 10px/1 Inter,system-ui,sans-serif!important;padding:3px 6px!important;border-radius:7px!important;margin:0!important;align-self:center}
 
     /* v610 swipe a card right to call Alexandra */
-    #pyBody .py-c2,#overviewPanel .yoy,#overviewPanel .sx-hero,#overviewPanel .sx-ftile,#channelPanel .mtd-exec .ox-hero,#dxBody .dc-card,#dxBody .lyx-c,#dxBody .lyx-sum,#weeklyStrip .wx-seg,#channelRows .ccd,#channelRows .cdt-r,#labForecast .fc-card,#labForecast .fc-hero,#phBody .phs,#phBody .phr,#rxFlip,#rxBody .rx3,#rxBody .rx-sec,#stBody .st-card,#mxBody .mr3,#ssBody .ss-r{touch-action:pan-y}
+    #pyBody .py-c2,#overviewPanel .yoy,#overviewPanel .sx-hero,#overviewPanel .sx-ftile,#channelPanel .mtd-exec .ox-hero,#dxBody .dc-card,#dxBody .lyx-c,#dxBody .lyx-sum,#weeklyStrip .wx-seg,#channelRows .ccd,#channelRows .cdt-r,#labForecast .fc-card,#labForecast .fc-hero,#phBody .phs,#phBody .phr,#rxFlip,#rxBody .rx3,#rxBody .rx-sec,#stBody .st-card,#mxBody .mr3,#ssBody .ss-r,#chgPanel .chg-top,#chgPanel .chg-cmp,#stBody .stp-mt,#channelPanel .mtd-exec .ox-tile,#channelPanel .mtd-exec .ox-cl,#dxBody .ph2,#dxBody .mt,#weeklyDetail,#labForecast .fc-acc,#mxPeriodBtn,#mxBody .mxd-r{touch-action:pan-y}
     .ak-swp{position:fixed;z-index:2147480400;display:flex;align-items:center;gap:8px;height:42px;padding:0 14px 0 4px;border-radius:99px;background:rgba(10,20,60,.92);color:#fff;box-shadow:0 10px 26px rgba(10,20,60,.35);pointer-events:none;opacity:0;transition:background .2s ease,box-shadow .2s ease}
     .ak-swp b{font:800 13px Inter,system-ui,sans-serif;white-space:nowrap}
     .ak-swa{width:34px;height:34px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:linear-gradient(135deg,#2a52c9,#1C3C96);box-shadow:0 0 0 2px #E2B874}.ak-swa img,.ak-swa svg{width:100%;height:100%;object-fit:cover}
@@ -10708,7 +10708,7 @@ body.dark-mode .chg-ba b{color:#e9eef7}
 
 /* v631 Alexandra's part: the AI orb */
 .akn-orb{width:50px;height:50px;border-radius:50%;padding:4px;flex:none;display:grid;place-items:center;background:radial-gradient(circle at 30% 25%,#7cc4ff,transparent 60%),radial-gradient(circle at 75% 80%,#c87bff,transparent 60%),#2b3fb8;box-shadow:0 0 0 6px rgba(124,140,255,.15),0 0 24px rgba(124,140,255,.5);animation:aknOrb 3s ease-in-out infinite}
-.akn-orb .akn-av{width:42px!important;height:42px!important;box-shadow:none!important;background:none}.akn-orb .akn-av img{mix-blend-mode:luminosity;opacity:.92}
+.akn-orb .akn-av{width:42px!important;height:42px!important;box-shadow:none!important;background:none}.akn-orb .akn-av img{mix-blend-mode:normal;opacity:1}
 @keyframes aknOrb{50%{box-shadow:0 0 0 8px rgba(124,140,255,.1),0 0 32px rgba(160,124,255,.6)}}
 .akn-hd>b.akn-ot{white-space:nowrap;min-width:0}.akn-ot>span{white-space:normal;line-height:1.3}.chg-akn .akn-x{top:78px}
 .akn-ot small{display:block!important;font-size:13px!important;font-weight:900!important;letter-spacing:.14em!important;white-space:nowrap;margin:0!important;background:linear-gradient(90deg,#4f6bff,#9b6bff,#c99a45);-webkit-background-clip:text;background-clip:text;color:transparent!important}
@@ -23190,17 +23190,16 @@ async function akLiveSearch(a){const q=String(a.query||'').trim();if(!q)return {
 const AKSW=[
  ['#chgPanel .chg-top,#chgPanel .chg-cmp','Did it work? (a campaign type change)','Say whether the change worked: compare after with before (ROAS, value, conversions, CPA), say if it is still early, and give one clear recommendation.'],
  ['#pyBody .py-c2','Same Hijri day, past years','Compare this year with that year for the same Hijri day: was the spend sensible, what did we raise, what was different.'],
- ['#overviewPanel .yoy','Same Hijri day last year','Compare today with the same Hijri day last year and the years before.'],
- ['#overviewPanel .sx-hero,#overviewPanel .sx-ftile','Month at a Glance','Are we on pace for this month? At this pace, what will we spend and raise by the end of the month, and should we speed up or slow down?'],
+ ['#overviewPanel .sx-hero','Month at a Glance','Are we on pace for this month? At this pace, what will we spend and raise by the end of the month, and should we speed up or slow down?'],
  ['#channelPanel .mtd-exec .ox-hero,#channelPanel .mtd-exec .ox-tile,#channelPanel .mtd-exec .ox-cl','Month performance','How are we doing so far this month against the plan? If we continue the same way, how much of the target will we reach by the end of the month?'],
  ['#dxBody .dc-card[data-date],#dxBody .ph2,#dxBody .mt','Day by Day (media plan / results)','Talk about this day or this summary: plan vs results, and the same day in past years.'],
  ['#dxBody .lyx-c,#dxBody .lyx-sum','Day by Day vs last year','Compare this with the same day last year: what changed and why.'],
  ['#weeklyStrip .wx-seg,#weeklyDetail','Weekly performance','Talk about this week: plan vs results, how it compares with the other weeks and last year.'],
- ['#channelRows .ccd,#channelRows .cdt-r,#dayChannelsGrid .ctd','Channel delivery (campaign type)','Talk about this campaign type: delivery vs plan, and offer to compare it with another period or another type.'],
+ ['#channelRows .ccd,#channelRows .cdt-r','Channel delivery (campaign type)','Talk about this campaign type: delivery vs plan, and offer to compare it with another period or another type.'],
  ['#labForecast .fc-hero,#labForecast .fc-acc,#labForecast .fc-card','Lab: forecast, assumptions and years','Is the spend good compared with the pace of past periods? Should we raise or lower it, week by week? If it is the assumptions, suggest better index values. If it is the years, say which year spent the most and which type brought the most.'],
  ['#phBody .phs,#phBody .phr','Plan history / monthly report','Tell the details of this month or this report: plan vs actual, channels, what went well and what did not.'],
- ['#rxFlip,#rxBody .rx-sec,#rxBody .rx3','Top & Bottom 5','Ask the person whether they want all the top and bottom items, or something specific; then answer.'],
- ['#stBody .st-card,#stBody .st-r2,#stBody .stp-sw2','Search terms','Talk about these search terms: the wasted ones, the good ones, and what to do.'],
+ ['#rxFlip','Top & Bottom 5','Ask the person whether they want all the top and bottom items, or something specific; then answer.'],
+ ['#stBody .stp-mt','Search terms performance (match type spend split)','Talk about the search terms performance: how the spend splits by match type, the wasted terms, the good ones, and what to do.'],
  ['#mxBody .mr3,#mxPeriodBtn,#mxBody .mxd-r','Reports Studio','Talk about this month (or this change between periods), and ask which period they want to look at.'],
  ['#ssBody .ss-r','Seasons calendar','Talk about this season in the past years: spend, value, ROAS, and how to prepare this year.']];
 function akSwFind(t){for(const [sel,name,hint] of AKSW){const el=t.closest&&t.closest(sel);if(el)return {el,name,hint}}return null}
