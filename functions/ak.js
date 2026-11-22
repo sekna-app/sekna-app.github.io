@@ -115,6 +115,21 @@ async function xop(b, who, isOwner) {
     if (!r || !r.ok) return { ok: false, error: 'Could not hear the message' + (r ? ' (' + r.status + ')' : '') + '.' };
     const j = await r.json(), t = (((j.candidates || [])[0] || {}).content || {}).parts || [];
     const text = t.filter(x => !x.thought).map(x => x.text || '').join('').trim(); return text ? { ok: true, text } : { ok: false, error: 'Could not hear the message.' }; }
+  if (op === 'read') { const acc = b.acc === 'ar' ? 'ar' : 'usa', date = /^\d{4}-\d{2}-\d{2}$/.test(String(b.date)) ? b.date : '', kind = b.month ? 'month' : 'day', key = acc + '_' + date + '_' + kind;
+    if (!date) return { ok: false }; const RD = 'server/ak-read', have = (await fsGet(RD).catch(() => null)) || {}; if (have[key]) return { ok: true, read: have[key] };
+    const facts = String(b.facts || '').slice(0, 6000); if (!facts) return { ok: false };
+    const pp = await prep(email, String(b.name || who.name || '').slice(0, 60)); if (pp.blocked) return { ok: false };
+    const keys = (pp.keys || []).filter(Boolean), url = String(pp.url || '').replace(/:streamGenerateContent.*$/, ':generateContent').replace(/\?alt=sse$/, '');
+    const shape = kind === 'month' ? '{"en":{"h":"one short warm line (max 7 words), like I am proud of this month","moments":[{"e":"emoji","t":"short moment with its number"},{"e":"","t":""},{"e":"","t":""}]},"ar":{same in Egyptian Arabic}}'
+      : '{"en":{"h":"headline, max 7 words, the verdict of the day and what carried it","card":{"l":"short label, like ROAS · YESTERDAY","v":"the key number","p":"short change, like +18% vs avg","d":"up|down|"},"why":"one short sentence with a number","do":"one short concrete action for today"},"ar":{same keys, in Egyptian Arabic, numbers in English digits}}';
+    const prompt = 'You are Alexandra, the media analyst of the Human Appeal digital team. Write ' + (kind === 'month' ? 'your month-end story slide: three proud moments of the month' : 'your daily story slide about yesterday') + '. Use ONLY these numbers, never invent. Money in the account currency as written. ROAS with x. Return JSON only, exactly this shape:\n' + shape + '\n\nNUMBERS:\n' + facts;
+    const payload = { contents: [{ role: 'user', parts: [{ text: prompt }] }], generationConfig: { temperature: 0.4, maxOutputTokens: 1200, responseMimeType: 'application/json', thinkingConfig: { thinkingBudget: 512 } } };
+    let r = null; for (let ki = 0; ki < keys.length; ki++) { r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': keys[ki] }, body: JSON.stringify(payload) }); if (r.status !== 429) break; }
+    if (!r || !r.ok) return { ok: false }; const j = await r.json(), txt = ((((j.candidates || [])[0] || {}).content || {}).parts || []).filter(x => !x.thought).map(x => x.text || '').join('');
+    let o = null; try { o = JSON.parse(txt.replace(/^```(?:json)?|```$/g, '').trim()); } catch (e) { const m = txt.match(/\{[\s\S]*\}/); try { o = m && JSON.parse(m[0]); } catch (e2) {} }
+    if (!o || !o.en) return { ok: false }; o.at = Date.now();
+    await fsUpdate(RD, d => { d = d || {}; d[key] = o; Object.keys(d).sort().slice(0, -60).forEach(x => delete d[x]); return d; }).catch(() => {});
+    return { ok: true, read: o }; }
   if (op === 'notes') { const d = (await fsGet(NOTES).catch(() => null)) || {}; return { ok: true, list: (d.list || []).slice(-150).reverse() }; }
   if (op === 'noteAdd') { const t = String(b.text || '').trim().slice(0, 300); if (!t) return { ok: false };
     await fsUpdate(NOTES, d => { d = d || {}; const l = d.list = d.list || []; if (!l.slice(-30).some(x => x.t === t)) l.push({ id: 'n' + Date.now().toString(36), t, src: String(b.src || 'Chat').slice(0, 60), by: email, at: Date.now(), done: false }); d.list = l.slice(-300); return d; }); return { ok: true }; }
