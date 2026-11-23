@@ -176,4 +176,45 @@ async function buildTikTokData() {
   };
 }
 
-module.exports = { buildTikTokData, TT_CH, TT_SHEET_ID };
+/* ---------- TikTok's own server (exports.tiktok): https://europe-west2-human-appeal-media-plan.cloudfunctions.net/tiktok ----------
+ * POST /data {token, force}: the signed-in person (the same HEMERA sign-in) gets TikTok's numbers.
+ * The sheet is read at most once a minute; the last good copy is kept in memory.
+ */
+const { onRequest } = require('firebase-functions/v2/https');
+const { assertAccess } = require('./access');
+const ORIGINS = ['https://sekna-app.web.app', 'https://sekna-app.firebaseapp.com', 'https://sekna-app.github.io'];
+let held = null, pending = null;
+function ttData(force) {
+  if (!force && held && Date.now() - held.at < 60000) return Promise.resolve(held.v);
+  if (pending) return pending;
+  pending = buildTikTokData().then(v => { held = { at: Date.now(), v }; pending = null; return v; }, e => { pending = null; if (held) return held.v; throw e; });
+  return pending;
+}
+const fn = onRequest({
+  region: 'europe-west2', serviceAccount: 'sekna-server@human-appeal-media-plan.iam.gserviceaccount.com',
+  memory: '256MiB', cpu: 1, concurrency: 20, minInstances: 0, maxInstances: 3, timeoutSeconds: 60, invoker: 'public'
+}, async (req, res) => {
+  const origin = req.get('origin') || '';
+  if (ORIGINS.indexOf(origin) >= 0) {
+    res.set('Access-Control-Allow-Origin', origin); res.set('Vary', 'Origin');
+    res.set('Access-Control-Allow-Methods', 'POST'); res.set('Access-Control-Allow-Headers', 'Content-Type'); res.set('Access-Control-Max-Age', '3600');
+  }
+  res.set('Cache-Control', 'no-store');
+  if (req.method === 'OPTIONS') { res.status(204).send(''); return; }
+  const route = String(req.path || '/').replace(/\/+$/, '') || '/';
+  if (route === '/ping') { res.json({ ok: true }); return; }
+  if (route !== '/data' || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
+  let body = req.body;
+  if (!(body && typeof body === 'object' && !Buffer.isBuffer(body))) {
+    const text = Buffer.isBuffer(body) ? body.toString('utf8') : typeof body === 'string' ? body : (req.rawBody ? req.rawBody.toString('utf8') : '');
+    try { body = JSON.parse(text || '{}'); } catch (e) { body = {}; }
+  }
+  try {
+    await assertAccess(body.token);
+    res.json({ ok: true, result: await ttData(!!body.force) });
+  } catch (e) {
+    res.json({ ok: false, access: !!(e && (e.access || e.blocked)), error: String((e && e.message) || e).slice(0, 300) });
+  }
+});
+
+module.exports = { buildTikTokData, TT_CH, TT_SHEET_ID, fn };

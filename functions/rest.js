@@ -422,12 +422,12 @@ const R = {
   /** Day by Day → Results: how the team felt about each day (one face per person per day; tap the badge to see who). */
   async dayReactions([token, account, month]) {
     const a = await assertAccess(token), e = norm(a.email);
-    const acc = account === 'ar' ? 'ar' : account === 'tt' ? 'tt' : 'usa', m = /^\d{4}-\d{2}$/.test(String(month || '')) ? String(month) : monthOf(Date.now());
+    const acc = account === 'ar' ? 'ar' : 'usa', m = /^\d{4}-\d{2}$/.test(String(month || '')) ? String(month) : monthOf(Date.now());
     return dayReactOut((await fsGet(DOC.reacts(acc, m))) || {}, e);
   },
   async dayReact([token, account, day, face]) {
     const a = await assertAccess(token), e = norm(a.email);
-    const acc = account === 'ar' ? 'ar' : account === 'tt' ? 'tt' : 'usa', d = String(day || '');
+    const acc = account === 'ar' ? 'ar' : 'usa', d = String(day || '');
     if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) throw new Error('Pick a day.');
     if (face != null && DAY_FACES.indexOf(face) < 0) throw new Error('Unknown reaction.');
     const out = await fsUpdate(DOC.reacts(acc, d.slice(0, 7)), doc => {

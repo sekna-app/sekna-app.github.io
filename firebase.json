@@ -31,6 +31,15 @@
         ]
       },
       {
+        "regex": "^/tiktok/?(index\\.html)?$",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
         "regex": "^/aether/?(index\\.html)?$",
         "headers": [
           {
