@@ -10708,27 +10708,6 @@ body.dark-mode .chg-ver.b{background:#16203a!important;color:#e9eef7!important}b
 .stxa-why{margin-top:10px;background:rgba(8,16,42,.55);border-radius:12px;padding:9px 11px;font-size:13px;line-height:1.5}.stxa-why b{color:#F3D58E}
 /* v656 TikTok in Team Tasks */
 .tk-chip.tt.on{background:#111;color:#fff;box-shadow:-2px 0 0 #25F4EE,2px 0 0 #FE2C55}.tk-tag.tiktok{background:#f0f0f2;color:#111;box-shadow:inset 2px 0 0 #25F4EE,inset -2px 0 0 #FE2C55}
-/* v657 TikTok in the account card (design C): a small switch with the Google and TikTok logos; on TikTok the card shows its badge and the menu takes TikTok's colours */
-body .sk-drawer #accountCurrent{background:#fff!important;color:#0d1b4c!important;border-color:#fff!important}
-body .sk-drawer #accountCurrent b{color:#0d1b4c}
-.sk-drawer #accountCurrent .sk-client-logo.stx-seen::before{background:#c4cad6}
-.sk-account-text .pl-sub{display:block;font-size:11px;font-weight:700;color:#5b6684;margin-top:1px}
-.pl-badge{display:none;width:17px;height:17px;flex:0 0 17px;border-radius:50%;border:2px solid #fff;background:#000;overflow:hidden;margin:20px -5px 0 -23px;position:relative;z-index:2}
-.pl-badge img{width:100%;height:100%;display:block}
-body.plat-tt .pl-badge{display:block}
-.sk-account.has-pl .sk-account-current{padding-right:92px}
-.sk-account.has-pl .sk-chevron{display:none}
-.pl-sw{position:absolute;right:9px;top:50%;transform:translateY(-50%);display:flex;gap:5px;background:#eef1f8;border-radius:99px;padding:4px;z-index:3}
-.pl-sw[hidden]{display:none}
-.pl-sw button{width:30px;height:30px;border:0;padding:0;border-radius:50%;background:transparent;cursor:pointer;display:grid;place-items:center;transition:box-shadow .2s ease}
-.pl-sw img{width:26px;height:26px;border-radius:50%;opacity:.38;filter:grayscale(1);transition:opacity .2s ease,filter .2s ease}
-.pl-sw button.on img{opacity:1;filter:none}
-.pl-sw button.on{box-shadow:0 0 0 2px #fff,0 0 0 4px #0d1b4c}
-body.plat-tt .sk-drawer{background:radial-gradient(circle at 105% 16%,rgba(254,44,85,.32) 0,transparent 38%),radial-gradient(circle at -10% 30%,rgba(37,244,238,.24) 0,transparent 40%),linear-gradient(170deg,#0c1a46 0%,#152a66 55%,#0c1a46 100%)!important}
-body.plat-tt .py-open-wrap,body.plat-tt #mrSection{display:none!important}
-body.plat-tt [data-grp="ps"],body.plat-tt [data-grp="ai"],body.plat-tt #grp-ps,body.plat-tt #grp-ai{display:none!important}
-.channel-icon.tt-partnership{background:#f4efff;color:#7a45d6}.channel-icon.tt-sales{background:#eef3ff;color:#2a4fb8}.channel-icon.tt-catalog{background:#fff4e8;color:#e08a2a}.channel-icon.tt-reach{background:#e8f8fc;color:#1fa3c9}
-body.dark-mode .channel-icon.tt-partnership,body.dark-mode .channel-icon.tt-sales,body.dark-mode .channel-icon.tt-catalog,body.dark-mode .channel-icon.tt-reach{background:#121e38!important}
 </style>
 </head>
 <body>
@@ -10879,11 +10858,10 @@ body.dark-mode .channel-icon.tt-partnership,body.dark-mode .channel-icon.tt-sale
   <div class="sk-section-label">Client account</div>
   <div class="sk-account" id="accountPicker">
     <button class="sk-account-current" id="accountCurrent" type="button" onclick="toggleAccountMenu()" aria-haspopup="listbox" aria-expanded="false">
-      <span class="sk-client-logo"><img data-client-logo alt=""></span><span class="pl-badge" aria-hidden="true"><img src="icons/alexandra/logo-tiktok.png?v=3" alt=""></span>
-      <span class="sk-account-text"><b id="accountCurrentName">Human Appeal US</b><small class="pl-sub" id="platSub">Google Ads</small></span>
+      <span class="sk-client-logo"><img data-client-logo alt=""></span>
+      <span class="sk-account-text"><b id="accountCurrentName">Human Appeal US</b></span>
       <svg class="sk-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
     </button>
-    <div class="pl-sw" id="platSw" role="group" aria-label="Platform"><button type="button" data-p="usa" aria-label="Google Ads" title="Google Ads" onclick="pickPlatform('usa')"><img src="icons/alexandra/logo-google.png?v=3" alt=""></button><button type="button" data-p="tt" aria-label="TikTok" title="TikTok" onclick="pickPlatform('tt')"><img src="icons/alexandra/logo-tiktok.png?v=3" alt=""></button></div>
     <div class="sk-account-menu" id="accountMenu" role="listbox" aria-label="Select client account">
       <button class="sk-account-option" type="button" role="option" data-account="usa" onclick="pickAccount('usa')"><span class="sk-client-logo"><img data-client-logo alt=""></span><span class="sk-account-text"><b>Human Appeal US</b><small class="stx-sub" data-stx="usa"></small></span><svg class="sk-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
       <button class="sk-account-option" type="button" role="option" data-account="ar" onclick="pickAccount('ar')"><span class="sk-client-logo"><img data-client-logo alt=""></span><span class="sk-account-text"><b>Human Appeal AR</b><small class="stx-sub" data-stx="ar"></small></span><svg class="sk-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
@@ -11511,7 +11489,7 @@ const ACCOUNT_DATA_CACHE={};
 const ACCOUNT_CACHE_MAX_AGE=30000;
 let PREFETCH_STARTED=false;
 let CURRENT_ACCOUNT=(localStorage.getItem('ha_media_plan_account')||'usa').toLowerCase();
-if(!['usa','ar','tt'].includes(CURRENT_ACCOUNT))CURRENT_ACCOUNT='usa';
+if(!['usa','ar'].includes(CURRENT_ACCOUNT))CURRENT_ACCOUNT='usa';
 
 const SAMPLE_DATA={
  account:{key:'usa',label:'Human Appeal US',shortLabel:'USA',dashboardTitle:'Media Plan US'},
@@ -11765,7 +11743,7 @@ function navGroupState(){return NAV_GRP}
 function navGroupApply(){
  const st=navGroupState();
  // "6 pages": count what this person can actually open in each group.
- Object.keys(st).forEach(k=>{const b=document.getElementById('grp-'+k),c=document.querySelector('[data-grp="'+k+'"] .sk-gn');if(b&&c){const n=[...b.querySelectorAll('.sk-nav-btn')].filter(x=>!x.hidden&&!(CURRENT_ACCOUNT==='tt'&&/TabBtn$/.test(x.id)&&!TT_TABS.includes(x.id.replace('TabBtn','')))).length;c.textContent=n+(n===1?' page':' pages')}});
+ Object.keys(st).forEach(k=>{const b=document.getElementById('grp-'+k),c=document.querySelector('[data-grp="'+k+'"] .sk-gn');if(b&&c){const n=[...b.querySelectorAll('.sk-nav-btn')].filter(x=>!x.hidden).length;c.textContent=n+(n===1?' page':' pages')}});
  Object.keys(st).forEach(k=>{
    const b=document.getElementById('grp-'+k);if(b)b.classList.toggle('open',!!st[k]);
    document.querySelectorAll('[data-grp="'+k+'"]').forEach(t=>{t.classList.toggle('open',!!st[k]);t.setAttribute('aria-expanded',st[k]?'true':'false')});
@@ -12789,7 +12767,7 @@ function updateAccountPicker(a){
  text('accountCurrentName',a.label);
  text('accountCurrentSub',a.dashboardTitle);
  document.querySelectorAll('.sk-account-option').forEach(opt=>{
-   const on=opt.dataset.account===(a.key==='tt'?'usa':a.key);
+   const on=opt.dataset.account===a.key;
    opt.classList.toggle('selected',on);
    opt.setAttribute('aria-selected',on?'true':'false');
  });
@@ -12839,8 +12817,8 @@ function accountMeta(d){
  return {
    key:key,
    label:a.label||(key==='ar'?'Human Appeal AR':'Human Appeal US'),
-   shortLabel:a.shortLabel||(key==='ar'?'AR':key==='tt'?'TikTok':'USA'),
-   dashboardTitle:a.dashboardTitle||(key==='ar'?'Media Plan AR':key==='tt'?'TikTok · Human Appeal US':'Media Plan US')
+   shortLabel:a.shortLabel||(key==='ar'?'AR':'USA'),
+   dashboardTitle:a.dashboardTitle||(key==='ar'?'Media Plan AR':'Media Plan US')
  };
 }
 
@@ -12851,7 +12829,6 @@ function applyAccountBrand(d){
  const sel=document.getElementById('accountSelect');
  if(sel)sel.value=CURRENT_ACCOUNT;
  updateAccountPicker(a);
- platApply();
  text('brandName',a.label);
  text('brandSub','Media Plan • Live performance');
  text('dashboardTitle',a.dashboardTitle);
@@ -12862,7 +12839,12 @@ function applyAccountBrand(d){
 function initAccountSelector(){
  const sel=document.getElementById('accountSelect');
  if(sel)sel.value=CURRENT_ACCOUNT;
- applyAccountBrand({account:accountMeta({account:{key:CURRENT_ACCOUNT}})});
+ applyAccountBrand({account:{
+   key:CURRENT_ACCOUNT,
+   label:CURRENT_ACCOUNT==='ar'?'Human Appeal AR':'Human Appeal US',
+   shortLabel:CURRENT_ACCOUNT==='ar'?'AR':'USA',
+   dashboardTitle:CURRENT_ACCOUNT==='ar'?'Media Plan AR':'Media Plan US'
+ }});
 }
 
 function animateScene(direction='right'){
@@ -12907,7 +12889,7 @@ function replayDashboardMotion(){
 }
 
 function switchAccount(accountKey){
- const key=(k=>k==='ar'||k==='tt'?k:'usa')(String(accountKey||'usa').toLowerCase());
+ const key=String(accountKey||'usa').toLowerCase()==='ar'?'ar':'usa';
  closeSidebar();
  if(key===CURRENT_ACCOUNT&&DASH_DATA)return;
  WEEK_PICK=null;
@@ -12917,8 +12899,12 @@ function switchAccount(accountKey){
  SUMMARY_TEXT='';
  try{accCurApply()}catch(e){}
  if(refreshTimer){clearInterval(refreshTimer);refreshTimer=null}
- if(key==='tt'&&!TT_TABS.includes(CURRENT_TAB))switchDashboardTab('overview');
- applyAccountBrand({account:accountMeta({account:{key:key}})});
+ applyAccountBrand({account:{
+   key:key,
+   label:key==='ar'?'Human Appeal AR':'Human Appeal US',
+   shortLabel:key==='ar'?'AR':'USA',
+   dashboardTitle:key==='ar'?'Media Plan AR':'Media Plan US'
+ }});
  const cached=getAccountCache(key);
  if(cached){
    render(cached.data);
@@ -13157,8 +13143,6 @@ function loadData(options){
   google.script.run
    .withSuccessHandler(d=>{
      if(slowTimer)clearTimeout(slowTimer);
-     // v657 TikTok asked, something else came back: never show it as TikTok (and never flip back to Google)
-     if(accountAtRequest==='tt'&&!(d&&d.platform==='tiktok')){if(accountAtRequest===CURRENT_ACCOUNT&&!silent)showError(new Error('TikTok data could not be loaded. Try again in a minute.'));return}
      saveAccountCache(d);
      if(accountAtRequest!==CURRENT_ACCOUNT)return;
      // Same numbers as on screen (the minute refresh, or the fresh copy after the cached one):
@@ -13178,7 +13162,12 @@ function loadData(options){
    .getDashboardData(accountAtRequest,force,getAccessToken());
  }else setTimeout(()=>{
    const preview=JSON.parse(JSON.stringify(SAMPLE_DATA));
-   preview.account=accountMeta({account:{key:accountAtRequest}});
+   preview.account={
+     key:accountAtRequest,
+     label:accountAtRequest==='ar'?'Human Appeal AR':'Human Appeal US',
+     shortLabel:accountAtRequest==='ar'?'AR':'USA',
+     dashboardTitle:accountAtRequest==='ar'?'Media Plan AR':'Media Plan US'
+   };
    saveAccountCache(preview);
    if(accountAtRequest===CURRENT_ACCOUNT)render(preview);
  },140);
@@ -13559,9 +13548,8 @@ function streakDraw(d){
 function render(d,opts){
  const animate=!(opts&&opts.animate===false);
  RENDER_QUIET=!animate;
- DASH_DATA=d; saveAccountCache(d); document.getElementById('app').classList.remove('loading');
- const TTD=d.platform==='tiktok';ttChannels(TTD);
- if(!TTD){setTimeout(akRoasAlert,9000);setTimeout(akWeekly,16000);labNewDay(d)}
+ DASH_DATA=d; saveAccountCache(d); document.getElementById('app').classList.remove('loading');setTimeout(akRoasAlert,9000);setTimeout(akWeekly,16000);
+ labNewDay(d);
  applyAccountBrand(d);
  try{scardHome()}catch(e){}
  const x=d.latest,y=d.yoy,m=d.month;
@@ -13574,13 +13562,13 @@ function render(d,opts){
  tbLive(d);
 
  kpi('kSpend','tSpend','dSpend','pSpend',money(x.spend),money(x.targetSpend),x.spendAchievement,true);
- if(!TTD){setTimeout(()=>{try{spendAlertCheck(d)}catch(e){}},900);
+ setTimeout(()=>{try{spendAlertCheck(d)}catch(e){}},900);
  setTimeout(()=>{try{roasDropCheck(d)}catch(e){}},1300);
- try{streakDraw(d)}catch(e){}}
+ try{streakDraw(d)}catch(e){}
  try{bbDraw()}catch(e){}
- if(!TTD)setTimeout(()=>{try{ssRemind()}catch(e){}},2600);
+ setTimeout(()=>{try{ssRemind()}catch(e){}},2600);
  try{if(!WK_LY)drawWeeklyLy(false)}catch(e){}
- if(!TTD)try{storyTrayDraw();if(STX_PENDING===CURRENT_ACCOUNT){STX_PENDING='';setTimeout(()=>openStories(CURRENT_ACCOUNT),400)}}catch(e){}
+ try{storyTrayDraw();if(STX_PENDING===CURRENT_ACCOUNT){STX_PENDING='';setTimeout(()=>openStories(CURRENT_ACCOUNT),400)}}catch(e){}
  kpi('kValue','tValue','dValue','pValue',money(x.value),money(x.planValue),x.valueAchievement,false);
  kpi('kConv','tConv','dConv','pConv',fmt(x.conversions,0),fmt(x.planConversions,1),x.convAchievement,false);
  kpi('kRoas','tRoas','dRoas','pRoas',roas!=null?fmt(roas,2)+'x':'—',planRoas!=null?fmt(planRoas,2)+'x':'—',roasAch,false);
@@ -13613,7 +13601,7 @@ function render(d,opts){
  // motion only plays on first load, account switch, tab change or manual refresh.
  initScrollAnimations(!animate);
  if(animate)setTimeout(()=>{animateScene('right');replayDashboardMotion();},35);
- if(!TTD)notifyAndroidDashboard(d);
+ notifyAndroidDashboard(d);
 
  RENDER_QUIET=false;
  if(refreshTimer)clearInterval(refreshTimer);
@@ -14196,14 +14184,14 @@ function renderChannels(rows){
  if(mxWide()){
   const C=['#7a45d6','#2a4fb8','#e08a2a','#1fa3c9','#d23a55'];
   host.innerHTML=`<div class="cdt-h"><span>#</span><span>Type</span><span>Spend · of plan</span><span>Clicks</span><span>Conv.</span><span>Value</span><span>ROAS</span></div>`+sorted.map((r,i)=>{
-   const roas=Number(r.roas)||0,ach=Number(r.spendAchievement)||0,k=chK(r.channel);
+   const roas=Number(r.roas)||0,ach=Number(r.spendAchievement)||0,k=Math.min(Math.max(CHANNEL_ORDER.indexOf(isVideoChannel(r.channel)?'Video (YouTube)':r.channel),0),4);
    return `<div class="cdt-r" style="--c:${C[k]}"><u>${i+1}</u><div class="n"><span class="channel-icon ${channelIconClass(r.channel)}">${channelIconSvg(r.channel)}</span><b>${esc(chName(r.channel))}</b>${i===0?'<em>👑 Best</em>':''}</div>
     <div class="s"><b>${money(r.actualSpend)}</b><div class="bar"><i style="width:${Math.min(ach*100,100).toFixed(1)}%"></i></div><small class="${ach>1.15?'over':''}">${percent(ach)} of plan${Number(r.planSpend)?` <em class="cdt-pl">· plan ${money(r.planSpend)}</em>`:''}</small></div>
     <span>${fmt(r.clicks,0)}</span><span>${fmt(r.conversions,0)}</span><span><b>${money(r.actualValue)}</b></span><span class="ro ${i===0||roas>=1?'up':'dn'}">${fmt(roas,2)}x</span></div>`}).join('');
   return;
  }
  host.innerHTML=sorted.map((r,i)=>{
-  const roas=Number(r.roas)||0, win=i===0, ach=Number(r.spendAchievement)||0, k=chK(r.channel);
+  const roas=Number(r.roas)||0, win=i===0, ach=Number(r.spendAchievement)||0, k=Math.min(Math.max(CHANNEL_ORDER.indexOf(isVideoChannel(r.channel)?'Video (YouTube)':r.channel),0),4);
   return `<div class="ccd k${k}${win?' win':''}">
    <div class="cc-h"><span class="channel-icon ${channelIconClass(r.channel)}">${channelIconSvg(r.channel)}</span><b>${esc(chName(r.channel))}</b><em class="cc-roas${win?' win':roas<1?' low':''}" style="--i:${i}">${win?'<span class="cc-crown">👑</span> ':''}${fmt(roas,2)}x</em></div>
    <div class="cc-sp"><b>${money(r.actualSpend)}</b> spent · <span class="${ach>1.15?'over':''}">${percent(ach)} of plan</span></div>
@@ -14254,7 +14242,7 @@ function renderYoy(x,y){
 
  const hijri=y.mode==='hijri';
  text('yoyTitle',hijri?'Same Hijri Day Last Year':'Same Day Last Year');
- text('yoySub',CURRENT_ACCOUNT==='tt'&&!y.lyDate?'TikTok last year will show here once its days are added.':hijri&&y.lyDate?`Vs ${y.lyLabel||y.lyDate} · same Hijri day${y.hasData===false?' (no data)':''}`:'Current performance compared with the same date last year.');
+ text('yoySub',hijri&&y.lyDate?`Vs ${y.lyLabel||y.lyDate} · same Hijri day${y.hasData===false?' (no data)':''}`:'Current performance compared with the same date last year.');
  const rowsHost=document.getElementById('yoyRows');
  if(rowsHost)rowsHost.innerHTML=metrics.map(m=>{
    const ok=m.ratio!=null&&isFinite(m.ratio);
@@ -14283,7 +14271,7 @@ function renderTopProjects(d){
  const sub=document.getElementById('topProjectsSub');
  const by=(d.bestWorst&&d.bestWorst.rankBy)||'ROAS';
  if(sub)sub.textContent=`Ranked by ${by}${d.topProjectsDay?' · '+shortDate(d.topProjectsDay):''}`;
- if(!rows.length){host.innerHTML=d.platform==='tiktok'?'<div class="dx-empty">TikTok projects will show here once the landing pages are linked.</div>':'<div class="dx-empty">Project results will show here once the Best &amp; Worst tab is linked for this account.</div>';return}
+ if(!rows.length){host.innerHTML='<div class="dx-empty">Project results will show here once the Best &amp; Worst tab is linked for this account.</div>';return}
  const top=Math.max(...rows.map(r=>Number(r.roas)||0),0.0001);
  host.innerHTML=rows.map((r,i)=>{
    const g=i===0, c=g?'g':'b', stale=offSeason(r.name,d.topProjectsDay);
@@ -14432,7 +14420,6 @@ function lyGapChart(has){
 }
 const lyChip=v=>v==null||!isFinite(v)?'':`${v>=0?'▲':'▼'} ${percent(Math.abs(v))}`;
 function lyDays(days){
- if(CURRENT_ACCOUNT==='tt')return '<div class="dx-empty">TikTok last year will show here once its days are added.</div>';
  const D=lyData(days);
  if(!D){loadMonthExtras();return extraWaitHtml('last year’s days')}
  if(!D.live)return '<div class="dx-empty">No day has results yet this month.</div>';
@@ -14716,7 +14703,7 @@ function resultsHero(days,T){
  const tR=p.roas, rR=tR&&a.roas!=null?a.roas/tR:null;
  const R=30,C=2*Math.PI*R,f=Math.max(0,Math.min(1,sR||0));
  const ch=(DASH_DATA&&DASH_DATA.channels)||[];
- const idx=n=>{const t=TT_CH_NAMES.indexOf(n);if(t>=0)return t;const k=['Search Brand','Search Non-Brand','Performance Max','Demand Gen','Video (YouTube)'].indexOf(n);return k<0?4:k};
+ const idx=n=>{const k=['Search Brand','Search Non-Brand','Performance Max','Demand Gen','Video (YouTube)'].indexOf(n);return k<0?4:k};
  const mix=ch.map(c=>({k:idx(c.channel),s:Number(c.actualSpend)||0})).filter(m=>m.s>0);
  const tot=mix.reduce((x,m)=>x+m.s,0)||1;
  const tile=(l,v,r,sub,c)=>`<div class="mt-t"><small>${l}</small><b>${v}</b><span class="mt-chip ${c}">${sub}${/%$/.test(sub)?'<i class="dk-of"> of plan</i>':''}</span></div>`;
@@ -14737,7 +14724,7 @@ function mergeDayChannels(rows){
 function dayChannelCards(d){
  const rows=mergeDayChannels(d&&d.dayChannels);
  return rows.map((c,i)=>{
-   const k=chK(c.channel);
+   const k=Math.min(Math.max(CHANNEL_ORDER.indexOf(c.channel),0),4);
    const plan=Number(c.planSpend)||0, r=plan?c.spend/plan:null;
    return `<div class="ctd k${k}" data-ch="${esc(c.channel)}"><div class="ctd-h"><b>${chIco(c.channel)}${esc(CHANNEL_SHORT[c.channel]||c.channel)}</b><span class="ctd-rk">${i+1}</span></div>
     <div class="ctd-roas">${c.roas!=null?fmt(c.roas,2)+'x':'—'}<small>ROAS</small></div>
@@ -16634,7 +16621,7 @@ function renderMiniYoy(valueId,stateId,currentId,m){
 }
 
 function channelIconClass(s){
- const t=String(s);if(TT_ICO[t])return 'tt-'+t.toLowerCase();
+ const t=String(s);
  if(t.includes('Performance')||t==='PMax')return 'pmax';
  if(t.includes('Demand'))return 'dg';
  if(/video|youtube/i.test(t))return 'video';
@@ -16646,7 +16633,7 @@ function channelIconClass(s){
 // v172: Search Brand shows the Human Appeal mark in blue; Demand Gen a TV.
 const HA_BLUE_MARK='data:image/png;base64,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';
 function channelIconSvg(s){
- const t=String(s);if(TT_ICO[t])return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">${TT_ICO[t]}</svg>`;
+ const t=String(s);
  if(/brand/i.test(t)&&!/non/i.test(t))return `<img class="ha-mk" src="${HA_BLUE_MARK}" alt="">`;
  // v179 Display: a banner with a picture · Smart: sparkles
  if(/display/i.test(t))return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3 15l5-4 4 3 3-2 6 4"/><circle cx="16.5" cy="9" r="1.6"/></svg>`;
@@ -16949,7 +16936,7 @@ function openWhatsAppText(summary){
 // Before a share: USA reports go out in dollars, AR in pounds. On the other currency a note drops under the
 // currency switch (which glows), with "Share in £" and "Change to $".
 function curWarn(tab,btn){
- const want=CURRENT_ACCOUNT==='ar'?'GBP':'USD';if(curOn()===want)return false;
+ const want=CURRENT_ACCOUNT==='usa'?'USD':'GBP';if(curOn()===want)return false;
  const has=CUR_LIST[curOn()],need=CUR_LIST[want],acc=accountMeta(DASH_DATA||{}).shortLabel||CURRENT_ACCOUNT.toUpperCase();
  document.getElementById('curWarn')?.remove();
  const sw=document.getElementById('curSw'),r=sw&&sw.getBoundingClientRect(),vis=r&&r.width>0&&r.bottom>0&&r.top<innerHeight;
@@ -17086,21 +17073,20 @@ function seasonTestEmail(a,key){if(a.dataset.busy)return;a.dataset.busy=1;const 
 function prefsLoad(){return serverCall('appPrefs',getAccessToken()).then(p=>{if(!p||!p.cur)return;APP_PREFS=p;ACC_CUR=p.cur;storeSet('sekna_app_prefs',JSON.stringify(p));accCurApply();drawAccCur();drawSpendAlertOpts();drawRoasAlertOpts()}).catch(()=>{})}
 function prefsSave(ch){if(!mrOwner())return;Object.assign(APP_PREFS,ch);storeSet('sekna_app_prefs',JSON.stringify(APP_PREFS));drawAccCur();drawSpendAlertOpts();drawRoasAlertOpts();
  serverCall('appPrefsSet',getAccessToken(),ch).then(p=>{if(p&&p.cur){APP_PREFS=p;ACC_CUR=p.cur;storeSet('sekna_app_prefs',JSON.stringify(p))}showSettingsToast('Saved for the whole team')}).catch(e=>showSettingsToast(errorText(e)))}
-let CUR=ACC_CUR[CURRENT_ACCOUNT==='tt'?'usa':CURRENT_ACCOUNT]||'GBP';
-function accCurApply(){const c=ACC_CUR[CURRENT_ACCOUNT==='tt'?'usa':CURRENT_ACCOUNT]||'GBP';if(c===CUR)return;CUR=c;curDraw();if(c!=='GBP'&&!(FX&&FX.rates&&FX.rates[c]))fxLoad(true).then(()=>{if(DASH_DATA)render(DASH_DATA,{animate:false})}).catch(()=>{})}
+let CUR=ACC_CUR[CURRENT_ACCOUNT]||'GBP';
+function accCurApply(){const c=ACC_CUR[CURRENT_ACCOUNT]||'GBP';if(c===CUR)return;CUR=c;curDraw();if(c!=='GBP'&&!(FX&&FX.rates&&FX.rates[c]))fxLoad(true).then(()=>{if(DASH_DATA)render(DASH_DATA,{animate:false})}).catch(()=>{})}
 function setAccCur(acc,c){if(!mrOwner()||!CUR_LIST[c]||!ACC_CUR[acc])return;ACC_CUR=Object.assign({},ACC_CUR,{[acc]:c});prefsSave({cur:ACC_CUR});if(acc===CURRENT_ACCOUNT&&CUR!==c)setCur(c)}
 function drawAccCur(){tpLock();const b=document.getElementById('accCurBox');if(!b)return;const lk=!mrOwner();b.innerHTML=['usa','ar'].map(k=>`<span class="ac-c"><em>${k==='usa'?'USA':'AR'}</em><span class="cur-sw">${Object.keys(CUR_LIST).map(c=>`<button type="button" class="${ACC_CUR[k]===c?'on':''}"${lk?' disabled':''} onclick="setAccCur('${k}','${c}')">${CUR_LIST[c].s}</button>`).join('')}</span></span>`).join('')}
 let FX=(()=>{try{return JSON.parse(storeGet('sekna_fx')||'null')}catch(e){return null}})();
 let CUR_HOLD=0; // while the monthly report is built it is always in pounds
 function curOn(){return !CUR_HOLD&&CUR!=='GBP'&&FX&&FX.rates&&FX.rates[CUR]>0?CUR:'GBP'}
-function cx(v){const c=curOn();if(v!=null&&ttUsd()){const r=FX&&FX.rates&&FX.rates.USD>0?FX.rates.USD:0;return !r||c==='USD'?v:c==='GBP'?v/r:v/r*FX.rates[c]}return c==='GBP'||v==null?v:v*FX.rates[c]}
-function ttUsd(){return !!(DASH_DATA&&DASH_DATA.baseCur==='USD'&&CURRENT_ACCOUNT==='tt')}
-function cs(){if(ttUsd()&&!(FX&&FX.rates&&FX.rates.USD>0))return '$';return CUR_LIST[curOn()].s}
+function cx(v){const c=curOn();return c==='GBP'||v==null?v:v*FX.rates[c]}
+function cs(){return CUR_LIST[curOn()].s}
 function money(n,d=0){return cs()+fmt(cx(n),d)}
 function curDraw(){
  const sw=document.getElementById('curSw');
  // v173 one chip: the money in use, tap to switch to the other; red while it is not the account's own money.
- if(sw){const ks=Object.keys(CUR_LIST),nx=ks[(ks.indexOf(CUR)+1)%ks.length],own=(ACC_CUR&&ACC_CUR[CURRENT_ACCOUNT==='tt'?'usa':CURRENT_ACCOUNT])||'GBP';
+ if(sw){const ks=Object.keys(CUR_LIST),nx=ks[(ks.indexOf(CUR)+1)%ks.length],own=(ACC_CUR&&ACC_CUR[CURRENT_ACCOUNT])||'GBP';
   sw.classList.add('cur-chip');sw.classList.toggle('away',CUR!==own);
   sw.innerHTML=`<button type="button" class="on" onclick="setCur('${nx}')" aria-label="Showing ${CUR_LIST[CUR].name}. Switch to ${CUR_LIST[nx].name}"><b>${CUR_LIST[CUR].s}</b>${CUR}<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4L4 7l3 3M4 7h13M17 20l3-3-3-3M20 17H7"/></svg></button>`}
  const n=document.getElementById('curAt');if(!n)return;
@@ -19190,7 +19176,7 @@ function myPerms(){
 }
 // Pages of the side menu and share are on unless Admin → Permissions turned them off.
 const VIEW_KEYS=['overview','days','channel','plans','ranks','camp','months','seasons','ask','team','mine','leaveview','notifs','updates','about','share'];
-function canDo(k){if(CURRENT_ACCOUNT==='tt'&&DASH_TABS.includes(k)&&!TT_TABS.includes(k))return false;const p=myPerms();if(k==='terms')k='ranks';if(k==='chg')k='camp'; // Search Terms follows Top & Bottom 5
+function canDo(k){const p=myPerms();if(k==='terms')k='ranks';if(k==='chg')k='camp'; // Search Terms follows Top & Bottom 5
  if(k==='lab')return p.lab===true||p.lab==='view';return k in p?p[k]===true:VIEW_KEYS.includes(k)}
 // Media Plan Lab: 'view' opens it, but only true can change anything.
 function labEdit(){return myPerms().lab===true}
@@ -23663,32 +23649,6 @@ function stxAkHtml(s,G){const r=stxAkLoad(s,G),lang=stxAkLang(),c=r&&typeof r===
  const inner=month?`<div class="stxa-k">${ar?'أحسن ٣ لحظات في الشهر':'MY 3 MOMENTS OF THE MONTH'}</div><div class="stxa-hl">${E(c.h)}</div>${(c.moments||[]).slice(0,3).map(m=>`<div class="stxa-why">${E(m.e)} ${E(m.t)}</div>`).join('')}`
   :`<div class="stxa-k">${ar?'قرايتي لامبارح':'MY READ ON YESTERDAY'}</div><div class="stxa-hl">${E(c.h)}</div>${c.card?`<div class="stxa-cd"><small>${E(c.card.l)}</small><b>${E(c.card.v)}</b>${c.card.p?`<em class="${c.card.d==='up'?'up':c.card.d==='down'?'dn':''}">${E(c.card.p)}</em>`:''}</div>`:''}<div class="stxa-why"><b>${ar?'ليه:':'Why:'}</b> ${E(c.why)}<br><b>${ar?'نعمل إيه:':'Do:'}</b> ${E(c.do)}</div>`;
  return `<div class="stxa" dir="${ar?'rtl':'ltr'}" style="--img:url(icons/alexandra/story-read.webp?v=2)">${head}<div class="stxa-in">${inner}</div></div>`}
-
-/* v657 TikTok · Human Appeal US (key 'tt'): the switch in the account card, its own sheet, three pages */
-const TT_TABS=['overview','days','channel'];
-const TT_CH_NAMES=['Partnership','Sales','Catalog','Reach'];
-const G_PLAN_NAMES=PLAN_CHANNEL_NAMES.slice(),G_MIX_LABELS=PLAN_MIX_LABELS.slice();
-const TT_ICO={Partnership:'<path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M2.5 20a5.5 5.5 0 0 1 11 0M10.5 20a5.5 5.5 0 0 1 11 0"/>',
- Sales:'<path d="M4 5h2l2 10h10l2-7H7"/><circle cx="9.5" cy="19" r="1.4"/><circle cx="17" cy="19" r="1.4"/>',
- Catalog:'<rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.6"/>',
- Reach:'<path d="M4 10v4h3l6 4V6L7 10z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a7.5 7.5 0 0 1 0 11"/>'};
-function chK(n){const t=TT_CH_NAMES.indexOf(n);if(t>=0)return t;return Math.min(Math.max(CHANNEL_ORDER.indexOf(isVideoChannel(n)?'Video (YouTube)':n),0),4)}
-// The plan mix on Day by Day names TikTok's four types while TikTok is on screen, Google's five otherwise.
-function ttChannels(on){const a=on?TT_CH_NAMES:G_PLAN_NAMES,b=on?TT_CH_NAMES:G_MIX_LABELS;PLAN_CHANNEL_NAMES.splice(0,PLAN_CHANNEL_NAMES.length,...a);PLAN_MIX_LABELS.splice(0,PLAN_MIX_LABELS.length,...b)}
-function pickPlatform(p){
- if(p===CURRENT_ACCOUNT)return;
- const sw=document.getElementById('platSw');if(sw)sw.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
- setTimeout(()=>switchAccount(p),160);
-}
-function platApply(){
- const tt=CURRENT_ACCOUNT==='tt',us=CURRENT_ACCOUNT!=='ar';
- document.body.classList.toggle('plat-tt',tt);
- const acc=document.getElementById('accountPicker');if(acc)acc.classList.toggle('has-pl',us);
- const sw=document.getElementById('platSw');if(sw){sw.hidden=!us;sw.querySelectorAll('button').forEach(b=>{const on=b.dataset.p===(tt?'tt':'usa');b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on))})}
- text('platSub',tt?'TikTok Ads':'Google Ads');
- try{applyMenuPerms()}catch(e){}
- try{navGroupApply()}catch(e){}
-}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
