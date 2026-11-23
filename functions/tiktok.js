@@ -213,6 +213,10 @@ async function buildTikTokData() {
   const now = new Date(Date.now() + 4 * 3600e3); // Muscat time, like the rest of the app
   const stamp = now.getUTCFullYear() + '-' + pad(now.getUTCMonth() + 1) + '-' + pad(now.getUTCDate()) + ' ' + pad(now.getUTCHours()) + ':' + pad(now.getUTCMinutes()) + ':' + pad(now.getUTCSeconds());
 
+  // Daily → Top 3 Projects: the topics of "Topics & landing pages" (last 30 days) by CTA ROAS, $100 spend or more
+  const snap = await ttSnap().catch(() => null);
+  const topProjects = ((snap && snap.topics) || []).filter(t => t.spend >= 100).sort((a, b) => b.roas - a.roas).slice(0, 3)
+    .map(t => ({ name: t.topic, roas: t.roas, spend: t.spend, conversions: t.conv, value: t.value }));
   return {
     refreshSeconds: 60, platform: 'tiktok', baseCur: 'USD', planFound: plan.found,
     account: TT_ACCOUNT, userEmail: '',
@@ -236,9 +240,8 @@ async function buildTikTokData() {
     weekly, channels, daily, dayPlan, dayChannels,
     history: Object.keys(hist.months).sort().map(mk => { const m = hist.months[mk], h = hijriNum(mk + '-15');
       return { month: mk, hijri: HIJRI_M[h.m - 1], cost: m.spend, value: m.value, conversions: m.conversions, roas: div(m.value, m.spend), partial: mk === monthKey }; }).filter(x => x.cost || x.value || x.conversions),
-    bestWorst: null,
-    // Top projects: empty until they come from the landing pages.
-    topProjects: [], topProjectsDay: '',
+    bestWorst: { rankBy: 'ROAS · last 30 days' },
+    topProjects, topProjectsDay: '',
     generatedAt: stamp, generatedAtMs: Date.now()
   };
 }
