@@ -11526,6 +11526,8 @@ const TT_NO_GOOGLE={getForecast:1,getMonthVsLy:1,getSearchTerms:1,getSearchTerms
 
 function ttGoGoogle(acc){try{if(acc==='ar'||acc==='usa')localStorage.setItem('ha_media_plan_account',acc)}catch(e){}location.href='/'}
 function pickPlatform(p){if(p!=='tt')ttGoGoogle('usa')}
+(function(){const f=window.fetch.bind(window);window.fetch=function(u,o){try{const s=typeof u==='string'?u:(u&&u.url)||'';
+ if(/cloudfunctions\.net\/api\/ak\//.test(s)&&o&&typeof o.body==='string'&&o.body.charAt(0)==='{'){const b=JSON.parse(o.body);b.plat='tiktok';o=Object.assign({},o,{body:JSON.stringify(b)})}}catch(e){}return f(u,o)}})();
 
 let DASH_DATA=null, refreshTimer=null, SUMMARY_TEXT='', CURRENT_TAB='overview';
 const ACCOUNT_DATA_CACHE={};
@@ -11999,7 +12001,7 @@ function akSideDraw(){const o=document.getElementById('akBox');if(!o)return;let 
  R.innerHTML=`<div class="ak-drc" style="background-image:url(${akCovUrl()})"></div><span class="ak-pga ak-tapp" onclick="AK.pgTab='about';akAbout(event)">${akAvIn()}<em></em></span><b class="ak-drn">Alexandra ${AK_TICK}</b><small class="ak-drs">Active now</small>
   <div class="ak-intro">${akIntroHtml()}</div><button type="button" class="ak-drb" onclick="AK.pgTab='about';akAbout(event)">${akI('about')}View profile</button>`}
 addEventListener('resize',()=>{clearTimeout(akModeApply.t);akModeApply.t=setTimeout(akModeApply,150)});
-function openAsk(){showSettingsToast('Alexandra is not on TikTok yet.');return;setTimeout(()=>{try{akCtx().catch(()=>{})}catch(e){}},400);setTimeout(akLiveWarm,900);setTimeout(akLivePre,1600);if(!ASK_HEMERA_URL)setTimeout(()=>akStoryFirst(false),600);const w=akWho();if(w&&w.ok===false){AK.blocked=true;AK.msgs=[];try{localStorage.removeItem(AK_KEEP)}catch(e){}}akOpenNow();setTimeout(akReqDot,0)}
+function openAsk(){setTimeout(()=>{try{akCtx().catch(()=>{})}catch(e){}},400);setTimeout(akLiveWarm,900);setTimeout(akLivePre,1600);if(!ASK_HEMERA_URL)setTimeout(()=>akStoryFirst(false),600);const w=akWho();if(w&&w.ok===false){AK.blocked=true;AK.msgs=[];try{localStorage.removeItem(AK_KEEP)}catch(e){}}akOpenNow();setTimeout(akReqDot,0)}
 setTimeout(()=>{try{akNavLock(false)}catch(e){}},1500);
  
 function akBlockedSay(){AK.kb=false;akKb();akLockIn();if(!AK.msgs.some(m=>akIsNo(m.html)))akBot(akReqSent()?AK_NO_SENT:AK_NO)}
@@ -12076,7 +12078,7 @@ function akRecSend(){
 }
 
 const AKV={urls:{},db:null};
-function akVoiceDb(){if(AKV.db)return AKV.db;AKV.db=new Promise((ok,no)=>{try{const r=indexedDB.open('hm_ak_voice',1);r.onupgradeneeded=()=>r.result.createObjectStore('v');r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)}catch(e){no(e)}});return AKV.db}
+function akVoiceDb(){if(AKV.db)return AKV.db;AKV.db=new Promise((ok,no)=>{try{const r=indexedDB.open('hm_ak_voice_tt',1);r.onupgradeneeded=()=>r.result.createObjectStore('v');r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)}catch(e){no(e)}});return AKV.db}
 async function akVoicePut(id,blob){try{const db=await akVoiceDb();const tx=db.transaction('v','readwrite');tx.objectStore('v').put(blob,id);
  
  const st=tx.objectStore('v'),k=st.getAllKeys();k.onsuccess=()=>{const all=(k.result||[]).sort();all.slice(0,Math.max(0,all.length-30)).forEach(x=>st.delete(x))}}catch(e){}}
@@ -12229,7 +12231,7 @@ function closeAsk(){document.documentElement.classList.remove('ak-bubbed');akBub
 function akBot(html,cls){AK.msgs.push({w:'h',html,cls:cls||'',nw:1});akSfx('recv');akDraw()}
 function akUser(t,quote){AK.msgs.push({w:'u',html:`${quote?`<span class="ak-rq" dir="auto">${akEsc(String(quote).slice(0,140))}</span>`:''}<span dir="auto">${akEsc(t)}</span>`,nw:1});akSfx('send');akDraw()}
 
-const AK_KEEP='hm_ask_chat';
+const AK_KEEP='hm_ask_chat_tt';
 function akSave(){clearTimeout(akSave.t);akSave.t=setTimeout(()=>{try{if(!AK.msgs.length)return;AK.t0=AK.t0||Date.now();
  localStorage.setItem(AK_KEEP,JSON.stringify({t0:AK.t0,msgs:AK.msgs.slice(-60).map(m=>({w:m.w,html:String(m.html).replace(/ data-u="blob:[^"]*"/g,''),cls:m.cls||'',pid:m.pid||''})),hist:AK.hist.slice(-12),nav:AK.nav,res:(AK.res||[]).map(r=>r.id)}))}catch(e){}},400)}
 function akRestore(){if(AK.msgs.length)return;try{const o=JSON.parse(localStorage.getItem(AK_KEEP)||'null');if(!o)return;
@@ -21640,8 +21642,8 @@ function akDashLines(D,title,K){K=K||1;if(!D)return '';const L=[],a=D.account||{
  (D.topProjects||[]).forEach(t=>L.push('Top project on '+(D.topProjectsDay||'the latest day')+': '+t.name+' spend '+akR(K*(t.spend||0))+', conv '+akR(t.conversions)+', value '+akR(K*(t.value||0))+', ROAS '+akR(t.roas,2)));
  return L.join('\n')}
 
-function akFx(acc){try{const c=(ACC_CUR||{})[acc]||'GBP';return c!=='GBP'&&FX&&FX.rates&&FX.rates[c]>0?FX.rates[c]:1}catch(e){return 1}}
-function akFxSym(acc){try{const c=(ACC_CUR||{})[acc]||'GBP';return akFx(acc)===1?'£':(CUR_LIST[c]||{}).s||'$'}catch(e){return '£'}}
+function akFx(acc){return 1;try{const c=(ACC_CUR||{})[acc]||'GBP';return c!=='GBP'&&FX&&FX.rates&&FX.rates[c]>0?FX.rates[c]:1}catch(e){return 1}}
+function akFxSym(acc){return '$';try{const c=(ACC_CUR||{})[acc]||'GBP';return akFx(acc)===1?'£':(CUR_LIST[c]||{}).s||'$'}catch(e){return '£'}}
 
 function akPace(D,K){if(!D)return [];const L=[],rows=D.dayPlan||[],m=D.mtd||{},act=rows.filter(x=>x.actual);if(!rows.length||!act.length)return L;
  const sum=(a,f)=>a.reduce((t,x)=>t+(Number(f(x))||0),0),dim=rows.length,n=act.length,left=dim-n;
@@ -21705,7 +21707,7 @@ async function akCtx(){if(typeof DASH_DATA==='undefined'||!DASH_DATA)return '';c
 let AK_CTX={k:'',p:null,v:'',at:0};
 async function akCtx0(acc){const L=[];
  L.push('Today (the user’s date): '+ssToday());try{L.push('Currency: open account '+((ACC_CUR||{})[acc]||'USD')+', other account '+((ACC_CUR||{})[acc==='ar'?'usa':'ar']||''))}catch(e){}
- const K=akFx(acc);L.push('Money below is already in the account currency ('+akFxSym(acc)+'). The sheet keeps GBP; HEMERA converted it with today\'s rate'+(K!==1?' ('+akR(K,4)+')':'')+'.');
+ const K=akFx(acc);L.push('This is the TikTok page: TikTok Ads · Human Appeal US. Every number below is TikTok, in US dollars as the TikTok sheet keeps them. Conversions and value are CTA; ROAS = CTA value ÷ spend. Types: Partnership, Sales, Catalog, Reach.');
  L.push(akDashLines(DASH_DATA,'Account open on screen',K));
  try{akPace(DASH_DATA,K).forEach(x=>L.push(x))}catch(e){}
  
@@ -22513,14 +22515,15 @@ function akPlView(id){const s=AKPL[id];if(!s||!s.c)return;const o=document.creat
 const AK_SRV='https:\/\/europe-west2-human-appeal-media-plan.cloudfunctions.net/api/ak/ask';
 function akSrvOn(){try{return localStorage.getItem('hm_ak_srv')==='1'}catch(e){return false}}
 function akSrvSet(on){try{localStorage.setItem('hm_ak_srv',on?'1':'0')}catch(e){}}
-async function akAskSrv(q,history,ctx,image){
+async function akAskSrv(q,history,ctx,image){const r=await akAskSrv0(q,history,ctx,image);return r||{answer:'I could not answer right now. Try again in a minute.',api:'srv'}}
+async function akAskSrv0(q,history,ctx,image){
  
- if(!image&&Date.now()-(+storeGet('hm_ak_srv_off')||0)<12e4)return null;
+ if(!image&&Date.now()-(+storeGet('hm_ak_srv_off_tt')||0)<12e4)return null;
  AK.srvErr='';let r;try{r=await fetch(AK_SRV,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),q,history,ctx,name:akMe().name,image:image||undefined})})}catch(e){AK.srvErr='no connection';return null}
- if(!r.ok){AK.srvErr='server '+r.status;if(!image)storeSet('hm_ak_srv_off',String(Date.now()));return null}
+ if(!r.ok){AK.srvErr='server '+r.status;if(!image)storeSet('hm_ak_srv_off_tt',String(Date.now()));return null}
  if(!/stream/.test(r.headers.get('X-Ak')||'')&&/json/.test(r.headers.get('Content-Type')||'')){const j=await r.json().catch(()=>null);
   if(!j)return null;if(j.blocked){const e=new Error(j.error||'blocked');e.blocked=true;AK.blocked=true;throw e}
-  if(j.fallback||!j.ok){AK.srvErr=String(j.error||'');if(!image)storeSet('hm_ak_srv_off',String(Date.now()));return null}akSrvSet(true);return {answer:j.answer||'',api:'srv',limit:!!j.limit}}
+  if(j.fallback||!j.ok){AK.srvErr=String(j.error||'');if(!image)storeSet('hm_ak_srv_off_tt',String(Date.now()));return null}akSrvSet(true);return {answer:j.answer||'',api:'srv',limit:!!j.limit}}
  akSrvSet(true);
  const sid='aks'+Date.now().toString(36);AK.busy=false;akBot(`<div class="akst" id="${sid}"><p class="aks-t"><span class="aks-c"></span></p></div>`);
  const rd=r.body.getReader(),dec=new TextDecoder();let txt='',raf=0;
@@ -22532,8 +22535,8 @@ async function akAskSrv(q,history,ctx,image){
  return {answer:txt.trim(),api:'srv',sid}}
 
 async function akSrvLink(){try{if(!akOwner()||!ASK_HEMERA_URL)return;const last=+storeGet('hm_ak_link_try')||0;if(Date.now()-last<6*36e5)return;storeSet('hm_ak_link_try',String(Date.now()));
- const st=await serverCall('akLinkState',getAccessToken());if(st&&st.linked){akSrvSet(true);storeSet('hm_ak_srv_off','0');return}
- const {secret}=await serverCall('akLink',getAccessToken());await akPost('link',{secret});akSrvSet(true);storeSet('hm_ak_srv_off','0')}catch(e){}}
+ const st=await serverCall('akLinkState',getAccessToken());if(st&&st.linked){akSrvSet(true);storeSet('hm_ak_srv_off_tt','0');return}
+ const {secret}=await serverCall('akLink',getAccessToken());await akPost('link',{secret});akSrvSet(true);storeSet('hm_ak_srv_off_tt','0')}catch(e){}}
 setTimeout(akSrvLink,12000);
 
  
@@ -22999,7 +23002,7 @@ async function akPlanHist(acc,K){const L=[];try{if(!canDo('plans'))return L;cons
  L.push('## Plan history (closed months: plan vs actual; month | plan spend/value ROAS | actual spend/value ROAS | channels actual spend)');
  H.forEach(h=>{const p=h.plan||{},a=h.actual||{};L.push(h.month+(h.hijriFrom?' ('+h.hijriFrom+(h.hijriTo&&h.hijriTo!==h.hijriFrom?' – '+h.hijriTo:'')+')':'')+' | plan '+M(p.spend)+'/'+M(p.value)+' '+akR(p.roas,2)+' | actual '+M(a.spend)+'/'+M(a.value)+' '+akR(a.roas,2)+((h.channels||[]).length?' | '+h.channels.slice(0,6).map(c=>c.channel+' '+M(c.spend)).join(', '):''))})}catch(e){}return L}
 const AKPH={};
-function akFresh(acc){const L=['## When each data source was last read (the person\'s time)'];const f=v=>{if(!v)return 'not read yet';const d=new Date(typeof v==='number'?v:String(v).replace(' ','T'));return isNaN(d)?String(v):d.toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})};
+function akFresh(acc){return [];const L=['## When each data source was last read (the person\'s time)'];const f=v=>{if(!v)return 'not read yet';const d=new Date(typeof v==='number'?v:String(v).replace(' ','T'));return isNaN(d)?String(v):d.toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})};
  try{['usa','ar'].forEach(a=>{const d=a===acc?DASH_DATA:(getAccountCache(a)||{}).data;if(d)L.push('Media plan dashboard ('+a.toUpperCase()+'): '+f(d.generatedAtMs||d.generatedAt)+(d.latest&&d.latest.date?', latest day with results '+d.latest.date:''))})}catch(e){}
  try{const c=(CP[acc]||{}).data;if(c&&c.latest)L.push('Campaign tabs: latest day '+c.latest)}catch(e){}
  try{const st=(ST[acc]||{}).data;if(st&&!st.missing)L.push('Search terms (AI Max snapshot): '+(st.run?'report run '+st.run:'')+(st.updated?' updated '+st.updated:'')+(st.at?' read '+f(st.at):''))}catch(e){}

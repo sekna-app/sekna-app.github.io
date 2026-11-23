@@ -75,6 +75,9 @@ async function count(f) { const m = month(); await fsUpdate(USE, d => { d = d ||
 
 // v651 usage per person, limits, Alexandra's notes and her log
 const UU = 'server/ak-users-usage', NOTES = 'server/ak-notes', ALOG = 'server/ak-log';
+// v663 the TikTok page's Alexandra (plat: 'tiktok') keeps her own notes, log and memory and knows only TikTok; Google's are untouched.
+const TTS = b => (b && b.plat === 'tiktok' ? '-tt' : '');
+const TT_RULES = '# TikTok mode\nThis chat is on the TikTok page of HEMERA (TikTok Ads · Human Appeal US, in US dollars). Everything you know here is TikTok: the numbers below are TikTok only. Conversions and value are CTA (click-through) ones, which is what the team works with on TikTok, and ROAS is CTA value ÷ spend. The campaign types are Partnership, Sales, Catalog and Reach (Reach is called Awareness in the sheet). You know nothing about Google Ads on this page: never mention Google Ads numbers, Search, PMax or other Google types; if the person asks about Google, tell them to open the Google page of HEMERA and ask you there.';
 const LIM_DEF = { msgDay: 80, callWeek: 60 }; // messages per day, call minutes per week
 const ekey = e => String(e || '').toLowerCase().replace(/\./g, ',');
 const dayKey = () => new Date(Date.now() + 4 * 36e5).toISOString().slice(0, 10); // Muscat day
@@ -132,12 +135,12 @@ async function xop(b, who, isOwner) {
     if (!o || !o.en) return { ok: false }; o.at = Date.now();
     await fsUpdate(RD, d => { d = d || {}; d[key] = o; Object.keys(d).sort().slice(0, -60).forEach(x => delete d[x]); return d; }).catch(() => {});
     return { ok: true, read: o }; }
-  if (op === 'notes') { const d = (await fsGet(NOTES).catch(() => null)) || {}; return { ok: true, list: (d.list || []).slice(-150).reverse() }; }
+  if (op === 'notes') { const d = (await fsGet(NOTES + TTS(b)).catch(() => null)) || {}; return { ok: true, list: (d.list || []).slice(-150).reverse() }; }
   if (op === 'noteAdd') { const t = String(b.text || '').trim().slice(0, 300); if (!t) return { ok: false };
-    await fsUpdate(NOTES, d => { d = d || {}; const l = d.list = d.list || []; if (!l.slice(-30).some(x => x.t === t)) l.push({ id: 'n' + Date.now().toString(36), t, src: String(b.src || 'Chat').slice(0, 60), by: email, at: Date.now(), done: false }); d.list = l.slice(-300); return d; }); return { ok: true }; }
-  if (op === 'noteSet') { await fsUpdate(NOTES, d => { d = d || {}; (d.list || []).forEach(x => { if (x.id === b.id) { x.done = !!b.done; x.doneBy = email; x.doneAt = Date.now(); } }); return d; }); return xop({ op: 'notes' }, who, isOwner); }
-  if (op === 'logAdd') { const t = String(b.text || '').trim().slice(0, 240); if (t) await fsUpdate(ALOG, d => { d = d || {}; const l = d.list = d.list || []; l.push({ t, by: email, at: Date.now() }); d.list = l.slice(-400); return d; }).catch(() => {}); return { ok: true }; }
-  if (op === 'log') { if (!isOwner) return { ok: false, error: 'Owner only.' }; const d = (await fsGet(ALOG).catch(() => null)) || {}; return { ok: true, list: (d.list || []).slice(-200).reverse() }; }
+    await fsUpdate(NOTES + TTS(b), d => { d = d || {}; const l = d.list = d.list || []; if (!l.slice(-30).some(x => x.t === t)) l.push({ id: 'n' + Date.now().toString(36), t, src: String(b.src || 'Chat').slice(0, 60), by: email, at: Date.now(), done: false }); d.list = l.slice(-300); return d; }); return { ok: true }; }
+  if (op === 'noteSet') { await fsUpdate(NOTES + TTS(b), d => { d = d || {}; (d.list || []).forEach(x => { if (x.id === b.id) { x.done = !!b.done; x.doneBy = email; x.doneAt = Date.now(); } }); return d; }); return xop({ op: 'notes' }, who, isOwner); }
+  if (op === 'logAdd') { const t = String(b.text || '').trim().slice(0, 240); if (t) await fsUpdate(ALOG + TTS(b), d => { d = d || {}; const l = d.list = d.list || []; l.push({ t, by: email, at: Date.now() }); d.list = l.slice(-400); return d; }).catch(() => {}); return { ok: true }; }
+  if (op === 'log') { if (!isOwner) return { ok: false, error: 'Owner only.' }; const d = (await fsGet(ALOG + TTS(b)).catch(() => null)) || {}; return { ok: true, list: (d.list || []).slice(-200).reverse() }; }
   return { ok: false, error: 'Unknown.' };
 }
 
@@ -164,8 +167,8 @@ async function ask(req, res, b, who) {
     hist = hist.filter(x => !(x.role === 'model' && /مش عندي|ليس لدي|don.t have/i.test(x.parts[0].text)));
     q += '\n\n[HEMERA: the live dashboard numbers are in your instructions under "Dashboard numbers". If this is about performance, answer from them and end with [[CARDS]] and the JSON cards. If the answer has no numbers, do not write [[CARDS]] at all.]';
   }
-  const mem = await memGet(email);
-  const sys = (ctx ? '# HEMERA mode\n' + HM_NUM_RULES + '\n\n' : '') + p.base + '\n\n' + SMART_RULES + '\n\n' + CHAT_STYLE + memText(mem) + (ctx ? '\n\n## Dashboard numbers (HEMERA)\n' + ctx : '') + '\n\n=== DATA ===\n' + (p.data || '');
+  const tt = TTS(b), mem = await memGet(email, tt);
+  const sys = (tt ? TT_RULES + '\n\n' : '') + (ctx ? '# HEMERA mode\n' + HM_NUM_RULES + '\n\n' : '') + p.base + '\n\n' + SMART_RULES + '\n\n' + CHAT_STYLE + memText(mem) + (ctx ? '\n\n## Dashboard numbers (HEMERA' + (tt ? ' · TikTok' : '') + ')\n' + ctx : '') + (tt ? '' : '\n\n=== DATA ===\n' + (p.data || ''));
   const deep = DEEP_RE.test(q0) || q0.length > 220;
   const payload = { tools: Date.now() < searchOffUntil ? undefined : [{ google_search: {} }, { url_context: {} }], system_instruction: { parts: [{ text: sys }] }, contents: hist.concat([{ role: 'user', parts: (img ? [{ inline_data: { mime_type: img.mime, data: img.data } }] : []).concat([{ text: q }]) }]),
     // v604 faster written answers: a short think for short questions, a capped one otherwise (the photo keeps the script's setting)
@@ -212,7 +215,7 @@ async function ask(req, res, b, who) {
   } catch (e) { console.error('Alexandra stream: ' + e.message); }
   if (!any) res.write('I could not answer that. Try again.');
   if (srcs.size) res.write('\n[[SOURCES]] ' + JSON.stringify([...srcs].map(([u, t]) => ({ u, t }))));
-  try { await memLearn(email, full); } catch (e) {}
+  try { await memLearn(email, full, tt); } catch (e) {}
   await count(o => { o.n++; });
   await used;
   last.step = 'done'; last.ms = Date.now() - t0;
@@ -356,8 +359,8 @@ async function live(b, who) {
   await count(o => { o.voice = (o.voice || 0) + 1; });
   const c = await conf();
   const ctx = String(b.ctx || '').slice(0, 40000);
-  const vmem = memText(await memGet(email));
-  const sys = (VOICE_RULES + vmem + '\n\n' + p.base + (ctx ? '\n\n## Dashboard numbers (HEMERA)\n' + ctx : '') + '\n\n=== DATA ===\n' + (p.data || '')).slice(0, 160000);
+  const tt = TTS(b), vmem = memText(await memGet(email, tt));
+  const sys = ((tt ? TT_RULES + '\n\n' : '') + VOICE_RULES + vmem + '\n\n' + p.base + (ctx ? '\n\n## Dashboard numbers (HEMERA' + (tt ? ' · TikTok' : '') + ')\n' + ctx : '') + (tt ? '' : '\n\n=== DATA ===\n' + (p.data || ''))).slice(0, 160000);
   return { ok: true, token: j.name, model, voice: c.voice || 'Leda', sys };
 }
 
@@ -416,20 +419,20 @@ const SMART_RULES = `# Thinking and sources
 - If the person tells you something worth remembering for later (a preference, a decision, a target, a fact about the team, the accounts or the campaigns), add one last line: [[REMEMBER]] <the fact in one short sentence>. Only for things that matter later; never for passing questions.
 - If they ask you to forget something, add one last line: [[FORGET]] <a few words of what to forget>.`;
 const MEM = 'server/ak-mem';
-let memCache = null, memAt = 0;
-async function memAll() { if (memCache && Date.now() - memAt < 60000) return memCache; memCache = (await fsGet(MEM).catch(() => null)) || {}; memAt = Date.now(); return memCache; }
-async function memGet(email) { try { const a = (await memAll())[email.replace(/\./g, ',')]; return Array.isArray(a) ? a : []; } catch (e) { return []; } }
+const memC = {};
+async function memAll(tt) { tt = tt || ''; const c = memC[tt]; if (c && Date.now() - c.at < 60000) return c.v; const v = (await fsGet(MEM + tt).catch(() => null)) || {}; memC[tt] = { at: Date.now(), v }; return v; }
+async function memGet(email, tt) { try { const a = (await memAll(tt))[email.replace(/\./g, ',')]; return Array.isArray(a) ? a : []; } catch (e) { return []; } }
 function memText(m) { return m.length ? '\n\n## What you remember about this person (from past chats)\n' + m.slice(-40).map(x => '- ' + x.t + (x.at ? ' (' + new Date(x.at).toISOString().slice(0, 10) + ')' : '')).join('\n') : ''; }
-async function memLearn(email, text) {
+async function memLearn(email, text, tt) {
   const add = [...String(text).matchAll(/\[\[REMEMBER\]\]\s*([^\n\[]{3,240})/g)].map(m => m[1].trim());
   const del = [...String(text).matchAll(/\[\[FORGET\]\]\s*([^\n\[]{2,120})/g)].map(m => m[1].trim().toLowerCase());
   if (!add.length && !del.length) return;
   const k = email.replace(/\./g, ',');
-  await fsUpdate(MEM, d => { d = d || {}; let a = Array.isArray(d[k]) ? d[k] : [];
+  await fsUpdate(MEM + (tt || ''), d => { d = d || {}; let a = Array.isArray(d[k]) ? d[k] : [];
     if (del.length) a = a.filter(x => !del.some(w => w.split(/\s+/).filter(z => z.length > 2).every(z => x.t.toLowerCase().includes(z))));
     add.forEach(t => { if (!a.some(x => x.t === t)) a.push({ t, at: Date.now() }); });
     d[k] = a.slice(-60); return d; });
-  memCache = null;
+  delete memC[tt || ''];
 }
 
 // v609 a search the voice call can ask for: Gemini with Google Search answers in a few lines with its sources (no guessing)
