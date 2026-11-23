@@ -264,6 +264,13 @@ function ttMonths() {
   monthsPending = buildTikTokMonths().then(v => { monthsHeld = { at: Date.now(), v }; monthsPending = null; return v; }, e => { monthsPending = null; if (monthsHeld) return monthsHeld.v; throw e; });
   return monthsPending;
 }
+let snapHeld = null, snapPending = null;
+function ttSnap() {
+  if (snapHeld && Date.now() - snapHeld.at < 5 * 60000) return Promise.resolve(snapHeld.v);
+  if (snapPending) return snapPending;
+  snapPending = buildTikTokSnap().then(v => { snapHeld = { at: Date.now(), v }; snapPending = null; return v; }, e => { snapPending = null; if (snapHeld) return snapHeld.v; throw e; });
+  return snapPending;
+}
 const fn = onRequest({
   region: 'europe-west2', serviceAccount: 'sekna-server@human-appeal-media-plan.iam.gserviceaccount.com',
   memory: '256MiB', cpu: 1, concurrency: 20, minInstances: 0, maxInstances: 3, timeoutSeconds: 60, invoker: 'public'
@@ -277,7 +284,7 @@ const fn = onRequest({
   if (req.method === 'OPTIONS') { res.status(204).send(''); return; }
   const route = String(req.path || '/').replace(/\/+$/, '') || '/';
   if (route === '/ping') { res.json({ ok: true }); return; }
-  if ((route !== '/data' && route !== '/months') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
+  if ((route !== '/data' && route !== '/months' && route !== '/snap') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
   let body = req.body;
   if (!(body && typeof body === 'object' && !Buffer.isBuffer(body))) {
     const text = Buffer.isBuffer(body) ? body.toString('utf8') : typeof body === 'string' ? body : (req.rawBody ? req.rawBody.toString('utf8') : '');
@@ -285,13 +292,36 @@ const fn = onRequest({
   }
   try {
     await assertAccess(body.token);
-    res.json({ ok: true, result: route === '/months' ? await ttMonths() : await ttData(!!body.force) });
+    res.json({ ok: true, result: route === '/months' ? await ttMonths() : route === '/snap' ? await ttSnap() : await ttData(!!body.force) });
   } catch (e) {
     res.json({ ok: false, access: !!(e && (e.access || e.blocked)), error: String((e && e.message) || e).slice(0, 300) });
   }
 });
 
 // The Hijri month of each month, named exactly as Google's sheet does (the app marks 'Ramadan' and 'Dhu Hijjah' by these names).
+/* ---------- Performance Snapshots: the Creatives, Topics & landing pages and Partners tabs, read by their headers ---------- */
+async function buildTikTokSnap() {
+  const meta = await sheetMeta(TT_SHEET_ID);
+  const find = re => meta.sheets.find(s => re.test(String(s.title).trim()));
+  const tabs = [find(/^creatives$/i), find(/^topics/i), find(/^partners$/i)];
+  const vals = await batchGet(TT_SHEET_ID, tabs.map(t => a1(t ? t.title : 'Creatives', 'A1:P400')));
+  const table = (v, map) => {
+    const rows = v || [], head = (rows[0] || []).map(h => String(h || '').trim().toLowerCase());
+    const ix = {}; Object.keys(map).forEach(k => { ix[k] = head.findIndex(h => map[k].some(n => h === n || h.indexOf(n) === 0)); });
+    return rows.slice(1).filter(r => r && r.some(c => c !== '' && c != null)).map(r => {
+      const o = {}; Object.keys(map).forEach(k => { const c = ix[k] >= 0 ? r[ix[k]] : ''; o[k] = c == null ? '' : c; }); return o;
+    });
+  };
+  const N = v => num(v), T = v => String(v == null ? '' : v).trim();
+  const creatives = tabs[0] ? table(vals[0], { name: ['creative'], topic: ['topic'], creator: ['creator'], type: ['type'], campaign: ['campaign'], adgroup: ['ad group'], spend: ['spend'], ctr: ['ctr'], conv: ['conv'], value: ['value'], roas: ['roas'], share: ['share of ad group'], lp: ['landing page'], decision: ['decision'] })
+    .map(o => ({ name: T(o.name), topic: T(o.topic), creator: T(o.creator), type: T(o.type), campaign: T(o.campaign), adgroup: T(o.adgroup), spend: N(o.spend), ctr: N(o.ctr), conv: N(o.conv), value: N(o.value), roas: N(o.roas), share: o.share === '' ? null : N(o.share), lp: T(o.lp), decision: T(o.decision) })).filter(o => o.name) : [];
+  const topics = tabs[1] ? table(vals[1], { topic: ['topic'], spend: ['spend'], conv: ['conv'], value: ['value'], roas: ['roas'], best: ['best landing page'], bestRoas: ['its roas'], tried: ['pages tried'] })
+    .map(o => ({ topic: T(o.topic), spend: N(o.spend), conv: N(o.conv), value: N(o.value), roas: N(o.roas), best: T(o.best), bestRoas: o.bestRoas === '' ? null : N(o.bestRoas), tried: N(o.tried) })).filter(o => o.topic) : [];
+  const partners = tabs[2] ? table(vals[2], { creator: ['creator'], n: ['creatives'], spend: ['spend'], spark: ['spark spend'], repost: ['repost spend'], conv: ['conv'], value: ['value'], roas: ['roas'], best: ['best creative'] })
+    .map(o => ({ creator: T(o.creator), n: N(o.n), spend: N(o.spend), spark: N(o.spark), repost: N(o.repost), conv: N(o.conv), value: N(o.value), roas: N(o.roas), best: T(o.best) })).filter(o => o.creator) : [];
+  return { creatives, topics, partners, at: Date.now() };
+}
+
 const HIJRI_M = ['Muharram', 'Safar', 'Rabi I', 'Rabi II', 'Jumada I', 'Jumada II', 'Rajab', 'Shaban', 'Ramadan', 'Shawwal', 'Dhu Qadah', 'Dhu Hijjah'];
 /** Daily → Same Hijri Day Last Year, from the month history. */
 function lyOf(k, x, hist) {
@@ -306,4 +336,4 @@ function lyOf(k, x, hist) {
   };
 }
 
-module.exports = { buildTikTokData, buildTikTokMonths, TT_CH, TT_SHEET_ID, fn };
+module.exports = { buildTikTokData, buildTikTokMonths, buildTikTokSnap, TT_CH, TT_SHEET_ID, fn };
