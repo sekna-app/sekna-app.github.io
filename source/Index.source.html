@@ -10708,6 +10708,19 @@ body.dark-mode .chg-ver.b{background:#16203a!important;color:#e9eef7!important}b
 .stxa-why{margin-top:10px;background:rgba(8,16,42,.55);border-radius:12px;padding:9px 11px;font-size:13px;line-height:1.5}.stxa-why b{color:#F3D58E}
 /* v656 TikTok in Team Tasks */
 .tk-chip.tt.on{background:#111;color:#fff;box-shadow:-2px 0 0 #25F4EE,2px 0 0 #FE2C55}.tk-tag.tiktok{background:#f0f0f2;color:#111;box-shadow:inset 2px 0 0 #25F4EE,inset -2px 0 0 #FE2C55}
+/* v661 the account card (design C): white, "Google Ads" under the name, and a Google / TikTok switch on US (TikTok opens its own page) */
+body .sk-drawer #accountCurrent{background:#fff!important;color:#0d1b4c!important;border-color:#fff!important}
+body .sk-drawer #accountCurrent b{color:#0d1b4c}
+.sk-drawer #accountCurrent .sk-client-logo.stx-seen::before{background:#c4cad6}
+.sk-account-text .pl-sub{display:block;font-size:11px;font-weight:700;color:#5b6684;margin-top:1px}
+.sk-account.has-pl .sk-account-current{padding-right:92px}
+.sk-account.has-pl .sk-chevron{display:none}
+.pl-sw{position:absolute;right:9px;top:31px;transform:translateY(-50%);display:flex;gap:5px;background:#eef1f8;border-radius:99px;padding:4px;z-index:3}
+.pl-sw[hidden]{display:none}
+.pl-sw button,.pl-sw a{width:30px;height:30px;border:0;padding:0;border-radius:50%;background:transparent;cursor:pointer;display:grid;place-items:center}
+.pl-sw img{width:26px;height:26px;border-radius:50%;opacity:.38;filter:grayscale(1)}
+.pl-sw .on img{opacity:1;filter:none}
+.pl-sw .on{box-shadow:0 0 0 2px #fff,0 0 0 4px #0d1b4c;cursor:default}
 </style>
 </head>
 <body>
@@ -10856,12 +10869,13 @@ body.dark-mode .chg-ver.b{background:#16203a!important;color:#e9eef7!important}b
   </div>
 
   <div class="sk-section-label">Client account</div>
-  <div class="sk-account" id="accountPicker">
+  <div class="sk-account has-pl" id="accountPicker">
     <button class="sk-account-current" id="accountCurrent" type="button" onclick="toggleAccountMenu()" aria-haspopup="listbox" aria-expanded="false">
       <span class="sk-client-logo"><img data-client-logo alt=""></span>
-      <span class="sk-account-text"><b id="accountCurrentName">Human Appeal US</b></span>
+      <span class="sk-account-text"><b id="accountCurrentName">Human Appeal US</b><small class="pl-sub">Google Ads</small></span>
       <svg class="sk-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
     </button>
+    <div class="pl-sw" id="platSw" role="group" aria-label="Platform"><button type="button" class="on" aria-pressed="true" aria-label="Google Ads" title="Google Ads"><img src="icons/alexandra/logo-google.png?v=3" alt=""></button><a href="/tiktok/" aria-label="TikTok" title="TikTok"><img src="icons/alexandra/logo-tiktok.png?v=3" alt=""></a></div>
     <div class="sk-account-menu" id="accountMenu" role="listbox" aria-label="Select client account">
       <button class="sk-account-option" type="button" role="option" data-account="usa" onclick="pickAccount('usa')"><span class="sk-client-logo"><img data-client-logo alt=""></span><span class="sk-account-text"><b>Human Appeal US</b><small class="stx-sub" data-stx="usa"></small></span><svg class="sk-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
       <button class="sk-account-option" type="button" role="option" data-account="ar" onclick="pickAccount('ar')"><span class="sk-client-logo"><img data-client-logo alt=""></span><span class="sk-account-text"><b>Human Appeal AR</b><small class="stx-sub" data-stx="ar"></small></span><svg class="sk-check" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
@@ -12766,6 +12780,8 @@ function pickAccount(key){
 function updateAccountPicker(a){
  text('accountCurrentName',a.label);
  text('accountCurrentSub',a.dashboardTitle);
+ // v661 the Google / TikTok switch (TikTok is only a link to its own page) shows on US only
+ {const w=document.getElementById('platSw'),pk=document.getElementById('accountPicker');if(w)w.hidden=a.key==='ar';if(pk)pk.classList.toggle('has-pl',a.key!=='ar')}
  document.querySelectorAll('.sk-account-option').forEach(opt=>{
    const on=opt.dataset.account===a.key;
    opt.classList.toggle('selected',on);
