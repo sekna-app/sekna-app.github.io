@@ -10873,6 +10873,8 @@ body.dark-mode .chg-ver.b{background:#16203a!important;color:#e9eef7!important}b
 .stxa-cd{display:inline-block;margin-top:10px;background:rgba(8,16,42,.78);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:9px 13px;min-width:62%}
 .stxa-cd small{display:block;font-size:9.5px;font-weight:900;letter-spacing:.14em;color:#E2B874}.stxa-cd b{font-size:24px;font-weight:900}.stxa-cd em{font-style:normal;font-size:12px;font-weight:800;margin-left:6px;color:#c9d3f5}.stxa-cd em.up{color:#5fd99a}.stxa-cd em.dn{color:#ff8f8f}
 .stxa-why{margin-top:10px;background:rgba(8,16,42,.55);border-radius:12px;padding:9px 11px;font-size:13px;line-height:1.5}.stxa-why b{color:#F3D58E}
+/* v656 TikTok in Team Tasks */
+.tk-chip.tt.on{background:#111;color:#fff;box-shadow:-2px 0 0 #25F4EE,2px 0 0 #FE2C55}.tk-tag.tiktok{background:#f0f0f2;color:#111;box-shadow:inset 2px 0 0 #25F4EE,inset -2px 0 0 #FE2C55}
 </style>
 </head>
 <body>
@@ -19461,7 +19463,7 @@ function tkTags(t){
  const d=t.data||{},out=[];
  if((d.days||[]).length)out.push(`<span class="tk-tag days">📅 ${d.days.length>4?d.days.length+' days':'Day '+d.days.join(', ')}</span>`);
  out.push(tkAccTxt(tkAccs(d)));
- (d.platforms||[]).forEach(p=>out.push(`<span class="tk-tag ${p}">${p==='google'?'Google':p==='openai'?'OpenAI':'Microsoft'}</span>`));
+ (d.platforms||[]).forEach(p=>out.push(`<span class="tk-tag ${p}">${p==='google'?'Google':p==='openai'?'OpenAI':p==='tiktok'?'TikTok':'Microsoft'}</span>`));
  return out.join('');
 }
 function tkSnaps(t){const s=(t.data&&t.data.snaps)||[];return s.length?`<div class="tk-snaps">${s.map(x=>`<span>${TK_CAM}${esc(x.n)}${x.t?` · <b>${esc(x.t)}</b>`:''}</span>`).join('')}</div>`:''}
@@ -19756,7 +19758,7 @@ function tkBuildHtml(){
  const rows=Object.keys(by).sort((a,b)=>roleTier(tkPerson(b).role)-roleTier(tkPerson(a).role)||tkPerson(a).name.localeCompare(tkPerson(b).name)).map((e,i)=>{const p=tkPerson(e),list=by[e],open=TK.bOpen===e,n=snapN(list);
    return `<div class="b4-row${open?' open':''}" style="--i:${i}"><button type="button" class="b4-h" onclick="tkBOpen('${esc(e)}')">${tkAv(p)}<div class="b4-n"><b>${esc(p.name)}</b><div class="b4-c"><span class="tk-tag">${list.length} task${list.length>1?'s':''}</span>${n?`<span class="tk-tag snap">${TK_CAM}${n}</span>`:''}${tkAccTxt(accOf(list))}</div></div><span class="b4-cv">›</span></button>
      ${open?`<div class="b4-d">${list.map(t=>`<div class="b4-t"><div class="b4-tt"><b>${esc(t.title)}</b><button type="button" class="tk-ed" onclick="tkEdit('${t.id}')" aria-label="Edit">✎</button></div>
-       <div class="tk-tags">${tkAccTxt(tkAccs(t.data))}${(t.data.platforms||[]).map(x=>`<span class="tk-tag ${x}">${x==='google'?'Google':x==='openai'?'OpenAI':'Microsoft'}</span>`).join('')}${t.weeks.length===4?'<span class="tk-tag all">All weeks</span>':`<span class="tk-tag">W${t.weeks.join(', W')}</span>`}</div>
+       <div class="tk-tags">${tkAccTxt(tkAccs(t.data))}${(t.data.platforms||[]).map(x=>`<span class="tk-tag ${x}">${x==='google'?'Google':x==='openai'?'OpenAI':x==='tiktok'?'TikTok':'Microsoft'}</span>`).join('')}${t.weeks.length===4?'<span class="tk-tag all">All weeks</span>':`<span class="tk-tag">W${t.weeks.join(', W')}</span>`}</div>
        ${tkSnaps(t)}${t.data&&t.data.msg?`<div class="tk-msg">💬 ${esc(t.data.msg)}</div>`:''}</div>`).join('')}</div>`:''}</div>`}).join('');
  const empty=ts.length?'':`<div class="tk-empty"><b>No tasks for week ${w} yet</b><small>Add the first one below.</small></div>`;
  return `<div class="tk-mw">${TK._mo||''}${weeks}</div>${copy}${sum}${rows}${empty}
@@ -19916,7 +19918,7 @@ function tkForm(keep,stay){
    ${q?`<div class="tq-who${bad('email')?' tk-bad':''}"><div class="tq-q">Who is it for?</div><div class="tq-ppl">${tkPeople().map(p=>`<button type="button" class="${f.email===p.email?'on':''}" onclick="tkF('email','${esc(p.email)}')">${tkAv(p)}<span>${esc(p.name.split(' ')[0])}</span>${tkPeople().filter(x=>x.name.split(' ')[0]===p.name.split(' ')[0]).length>1?`<small>${esc(p.email.split('@')[0].slice(0,12))}</small>`:''}</button>`).join('')||'<small>No approved people yet.</small>'}</div></div>`:`<label class="tk-l">For</label><div class="tk-people${bad('email')?' tk-bad':''}">${people||'<small>No approved people yet.</small>'}</div>`}
    ${q?`<label class="tk-l">Deadline <small>optional</small></label>${tkDlPicker(f)}${tkQuickWarn(f)}${tkPhField(f)}`:`
    <label class="tk-l">Account <small>one or both</small></label><div class="tk-row">${['usa','ar'].map(a=>chip(f.data.accounts.includes(a),`${tkHaLogo()?`<img class="tk-ha" src="${tkHaLogo()}" alt="">`:''}HA-${a.toUpperCase()}${f.data.accounts.includes(a)?'<i class="tk-ck">✓</i>':''}`,`tkF('account','${a}')`,'acc')).join('')}</div>
-   ${f.data.accounts.length?`<label class="tk-l">Platform</label><div class="tk-row">${chip(f.data.platforms.includes('google'),'Google',`tkF('platform','google')`,'g')}${chip(f.data.platforms.includes('microsoft'),'Microsoft',`tkF('platform','microsoft')`,'m')}${chip(f.data.platforms.includes('openai'),'OpenAI',`tkF('platform','openai')`,'o')}</div>`:''}
+   ${f.data.accounts.length?`<label class="tk-l">Platform</label><div class="tk-row">${chip(f.data.platforms.includes('google'),'Google',`tkF('platform','google')`,'g')}${chip(f.data.platforms.includes('microsoft'),'Microsoft',`tkF('platform','microsoft')`,'m')}${chip(f.data.platforms.includes('openai'),'OpenAI',`tkF('platform','openai')`,'o')}${chip(f.data.platforms.includes('tiktok'),'TikTok',`tkF('platform','tiktok')`,'tt')}</div>`:''}
    <label class="tk-l">Snapshots <small>Egypt time</small></label>${snaps}
    <datalist id="tkSnapList">${TK_SNAP_SUGGEST.map(s=>`<option value="${s}">`).join('')}</datalist>
    <label class="tk-l">Weeks</label><div class="tk-row">${[1,2,3,4].map(w=>chip(f.weeks.includes(w),`W${w}<small>${esc(tkRange(TK.month,w))}</small>`,`tkF('weeks',${w})`,'w')).join('')}${chip(f.weeks.length===4&&!(f.data.days||[]).length,'All 4',`tkF('weeks','all')`)}${chip(f.daysOn||(f.data.days||[]).length,'📅 Pick days',`tkF('daysOn')`)}</div>

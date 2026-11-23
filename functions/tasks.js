@@ -248,7 +248,7 @@ const T = {
     if (!title) throw new Error('Give the task a name.');
     const clean = {
       accounts: (Array.isArray(d.accounts) ? d.accounts : [d.account]).filter((x, i, all) => (x === 'usa' || x === 'ar') && all.indexOf(x) === i),
-      platforms: (Array.isArray(d.platforms) ? d.platforms : []).filter(p => p === 'google' || p === 'microsoft' || p === 'openai'),
+      platforms: (Array.isArray(d.platforms) ? d.platforms : []).filter(p => p === 'google' || p === 'microsoft' || p === 'openai' || p === 'tiktok'),
       snaps: (Array.isArray(d.snaps) ? d.snaps : []).slice(0, 12).map(s => ({ n: String((s && s.n) || '').trim().slice(0, 60), t: String((s && s.t) || '').slice(0, 10) })).filter(s => s.n),
       msg: String(d.msg || '').trim().slice(0, 600),
       days: (Array.isArray(d.days) ? d.days : []).map(Number).filter((n, i, all) => n >= 1 && n <= 31 && Math.round(n) === n && all.indexOf(n) === i).sort((x, y) => x - y)
@@ -411,7 +411,7 @@ const T = {
       const p = people[email] || { name: email.split('@')[0] };
       const list = mine[email].map(t => {
         const d = t.data || {};
-        const tags = [(d.accounts || (d.account ? [d.account] : [])).map(x => 'HA-' + x.toUpperCase()).join(' + '), (d.platforms || []).map(x => x === 'google' ? 'Google' : 'Microsoft').join(' + ')].filter(Boolean).join(' · ');
+        const tags = [(d.accounts || (d.account ? [d.account] : [])).map(x => 'HA-' + x.toUpperCase()).join(' + '), (d.platforms || []).map(x => x === 'google' ? 'Google' : x === 'openai' ? 'OpenAI' : x === 'tiktok' ? 'TikTok' : 'Microsoft').join(' + ')].filter(Boolean).join(' · ');
         const snaps = (d.snaps || []).map(s => '<li style="margin:2px 0">' + esc(s.n) + (s.t ? ' — <b>' + esc(s.t) + '</b> Egypt time' : '') + '</li>').join('');
         const days = (d.days || []).filter(n => n >= from && n <= to);
         return '<div style="border:1px solid #e6eaf4;border-radius:12px;padding:12px 14px;margin:0 0 10px">' +
