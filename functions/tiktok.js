@@ -235,7 +235,7 @@ async function buildTikTokData() {
     },
     weekly, channels, daily, dayPlan, dayChannels,
     history: Object.keys(hist.months).sort().map(mk => { const m = hist.months[mk], h = hijriNum(mk + '-15');
-      return { month: mk, hijri: HIJRI_M[h.m - 1] + ' ' + h.y, cost: m.spend, value: m.value, conversions: m.conversions, roas: div(m.value, m.spend), partial: mk === monthKey }; }).filter(x => x.cost || x.value || x.conversions),
+      return { month: mk, hijri: HIJRI_M[h.m - 1], cost: m.spend, value: m.value, conversions: m.conversions, roas: div(m.value, m.spend), partial: mk === monthKey }; }).filter(x => x.cost || x.value || x.conversions),
     bestWorst: null,
     // Top projects: empty until they come from the landing pages.
     topProjects: [], topProjectsDay: '',
@@ -291,7 +291,8 @@ const fn = onRequest({
   }
 });
 
-const HIJRI_M = ['Muharram', 'Safar', 'Rabi I', 'Rabi II', 'Jumada I', 'Jumada II', 'Rajab', 'Shaban', 'Ramadan', 'Shawwal', 'Dhul Qadah', 'Dhul Hijjah'];
+// The Hijri month of each month, named exactly as Google's sheet does (the app marks 'Ramadan' and 'Dhu Hijjah' by these names).
+const HIJRI_M = ['Muharram', 'Safar', 'Rabi I', 'Rabi II', 'Jumada I', 'Jumada II', 'Rajab', 'Shaban', 'Ramadan', 'Shawwal', 'Dhu Qadah', 'Dhu Hijjah'];
 /** Daily → Same Hijri Day Last Year, from the month history. */
 function lyOf(k, x, hist) {
   const ly = sameHijriLastYear(k), d = ly ? hist.days[ly] : null;
