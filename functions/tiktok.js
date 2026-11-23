@@ -271,6 +271,13 @@ function ttSnap() {
   snapPending = buildTikTokSnap().then(v => { snapHeld = { at: Date.now(), v }; snapPending = null; return v; }, e => { snapPending = null; if (snapHeld) return snapHeld.v; throw e; });
   return snapPending;
 }
+let acctHeld = null, acctPending = null;
+function ttAcct() {
+  if (acctHeld && Date.now() - acctHeld.at < 5 * 60000) return Promise.resolve(acctHeld.v);
+  if (acctPending) return acctPending;
+  acctPending = buildTikTokAcct().then(v => { acctHeld = { at: Date.now(), v }; acctPending = null; return v; }, e => { acctPending = null; if (acctHeld) return acctHeld.v; throw e; });
+  return acctPending;
+}
 const fn = onRequest({
   region: 'europe-west2', serviceAccount: 'sekna-server@human-appeal-media-plan.iam.gserviceaccount.com',
   memory: '256MiB', cpu: 1, concurrency: 20, minInstances: 0, maxInstances: 3, timeoutSeconds: 60, invoker: 'public'
@@ -284,7 +291,7 @@ const fn = onRequest({
   if (req.method === 'OPTIONS') { res.status(204).send(''); return; }
   const route = String(req.path || '/').replace(/\/+$/, '') || '/';
   if (route === '/ping') { res.json({ ok: true }); return; }
-  if ((route !== '/data' && route !== '/months' && route !== '/snap') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
+  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
   let body = req.body;
   if (!(body && typeof body === 'object' && !Buffer.isBuffer(body))) {
     const text = Buffer.isBuffer(body) ? body.toString('utf8') : typeof body === 'string' ? body : (req.rawBody ? req.rawBody.toString('utf8') : '');
@@ -292,7 +299,7 @@ const fn = onRequest({
   }
   try {
     await assertAccess(body.token);
-    res.json({ ok: true, result: route === '/months' ? await ttMonths() : route === '/snap' ? await ttSnap() : await ttData(!!body.force) });
+    res.json({ ok: true, result: route === '/months' ? await ttMonths() : route === '/snap' ? await ttSnap() : route === '/acct' ? await ttAcct() : await ttData(!!body.force) });
   } catch (e) {
     res.json({ ok: false, access: !!(e && (e.access || e.blocked)), error: String((e && e.message) || e).slice(0, 300) });
   }
@@ -322,6 +329,36 @@ async function buildTikTokSnap() {
   return { creatives, topics, partners, at: Date.now() };
 }
 
+/* ---------- Account Health: Account & policy, QA & naming (Ad Checks) and the Issues log ---------- */
+async function buildTikTokAcct() {
+  const meta = await sheetMeta(TT_SHEET_ID);
+  const find = re => meta.sheets.find(s => re.test(String(s.title).trim()));
+  const tabs = [find(/^account/i), find(/^qa/i), find(/^issues/i)];
+  const vals = await batchGet(TT_SHEET_ID, tabs.map(t => a1(t ? t.title : 'Guide', 'A1:H800')), true);
+  const T = v => String(v == null ? '' : v).trim();
+  const rowsOf = v => (v || []).map(r => (r || []).map(T)).filter(r => r.some(c => c));
+  // Account & policy: the account table, then the ads table (or one line saying none is rejected)
+  const A = rowsOf(tabs[0] ? vals[0] : []), account = {}, ads = []; let note = '';
+  if (A.length) {
+    const h1 = A[0].map(x => x.toLowerCase()), r1 = A[1] || [];
+    h1.forEach((h, i) => { if (h) account[h] = r1[i] || ''; });
+    const at = A.findIndex((r, i) => i > 1 && /^ad$/i.test(r[0]));
+    if (at > 0) {
+      const h2 = A[at].map(x => x.toLowerCase());
+      A.slice(at + 1).forEach(r => { if (r.slice(1).every(c => !c)) note = note || r[0]; else { const o = {}; h2.forEach((h, i) => { if (h) o[h] = r[i] || ''; }); ads.push(o); } });
+    }
+  }
+  const tbl = (v, map) => { const R = rowsOf(v), head = (R[0] || []).map(h => h.toLowerCase());
+    const ix = {}; Object.keys(map).forEach(k => { ix[k] = head.findIndex(h => map[k].some(n => h === n || h.indexOf(n) === 0)); });
+    return R.slice(1).map(r => { const o = {}; Object.keys(map).forEach(k => { o[k] = ix[k] >= 0 ? (r[ix[k]] || '') : ''; }); return o; }); };
+  const checks = tabs[1] ? tbl(vals[1], { ad: ['ad'], campaign: ['campaign'], adgroup: ['ad group'], created: ['created'], problems: ['problems'], id: ['ad id'] }).filter(o => o.ad) : [];
+  const issues = tabs[2] ? tbl(vals[2], { found: ['found'], type: ['type'], ads: ['ad(s)', 'ads'], what: ['description'], owner: ['owner'], fixed: ['fixed'], fixedOn: ['fixed on'] }).filter(o => o.type || o.what) : [];
+  return {
+    account: { name: account.account || '', status: account.status || '', balance: num(account.balance), currency: account.currency || 'USD', opened: account.opened || '', checked: account['checked on'] || '' },
+    rejected: ads, note, checks, issues, at: Date.now()
+  };
+}
+
 const HIJRI_M = ['Muharram', 'Safar', 'Rabi I', 'Rabi II', 'Jumada I', 'Jumada II', 'Rajab', 'Shaban', 'Ramadan', 'Shawwal', 'Dhu Qadah', 'Dhu Hijjah'];
 /** Daily → Same Hijri Day Last Year, from the month history. */
 function lyOf(k, x, hist) {
@@ -336,4 +373,4 @@ function lyOf(k, x, hist) {
   };
 }
 
-module.exports = { buildTikTokData, buildTikTokMonths, buildTikTokSnap, TT_CH, TT_SHEET_ID, fn };
+module.exports = { buildTikTokData, buildTikTokMonths, buildTikTokSnap, buildTikTokAcct, TT_CH, TT_SHEET_ID, fn };

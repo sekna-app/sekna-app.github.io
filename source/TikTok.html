@@ -10752,6 +10752,15 @@ body.dark-mode .channel-icon.tt-partnership,body.dark-mode .channel-icon.tt-sale
 .tts-retry{margin-top:10px;border:0;border-radius:12px;background:#203C8E;color:#fff;font:inherit;font-weight:800;padding:8px 16px;cursor:pointer}
 @media (min-width:1100px){.tts-grid{grid-template-columns:repeat(4,1fr)}}
 body.dark-mode .tts-tr{border-color:#26326A}body.dark-mode .tts-tr b,body.dark-mode .tts-kv b{color:#E7EBF3}body.dark-mode .tts-tr.open,body.dark-mode .tts-more{background:#1b2656}
+/* TikTok · Account Health */
+.tta-chk{padding:4px 14px!important;border-radius:18px}
+.tta-cr{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid #EEF1F6;font-size:13px;font-weight:700;color:#6B7385}.tta-cr:first-child{border:0}.tta-cr span{flex:1}.tta-cr b{color:#141B33;font-weight:900;font-variant-numeric:tabular-nums}
+.tta-ck{font-style:normal;width:28px;height:28px;flex:0 0 28px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:900}.tta-ck svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.tta-ck.g{background:#E3F6EC;color:#13804F}.tta-ck.r{background:#FBDDE1;color:#C63A4A}.tta-ck.n{background:#EEF2FB;color:#203C8E}
+.tta-fine{text-transform:none;letter-spacing:0;font-size:12px;color:#13804F;font-weight:800}
+.tta-seg{display:flex;background:#E9ECF4;border-radius:12px;padding:3px;margin-bottom:10px}.tta-seg button{flex:1;border:0;background:transparent;font:inherit;font-size:12px;font-weight:800;padding:8px 0;border-radius:9px;color:#6B7385;cursor:pointer}.tta-seg button.on{background:#203C8E;color:#fff}
+.tts-tr.tta-tr{grid-template-columns:1fr auto}.tta-1l small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tta-tr .tts-chip{margin:0;max-width:128px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+body.dark-mode .tta-cr{border-color:#26326A}body.dark-mode .tta-cr b{color:#E7EBF3}body.dark-mode .tta-seg{background:#1b2656}
 </style>
 </head>
 <body class="plat-tt">
@@ -10928,6 +10937,13 @@ body.dark-mode .tts-tr{border-color:#26326A}body.dark-mode .tts-tr b,body.dark-m
     <button class="sk-nav-btn" id="ttcrTabBtn" type="button" onclick="switchDashboardTab('ttcr')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="13" height="14" rx="2.5"/><path d="M16.5 10l4-2.5v9l-4-2.5"/></svg></span><span>Creatives</span></button>
     <button class="sk-nav-btn" id="tttpTabBtn" type="button" onclick="switchDashboardTab('tttp')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><path d="M14 17h6M17 14v6"/></svg></span><span>Topics &amp; Landing Pages</span></button>
     <button class="sk-nav-btn" id="ttpaTabBtn" type="button" onclick="switchDashboardTab('ttpa')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M2.5 20a5.5 5.5 0 0 1 11 0M10.5 20a5.5 5.5 0 0 1 11 0"/></svg></span><span>Partners</span></button>
+  </nav></div>
+
+  <button class="sk-grp" type="button" data-grp="ah" onclick="navGroup('ah')" aria-expanded="false"><span class="sk-gt"><b>Account Health</b><small class="sk-gn"></small></span><svg class="sk-gchev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+  <div class="sk-grp-body" id="grp-ah"><nav class="sk-nav" aria-label="Account Health">
+    <button class="sk-nav-btn" id="ttacTabBtn" type="button" onclick="switchDashboardTab('ttac')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></span><span>Account &amp; Policy</span></button>
+    <button class="sk-nav-btn" id="ttqaTabBtn" type="button" onclick="switchDashboardTab('ttqa')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M3.5 6l1.5 1.5L7.5 5M3.5 12l1.5 1.5 2.5-2.5M3.5 18l1.5 1.5 2.5-2.5"/></svg></span><span>Ad Checks</span></button>
+    <button class="sk-nav-btn" id="ttisTabBtn" type="button" onclick="switchDashboardTab('ttis')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.1"/></svg></span><span>Issues Log</span></button>
   </nav></div>
 
   <button class="sk-grp" type="button" data-grp="ai" onclick="navGroup('ai')" aria-expanded="false"><span class="sk-gt"><b>AI Reports</b><small class="sk-gn"></small></span><svg class="sk-gchev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
@@ -11501,6 +11517,9 @@ body.dark-mode .tts-tr{border-color:#26326A}body.dark-mode .tts-tr b,body.dark-m
 
   <div class="tab-panel" id="seasonsPanel"><div class="ss" id="ssBody"></div></div>
 
+  <div class="tab-panel" id="ttacPanel"><div id="ttacBody" class="tts"></div></div>
+  <div class="tab-panel" id="ttqaPanel"><div id="ttqaBody" class="tts"></div></div>
+  <div class="tab-panel" id="ttisPanel"><div id="ttisBody" class="tts"></div></div>
   <div class="tab-panel" id="ttcrPanel"><div id="ttcrBody" class="tts"></div></div>
   <div class="tab-panel" id="tttpPanel"><div id="tttpBody" class="tts"></div></div>
   <div class="tab-panel" id="ttpaPanel"><div id="ttpaBody" class="tts"></div></div>
@@ -11750,7 +11769,7 @@ function tbLive(d){
  else{const m=String((d&&d.generatedAt)||'').match(/^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/);if(m){const h=+m[4];when=` · ${h%12||12}:${m[5]} ${h<12?'AM':'PM'}`}}
  el.innerHTML=`<span class="tb-live"><span class="tb-l1"><span class="tb-dot"></span>Live${when}</span>${when&&ms&&tzName()?`<small class="tb-tz">${esc(tzName())}</small>`:''}</span>`;
 }
-const PAGE_NAMES={overview:'Daily Performance',days:'Day by Day Performance',channel:'Monthly Progress',lab:'Media Plan Lab',plans:'Plan Performance History',ranks:'Top & Bottom 5',ttcr:'Creatives',tttp:'Topics & Landing Pages',ttpa:'Partners',terms:'Search Terms',camp:'Campaign Performance',chg:'Did it work?',months:'Reports Studio',seasons:'Seasons Calendar'};
+const PAGE_NAMES={overview:'Daily Performance',days:'Day by Day Performance',channel:'Monthly Progress',lab:'Media Plan Lab',plans:'Plan Performance History',ranks:'Top & Bottom 5',ttcr:'Creatives',tttp:'Topics & Landing Pages',ttpa:'Partners',ttac:'Account & Policy',ttqa:'Ad Checks',ttis:'Issues Log',terms:'Search Terms',camp:'Campaign Performance',chg:'Did it work?',months:'Reports Studio',seasons:'Seasons Calendar'};
 
 function setPageTitle(){
  const el=document.getElementById('pgTitle');if(!el)return;
@@ -11810,7 +11829,7 @@ function showSettingsToast(message){
 }
 
 
-const NAV_GRP={mp:false,ps:false,ai:false,tt:false};
+const NAV_GRP={mp:false,ps:false,ah:false,ai:false,tt:false};
 function navGroupState(){return NAV_GRP}
 function navGroupApply(){
  const st=navGroupState();
@@ -12972,11 +12991,11 @@ function switchAccount(accountKey){
  }
 }
 
-const DASH_TABS=['overview','days','channel','ttcr','tttp','ttpa','lab','plans','ranks','terms','camp','chg','months','seasons'];
+const DASH_TABS=['overview','days','channel','ttcr','tttp','ttpa','ttac','ttqa','ttis','lab','plans','ranks','terms','camp','chg','months','seasons'];
 let SWIPE_FROM='';
 
 function setFooter(){
- const g=['ranks','terms','camp','chg','ttcr','tttp','ttpa'].includes(CURRENT_TAB)?'Performance Snapshots':['months','seasons'].includes(CURRENT_TAB)?'AI Report':'Media Plan';
+ const g=['ttac','ttqa','ttis'].includes(CURRENT_TAB)?'Account Health':['ranks','terms','camp','chg','ttcr','tttp','ttpa'].includes(CURRENT_TAB)?'Performance Snapshots':['months','seasons'].includes(CURRENT_TAB)?'AI Report':'Media Plan';
  text('dashboardFooter','HEMERA · '+g+' '+(accountMeta(DASH_DATA||{}).shortLabel||CURRENT_ACCOUNT.toUpperCase()));
  try{tabArrows()}catch(e){} 
 }
@@ -13019,7 +13038,7 @@ function bbCloseAll(){
 function bbGo(k){bbCloseAll();switchDashboardTab(k);window.scrollTo(0,0)}
 
 
-const DK_GRP=[['mp','Media Plan','<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>'],['ps','Performance Snapshots','<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'],['ai','AI Reports','<path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/>'],['tt','Team Tasks','<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>']];
+const DK_GRP=[['mp','Media Plan','<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>'],['ps','Performance Snapshots','<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'],['ah','Account Health','<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>'],['ai','AI Reports','<path d="M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2z"/>'],['tt','Team Tasks','<path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/>']];
 const DK={g:null,act:''};
 const dkSvg=p=>`<svg viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
 function dkBtns(g){const b=document.getElementById('grp-'+g);return b?[...b.querySelectorAll('.sk-nav-btn')].filter(x=>!x.hidden&&getComputedStyle(x).display!=='none'):[]}
@@ -14354,6 +14373,7 @@ function renderExtraTab(d){
  else if(CURRENT_TAB==='plans')renderPlanHistory();
  else if(CURRENT_TAB==='seasons')renderSeasons();
  else if(CURRENT_TAB==='ttcr'||CURRENT_TAB==='tttp'||CURRENT_TAB==='ttpa')ttSnapDraw();
+ else if(CURRENT_TAB==='ttac'||CURRENT_TAB==='ttqa'||CURRENT_TAB==='ttis')ttAcDraw();
 }
 
  
@@ -19204,14 +19224,14 @@ function myPerms(){
 }
 
 const VIEW_KEYS=['overview','days','channel','plans','ranks','camp','months','seasons','ask','team','mine','leaveview','notifs','updates','about','share'];
-function canDo(k){if(['lab','plans','ranks','terms','camp','chg'].indexOf(k)>=0)return false;const p=myPerms();if(k==='terms'||k==='ttcr'||k==='tttp'||k==='ttpa')k='ranks';if(k==='chg')k='camp'; 
+function canDo(k){if(['lab','plans','ranks','terms','camp','chg'].indexOf(k)>=0)return false;const p=myPerms();if(k==='terms'||k==='ttcr'||k==='tttp'||k==='ttpa'||k==='ttac'||k==='ttqa'||k==='ttis')k='ranks';if(k==='chg')k='camp'; 
  if(k==='lab')return p.lab===true||p.lab==='view';return k in p?p[k]===true:VIEW_KEYS.includes(k)}
 
 function labEdit(){return myPerms().lab===true}
 
 function isLocked(k){return myPerms()[k]==='lock'}
 
-const MENU_PERM=[['overviewTabBtn','overview'],['daysTabBtn','days'],['channelTabBtn','channel'],['ttcrTabBtn','ttcr'],['tttpTabBtn','tttp'],['ttpaTabBtn','ttpa'],['labTabBtn','lab'],['plansTabBtn','plans'],['ranksTabBtn','ranks'],['termsTabBtn','terms'],['campTabBtn','camp'],['chgTabBtn','chg'],['monthsTabBtn','months'],['seasonsTabBtn','seasons'],['askNavBtn','ask'],
+const MENU_PERM=[['overviewTabBtn','overview'],['daysTabBtn','days'],['channelTabBtn','channel'],['ttcrTabBtn','ttcr'],['tttpTabBtn','tttp'],['ttpaTabBtn','ttpa'],['ttacTabBtn','ttac'],['ttqaTabBtn','ttqa'],['ttisTabBtn','ttis'],['labTabBtn','lab'],['plansTabBtn','plans'],['ranksTabBtn','ranks'],['termsTabBtn','terms'],['campTabBtn','camp'],['chgTabBtn','chg'],['monthsTabBtn','months'],['seasonsTabBtn','seasons'],['askNavBtn','ask'],
  ['ttTeamBtn','team'],['ttMineBtn','mine'],['ttBuildBtn','build'],['ttLeaveBtn','leaveview'],['ttQuickBtn','quick'],['nfNavBtn','notifs'],['updatesNavBtn','updates'],['aboutNavBtn','about'],['adminNavBtn','admin']];
 function lockSheet(name){
  let o=document.getElementById('lockSheet');
@@ -23667,6 +23687,50 @@ function ttSnapDraw(){
   host.innerHTML=`<div class="tts-sub">Each creator · Spark against Repost · last 30 days</div>${P.map(p=>{const t=(p.spark+p.repost)||1;
    return `<div class="card tts-pa"><span class="tts-av">${esc((p.creator||'?').charAt(0).toUpperCase())}</span><div class="tts-pt"><b>${esc(p.creator)}</b><div class="tts-split"><i style="width:${(p.spark/t*100).toFixed(0)}%"></i></div><small>Spark ${money(p.spark)} · Repost ${money(p.repost)}</small></div><em class="${p.roas>=2?'g':p.roas<1?'r':''}">${ttRo(p.roas)}</em></div>`}).join('')}
    <div class="tts-note">Navy = Spark · gold = Repost</div>`;
+ }
+}
+
+ 
+let TTA={data:null,busy:false,err:'',all:false,open:''};
+function ttAcLoad(force){
+ if(TTA.busy||(TTA.data&&!force&&Date.now()-TTA.data.got<5*6e4))return;TTA.busy=true;TTA.err='';
+ fetch(TT_API+'/acct',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken()})})
+  .then(x=>{if(!x.ok)throw new Error('The TikTok server did not answer ('+x.status+').');return x.json()})
+  .then(j=>{if(!(j&&j.ok&&j.result))throw new Error((j&&j.error)||'The TikTok server did not answer.');TTA.data=Object.assign(j.result,{got:Date.now()})})
+  .catch(e=>{TTA.err=errorText(e)}).finally(()=>{TTA.busy=false;if(['ttac','ttqa','ttis'].includes(CURRENT_TAB))ttAcDraw()});
+}
+function ttDay(v){const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(v||''));return m?new Date(Date.UTC(+m[1],+m[2]-1,+m[3])).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}):esc(String(v||''))}
+function ttAcOpen(k){TTA.open=TTA.open===k?'':k;ttAcDraw()}
+function ttAcAll(v){TTA.all=v;TTA.open='';ttAcDraw()}
+const TT_OK=v=>/^ok$/i.test(String(v||'').trim());
+function ttAcDraw(){
+ const host=document.getElementById(CURRENT_TAB+'Body');if(!host)return;
+ const D=TTA.data;ttAcLoad();
+ if(!D){host.innerHTML=TTA.err?`<div class="card section"><div class="dx-empty">${esc(TTA.err)}<br><button type="button" class="tts-retry" onclick="ttAcLoad(true);ttAcDraw()">Try again</button></div></div>`:'<div class="card section"><div class="dx-empty">Loading TikTok…</div></div>';return}
+ const ico=(k,t)=>`<i class="tta-ck ${k}">${t}</i>`,ok='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',no='<svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg>';
+ if(CURRENT_TAB==='ttac'){
+  const a=D.account||{},act=/^active$/i.test(a.status),rj=D.rejected||[];
+  host.innerHTML=`<div class="tts-sub">${esc(a.name||'TikTok account')}${a.checked?' · checked '+ttDay(a.checked):''}</div>
+   <div class="card tta-chk"><div class="tta-cr">${ico(act?'g':'r',act?ok:no)}<span>Account status</span><b>${esc(a.status||'—')}</b></div>
+   <div class="tta-cr">${ico('g','$')}<span>Balance</span><b>${money(a.balance)}</b></div>
+   <div class="tta-cr">${ico(rj.length?'r':'g',rj.length?no:ok)}<span>Rejected ads</span><b>${rj.length?rj.length:'None'}</b></div>
+   <div class="tta-cr">${ico('n','<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>')}<span>Opened</span><b>${ttDay(a.opened)}</b></div></div>
+   ${rj.length?`<div class="tts-sub">Ads that need a look</div><div class="card tts-tbl">${rj.map(r=>`<div class="tts-tr tta-tr"><span><b>${esc(r.ad||'')}</b><small>${esc(r.campaign||'')}${r.changed?' · '+ttDay(r.changed):''}</small></span><span class="tts-chip bad">${esc(r.state||'Rejected')}</span></div>`).join('')}</div>`:`<div class="tts-note tta-fine">${esc(D.note||'No ad is rejected.')}</div>`}`;
+ }else if(CURRENT_TAB==='ttqa'){
+  const C=D.checks||[],bad=C.filter(c=>!TT_OK(c.problems)),L=TTA.all?C:bad;
+  host.innerHTML=`<div class="tts-sub">${bad.length} of ${C.length} live ads need a fix · made in the last 60 days</div>
+   <div class="tta-seg"><button type="button" class="${TTA.all?'':'on'}" onclick="ttAcAll(false)">Needs fix ${bad.length}</button><button type="button" class="${TTA.all?'on':''}" onclick="ttAcAll(true)">All ${C.length}</button></div>
+   <div class="card tts-tbl">${L.length?L.map((c,i)=>{const k='q'+(c.id||i),o=TTA.open===k,good=TT_OK(c.problems);
+    return `<div class="tts-tr tta-tr tta-1l${o?' open':''}" role="button" tabindex="0" onclick="ttAcOpen('${esc(k)}')"><span><b>${esc(c.ad)}</b><small>${ttDay(c.created)} · ${esc(String(c.campaign).replace(/^HAUS_/,''))}</small></span><span class="tts-chip ${good?'good':'warn'}">${good?'OK':esc(String(c.problems).split(';')[0])}${!good&&String(c.problems).split(';').length>1?' +'+(String(c.problems).split(';').length-1):''}</span></div>`+
+    (o?`<div class="tts-more">${good?'':`<p><small>Problems</small>${String(c.problems).split(';').map(x=>esc(x.trim())).join('<br>')}</p>`}<p><small>Campaign</small>${esc(c.campaign)}</p>${c.adgroup?`<p><small>Ad group</small>${esc(c.adgroup)}</p>`:''}${c.id?`<p><small>Ad ID</small>${esc(c.id)}</p>`:''}</div>`:'')}).join(''):'<div class="dx-empty">Every live ad passes.</div>'}</div>
+   <div class="tts-note">Tap an ad to see its problems and IDs</div>`;
+ }else{
+  const I=[...(D.issues||[])].sort((a,b)=>((/^yes/i.test(a.fixed)?1:0)-(/^yes/i.test(b.fixed)?1:0))||(String(b.found).localeCompare(String(a.found)))),open=I.filter(x=>!/^yes/i.test(x.fixed)).length;
+  host.innerHTML=`<div class="tts-sub">${open} open · ${I.length-open} fixed</div>
+   <div class="card tts-tbl">${I.map((x,i)=>{const k='i'+i,o=TTA.open===k,f=/^yes/i.test(x.fixed);
+    return `<div class="tts-tr tta-tr${o?' open':''}" role="button" tabindex="0" onclick="ttAcOpen('${k}')"><span><b>${esc(x.type||'Issue')}</b><small>${esc(x.what)}</small></span><span class="tts-chip ${f?'good':'bad'}">${f?'Fixed':'Open'}</span></div>`+
+    (o?`<div class="tts-more"><p><small>What</small>${esc(x.what)}</p>${x.ads?`<p><small>Ad(s)</small>${esc(x.ads)}</p>`:''}<p><small>Found</small>${ttDay(x.found)}${f&&x.fixedOn?' · fixed '+ttDay(x.fixedOn):''}</p>${x.owner?`<p><small>Owner</small>${esc(x.owner)}</p>`:''}</div>`:'')}).join('')}</div>
+   <div class="tts-note">Open first, newest first · tap one for details</div>`;
  }
 }
 </script>
