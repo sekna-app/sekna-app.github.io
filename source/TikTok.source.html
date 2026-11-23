@@ -10723,7 +10723,7 @@ body .sk-drawer #accountCurrent b{color:#0d1b4c}
 .pl-sw button.on img{opacity:1;filter:none}
 .pl-sw button.on{box-shadow:0 0 0 2px #fff,0 0 0 4px #0d1b4c}
 body .sk-drawer{background:radial-gradient(circle at 105% 16%,rgba(254,44,85,.32) 0,transparent 38%),radial-gradient(circle at -10% 30%,rgba(37,244,238,.24) 0,transparent 40%),linear-gradient(170deg,#0c1a46 0%,#152a66 55%,#0c1a46 100%)!important}
-[data-grp="ps"],[data-grp="ai"],#grp-ps,#grp-ai,.py-open-wrap,#mrSection{display:none!important}
+[data-grp="ps"],#grp-ps,#mrSection{display:none!important}
 .channel-icon.tt-partnership{background:#f4efff;color:#7a45d6}.channel-icon.tt-sales{background:#eef3ff;color:#2a4fb8}.channel-icon.tt-catalog{background:#fff4e8;color:#e08a2a}.channel-icon.tt-reach{background:#e8f8fc;color:#1fa3c9}
 body.dark-mode .channel-icon.tt-partnership,body.dark-mode .channel-icon.tt-sales,body.dark-mode .channel-icon.tt-catalog,body.dark-mode .channel-icon.tt-reach{background:#121e38!important}
 </style>
@@ -11516,7 +11516,14 @@ function ttRun(){let ok=()=>{},fail=()=>{};const r={withSuccessHandler(f){ok=f;r
  getDashboardData(acc,force,tok){fetch(TT_API+'/data',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:tok,force:!!force})})
   .then(x=>{if(!x.ok)throw new Error('The TikTok server did not answer ('+x.status+'). Try again in a minute.');return x.json()})
   .then(j=>{if(j&&j.ok&&j.result&&j.result.platform==='tiktok')ok(j.result);else{const e=new Error((j&&j.error)||'The TikTok server did not answer. Try again in a minute.');e.access=!!(j&&j.access);fail(e)}})
-  .catch(e=>fail(e))}};return r}
+  .catch(e=>fail(e))},
+ getMonthCompareData(acc,tok){ttMonthsCall(tok).then(ok,fail)}};return r}
+// The month history (History to Oct 2026 + the month tabs) from TikTok's server.
+function ttMonthsCall(tok){return fetch(TT_API+'/months',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:tok})})
+ .then(x=>{if(!x.ok)throw new Error('The TikTok server did not answer ('+x.status+').');return x.json()})
+ .then(j=>{if(j&&j.ok&&j.result)return j.result;const e=new Error((j&&j.error)||'The TikTok server did not answer.');e.access=!!(j&&j.access);throw e})}
+// Google's own data calls never run on this page: their answers would be Google's numbers.
+const TT_NO_GOOGLE={getForecast:1,getMonthVsLy:1,getSearchTerms:1,getSearchTermsDaily:1,getActionLog:1,getCampPerf:1,getAssumptions:1,forecastSet:1,assumeSet:1,getPlanHistory:1,reportLib:1,adminArchiveStatus:1,adminArchiveMove:1,adminSavePlanHistory:1,dayReactions:1,dayReact:1,seasonGoalSet:1,storyLog:1,storyTeam:1,getDashboardData:1};
 // Back to the Google page (with the account picked there).
 function ttGoGoogle(acc){try{if(acc==='ar'||acc==='usa')localStorage.setItem('ha_media_plan_account',acc)}catch(e){}location.href='/'}
 function pickPlatform(p){if(p!=='tt')ttGoGoogle('usa')}
@@ -14263,7 +14270,7 @@ function renderYoy(x,y){
 
  const hijri=y.mode==='hijri';
  text('yoyTitle',hijri?'Same Hijri Day Last Year':'Same Day Last Year');
- text('yoySub',!y.lyDate?'TikTok last year will show here once its days are added.':hijri&&y.lyDate?`Vs ${y.lyLabel||y.lyDate} · same Hijri day${y.hasData===false?' (no data)':''}`:'Current performance compared with the same date last year.');
+ text('yoySub',hijri&&y.lyDate?`Vs ${y.lyLabel||y.lyDate} · same Hijri day${y.hasData===false?' (no data)':''}`:'Current performance compared with the same date last year.');
  const rowsHost=document.getElementById('yoyRows');
  if(rowsHost)rowsHost.innerHTML=metrics.map(m=>{
    const ok=m.ratio!=null&&isFinite(m.ratio);
@@ -14441,7 +14448,6 @@ function lyGapChart(has){
 }
 const lyChip=v=>v==null||!isFinite(v)?'':`${v>=0?'▲':'▼'} ${percent(Math.abs(v))}`;
 function lyDays(days){
- return '<div class="dx-empty">TikTok last year will show here once its days are added.</div>';
  const D=lyData(days);
  if(!D){loadMonthExtras();return extraWaitHtml('last year’s days')}
  if(!D.live)return '<div class="dx-empty">No day has results yet this month.</div>';
@@ -15376,7 +15382,7 @@ function labStepsDraw(){
    ${st.done||st.err?`<button type="button" class="ls-close">${st.done?'Done':'Close'}</button>`:''}</div>`;
 }
 /* ---------- Monthly history ---------- */
-let MONTH_BASIS='total', MONTH_MODE='one', MONTH_EXTRA={tt:{months:{},days:{},channels:[]}}, MONTH_EXTRA_LOADING={}, MONTH_EXTRA_FAIL={}, MONTH_PICK={}, MONTH_CHART='value', MONTH_TIP='';
+let MONTH_BASIS='total', MONTH_MODE='one', MONTH_EXTRA={}, MONTH_EXTRA_LOADING={}, MONTH_EXTRA_FAIL={}, MONTH_PICK={}, MONTH_CHART='value', MONTH_TIP='';
 const PERIOD_SEL={};
 // Campaign types picked in Month vs Month (per account); empty means all of them.
 const MX_TYPES={};
@@ -15438,7 +15444,7 @@ function loadMonthExtras(){
  if(MONTH_EXTRA[key]||MONTH_EXTRA_LOADING[key])return;
  if(!(window.google&&google.script&&google.script.run))return;
  MONTH_EXTRA_LOADING[key]=true;MONTH_EXTRA_FAIL[key]=false;
- google.script.run
+ ttRun()
   .withSuccessHandler(r=>{MONTH_EXTRA_LOADING[key]=false;MONTH_EXTRA[key]=r||{months:{}};if(key===CURRENT_ACCOUNT&&CURRENT_TAB==='chg')try{chgDraw()}catch(e){}if(CURRENT_TAB==='months'&&key===CURRENT_ACCOUNT)renderMonthCompare();if(CURRENT_TAB==='days'&&DAY_VIEW==='ly'&&key===CURRENT_ACCOUNT&&DASH_DATA)renderDays(DASH_DATA);if(WK_LY&&key===CURRENT_ACCOUNT)drawWeeklyLy(true);if(PY_OPEN&&key===CURRENT_ACCOUNT)renderPastYears()})
   .withFailureHandler(()=>{MONTH_EXTRA_LOADING[key]=false;MONTH_EXTRA_FAIL[key]=true;if(CURRENT_TAB==='months'&&key===CURRENT_ACCOUNT)renderMonthCompare();if(CURRENT_TAB==='days'&&DAY_VIEW==='ly'&&key===CURRENT_ACCOUNT&&DASH_DATA)renderDays(DASH_DATA)})
   .getMonthCompareData(key,getAccessToken());
@@ -17176,6 +17182,9 @@ function getDeviceId(){
 }
 function hasServer(){return !!(window.google&&google.script&&google.script.run)}
 function serverCall(name,...args){
+ if(name==='getMonthCompareData')return ttMonthsCall(args[args.length-1]);
+ if(name==='seasonsInfo')return Promise.resolve({goals:{},prep:{}});
+ if(TT_NO_GOOGLE[name])return Promise.reject(new Error('This is on the Google page.'));
  return new Promise((resolve,reject)=>{
    if(!hasServer()){try{resolve(demoServer(name,args))}catch(e){reject(e)}return}
    google.script.run.withSuccessHandler(resolve).withFailureHandler(reject)[name](...args);
@@ -18776,13 +18785,13 @@ function ssSum(accs,from,to){
  return n?{spend:sp,value:val,days:n}:null;
 }
 // Each card has its own All / US / AR filter (All = both accounts).
-const SS_ACC={all:{l:'All',who:'both accounts',a:['usa','ar']},usa:{l:'US',who:'USA',a:['usa']},ar:{l:'AR',who:'AR',a:['ar']}};
+const SS_ACC={all:{l:'TikTok',who:'TikTok',a:['tt']}};
 function ssAccOf(s){return SS_ACC[(SS.acc||{})[s.id]]?SS.acc[s.id]:'all'}
 function ssAccs(s){return SS_ACC[ssAccOf(s)].a}
 function ssAccSet(id,k,e){if(e)e.stopPropagation();SS.acc=Object.assign({},SS.acc,{[id]:k});renderSeasons()}
 function ssLoadExtras(){
  if(SS.exBusy)return;
- const need=['usa','ar'].filter(a=>!SS.ex[a]);if(!need.length)return;
+ const need=['tt'].filter(a=>!SS.ex[a]);if(!need.length)return;
  SS.exBusy=true;
  Promise.all(need.map(a=>(MONTH_EXTRA[a]?Promise.resolve(MONTH_EXTRA[a]):serverCall('getMonthCompareData',a,getAccessToken()).then(r=>{MONTH_EXTRA[a]=r||{months:{},days:{}};return MONTH_EXTRA[a]})).then(r=>{SS.ex[a]=r}).catch(()=>{SS.ex[a]={days:{},fail:1}})))
   .then(()=>{SS.exBusy=false;if(CURRENT_TAB==='seasons')renderSeasons()});
@@ -19198,7 +19207,7 @@ function myPerms(){
 }
 // Pages of the side menu and share are on unless Admin → Permissions turned them off.
 const VIEW_KEYS=['overview','days','channel','plans','ranks','camp','months','seasons','ask','team','mine','leaveview','notifs','updates','about','share'];
-function canDo(k){if(['lab','plans','ranks','terms','camp','chg','months','seasons'].indexOf(k)>=0)return false;const p=myPerms();if(k==='terms')k='ranks';if(k==='chg')k='camp'; // Search Terms follows Top & Bottom 5
+function canDo(k){if(['lab','plans','ranks','terms','camp','chg'].indexOf(k)>=0)return false;const p=myPerms();if(k==='terms')k='ranks';if(k==='chg')k='camp'; // Search Terms follows Top & Bottom 5
  if(k==='lab')return p.lab===true||p.lab==='view';return k in p?p[k]===true:VIEW_KEYS.includes(k)}
 // Media Plan Lab: 'view' opens it, but only true can change anything.
 function labEdit(){return myPerms().lab===true}

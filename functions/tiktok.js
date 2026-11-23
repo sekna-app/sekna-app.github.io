@@ -49,6 +49,70 @@ function readPlan(rows, monthKey) {
   return { found: true, types: out };
 }
 
+/* ---------- Month history (History to Oct 2026 + the month tabs), in the shape of Google's getMonthCompareData ----------
+ * months[yyyy-mm] = {spend, impressions, clicks, conversions, value, days, channels{type:{spend,clicks,conversions,value}}}
+ * days[yyyy-mm-dd] = [spend, impressions, clicks, conversions, value] for each type in TT_CH order. CTA conversions and value.
+ */
+let histHeld = null;
+const HIST_TTL = 30 * 60 * 1000;
+function aggregate(rows, months, days) {
+  rows.forEach(r => {
+    const k = dayKey(r[COL.DATE]), ch = chOf(r[COL.CAT]); if (!k || !ch) return;
+    const mk = k.slice(0, 7), ci = TT_CH.indexOf(ch);
+    const m = months[mk] || (months[mk] = { spend: 0, impressions: 0, clicks: 0, conversions: 0, value: 0, days: {}, channels: {} });
+    const c = m.channels[ch] || (m.channels[ch] = { spend: 0, clicks: 0, conversions: 0, value: 0 });
+    const sp = num(r[COL.SPEND]), im = num(r[COL.IMPR]), cl = num(r[COL.CLICKS]), cv = num(r[COL.CONV]), va = num(r[COL.VALUE]);
+    m.spend += sp; m.impressions += im; m.clicks += cl; m.conversions += cv; m.value += va; m.days[k] = 1;
+    c.spend += sp; c.clicks += cl; c.conversions += cv; c.value += va;
+    const d = days[k] || (days[k] = new Array(TT_CH.length * 5).fill(0));
+    d[ci * 5] += sp; d[ci * 5 + 1] += im; d[ci * 5 + 2] += cl; d[ci * 5 + 3] += cv; d[ci * 5 + 4] += va;
+  });
+}
+function monthTabsOf(meta) {
+  return meta.sheets.map(s => {
+    const m = /^([A-Z][a-z]{2})\s+(\d{4})$/.exec(String(s.title).trim());
+    const i = m ? MON.indexOf(m[1]) : -1;
+    return i >= 0 ? { title: s.title, key: m[2] + '-' + pad(i + 1) } : null;
+  }).filter(Boolean).sort((a, b) => (a.key < b.key ? 1 : -1));
+}
+/** The history tab (it changes once a month), kept for 30 minutes. */
+async function historyRows(meta) {
+  if (histHeld && Date.now() - histHeld.at < HIST_TTL) return histHeld.rows;
+  const tab = meta.sheets.find(s => /^history/i.test(String(s.title).trim()));
+  const rows = tab ? ((await batchGet(TT_SHEET_ID, [a1(tab.title, 'A2:M')]))[0] || []) : [];
+  histHeld = { at: Date.now(), rows };
+  return rows;
+}
+async function buildTikTokMonths(meta, monthRows) {
+  meta = meta || await sheetMeta(TT_SHEET_ID);
+  const months = {}, days = {};
+  aggregate(await historyRows(meta), months, days);
+  if (!monthRows) {
+    const tabs = monthTabsOf(meta);
+    const vals = tabs.length ? await batchGet(TT_SHEET_ID, tabs.map(t => a1(t.title, 'A2:M'))) : [];
+    monthRows = tabs.map((t, i) => ({ key: t.key, rows: vals[i] || [] }));
+  }
+  // A month tab replaces the history for its month.
+  monthRows.forEach(t => {
+    const part = { m: {}, d: {} }; aggregate(t.rows, part.m, part.d);
+    Object.keys(part.m).forEach(mk => { months[mk] = part.m[mk]; Object.keys(days).forEach(dk => { if (dk.slice(0, 7) === mk) delete days[dk]; }); });
+    Object.keys(part.d).forEach(dk => { days[dk] = part.d[dk]; });
+  });
+  Object.keys(months).forEach(mk => { months[mk].days = Object.keys(months[mk].days).length; });
+  Object.keys(days).forEach(dk => { days[dk] = days[dk].map(v => Math.round(v * 100) / 100); });
+  return { months, days, channels: TT_CH.slice(), generatedAt: new Date().toISOString().slice(0, 16).replace('T', ' ') };
+}
+const HPARTS = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { timeZone: 'UTC', year: 'numeric', month: 'numeric', day: 'numeric' });
+function hijriNum(k) { const p = {}; HPARTS.formatToParts(utc(k)).forEach(x => { p[x.type] = x.value; }); return { y: parseInt(p.year, 10), m: +p.month, d: +p.day }; }
+const isoAdd = (k, n) => { const d = utc(k); d.setUTCDate(d.getUTCDate() + n); return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()); };
+/** The same Hijri day one Hijri year back (Umm al-Qura), as yyyy-mm-dd. */
+function sameHijriLastYear(k) {
+  const h = hijriNum(k);
+  for (let n = 350; n <= 360; n++) { const c = isoAdd(k, -n), x = hijriNum(c); if (x.y === h.y - 1 && x.m === h.m && x.d === h.d) return c; }
+  for (let n = 350; n <= 360; n++) { const c = isoAdd(k, -n), x = hijriNum(c); if (x.y === h.y - 1 && x.m === h.m && Math.abs(x.d - h.d) <= 1) return c; }
+  return '';
+}
+
 async function buildTikTokData() {
   let meta;
   try { meta = await sheetMeta(TT_SHEET_ID); }
@@ -58,10 +122,11 @@ async function buildTikTokData() {
     const m = /^([A-Z][a-z]{2})\s+(\d{4})$/.exec(String(s.title).trim());
     const i = m ? MON.indexOf(m[1]) : -1;
     return i >= 0 ? { title: s.title, key: m[2] + '-' + pad(i + 1) } : null;
-  }).filter(Boolean).sort((a, b) => (a.key < b.key ? 1 : -1)).slice(0, 2);
+  }).filter(Boolean).sort((a, b) => (a.key < b.key ? 1 : -1)).slice(0, 3);
   if (!monthTabs.length) throw new Error('TikTok: no month tab (like "Nov 2026") was found.');
   const planTab = meta.sheets.find(s => /^media plan$/i.test(String(s.title).trim()));
   const vals = await batchGet(TT_SHEET_ID, monthTabs.map(t => a1(t.title, 'A2:M')).concat(planTab ? [a1(planTab.title, 'A1:O80')] : []));
+  const hist = await buildTikTokMonths(meta, monthTabs.map((t, i) => ({ key: t.key, rows: vals[i] || [] })));
 
   let tab = null, rows = [];
   for (let i = 0; i < monthTabs.length; i++) {
@@ -160,7 +225,7 @@ async function buildTikTokData() {
       convAchievement: div(L.conversions, perDay.conv), valueAchievement: div(L.value, perDay.value), spendAchievement: div(L.spend, perDay.spend)
     },
     // Same Hijri day last year: empty until TikTok's last-year days are added.
-    yoy: { mode: 'hijri', lyDate: '', lyLabel: '', hasData: false, spend: 0, clicks: 0, impressions: 0, conversions: 0, value: 0, ctr: 0, convVsLy: null, valueVsLy: null, spendDelta: null, ctrDelta: null },
+    yoy: lyOf(latestKey, L, hist),
     month: { planSpend, planValue, actualSpend: month.spend, actualValue: month.value, actualRoas: roasToDate, spendAchievement: div(month.spend, planSpend), valueAchievement: div(month.value, planValue) },
     mtd: {
       planSpend, actualSpend: month.spend, spendAchievement: div(month.spend, planSpend), planValue, actualValue: month.value, valueAchievement: div(month.value, planValue),
@@ -169,7 +234,9 @@ async function buildTikTokData() {
       conversions: month.conversions, clicks: month.clicks, impressions: month.impressions
     },
     weekly, channels, daily, dayPlan, dayChannels,
-    history: [], bestWorst: null,
+    history: Object.keys(hist.months).sort().map(mk => { const m = hist.months[mk], h = hijriNum(mk + '-15');
+      return { month: mk, hijri: HIJRI_M[h.m - 1] + ' ' + h.y, cost: m.spend, value: m.value, conversions: m.conversions, roas: div(m.value, m.spend), partial: mk === monthKey }; }).filter(x => x.cost || x.value || x.conversions),
+    bestWorst: null,
     // Top projects: empty until they come from the landing pages.
     topProjects: [], topProjectsDay: '',
     generatedAt: stamp, generatedAtMs: Date.now()
@@ -190,6 +257,13 @@ function ttData(force) {
   pending = buildTikTokData().then(v => { held = { at: Date.now(), v }; pending = null; return v; }, e => { pending = null; if (held) return held.v; throw e; });
   return pending;
 }
+let monthsHeld = null, monthsPending = null;
+function ttMonths() {
+  if (monthsHeld && Date.now() - monthsHeld.at < 5 * 60000) return Promise.resolve(monthsHeld.v);
+  if (monthsPending) return monthsPending;
+  monthsPending = buildTikTokMonths().then(v => { monthsHeld = { at: Date.now(), v }; monthsPending = null; return v; }, e => { monthsPending = null; if (monthsHeld) return monthsHeld.v; throw e; });
+  return monthsPending;
+}
 const fn = onRequest({
   region: 'europe-west2', serviceAccount: 'sekna-server@human-appeal-media-plan.iam.gserviceaccount.com',
   memory: '256MiB', cpu: 1, concurrency: 20, minInstances: 0, maxInstances: 3, timeoutSeconds: 60, invoker: 'public'
@@ -203,7 +277,7 @@ const fn = onRequest({
   if (req.method === 'OPTIONS') { res.status(204).send(''); return; }
   const route = String(req.path || '/').replace(/\/+$/, '') || '/';
   if (route === '/ping') { res.json({ ok: true }); return; }
-  if (route !== '/data' || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
+  if ((route !== '/data' && route !== '/months') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
   let body = req.body;
   if (!(body && typeof body === 'object' && !Buffer.isBuffer(body))) {
     const text = Buffer.isBuffer(body) ? body.toString('utf8') : typeof body === 'string' ? body : (req.rawBody ? req.rawBody.toString('utf8') : '');
@@ -211,10 +285,24 @@ const fn = onRequest({
   }
   try {
     await assertAccess(body.token);
-    res.json({ ok: true, result: await ttData(!!body.force) });
+    res.json({ ok: true, result: route === '/months' ? await ttMonths() : await ttData(!!body.force) });
   } catch (e) {
     res.json({ ok: false, access: !!(e && (e.access || e.blocked)), error: String((e && e.message) || e).slice(0, 300) });
   }
 });
 
-module.exports = { buildTikTokData, TT_CH, TT_SHEET_ID, fn };
+const HIJRI_M = ['Muharram', 'Safar', 'Rabi I', 'Rabi II', 'Jumada I', 'Jumada II', 'Rajab', 'Shaban', 'Ramadan', 'Shawwal', 'Dhul Qadah', 'Dhul Hijjah'];
+/** Daily → Same Hijri Day Last Year, from the month history. */
+function lyOf(k, x, hist) {
+  const ly = sameHijriLastYear(k), d = ly ? hist.days[ly] : null;
+  const t = { spend: 0, impressions: 0, clicks: 0, conversions: 0, value: 0 };
+  if (d) for (let i = 0; i < d.length; i += 5) { t.spend += d[i]; t.impressions += d[i + 1]; t.clicks += d[i + 2]; t.conversions += d[i + 3]; t.value += d[i + 4]; }
+  const ld = ly ? utc(ly) : null, ctr = div(t.clicks, t.impressions), xctr = div(x.clicks, x.impressions);
+  return {
+    mode: 'hijri', lyDate: ly, lyLabel: ld ? DAYS[ld.getUTCDay()].slice(0, 3) + ' ' + ld.getUTCDate() + ' ' + MON[ld.getUTCMonth()] + ' ' + ld.getUTCFullYear() : '',
+    hasData: !!(d && (t.spend || t.value)), spend: t.spend, clicks: t.clicks, impressions: t.impressions, conversions: t.conversions, value: t.value, ctr: ctr || 0,
+    convVsLy: div(x.conversions, t.conversions), valueVsLy: div(x.value, t.value), spendDelta: t.spend ? x.spend / t.spend - 1 : null, ctrDelta: ctr && xctr != null ? xctr / ctr - 1 : null
+  };
+}
+
+module.exports = { buildTikTokData, buildTikTokMonths, TT_CH, TT_SHEET_ID, fn };
