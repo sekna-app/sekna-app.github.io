@@ -4,6 +4,7 @@
 const { onRequest } = require('firebase-functions/v2/https');
 const { onMessagePublished } = require('firebase-functions/v2/pubsub');
 const { onSchedule } = require('firebase-functions/v2/scheduler');
+const { buildTikTokData } = require('./tiktok');
 const { buildDashboardData, getMonthCompareData, normalizeAccountKey_, buildForecast, setForecast, buildAssumptions, setAssumptions, buildVsLy, buildSearchTerms, buildSearchTermsDaily, buildActionLog, buildCampPerf } = require('./dash');
 const { ACCESS, assertAccess, assertAdmin, assertPerm, assertLabView, assertOwner } = require('./access');
 const { fsGet, fsSet, fsAppend, fsList, fsClearList, request, PROJECT_ID } = require('./google');
@@ -109,7 +110,7 @@ async function keptData(kind, key) {
 }
 async function sheetData(kind, key, force) {
   const ttl = kind === 'dash' ? DASH_CACHE_MS : MONTHS_CACHE_MS;
-  const build = () => (kind === 'dash' ? buildDashboardData(key) : kind === 'forecast' ? buildForecast(key) : kind === 'assume' ? buildAssumptions(key) : kind === 'vsly' ? buildVsLy(key) : kind === 'terms' ? buildSearchTerms(key) : kind === 'stdaily' ? buildSearchTermsDaily(key) : kind === 'actlog' ? buildActionLog(key) : kind === 'camp' ? buildCampPerf(key) : getMonthCompareData(key)).then(v => { if (kind === 'dash') sheetReads++; saveSnap(kind, key, v); return v; });
+  const build = () => (kind === 'dash' ? (key === 'tt' ? buildTikTokData() : buildDashboardData(key)) : kind === 'forecast' ? buildForecast(key) : kind === 'assume' ? buildAssumptions(key) : kind === 'vsly' ? buildVsLy(key) : kind === 'terms' ? buildSearchTerms(key) : kind === 'stdaily' ? buildSearchTermsDaily(key) : kind === 'actlog' ? buildActionLog(key) : kind === 'camp' ? buildCampPerf(key) : getMonthCompareData(key)).then(v => { if (kind === 'dash') sheetReads++; saveSnap(kind, key, v); return v; });
   const ck = kind + ':' + key;
   if (force || inReadWindow(groupWin(await readWindow(), kindGroup(kind)))) return cached(ck, ttl, !!force, build);
   const hit = cache[ck];
@@ -157,10 +158,13 @@ const CALLS = {
     return { ok: true };
   },
   async getDashboardData(args) {
-    const key = normalizeAccountKey_(args[0]);
+    // v657 TikTok · Human Appeal US has its own key and its own sheet
+    const key = String(args[0] || '').toLowerCase() === 'tt' ? 'tt' : normalizeAccountKey_(args[0]);
     return withAccess(args[2], sheetData('dash', key, !!args[1]));
   },
   async getMonthCompareData(args) {
+    // v657 TikTok: no last-year days yet, so its month history is empty (never Google's)
+    if (String(args[0] || '').toLowerCase() === 'tt') return withAccess(args[1], Promise.resolve({ months: {}, days: {}, channels: [] }));
     const key = normalizeAccountKey_(args[0]);
     return withAccess(args[1], sheetData('months', key, false));
   },

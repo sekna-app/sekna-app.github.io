@@ -1,0 +1,179 @@
+// TikTok · Human Appeal US: the Daily Performance, Day by Day and Monthly Progress data, built from the
+// TikTok tracker sheet (one tab per month, e.g. "Nov 2026", and the "Media plan" tab) in the same shape as
+// buildDashboardData, so the Google pages draw it as they are.
+// Conversions and value are the CTA ones (the media plan targets are CTA). Money is in US dollars.
+const { sheetMeta, batchGet, a1 } = require('./google');
+
+const TT_SHEET_ID = '1n-aHvbMFQalzmYn1vjHUDPYszF_B5-FVJIcPDY6PSUU';
+const TT_ACCOUNT = { key: 'tt', label: 'Human Appeal US', shortLabel: 'TikTok', dashboardTitle: 'TikTok · Human Appeal US' };
+// The four campaign types in the order the app shows them (the sheet calls Reach "Awareness").
+const TT_TYPES = [['Partnership', 'Partnership'], ['Sales', 'Sales'], ['Catalog', 'Catalog'], ['Awareness', 'Reach']];
+const TT_CH = TT_TYPES.map(t => t[1]);
+const COL = { DATE: 0, CAT: 3, SPEND: 4, IMPR: 5, CLICKS: 6, CONV: 9, VALUE: 12 };
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const HIJRI = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { timeZone: 'UTC', month: 'long', day: 'numeric' });
+
+const num = v => { const n = typeof v === 'number' ? v : parseFloat(String(v == null ? '' : v).replace(/[$,\s]/g, '')); return isFinite(n) ? n : 0; };
+const div = (a, b) => (b ? a / b : null);
+const pad = n => String(n).padStart(2, '0');
+const chOf = cat => { const t = TT_TYPES.find(x => x[0].toLowerCase() === String(cat || '').trim().toLowerCase()); return t ? t[1] : null; };
+/** A sheet date (serial number or yyyy-mm-dd text) as yyyy-mm-dd. */
+function dayKey(v) {
+  if (typeof v === 'number' && v > 20000) { const d = new Date(Math.round((v - 25569) * 864e5)); return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()); }
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(v || '').trim());
+  return m ? m[1] + '-' + m[2] + '-' + m[3] : '';
+}
+const utc = k => new Date(Date.UTC(+k.slice(0, 4), +k.slice(5, 7) - 1, +k.slice(8, 10)));
+const hijriOf = k => { const p = {}; HIJRI.formatToParts(utc(k)).forEach(x => { p[x.type] = x.value; }); return p.day + ' ' + p.month; };
+const blank = () => ({ spend: 0, impressions: 0, clicks: 0, conversions: 0, value: 0 });
+function add(t, r) { t.spend += num(r[COL.SPEND]); t.impressions += num(r[COL.IMPR]); t.clicks += num(r[COL.CLICKS]); t.conversions += num(r[COL.CONV]); t.value += num(r[COL.VALUE]); }
+
+/** "Media plan" tab: the block under "<Month> <Year>" → budget, CTA conversion and value targets per type. */
+function readPlan(rows, monthKey) {
+  const title = MONTHS[+monthKey.slice(5, 7) - 1] + ' ' + monthKey.slice(0, 4);
+  const at = rows.findIndex(r => String(r[0] || '').trim().toLowerCase() === title.toLowerCase());
+  const out = {};
+  TT_CH.forEach(c => { out[c] = { budget: 0, conv: 0, value: 0 }; });
+  if (at < 0) return { found: false, types: out };
+  const head = (rows[at + 1] || []).map(h => String(h || '').trim().toLowerCase());
+  const ix = name => head.indexOf(name);
+  const iB = ix('budget'), iC = ix('cta conv target'), iV = ix('cta value target');
+  for (let i = at + 2; i < rows.length; i++) {
+    const name = String((rows[i] || [])[0] || '').trim();
+    if (!name || /^total$/i.test(name)) break;
+    const ch = chOf(name);
+    if (ch) out[ch] = { budget: num(rows[i][iB]), conv: num(rows[i][iC]), value: num(rows[i][iV]) };
+  }
+  return { found: true, types: out };
+}
+
+async function buildTikTokData() {
+  let meta;
+  try { meta = await sheetMeta(TT_SHEET_ID); }
+  catch (e) { throw new Error('Could not open the TikTok sheet (' + String((e && e.message) || e).slice(0, 120) + '). Check that it is shared with the HEMERA server.'); }
+  // The month tabs ("Nov 2026"), newest first; the newest one with a day of spend is the month shown.
+  const monthTabs = meta.sheets.map(s => {
+    const m = /^([A-Z][a-z]{2})\s+(\d{4})$/.exec(String(s.title).trim());
+    const i = m ? MON.indexOf(m[1]) : -1;
+    return i >= 0 ? { title: s.title, key: m[2] + '-' + pad(i + 1) } : null;
+  }).filter(Boolean).sort((a, b) => (a.key < b.key ? 1 : -1)).slice(0, 2);
+  if (!monthTabs.length) throw new Error('TikTok: no month tab (like "Nov 2026") was found.');
+  const planTab = meta.sheets.find(s => /^media plan$/i.test(String(s.title).trim()));
+  const vals = await batchGet(TT_SHEET_ID, monthTabs.map(t => a1(t.title, 'A2:M')).concat(planTab ? [a1(planTab.title, 'A1:O80')] : []));
+
+  let tab = null, rows = [];
+  for (let i = 0; i < monthTabs.length; i++) {
+    const r = (vals[i] || []).filter(x => dayKey(x[COL.DATE]) && chOf(x[COL.CAT]));
+    if (r.some(x => num(x[COL.SPEND]) > 0)) { tab = monthTabs[i]; rows = r; break; }
+  }
+  if (!tab) throw new Error('TikTok: no day with spend was found in ' + monthTabs.map(t => t.title).join(' or ') + '.');
+  const monthKey = tab.key, y = +monthKey.slice(0, 4), mo = +monthKey.slice(5, 7);
+  const dim = new Date(Date.UTC(y, mo, 0)).getUTCDate();
+  const plan = readPlan(planTab ? vals[monthTabs.length] || [] : [], monthKey);
+  const P = plan.types;
+  const perDay = { spend: 0, conv: 0, value: 0 };
+  TT_CH.forEach(c => { perDay.spend += P[c].budget / dim; perDay.conv += P[c].conv / dim; perDay.value += P[c].value / dim; });
+
+  // Day × type totals.
+  const byDay = {}, byDayCh = {}, month = blank(), monthCh = {};
+  TT_CH.forEach(c => { monthCh[c] = blank(); });
+  rows.forEach(r => {
+    const k = dayKey(r[COL.DATE]); if (k.slice(0, 7) !== monthKey) return;
+    const ch = chOf(r[COL.CAT]);
+    add(byDay[k] || (byDay[k] = blank()), r);
+    const dc = byDayCh[k] || (byDayCh[k] = {}); add(dc[ch] || (dc[ch] = blank()), r);
+    add(month, r); add(monthCh[ch], r);
+  });
+  const liveDays = Object.keys(byDay).filter(k => byDay[k].spend > 0).sort();
+  const latestKey = liveDays[liveDays.length - 1];
+  const L = byDay[latestKey], ld = utc(latestKey);
+
+  const dayPlan = [];
+  for (let d = 1; d <= dim; d++) {
+    const k = monthKey + '-' + pad(d), a = byDay[k], live = !!(a && (a.spend || a.clicks || a.conversions || a.value));
+    dayPlan.push({
+      date: k, label: MON[mo - 1] + ' ' + d, dayNumber: d, dayName: DAYS[utc(k).getUTCDay()], hijri: hijriOf(k),
+      plan: {
+        spend: perDay.spend, channels: TT_CH.map(c => ({ channel: c, spend: P[c].budget / dim })),
+        clicks: 0, conversions: perDay.conv, value: perDay.value,
+        cpa: div(perDay.spend, perDay.conv), cvr: null, aov: div(perDay.value, perDay.conv), roas: div(perDay.value, perDay.spend)
+      },
+      actual: live ? {
+        target: perDay.spend, spend: a.spend, clicks: a.clicks, conversions: a.conversions, value: a.value,
+        cpa: div(a.spend, a.conversions), cvr: div(a.conversions, a.clicks), ctr: div(a.clicks, a.impressions), roas: div(a.value, a.spend),
+        spendAchievement: div(a.spend, perDay.spend), clicksAchievement: null,
+        convAchievement: div(a.conversions, perDay.conv), valueAchievement: div(a.value, perDay.value)
+      } : null
+    });
+  }
+
+  const planSpend = TT_CH.reduce((s, c) => s + P[c].budget, 0), planValue = TT_CH.reduce((s, c) => s + P[c].value, 0);
+  const roasToDate = div(month.value, month.spend), targetRoas = div(planValue, planSpend);
+  const weekly = [[1, 7], [8, 14], [15, 21], [22, dim]].map(([from, to], i) => {
+    const t = blank(); let days = 0;
+    for (let d = from; d <= to; d++) { days++; const a = byDay[monthKey + '-' + pad(d)]; if (a) ['spend', 'impressions', 'clicks', 'conversions', 'value'].forEach(f => { t[f] += a[f]; }); }
+    const ps = perDay.spend * days, pv = perDay.value * days;
+    return {
+      week: 'Week ' + (i + 1), sourceLabel: MON[mo - 1] + ' ' + from, days, planSpend: ps, planConversions: perDay.conv * days, planValue: pv,
+      actualSpend: t.spend, actualValue: t.value, actualConversions: t.conversions, actualClicks: t.clicks,
+      spendAccuracy: div(t.spend, ps), spendAchievement: div(t.spend, ps), roas: div(t.value, t.spend),
+      hasActual: !!(t.spend || t.value || t.conversions || t.clicks)
+    };
+  });
+  const channels = TT_CH.map(c => {
+    const a = monthCh[c];
+    return {
+      channel: c, planSpend: P[c].budget, actualSpend: a.spend, spendAchievement: div(a.spend, P[c].budget),
+      clicks: a.clicks, impressions: a.impressions, conversions: a.conversions, planValue: P[c].value, actualValue: a.value,
+      valueAchievement: div(a.value, P[c].value), roas: div(a.value, a.spend), cpa: div(a.spend, a.conversions),
+      cvr: div(a.conversions, a.clicks), ctr: div(a.clicks, a.impressions)
+    };
+  });
+  const dayCh = byDayCh[latestKey] || {};
+  const dayChannels = TT_CH.map(c => {
+    const a = dayCh[c] || blank();
+    return { channel: c, spend: a.spend, clicks: a.clicks, conversions: a.conversions, value: a.value, planSpend: P[c].budget / dim, roas: div(a.value, a.spend) };
+  }).filter(c => c.spend || c.value).sort((a, b) => (b.roas || 0) - (a.roas || 0));
+  const daily = liveDays.slice(-14).map(k => {
+    const a = byDay[k];
+    return {
+      date: MON[mo - 1] + ' ' + (+k.slice(8, 10)), fullDate: k, targetSpend: perDay.spend, planConversions: perDay.conv, planValue: perDay.value,
+      spend: a.spend, clicks: a.clicks, conversions: a.conversions, value: a.value,
+      convAchievement: div(a.conversions, perDay.conv), valueAchievement: div(a.value, perDay.value), spendAchievement: div(a.spend, perDay.spend),
+      roas: div(a.value, a.spend), targetRoas: div(perDay.value, perDay.spend), ctr: div(a.clicks, a.impressions)
+    };
+  });
+  const now = new Date(Date.now() + 4 * 3600e3); // Muscat time, like the rest of the app
+  const stamp = now.getUTCFullYear() + '-' + pad(now.getUTCMonth() + 1) + '-' + pad(now.getUTCDate()) + ' ' + pad(now.getUTCHours()) + ':' + pad(now.getUTCMinutes()) + ':' + pad(now.getUTCSeconds());
+
+  return {
+    refreshSeconds: 60, platform: 'tiktok', baseCur: 'USD', planFound: plan.found,
+    account: TT_ACCOUNT, userEmail: '',
+    source: { spreadsheetUrl: 'https://docs.google.com/spreadsheets/d/' + TT_SHEET_ID + '/edit', month: tab.title, mediaPlan: planTab ? planTab.title : '' },
+    latest: {
+      date: latestKey, dayNumber: ld.getUTCDate(), monthName: MONTHS[mo - 1], dayName: DAYS[ld.getUTCDay()], hijriDate: hijriOf(latestKey),
+      targetSpend: perDay.spend, planClicks: 0, planConversions: perDay.conv, planValue: perDay.value,
+      spend: L.spend, clicks: L.clicks, conversions: L.conversions, value: L.value,
+      cpa: div(L.spend, L.conversions), cvr: div(L.conversions, L.clicks), ctr: div(L.clicks, L.impressions),
+      convAchievement: div(L.conversions, perDay.conv), valueAchievement: div(L.value, perDay.value), spendAchievement: div(L.spend, perDay.spend)
+    },
+    // Same Hijri day last year: empty until TikTok's last-year days are added.
+    yoy: { mode: 'hijri', lyDate: '', lyLabel: '', hasData: false, spend: 0, clicks: 0, impressions: 0, conversions: 0, value: 0, ctr: 0, convVsLy: null, valueVsLy: null, spendDelta: null, ctrDelta: null },
+    month: { planSpend, planValue, actualSpend: month.spend, actualValue: month.value, actualRoas: roasToDate, spendAchievement: div(month.spend, planSpend), valueAchievement: div(month.value, planValue) },
+    mtd: {
+      planSpend, actualSpend: month.spend, spendAchievement: div(month.spend, planSpend), planValue, actualValue: month.value, valueAchievement: div(month.value, planValue),
+      actualRoas: roasToDate, targetRoas, roasAchievement: div(roasToDate, targetRoas), budgetRemaining: planSpend - month.spend,
+      budgetVariancePct: div(planSpend - month.spend, planSpend), revenueRemaining: planValue - month.value,
+      conversions: month.conversions, clicks: month.clicks, impressions: month.impressions
+    },
+    weekly, channels, daily, dayPlan, dayChannels,
+    history: [], bestWorst: null,
+    // Top projects: empty until they come from the landing pages.
+    topProjects: [], topProjectsDay: '',
+    generatedAt: stamp, generatedAtMs: Date.now()
+  };
+}
+
+module.exports = { buildTikTokData, TT_CH, TT_SHEET_ID };
