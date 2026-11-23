@@ -13157,6 +13157,8 @@ function loadData(options){
   google.script.run
    .withSuccessHandler(d=>{
      if(slowTimer)clearTimeout(slowTimer);
+     // v657 TikTok asked, something else came back: never show it as TikTok (and never flip back to Google)
+     if(accountAtRequest==='tt'&&!(d&&d.platform==='tiktok')){if(accountAtRequest===CURRENT_ACCOUNT&&!silent)showError(new Error('TikTok data could not be loaded. Try again in a minute.'));return}
      saveAccountCache(d);
      if(accountAtRequest!==CURRENT_ACCOUNT)return;
      // Same numbers as on screen (the minute refresh, or the fresh copy after the cached one):

@@ -13152,6 +13152,8 @@ function loadData(options){
   google.script.run
    .withSuccessHandler(d=>{
      if(slowTimer)clearTimeout(slowTimer);
+     
+     if(accountAtRequest==='tt'&&!(d&&d.platform==='tiktok')){if(accountAtRequest===CURRENT_ACCOUNT&&!silent)showError(new Error('TikTok data could not be loaded. Try again in a minute.'));return}
      saveAccountCache(d);
      if(accountAtRequest!==CURRENT_ACCOUNT)return;
      

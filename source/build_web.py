@@ -7,7 +7,7 @@ API = 'https://script.google.com/macros/s/AKfycbzjgZ1nXxLTcFdeFCIEznOj2H0XCo9YGU
 FB = 'https://europe-west2-human-appeal-media-plan.cloudfunctions.net/api'
 FB_PRIMARY = 'true'
 # Accounts confirmed to give the same numbers on Firebase. The others stay on Apps Script.
-FB_ACCOUNTS = '{usa:1,ar:1}'
+FB_ACCOUNTS = '{usa:1,ar:1,tt:1}'
 h = open(src).read()
 
 head = '''<meta name="theme-color" content="#203C8E">
@@ -65,6 +65,8 @@ head = '''<meta name="theme-color" content="#203C8E">
     return v;
    }
    function fbWanted(account){
+    // v657 TikTok lives only on the HEMERA server (Apps Script does not know it)
+    if(String(account||'').toLowerCase()==='tt')return true;
     var t=dev();
     if(t==='firebase')return true;
     if(t==='appsscript')return false;
@@ -142,6 +144,8 @@ head = '''<meta name="theme-color" content="#203C8E">
     if(f&&fbWanted(args[f.a])&&(!f.data||Date.now()>SRV.hold)){
      var token=args[f.t];
      return fbPost('/call',{fn:name,args:args},f.w).then(function(r){if(f.data)setMode('firebase','',token);return r},function(e){
+      // v657 TikTok has no copy on Apps Script: its error is shown as it is (never Google's numbers instead)
+      if(f.a!==undefined&&String(args[f.a]||'').toLowerCase()==='tt')throw e;
       // A move the server refused on purpose is shown as it is, never repeated on Apps Script.
       if(name==='adminArchiveMove'&&/Another move is running|did not save every row/.test(e.message))throw e;
       // An access answer is not a server failure: Apps Script decides it.
