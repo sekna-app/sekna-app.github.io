@@ -2,7 +2,7 @@
 // TikTok tracker sheet (one tab per month, e.g. "Nov 2026", and the "Media plan" tab) in the same shape as
 // buildDashboardData, so the Google pages draw it as they are.
 // Conversions and value are the CTA ones (the media plan targets are CTA). Money is in US dollars.
-const { sheetMeta, batchGet, a1, request } = require('./google');
+const { sheetMeta, batchGet, a1, request, fsGet, fsUpdate } = require('./google');
 
 const TT_SHEET_ID = '1n-aHvbMFQalzmYn1vjHUDPYszF_B5-FVJIcPDY6PSUU';
 const TT_ACCOUNT = { key: 'tt', label: 'Human Appeal US', shortLabel: 'TikTok', dashboardTitle: 'TikTok · Human Appeal US' };
@@ -251,7 +251,7 @@ async function buildTikTokData() {
  * The sheet is read at most once a minute; the last good copy is kept in memory.
  */
 const { onRequest } = require('firebase-functions/v2/https');
-const { assertAccess } = require('./access');
+const { assertAccess, assertAdmin } = require('./access');
 const ORIGINS = ['https://sekna-app.web.app', 'https://sekna-app.firebaseapp.com', 'https://sekna-app.github.io'];
 let held = null, pending = null;
 function ttData(force) {
@@ -274,6 +274,7 @@ function ttSnap() {
   snapPending = buildTikTokSnap().then(v => { snapHeld = { at: Date.now(), v }; snapPending = null; return v; }, e => { snapPending = null; if (snapHeld) return snapHeld.v; throw e; });
   return snapPending;
 }
+const TT_PEOPLE = 'server/tt-people';
 let feedHeld = null, feedPending = null;
 function ttFeed() {
   if (feedHeld && Date.now() - feedHeld.at < 5 * 60000) return Promise.resolve(feedHeld.v);
@@ -318,14 +319,24 @@ const fn = onRequest({
     } catch (e) { console.warn('TikTok picture: ' + ((e && e.message) || e)); res.status(502).send(''); }
     return;
   }
-  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct' && route !== '/feed') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
+  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct' && route !== '/feed' && route !== '/people' && route !== '/peopleSet') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
   let body = req.body;
   if (!(body && typeof body === 'object' && !Buffer.isBuffer(body))) {
     const text = Buffer.isBuffer(body) ? body.toString('utf8') : typeof body === 'string' ? body : (req.rawBody ? req.rawBody.toString('utf8') : '');
     try { body = JSON.parse(text || '{}'); } catch (e) { body = {}; }
   }
   try {
+    // v675 who is behind each masked TikTok email: a name, or a HEMERA profile (admins set it in Account & Policy)
+    if (route === '/peopleSet') {
+      await assertAdmin(body.token);
+      const key = String(body.key || '').trim().toLowerCase().slice(0, 120);
+      if (!key) throw new Error('No account.');
+      const name = String(body.name || '').trim().slice(0, 60), email = String(body.email || '').trim().toLowerCase().slice(0, 120);
+      const doc = await fsUpdate(TT_PEOPLE, d => { d = d || {}; d.map = d.map || {}; if (!name && !email) delete d.map[key]; else d.map[key] = { name, email, at: Date.now() }; return d; });
+      res.json({ ok: true, result: (doc && doc.map) || {} }); return;
+    }
     await assertAccess(body.token);
+    if (route === '/people') { const d = (await fsGet(TT_PEOPLE).catch(() => null)) || {}; res.json({ ok: true, result: d.map || {} }); return; }
     res.json({ ok: true, result: route === '/months' ? await ttMonths() : route === '/snap' ? await ttSnap() : route === '/acct' ? await ttAcct() : route === '/feed' ? await ttFeed() : await ttData(!!body.force) });
   } catch (e) {
     res.json({ ok: false, access: !!(e && (e.access || e.blocked)), error: String((e && e.message) || e).slice(0, 300) });
