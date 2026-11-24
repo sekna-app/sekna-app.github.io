@@ -276,6 +276,44 @@ function ttSnap() {
   return snapPending;
 }
 const TT_PEOPLE = 'server/tt-people', TT_LINKS = 'server/tt-issue-links';
+/** v683 the email's page: the app's look (header, account, TikTok), the person's navy card with all their open issues, and their Ad Checks. */
+function personPage(who, acct, map) {
+  const E = notify.esc, W = String(who || '').toLowerCase(), m = /^([^@]+)@(.+)$/.exec(W), nm = (map[W] && map[W].name) || (m ? m[1] : 'Your ads');
+  const mon = k => { const x = /^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}:\d{2}))?/.exec(String(k || '')); return x ? (+x[3]) + ' ' + MON[+x[2] - 1] + ' ' + x[1] + (x[4] ? ' · ' + x[4] : '') : String(k || ''); };
+  const PIC = u => 'https://europe-west2-human-appeal-media-plan.cloudfunctions.net/tiktok/pic?u=' + encodeURIComponent(u);
+  const iss = (acct.issues || []).filter(x => !/^yes/i.test(x.fixed) && W && String(x.by || '').toLowerCase().indexOf(W) >= 0);
+  const chk = (acct.checks || []).filter(c => W && String(c.by || '').toLowerCase().indexOf(W) >= 0 && String(c.problems || '').trim() && !/^ok$/i.test(String(c.problems).trim()));
+  const prob = t => /same video/i.test(t) ? ['Same video twice in a campaign', '#7B5CF0'] : /utm/i.test(t) ? ['UTM medium not Paid', '#1D9CC8'] : /videos in one ad/i.test(t) ? ['Too many videos in one ad', '#E05566'] : /ptr|spark/i.test(t) ? ['Spark post without PTR', '#2453D6'] : /name/i.test(t) ? ['Name not in the pattern', '#C99A45'] : /https|link/i.test(t) ? ['Link not https', '#B0812E'] : /country/i.test(t) ? ['Country in text ≠ page', '#C63A4A'] : [String(t).slice(0, 40), '#8A93A8'];
+  const G = new Map(); chk.forEach(c => String(c.problems).split(';').map(p => prob(p.trim())).forEach(([k, col]) => { if (!G.has(k)) G.set(k, { col, L: [] }); G.get(k).L.push(c); }));
+  const others = by => String(by || '').split(/\s+·\s+/).length - 1;
+  const issues = iss.map(x => `<details class="ir"><summary><div class="it"><b>${E(x.type || 'Issue')}</b><span class="op">Open</span></div><p>${E(x.what || '')}</p><div class="im"><span class="gold">${others(x.by) > 0 ? '+' + others(x.by) + ' more made these ads' : ''}</span><span class="dt">${E(mon(x.found))}</span></div></summary>
+    <div class="more">${x.ads ? `<small>Ads</small><p>${E(String(x.ads).replace(/\n+/g, ' · '))}</p>` : ''}${x.made ? `<small>Ads created · New York time</small>${String(x.made).split(/\n+/).filter(Boolean).map(l => `<p>${E(l)}</p>`).join('')}` : ''}</div></details>`).join('');
+  const checks = [...G.entries()].sort((a, b) => b[1].L.length - a[1].L.length).map(([k, g], gi) => `<details class="cg"${gi === 0 ? ' open' : ''}><summary style="--c:${g.col}"><i></i><b>${E(k)}</b><em>${g.L.length}</em></summary>
+    ${g.L.map(c => `<div class="ca"><b>${E(c.ad)}</b>${(c.pics || []).length ? `<div class="pics">${c.pics.slice(0, 5).map(u => u === 'spark' ? '<span class="sp">Spark</span>' : `<span class="pc"><img src="${E(PIC(u))}" alt="" loading="lazy"></span>`).join('')}${c.pics.length > 5 ? `<em>+${c.pics.length - 5}</em>` : ''}</div>` : ''}<span class="dt">${E(String(c.campaign).replace(/^HAUS_/, '').replace(/_TikTok.*$/, ''))} · ${E(mon(c.created).replace(/ · .*/, ''))}${c.id ? ' · ' + E(c.id) : ''}</span></div>`).join('')}</details>`).join('');
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><meta name="theme-color" content="#203C8E"><title>${E(nm)} · TikTok · HEMERA</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box;margin:0}body{background:#F1F3F8;font-family:Inter,system-ui,sans-serif;color:#141B33;padding-bottom:40px}
+.hd{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:linear-gradient(120deg,#132457,#203C8E 60%,#3B5BC8)}.hd img.lg{height:30px}.tt{width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);display:grid;place-items:center}.tt img{width:26px;height:26px;border-radius:50%}
+.w{max-width:560px;margin:0 auto;padding:16px}.acc{display:inline-flex;align-items:center;gap:10px;background:#fff;border-radius:99px;padding:8px 18px 8px 10px;box-shadow:0 8px 22px rgba(20,40,110,.08);font-weight:800;font-size:15px}.acc img{width:30px;height:30px}.acc small{display:block;font-size:10.5px;color:#8A93A8;font-weight:700}
+.t{font-family:"DM Serif Display",Georgia,serif;font-size:32px;margin:20px 2px 4px}.t span{background:linear-gradient(transparent 58%,#F2D38F 0)}.sub{font-size:11px;font-weight:900;letter-spacing:.1em;color:#8A93A8;margin:0 2px 12px;text-transform:uppercase}
+.card{background:#fff;border-radius:18px;box-shadow:0 10px 26px rgba(20,40,110,.08);overflow:hidden;margin-bottom:14px}
+.nb{position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;padding:18px;background:linear-gradient(135deg,#132457,#203C8E 55%,#2C4FB8);color:#fff}.nb .glow{position:absolute;right:-34px;top:-40px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(226,184,116,.42),transparent 70%)}
+.av{width:56px;height:56px;border-radius:50%;background:#fff;color:#203C8E;display:grid;place-items:center;font-weight:900;font-size:24px;flex:none;box-shadow:0 6px 16px rgba(0,0,0,.25)}.nb div.n{flex:1;min-width:0}.nb b{font-size:20px}.nb small{display:block;color:#C9D3F5;font-size:12px;font-weight:700}.big{position:relative;text-align:right}.big em{display:block;font-style:normal;font-size:34px;font-weight:900;color:#E2B874;line-height:1}.big span{font-size:11px;color:#C9D3F5;font-weight:800}
+details summary{list-style:none;cursor:pointer}details summary::-webkit-details-marker{display:none}
+.ir{border-top:1px solid #EEF1F6;padding:14px 18px}.ir:first-of-type{border-top:0}.it{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.it b{font-size:16px}.op{background:#FBDDE1;color:#C63A4A;font-size:12px;font-weight:900;border-radius:99px;padding:4px 12px;flex:none}
+.ir p{font-size:13.5px;color:#6B7385;font-weight:600;margin-top:4px;line-height:1.45}.im{display:flex;justify-content:space-between;margin-top:10px;font-size:12.5px;font-weight:800}.gold{color:#B0812E}.dt{color:#8A93A8;font-size:12px;font-weight:700}
+.more{background:#F6F8FD;border-radius:12px;padding:10px 12px;margin-top:10px}.more small{display:block;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#8A93A8;margin-top:6px}.more p{color:#141B33;font-size:12.5px;margin-top:2px;word-break:break-word}
+.cg{border-top:1px solid #EEF1F6}.cg:first-of-type{border-top:0}.cg summary{display:flex;align-items:center;gap:10px;padding:14px 18px}.cg summary i{width:10px;height:10px;border-radius:3px;background:var(--c)}.cg summary b{flex:1;font-size:14px}.cg summary em{font-style:normal;font-weight:900;color:var(--c);font-size:16px}
+.ca{padding:11px 18px;border-top:1px solid #EEF1F6;background:#FAFBFE}.ca b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pics{display:flex;gap:4px;align-items:center;margin:7px 0 5px}.pc{width:30px;height:40px;border-radius:7px;overflow:hidden;background:#EEF2FB;display:block}.pc img{width:100%;height:100%;object-fit:cover;display:block}.sp{display:grid;place-items:center;width:30px;height:40px;border-radius:7px;background:#EEF2FB;color:#203C8E;font-size:8px;font-weight:900}.pics em{font-style:normal;font-size:11px;font-weight:900;color:#8A93A8}
+.empty{padding:20px;text-align:center;font-weight:700;color:#13804F}.f{font-size:11px;color:#8A93A8;text-align:center;margin-top:20px}.ob{display:block;text-align:center;background:#203C8E;color:#fff;text-decoration:none;font-weight:800;font-size:14px;border-radius:14px;padding:14px;margin-top:6px}</style></head>
+<body><div class="hd"><img class="lg" src="https://sekna-app.web.app/get/logo-white.webp" alt="HEMERA"><span class="tt"><img src="https://sekna-app.web.app/icons/alexandra/logo-tiktok.png?v=3" alt="TikTok"></span></div>
+<div class="w"><span class="acc"><img src="https://sekna-app.web.app/icons/ha-brand.png" alt=""><span>Human Appeal US<small>TikTok Ads</small></span></span>
+<div class="t">Issues <span>Log</span></div><div class="sub">${iss.length} open · active ads only</div>
+<div class="card"><div class="nb"><span class="glow"></span><span class="av">${E(String(nm).charAt(0).toUpperCase())}</span><div class="n"><b>${E(nm)}</b><small>${E(W)}</small></div><div class="big"><em>${iss.length}</em><span>open issue${iss.length === 1 ? '' : 's'}</span></div></div>${issues || '<div class="empty">No open issue. Thank you!</div>'}</div>
+<div class="t">Ad <span>Checks</span></div><div class="sub">${chk.length} of your live ads need a fix · tap a problem</div>
+<div class="card">${checks || '<div class="empty">Every live ad you made passes.</div>'}</div>
+<a class="ob" href="https://sekna-app.web.app/tiktok/">Open HEMERA</a><p class="f">TikTok · Human Appeal US · Account Health · tap an issue for its ads</p></div></body></html>`;
+}
 /** The issue on a page of its own (HEMERA's look), for the email's link. */
 function issuePage(x, msg, map, key) {
   const E = notify.esc, mon = k => { const m = /^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}:\d{2}))?/.exec(String(k || '')); return m ? (+m[3]) + ' ' + MON[+m[2] - 1] + ' ' + m[1] + (m[4] ? ' · ' + m[4] : '') : String(k || ''); };
@@ -357,9 +395,8 @@ const fn = onRequest({
     try {
       const L = ((await fsGet(TT_LINKS).catch(() => null)) || {})[im[1]];
       if (!L || L.exp < Date.now()) { res.status(410).send(issuePage(null, 'This link has expired. Ask the team to send it again.')); return; }
-      const acct = await ttAcct(), x = (acct.issues || []).find(i => issueKey(i) === L.key);
-      const doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {};
-      res.status(200).send(issuePage(x || null, x ? '' : 'This issue is not open any more. Thank you!', doc.map || {}, L.key));
+      const acct = await ttAcct(), doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {};
+      res.status(200).send(personPage(L.who || '', acct, doc.map || {}));
     } catch (e) { console.warn('Issue page: ' + ((e && e.message) || e)); res.status(500).send(issuePage(null, 'The page could not load. Try again in a minute.')); }
     return;
   }
