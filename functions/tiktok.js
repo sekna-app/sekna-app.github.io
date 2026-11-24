@@ -275,12 +275,39 @@ function ttSnap() {
   snapPending = buildTikTokSnap().then(v => { snapHeld = { at: Date.now(), v }; snapPending = null; return v; }, e => { snapPending = null; if (snapHeld) return snapHeld.v; throw e; });
   return snapPending;
 }
-const TT_PEOPLE = 'server/tt-people';
+const TT_PEOPLE = 'server/tt-people', TT_LINKS = 'server/tt-issue-links';
+/** The issue on a page of its own (HEMERA's look), for the email's link. */
+function issuePage(x, msg, map, key) {
+  const E = notify.esc, mon = k => { const m = /^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}:\d{2}))?/.exec(String(k || '')); return m ? (+m[3]) + ' ' + MON[+m[2] - 1] + ' ' + m[1] + (m[4] ? ' · ' + m[4] : '') : String(k || ''); };
+  const person = part => { let lab = '', who = part; const c = part.indexOf(': '); if (c > 0 && c < 40) { lab = part.slice(0, c); who = part.slice(c + 2); }
+    const m = /([^\s@(]+)@([a-z0-9.-]+)/i.exec(who), k = m ? (m[1] + '@' + m[2]).toLowerCase() : '', n = k && map && map[k] && map[k].name;
+    return { name: n || (m ? m[1] : /claude/i.test(who) ? 'Claude' : /older/i.test(who) ? 'Older' : who), sub: m ? (n ? k : '@' + m[2]) + (/api/i.test(who) ? ' · via API' : '') : /older/i.test(who) ? 'before the change log' : '', lab }; };
+  const kind = x ? (/landing|link|https?/i.test(x.type) ? 'LANDING PAGE' : /utm|pixel|track/i.test(x.type) ? 'TRACKING' : /name|duplicate|videos in one/i.test(x.type) ? 'NAMING' : /country|text|content|caption/i.test(x.type) ? 'CONTENT' : 'ISSUE') : '';
+  const card = (t, b) => `<div class="c"><div class="l">${t}</div>${b}</div>`;
+  const body = x ? `<div class="h"><small>${kind} · FOUND ${E(mon(x.found).toUpperCase())}</small><h1>${E(x.type || 'Issue')}</h1><span class="${/^yes/i.test(x.fixed) ? 'sg' : 'sr'}">${/^yes/i.test(x.fixed) ? 'Fixed' : 'Open'}</span></div>
+   ${card("What's wrong", `<p class="w">${E(x.what || '—')}</p>`)}
+   ${x.ads ? card('Ads affected', String(x.ads).split(/\n+|,\s+(?=[A-Za-z])/).filter(Boolean).map(a => `<div class="r"><b>${E(a)}</b></div>`).join('')) : ''}
+   ${x.made ? card('Ads created · New York time', String(x.made).split(/\n+/).filter(Boolean).map(l => { const m = /^\s*(\d+)\s*:\s*(.+)$/.exec(l); return m ? `<div class="r"><b>${E(m[1])}</b><span>${E(m[2])}</span></div>` : `<div class="r"><b>${E(l)}</b></div>`; }).join('')) : ''}
+   ${x.by ? card('Made by', String(x.by).split(/\s+·\s+/).map(person).map(p => `<div class="p"><i>${E(String(p.name).charAt(0).toUpperCase())}</i><div><b>${E(p.name)}</b><small>${E(p.sub)}</small></div>${p.lab ? `<em>${E(p.lab)}</em>` : ''}</div>`).join('')) : ''}
+   <a class="b" href="https://sekna-app.web.app/tiktok/?is=${E(key || '')}">Open in HEMERA</a><p class="n">For the HEMERA team: open it in the app to ask Alexandra about it.</p>`
+    : `<div class="c e"><p>${E(msg)}</p></div>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${x ? E(x.type) + ' · ' : ''}TikTok issue · HEMERA</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box;margin:0}body{background:#F4F6FB;font-family:Inter,system-ui,sans-serif;color:#141B33;padding:18px 16px 40px}.wrap{max-width:560px;margin:0 auto}
+.top{display:flex;align-items:center;gap:8px;margin:2px 2px 14px;font-weight:900;color:#203C8E;font-size:15px;letter-spacing:.06em}.top i{width:26px;height:26px;border-radius:8px;background:linear-gradient(140deg,#203C8E,#2C4FB8);display:grid;place-items:center;color:#E2B874;font-style:normal;font-size:13px}
+.t{font-family:"DM Serif Display",Georgia,serif;font-size:30px;margin:0 2px 12px}.t span{background:linear-gradient(transparent 58%,#F2D38F 0)}
+.h{background:linear-gradient(140deg,#132457,#203C8E 55%,#2C4FB8);color:#fff;border-radius:18px;padding:18px;margin-bottom:10px;box-shadow:0 10px 26px rgba(20,40,110,.14)}.h small{font-size:10.5px;font-weight:900;letter-spacing:.1em;color:#E2B874}.h h1{font-size:23px;font-weight:900;margin:6px 0 10px;line-height:1.2}.h span{font-size:11px;font-weight:900;border-radius:99px;padding:4px 12px}.h .sr{background:#FBDDE1;color:#C63A4A}.h .sg{background:#E3F6EC;color:#13804F}
+.c{background:#fff;border-radius:16px;padding:14px 16px;margin-bottom:10px;box-shadow:0 8px 22px rgba(20,40,110,.07)}.l{font-size:9.5px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#8A93A8;margin-bottom:8px}.w{font-size:15px;font-weight:600;line-height:1.55}
+.r{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid #F1F3F8;font-size:13px}.l+.r{border-top:0}.r b{word-break:break-word}.r span{color:#8A93A8;font-weight:700;font-size:12px;flex:none}
+.p{display:flex;align-items:center;gap:10px;padding:7px 0}.p>div{flex:1;min-width:0}.p i{width:32px;height:32px;border-radius:50%;background:linear-gradient(140deg,#2C4FB8,#203C8E);color:#fff;font-style:normal;font-weight:900;display:grid;place-items:center;flex:none}.p b{font-size:13.5px}.p small{display:block;font-size:11px;color:#8A93A8;font-weight:700}.p em{font-style:normal;font-size:11px;font-weight:800;color:#B0812E;text-align:right;max-width:130px}
+.b{display:block;text-align:center;background:#203C8E;color:#fff;text-decoration:none;font-weight:800;font-size:14px;border-radius:14px;padding:14px;margin-top:6px}.n{font-size:11.5px;color:#8A93A8;font-weight:600;text-align:center;margin-top:8px}.e p{font-size:15px;font-weight:700;text-align:center;padding:16px 0}
+.f{font-size:11px;color:#8A93A8;text-align:center;margin-top:22px}</style></head><body><div class="wrap"><div class="top"><i>H</i>HEMERA · TIKTOK</div><div class="t">Issue <span>to fix</span></div>${body}<p class="f">TikTok · Human Appeal US · Account Health</p></div></body></html>`;
+}
 /** A short id for an issue (the same on the page): its date, type and ads. */
 function issueKey(x) { const t = String(x.found || '') + '|' + String(x.type || '') + '|' + String(x.ads || '').slice(0, 60); let h = 5381; for (let i = 0; i < t.length; i++) h = ((h * 33) ^ t.charCodeAt(i)) >>> 0; return h.toString(36); }
 /** The issue email (design C, "Personal note"); the button opens the issue on the TikTok page. */
-function issueMailHtml(x, name) {
-  const E = notify.esc, F = "font-family:Inter,'Segoe UI',Helvetica,Arial,sans-serif", url = 'https://sekna-app.web.app/tiktok/?is=' + issueKey(x);
+function issueMailHtml(x, name, link) {
+  const E = notify.esc, F = "font-family:Inter,'Segoe UI',Helvetica,Arial,sans-serif", url = link || ('https://sekna-app.web.app/tiktok/?is=' + issueKey(x));
   const kind = /landing|link|https?/i.test(x.type) ? 'LANDING PAGE' : /utm|pixel|track/i.test(x.type) ? 'TRACKING' : /name|duplicate|videos in one/i.test(x.type) ? 'NAMING' : /country|text|content|caption/i.test(x.type) ? 'CONTENT' : 'ISSUE';
   const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(x.found || '')), day = m ? (+m[3]) + ' ' + MON[+m[2] - 1].toUpperCase() + ' ' + m[1] : String(x.found || '').toUpperCase();
   return `<!doctype html><html><body style="margin:0;background:#F4F6FB;padding:24px 12px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px"><tr><td style="background:#ffffff;border-radius:20px;padding:24px">
@@ -291,8 +318,8 @@ function issueMailHtml(x, name) {
 <p style="margin:6px 0 4px;${F};font-size:17px;font-weight:900;color:#141B33">${E(x.type || 'Issue')}</p>
 <p style="margin:0;${F};font-size:13.5px;font-weight:600;color:#4b5263;line-height:1.5">${E(x.what || '')}</p>
 ${x.ads ? `<p style="margin:10px 0 0;${F};font-size:12px;font-weight:800;color:#203C8E">${E(String(x.ads).replace(/\n+/g, ' · '))}</p>` : ''}</td></tr></table>
-<div style="height:20px"></div><table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto"><tr><td style="background:#203C8E;border-radius:12px"><a href="${url}" style="display:inline-block;padding:13px 26px;${F};font-size:14px;font-weight:800;color:#ffffff;text-decoration:none">Open in HEMERA</a></td></tr></table>
-<p style="margin:14px 0 0;${F};font-size:12px;color:#6B7385;text-align:center">You can ask Alexandra about it from the issue page.</p></td></tr></table><p style="${F};font-size:11px;color:#8A93A8;text-align:center;margin:18px 0 0">TikTok · Human Appeal US · Account Health<br>You get this because an ad you made has an open issue.</p></td></tr></table></body></html>`;
+<div style="height:20px"></div><table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto"><tr><td style="background:#203C8E;border-radius:12px"><a href="${url}" style="display:inline-block;padding:13px 26px;${F};font-size:14px;font-weight:800;color:#ffffff;text-decoration:none">See the issue</a></td></tr></table>
+<p style="margin:14px 0 0;${F};font-size:12px;color:#6B7385;text-align:center">The link works for 14 days, no sign-in needed.</p></td></tr></table><p style="${F};font-size:11px;color:#8A93A8;text-align:center;margin:18px 0 0">TikTok · Human Appeal US · Account Health<br>You get this because an ad you made has an open issue.</p></td></tr></table></body></html>`;
 }
 let feedHeld = null, feedPending = null;
 function ttFeed() {
@@ -323,6 +350,19 @@ const fn = onRequest({
   const route = String(req.path || '/').replace(/\/+$/, '') || '/';
   if (route === '/ping') { res.json({ ok: true }); return; }
   // GET /pic?u=<TikTok picture link>: the picture through this server (only links that are in the sheet's Creatives tab)
+  // v681 the issue page from the email: /tiktok/i/<secret> (on sekna-app.web.app) or /i/<secret> here; no sign-in, 14 days
+  const im = /^(?:\/tiktok)?\/i\/([A-Za-z0-9_-]{16,40})$/.exec(route);
+  if (im && req.method === 'GET') {
+    res.set('Content-Type', 'text/html; charset=utf-8'); res.set('X-Robots-Tag', 'noindex');
+    try {
+      const L = ((await fsGet(TT_LINKS).catch(() => null)) || {})[im[1]];
+      if (!L || L.exp < Date.now()) { res.status(410).send(issuePage(null, 'This link has expired. Ask the team to send it again.')); return; }
+      const acct = await ttAcct(), x = (acct.issues || []).find(i => issueKey(i) === L.key);
+      const doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {};
+      res.status(200).send(issuePage(x || null, x ? '' : 'This issue is not open any more. Thank you!', doc.map || {}, L.key));
+    } catch (e) { console.warn('Issue page: ' + ((e && e.message) || e)); res.status(500).send(issuePage(null, 'The page could not load. Try again in a minute.')); }
+    return;
+  }
   if (route === '/pic' && req.method === 'GET') {
     try {
       const u = String((req.query && req.query.u) || '');
@@ -367,7 +407,9 @@ const fn = onRequest({
       if (!m || !m.email) throw new Error('Link this person to a HEMERA profile first (Account & Policy → Team accounts).');
       if (!notify.mailReady()) throw new Error('Email is not set up on the server yet.');
       const name = m.name || String(m.email).split('@')[0];
-      await notify.sendMail({ to: m.email, replyTo: me && me.email ? me.email : undefined, subject: 'TikTok issue to fix: ' + String(issue.type || 'Issue').slice(0, 80), rawHtml: issueMailHtml(issue, name) });
+      const tok = require('crypto').randomBytes(18).toString('base64url');
+      await fsUpdate(TT_LINKS, d => { d = d || {}; const now = Date.now(); Object.keys(d).forEach(k => { if (!d[k] || d[k].exp < now) delete d[k]; }); d[tok] = { key, who, exp: now + 14 * 864e5 }; return d; });
+      await notify.sendMail({ to: m.email, replyTo: me && me.email ? me.email : undefined, subject: 'TikTok issue to fix: ' + String(issue.type || 'Issue').slice(0, 80), rawHtml: issueMailHtml(issue, name, 'https://sekna-app.web.app/tiktok/i/' + tok) });
       const at = Date.now();
       await fsUpdate(TT_PEOPLE, d => { d = d || {}; d.mails = d.mails || {}; const l = d.mails[key] = (d.mails[key] || []).filter(x => x.who !== who); l.push({ who, at }); return d; });
       res.json({ ok: true, result: { at } }); return;
