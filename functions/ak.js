@@ -108,6 +108,20 @@ async function xop(b, who, isOwner) {
       if (b.email) { u.limits.per = u.limits.per || {}; const k = ekey(b.email); u.limits.per[k] = { msgDay: n(b.msgDay), callWeek: n(b.callWeek) }; Object.keys(u.limits.per[k]).forEach(x => u.limits.per[k][x] === undefined && delete u.limits.per[k][x]); }
       else u.limits.base = Object.assign({}, u.limits.base || {}, b.msgDay != null ? { msgDay: n(b.msgDay) } : {}, b.callWeek != null ? { callWeek: n(b.callWeek) } : {}); return u; });
     return xop({ op: 'usage' }, who, true); }
+  // v674 the TikTok page's Comments: translate short texts into Arabic (only that page asks; nothing else changes)
+  if (op === 'tr' && b.plat === 'tiktok') {
+    const texts = (Array.isArray(b.texts) ? b.texts : []).slice(0, 40).map(t => String(t || '').slice(0, 500));
+    if (!texts.length) return { ok: true, out: [] };
+    const pp = await prep(email, String(b.name || who.name || '').slice(0, 60)); if (pp.blocked) return { ok: false, error: 'No access.' };
+    const keys = (pp.keys || []).filter(Boolean), url = String(pp.url || '').replace(/:streamGenerateContent.*$/, ':generateContent').replace(/\?alt=sse$/, '');
+    const payload = { contents: [{ role: 'user', parts: [{ text: 'Translate each of these TikTok comments into clear Arabic (Egyptian Arabic is fine). Keep the meaning, insults and tone exactly; do not soften or explain. Emojis stay. If a comment is already Arabic, return it as it is. Return only a JSON array of strings, the same length and order.\n\n' + JSON.stringify(texts) }] }],
+      generationConfig: { temperature: 0, maxOutputTokens: 4000, responseMimeType: 'application/json', thinkingConfig: { thinkingBudget: 0 } } };
+    let r = null; for (let ki = 0; ki < keys.length; ki++) { r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': keys[ki] }, body: JSON.stringify(payload) }); if (r.status !== 429 && r.status < 500) break; }
+    if (!r || !r.ok) return { ok: false, error: 'Could not translate right now.' };
+    const j = await r.json().catch(() => ({})), t = (((((j.candidates || [])[0] || {}).content || {}).parts || []).map(x => x.text || '').join(''));
+    let out = []; try { out = JSON.parse(t); } catch (e) { const m = /\[[\s\S]*\]/.exec(t); try { out = m ? JSON.parse(m[0]) : []; } catch (e2) { out = []; } }
+    return { ok: true, out: texts.map((_, i) => String((Array.isArray(out) ? out[i] : '') || '')) };
+  }
   if (op === 'stt') { const audio = String(b.audio || ''), mime = /^audio\/(wav|aac|ogg|webm|mp4|mpeg)$/.test(String(b.mime || '')) ? b.mime : 'audio/wav';
     if (!audio || audio.length > 9e6 || !/^[A-Za-z0-9+/=]+$/.test(audio.slice(0, 200))) return { ok: false, error: 'Could not hear the message.' };
     const pp = await prep(email, String(b.name || who.name || '').slice(0, 60)); if (pp.blocked) return { ok: false, error: 'No access.' };

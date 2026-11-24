@@ -274,6 +274,13 @@ function ttSnap() {
   snapPending = buildTikTokSnap().then(v => { snapHeld = { at: Date.now(), v }; snapPending = null; return v; }, e => { snapPending = null; if (snapHeld) return snapHeld.v; throw e; });
   return snapPending;
 }
+let feedHeld = null, feedPending = null;
+function ttFeed() {
+  if (feedHeld && Date.now() - feedHeld.at < 5 * 60000) return Promise.resolve(feedHeld.v);
+  if (feedPending) return feedPending;
+  feedPending = buildTikTokFeed().then(v => { feedHeld = { at: Date.now(), v }; feedPending = null; return v; }, e => { feedPending = null; if (feedHeld) return feedHeld.v; throw e; });
+  return feedPending;
+}
 let acctHeld = null, acctPending = null;
 function ttAcct() {
   if (acctHeld && Date.now() - acctHeld.at < 5 * 60000) return Promise.resolve(acctHeld.v);
@@ -300,7 +307,7 @@ const fn = onRequest({
       const u = String((req.query && req.query.u) || '');
       if (!/^https:\/\/[a-z0-9.-]+\.(tiktokcdn(-[a-z]+)?\.com|ibyteimg\.com)\//i.test(u)) { res.status(400).send(''); return; }
       const snap = await ttSnap().catch(() => null);
-      if (!snap || !((snap.creatives || []).concat(snap.partners || []).some(c => c.pic === u) || (snap.topics || []).some(t => t.img === u))) { res.status(404).send(''); return; }
+      if (!snap || !((snap.creatives || []).concat(snap.partners || []).some(c => c.pic === u) || (snap.topics || []).some(t => t.img === u) || (feedHeld && Object.values(feedHeld.v.vids || {}).some(v => v.pic === u)))) { res.status(404).send(''); return; }
       const r = await fetch(u, { headers: { 'User-Agent': 'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/124 Mobile Safari/537.36', Accept: 'image/avif,image/webp,image/*,*/*' } });
       if (!r.ok) { res.status(r.status === 404 ? 404 : 502).send(''); return; }
       const type = String(r.headers.get('content-type') || 'image/jpeg');
@@ -311,7 +318,7 @@ const fn = onRequest({
     } catch (e) { console.warn('TikTok picture: ' + ((e && e.message) || e)); res.status(502).send(''); }
     return;
   }
-  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
+  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct' && route !== '/feed') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
   let body = req.body;
   if (!(body && typeof body === 'object' && !Buffer.isBuffer(body))) {
     const text = Buffer.isBuffer(body) ? body.toString('utf8') : typeof body === 'string' ? body : (req.rawBody ? req.rawBody.toString('utf8') : '');
@@ -319,7 +326,7 @@ const fn = onRequest({
   }
   try {
     await assertAccess(body.token);
-    res.json({ ok: true, result: route === '/months' ? await ttMonths() : route === '/snap' ? await ttSnap() : route === '/acct' ? await ttAcct() : await ttData(!!body.force) });
+    res.json({ ok: true, result: route === '/months' ? await ttMonths() : route === '/snap' ? await ttSnap() : route === '/acct' ? await ttAcct() : route === '/feed' ? await ttFeed() : await ttData(!!body.force) });
   } catch (e) {
     res.json({ ok: false, access: !!(e && (e.access || e.blocked)), error: String((e && e.message) || e).slice(0, 300) });
   }
@@ -434,6 +441,35 @@ async function buildTikTokAcct() {
   };
 }
 
+/* ---------- Comments and Activity history: the two newest month tabs of each ("Comments – Nov 2026", "Activity history – Nov 2026") ---------- */
+async function buildTikTokFeed() {
+  const meta = await sheetMeta(TT_SHEET_ID);
+  const months = re => meta.sheets.filter(s => re.test(String(s.title).trim())).map(s => {
+    const m = /([A-Z][a-z]{2})\s+(\d{4})\s*$/.exec(String(s.title).trim()), i = m ? MON.indexOf(m[1]) : -1;
+    return { s, k: i >= 0 ? m[2] + '-' + pad(i + 1) : '0000' }; }).sort((a, b) => (a.k < b.k ? 1 : -1)).slice(0, 2).map(x => x.s);
+  const cT = months(/^comments/i), aT = months(/^activity/i);
+  const [vals, links, snap] = await Promise.all([
+    batchGet(TT_SHEET_ID, cT.map(t => a1(t.title, 'A1:M5000')).concat(aT.map(t => a1(t.title, 'A1:I8000'))), true),
+    imageLinks(meta).catch(() => ({})), ttSnap().catch(() => null)]);
+  const T = v => String(v == null ? '' : v).trim();
+  const rows = (v, map) => { const R = (v || []).filter(r => r && r.some(c => T(c))), head = (R[0] || []).map(h => T(h).toLowerCase());
+    const ix = {}; Object.keys(map).forEach(k => { let i = -1; for (const n of map[k]) { i = head.indexOf(n); if (i >= 0) break; }
+      if (i < 0) for (const n of map[k]) { i = head.findIndex(h => h.indexOf(n) === 0); if (i >= 0) break; } ix[k] = i; });
+    return R.slice(1).map(r => { const o = {}; Object.keys(map).forEach(k => { o[k] = ix[k] >= 0 ? T(r[ix[k]]) : ''; }); return o; }); };
+  const seen = new Set(), comments = [];
+  cT.forEach((t, i) => rows(vals[i], { t: ['time'], camp: ['campaign'], ag: ['ad group'], post: ['post id'], user: ['user'], text: ['comment'], type: ['type'], status: ['status'], likes: ['likes'], replies: ['replies'], blocked: ['blocked'], id: ['comment_id', 'comment id'], cat: ['category'] })
+    .forEach(o => { if (!o.text && !o.id) return; const k = o.id || (o.t + o.user + o.text); if (seen.has(k)) return; seen.add(k);
+      comments.push({ t: o.t, camp: o.camp, ag: o.ag, post: o.post, user: o.user, text: o.text.slice(0, 600), type: o.type, status: o.status.toLowerCase(), likes: num(o.likes), replies: num(o.replies), blocked: /^y/i.test(o.blocked), id: o.id, cat: o.cat || 'Other' }); }));
+  const acts = [];
+  aT.forEach((t, i) => rows(vals[cT.length + i], { d: ['date'], tm: ['time'], obj: ['object'], id: ['id'], name: ['name'], act: ['action'], det: ['details'], op: ['operator'], src: ['source'] })
+    .forEach(o => { if (!o.d) return; acts.push({ d: o.d.slice(0, 10), tm: o.tm.slice(0, 5), obj: o.obj, id: o.id, name: o.name.slice(0, 120), act: o.act, det: o.det.slice(0, 420), op: o.op, src: o.src }); }));
+  // the videos the comments are on: name from Creatives, picture from Image links
+  const vids = {}, cr = (snap && snap.creatives) || [];
+  comments.forEach(c => { if (!c.post || vids[c.post]) return; const v = cr.find(x => x.post === c.post); vids[c.post] = { name: v ? v.name : '', pic: (v && v.pic) || links[c.post] || '' }; });
+  comments.sort((a, b) => (a.t < b.t ? 1 : -1)); acts.sort((a, b) => ((a.d + a.tm) < (b.d + b.tm) ? 1 : -1));
+  return { comments, acts, vids, tabs: cT.map(t => t.title).concat(aT.map(t => t.title)), at: Date.now() };
+}
+
 const HIJRI_M = ['Muharram', 'Safar', 'Rabi I', 'Rabi II', 'Jumada I', 'Jumada II', 'Rajab', 'Shaban', 'Ramadan', 'Shawwal', 'Dhu Qadah', 'Dhu Hijjah'];
 /** Daily → Same Hijri Day Last Year, from the month history. */
 function lyOf(k, x, hist) {
@@ -448,4 +484,4 @@ function lyOf(k, x, hist) {
   };
 }
 
-module.exports = { buildTikTokData, buildTikTokMonths, buildTikTokSnap, buildTikTokAcct, TT_CH, TT_SHEET_ID, fn };
+module.exports = { buildTikTokData, buildTikTokMonths, buildTikTokSnap, buildTikTokAcct, buildTikTokFeed, TT_CH, TT_SHEET_ID, fn };
