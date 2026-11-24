@@ -2,7 +2,7 @@
 // TikTok tracker sheet (one tab per month, e.g. "Nov 2026", and the "Media plan" tab) in the same shape as
 // buildDashboardData, so the Google pages draw it as they are.
 // Conversions and value are the CTA ones (the media plan targets are CTA). Money is in US dollars.
-const { sheetMeta, batchGet, a1 } = require('./google');
+const { sheetMeta, batchGet, a1, request } = require('./google');
 
 const TT_SHEET_ID = '1n-aHvbMFQalzmYn1vjHUDPYszF_B5-FVJIcPDY6PSUU';
 const TT_ACCOUNT = { key: 'tt', label: 'Human Appeal US', shortLabel: 'TikTok', dashboardTitle: 'TikTok · Human Appeal US' };
@@ -314,20 +314,32 @@ async function buildTikTokSnap() {
   const meta = await sheetMeta(TT_SHEET_ID);
   const find = re => meta.sheets.find(s => re.test(String(s.title).trim()));
   const tabs = [find(/^creatives$/i), find(/^topics/i), find(/^partners$/i)];
-  const vals = await batchGet(TT_SHEET_ID, tabs.map(t => a1(t ? t.title : 'Creatives', 'A1:P400')));
-  const table = (v, map) => {
+  const vals = await batchGet(TT_SHEET_ID, tabs.map(t => a1(t ? t.title : 'Creatives', 'A1:T400')));
+  // The video pictures: column A of Creatives holds =IMAGE("url"), read as formulas (the link lasts about 7 days; the sheet renews it)
+  let pics = [];
+  if (tabs[0]) {
+    try {
+      const f = await request('https://sheets.googleapis.com/v4/spreadsheets/' + TT_SHEET_ID + '/values/' + encodeURIComponent(a1(tabs[0].title, 'A1:A400')) + '?valueRenderOption=FORMULA');
+      pics = ((f && f.values) || []).map(r => { const m = /IMAGE\(\s*"(https:\/\/[^"]+)"/i.exec(String((r || [])[0] || '')); return m ? m[1] : ''; });
+    } catch (e) { console.warn('TikTok pictures: ' + ((e && e.message) || e)); }
+  }
+  // Columns by their header: an exact name first, then one that starts with it (so "Conv (CTA)" is never taken for "Conv (total)")
+  const table = (v, map, keepRow) => {
     const rows = v || [], head = (rows[0] || []).map(h => String(h || '').trim().toLowerCase());
-    const ix = {}; Object.keys(map).forEach(k => { ix[k] = head.findIndex(h => map[k].some(n => h === n || h.indexOf(n) === 0)); });
-    return rows.slice(1).filter(r => r && r.some(c => c !== '' && c != null)).map(r => {
-      const o = {}; Object.keys(map).forEach(k => { const c = ix[k] >= 0 ? r[ix[k]] : ''; o[k] = c == null ? '' : c; }); return o;
+    const ix = {}; Object.keys(map).forEach(k => { let i = -1;
+      for (const n of map[k]) { i = head.indexOf(n); if (i >= 0) break; }
+      if (i < 0) for (const n of map[k]) { i = head.findIndex(h => h.indexOf(n) === 0); if (i >= 0) break; }
+      ix[k] = i; });
+    return rows.slice(1).map((r, ri) => ({ r, ri: ri + 1 })).filter(x => x.r && x.r.some(c => c !== '' && c != null)).map(({ r, ri }) => {
+      const o = {}; Object.keys(map).forEach(k => { const c = ix[k] >= 0 ? r[ix[k]] : ''; o[k] = c == null ? '' : c; }); if (keepRow) o._row = ri; return o;
     });
   };
   const N = v => num(v), T = v => String(v == null ? '' : v).trim();
-  const creatives = tabs[0] ? table(vals[0], { name: ['creative'], topic: ['topic'], creator: ['creator'], type: ['type'], campaign: ['campaign'], adgroup: ['ad group'], spend: ['spend'], ctr: ['ctr'], conv: ['conv'], value: ['value'], roas: ['roas'], share: ['share of ad group'], lp: ['landing page'], decision: ['decision'] })
-    .map(o => ({ name: T(o.name), topic: T(o.topic), creator: T(o.creator), type: T(o.type), campaign: T(o.campaign), adgroup: T(o.adgroup), spend: N(o.spend), ctr: N(o.ctr), conv: N(o.conv), value: N(o.value), roas: N(o.roas), share: o.share === '' ? null : N(o.share), lp: T(o.lp), decision: T(o.decision) })).filter(o => o.name) : [];
-  const topics = tabs[1] ? table(vals[1], { topic: ['topic'], spend: ['spend'], conv: ['conv'], value: ['value'], roas: ['roas'], best: ['best landing page'], bestRoas: ['its roas'], tried: ['pages tried'] })
+  const creatives = tabs[0] ? table(vals[0], { name: ['creative'], topic: ['topic'], creator: ['creator'], type: ['type'], campaign: ['campaign'], adgroup: ['ad group'], spend: ['spend'], impr: ['impressions'], clicks: ['clicks'], ctr: ['ctr'], conv: ['conv (cta)', 'conv'], value: ['value (cta)', 'value'], roas: ['roas (cta)', 'roas'], share: ['share of ad group'], lp: ['landing page'], decision: ['decision'], post: ['post id'] }, true)
+    .map(o => ({ name: T(o.name), topic: T(o.topic), creator: T(o.creator), type: T(o.type), campaign: T(o.campaign), adgroup: T(o.adgroup), spend: N(o.spend), impr: N(o.impr), clicks: N(o.clicks), ctr: N(o.ctr), conv: N(o.conv), value: N(o.value), roas: N(o.roas), share: o.share === '' ? null : N(o.share), lp: T(o.lp), decision: T(o.decision), post: T(o.post), pic: pics[o._row] || '' })).filter(o => o.name) : [];
+  const topics = tabs[1] ? table(vals[1], { topic: ['topic'], spend: ['spend'], conv: ['conv (cta)', 'conv'], value: ['value (cta)', 'value'], roas: ['roas (cta)', 'roas'], best: ['best landing page'], bestRoas: ['its roas'], tried: ['pages tried'] })
     .map(o => ({ topic: T(o.topic), spend: N(o.spend), conv: N(o.conv), value: N(o.value), roas: N(o.roas), best: T(o.best), bestRoas: o.bestRoas === '' ? null : N(o.bestRoas), tried: N(o.tried) })).filter(o => o.topic) : [];
-  const partners = tabs[2] ? table(vals[2], { creator: ['creator'], n: ['creatives'], spend: ['spend'], spark: ['spark spend'], repost: ['repost spend'], conv: ['conv'], value: ['value'], roas: ['roas'], best: ['best creative'] })
+  const partners = tabs[2] ? table(vals[2], { creator: ['creator'], n: ['creatives'], spend: ['spend'], spark: ['spark spend'], repost: ['repost spend'], conv: ['conv (cta)', 'conv'], value: ['value (cta)', 'value'], roas: ['roas (cta)', 'roas'], best: ['best creative'] })
     .map(o => ({ creator: T(o.creator), n: N(o.n), spend: N(o.spend), spark: N(o.spark), repost: N(o.repost), conv: N(o.conv), value: N(o.value), roas: N(o.roas), best: T(o.best) })).filter(o => o.creator) : [];
   return { creatives, topics, partners, at: Date.now() };
 }
@@ -354,8 +366,8 @@ async function buildTikTokAcct() {
   const tbl = (v, map) => { const R = rowsOf(v), head = (R[0] || []).map(h => h.toLowerCase());
     const ix = {}; Object.keys(map).forEach(k => { ix[k] = head.findIndex(h => map[k].some(n => h === n || h.indexOf(n) === 0)); });
     return R.slice(1).map(r => { const o = {}; Object.keys(map).forEach(k => { o[k] = ix[k] >= 0 ? (r[ix[k]] || '') : ''; }); return o; }); };
-  const checks = tabs[1] ? tbl(vals[1], { ad: ['ad'], campaign: ['campaign'], adgroup: ['ad group'], created: ['created'], problems: ['problems'], id: ['ad id'] }).filter(o => o.ad) : [];
-  const issues = tabs[2] ? tbl(vals[2], { found: ['found'], type: ['type'], ads: ['ad(s)', 'ads'], what: ['description'], owner: ['owner'], fixed: ['fixed'], fixedOn: ['fixed on'] }).filter(o => o.type || o.what) : [];
+  const checks = tabs[1] ? tbl(vals[1], { ad: ['ad'], campaign: ['campaign'], adgroup: ['ad group'], created: ['created'], by: ['created by'], problems: ['problems'], id: ['ad id'] }).filter(o => o.ad) : [];
+  const issues = tabs[2] ? tbl(vals[2], { found: ['found'], type: ['type'], ads: ['ad(s)', 'ads'], what: ['description'], by: ['created by'], owner: ['owner'], fixed: ['fixed'], fixedOn: ['fixed on'] }).filter(o => o.type || o.what) : [];
   return {
     account: { name: account.account || '', status: account.status || '', balance: num(account.balance), currency: account.currency || 'USD', opened: account.opened || '', checked: account['checked on'] || '' },
     rejected: ads, note, checks, issues, at: Date.now()

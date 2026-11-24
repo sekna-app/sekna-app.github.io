@@ -10761,6 +10761,15 @@ body.dark-mode .tts-tr{border-color:#26326A}body.dark-mode .tts-tr b,body.dark-m
 .tta-seg{display:flex;background:#E9ECF4;border-radius:12px;padding:3px;margin-bottom:10px}.tta-seg button{flex:1;border:0;background:transparent;font:inherit;font-size:12px;font-weight:800;padding:8px 0;border-radius:9px;color:#6B7385;cursor:pointer}.tta-seg button.on{background:#203C8E;color:#fff}
 .tts-tr.tta-tr{grid-template-columns:1fr auto}.tta-1l small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tta-tr .tts-chip{margin:0;max-width:128px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
 body.dark-mode .tta-cr{border-color:#26326A}body.dark-mode .tta-cr b{color:#E7EBF3}body.dark-mode .tta-seg{background:#1b2656}
+/* TikTok · Creatives pictures */
+.tts-tr.tts-cr{grid-template-columns:1fr 64px 52px 14px}
+.tts-cn{display:flex!important;align-items:center;gap:10px;min-width:0}.tts-tr .tts-cn span{text-align:left!important}.tts-cn>span:last-child{min-width:0}
+.tts-pic{width:34px;height:46px;flex:0 0 34px;border-radius:8px;overflow:hidden;background:#EEF2FB;display:grid;place-items:center}
+.tts-pic img{width:100%;height:100%;object-fit:cover;display:block}
+.tts-pic svg{width:16px;height:16px;fill:none;stroke:#8A93A8;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.tts-pic.big{width:90px;height:150px;flex:0 0 90px;border-radius:12px}.tts-pic.big svg{width:24px;height:24px}
+.tts-mv{display:flex;gap:12px;align-items:flex-start;padding-top:8px}.tts-mv>div{flex:1;min-width:0}.tts-mv .tts-chip{display:inline-block;margin:8px 0 0}
+body.dark-mode .tts-pic{background:#1b2656}
 </style>
 </head>
 <body class="plat-tt">
@@ -23744,8 +23753,12 @@ function ttSnapLoad(force){
 }
 function ttRo(v){return (Number(v)||0).toFixed(2)+'x'}
 function ttDec(d){d=String(d||'');return /^scale/i.test(d)?'good':/^pause/i.test(d)?'bad':/^keep/i.test(d)?'navy':'warn'}
+// the video's picture (from the sheet; the link lasts about a week) or a plain tile when there is none
+function ttPic(c,big){const ph=`<span class="tts-pic${big?' big':''} none"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="13" height="14" rx="2.5"/><path d="M16.5 10l4-2.5v9l-4-2.5"/></svg></span>`;
+ return c.pic?`<span class="tts-pic${big?' big':''}"><img src="${esc(c.pic)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.classList.add('none');this.remove()"></span>`:ph}
 function ttDecName(d){d=String(d||'');return /^traffic/i.test(d)?'CPC':d}
-function ttCrTitle(c){const t=c.topic||'Creative',w=c.creator&&!/^unknown/i.test(c.creator)?c.creator:'';return esc(t)+(w?' · '+esc(w):'')}
+function ttCrTitle(c){const code=/_/.test(c.name)&&String(c.name).length>30;if(c.name&&!code)return esc(c.name);const t=c.topic||'Creative',w=c.creator&&!/^unknown/i.test(c.creator)?c.creator:'';return esc(t)+(w?' · '+esc(w):'')}
+function ttCrSub(c){const code=/_/.test(c.name)&&String(c.name).length>30;return esc([code?'':c.topic,c.type].filter(Boolean).join(' · '))}
 function ttCrOpen(i){TTS.open=TTS.open===String(i)?'':String(i);ttSnapDraw()}
 function ttSnapDraw(){
  const host=document.getElementById(CURRENT_TAB+'Body');if(!host)return;
@@ -23754,12 +23767,13 @@ function ttSnapDraw(){
  if(CURRENT_TAB==='ttcr'){
   const C=D.creatives||[],tot=C.reduce((a,c)=>a+c.spend,0),n=k=>C.filter(c=>ttDec(c.decision)===k).length;
   host.innerHTML=`<div class="tts-hero"><small>Last 30 days · ${C.length} videos</small><b>${money(tot)}</b><span>spent on the top ${C.length}</span>
-   <div class="tts-hk"><div><em class="g">${n('good')}</em>Scale</div><div><em>${n('navy')}</em>Keep</div><div><em class="r">${n('bad')}</em>Pause</div><div><em class="w">${n('warn')}</em>CPC</div></div></div>
+   <div class="tts-hk"><div><em class="g">${n('good')}</em>Scale</div><div><em>${n('navy')}</em>Keep</div><div><em class="r">${n('bad')}</em>Pause</div><div><em class="w">${n('warn')}</em>${C.some(c=>/^wait/i.test(c.decision))||!C.some(c=>/^traffic/i.test(c.decision))?'Wait':'CPC'}</div></div></div>
    <div class="card tts-tbl"><div class="tts-tr th"><span>Creative</span><span>Spend</span><span>ROAS</span><span></span></div>${C.map((c,i)=>{const o=TTS.open===String(i);
-    return `<div class="tts-tr${o?' open':''}" role="button" tabindex="0" onclick="ttCrOpen(${i})"><span><b>${ttCrTitle(c)}</b><small>${esc(c.type||'')}</small></span><span>${money(c.spend)}</span><span class="${c.roas>=2?'g':c.roas<1?'r':''}">${ttRo(c.roas)}</span><span><i class="tts-dot ${ttDec(c.decision)}"></i></span></div>`+
-    (o?`<div class="tts-more"><div class="tts-kv"><span>Conv<b>${fmt(c.conv,0)}</b></span><span>Value<b>${money(c.value)}</b></span><span>CTR<b>${percent(c.ctr)}</b></span><span class="tts-chip ${ttDec(c.decision)}">${esc(ttDecName(c.decision))}</span></div>
-     ${c.lp?`<p><small>Landing page</small>${esc(c.lp)}</p>`:''}<p><small>Campaign</small>${esc(c.campaign)}</p>${c.adgroup?`<p><small>Ad group</small>${esc(c.adgroup)}${c.share!=null?' · '+percent(c.share)+' of its spend':''}</p>`:''}<p><small>Video</small>${esc(c.name)}</p></div>`:'')}).join('')}</div>
-   <div class="tts-note">Tap a video to see its details · the decision is from the TikTok sheet</div>`;
+    return `<div class="tts-tr tts-cr${o?' open':''}" role="button" tabindex="0" onclick="ttCrOpen(${i})"><span class="tts-cn">${ttPic(c)}<span><b>${ttCrTitle(c)}</b><small>${ttCrSub(c)}</small></span></span><span>${money(c.spend)}</span><span class="${c.roas>=2?'g':c.roas<1?'r':''}">${ttRo(c.roas)}</span><span><i class="tts-dot ${ttDec(c.decision)}"></i></span></div>`+
+    (o?`<div class="tts-more"><div class="tts-mv">${ttPic(c,1)}<div><div class="tts-kv"><span>Conv<b>${fmt(c.conv,0)}</b></span><span>Value<b>${money(c.value)}</b></span><span>CTR<b>${percent(c.ctr)}</b></span>${c.impr?`<span>Impressions<b>${fmt(c.impr,0)}</b></span>`:''}${c.clicks?`<span>Clicks<b>${fmt(c.clicks,0)}</b></span>`:''}</div>
+     <span class="tts-chip ${ttDec(c.decision)}">${esc(ttDecName(c.decision))}</span>
+     ${c.creator&&!/^unknown/i.test(c.creator)?`<p><small>Creator</small>${esc(c.creator)}</p>`:''}${c.lp?`<p><small>Landing page</small>${esc(c.lp)}</p>`:''}<p><small>Campaign</small>${esc(c.campaign)}</p>${c.adgroup?`<p><small>Ad group</small>${esc(c.adgroup)}${c.share!=null?' · '+percent(c.share)+' of its spend':''}</p>`:''}${c.post?`<p><small>Post ID</small>${esc(c.post)}</p>`:`<p><small>Video</small>${esc(c.name)}</p>`}</div></div></div>`:'')}).join('')}</div>
+   <div class="tts-note">Tap a video to see its details · the decision is from the TikTok sheet${C.some(c=>/^wait/i.test(c.decision))?' · Wait = under $30 spent':''}</div>`;
  }else if(CURRENT_TAB==='tttp'){
   const T=[...(D.topics||[])].sort((a,b)=>b.spend-a.spend);
   host.innerHTML=`<div class="tts-sub">Each topic and its best landing page · last 30 days</div><div class="tts-grid">${T.map(t=>`<div class="card tts-tile"><small>${esc(t.topic)}</small><b>${ttRo(t.roas)}</b><span>${money(t.spend)} spend · ${fmt(t.conv,0)} conv</span>
@@ -23804,14 +23818,14 @@ function ttAcDraw(){
    <div class="tta-seg"><button type="button" class="${TTA.all?'':'on'}" onclick="ttAcAll(false)">Needs fix ${bad.length}</button><button type="button" class="${TTA.all?'on':''}" onclick="ttAcAll(true)">All ${C.length}</button></div>
    <div class="card tts-tbl">${L.length?L.map((c,i)=>{const k='q'+(c.id||i),o=TTA.open===k,good=TT_OK(c.problems);
     return `<div class="tts-tr tta-tr tta-1l${o?' open':''}" role="button" tabindex="0" onclick="ttAcOpen('${esc(k)}')"><span><b>${esc(c.ad)}</b><small>${ttDay(c.created)} · ${esc(String(c.campaign).replace(/^HAUS_/,''))}</small></span><span class="tts-chip ${good?'good':'warn'}">${good?'OK':esc(String(c.problems).split(';')[0])}${!good&&String(c.problems).split(';').length>1?' +'+(String(c.problems).split(';').length-1):''}</span></div>`+
-    (o?`<div class="tts-more">${good?'':`<p><small>Problems</small>${String(c.problems).split(';').map(x=>esc(x.trim())).join('<br>')}</p>`}<p><small>Campaign</small>${esc(c.campaign)}</p>${c.adgroup?`<p><small>Ad group</small>${esc(c.adgroup)}</p>`:''}${c.id?`<p><small>Ad ID</small>${esc(c.id)}</p>`:''}</div>`:'')}).join(''):'<div class="dx-empty">Every live ad passes.</div>'}</div>
+    (o?`<div class="tts-more">${good?'':`<p><small>Problems</small>${String(c.problems).split(';').map(x=>esc(x.trim())).join('<br>')}</p>`}${c.by?`<p><small>Created by</small>${esc(c.by)}</p>`:''}<p><small>Campaign</small>${esc(c.campaign)}</p>${c.adgroup?`<p><small>Ad group</small>${esc(c.adgroup)}</p>`:''}${c.id?`<p><small>Ad ID</small>${esc(c.id)}</p>`:''}</div>`:'')}).join(''):'<div class="dx-empty">Every live ad passes.</div>'}</div>
    <div class="tts-note">Tap an ad to see its problems and IDs</div>`;
  }else{
   const I=[...(D.issues||[])].sort((a,b)=>((/^yes/i.test(a.fixed)?1:0)-(/^yes/i.test(b.fixed)?1:0))||(String(b.found).localeCompare(String(a.found)))),open=I.filter(x=>!/^yes/i.test(x.fixed)).length;
-  host.innerHTML=`<div class="tts-sub">${open} open · ${I.length-open} fixed</div>
+  host.innerHTML=`<div class="tts-sub">${open} open${I.length-open?' · '+(I.length-open)+' fixed':''} · active ads only</div>
    <div class="card tts-tbl">${I.map((x,i)=>{const k='i'+i,o=TTA.open===k,f=/^yes/i.test(x.fixed);
     return `<div class="tts-tr tta-tr${o?' open':''}" role="button" tabindex="0" onclick="ttAcOpen('${k}')"><span><b>${esc(x.type||'Issue')}</b><small>${esc(x.what)}</small></span><span class="tts-chip ${f?'good':'bad'}">${f?'Fixed':'Open'}</span></div>`+
-    (o?`<div class="tts-more"><p><small>What</small>${esc(x.what)}</p>${x.ads?`<p><small>Ad(s)</small>${esc(x.ads)}</p>`:''}<p><small>Found</small>${ttDay(x.found)}${f&&x.fixedOn?' · fixed '+ttDay(x.fixedOn):''}</p>${x.owner?`<p><small>Owner</small>${esc(x.owner)}</p>`:''}</div>`:'')}).join('')}</div>
+    (o?`<div class="tts-more"><p><small>What</small>${esc(x.what)}</p>${x.ads?`<p><small>Ad(s)</small>${esc(x.ads)}</p>`:''}${x.by?`<p><small>Created by</small>${esc(x.by)}</p>`:''}<p><small>Found</small>${ttDay(x.found)}${f&&x.fixedOn?' · fixed '+ttDay(x.fixedOn):''}</p>${x.owner?`<p><small>Owner</small>${esc(x.owner)}</p>`:''}</div>`:'')}).join('')}</div>
    <div class="tts-note">Open first, newest first · tap one for details</div>`;
  }
 }
