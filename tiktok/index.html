@@ -11036,6 +11036,23 @@ body.dark-mode .ttf-tdot{box-shadow:0 0 0 3px #0D1430}
 .ttf-rn{text-align:right;flex:none}.ttf-rn em{display:block;font-style:normal;font-weight:900;font-size:18px;color:#203C8E;font-variant-numeric:tabular-nums}.ttf-rn span{font-size:9.5px;color:#8A93A8;font-weight:800}
 .tti-avp img{width:100%;height:100%;object-fit:cover;display:block}
 body.dark-mode .ttf-row,body.dark-mode .tta-kv{border-color:#26326A}body.dark-mode .ttf-rb b,body.dark-mode .tta-kv b{color:#E7EBF3}
+/* v678 Ad Checks grouped by problem */
+.ttq-sum{padding:14px 16px!important;border-radius:18px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 12px}
+.ttq-sum b{font-size:30px;font-weight:900;color:#0F1F52;margin-right:6px;font-variant-numeric:tabular-nums}.ttq-sum span{font-size:12.5px;color:#6B7385;font-weight:700}
+.ttq-p{text-align:right}.ttq-p em{display:block;font-style:normal;font-size:22px;font-weight:900;color:#13804F}.ttq-p small{font-size:9.5px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#8A93A8}
+.ttq-bar{grid-column:1/-1;height:7px;background:#FBDDE1;border-radius:99px;overflow:hidden;margin-top:6px}.ttq-bar i{display:block;height:100%;background:#13804F;border-radius:99px}
+.ttq-n{grid-column:1/-1;font-size:10.5px;color:#8A93A8;font-weight:700}
+.ttq-g{padding:0!important;overflow:hidden;border-radius:16px;margin-bottom:9px}
+.ttq-gh{display:flex;align-items:center;gap:10px;width:100%;padding:13px 14px;border:0;background:#fff;font:inherit;text-align:left;cursor:pointer}
+.ttq-gh i{width:10px;height:10px;border-radius:3px;background:var(--c);flex:none}.ttq-gh b{flex:1;font-size:13.5px;color:#141B33}.ttq-gh em{font-style:normal;font-weight:900;font-size:16px;color:var(--c)}
+.ttq-ch{color:#8A93A8;font-weight:900;transition:transform .2s}.ttq-ch.up{transform:rotate(180deg)}
+.ttq-r{padding:11px 14px;border-top:1px solid #EEF1F6;background:#FAFBFE;cursor:pointer}.ttq-ad{display:block;font-size:12.5px;color:#141B33;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ttq-pics{display:flex;gap:4px;align-items:center;margin-top:7px}.ttq-pics .tts-pic{width:28px;height:38px;flex:0 0 28px;border-radius:6px}.ttq-pics em{font-style:normal;font-size:10.5px;font-weight:900;color:#8A93A8}
+.ttq-sp{display:grid;place-items:center;width:28px;height:38px;border-radius:6px;background:#EEF2FB;color:#203C8E;font-size:7.5px;font-weight:900}
+.ttq-m{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:7px}.ttq-m .tti-d{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ttq-more{margin-top:8px;font-size:11.5px;color:#4b5263;font-weight:600}.ttq-more p{margin-top:6px;word-break:break-all}.ttq-more small{display:block;font-size:9.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8A93A8}
+.ttq-cp{border:0;font:inherit;font-size:10px;font-weight:800;color:#203C8E;background:#EEF2FB;border-radius:7px;padding:2px 8px;margin-left:6px;cursor:pointer}
+body.dark-mode .ttq-gh{background:#16204A}body.dark-mode .ttq-gh b,body.dark-mode .ttq-ad,body.dark-mode .ttq-sum b{color:#E7EBF3}body.dark-mode .ttq-r{background:#1b2656;border-color:#26326A}
 </style>
 </head>
 <body class="plat-tt">
@@ -24007,8 +24024,12 @@ function ttAcLoad(force){
 }
 function ttDay(v){const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(v||''));return m?new Date(Date.UTC(+m[1],+m[2]-1,+m[3])).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}):esc(String(v||''))}
 function ttAcOpen(k){TTA.open=TTA.open===k?'':k;ttAcDraw()}
+function ttQWho(k){TTA.qWho=k;TTA.open='';ttAcDraw()}
+function ttQOpen(k){TTA.qOpen=TTA.qOpen===k?'':k;TTA.open='';ttAcDraw()}
+
+function ttProb(t){t=String(t||'');return /^no problem$/i.test(t)?['No problem','#13804F']:/same video/i.test(t)?['Same video twice in a campaign','#7B5CF0']:/utm/i.test(t)?['UTM medium not Paid','#1D9CC8']:/videos in one ad/i.test(t)?['Too many videos in one ad','#E05566']:/ptr|spark/i.test(t)?['Spark post without PTR','#2453D6']:/name/i.test(t)?['Name not in the pattern','#C99A45']:/https|link/i.test(t)?['Link not https','#E2B874']:/country/i.test(t)?['Country in text ≠ page','#C63A4A']:[t.slice(0,40)||'Other','#8A93A8']}
 function ttAcAll(v){TTA.all=v;TTA.open='';ttAcDraw()}
-const TT_OK=v=>/^ok$/i.test(String(v||'').trim());
+const TT_OK=v=>{v=String(v||'').trim();return !v||/^ok$/i.test(v)};
 function ttAcDraw(){
  const host=document.getElementById(CURRENT_TAB+'Body');if(!host)return;
  const D=TTA.data;ttAcLoad();
@@ -24027,13 +24048,25 @@ function ttAcDraw(){
    ${ttTeamBlock(D)}
    ${rj.length?`<div class="tts-sub">Ads that need a look</div><div class="card tts-tbl">${rj.map(r=>`<div class="tts-tr tta-tr"><span><b>${esc(r.ad||'')}</b><small>${esc(r.campaign||'')}${r.changed?' · '+ttDay(r.changed):''}</small></span><span class="tts-chip bad">${esc(r.state||'Rejected')}</span></div>`).join('')}</div>`:`<div class="tts-note tta-fine">${esc(D.note||'No ad is rejected.')}</div>`}`;
  }else if(CURRENT_TAB==='ttqa'){
-  const C=D.checks||[],bad=C.filter(c=>!TT_OK(c.problems)),L=TTA.all?C:bad;
-  host.innerHTML=`<div class="tts-sub">${bad.length} of ${C.length} live ads need a fix · made in the last 60 days</div>
-   <div class="tta-seg"><button type="button" class="${TTA.all?'':'on'}" onclick="ttAcAll(false)">Needs fix ${bad.length}</button><button type="button" class="${TTA.all?'on':''}" onclick="ttAcAll(true)">All ${C.length}</button></div>
-   <div class="card tts-tbl">${L.length?L.map((c,i)=>{const k='q'+(c.id||i),o=TTA.open===k,good=TT_OK(c.problems);
-    return `<div class="tts-tr tta-tr tta-1l${o?' open':''}" role="button" tabindex="0" onclick="ttAcOpen('${esc(k)}')"><span><b>${esc(c.ad)}</b><small>${ttDay(c.created)} · ${esc(String(c.campaign).replace(/^HAUS_/,''))}</small></span><span class="tts-chip ${good?'good':'warn'}">${good?'OK':esc(String(c.problems).split(';')[0])}${!good&&String(c.problems).split(';').length>1?' +'+(String(c.problems).split(';').length-1):''}</span></div>`+
-    (o?`<div class="tts-more">${good?'':`<p><small>Problems</small>${String(c.problems).split(';').map(x=>esc(x.trim())).join('<br>')}</p>`}${c.by?`<p><small>Created by</small>${esc(ttNameText(c.by))}</p>`:''}<p><small>Campaign</small>${esc(c.campaign)}</p>${c.adgroup?`<p><small>Ad group</small>${esc(c.adgroup)}</p>`:''}${c.id?`<p><small>Ad ID</small>${esc(c.id)}</p>`:''}</div>`:'')}).join(''):'<div class="dx-empty">Every live ad passes.</div>'}</div>
-   <div class="tts-note">Tap an ad to see its problems and IDs</div>`;
+  const C=D.checks||[],bad=C.filter(c=>!TT_OK(c.problems)),pct=C.length?Math.round((C.length-bad.length)/C.length*100):100;
+  const pw=c=>ttWho1(String(c.by||'').replace(/\s*\((desktop|marketing api|ads manager|via api)\)\s*$/i,'')),pk=p=>p.k==='o'?'older':(p.key||p.name.toLowerCase());
+  const P=new Map();C.forEach(c=>{const p=ttNamed(pw(c)),k=pk(p);const o=P.get(k)||{p,n:0};o.n++;P.set(k,o)});
+  if(TTA.qWho&&!P.has(TTA.qWho))TTA.qWho='';
+  const L=(TTA.all?C:bad).filter(c=>!TTA.qWho||pk(ttNamed(pw(c)))===TTA.qWho);
+  const G=new Map();L.forEach(c=>{const ks=TT_OK(c.problems)?['No problem']:String(c.problems).split(';').map(x=>ttProb(x.trim())[0]).filter(Boolean);[...new Set(ks)].forEach(k=>{if(!G.has(k))G.set(k,[]);G.get(k).push(c)})});
+  const groups=[...G.entries()].sort((a,b)=>(a[0]==='No problem')-(b[0]==='No problem')||b[1].length-a[1].length);
+  if(TTA.qOpen==null&&groups.length)TTA.qOpen=groups[0][0];
+  host.innerHTML=`<div class="card ttq-sum"><div><b>${bad.length}</b><span>live ad${bad.length===1?'':'s'} need a fix</span></div><div class="ttq-p"><em>${pct}%</em><small>pass</small></div>
+    <div class="ttq-bar"><i style="width:${pct}%"></i></div><small class="ttq-n">${C.length-bad.length} of ${C.length} live ads made in the last 60 days pass every check</small></div>
+   <div class="tti-ff"><button type="button" class="${TTA.all?'':'on'}" onclick="ttAcAll(false)">Needs fix ${bad.length}</button><button type="button" class="${TTA.all?'on':''}" onclick="ttAcAll(true)">All ${C.length}</button></div>
+   ${P.size>1?`<div class="tti-ff"><button type="button" class="${TTA.qWho?'':'on'}" onclick="ttQWho('')">Everyone</button>${[...P.entries()].sort((a,b)=>(a[1].p.k==='o')-(b[1].p.k==='o')||b[1].n-a[1].n).map(([k,o])=>`<button type="button" class="${TTA.qWho===k?'on':''}" onclick="ttQWho('${esc(k).replace(/'/g,'&#39;')}')">${esc(o.p.name)} ${o.n}</button>`).join('')}</div>`:''}
+   ${groups.length?groups.map(([k,Ls])=>{const col=ttProb(k)[1],op=TTA.qOpen===k;return `<div class="card ttq-g"><button type="button" class="ttq-gh" style="--c:${col}" onclick="ttQOpen('${esc(k).replace(/'/g,'&#39;')}')"><i></i><b>${esc(k)}</b><em>${Ls.length}</em><span class="ttq-ch${op?' up':''}">⌄</span></button>
+    ${op?Ls.map((c,i)=>{const id='q'+(c.id||i)+k,o=TTA.open===id,p=ttNamed(pw(c)),pics=c.pics||[];
+     return `<div class="ttq-r${o?' open':''}" role="button" tabindex="0" onclick="ttAcOpen('${esc(id).replace(/'/g,'&#39;')}')"><b class="ttq-ad">${esc(c.ad)}</b>
+      ${pics.length?`<div class="ttq-pics">${pics.slice(0,5).map(u=>u==='spark'?'<span class="ttq-sp">Spark</span>':ttPic({pic:u})).join('')}${pics.length>5?`<em>+${pics.length-5}</em>`:''}</div>`:''}
+      <div class="ttq-m"><span class="tti-who">${ttPav(p,20)}<b>${esc(p.name)}</b></span><span class="tti-d">${esc(String(c.campaign).replace(/^HAUS_/,'').replace(/_TikTok.*$/,'').slice(0,26))} · ${ttDay(c.created).replace(/ \d{4}$/,'')}</span></div>
+      ${o?`<div class="ttq-more">${TT_OK(c.problems)?'':`<p><small>Problems</small>${String(c.problems).split(';').map(x=>esc(x.trim())).join('<br>')}</p>`}${c.by?`<p><small>Created by</small>${esc(ttNameText(c.by))}</p>`:''}<p><small>Campaign</small>${esc(c.campaign)}</p>${c.adgroup?`<p><small>Ad group</small>${esc(c.adgroup)}</p>`:''}${c.id?`<p><small>Ad ID</small>${esc(c.id)} <button type="button" class="ttq-cp" onclick="event.stopPropagation();ttCopy('${esc(c.id)}',this)">Copy</button></p>`:''}</div>`:''}</div>`}).join(''):''}</div>`}).join(''):'<div class="card section"><div class="dx-empty">Every live ad passes.</div></div>'}
+   <div class="tts-note">Tap a problem to open it · tap an ad for its details</div>`;
  }else{
   const I=ttIssues(D),open=I.filter(x=>!/^yes/i.test(x.fixed)).length;
   if(TTA.page!=null&&I[TTA.page]){host.innerHTML=ttIssuePage(I[TTA.page]);return}TTA.page=null;

@@ -308,7 +308,7 @@ const fn = onRequest({
       const u = String((req.query && req.query.u) || '');
       if (!/^https:\/\/[a-z0-9.-]+\.(tiktokcdn(-[a-z]+)?\.com|ibyteimg\.com)\//i.test(u)) { res.status(400).send(''); return; }
       const snap = await ttSnap().catch(() => null);
-      if (!snap || !((snap.creatives || []).concat(snap.partners || []).some(c => c.pic === u) || (snap.topics || []).some(t => t.img === u) || (feedHeld && Object.values(feedHeld.v.vids || {}).some(v => v.pic === u)))) { res.status(404).send(''); return; }
+      if (!snap || !((snap.creatives || []).concat(snap.partners || []).some(c => c.pic === u) || (snap.topics || []).some(t => t.img === u) || (feedHeld && Object.values(feedHeld.v.vids || {}).some(v => v.pic === u)) || (acctHeld && (acctHeld.v.checks || []).some(c => (c.pics || []).indexOf(u) >= 0)))) { res.status(404).send(''); return; }
       const r = await fetch(u, { headers: { 'User-Agent': 'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/124 Mobile Safari/537.36', Accept: 'image/avif,image/webp,image/*,*/*' } });
       if (!r.ok) { res.status(r.status === 404 ? 404 : 502).send(''); return; }
       const type = String(r.headers.get('content-type') || 'image/jpeg');
@@ -445,6 +445,17 @@ async function buildTikTokAcct() {
     const ix = {}; Object.keys(map).forEach(k => { ix[k] = head.findIndex(h => map[k].some(n => h === n || h.indexOf(n) === 0)); });
     return R.slice(1).map(r => { const o = {}; Object.keys(map).forEach(k => { o[k] = ix[k] >= 0 ? (r[ix[k]] || '') : ''; }); return o; }); };
   const checks = tabs[1] ? tbl(vals[1], { ad: ['ad'], campaign: ['campaign'], adgroup: ['ad group'], created: ['created'], by: ['created by'], problems: ['problems'], id: ['ad id'] }).filter(o => o.ad) : [];
+  // v678 the creatives in each ad ("Creative 1" … "Creative 31": =IMAGE(...) or "Spark post"), by Ad ID
+  if (tabs[1] && checks.length) {
+    try {
+      const [f, links] = await Promise.all([request('https://sheets.googleapis.com/v4/spreadsheets/' + TT_SHEET_ID + '/values/' + encodeURIComponent(a1(tabs[1].title, 'A1:AN800')) + '?valueRenderOption=FORMULA'), imageLinks(meta).catch(() => ({}))]);
+      const R = (f && f.values) || [], head = (R[0] || []).map(h => String(h || '').trim().toLowerCase()), idc = head.indexOf('ad id'), cc = head.map((h, i) => (/^creative \d+$/.test(h) ? i : -1)).filter(i => i >= 0);
+      const by = {};
+      R.slice(1).forEach(r => { const id = String((r || [])[idc] == null ? '' : r[idc]).trim(); if (!id) return;
+        by[id] = cc.map(i => { const v = String((r || [])[i] == null ? '' : r[i]).trim(); if (!v) return null; const u = picOf(v, links); return u ? u : (/spark/i.test(v) ? 'spark' : null); }).filter(Boolean); });
+      checks.forEach(c => { c.pics = by[c.id] || []; });
+    } catch (e) { console.warn('TikTok ad pictures: ' + ((e && e.message) || e)); }
+  }
   const issues = tabs[2] ? tbl(vals[2], { found: ['found'], type: ['type'], ads: ['ad(s)', 'ads'], what: ['description'], by: ['created by'], owner: ['owner'], fixed: ['fixed'], fixedOn: ['fixed on'], made: ['ads created'] }).filter(o => o.type || o.what) : [];
   return {
     account: { name: account.account || '', status: account.status || '', balance: num(account.balance), currency: account.currency || 'USD', opened: account.opened || '', checked: account['checked on'] || '' },
