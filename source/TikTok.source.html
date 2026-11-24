@@ -10839,6 +10839,22 @@ body.tt-nocur .cur-box{display:none!important}
 .tta-ed select,.tta-ed input{font:inherit;font-size:13px;font-weight:700;text-transform:none;letter-spacing:0;color:#141B33;border:1px solid #DFE4EF;border-radius:10px;padding:9px 10px;background:#fff}
 .tta-edb{display:flex;gap:8px;justify-content:flex-end}.tta-edb button{border:0;font:inherit;font-size:12px;font-weight:800;border-radius:10px;padding:8px 16px;background:#203C8E;color:#fff;cursor:pointer}.tta-edb .ghost{background:#fff;color:#C63A4A;border:1px solid #F3C5CC}
 .tta-ed small{font-size:10.5px;color:#6B7385;font-weight:600}
+/* v676 Issues Log navy banner + email filter; Activity timeline */
+.tti-ff{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -4px 10px;padding:0 4px}.tti-ff::-webkit-scrollbar{display:none}
+.tti-ff button{flex:none;font:inherit;font-size:11.5px;font-weight:800;padding:6px 12px;border-radius:99px;background:#fff;border:1px solid #DFE4EF;color:#203C8E;cursor:pointer}.tti-ff button.on{background:#203C8E;color:#fff;border-color:#203C8E}
+.tti-nb{padding:0!important;overflow:hidden}.tti-nb .tti-gh{position:relative;overflow:hidden;padding:16px;border-bottom:0;background:linear-gradient(135deg,#132457,#203C8E 55%,#2C4FB8)}
+.tti-nb .tti-gh b{color:#fff;font-size:17px}.tti-nb .tti-gh small{color:#C9D3F5}.tti-glow{position:absolute;right:-34px;top:-38px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(226,184,116,.42),transparent 70%);pointer-events:none}
+.tti-big{position:relative;text-align:right;flex:none}.tti-nb .tti-big em{display:block;font-style:normal;font-size:30px;font-weight:900;color:#E2B874;line-height:1;background:none;padding:0;border-radius:0}.tti-big span{font-size:9.5px;font-weight:800;color:#C9D3F5}
+.tti-avw{background:#fff!important;color:#203C8E!important;box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.tti-nb .tti-r{padding:12px 16px}.tti-nb .tti-gh+.tti-r{border-top:0}
+.ttf-fld{margin-top:-4px}
+.ttf-tl{position:relative;padding-left:20px}.ttf-tl:before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:2px;background:linear-gradient(#E2B874,#DFE4EF)}
+.ttf-tday{font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#B0812E;margin:4px 0 8px}
+.ttf-ti{position:relative}.ttf-tdot{position:absolute;left:-19px;top:15px;width:12px;height:12px;border-radius:50%;box-shadow:0 0 0 3px #F4F6FB}.ttf-tdot.g{background:#13804F}.ttf-tdot.b{background:#203C8E}.ttf-tdot.r{background:#C63A4A}
+.ttf-tc{padding:11px 13px!important;border-radius:14px;margin-bottom:9px}.ttf-tag{display:inline-block;font-size:10px;font-weight:800;color:#203C8E;background:#EEF2FB;border-radius:6px;padding:2px 7px;margin-top:4px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ttf-ba{margin-top:7px}.ttf-ba small{display:block;font-size:9.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8A93A8}.ttf-ba div{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12.5px;font-weight:800;margin-top:2px}
+.ttf-ba s{color:#C63A4A;background:#FBDDE1;border-radius:6px;padding:1px 6px;word-break:break-word}.ttf-ba b{color:#13804F;background:#E3F6EC;border-radius:6px;padding:1px 6px;word-break:break-word}.ttf-ba i{font-style:normal;color:#B0812E}
+body.dark-mode .ttf-tdot{box-shadow:0 0 0 3px #0D1430}
 </style>
 </head>
 <body class="plat-tt">
@@ -23920,11 +23936,12 @@ function ttAcDraw(){
   const I=ttIssues(D),open=I.filter(x=>!/^yes/i.test(x.fixed)).length;
   if(TTA.page!=null&&I[TTA.page]){host.innerHTML=ttIssuePage(I[TTA.page]);return}TTA.page=null;
   host.innerHTML=`<div class="tts-sub">${open} open${I.length-open?' · '+(I.length-open)+' fixed':''} · active ads only</div>
-   ${I.length?ttGroups(I).map(g=>`<div class="card tti-g"><div class="tti-gh">${ttPav(g.p,34)}<div><b>${esc(g.p.name)}</b><small>${esc(g.p.sub)||'&nbsp;'}</small></div><em>${g.L.length}</em></div>
+   ${(()=>{const GG=ttGroups(I),gk=g=>g.p.k+'|'+String(g.p.key||g.p.name).toLowerCase();if(TTA.whoF&&!GG.some(g=>gk(g)===TTA.whoF))TTA.whoF='';
+    return (GG.length>1?`<div class="tti-ff"><button type="button" class="${TTA.whoF?'':'on'}" onclick="ttIssWho('')">All ${I.length}</button>${GG.map(g=>`<button type="button" class="${TTA.whoF===gk(g)?'on':''}" onclick="ttIssWho('${esc(gk(g)).replace(/'/g,'&#39;')}')">${esc(g.p.name)} ${g.L.length}</button>`).join('')}</div>`:'')+GG.filter(g=>!TTA.whoF||gk(g)===TTA.whoF).map(g=>`<div class="card tti-g tti-nb"><div class="tti-gh"><span class="tti-glow"></span>${ttPav(g.p.k==='o'?g.p:Object.assign({},g.p,{k:'w'}),50)}<div><b>${esc(g.p.name)}</b><small>${esc(g.p.sub)||'&nbsp;'}</small></div><div class="tti-big"><em>${g.L.length}</em><span>open issue${g.L.length===1?'':'s'}</span></div></div>
     ${g.L.map(({x,i})=>{const f=/^yes/i.test(x.fixed),n=ttPeople(x.by).length;
      return `<div class="tti-r" role="button" tabindex="0" onclick="ttIssueOpen(${i})"><div class="tti-t"><b>${esc(x.type||'Issue')}</b><span class="tts-chip ${f?'good':'bad'}">${f?'Fixed':'Open'}</span></div><p>${esc(x.what)}</p>
       <div class="tti-m">${n>1?`<span class="tti-more">+${n-1} more made these ads</span>`:'<span></span>'}<span class="tti-d">${ttDay(x.found)}</span></div>
-      <span class="tti-sr">Ads: ${esc(x.ads||'')}. Made by: ${esc(x.by||'')}. Found ${esc(x.found||'')}.</span></div>`}).join('')}</div>`).join(''):'<div class="card section"><div class="dx-empty">No open issue.</div></div>'}
+      <span class="tti-sr">Ads: ${esc(x.ads||'')}. Made by: ${esc(x.by||'')}. Found ${esc(x.found||'')}.</span></div>`}).join('')}</div>`).join('')})()}${I.length?'':'<div class="card section"><div class="dx-empty">No open issue.</div></div>'}
    <div class="tts-note">Grouped by who made the ads (the first one named) · tap one to open it · swipe one right to ask Alexandra</div>`;
  }
 }
@@ -23935,6 +23952,7 @@ function ttIssues(D){return [...(D.issues||[])].sort((a,b)=>((/^yes/i.test(a.fix
 function ttGroups(I){const m=new Map();I.forEach((x,i)=>{const p=ttPeople(x.by)[0]||{name:'Not known',sub:'',lab:'',k:'o'},k=p.k+'|'+p.name.toLowerCase();
   if(!m.has(k))m.set(k,{p,L:[]});m.get(k).L.push({x,i})});
  return [...m.values()].sort((a,b)=>((a.p.k==='o')-(b.p.k==='o'))||(b.L.length-a.L.length))}
+function ttIssWho(k){TTA.whoF=k;ttAcDraw()}
 function ttIssueOpen(i){TTA.page=i;ttAcDraw();try{scrollTo({top:0})}catch(e){scrollTo(0,0)}}
 function ttIssueBack(){TTA.page=null;ttAcDraw();try{scrollTo({top:0})}catch(e){}}
 // "General: m***m@sekna.co.uk · Remarketing: a***h@gmail.com (via API) · Prospecting copies: Claude (i***m, via API)" → people
@@ -23959,7 +23977,7 @@ function ttNamed(p){if(!p||!p.key)return p;const m=ttMapOf(p.key);if(!m)return p
  return Object.assign({},p,{masked:p.name,name:m.name,sub:p.key+(/via API/.test(p.sub)?' · via API':'')+(/Ads Manager/.test(p.sub)?' · Ads Manager':''),av:m.prof?personAv(m.prof.avatar,m.prof.name):''})}
 // any text with masked emails in it: "m***m@sekna.co.uk (Desktop)" → "Mariam (m***m) (Desktop)"
 function ttNameText(t){return String(t||'').replace(/([^\s@(]+\*+[^\s@]*@[a-z0-9.-]+)/gi,e=>{const m=ttMapOf(e);return m?m.name+' ('+e.split('@')[0]+')':e})}
-function ttPav(p,s){if(p&&p.av)return `<span class="tti-av tti-avp" style="width:${s}px;height:${s}px">${p.av}</span>`;const bg=p.k==='p'?'linear-gradient(140deg,#2C4FB8,#203C8E)':p.k==='c'?'linear-gradient(140deg,#C28D3E,#E2B874)':'#C9D0DE';
+function ttPav(p,s){if(p&&p.av)return `<span class="tti-av tti-avp" style="width:${s}px;height:${s}px">${p.av}</span>`;if(p&&p.k==='w')return `<span class="tti-av tti-avw" style="width:${s}px;height:${s}px;font-size:${Math.round(s*.42)}px">${esc(String(p.name).charAt(0).toUpperCase())}</span>`;const bg=p.k==='p'?'linear-gradient(140deg,#2C4FB8,#203C8E)':p.k==='c'?'linear-gradient(140deg,#C28D3E,#E2B874)':'#C9D0DE';
  return `<span class="tti-av" style="width:${s}px;height:${s}px;font-size:${Math.round(s*.45)}px;background:${bg}">${p.k==='o'?'–':esc(String(p.name).charAt(0).toUpperCase())}</span>`}
 function ttKind(t){t=String(t||'');return /landing|link|https?/i.test(t)?'Landing page':/utm|pixel|track/i.test(t)?'Tracking':/name|duplicate|videos in one/i.test(t)?'Naming':/country|text|content|caption/i.test(t)?'Content':'Issue'}
 function ttIssueAds(s){s=String(s||'').trim();if(!s)return [];const n=(/\((\d+)\s+active ads?\)/i.exec(s)||[])[1];
@@ -24010,7 +24028,12 @@ function ttfList(){const C=((TTF.data||{}).comments||[]).filter(c=>ttfIn(c.t));r
 // operator → a person: "a***h@gmail.com" → a***h · @gmail.com; "TikTok For Business" → TikTok
 function ttfOp(op){op=String(op||'').trim();const m=/^([^\s@]+)@([a-z0-9.-]+)/i.exec(op);
  if(m){const n=ttMapOf(op);return n?{k:op.toLowerCase(),name:n.name,sub:op.toLowerCase(),kind:'p',av:n.prof?personAv(n.prof.avatar,n.prof.name):''}:{k:op.toLowerCase(),name:m[1],sub:'@'+m[2],kind:'p'}}if(/tiktok/i.test(op))return {k:'tiktok',name:'TikTok',sub:'',kind:'c'};return {k:op.toLowerCase()||'?',name:op||'Not known',sub:'',kind:'o'}}
-function ttfWho(k){TTF.who=k;TTF.show=100;ttFeedDraw();try{scrollTo({top:0})}catch(e){}}
+// the field a change is about, for the filter
+function ttfField(n){n=String(n||'');return /status|on\/off/i.test(n)?'Status':/budget|bid|cost/i.test(n)?'Budget':/creative|video|text|identity|spark/i.test(n)?'Creative':/url|destination|deeplink|page/i.test(n)?'Landing page':/review/i.test(n)?'Review':/^ad$|name/i.test(n)?'Ad':'Other'}
+function ttfFld(f){TTF.fld=f;TTF.show=100;ttFeedDraw()}
+// "Text: -> Hello | Video: old -> new" → [{f,b,a}]
+function ttfChanges(det){return String(det||'').split(/\s+\|\s+/).map(p=>{const m=/^([^:]{1,40}):\s*(.*?)\s*->\s*(.*)$/.exec(p.trim());return m?{f:m[1].trim(),b:m[2].trim().slice(0,90),a:m[3].trim().slice(0,90)}:null}).filter(Boolean)}
+function ttfWho(k){TTF.fld='';TTF.who=k;TTF.show=100;ttFeedDraw();try{scrollTo({top:0})}catch(e){}}
 function ttfActIco(a){return /^create/i.test(a)?['g','+']:/^delete/i.test(a)?['r','×']:['b','✎']}
 function ttFeedDraw(){
  const host=document.getElementById(CURRENT_TAB+'Body');if(!host)return;ttfDateSwap();const D=TTF.data;ttFeedLoad();
@@ -24038,8 +24061,12 @@ function ttFeedDraw(){
     <div class="tti-hero ttf-ph"><div class="ttf-phh">${ttPav({name:P.p.name,av:P.p.av,k:P.p.kind==='p'?'p':P.p.kind==='c'?'c':'o'},44)}<div><h3>${esc(P.p.name)}</h3><small>${esc([P.p.sub,top(P)].filter(Boolean).join(' · '))}</small></div><em>${fmt(P.L.length,0)}</em></div>
      <div class="ttf-k3"><div><em class="g">${P.c}</em>Create</div><div><em>${P.ch}</em>Change</div><div><em class="r">${P.dl}</em>Delete</div></div></div>
     ${ttfDates()}
-    <div class="card ttf-list">${P.L.length?P.L.slice(0,TTF.show).map(a=>{const [k,ic]=ttfActIco(a.act),day=a.d!==last?(last=a.d,`<div class="ttf-day">${esc(ttDay(a.d))}</div>`):'';
-     return day+`<div class="ttf-a"><span class="ttf-ai ${k}">${ic}</span><div class="ttf-cb"><div class="ttf-ct"><b>${esc(a.act)} · ${esc(a.obj)}</b><small>${esc(a.tm)}</small></div><p>${esc(a.name)}${a.id?` <small class="ttf-id">${esc(a.id)}</small>`:''}</p>${a.det&&a.det!==a.name?`<p class="ttf-det">${esc(a.det)}</p>`:''}${a.src&&a.src!=='--'?`<small class="ttf-src">${esc(a.src)}</small>`:''}</div></div>`}).join('')+(P.L.length>TTF.show?`<button type="button" class="ttf-more" onclick="ttfMore()">Show more (${P.L.length-TTF.show})</button>`:''):'<div class="dx-empty">No change on these days.</div>'}</div>`;
+    ${(()=>{const F=[...new Set(P.L.map(a=>ttfField(a.name)))];if(TTF.fld&&!F.includes(TTF.fld))TTF.fld='';return F.length>1?`<div class="ttf-dates ttf-fld"><button type="button" class="${TTF.fld?'':'on'}" onclick="ttfFld('')">All fields</button>${F.map(f=>`<button type="button" class="${TTF.fld===f?'on':''}" onclick="ttfFld('${f}')">${f}</button>`).join('')}</div>`:''})()}
+    ${(()=>{const L=P.L.filter(a=>!TTF.fld||ttfField(a.name)===TTF.fld);let last='';
+     return L.length?`<div class="ttf-tl">${L.slice(0,TTF.show).map(a=>{const [k]=ttfActIco(a.act),day=a.d!==last?(last=a.d,`<div class="ttf-tday">${esc(ttDay(a.d))}</div>`):'',ch=ttfChanges(a.det).slice(0,3);
+      return day+`<div class="ttf-ti"><span class="ttf-tdot ${k}"></span><div class="card ttf-tc"><div class="ttf-ct"><b>${esc(a.name)}</b><small>${esc(a.tm)}</small></div><span class="ttf-tag">${esc(a.act)} · ${esc(a.obj)}${a.id?' · '+esc(a.id):''}</span>
+       ${ch.length?ch.map(c=>`<div class="ttf-ba">${c.f&&c.f!==a.name?`<small>${esc(c.f)}</small>`:''}<div>${c.b?`<s>${esc(c.b)}</s><i>→</i>`:''}<b>${esc(c.a||'—')}</b></div></div>`).join(''):a.det&&a.det!==a.name?`<p class="ttf-det">${esc(a.det)}</p>`:''}
+       ${a.src&&a.src!=='--'?`<small class="ttf-src">${esc(a.src)}</small>`:''}</div></div>`}).join('')}</div>`+(L.length>TTF.show?`<button type="button" class="ttf-more" onclick="ttfMore()">Show more (${L.length-TTF.show})</button>`:''):'<div class="card section"><div class="dx-empty">No change on these days.</div></div>'})()}`;
    return}
   host.innerHTML=`<div class="tts-sub">${fmt(A.length,0)} change${A.length===1?'':'s'} · who changed what</div>${ttfDates()}
    ${groups.length?groups.map(g=>{const t=g.L.length||1;return `<button type="button" class="card ttf-pc" onclick="ttfWho('${esc(g.p.k).replace(/'/g,'&#39;')}')"><div class="ttf-phh">${ttPav({name:g.p.name,av:g.p.av,k:g.p.kind==='p'?'p':g.p.kind==='c'?'c':'o'},40)}<div><b>${esc(g.p.name)}</b><small>${esc([g.p.sub,top(g)].filter(Boolean).join(' · '))}</small></div><em>${fmt(g.L.length,0)}</em></div>
