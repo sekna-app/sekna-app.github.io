@@ -10770,6 +10770,16 @@ body.dark-mode .tta-cr{border-color:#26326A}body.dark-mode .tta-cr b{color:#E7EB
 .tts-pic.big{width:90px;height:150px;flex:0 0 90px;border-radius:12px}.tts-pic.big svg{width:24px;height:24px}
 .tts-mv{display:flex;gap:12px;align-items:flex-start;padding-top:8px}.tts-mv>div{flex:1;min-width:0}.tts-mv .tts-chip{display:inline-block;margin:8px 0 0}
 body.dark-mode .tts-pic{background:#1b2656}
+/* TikTok · Creatives filters and creator strip (design A) */
+.tts-chips{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}.tts-chips button{font:inherit;font-size:12px;font-weight:800;padding:7px 13px;border-radius:99px;background:#fff;border:1px solid #DFE4EF;color:#203C8E;cursor:pointer}.tts-chips button.on{background:#203C8E;color:#fff;border-color:#203C8E}
+.tts-strip{display:flex;gap:12px;overflow-x:auto;padding:6px 4px 10px;margin:0 -4px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}.tts-strip::-webkit-scrollbar{display:none}
+.tts-st{position:relative;flex:0 0 auto;width:60px;display:flex;flex-direction:column;align-items:center;background:none;border:0;padding:0;font:inherit;cursor:pointer}
+.tts-av2{position:relative;width:52px;height:52px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:linear-gradient(140deg,var(--c),#203C8E);box-shadow:0 0 0 2px #fff,0 0 0 4px #E2B874}
+.tts-av2 b{color:#fff;font-weight:900;font-size:17px}.tts-av2 img{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;z-index:1}
+.tts-st.on .tts-av2{box-shadow:0 0 0 2px #fff,0 0 0 5px #203C8E}.tts-st.on small{color:#203C8E}
+.tts-st em{position:absolute;top:-3px;right:0;z-index:2;background:#13804F;color:#fff;font-style:normal;font-size:10px;font-weight:900;border-radius:99px;padding:1px 6px;border:2px solid #fff;font-variant-numeric:tabular-nums}
+.tts-st small{font-size:10.5px;font-weight:800;margin-top:7px;color:#141B33;max-width:60px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body.dark-mode .tts-chips button{background:#16204A;border-color:#26326A;color:#C9D3F5}body.dark-mode .tts-st small{color:#E7EBF3}
 </style>
 </head>
 <body class="plat-tt">
@@ -23680,20 +23690,37 @@ function ttDecName(d){d=String(d||'');return /^traffic/i.test(d)?'CPC':d}
 function ttCrTitle(c){const code=/_/.test(c.name)&&String(c.name).length>30;if(c.name&&!code)return esc(c.name);const t=c.topic||'Creative',w=c.creator&&!/^unknown/i.test(c.creator)?c.creator:'';return esc(t)+(w?' · '+esc(w):'')}
 function ttCrSub(c){const code=/_/.test(c.name)&&String(c.name).length>30;return esc([code?'':c.topic,c.type].filter(Boolean).join(' · '))}
 function ttCrOpen(i){TTS.open=TTS.open===String(i)?'':String(i);ttSnapDraw()}
+
+function ttCrType(t){TTS.type=t;TTS.open='';ttSnapDraw()}
+function ttCrWho(w){TTS.who=TTS.who===w?'':w;TTS.open='';ttSnapDraw()}
+const TT_SER=['#7B5CF0','#2453D6','#C99A45','#1D9CC8','#E05566','#13804F'];
+function ttWhoKey(w){return String(w||'').trim().toLowerCase()}
+function ttCreators(D){const C=D.creatives||[],P=D.partners||[],m=new Map();
+ P.forEach(p=>{const k=ttWhoKey(p.creator);if(!k||/^unknown/.test(k))return;m.set(k,{name:p.creator,spend:p.spend,pic:p.pic||'',active:p.active,n:0})});
+ C.forEach(c=>{const k=ttWhoKey(c.creator);if(!k||/^unknown/.test(k))return;const o=m.get(k)||{name:c.creator,spend:0,pic:'',active:null,n:0};o.n++;if(!m.has(k))o.spend+=c.spend;m.set(k,o)});
+ return [...m.values()].sort((a,b)=>b.spend-a.spend)}
+function ttAv(o,i){const ini=esc(String(o.name||'?').trim().charAt(0).toUpperCase());
+ return o.pic?`<span class="tts-av2" style="--c:${TT_SER[i%6]}"><img src="${esc(TT_API+'/pic?u='+encodeURIComponent(o.pic))}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><b>${ini}</b></span>`:`<span class="tts-av2" style="--c:${TT_SER[i%6]}"><b>${ini}</b></span>`}
 function ttSnapDraw(){
  const host=document.getElementById(CURRENT_TAB+'Body');if(!host)return;
  const D=TTS.data;ttSnapLoad();
  if(!D){host.innerHTML=TTS.err?`<div class="card section"><div class="dx-empty">${esc(TTS.err)}<br><button type="button" class="tts-retry" onclick="ttSnapLoad(true);ttSnapDraw()">Try again</button></div></div>`:'<div class="card section"><div class="dx-empty">Loading TikTok…</div></div>';return}
  if(CURRENT_TAB==='ttcr'){
-  const C=D.creatives||[],tot=C.reduce((a,c)=>a+c.spend,0),n=k=>C.filter(c=>ttDec(c.decision)===k).length;
-  host.innerHTML=`<div class="tts-hero"><small>Last 30 days · ${C.length} videos</small><b>${money(tot)}</b><span>spent on the top ${C.length}</span>
+  const ALL=D.creatives||[],TYPES=['Brand','Partner','Spark','Catalog'].filter(t=>ALL.some(c=>c.type===t)),ty=TTS.type&&TYPES.includes(TTS.type)?TTS.type:'',WHO=ttCreators(D),who=WHO.some(o=>ttWhoKey(o.name)===TTS.who)?TTS.who:'';
+  const C=ALL.filter(c=>(!ty||c.type===ty)&&(!who||ttWhoKey(c.creator)===who)),tot=C.reduce((a,c)=>a+c.spend,0),n=k=>C.filter(c=>ttDec(c.decision)===k).length,hasAct=WHO.some(o=>o.active!=null);
+  const whoName=who?(WHO.find(o=>ttWhoKey(o.name)===who)||{}).name:'';
+  host.innerHTML=`<div class="tts-chips">${['',...TYPES].map(t=>`<button type="button" class="${t===ty?'on':''}" onclick="ttCrType('${t}')">${t||'All'}</button>`).join('')}</div>
+   ${WHO.length?`<div class="tts-sub">Creators · tap one</div><div class="tts-strip">${WHO.map((o,i)=>{const k=ttWhoKey(o.name),num=hasAct?o.active:o.n;
+    return `<button type="button" class="tts-st${k===who?' on':''}" onclick="ttCrWho('${esc(k).replace(/'/g,'&#39;')}')">${ttAv(o,i)}${num?`<em>${fmt(num,0)}</em>`:''}<small>${esc(String(o.name).split(' ')[0])}</small></button>`}).join('')}</div>`:''}
+   <div class="tts-hero"><small>Last 30 days · ${C.length} video${C.length===1?'':'s'}${whoName?' · '+esc(whoName):ty?' · '+esc(ty):''}</small><b>${money(tot)}</b><span>${who||ty?'spent on these':'spent on the top '+C.length}</span>
    <div class="tts-hk"><div><em class="g">${n('good')}</em>Scale</div><div><em>${n('navy')}</em>Keep</div><div><em class="r">${n('bad')}</em>Pause</div><div><em class="w">${n('warn')}</em>${C.some(c=>/^wait/i.test(c.decision))||!C.some(c=>/^traffic/i.test(c.decision))?'Wait':'CPC'}</div></div></div>
    <div class="card tts-tbl"><div class="tts-tr th"><span>Creative</span><span>Spend</span><span>ROAS</span><span></span></div>${C.map((c,i)=>{const o=TTS.open===String(i);
     return `<div class="tts-tr tts-cr${o?' open':''}" role="button" tabindex="0" onclick="ttCrOpen(${i})"><span class="tts-cn">${ttPic(c)}<span><b>${ttCrTitle(c)}</b><small>${ttCrSub(c)}</small></span></span><span>${money(c.spend)}</span><span class="${c.roas>=2?'g':c.roas<1?'r':''}">${ttRo(c.roas)}</span><span><i class="tts-dot ${ttDec(c.decision)}"></i></span></div>`+
     (o?`<div class="tts-more"><div class="tts-mv">${ttPic(c,1)}<div><div class="tts-kv"><span>Conv<b>${fmt(c.conv,0)}</b></span><span>Value<b>${money(c.value)}</b></span><span>CTR<b>${percent(c.ctr)}</b></span>${c.impr?`<span>Impressions<b>${fmt(c.impr,0)}</b></span>`:''}${c.clicks?`<span>Clicks<b>${fmt(c.clicks,0)}</b></span>`:''}</div>
      <span class="tts-chip ${ttDec(c.decision)}">${esc(ttDecName(c.decision))}</span>
      ${c.creator&&!/^unknown/i.test(c.creator)?`<p><small>Creator</small>${esc(c.creator)}</p>`:''}${c.lp?`<p><small>Landing page</small>${esc(c.lp)}</p>`:''}<p><small>Campaign</small>${esc(c.campaign)}</p>${c.adgroup?`<p><small>Ad group</small>${esc(c.adgroup)}${c.share!=null?' · '+percent(c.share)+' of its spend':''}</p>`:''}${c.post?`<p><small>Post ID</small>${esc(c.post)}</p>`:`<p><small>Video</small>${esc(c.name)}</p>`}</div></div></div>`:'')}).join('')}</div>
-   <div class="tts-note">Tap a video to see its details · the decision is from the TikTok sheet${C.some(c=>/^wait/i.test(c.decision))?' · Wait = under $30 spent':''}</div>`;
+   ${C.length?'':'<div class="dx-empty">No video here for this filter.</div>'}
+   <div class="tts-note">Tap a video to see its details · the decision is from the TikTok sheet${ALL.some(c=>/^wait/i.test(c.decision))?' · Wait = under $30 spent':''}${WHO.length?(hasAct?' · the number on a creator = their active videos':' · the number on a creator = their videos in this list'):''}</div>`;
  }else if(CURRENT_TAB==='tttp'){
   const T=[...(D.topics||[])].sort((a,b)=>b.spend-a.spend);
   host.innerHTML=`<div class="tts-sub">Each topic and its best landing page · last 30 days</div><div class="tts-grid">${T.map(t=>`<div class="card tts-tile"><small>${esc(t.topic)}</small><b>${ttRo(t.roas)}</b><span>${money(t.spend)} spend · ${fmt(t.conv,0)} conv</span>

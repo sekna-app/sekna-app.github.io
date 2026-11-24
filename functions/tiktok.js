@@ -300,7 +300,7 @@ const fn = onRequest({
       const u = String((req.query && req.query.u) || '');
       if (!/^https:\/\/[a-z0-9.-]+\.tiktokcdn(-[a-z]+)?\.com\//i.test(u)) { res.status(400).send(''); return; }
       const snap = await ttSnap().catch(() => null);
-      if (!snap || !(snap.creatives || []).some(c => c.pic === u)) { res.status(404).send(''); return; }
+      if (!snap || !(snap.creatives || []).concat(snap.partners || []).some(c => c.pic === u)) { res.status(404).send(''); return; }
       const r = await fetch(u, { headers: { 'User-Agent': 'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/124 Mobile Safari/537.36', Accept: 'image/avif,image/webp,image/*,*/*' } });
       if (!r.ok) { res.status(r.status === 404 ? 404 : 502).send(''); return; }
       const type = String(r.headers.get('content-type') || 'image/jpeg');
@@ -356,8 +356,21 @@ async function buildTikTokSnap() {
     .map(o => ({ name: T(o.name), topic: T(o.topic), creator: T(o.creator), type: T(o.type), campaign: T(o.campaign), adgroup: T(o.adgroup), spend: N(o.spend), impr: N(o.impr), clicks: N(o.clicks), ctr: N(o.ctr), conv: N(o.conv), value: N(o.value), roas: N(o.roas), share: o.share === '' ? null : N(o.share), lp: T(o.lp), decision: T(o.decision), post: T(o.post), pic: pics[o._row] || '' })).filter(o => o.name) : [];
   const topics = tabs[1] ? table(vals[1], { topic: ['topic'], spend: ['spend'], conv: ['conv (cta)', 'conv'], value: ['value (cta)', 'value'], roas: ['roas (cta)', 'roas'], best: ['best landing page'], bestRoas: ['its roas'], tried: ['pages tried'] })
     .map(o => ({ topic: T(o.topic), spend: N(o.spend), conv: N(o.conv), value: N(o.value), roas: N(o.roas), best: T(o.best), bestRoas: o.bestRoas === '' ? null : N(o.bestRoas), tried: N(o.tried) })).filter(o => o.topic) : [];
-  const partners = tabs[2] ? table(vals[2], { creator: ['creator'], n: ['creatives'], spend: ['spend'], spark: ['spark spend'], repost: ['repost spend'], conv: ['conv (cta)', 'conv'], value: ['value (cta)', 'value'], roas: ['roas (cta)', 'roas'], best: ['best creative'] })
-    .map(o => ({ creator: T(o.creator), n: N(o.n), spend: N(o.spend), spark: N(o.spark), repost: N(o.repost), conv: N(o.conv), value: N(o.value), roas: N(o.roas), best: T(o.best) })).filter(o => o.creator) : [];
+  // Partners: a profile picture ("Avatar" / "Profile image": =IMAGE("url") or a plain link) and "Active videos" when the sheet has them
+  let avatars = [];
+  if (tabs[2]) {
+    const head = ((vals[2] || [])[0] || []).map(h => String(h || '').trim().toLowerCase());
+    const ai = head.findIndex(h => /^(avatar|profile)/.test(h));
+    if (ai >= 0) {
+      const col = String.fromCharCode(65 + ai);
+      try {
+        const f = await request('https://sheets.googleapis.com/v4/spreadsheets/' + TT_SHEET_ID + '/values/' + encodeURIComponent(a1(tabs[2].title, col + '1:' + col + '400')) + '?valueRenderOption=FORMULA');
+        avatars = ((f && f.values) || []).map(r => { const v = String((r || [])[0] || ''); const m = /IMAGE\(\s*"(https:\/\/[^"]+)"/i.exec(v) || /^(https:\/\/\S+)$/.exec(v.trim()); return m ? m[1] : ''; });
+      } catch (e) { console.warn('TikTok avatars: ' + ((e && e.message) || e)); }
+    }
+  }
+  const partners = tabs[2] ? table(vals[2], { creator: ['creator'], n: ['creatives'], spend: ['spend'], spark: ['spark spend'], repost: ['repost spend'], conv: ['conv (cta)', 'conv'], value: ['value (cta)', 'value'], roas: ['roas (cta)', 'roas'], best: ['best creative'], active: ['active videos', 'active'] }, true)
+    .map(o => ({ creator: T(o.creator), n: N(o.n), spend: N(o.spend), spark: N(o.spark), repost: N(o.repost), conv: N(o.conv), value: N(o.value), roas: N(o.roas), best: T(o.best), active: o.active === '' ? null : N(o.active), pic: avatars[o._row] || '' })).filter(o => o.creator) : [];
   return { creatives, topics, partners, at: Date.now() };
 }
 
