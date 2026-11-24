@@ -10801,6 +10801,11 @@ body.dark-mode .tts-chips button{background:#16204A;border-color:#26326A;color:#
 .tti-pic{width:22px;height:30px;border-radius:6px;background:linear-gradient(160deg,#c9d3f5,#8a9be0);flex:none}
 .tti-p{display:flex;align-items:center;gap:10px;padding:7px 0}.tti-p>div{flex:1;min-width:0}.tti-p b{font-size:13px}.tti-p small{display:block;font-size:10.5px;color:#8A93A8;font-weight:700}.tti-p em{font-style:normal;font-size:10.5px;font-weight:800;color:#B0812E;text-align:right;max-width:120px}
 body.dark-mode .tti-r{background:transparent;border-color:#26326A}body.dark-mode .tti-t b,body.dark-mode .tti-what{color:#E7EBF3}
+.tti-g{padding:12px 14px!important;border-radius:18px;margin-bottom:10px}
+.tti-gh{display:flex;align-items:center;gap:10px;padding-bottom:9px;border-bottom:1px solid #EEF1F6}.tti-gh>div{flex:1;min-width:0}.tti-gh b{font-size:14.5px;color:#141B33}.tti-gh small{display:block;font-size:10.5px;color:#8A93A8;font-weight:700}
+.tti-gh em{font-style:normal;background:#FBDDE1;color:#C63A4A;font-weight:900;border-radius:99px;padding:2px 10px;font-size:12px}
+.tti-g .tti-r:nth-child(2){border-top:0}.tti-more{font-size:10.5px;font-weight:800;color:#B0812E}
+body.dark-mode .tti-gh{border-color:#26326A}body.dark-mode .tti-gh b{color:#E7EBF3}
 </style>
 </head>
 <body class="plat-tt">
@@ -23793,16 +23798,21 @@ function ttAcDraw(){
   const I=ttIssues(D),open=I.filter(x=>!/^yes/i.test(x.fixed)).length;
   if(TTA.page!=null&&I[TTA.page]){host.innerHTML=ttIssuePage(I[TTA.page]);return}TTA.page=null;
   host.innerHTML=`<div class="tts-sub">${open} open${I.length-open?' · '+(I.length-open)+' fixed':''} · active ads only</div>
-   <div class="card tti-list">${I.length?I.map((x,i)=>{const f=/^yes/i.test(x.fixed),P=ttPeople(x.by),p=P[0];
-    return `<div class="tti-r" role="button" tabindex="0" onclick="ttIssueOpen(${i})"><div class="tti-t"><b>${esc(x.type||'Issue')}</b><span class="tts-chip ${f?'good':'bad'}">${f?'Fixed':'Open'}</span></div><p>${esc(x.what)}</p>
-     <div class="tti-m">${p?`<span class="tti-who">${ttPav(p,20)}<b>${esc(p.name)}</b>${P.length>1?`<i>+${P.length-1}</i>`:''}</span>`:'<span></span>'}<span class="tti-d">${ttDay(x.found)}</span></div>
-     <span class="tti-sr">Ads: ${esc(x.ads||'')}. Made by: ${esc(x.by||'')}. Found ${esc(x.found||'')}.</span></div>`}).join(''):'<div class="dx-empty">No open issue.</div>'}</div>
-   <div class="tts-note">Open first, newest first · tap one to open it · swipe one right to ask Alexandra</div>`;
+   ${I.length?ttGroups(I).map(g=>`<div class="card tti-g"><div class="tti-gh">${ttPav(g.p,34)}<div><b>${esc(g.p.name)}</b><small>${esc(g.p.sub)||'&nbsp;'}</small></div><em>${g.L.length}</em></div>
+    ${g.L.map(({x,i})=>{const f=/^yes/i.test(x.fixed),n=ttPeople(x.by).length;
+     return `<div class="tti-r" role="button" tabindex="0" onclick="ttIssueOpen(${i})"><div class="tti-t"><b>${esc(x.type||'Issue')}</b><span class="tts-chip ${f?'good':'bad'}">${f?'Fixed':'Open'}</span></div><p>${esc(x.what)}</p>
+      <div class="tti-m">${n>1?`<span class="tti-more">+${n-1} more made these ads</span>`:'<span></span>'}<span class="tti-d">${ttDay(x.found)}</span></div>
+      <span class="tti-sr">Ads: ${esc(x.ads||'')}. Made by: ${esc(x.by||'')}. Found ${esc(x.found||'')}.</span></div>`}).join('')}</div>`).join(''):'<div class="card section"><div class="dx-empty">No open issue.</div></div>'}
+   <div class="tts-note">Grouped by who made the ads (the first one named) · tap one to open it · swipe one right to ask Alexandra</div>`;
  }
 }
 
  
 function ttIssues(D){return [...(D.issues||[])].sort((a,b)=>((/^yes/i.test(a.fixed)?1:0)-(/^yes/i.test(b.fixed)?1:0))||(String(b.found).localeCompare(String(a.found))))}
+
+function ttGroups(I){const m=new Map();I.forEach((x,i)=>{const p=ttPeople(x.by)[0]||{name:'Not known',sub:'',lab:'',k:'o'},k=p.k+'|'+p.name.toLowerCase();
+  if(!m.has(k))m.set(k,{p,L:[]});m.get(k).L.push({x,i})});
+ return [...m.values()].sort((a,b)=>((a.p.k==='o')-(b.p.k==='o'))||(b.L.length-a.L.length))}
 function ttIssueOpen(i){TTA.page=i;ttAcDraw();try{scrollTo({top:0})}catch(e){scrollTo(0,0)}}
 function ttIssueBack(){TTA.page=null;ttAcDraw();try{scrollTo({top:0})}catch(e){}}
 
