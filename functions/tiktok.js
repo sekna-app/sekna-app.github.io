@@ -379,7 +379,7 @@ const fn = onRequest({
     } catch (e) { console.warn('TikTok picture: ' + ((e && e.message) || e)); res.status(502).send(''); }
     return;
   }
-  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct' && route !== '/feed' && route !== '/people' && route !== '/peopleSet' && route !== '/issueMail') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
+  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct' && route !== '/feed' && route !== '/people' && route !== '/peopleSet' && route !== '/issueMail' && route !== '/issueMailTest') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
   let body = req.body;
   if (!(body && typeof body === 'object' && !Buffer.isBuffer(body))) {
     const text = Buffer.isBuffer(body) ? body.toString('utf8') : typeof body === 'string' ? body : (req.rawBody ? req.rawBody.toString('utf8') : '');
@@ -398,6 +398,20 @@ const fn = onRequest({
     await assertAccess(body.token);
     if (route === '/people') { const d = (await fsGet(TT_PEOPLE).catch(() => null)) || {}; res.json({ ok: true, result: Object.assign({}, d.map || {}, { _mails: d.mails || {} }) }); return; }
     // v680 email the person who made the ads of an issue (admins; only people linked to a HEMERA profile)
+    // v682 a test: the email for one of this person's open issues, sent to the admin who taps it (not to the person)
+    if (route === '/issueMailTest') {
+      const me = await assertAdmin(body.token);
+      if (!me || !me.email) throw new Error('No email for you.');
+      const who = String(body.who || '').toLowerCase(), acct = await ttAcct();
+      const issue = (acct.issues || []).find(x => !/^yes/i.test(x.fixed) && String(x.by || '').toLowerCase().indexOf(who) >= 0) || (acct.issues || [])[0];
+      if (!issue) throw new Error('No open issue to send.');
+      if (!notify.mailReady()) throw new Error('Email is not set up on the server yet.');
+      const doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, m = (doc.map || {})[who] || {}, name = m.name || who.split('@')[0];
+      const tok = require('crypto').randomBytes(18).toString('base64url');
+      await fsUpdate(TT_LINKS, d => { d = d || {}; const now = Date.now(); Object.keys(d).forEach(k => { if (!d[k] || d[k].exp < now) delete d[k]; }); d[tok] = { key: issueKey(issue), who, exp: now + 14 * 864e5, test: true }; return d; });
+      await notify.sendMail({ to: me.email, subject: '[Test] TikTok issue to fix: ' + String(issue.type || 'Issue').slice(0, 80), rawHtml: issueMailHtml(issue, name, 'https://sekna-app.web.app/tiktok/i/' + tok) });
+      res.json({ ok: true, result: { to: me.email, issue: issue.type } }); return;
+    }
     if (route === '/issueMail') {
       const me = await assertAdmin(body.token);
       const key = String(body.key || ''), who = String(body.who || '').toLowerCase();

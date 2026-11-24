@@ -11055,6 +11055,7 @@ body.dark-mode .ttf-row,body.dark-mode .tta-kv{border-color:#26326A}body.dark-mo
 body.dark-mode .ttq-gh{background:#16204A}body.dark-mode .ttq-gh b,body.dark-mode .ttq-ad,body.dark-mode .ttq-sum b{color:#E7EBF3}body.dark-mode .ttq-r{background:#1b2656;border-color:#26326A}
 .tta-note{display:block;margin:-6px 0 4px;text-align:right;font-size:10.5px;font-weight:700;color:#13804F}
 .tti-mail{display:inline-flex;align-items:center;gap:5px;border:0;font:inherit;font-size:11px;font-weight:800;color:#fff;background:#203C8E;border-radius:99px;padding:6px 11px;cursor:pointer;flex:none}.tti-mail svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.tti-mail.sent{background:#E3F6EC;color:#13804F}
+.tta-tmh .tta-mt{background:#203C8E;color:#fff;margin-right:2px}
 </style>
 </head>
 <body class="plat-tt">
@@ -24235,10 +24236,14 @@ function ttIsAdmin(){return !!(typeof ACCESS_PROFILE!=='undefined'&&ACCESS_PROFI
 function ttTeamBlock(D){const K=ttTeamKeys(D),adm=ttIsAdmin();if(!K.length)return '';const P=((typeof PFP!=='undefined'&&PFP.people)||[]),named=K.filter(o=>ttMapOf(o.k)).length;
  return `<div class="tta-sec"><b>Team accounts</b><span>${named} of ${K.length} named</span></div><div class="card tta-team">${K.map(o=>{const m=(TTP.map||{})[o.k]||{},n=ttMapOf(o.k),ed=TTP.edit===o.k,mask=o.k.split('@');
   const av=ttPav({name:n?n.name:mask[0],k:'p',av:n&&n.prof?personAv(n.prof.avatar,n.prof.name):''},36);
-  return `<div class="tta-tm"><div class="tta-tmh">${av}<div><b>${esc(n?n.name:mask[0])}</b><small>${n?esc(o.k):'Not named yet'}</small></div>${ed?`<button type="button" onclick="ttTeamEdit('${esc(o.k)}')">Close</button>`:n?(adm?`<button type="button" class="tta-ok" aria-label="Change" onclick="ttTeamEdit('${esc(o.k)}')">✓</button>`:'<span class="tta-ok">✓</span>'):adm?`<button type="button" class="tta-add" onclick="ttTeamEdit('${esc(o.k)}')">+ Name</button>`:'<em>Not named</em>'}</div>
+  return `<div class="tta-tm"><div class="tta-tmh">${av}<div><b>${esc(n?n.name:mask[0])}</b><small>${n?esc(o.k):'Not named yet'}</small></div>${adm&&!ed?`<button type="button" class="tta-mt" onclick="ttMailTest('${esc(o.k)}',this)">Email</button>`:''}${ed?`<button type="button" onclick="ttTeamEdit('${esc(o.k)}')">Close</button>`:n?(adm?`<button type="button" class="tta-ok" aria-label="Change" onclick="ttTeamEdit('${esc(o.k)}')">✓</button>`:'<span class="tta-ok">✓</span>'):adm?`<button type="button" class="tta-add" onclick="ttTeamEdit('${esc(o.k)}')">+ Name</button>`:'<em>Not named</em>'}</div>
    ${ed?`<div class="tta-ed"><label>Choose a HEMERA profile<select id="ttTmP"><option value="">— Not on HEMERA —</option>${P.map(p=>`<option value="${esc(String(p.email||'').toLowerCase())}"${String(p.email||'').toLowerCase()===m.email?' selected':''}>${esc(p.name||p.email)}</option>`).join('')}</select></label>
     <label>Or type a name<input id="ttTmN" type="text" maxlength="60" placeholder="e.g. Mariam" value="${esc(m.name||'')}"></label>
     <div class="tta-edb">${n?`<button type="button" class="ghost" onclick="ttTeamSave('${esc(o.k)}',1)">Clear</button>`:''}<button type="button" onclick="ttTeamSave('${esc(o.k)}')">Save</button></div></div>`:''}</div>`}).join('')}</div>`}
+function ttMailTest(k,btn){btn.disabled=true;btn.textContent='Sending…';
+ fetch(TT_API+'/issueMailTest',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),who:k})}).then(x=>x.json())
+  .then(j=>{if(!(j&&j.ok))throw new Error((j&&j.error)||'Could not send.');btn.textContent='Sent ✓';showSettingsToast('Test sent to you: '+(j.result.issue||'an issue'))})
+  .catch(e=>{btn.disabled=false;btn.textContent='Email';showSettingsToast(errorText(e))})}
 function ttTeamEdit(k){TTP.edit=TTP.edit===k?'':k;try{pfPeopleLoad()}catch(e){}ttAcDraw()}
 function ttTeamSave(k,clear){const p=clear?'':(document.getElementById('ttTmP')||{}).value||'',n=clear?'':((document.getElementById('ttTmN')||{}).value||'').trim();
  fetch(TT_API+'/peopleSet',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),key:k,name:n,email:p})}).then(x=>x.json())
