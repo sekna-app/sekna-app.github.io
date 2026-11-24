@@ -10886,6 +10886,7 @@ body.dark-mode .ttf-row,body.dark-mode .tta-kv{border-color:#26326A}body.dark-mo
 .ttq-more{margin-top:8px;font-size:11.5px;color:#4b5263;font-weight:600}.ttq-more p{margin-top:6px;word-break:break-all}.ttq-more small{display:block;font-size:9.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8A93A8}
 .ttq-cp{border:0;font:inherit;font-size:10px;font-weight:800;color:#203C8E;background:#EEF2FB;border-radius:7px;padding:2px 8px;margin-left:6px;cursor:pointer}
 body.dark-mode .ttq-gh{background:#16204A}body.dark-mode .ttq-gh b,body.dark-mode .ttq-ad,body.dark-mode .ttq-sum b{color:#E7EBF3}body.dark-mode .ttq-r{background:#1b2656;border-color:#26326A}
+.tta-note{display:block;margin:-6px 0 4px;text-align:right;font-size:10.5px;font-weight:700;color:#13804F}
 </style>
 </head>
 <body class="plat-tt">
@@ -23875,11 +23876,11 @@ function ttAcDraw(){
    <div class="card tta-one"><div class="tta-oh ${fine?'g':'r'}"><span></span><b>${fine?'Account is healthy':!act?'Account is '+esc(a.status||'not active'):rj.length+' ad'+(rj.length===1?'':'s')+' need a look'}</b></div>
     <div class="tta-kv"><span>Status</span><b class="${act?'g':'r'}">${esc(a.status||'—')}</b></div>
     <div class="tta-kv"><span>Balance</span><b>${money(a.balance)}</b></div>
-    <div class="tta-kv"><span>Rejected ads</span><b class="${rj.length?'r':'g'}">${rj.length?rj.length:'None'}</b></div>
+    <div class="tta-kv"><span>Rejected ads</span><b class="${rj.length?'r':'g'}">${rj.length?rj.length:'None'}</b></div>${rj.length?'':`<small class="tta-note">${/smart/i.test(D.note||'')||!D.note?'No ad rejected or in review':esc(String(D.note).slice(0,60))}</small>`}
     <div class="tta-kv"><span>Opened</span><b>${ttDay(a.opened)}</b></div>
     ${a.checked?`<div class="tta-kv"><span>Checked</span><b>${ttDay(a.checked)}</b></div>`:''}</div>
    ${ttTeamBlock(D)}
-   ${rj.length?`<div class="tts-sub">Ads that need a look</div><div class="card tts-tbl">${rj.map(r=>`<div class="tts-tr tta-tr"><span><b>${esc(r.ad||'')}</b><small>${esc(r.campaign||'')}${r.changed?' · '+ttDay(r.changed):''}</small></span><span class="tts-chip bad">${esc(r.state||'Rejected')}</span></div>`).join('')}</div>`:`<div class="tts-note tta-fine">${esc(D.note||'No ad is rejected.')}</div>`}`;
+   ${rj.length?`<div class="tts-sub">Ads that need a look</div><div class="card tts-tbl">${rj.map(r=>`<div class="tts-tr tta-tr"><span><b>${esc(r.ad||'')}</b><small>${esc(r.campaign||'')}${r.changed?' · '+ttDay(r.changed):''}</small></span><span class="tts-chip bad">${esc(r.state||'Rejected')}</span></div>`).join('')}</div>`:''}`;
  }else if(CURRENT_TAB==='ttqa'){
   const C=D.checks||[],bad=C.filter(c=>!TT_OK(c.problems)),pct=C.length?Math.round((C.length-bad.length)/C.length*100):100;
   const pw=c=>ttWho1(String(c.by||'').replace(/\s*\((desktop|marketing api|ads manager|via api)\)\s*$/i,'')),pk=p=>p.k==='o'?'older':(p.key||p.name.toLowerCase());
@@ -24058,7 +24059,7 @@ function ttTeamBlock(D){const K=ttTeamKeys(D),adm=ttIsAdmin();if(!K.length)retur
   return `<div class="tta-tm"><div class="tta-tmh">${av}<div><b>${esc(n?n.name:mask[0])}</b><small>${n?esc(o.k):'Not named yet'}</small></div>${ed?`<button type="button" onclick="ttTeamEdit('${esc(o.k)}')">Close</button>`:n?(adm?`<button type="button" class="tta-ok" aria-label="Change" onclick="ttTeamEdit('${esc(o.k)}')">✓</button>`:'<span class="tta-ok">✓</span>'):adm?`<button type="button" class="tta-add" onclick="ttTeamEdit('${esc(o.k)}')">+ Name</button>`:'<em>Not named</em>'}</div>
    ${ed?`<div class="tta-ed"><label>Choose a HEMERA profile<select id="ttTmP"><option value="">— Not on HEMERA —</option>${P.map(p=>`<option value="${esc(String(p.email||'').toLowerCase())}"${String(p.email||'').toLowerCase()===m.email?' selected':''}>${esc(p.name||p.email)}</option>`).join('')}</select></label>
     <label>Or type a name<input id="ttTmN" type="text" maxlength="60" placeholder="e.g. Mariam" value="${esc(m.name||'')}"></label>
-    <div class="tta-edb">${n?`<button type="button" class="ghost" onclick="ttTeamSave('${esc(o.k)}',1)">Clear</button>`:''}<button type="button" onclick="ttTeamSave('${esc(o.k)}')">Save</button></div><small>Shows everywhere in TikTok (Issues, Ad Checks, Activity). Only the email's visible part is known to TikTok.</small></div>`:''}</div>`}).join('')}</div>`}
+    <div class="tta-edb">${n?`<button type="button" class="ghost" onclick="ttTeamSave('${esc(o.k)}',1)">Clear</button>`:''}<button type="button" onclick="ttTeamSave('${esc(o.k)}')">Save</button></div></div>`:''}</div>`}).join('')}</div>`}
 function ttTeamEdit(k){TTP.edit=TTP.edit===k?'':k;try{pfPeopleLoad()}catch(e){}ttAcDraw()}
 function ttTeamSave(k,clear){const p=clear?'':(document.getElementById('ttTmP')||{}).value||'',n=clear?'':((document.getElementById('ttTmN')||{}).value||'').trim();
  fetch(TT_API+'/peopleSet',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),key:k,name:n,email:p})}).then(x=>x.json())
