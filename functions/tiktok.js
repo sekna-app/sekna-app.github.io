@@ -298,9 +298,9 @@ const fn = onRequest({
   if (route === '/pic' && req.method === 'GET') {
     try {
       const u = String((req.query && req.query.u) || '');
-      if (!/^https:\/\/[a-z0-9.-]+\.tiktokcdn(-[a-z]+)?\.com\//i.test(u)) { res.status(400).send(''); return; }
+      if (!/^https:\/\/[a-z0-9.-]+\.(tiktokcdn(-[a-z]+)?\.com|ibyteimg\.com)\//i.test(u)) { res.status(400).send(''); return; }
       const snap = await ttSnap().catch(() => null);
-      if (!snap || !(snap.creatives || []).concat(snap.partners || []).some(c => c.pic === u)) { res.status(404).send(''); return; }
+      if (!snap || !((snap.creatives || []).concat(snap.partners || []).some(c => c.pic === u) || (snap.topics || []).some(t => t.img === u))) { res.status(404).send(''); return; }
       const r = await fetch(u, { headers: { 'User-Agent': 'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/124 Mobile Safari/537.36', Accept: 'image/avif,image/webp,image/*,*/*' } });
       if (!r.ok) { res.status(r.status === 404 ? 404 : 502).send(''); return; }
       const type = String(r.headers.get('content-type') || 'image/jpeg');
@@ -327,17 +327,47 @@ const fn = onRequest({
 
 // The Hijri month of each month, named exactly as Google's sheet does (the app marks 'Ramadan' and 'Dhu Hijjah' by these names).
 /* ---------- Performance Snapshots: the Creatives, Topics & landing pages and Partners tabs, read by their headers ---------- */
+/* ---------- Pictures: the sheet's "Image links" tab (Key → Image URL); other tabs show =IMAGE(VLOOKUP(key, 'Image links'!A:C, 3)) ---------- */
+async function imageLinks(meta) {
+  const tab = meta.sheets.find(s => /^image links$/i.test(String(s.title).trim()));
+  if (!tab) return {};
+  const rows = (await batchGet(TT_SHEET_ID, [a1(tab.title, 'A2:C4000')]))[0] || [];
+  const m = {}; rows.forEach(r => { const k = String((r || [])[0] == null ? '' : r[0]).trim(), u = String((r || [])[2] || '').trim(); if (k && /^https:\/\//.test(u)) m[k] = u; });
+  return m;
+}
+async function formulas(title, range) {
+  try {
+    const f = await request('https://sheets.googleapis.com/v4/spreadsheets/' + TT_SHEET_ID + '/values/' + encodeURIComponent(a1(title, range)) + '?valueRenderOption=FORMULA');
+    return ((f && f.values) || []).map(r => String((r || [])[0] == null ? '' : r[0]));
+  } catch (e) { console.warn('TikTok formulas ' + title + ': ' + ((e && e.message) || e)); return []; }
+}
+/** =IMAGE("url"), =IMAGE(VLOOKUP("key", …)) or a plain link → the picture's link */
+function picOf(f, links) {
+  f = String(f || '').trim();
+  const a = /IMAGE\(\s*"(https:\/\/[^"]+)"/i.exec(f); if (a) return a[1];
+  const b = /VLOOKUP\(\s*"([^"]+)"/i.exec(f); if (b) return links[b[1]] || '';
+  const c = /^(https:\/\/\S+)$/.exec(f); return c ? c[1] : '';
+}
+/** The newest monthly tab of a kind, e.g. "Issues log – Nov 2026" (or the plain one, like "Issues log") */
+function monthTab(meta, re) {
+  const L = meta.sheets.filter(s => re.test(String(s.title).trim())).map(s => {
+    const m = /([A-Z][a-z]{2})\s+(\d{4})\s*$/.exec(String(s.title).trim()), i = m ? MON.indexOf(m[1]) : -1;
+    return { s, k: i >= 0 ? m[2] + '-' + pad(i + 1) : '0000' };
+  }).sort((a, b) => (a.k < b.k ? 1 : -1));
+  return L.length ? L[0].s : null;
+}
+
 async function buildTikTokSnap() {
   const meta = await sheetMeta(TT_SHEET_ID);
   const find = re => meta.sheets.find(s => re.test(String(s.title).trim()));
   const tabs = [find(/^creatives$/i), find(/^topics/i), find(/^partners$/i)];
-  const vals = await batchGet(TT_SHEET_ID, tabs.map(t => a1(t ? t.title : 'Creatives', 'A1:T400')));
+  const [vals, links] = await Promise.all([batchGet(TT_SHEET_ID, tabs.map(t => a1(t ? t.title : 'Creatives', 'A1:T400'))), imageLinks(meta).catch(() => ({}))]);
   // The video pictures: column A of Creatives holds =IMAGE("url"), read as formulas (the link lasts about 7 days; the sheet renews it)
   let pics = [];
   if (tabs[0]) {
     try {
       const f = await request('https://sheets.googleapis.com/v4/spreadsheets/' + TT_SHEET_ID + '/values/' + encodeURIComponent(a1(tabs[0].title, 'A1:A400')) + '?valueRenderOption=FORMULA');
-      pics = ((f && f.values) || []).map(r => { const m = /IMAGE\(\s*"(https:\/\/[^"]+)"/i.exec(String((r || [])[0] || '')); return m ? m[1] : ''; });
+      pics = ((f && f.values) || []).map(r => picOf((r || [])[0], links));
     } catch (e) { console.warn('TikTok pictures: ' + ((e && e.message) || e)); }
   }
   // Columns by their header: an exact name first, then one that starts with it (so "Conv (CTA)" is never taken for "Conv (total)")
@@ -353,19 +383,19 @@ async function buildTikTokSnap() {
   };
   const N = v => num(v), T = v => String(v == null ? '' : v).trim();
   const creatives = tabs[0] ? table(vals[0], { name: ['creative'], topic: ['topic'], creator: ['creator'], type: ['type'], campaign: ['campaign'], adgroup: ['ad group'], spend: ['spend'], impr: ['impressions'], clicks: ['clicks'], ctr: ['ctr'], conv: ['conv (cta)', 'conv'], value: ['value (cta)', 'value'], roas: ['roas (cta)', 'roas'], share: ['share of ad group'], lp: ['landing page'], decision: ['decision'], post: ['post id'] }, true)
-    .map(o => ({ name: T(o.name), topic: T(o.topic), creator: T(o.creator), type: T(o.type), campaign: T(o.campaign), adgroup: T(o.adgroup), spend: N(o.spend), impr: N(o.impr), clicks: N(o.clicks), ctr: N(o.ctr), conv: N(o.conv), value: N(o.value), roas: N(o.roas), share: o.share === '' ? null : N(o.share), lp: T(o.lp), decision: T(o.decision), post: T(o.post), pic: pics[o._row] || '' })).filter(o => o.name) : [];
+    .map(o => ({ name: T(o.name), topic: T(o.topic), creator: T(o.creator), type: T(o.type), campaign: T(o.campaign), adgroup: T(o.adgroup), spend: N(o.spend), impr: N(o.impr), clicks: N(o.clicks), ctr: N(o.ctr), conv: N(o.conv), value: N(o.value), roas: N(o.roas), share: o.share === '' ? null : N(o.share), lp: T(o.lp), decision: T(o.decision), post: T(o.post), pic: pics[o._row] || links[T(o.type) === 'Catalog' ? T(o.name) : T(o.post)] || '' })).filter(o => o.name) : [];
   const topics = tabs[1] ? table(vals[1], { topic: ['topic'], spend: ['spend'], conv: ['conv (cta)', 'conv'], value: ['value (cta)', 'value'], roas: ['roas (cta)', 'roas'], best: ['best landing page'], bestRoas: ['its roas'], tried: ['pages tried'] })
-    .map(o => ({ topic: T(o.topic), spend: N(o.spend), conv: N(o.conv), value: N(o.value), roas: N(o.roas), best: T(o.best), bestRoas: o.bestRoas === '' ? null : N(o.bestRoas), tried: N(o.tried) })).filter(o => o.topic) : [];
+    .map(o => ({ topic: T(o.topic), spend: N(o.spend), conv: N(o.conv), value: N(o.value), roas: N(o.roas), best: T(o.best), bestRoas: o.bestRoas === '' ? null : N(o.bestRoas), tried: N(o.tried), img: links[T(o.best)] || '' })).filter(o => o.topic) : [];
   // Partners: a profile picture ("Avatar" / "Profile image": =IMAGE("url") or a plain link) and "Active videos" when the sheet has them
   let avatars = [];
   if (tabs[2]) {
     const head = ((vals[2] || [])[0] || []).map(h => String(h || '').trim().toLowerCase());
-    const ai = head.findIndex(h => /^(avatar|profile)/.test(h));
+    const ai = head.findIndex(h => /^(avatar|profile|photo)/.test(h));
     if (ai >= 0) {
       const col = String.fromCharCode(65 + ai);
       try {
         const f = await request('https://sheets.googleapis.com/v4/spreadsheets/' + TT_SHEET_ID + '/values/' + encodeURIComponent(a1(tabs[2].title, col + '1:' + col + '400')) + '?valueRenderOption=FORMULA');
-        avatars = ((f && f.values) || []).map(r => { const v = String((r || [])[0] || ''); const m = /IMAGE\(\s*"(https:\/\/[^"]+)"/i.exec(v) || /^(https:\/\/\S+)$/.exec(v.trim()); return m ? m[1] : ''; });
+        avatars = ((f && f.values) || []).map(r => picOf((r || [])[0], links));
       } catch (e) { console.warn('TikTok avatars: ' + ((e && e.message) || e)); }
     }
   }
@@ -378,7 +408,7 @@ async function buildTikTokSnap() {
 async function buildTikTokAcct() {
   const meta = await sheetMeta(TT_SHEET_ID);
   const find = re => meta.sheets.find(s => re.test(String(s.title).trim()));
-  const tabs = [find(/^account/i), find(/^qa/i), find(/^issues/i)];
+  const tabs = [find(/^account/i), find(/^qa/i), monthTab(meta, /^issues/i)];
   const vals = await batchGet(TT_SHEET_ID, tabs.map(t => a1(t ? t.title : 'Guide', 'A1:H800')), true);
   const T = v => String(v == null ? '' : v).trim();
   const rowsOf = v => (v || []).map(r => (r || []).map(T)).filter(r => r.some(c => c));
@@ -397,7 +427,7 @@ async function buildTikTokAcct() {
     const ix = {}; Object.keys(map).forEach(k => { ix[k] = head.findIndex(h => map[k].some(n => h === n || h.indexOf(n) === 0)); });
     return R.slice(1).map(r => { const o = {}; Object.keys(map).forEach(k => { o[k] = ix[k] >= 0 ? (r[ix[k]] || '') : ''; }); return o; }); };
   const checks = tabs[1] ? tbl(vals[1], { ad: ['ad'], campaign: ['campaign'], adgroup: ['ad group'], created: ['created'], by: ['created by'], problems: ['problems'], id: ['ad id'] }).filter(o => o.ad) : [];
-  const issues = tabs[2] ? tbl(vals[2], { found: ['found'], type: ['type'], ads: ['ad(s)', 'ads'], what: ['description'], by: ['created by'], owner: ['owner'], fixed: ['fixed'], fixedOn: ['fixed on'] }).filter(o => o.type || o.what) : [];
+  const issues = tabs[2] ? tbl(vals[2], { found: ['found'], type: ['type'], ads: ['ad(s)', 'ads'], what: ['description'], by: ['created by'], owner: ['owner'], fixed: ['fixed'], fixedOn: ['fixed on'], made: ['ads created'] }).filter(o => o.type || o.what) : [];
   return {
     account: { name: account.account || '', status: account.status || '', balance: num(account.balance), currency: account.currency || 'USD', opened: account.opened || '', checked: account['checked on'] || '' },
     rejected: ads, note, checks, issues, at: Date.now()
