@@ -10780,6 +10780,27 @@ body.dark-mode .tts-pic{background:#1b2656}
 .tts-st em{position:absolute;top:-3px;right:0;z-index:2;background:#13804F;color:#fff;font-style:normal;font-size:10px;font-weight:900;border-radius:99px;padding:1px 6px;border:2px solid #fff;font-variant-numeric:tabular-nums}
 .tts-st small{font-size:10.5px;font-weight:800;margin-top:7px;color:#141B33;max-width:60px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 body.dark-mode .tts-chips button{background:#16204A;border-color:#26326A;color:#C9D3F5}body.dark-mode .tts-st small{color:#E7EBF3}
+/* TikTok · Issues Log list (A) and issue page (3) */
+.tti-list{padding:2px 14px!important;border-radius:18px}
+.tti-r{position:relative;padding:12px 0;border-top:1px solid #EEF1F6;cursor:pointer;background:#fff}.tti-r:first-child{border-top:0}
+.tti-t{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.tti-t b{font-size:14px;color:#141B33}.tti-t .tts-chip{margin:0;flex:none}
+.tti-r p{font-size:11.5px;color:#6B7385;font-weight:600;line-height:1.4;margin-top:3px}
+.tti-m{display:flex;justify-content:space-between;align-items:center;margin-top:8px}
+.tti-who{display:inline-flex;align-items:center;gap:6px;background:#EEF2FB;border-radius:99px;padding:3px 10px 3px 3px}.tti-who b{font-size:11px;color:#203C8E}.tti-who i{font-style:normal;font-size:10px;font-weight:900;color:#B0812E}
+.tti-d{font-size:10.5px;font-weight:800;color:#8A93A8}
+.tti-av{display:inline-grid;place-items:center;border-radius:50%;color:#fff;font-weight:900;flex:none}
+.tti-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.tti-back{display:inline-flex;align-items:center;gap:4px;border:0;background:none;font:inherit;font-size:13px;font-weight:800;color:#203C8E;padding:4px 2px 10px;cursor:pointer}.tti-back svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.tti-hero{background:linear-gradient(140deg,#203C8E,#2C4FB8);color:#fff;border-radius:18px;padding:16px;margin-bottom:10px;box-shadow:0 10px 26px rgba(20,40,110,.12)}
+.tti-hero small{display:block;font-size:10px;font-weight:900;letter-spacing:.1em;color:#E2B874}.tti-hero h3{font-size:21px;font-weight:900;margin:6px 0 10px;line-height:1.2}
+.tti-st{display:inline-block;font-size:11px;font-weight:900;border-radius:99px;padding:4px 12px}.tti-st.r{background:#FBDDE1;color:#C63A4A}.tti-st.g{background:#E3F6EC;color:#13804F}
+.tti-c{padding:14px!important;border-radius:16px;margin-bottom:10px}.tti-l{font-size:9.5px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#8A93A8;margin-bottom:8px}
+.tti-what{font-size:13.5px;color:#141B33;font-weight:600;line-height:1.55}
+.tti-ad{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid #F3F5F9}.tti-ad:first-of-type{border-top:0}.tti-ad b{flex:1;min-width:0;font-size:12px;word-break:break-word}
+.tti-ad button{border:0;font:inherit;font-size:10.5px;font-weight:800;color:#203C8E;background:#EEF2FB;border-radius:8px;padding:4px 9px;cursor:pointer;flex:none}
+.tti-pic{width:22px;height:30px;border-radius:6px;background:linear-gradient(160deg,#c9d3f5,#8a9be0);flex:none}
+.tti-p{display:flex;align-items:center;gap:10px;padding:7px 0}.tti-p>div{flex:1;min-width:0}.tti-p b{font-size:13px}.tti-p small{display:block;font-size:10.5px;color:#8A93A8;font-weight:700}.tti-p em{font-style:normal;font-size:10.5px;font-weight:800;color:#B0812E;text-align:right;max-width:120px}
+body.dark-mode .tti-r{background:transparent;border-color:#26326A}body.dark-mode .tti-t b,body.dark-mode .tti-what{color:#E7EBF3}
 </style>
 </head>
 <body class="plat-tt">
@@ -23271,6 +23292,7 @@ const AKSW=[
  ['#rxFlip','Top & Bottom 5','Ask the person whether they want all the top and bottom items, or something specific; then answer.'],
  ['#stBody .stp-mt','Search terms performance (match type spend split)','Talk about the search terms performance: how the spend splits by match type, the wasted terms, the good ones, and what to do.'],
  ['#mxBody .mr3,#mxPeriodBtn,#mxBody .mxd-r','Reports Studio','Talk about this month (or this change between periods), and ask which period they want to look at.'],
+ ['#ttisBody .tti-r','Issues Log (a problem in the TikTok ads)','Explain this problem in simple words: what is wrong, why it matters for the campaigns and the donations, and exactly what the team should do to fix it. Say who made the ads if the card says so (the emails are masked, say only the visible part).'],
  ['#ssBody .ss-r','Seasons calendar','Talk about this season in the past years: spend, value, ROAS, and how to prepare this year.']];
 function akSwFind(t){for(const [sel,name,hint] of AKSW){const el=t.closest&&t.closest(sel);if(el)return {el,name,hint}}return null}
 function akSwCall(hit){if(AK.blocked)return;const txt=String((hit.el.closest('#chgCard')||hit.el).innerText||'').replace(/\s+/g,' ').trim().slice(0,600);
@@ -23768,14 +23790,44 @@ function ttAcDraw(){
     (o?`<div class="tts-more">${good?'':`<p><small>Problems</small>${String(c.problems).split(';').map(x=>esc(x.trim())).join('<br>')}</p>`}${c.by?`<p><small>Created by</small>${esc(c.by)}</p>`:''}<p><small>Campaign</small>${esc(c.campaign)}</p>${c.adgroup?`<p><small>Ad group</small>${esc(c.adgroup)}</p>`:''}${c.id?`<p><small>Ad ID</small>${esc(c.id)}</p>`:''}</div>`:'')}).join(''):'<div class="dx-empty">Every live ad passes.</div>'}</div>
    <div class="tts-note">Tap an ad to see its problems and IDs</div>`;
  }else{
-  const I=[...(D.issues||[])].sort((a,b)=>((/^yes/i.test(a.fixed)?1:0)-(/^yes/i.test(b.fixed)?1:0))||(String(b.found).localeCompare(String(a.found)))),open=I.filter(x=>!/^yes/i.test(x.fixed)).length;
+  const I=ttIssues(D),open=I.filter(x=>!/^yes/i.test(x.fixed)).length;
+  if(TTA.page!=null&&I[TTA.page]){host.innerHTML=ttIssuePage(I[TTA.page]);return}TTA.page=null;
   host.innerHTML=`<div class="tts-sub">${open} open${I.length-open?' · '+(I.length-open)+' fixed':''} · active ads only</div>
-   <div class="card tts-tbl">${I.map((x,i)=>{const k='i'+i,o=TTA.open===k,f=/^yes/i.test(x.fixed);
-    return `<div class="tts-tr tta-tr${o?' open':''}" role="button" tabindex="0" onclick="ttAcOpen('${k}')"><span><b>${esc(x.type||'Issue')}</b><small>${esc(x.what)}</small></span><span class="tts-chip ${f?'good':'bad'}">${f?'Fixed':'Open'}</span></div>`+
-    (o?`<div class="tts-more"><p><small>What</small>${esc(x.what)}</p>${x.ads?`<p><small>Ad(s)</small>${esc(x.ads)}</p>`:''}${x.by?`<p><small>Created by</small>${esc(x.by)}</p>`:''}<p><small>Found</small>${ttDay(x.found)}${f&&x.fixedOn?' · fixed '+ttDay(x.fixedOn):''}</p>${x.owner?`<p><small>Owner</small>${esc(x.owner)}</p>`:''}</div>`:'')}).join('')}</div>
-   <div class="tts-note">Open first, newest first · tap one for details</div>`;
+   <div class="card tti-list">${I.length?I.map((x,i)=>{const f=/^yes/i.test(x.fixed),P=ttPeople(x.by),p=P[0];
+    return `<div class="tti-r" role="button" tabindex="0" onclick="ttIssueOpen(${i})"><div class="tti-t"><b>${esc(x.type||'Issue')}</b><span class="tts-chip ${f?'good':'bad'}">${f?'Fixed':'Open'}</span></div><p>${esc(x.what)}</p>
+     <div class="tti-m">${p?`<span class="tti-who">${ttPav(p,20)}<b>${esc(p.name)}</b>${P.length>1?`<i>+${P.length-1}</i>`:''}</span>`:'<span></span>'}<span class="tti-d">${ttDay(x.found)}</span></div>
+     <span class="tti-sr">Ads: ${esc(x.ads||'')}. Made by: ${esc(x.by||'')}. Found ${esc(x.found||'')}.</span></div>`}).join(''):'<div class="dx-empty">No open issue.</div>'}</div>
+   <div class="tts-note">Open first, newest first · tap one to open it · swipe one right to ask Alexandra</div>`;
  }
 }
+
+ 
+function ttIssues(D){return [...(D.issues||[])].sort((a,b)=>((/^yes/i.test(a.fixed)?1:0)-(/^yes/i.test(b.fixed)?1:0))||(String(b.found).localeCompare(String(a.found))))}
+function ttIssueOpen(i){TTA.page=i;ttAcDraw();try{scrollTo({top:0})}catch(e){scrollTo(0,0)}}
+function ttIssueBack(){TTA.page=null;ttAcDraw();try{scrollTo({top:0})}catch(e){}}
+
+function ttPeople(s){s=String(s||'').trim();if(!s)return [];
+ return s.split(/\s+·\s+/).map(part=>{let lab='',who=part;const c=part.indexOf(': ');if(c>0&&c<40){lab=part.slice(0,c);who=part.slice(c+2)}
+  const api=/via api/i.test(who),m=/([^\s@(]+)@([a-z0-9.-]+)/i.exec(who);
+  if(/claude/i.test(who))return {name:'Claude',sub:(/\(([^,)]+)/.exec(who)||[])[1]?((/\(([^,)]+)/.exec(who)||[])[1]+' · via API'):'via API',lab,k:'c'};
+  if(m)return {name:m[1],sub:'@'+m[2]+(api?' · via API':'')+(/ads manager/i.test(who)?' · Ads Manager':''),lab,k:'p'};
+  if(/older/i.test(who))return {name:'Older',sub:'before the change log',lab,k:'o'};
+  return {name:who.slice(0,40),sub:'',lab,k:'o'}})}
+function ttPav(p,s){const bg=p.k==='p'?'linear-gradient(140deg,#2C4FB8,#203C8E)':p.k==='c'?'linear-gradient(140deg,#C28D3E,#E2B874)':'#C9D0DE';
+ return `<span class="tti-av" style="width:${s}px;height:${s}px;font-size:${Math.round(s*.45)}px;background:${bg}">${p.k==='o'?'–':esc(String(p.name).charAt(0).toUpperCase())}</span>`}
+function ttKind(t){t=String(t||'');return /landing|link|https?/i.test(t)?'Landing page':/utm|pixel|track/i.test(t)?'Tracking':/name|duplicate|videos in one/i.test(t)?'Naming':/country|text|content|caption/i.test(t)?'Content':'Issue'}
+function ttIssueAds(s){s=String(s||'').trim();if(!s)return [];const n=(/\((\d+)\s+active ads?\)/i.exec(s)||[])[1];
+ const L=s.replace(/\(\d+\s+active ads?\)/i,'').split(/,\s+(?=[A-Za-z])/).map(x=>x.trim()).filter(Boolean);return {n:n?+n:null,L}}
+function ttCopy(t,btn){const done=()=>{if(btn){const o=btn.textContent;btn.textContent='Copied';setTimeout(()=>{btn.textContent=o},1200)}};
+ try{navigator.clipboard.writeText(t).then(done,()=>{})}catch(e){}}
+function ttIssuePage(x){const f=/^yes/i.test(x.fixed),A=ttIssueAds(x.ads),P=ttPeople(x.by);
+ return `<button type="button" class="tti-back" onclick="ttIssueBack()"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>Issues Log</button>
+  <div class="tti-hero"><small>${esc(ttKind(x.type).toUpperCase())} · FOUND ${esc(ttDay(x.found).toUpperCase())}</small><h3>${esc(x.type||'Issue')}</h3><span class="tti-st ${f?'g':'r'}">${f?'Fixed':'Open'}</span></div>
+  <div class="card tti-c"><div class="tti-l">What's wrong</div><p class="tti-what">${esc(x.what||'—')}</p></div>
+  ${A.L&&A.L.length?`<div class="card tti-c"><div class="tti-l">Ads affected${A.n?' · '+A.n+' active':''}</div>${A.L.map(a=>{const id=(/(\d{15,})/.exec(a)||[])[1];
+    return `<div class="tti-ad"><span class="tti-pic"></span><b>${esc(a)}</b><button type="button" onclick="ttCopy('${esc(id||a).replace(/'/g,'&#39;')}',this)">${id?'Copy ID':'Copy'}</button></div>`}).join('')}</div>`:''}
+  ${P.length?`<div class="card tti-c"><div class="tti-l">Made by</div>${P.map(p=>`<div class="tti-p">${ttPav(p,32)}<div><b>${esc(p.name)}</b><small>${esc(p.sub)}</small></div>${p.lab?`<em>${esc(p.lab)}</em>`:''}</div>`).join('')}</div>`:''}
+  ${x.owner?`<div class="card tti-c"><div class="tti-l">Owner</div><p class="tti-what">${esc(x.owner)}</p></div>`:''}`}
 </script>
 <div id="seknaFileEnd" hidden></div>
 </body>
