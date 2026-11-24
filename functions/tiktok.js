@@ -252,6 +252,7 @@ async function buildTikTokData() {
  */
 const { onRequest } = require('firebase-functions/v2/https');
 const { assertAccess, assertAdmin } = require('./access');
+const notify = require('./notify');
 const ORIGINS = ['https://sekna-app.web.app', 'https://sekna-app.firebaseapp.com', 'https://sekna-app.github.io'];
 let held = null, pending = null;
 function ttData(force) {
@@ -275,6 +276,24 @@ function ttSnap() {
   return snapPending;
 }
 const TT_PEOPLE = 'server/tt-people';
+/** A short id for an issue (the same on the page): its date, type and ads. */
+function issueKey(x) { const t = String(x.found || '') + '|' + String(x.type || '') + '|' + String(x.ads || '').slice(0, 60); let h = 5381; for (let i = 0; i < t.length; i++) h = ((h * 33) ^ t.charCodeAt(i)) >>> 0; return h.toString(36); }
+/** The issue email (design C, "Personal note"); the button opens the issue on the TikTok page. */
+function issueMailHtml(x, name) {
+  const E = notify.esc, F = "font-family:Inter,'Segoe UI',Helvetica,Arial,sans-serif", url = 'https://sekna-app.web.app/tiktok/?is=' + issueKey(x);
+  const kind = /landing|link|https?/i.test(x.type) ? 'LANDING PAGE' : /utm|pixel|track/i.test(x.type) ? 'TRACKING' : /name|duplicate|videos in one/i.test(x.type) ? 'NAMING' : /country|text|content|caption/i.test(x.type) ? 'CONTENT' : 'ISSUE';
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(x.found || '')), day = m ? (+m[3]) + ' ' + MON[+m[2] - 1].toUpperCase() + ' ' + m[1] : String(x.found || '').toUpperCase();
+  return `<!doctype html><html><body style="margin:0;background:#F4F6FB;padding:24px 12px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px"><tr><td style="background:#ffffff;border-radius:20px;padding:24px">
+<table role="presentation" width="100%"><tr><td width="52" valign="middle"><div style="width:44px;height:44px;border-radius:50%;background:#203C8E;color:#fff;${F};font-size:19px;font-weight:900;text-align:center;line-height:44px">${E(String(name).charAt(0).toUpperCase())}</div></td>
+<td valign="middle"><p style="margin:0;${F};font-size:16px;font-weight:900;color:#141B33">Hi ${E(name)}</p><p style="margin:2px 0 0;${F};font-size:12px;font-weight:700;color:#8A93A8">An open issue on your TikTok ads</p></td></tr></table>
+<table role="presentation" width="100%" style="margin-top:18px;border-left:4px solid #C63A4A;background:#FFF7F8;border-radius:0 14px 14px 0"><tr><td style="padding:14px 16px">
+<p style="margin:0;${F};font-size:10px;font-weight:900;letter-spacing:1px;color:#C63A4A">${kind} · ${E(day)}</p>
+<p style="margin:6px 0 4px;${F};font-size:17px;font-weight:900;color:#141B33">${E(x.type || 'Issue')}</p>
+<p style="margin:0;${F};font-size:13.5px;font-weight:600;color:#4b5263;line-height:1.5">${E(x.what || '')}</p>
+${x.ads ? `<p style="margin:10px 0 0;${F};font-size:12px;font-weight:800;color:#203C8E">${E(String(x.ads).replace(/\n+/g, ' · '))}</p>` : ''}</td></tr></table>
+<div style="height:20px"></div><table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto"><tr><td style="background:#203C8E;border-radius:12px"><a href="${url}" style="display:inline-block;padding:13px 26px;${F};font-size:14px;font-weight:800;color:#ffffff;text-decoration:none">Open in HEMERA</a></td></tr></table>
+<p style="margin:14px 0 0;${F};font-size:12px;color:#6B7385;text-align:center">You can ask Alexandra about it from the issue page.</p></td></tr></table><p style="${F};font-size:11px;color:#8A93A8;text-align:center;margin:18px 0 0">TikTok · Human Appeal US · Account Health<br>You get this because an ad you made has an open issue.</p></td></tr></table></body></html>`;
+}
 let feedHeld = null, feedPending = null;
 function ttFeed() {
   if (feedHeld && Date.now() - feedHeld.at < 5 * 60000) return Promise.resolve(feedHeld.v);
@@ -291,6 +310,7 @@ function ttAcct() {
 }
 const fn = onRequest({
   region: 'europe-west2', serviceAccount: 'sekna-server@human-appeal-media-plan.iam.gserviceaccount.com',
+  ...(notify.MAIL_ON_DEPLOY ? { secrets: [notify.GMAIL_PASSWORD] } : {}),
   memory: '256MiB', cpu: 1, concurrency: 20, minInstances: 0, maxInstances: 3, timeoutSeconds: 60, invoker: 'public'
 }, async (req, res) => {
   const origin = req.get('origin') || '';
@@ -319,7 +339,7 @@ const fn = onRequest({
     } catch (e) { console.warn('TikTok picture: ' + ((e && e.message) || e)); res.status(502).send(''); }
     return;
   }
-  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct' && route !== '/feed' && route !== '/people' && route !== '/peopleSet') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
+  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct' && route !== '/feed' && route !== '/people' && route !== '/peopleSet' && route !== '/issueMail') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
   let body = req.body;
   if (!(body && typeof body === 'object' && !Buffer.isBuffer(body))) {
     const text = Buffer.isBuffer(body) ? body.toString('utf8') : typeof body === 'string' ? body : (req.rawBody ? req.rawBody.toString('utf8') : '');
@@ -336,7 +356,22 @@ const fn = onRequest({
       res.json({ ok: true, result: (doc && doc.map) || {} }); return;
     }
     await assertAccess(body.token);
-    if (route === '/people') { const d = (await fsGet(TT_PEOPLE).catch(() => null)) || {}; res.json({ ok: true, result: d.map || {} }); return; }
+    if (route === '/people') { const d = (await fsGet(TT_PEOPLE).catch(() => null)) || {}; res.json({ ok: true, result: Object.assign({}, d.map || {}, { _mails: d.mails || {} }) }); return; }
+    // v680 email the person who made the ads of an issue (admins; only people linked to a HEMERA profile)
+    if (route === '/issueMail') {
+      const me = await assertAdmin(body.token);
+      const key = String(body.key || ''), who = String(body.who || '').toLowerCase();
+      const acct = await ttAcct(), issue = (acct.issues || []).find(x => issueKey(x) === key);
+      if (!issue) throw new Error('This issue is not in the sheet any more.');
+      const doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, m = (doc.map || {})[who];
+      if (!m || !m.email) throw new Error('Link this person to a HEMERA profile first (Account & Policy → Team accounts).');
+      if (!notify.mailReady()) throw new Error('Email is not set up on the server yet.');
+      const name = m.name || String(m.email).split('@')[0];
+      await notify.sendMail({ to: m.email, replyTo: me && me.email ? me.email : undefined, subject: 'TikTok issue to fix: ' + String(issue.type || 'Issue').slice(0, 80), rawHtml: issueMailHtml(issue, name) });
+      const at = Date.now();
+      await fsUpdate(TT_PEOPLE, d => { d = d || {}; d.mails = d.mails || {}; const l = d.mails[key] = (d.mails[key] || []).filter(x => x.who !== who); l.push({ who, at }); return d; });
+      res.json({ ok: true, result: { at } }); return;
+    }
     res.json({ ok: true, result: route === '/months' ? await ttMonths() : route === '/snap' ? await ttSnap() : route === '/acct' ? await ttAcct() : route === '/feed' ? await ttFeed() : await ttData(!!body.force) });
   } catch (e) {
     res.json({ ok: false, access: !!(e && (e.access || e.blocked)), error: String((e && e.message) || e).slice(0, 300) });
