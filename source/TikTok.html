@@ -10855,6 +10855,20 @@ body.tt-nocur .cur-box{display:none!important}
 .ttf-ba{margin-top:7px}.ttf-ba small{display:block;font-size:9.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8A93A8}.ttf-ba div{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12.5px;font-weight:800;margin-top:2px}
 .ttf-ba s{color:#C63A4A;background:#FBDDE1;border-radius:6px;padding:1px 6px;word-break:break-word}.ttf-ba b{color:#13804F;background:#E3F6EC;border-radius:6px;padding:1px 6px;word-break:break-word}.ttf-ba i{font-style:normal;color:#B0812E}
 body.dark-mode .ttf-tdot{box-shadow:0 0 0 3px #0D1430}
+/* v677 Account & Policy one card; Activity split-bar list */
+.tta-one{padding:14px 16px!important;border-radius:18px}.tta-oh{display:flex;align-items:center;gap:9px;margin-bottom:6px}.tta-oh span{width:10px;height:10px;border-radius:50%}.tta-oh b{font-size:15.5px}
+.tta-oh.g span{background:#13804F;box-shadow:0 0 0 4px #E3F6EC}.tta-oh.g b{color:#13804F}.tta-oh.r span{background:#C63A4A;box-shadow:0 0 0 4px #FBDDE1}.tta-oh.r b{color:#C63A4A}
+.tta-kv{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid #EEF1F6;font-size:13px;font-weight:700;color:#6B7385}.tta-kv b{color:#141B33;font-weight:900}.tta-kv b.g{color:#13804F}.tta-kv b.r{color:#C63A4A}
+.tta-sec{display:flex;justify-content:space-between;align-items:baseline;margin:16px 4px 8px}.tta-sec b{font-size:15px;color:#0F1F52}.tta-sec span{font-size:10.5px;color:#8A93A8;font-weight:800}
+.tta-tmh .tta-ok{width:26px;height:26px;padding:0;border-radius:50%;background:#E3F6EC;color:#13804F;display:grid;place-items:center;font-weight:900;font-size:13px;flex:none}
+.tta-tmh .tta-add{background:#FDF1D8;color:#B0812E}
+.ttf-hk3{grid-template-columns:repeat(3,1fr)!important}
+.ttf-row{display:flex;align-items:center;gap:11px;width:100%;padding:12px 0;border:0;border-top:1px solid #EEF1F6;background:none;font:inherit;text-align:left;cursor:pointer}.ttf-row:first-child{border-top:0}
+.ttf-rb{flex:1;min-width:0}.ttf-rb b{font-size:14px;color:#141B33}.ttf-rb small{display:block;font-size:10.5px;font-weight:800;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ttf-rb small .g{color:#13804F}.ttf-rb small .b{color:#203C8E}.ttf-rb small .r{color:#C63A4A}
+.ttf-sb{display:flex;height:5px;border-radius:99px;overflow:hidden;gap:2px;margin-top:6px}.ttf-sb i{display:block}
+.ttf-rn{text-align:right;flex:none}.ttf-rn em{display:block;font-style:normal;font-weight:900;font-size:18px;color:#203C8E;font-variant-numeric:tabular-nums}.ttf-rn span{font-size:9.5px;color:#8A93A8;font-weight:800}
+.tti-avp img{width:100%;height:100%;object-fit:cover;display:block}
+body.dark-mode .ttf-row,body.dark-mode .tta-kv{border-color:#26326A}body.dark-mode .ttf-rb b,body.dark-mode .tta-kv b{color:#E7EBF3}
 </style>
 </head>
 <body class="plat-tt">
@@ -23835,11 +23849,14 @@ function ttAcDraw(){
  const ico=(k,t)=>`<i class="tta-ck ${k}">${t}</i>`,ok='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',no='<svg viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg>';
  if(CURRENT_TAB==='ttac'){
   const a=D.account||{},act=/^active$/i.test(a.status),rj=D.rejected||[];
-  host.innerHTML=`<div class="tts-sub">${esc(a.name||'TikTok account')}${a.checked?' · checked '+ttDay(a.checked):''}</div>
-   <div class="card tta-chk"><div class="tta-cr">${ico(act?'g':'r',act?ok:no)}<span>Account status</span><b>${esc(a.status||'—')}</b></div>
-   <div class="tta-cr">${ico('g','$')}<span>Balance</span><b>${money(a.balance)}</b></div>
-   <div class="tta-cr">${ico(rj.length?'r':'g',rj.length?no:ok)}<span>Rejected ads</span><b>${rj.length?rj.length:'None'}</b></div>
-   <div class="tta-cr">${ico('n','<svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>')}<span>Opened</span><b>${ttDay(a.opened)}</b></div></div>
+  const fine=act&&!rj.length;
+  host.innerHTML=`<div class="tts-sub">${esc(a.name||'TikTok account')}</div>
+   <div class="card tta-one"><div class="tta-oh ${fine?'g':'r'}"><span></span><b>${fine?'Account is healthy':!act?'Account is '+esc(a.status||'not active'):rj.length+' ad'+(rj.length===1?'':'s')+' need a look'}</b></div>
+    <div class="tta-kv"><span>Status</span><b class="${act?'g':'r'}">${esc(a.status||'—')}</b></div>
+    <div class="tta-kv"><span>Balance</span><b>${money(a.balance)}</b></div>
+    <div class="tta-kv"><span>Rejected ads</span><b class="${rj.length?'r':'g'}">${rj.length?rj.length:'None'}</b></div>
+    <div class="tta-kv"><span>Opened</span><b>${ttDay(a.opened)}</b></div>
+    ${a.checked?`<div class="tta-kv"><span>Checked</span><b>${ttDay(a.checked)}</b></div>`:''}</div>
    ${ttTeamBlock(D)}
    ${rj.length?`<div class="tts-sub">Ads that need a look</div><div class="card tts-tbl">${rj.map(r=>`<div class="tts-tr tta-tr"><span><b>${esc(r.ad||'')}</b><small>${esc(r.campaign||'')}${r.changed?' · '+ttDay(r.changed):''}</small></span><span class="tts-chip bad">${esc(r.state||'Rejected')}</span></div>`).join('')}</div>`:`<div class="tts-note tta-fine">${esc(D.note||'No ad is rejected.')}</div>`}`;
  }else if(CURRENT_TAB==='ttqa'){
@@ -23945,7 +23962,7 @@ function ttfTrRun(){if(TTF.trBusy||!TTF.tr||!TTF.data)return;const need=ttfList(
 function ttfList(){const C=((TTF.data||{}).comments||[]).filter(c=>ttfIn(c.t));return TTF.cat?C.filter(c=>(c.cat||'Other')===TTF.cat):C}
 
 function ttfOp(op){op=String(op||'').trim();const m=/^([^\s@]+)@([a-z0-9.-]+)/i.exec(op);
- if(m){const n=ttMapOf(op);return n?{k:op.toLowerCase(),name:n.name,sub:op.toLowerCase(),kind:'p',av:n.prof?personAv(n.prof.avatar,n.prof.name):''}:{k:op.toLowerCase(),name:m[1],sub:'@'+m[2],kind:'p'}}if(/tiktok/i.test(op))return {k:'tiktok',name:'TikTok',sub:'',kind:'c'};return {k:op.toLowerCase()||'?',name:op||'Not known',sub:'',kind:'o'}}
+ if(m){const n=ttMapOf(op);return n?{k:op.toLowerCase(),name:n.name,sub:op.toLowerCase(),kind:'p',av:n.prof?personAv(n.prof.avatar,n.prof.name):''}:{k:op.toLowerCase(),name:m[1],sub:'@'+m[2],kind:'p'}}if(/tiktok/i.test(op))return {k:'tiktok',name:'TikTok',sub:'',kind:'c',av:'<img src="icons/alexandra/logo-tiktok.png?v=3" alt="">'};return {k:op.toLowerCase()||'?',name:op||'Not known',sub:'',kind:'o'}}
 
 function ttfField(n){n=String(n||'');return /status|on\/off/i.test(n)?'Status':/budget|bid|cost/i.test(n)?'Budget':/creative|video|text|identity|spark/i.test(n)?'Creative':/url|destination|deeplink|page/i.test(n)?'Landing page':/review/i.test(n)?'Review':/^ad$|name/i.test(n)?'Ad':'Other'}
 function ttfFld(f){TTF.fld=f;TTF.show=100;ttFeedDraw()}
@@ -23986,9 +24003,13 @@ function ttFeedDraw(){
        ${ch.length?ch.map(c=>`<div class="ttf-ba">${c.f&&c.f!==a.name?`<small>${esc(c.f)}</small>`:''}<div>${c.b?`<s>${esc(c.b)}</s><i>→</i>`:''}<b>${esc(c.a||'—')}</b></div></div>`).join(''):a.det&&a.det!==a.name?`<p class="ttf-det">${esc(a.det)}</p>`:''}
        ${a.src&&a.src!=='--'?`<small class="ttf-src">${esc(a.src)}</small>`:''}</div></div>`}).join('')}</div>`+(L.length>TTF.show?`<button type="button" class="ttf-more" onclick="ttfMore()">Show more (${L.length-TTF.show})</button>`:''):'<div class="card section"><div class="dx-empty">No change on these days.</div></div>'})()}`;
    return}
-  host.innerHTML=`<div class="tts-sub">${fmt(A.length,0)} change${A.length===1?'':'s'} · who changed what</div>${ttfDates()}
-   ${groups.length?groups.map(g=>{const t=g.L.length||1;return `<button type="button" class="card ttf-pc" onclick="ttfWho('${esc(g.p.k).replace(/'/g,'&#39;')}')"><div class="ttf-phh">${ttPav({name:g.p.name,av:g.p.av,k:g.p.kind==='p'?'p':g.p.kind==='c'?'c':'o'},40)}<div><b>${esc(g.p.name)}</b><small>${esc([g.p.sub,top(g)].filter(Boolean).join(' · '))}</small></div><em>${fmt(g.L.length,0)}</em></div>
-    <div class="ttf-pb"><i style="flex:${g.c};background:#13804F"></i><i style="flex:${g.ch};background:#2453D6"></i><i style="flex:${g.dl};background:#C63A4A"></i></div><div class="ttf-lg"><span>Create ${g.c}</span><span>Change ${g.ch}</span><span>Delete ${g.dl}</span></div></button>`}).join(''):'<div class="card section"><div class="dx-empty">No change on these days.</div></div>'}
+  const TC=groups.reduce((t,g)=>t+g.c,0),TCH=groups.reduce((t,g)=>t+g.ch,0),TD=groups.reduce((t,g)=>t+g.dl,0),rl={all:'All changes','7':'Last 7 days',y:'Yesterday',day:ttDay(TTF.day)}[TTF.range]||'';
+  host.innerHTML=`<div class="tts-hero"><small>${esc(rl.toUpperCase())}</small><b>${fmt(A.length,0)}</b><span>change${A.length===1?'':'s'} in the ad account</span>
+    <div class="tts-hk ttf-hk3"><div><em class="g">${fmt(TC,0)}</em>Created</div><div><em>${fmt(TCH,0)}</em>Changed</div><div><em class="r">${fmt(TD,0)}</em>Deleted</div></div></div>
+   ${ttfDates()}
+   ${groups.length?`<div class="card ttf-list">${groups.map(g=>{const ld=g.L.reduce((m,a)=>a.d>m?a.d:m,'');return `<button type="button" class="ttf-row" onclick="ttfWho('${esc(g.p.k).replace(/'/g,'&#39;')}')">${ttPav({name:g.p.name,av:g.p.av,k:g.p.kind==='p'?'p':g.p.kind==='c'?'c':'o'},40)}
+    <div class="ttf-rb"><b>${esc(g.p.name)}</b><small><span class="g">${fmt(g.c,0)} created</span> · <span class="b">${fmt(g.ch,0)} changed</span> · <span class="r">${fmt(g.dl,0)} deleted</span></small><div class="ttf-sb"><i style="flex:${g.c||0.001};background:#13804F"></i><i style="flex:${g.ch||0.001};background:#203C8E"></i><i style="flex:${g.dl||0.001};background:#C63A4A"></i></div></div>
+    <div class="ttf-rn"><em>${fmt(g.L.length,0)}</em><span>${ld?(ld===ttfToday()?'today':'last '+esc(ttDay(ld).replace(/ \d{4}$/,''))):''}</span></div></button>`}).join('')}</div>`:'<div class="card section"><div class="dx-empty">No change on these days.</div></div>'}
    <div class="tts-note">From TikTok's change log in the sheet · New York time · tap a person to see their changes</div>`;
  }
 }
@@ -23998,10 +24019,10 @@ function ttTeamKeys(D){const S=new Map(),add=(t,src)=>{String(t||'').replace(/([
  ((D&&D.checks)||[]).forEach(c=>add(c.by,'Ad Checks'));((D&&D.issues)||[]).forEach(x=>add(x.by,'Issues'));(((TTF.data||{}).acts)||[]).forEach(a=>add(a.op,'Activity'));
  if(!TTF.data)ttFeedLoad();return [...S.values()].sort((a,b)=>b.n-a.n)}
 function ttIsAdmin(){return !!(typeof ACCESS_PROFILE!=='undefined'&&ACCESS_PROFILE&&(ACCESS_PROFILE.isAdmin||ACCESS_PROFILE.owner))}
-function ttTeamBlock(D){const K=ttTeamKeys(D),adm=ttIsAdmin();if(!K.length)return '';const P=((typeof PFP!=='undefined'&&PFP.people)||[]);
- return `<div class="tts-sub">Team accounts · who is behind each email</div><div class="card tta-team">${K.map(o=>{const m=(TTP.map||{})[o.k]||{},n=ttMapOf(o.k),ed=TTP.edit===o.k,mask=o.k.split('@');
+function ttTeamBlock(D){const K=ttTeamKeys(D),adm=ttIsAdmin();if(!K.length)return '';const P=((typeof PFP!=='undefined'&&PFP.people)||[]),named=K.filter(o=>ttMapOf(o.k)).length;
+ return `<div class="tta-sec"><b>Team accounts</b><span>${named} of ${K.length} named</span></div><div class="card tta-team">${K.map(o=>{const m=(TTP.map||{})[o.k]||{},n=ttMapOf(o.k),ed=TTP.edit===o.k,mask=o.k.split('@');
   const av=ttPav({name:n?n.name:mask[0],k:'p',av:n&&n.prof?personAv(n.prof.avatar,n.prof.name):''},36);
-  return `<div class="tta-tm"><div class="tta-tmh">${av}<div><b>${esc(n?n.name:mask[0])}</b><small>${esc(o.k)} · ${[...o.src].join(', ')}</small></div>${adm?`<button type="button" onclick="ttTeamEdit('${esc(o.k)}')">${ed?'Close':n?'Change':'Set name'}</button>`:n?'':'<em>Not set</em>'}</div>
+  return `<div class="tta-tm"><div class="tta-tmh">${av}<div><b>${esc(n?n.name:mask[0])}</b><small>${n?esc(o.k):'Not named yet'}</small></div>${ed?`<button type="button" onclick="ttTeamEdit('${esc(o.k)}')">Close</button>`:n?(adm?`<button type="button" class="tta-ok" aria-label="Change" onclick="ttTeamEdit('${esc(o.k)}')">✓</button>`:'<span class="tta-ok">✓</span>'):adm?`<button type="button" class="tta-add" onclick="ttTeamEdit('${esc(o.k)}')">+ Name</button>`:'<em>Not named</em>'}</div>
    ${ed?`<div class="tta-ed"><label>Choose a HEMERA profile<select id="ttTmP"><option value="">— Not on HEMERA —</option>${P.map(p=>`<option value="${esc(String(p.email||'').toLowerCase())}"${String(p.email||'').toLowerCase()===m.email?' selected':''}>${esc(p.name||p.email)}</option>`).join('')}</select></label>
     <label>Or type a name<input id="ttTmN" type="text" maxlength="60" placeholder="e.g. Mariam" value="${esc(m.name||'')}"></label>
     <div class="tta-edb">${n?`<button type="button" class="ghost" onclick="ttTeamSave('${esc(o.k)}',1)">Clear</button>`:''}<button type="button" onclick="ttTeamSave('${esc(o.k)}')">Save</button></div><small>Shows everywhere in TikTok (Issues, Ad Checks, Activity). Only the email's visible part is known to TikTok.</small></div>`:''}</div>`}).join('')}</div>`}
