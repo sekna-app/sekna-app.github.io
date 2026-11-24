@@ -294,6 +294,23 @@ const fn = onRequest({
   if (req.method === 'OPTIONS') { res.status(204).send(''); return; }
   const route = String(req.path || '/').replace(/\/+$/, '') || '/';
   if (route === '/ping') { res.json({ ok: true }); return; }
+  // GET /pic?u=<TikTok picture link>: the picture through this server (only links that are in the sheet's Creatives tab)
+  if (route === '/pic' && req.method === 'GET') {
+    try {
+      const u = String((req.query && req.query.u) || '');
+      if (!/^https:\/\/[a-z0-9.-]+\.tiktokcdn(-[a-z]+)?\.com\//i.test(u)) { res.status(400).send(''); return; }
+      const snap = await ttSnap().catch(() => null);
+      if (!snap || !(snap.creatives || []).some(c => c.pic === u)) { res.status(404).send(''); return; }
+      const r = await fetch(u, { headers: { 'User-Agent': 'Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 Chrome/124 Mobile Safari/537.36', Accept: 'image/avif,image/webp,image/*,*/*' } });
+      if (!r.ok) { res.status(r.status === 404 ? 404 : 502).send(''); return; }
+      const type = String(r.headers.get('content-type') || 'image/jpeg');
+      if (!/^image\//i.test(type)) { res.status(502).send(''); return; }
+      const buf = Buffer.from(await r.arrayBuffer());
+      res.set('Content-Type', type); res.set('Cache-Control', 'public, max-age=86400'); res.set('Access-Control-Allow-Origin', '*');
+      res.status(200).send(buf);
+    } catch (e) { console.warn('TikTok picture: ' + ((e && e.message) || e)); res.status(502).send(''); }
+    return;
+  }
   if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
   let body = req.body;
   if (!(body && typeof body === 'object' && !Buffer.isBuffer(body))) {

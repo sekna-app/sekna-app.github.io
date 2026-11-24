@@ -10764,8 +10764,8 @@ body.dark-mode .tta-cr{border-color:#26326A}body.dark-mode .tta-cr b{color:#E7EB
 /* TikTok · Creatives pictures */
 .tts-tr.tts-cr{grid-template-columns:1fr 64px 52px 14px}
 .tts-cn{display:flex!important;align-items:center;gap:10px;min-width:0}.tts-tr .tts-cn span{text-align:left!important}.tts-cn>span:last-child{min-width:0}
-.tts-pic{width:34px;height:46px;flex:0 0 34px;border-radius:8px;overflow:hidden;background:#EEF2FB;display:grid;place-items:center}
-.tts-pic img{width:100%;height:100%;object-fit:cover;display:block}
+.tts-pic{position:relative;width:34px;height:46px;flex:0 0 34px;border-radius:8px;overflow:hidden;background:#EEF2FB;display:grid;place-items:center}
+.tts-pic img{position:absolute;left:0;top:0;width:100%;height:100%;max-width:none;object-fit:cover;display:block}
 .tts-pic svg{width:16px;height:16px;fill:none;stroke:#8A93A8;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .tts-pic.big{width:90px;height:150px;flex:0 0 90px;border-radius:12px}.tts-pic.big svg{width:24px;height:24px}
 .tts-mv{display:flex;gap:12px;align-items:flex-start;padding-top:8px}.tts-mv>div{flex:1;min-width:0}.tts-mv .tts-chip{display:inline-block;margin:8px 0 0}
@@ -23755,7 +23755,9 @@ function ttRo(v){return (Number(v)||0).toFixed(2)+'x'}
 function ttDec(d){d=String(d||'');return /^scale/i.test(d)?'good':/^pause/i.test(d)?'bad':/^keep/i.test(d)?'navy':'warn'}
 // the video's picture (from the sheet; the link lasts about a week) or a plain tile when there is none
 function ttPic(c,big){const ph=`<span class="tts-pic${big?' big':''} none"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="13" height="14" rx="2.5"/><path d="M16.5 10l4-2.5v9l-4-2.5"/></svg></span>`;
- return c.pic?`<span class="tts-pic${big?' big':''}"><img src="${esc(c.pic)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.parentNode.classList.add('none');this.remove()"></span>`:ph}
+ return c.pic?`<span class="tts-pic${big?' big':''}"><img src="${esc(TT_API+'/pic?u='+encodeURIComponent(c.pic))}" data-raw="${esc(c.pic)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="ttPicErr(this)"></span>`:ph}
+// through TikTok's server first; if that fails, straight from TikTok; then the plain tile
+function ttPicErr(img){const raw=img.dataset.raw;if(raw&&img.src!==raw){img.src=raw;img.dataset.raw='';return}const p=img.parentNode;if(p){p.classList.add('none');p.innerHTML='<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="13" height="14" rx="2.5"/><path d="M16.5 10l4-2.5v9l-4-2.5"/></svg>'}}
 function ttDecName(d){d=String(d||'');return /^traffic/i.test(d)?'CPC':d}
 function ttCrTitle(c){const code=/_/.test(c.name)&&String(c.name).length>30;if(c.name&&!code)return esc(c.name);const t=c.topic||'Creative',w=c.creator&&!/^unknown/i.test(c.creator)?c.creator:'';return esc(t)+(w?' · '+esc(w):'')}
 function ttCrSub(c){const code=/_/.test(c.name)&&String(c.name).length>30;return esc([code?'':c.topic,c.type].filter(Boolean).join(' · '))}
