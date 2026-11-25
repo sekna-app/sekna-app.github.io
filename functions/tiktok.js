@@ -281,7 +281,7 @@ const sha = t => require('crypto').createHash('sha256').update(String(t)).digest
 async function meRoute(op, b) {
   const email = String(b.email || '').trim().toLowerCase();
   if (op === 'code') {
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw new Error('Enter your work email.');
+    if (!/^[^@\s]+@sekna\.co\.uk$/.test(email)) throw new Error('Use your work email.');
     const doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, who = Object.keys(doc.map || {}).find(k => String((doc.map[k] || {}).email || '').toLowerCase() === email);
     // the same answer either way, so the page does not tell who is in the team
     if (who) {
@@ -340,7 +340,7 @@ input{width:100%;font:inherit;font-size:15px;font-weight:600;border:1.5px solid 
 <body><span class="o o1"></span><span class="o o2"></span>
 <main class="card"><div class="lgb"><img class="lg" src="https://sekna-app.web.app/get/logo-white.webp" alt="HEMERA"></div><div class="tag">TIKTOK ISSUES</div>
 <section id="s1"><h1>Your TikTok ads</h1><p class="sub">Enter your work email. We'll send you a code to see the issues on the ads you made.</p>
-<form onsubmit="send(event)"><label><span>Work email</span><input id="em" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="name@sekna.co.uk"></label><p class="err" id="e1"></p><button class="btn" id="b1">Send verification code</button></form></section>
+<form onsubmit="send(event)"><label><span>Work email</span><input id="em" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="••••@•••••.••.•k"></label><p class="err" id="e1"></p><button class="btn" id="b1">Send verification code</button></form></section>
 <section id="s2" hidden><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7l8 6 8-6"/></svg></div><h1>Check your inbox</h1><p class="sub">If <b id="echo"></b> is on the team, we sent it a 6-digit code.</p>
 <form onsubmit="verify(event)"><label><span>Code</span><input id="cd" class="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••"></label><p class="err" id="e2"></p><button class="btn" id="b2">Verify &amp; Continue</button></form>
 <div class="lk"><button type="button" onclick="show(1)">Change email</button><button type="button" onclick="send()">Resend code</button></div></section></main>
@@ -349,7 +349,7 @@ input{width:100%;font:inherit;font-size:15px;font-weight:600;border:1.5px solid 
 function show(n){document.getElementById('s1').hidden=n!==1;document.getElementById('s2').hidden=n!==2}
 function S(){try{return localStorage.getItem('tt_me')||''}catch(e){return ''}}
 function load(){var s=S();if(!s)return;api('page',{sess:s}).then(function(j){if(j&&j.ok){document.open();document.write(j.html);document.close()}else{try{localStorage.removeItem('tt_me')}catch(e){}}})}
-function send(e){if(e)e.preventDefault();var em=document.getElementById('em').value.trim(),b=document.getElementById('b1');document.getElementById('e1').textContent='';b.disabled=true;
+function send(e){if(e)e.preventDefault();var em=document.getElementById('em').value.trim(),b=document.getElementById('b1');document.getElementById('e1').textContent='';if(!/^[^@\s]+@sekna\.co\.uk$/i.test(em)){document.getElementById('e1').textContent='Use your work email.';show(1);return}b.disabled=true;
  api('code',{email:em}).then(function(j){b.disabled=false;if(!j.ok){document.getElementById('e1').textContent=j.error||'Try again.';show(1);return}document.getElementById('echo').textContent=em;show(2);document.getElementById('cd').focus()}).catch(function(){b.disabled=false;document.getElementById('e1').textContent='No connection. Try again.'})}
 function verify(e){e.preventDefault();var b=document.getElementById('b2');b.disabled=true;document.getElementById('e2').textContent='';
  api('verify',{email:document.getElementById('em').value.trim(),code:document.getElementById('cd').value}).then(function(j){b.disabled=false;if(!j.ok){document.getElementById('e2').textContent=j.error||'Try again.';return}try{localStorage.setItem('tt_me',j.sess)}catch(x){}load()}).catch(function(){b.disabled=false})}
