@@ -581,7 +581,7 @@ ${pages}
 <section class="pg" id="ah" hidden><button type="button" class="bk" onclick="go('')">‹&nbsp; Issues Log</button><div class="t">Activity <span>History</span></div><div id="ahb"></div></section>
 <section class="pg" id="ap" hidden><button type="button" class="bk" onclick="go('')">‹&nbsp; Issues Log</button><div class="t">Account <span>&amp; Policy</span></div>${apCard}</section>
 
-</div><footer class="fb" id="fb"><p class="fbt">HEMERA · ISSUES &amp; AD CHECKS · HUMAN APPEAL</p><a class="fbl" href="https://sekna-app.web.app/get/" target="_blank" rel="noopener"><img src="https://sekna-app.web.app/icons/icon-192.png" alt="">Get the HEMERA app<span>›</span></a></footer>
+</div><footer class="fb" id="fb"><p class="fbt">BROADCAST FROM HEMERA</p><a class="fbl" href="https://sekna-app.web.app/get/" target="_blank" rel="noopener"><img src="https://sekna-app.web.app/icons/icon-192.png" alt="">HEMERA app<span>›</span></a></footer>
 <div class="ov" id="ov" onclick="dr(0)"></div><aside class="drw" id="drw" aria-label="Menu">
  <div class="dh"><img src="https://sekna-app.web.app/get/logo-white.webp" alt="HEMERA"><button type="button" class="dx" onclick="dr(0)" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
  <div class="dlb">CLIENT ACCOUNT</div>
