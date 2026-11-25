@@ -549,7 +549,7 @@ html{background:#132457}.w{flex:1 0 auto;width:100%}.pg .w{padding:0}.r.mk{align
 .fb{margin-top:30px;position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;color:#fff;padding:9px 16px calc(9px + env(safe-area-inset-bottom));background:linear-gradient(120deg,#132457,#203C8E 60%,#3B5BC8)}.fb:before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#E2B874 20%,#F2D38F 50%,#E2B874 80%,transparent)}
 .fb p{font-size:11.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.fb p span{color:#B7C3EA;font-weight:700}.fb a{flex:none;font-size:10.5px;color:#E2B874;font-weight:800;text-decoration:none;border:1px solid rgba(226,184,116,.6);border-radius:99px;padding:4px 10px;white-space:nowrap}
 /* v711 slimmer: everything a size smaller, the menu narrower */
-.dapp{display:flex;align-items:center;gap:8px;margin:0 0 10px;padding:6px 8px;border-radius:12px;border:1px solid rgba(226,184,116,.28);background:rgba(255,255,255,.04);text-decoration:none;color:#fff;flex-shrink:0}.dapp img{width:22px;height:22px;border-radius:6px}.dapp span{flex:1;min-width:0}.dapp b{display:block;font-size:11.5px;font-weight:800}.dapp small{display:block;font-size:9.5px;color:#B7C3EA;font-weight:600}.dapp i{font-style:normal;color:#E2B874;font-weight:900}
+.dsig{display:block;text-align:center;margin:14px 0 12px;text-decoration:none;flex-shrink:0}.dsig img{height:12px;opacity:.5;display:block;margin:0 auto}.dsig span{display:block;margin-top:6px;font-size:10.5px;font-weight:800;color:#E2B874}
 .rail,.dkh{display:none}
 @media (min-width:1000px){body{padding-left:290px!important}
  .rail{display:flex;flex-direction:column;align-items:center;gap:8px;position:fixed;left:0;top:0;bottom:0;width:74px;padding:16px 0;z-index:21;background:linear-gradient(180deg,#132457,#203C8E)}
@@ -559,7 +559,7 @@ html{background:#132457}.w{flex:1 0 auto;width:100%}.pg .w{padding:0}.r.mk{align
  .drw .dlb,.drw .dac,.drw .dme,.drw .dgn{display:none!important}
  .dkh{display:block;margin:0 8px 16px}.dkh b{display:block;font-family:"DM Serif Display",Georgia,serif;font-size:21px;font-weight:400;color:#203C8E}.dkh small{font-size:10.5px;font-weight:700;color:#8A93A8}
  .drw .dg{background:none!important}.drw .dn{color:#2B3350!important;font-size:12.5px!important;padding:9px 10px!important;border:0!important;border-radius:10px}.drw .dni{background:none!important;width:22px!important;height:22px!important;color:#4b5263}.drw .dn.on{background:#fff!important;color:#203C8E!important;box-shadow:inset 3px 0 0 #203C8E,0 4px 12px rgba(20,40,110,.08)!important}.drw .dn.on .dni{color:#203C8E}
- .drw .dapp{margin-top:auto;border-color:#E2C994;background:#fff;color:#141B33}.drw .dapp small{color:#8A93A8}
+ .drw .dsig{margin-top:auto}.drw .dsig img{filter:brightness(0) saturate(100%) invert(19%) sepia(61%) saturate(2400%) hue-rotate(214deg) brightness(88%);opacity:.4}.drw .dsig span{color:#B0812E}
  .hd{background:#fff!important;border-bottom:1px solid #E6EAF2}.hd .lo img{filter:brightness(0) saturate(100%) invert(19%) sepia(61%) saturate(2400%) hue-rotate(214deg) brightness(88%)}.hd .lo span{color:#B0812E}
  .w{max-width:760px!important}}
 
@@ -613,7 +613,7 @@ ${pages}
   <button type="button" class="dn" data-v="ah" onclick="go('ah')"><span class="dni"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg></span>Activity History</button>
   <button type="button" class="dn" data-v="ap" onclick="go('ap')"><span class="dni"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M8.5 12l2.5 2.5 4.5-4.5"/></svg></span>Account &amp; Policy</button></div>
  <div class="dg dgn">${signedIn ? `<button type="button" class="dn" onclick="bell()"><span class="dni"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span>Notifications<span class="tog${pushOn ? ' on' : ''}" data-n></span></button>` : ''}</div>
- <a class="dapp" href="https://sekna-app.web.app/get/" target="_blank" rel="noopener"><img src="https://sekna-app.web.app/icons/icon-192.png" alt=""><span><b>HEMERA app</b><small>Your ads on your phone</small></span><i>›</i></a>
+ <a class="dsig" href="https://sekna-app.web.app/get/" target="_blank" rel="noopener"><img src="https://sekna-app.web.app/get/logo-white.webp" alt="HEMERA"><span>Open HEMERA app ↗</span></a>
  <div class="dme"><span class="dav">${E(String(nm).charAt(0).toUpperCase())}</span><div><b>${E(nm)}</b><small>${E(W)}</small></div>${signedIn ? `<button type="button" class="dso" onclick="out()" aria-label="Sign out" title="Sign out"><svg viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg></button>` : ''}</div>
 </aside>
 <script>var AH=${JSON.stringify(ah).replace(/</g, '\\u003c')};
