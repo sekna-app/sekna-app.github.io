@@ -728,11 +728,10 @@ function digestMailHtml(name, list, open, toFix, link) {
 <td style="padding:11px 0;${i ? 'border-top:1px solid #EEF1F6;' : ''}${F};font-size:11px;font-weight:700;color:#8A93A8;white-space:nowrap" valign="top" align="right">${E(mon(x.found))}</td></tr>`).join('');
   const more = open > list.length ? `<p style="margin:4px 0 0;${F};font-size:12px;font-weight:700;color:#8A93A8">+${open - list.length} more on your page</p>` : '';
   return `<!doctype html><html><body style="margin:0;background:#F4F6FB;padding:20px 10px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px">
-<tr><td background="${B}tt-banner.jpg" bgcolor="#0F1F52" valign="top" style="background:#0F1F52 url(${B}tt-banner.jpg) right center / cover no-repeat;border-radius:18px;height:150px;padding:18px 20px">
-<img src="${B}hemera-logo.png" alt="HEMERA" height="18" style="display:block;height:18px;border:0">
-<div style="height:58px;line-height:58px">&nbsp;</div>
-<p style="margin:0;${F};font-size:21px;font-weight:900;color:#ffffff">Hi ${E(name)}</p>
-<p style="margin:3px 0 0;${F};font-size:12.5px;font-weight:700;color:#C9D3F5">${open} open issue${open === 1 ? '' : 's'}${toFix ? ' · ' + toFix + ' ad' + (toFix === 1 ? '' : 's') + ' to fix' : ''}</p></td></tr>
+<tr><td background="${B}tt-banner.jpg" bgcolor="#0F1F52" valign="top" style="background:#0F1F52 url(${B}tt-banner.jpg) right center / cover no-repeat;border-radius:18px;padding:0">
+<table role="presentation" width="100%" height="170" cellpadding="0" cellspacing="0" style="height:170px"><tr><td valign="top" style="padding:16px 20px 0"><img src="${B}hemera-logo.png" alt="HEMERA" height="17" style="display:block;height:17px;border:0"></td></tr>
+<tr><td valign="bottom" style="padding:0 20px 14px"><p style="margin:0;${F};font-size:20px;font-weight:900;color:#ffffff;text-shadow:0 1px 6px rgba(0,0,0,.6)">Hi ${E(name)}</p>
+<p style="margin:2px 0 0;${F};font-size:12px;font-weight:700;color:#DCE3F8;text-shadow:0 1px 6px rgba(0,0,0,.6)">${open} open issue${open === 1 ? '' : 's'}${toFix ? ' · ' + toFix + ' ad' + (toFix === 1 ? '' : 's') + ' to fix' : ''}</p></td></tr></table></td></tr>
 <tr><td style="height:12px;line-height:12px">&nbsp;</td></tr>
 <tr><td style="background:#ffffff;border-radius:18px;padding:18px 18px 20px">
 <p style="margin:0 0 4px;${F};font-size:10px;font-weight:900;letter-spacing:1.4px;color:#B0812E">${list.length < open ? 'YOUR NEWEST OPEN ISSUES' : 'YOUR OPEN ISSUES'}</p>
@@ -912,13 +911,13 @@ const fn = onRequest({
       const me = await assertAdmin(body.token);
       if (!me || !me.email) throw new Error('No email for you.');
       const who = String(body.who || '').toLowerCase(), acct = await ttAcct();
-      const issue = (acct.issues || []).find(x => !/^yes/i.test(x.fixed) && String(x.by || '').toLowerCase().indexOf(who) >= 0) || (acct.issues || [])[0];
-      if (!issue) throw new Error('No open issue to send.');
+      // v715 only the person's own open issues; none → nothing is sent
+      const dg = digestOf(who, acct);
+      if (!dg.L.length) throw new Error('No open issue for this person, so there is nothing to email.');
       if (!notify.mailReady()) throw new Error('Email is not set up on the server yet.');
       const doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, m = (doc.map || {})[who] || {}, name = nameOf(m, who) || 'there';
-      const dg = digestOf(who, acct), L3 = (dg.L.length ? dg.L : [issue]).slice(0, 3);
-      await notify.sendMail({ to: me.email, subject: (dg.L.length ? '[Test] ' : '[Test · sample issue, they have none] ') + 'TikTok: ' + (dg.L.length || 1) + ' open issue' + ((dg.L.length || 1) === 1 ? '' : 's') + ' on your ads', rawHtml: digestMailHtml(name, L3, dg.L.length || 1, dg.toFix, 'https://sekna-app.web.app/tiktok/me') });
-      res.json({ ok: true, result: { to: me.email, issue: issue.type } }); return;
+      await notify.sendMail({ to: me.email, subject: '[Test] TikTok: ' + dg.L.length + ' open issue' + (dg.L.length === 1 ? '' : 's') + ' on your ads', rawHtml: digestMailHtml(name, dg.L.slice(0, 3), dg.L.length, dg.toFix, 'https://sekna-app.web.app/tiktok/me') });
+      res.json({ ok: true, result: { to: me.email, issue: dg.L[0].type } }); return;
     }
     if (route === '/issueMail') {
       const me = await assertAdmin(body.token);
