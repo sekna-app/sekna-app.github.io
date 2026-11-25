@@ -549,8 +549,13 @@ html{background:#132457}.w{flex:1 0 auto;width:100%}.pg .w{padding:0}.r.mk{align
 .fb{margin-top:30px;position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;color:#fff;padding:9px 16px calc(9px + env(safe-area-inset-bottom));background:linear-gradient(120deg,#132457,#203C8E 60%,#3B5BC8)}.fb:before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#E2B874 20%,#F2D38F 50%,#E2B874 80%,transparent)}
 .fb p{font-size:11.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.fb p span{color:#B7C3EA;font-weight:700}.fb a{flex:none;font-size:10.5px;color:#E2B874;font-weight:800;text-decoration:none;border:1px solid rgba(226,184,116,.6);border-radius:99px;padding:4px 10px;white-space:nowrap}
 /* v711 slimmer: everything a size smaller, the menu narrower */
+.fb .fbo,.fbo{border:0!important;padding:0!important;background:none!important;border-radius:0!important;display:inline!important;margin-left:10px;letter-spacing:.02em;font-size:11px;font-weight:800;color:#B0812E;text-decoration:none;white-space:nowrap}
+.accw{position:relative;display:inline-block}.acc{border:0;font:inherit;cursor:pointer;color:inherit}.accv{width:14px;height:14px;fill:none;stroke:#8A93A8;stroke-width:2.4;stroke-linecap:round;margin-left:2px;transition:transform .2s}.acc.up .accv{transform:rotate(180deg)}
+.accm{position:absolute;left:0;top:calc(100% + 6px);z-index:8;min-width:220px;background:#fff;border-radius:14px;padding:5px;box-shadow:0 14px 30px rgba(20,40,110,.16)}.acco{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;font-size:12.5px;font-weight:800}.acco img{width:20px;height:20px}.acco i{margin-left:auto;font-style:normal;color:#B0812E}.acco small{margin-left:auto;font-size:10px;color:#8A93A8;font-weight:700}.acco.off{opacity:.45;filter:grayscale(1)}
+html.dk .accm{background:#16204A;color:#E7EBF3}
+
 .dsig{display:block;text-align:center;margin:14px 0 12px;text-decoration:none;flex-shrink:0}.dsig img{height:12px;opacity:.5;display:block;margin:0 auto}.dsig span{display:block;margin-top:6px;font-size:10.5px;font-weight:800;color:#E2B874}
-.rail,.dkh{display:none}
+.rail,.dkh,.lon{display:none}
 @media (min-width:1000px){body{padding-left:290px!important}
  .rail{display:flex;flex-direction:column;align-items:center;gap:8px;position:fixed;left:0;top:0;bottom:0;width:74px;padding:16px 0;z-index:21;background:linear-gradient(180deg,#132457,#203C8E)}
  .rav{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#132457;color:#fff;font-weight:900;box-shadow:0 0 0 2px #E2B874;margin-bottom:14px}
@@ -560,7 +565,7 @@ html{background:#132457}.w{flex:1 0 auto;width:100%}.pg .w{padding:0}.r.mk{align
  .dkh{display:block;margin:0 8px 16px}.dkh b{display:block;font-family:"DM Serif Display",Georgia,serif;font-size:21px;font-weight:400;color:#203C8E}.dkh small{font-size:10.5px;font-weight:700;color:#8A93A8}
  .drw .dg{background:none!important}.drw .dn{color:#2B3350!important;font-size:12.5px!important;padding:9px 10px!important;border:0!important;border-radius:10px}.drw .dni{background:none!important;width:22px!important;height:22px!important;color:#4b5263}.drw .dn.on{background:#fff!important;color:#203C8E!important;box-shadow:inset 3px 0 0 #203C8E,0 4px 12px rgba(20,40,110,.08)!important}.drw .dn.on .dni{color:#203C8E}
  .drw .dsig{margin-top:auto}.drw .dsig img{filter:brightness(0) saturate(100%) invert(19%) sepia(61%) saturate(2400%) hue-rotate(214deg) brightness(88%);opacity:.4}.drw .dsig span{color:#B0812E}
- .hd{background:#fff!important;border-bottom:1px solid #E6EAF2}.hd .lo img{filter:brightness(0) saturate(100%) invert(19%) sepia(61%) saturate(2400%) hue-rotate(214deg) brightness(88%)}.hd .lo span{color:#B0812E}
+ .hd{background:#fff!important;border-bottom:1px solid #E6EAF2}.hd .lo img{display:none}.hd .lo img.lon{display:block}.hd .lo span{color:#B0812E}
  .w{max-width:760px!important}}
 
 .fb{all:unset;display:block;text-align:center;padding:22px 16px calc(26px + env(safe-area-inset-bottom))!important;margin-top:26px}.fb:before{display:none!important}
@@ -588,8 +593,9 @@ html{background:#132457}.w{flex:1 0 auto;width:100%}.pg .w{padding:0}.r.mk{align
 .calp{position:relative;display:flex;gap:1px;flex-wrap:nowrap;background:#E9EDF5;border-radius:10px;padding:3px;margin:6px 18px}.calp button{position:relative;z-index:1;flex:1;border:0!important;background:transparent!important;border-radius:8px;padding:6px 6px;font-size:11.5px;font-weight:700;color:#4b5263;transition:color .25s}.calp button.on{color:#fff!important}
 .calg button.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);box-shadow:0 4px 12px rgba(61,107,255,.38)}.calg button{transition:transform .15s}.calg button:active{transform:scale(.94)}
 </style></head>
-<body><div class="hd"><button type="button" class="bl" onclick="dr(1)" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><div class="lo"><img src="https://sekna-app.web.app/get/logo-white.webp" alt=""><span>HEMERA</span></div>${signedIn ? `<span id="bell" class="${pushOn ? 'on' : ''}" hidden></span>` : ''}</div>
-<div class="w"><div id="home" class="fu"><span class="acc"><img src="https://sekna-app.web.app/icons/ha-brand.png" alt="">Human Appeal US<img class="tta" src="https://sekna-app.web.app/icons/tiktok-ads.png" alt="TikTok Ads"></span>
+<body><div class="hd"><button type="button" class="bl" onclick="dr(1)" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><div class="lo"><img src="https://sekna-app.web.app/get/logo-white.webp" alt=""><img class="lon" src="https://sekna-app.web.app/icons/logo-navy.png" alt=""><span>HEMERA</span></div>${signedIn ? `<span id="bell" class="${pushOn ? 'on' : ''}" hidden></span>` : ''}</div>
+<div class="w"><div id="home" class="fu"><span class="accw"><button type="button" class="acc" onclick="var m=this.nextElementSibling;m.hidden=!m.hidden;this.classList.toggle('up',!m.hidden)"><img src="https://sekna-app.web.app/icons/ha-brand.png" alt="">Human Appeal US<img class="tta" src="https://sekna-app.web.app/icons/tiktok-ads.png" alt="TikTok Ads"><svg class="accv" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+<span class="accm" hidden><span class="acco"><img src="https://sekna-app.web.app/icons/ha-brand.png" alt="">Human Appeal US<i>✓</i></span><span class="acco off"><img src="https://sekna-app.web.app/icons/ha-brand.png" alt="">Human Appeal AR<small>Soon</small></span></span></span>
 <div class="t">Issues <span>Log</span></div><div class="sub">${iss.length} open · active ads only · tap one</div>
 <div class="card"><div class="nb"><span class="glow"></span><span class="av">${E(String(nm).charAt(0).toUpperCase())}</span><div class="n"><b>${E(nm)}</b><small>${E(W)}</small></div><div class="big"><em>${iss.length}</em><span>open issue${iss.length === 1 ? '' : 's'}</span></div></div>${list || '<div class="empty">No open issue. Thank you!</div>'}</div>
 <div class="t">Ad <span>Checks</span></div><div class="sub">${chk.length} of your live ads need a fix · tap a problem</div>
@@ -598,7 +604,7 @@ ${pages}
 <section class="pg" id="ah" hidden><button type="button" class="bk" onclick="go('')">‹&nbsp; Issues Log</button><div class="t">Activity <span>History</span></div><div id="ahb"></div></section>
 <section class="pg" id="ap" hidden><button type="button" class="bk" onclick="go('')">‹&nbsp; Issues Log</button><div class="t">Account <span>&amp; Policy</span></div>${apCard}</section>
 
-</div><footer class="fb" id="fb"><p class="fbt">BROADCAST FROM HEMERA</p></footer>
+</div><footer class="fb" id="fb"><p class="fbt">BROADCAST FROM HEMERA<a class="fbo" href="https://sekna-app.web.app/get/" target="_blank" rel="noopener">Open HEMERA app ↗</a></p></footer>
 <nav class="rail" aria-label="Menu"><span class="rav">${E(String(nm).charAt(0).toUpperCase())}</span>
  <button type="button" class="ri on" title="Issues &amp; Ad Checks" onclick="go('')"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M8.5 12l2.5 2.5 4.5-4.5"/></svg></button>
  <span class="rsp"></span>${signedIn ? `<button type="button" class="ri" title="Notifications" onclick="bell()"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></button><button type="button" class="ri" title="Sign out" onclick="out()"><svg viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg></button>` : ''}</nav>
@@ -613,7 +619,6 @@ ${pages}
   <button type="button" class="dn" data-v="ah" onclick="go('ah')"><span class="dni"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg></span>Activity History</button>
   <button type="button" class="dn" data-v="ap" onclick="go('ap')"><span class="dni"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M8.5 12l2.5 2.5 4.5-4.5"/></svg></span>Account &amp; Policy</button></div>
  <div class="dg dgn">${signedIn ? `<button type="button" class="dn" onclick="bell()"><span class="dni"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span>Notifications<span class="tog${pushOn ? ' on' : ''}" data-n></span></button>` : ''}</div>
- <a class="dsig" href="https://sekna-app.web.app/get/" target="_blank" rel="noopener"><img src="https://sekna-app.web.app/get/logo-white.webp" alt="HEMERA"><span>Open HEMERA app ↗</span></a>
  <div class="dme"><span class="dav">${E(String(nm).charAt(0).toUpperCase())}</span><div><b>${E(nm)}</b><small>${E(W)}</small></div>${signedIn ? `<button type="button" class="dso" onclick="out()" aria-label="Sign out" title="Sign out"><svg viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg></button>` : ''}</div>
 </aside>
 <script>var AH=${JSON.stringify(ah).replace(/</g, '\\u003c')};
@@ -753,7 +758,7 @@ function digestMailHtml(name, list, open, toFix, link) {
 <td style="padding:11px 8px;${i ? 'border-top:1px solid #EEF1F6;' : ''}"><p style="margin:0;${F};font-size:14px;font-weight:800;color:#141B33">${E(x.type || 'Issue')}</p><p style="margin:3px 0 0;${F};font-size:12px;font-weight:600;color:#6B7385;line-height:1.45">${E(String(x.what || '').slice(0, 90))}${String(x.what || '').length > 90 ? '…' : ''}</p></td>
 <td style="padding:11px 0;${i ? 'border-top:1px solid #EEF1F6;' : ''}${F};font-size:11px;font-weight:700;color:#8A93A8;white-space:nowrap" valign="top" align="right">${E(mon(x.found))}</td></tr>`).join('');
   const more = open > list.length ? `<p style="margin:4px 0 0;${F};font-size:12px;font-weight:700;color:#8A93A8">+${open - list.length} more on your page</p>` : '';
-  return `<!doctype html><html><body style="margin:0;background:#F4F6FB;padding:20px 10px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px">
+  return `<!doctype html><html><body style="margin:0;background:#F4F6FB;padding:20px 10px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px">
 <tr><td background="${B}tt-banner.jpg" bgcolor="#0F1F52" valign="top" style="background:#0F1F52 url(${B}tt-banner.jpg) right center / cover no-repeat;border-radius:18px;padding:0">
 <table role="presentation" width="100%" height="170" cellpadding="0" cellspacing="0" style="height:170px"><tr><td valign="top" style="padding:16px 20px 0"><img src="${B}hemera-logo.png" alt="HEMERA" height="17" style="display:block;height:17px;border:0"></td></tr>
 <tr><td valign="bottom" style="padding:0 20px 14px"><p style="margin:0;${F};font-size:20px;font-weight:900;color:#ffffff;text-shadow:0 1px 6px rgba(0,0,0,.6)">Hi ${E(name)}</p>
