@@ -159,7 +159,7 @@ body.gate-open{overflow:hidden}
 .sk-gate{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),radial-gradient(62% 42% at 12% 10%,rgba(52,99,230,.75) 0%,rgba(52,99,230,0) 72%),radial-gradient(55% 38% at 96% 82%,rgba(226,184,116,.30),rgba(226,184,116,0) 70%),radial-gradient(70% 34% at 50% 0%,rgba(28,76,175,.8),rgba(28,76,175,0) 75%),linear-gradient(180deg,#0b2a78 0%,#0a1d62 35%,#081650 62%,#060f38 100%)}
 .sk-gate{padding-top:max(28px,env(safe-area-inset-top));padding-bottom:max(18px,env(safe-area-inset-bottom))}
 @media(prefers-reduced-motion:reduce){.sk-gate,.sk-gate *{animation:none!important}}
-</style>
+.tth{display:inline-flex;align-items:center;gap:8px;vertical-align:middle}.ttw{height:20px;width:auto;display:block;transform:translateY(1px)}.fb1{display:block;font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#E2B874;margin-bottom:4px}</style>
 </head>
 <body class="gate-open">
 <div class="lsp" id="launchSp" aria-hidden="true">
@@ -178,7 +178,7 @@ body.gate-open{overflow:hidden}
     <div class="sk-gate-tag">TIKTOK ISSUES</div>
 
     <section class="sk-step" data-step="email">
-      <h1 id="gateTitle">Your TikTok ads</h1>
+      <h1 id="gateTitle"><span class="tth">Your <img src="/icons/tiktok-ads-white.png" alt="TikTok Ads" class="ttw"></span></h1>
       <p class="sk-gate-sub">Enter your work email. We'll send you a code to see the issues on the ads you made.</p>
       <form onsubmit="gateSendCode(event)" novalidate>
         <label class="sk-field"><span>Work email</span><input id="gateEmail" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="••••@•••••.••.•k"></label>
@@ -202,7 +202,7 @@ body.gate-open{overflow:hidden}
 
     <p class="sk-gate-error" id="gateError" role="alert"></p>
   </main>
-  <div class="sk-gate-foot">TikTok · Human Appeal US · Account Health</div>
+  <div class="sk-gate-foot"><span class="fb1">Broadcast to you from HEMERA</span>Human Appeal</div>
 </div>
 
 <script>
