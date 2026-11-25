@@ -393,6 +393,7 @@ async function parity(token, account) {
 
 // TikTok · Human Appeal US has its own server (functions/tiktok.js) and its own page (/tiktok).
 exports.tiktok = require('./tiktok').fn;
+exports.tiktokDaily = require('./tiktok').daily;
 
 exports.api = onRequest({
   region: 'europe-west2',

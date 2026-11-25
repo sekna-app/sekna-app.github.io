@@ -310,7 +310,40 @@ async function meRoute(op, b) {
   if (!se || se.exp < Date.now()) return { ok: false, signedOut: true, error: 'Please sign in again.' };
   const doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {};
   if (String(((doc.map || {})[se.who] || {}).email || '').toLowerCase() !== se.email) return { ok: false, signedOut: true, error: 'This email is not linked any more.' };
-  return { ok: true, html: personPage(se.who, await ttAcct(), doc.map || {}, true) };
+  if (op === 'push') {
+    const token = String(b.token || ''), on = b.on !== false;
+    if (on && (token.length < 20 || token.length > 4096)) throw new Error('Invalid notification token.');
+    const acct = await ttAcct();
+    await fsUpdate(TT_ME, d => { d = d || {}; d.push = d.push || {}; d.seen = d.seen || {}; let l = (d.push[se.who] || []).filter(t => t !== token);
+      if (on) { l.push(token); d.seen[se.who] = seenOf(se.who, acct); } d.push[se.who] = l.slice(-10); if (!d.push[se.who].length) delete d.push[se.who]; return d; });
+    return { ok: true, on };
+  }
+  const st2 = (await fsGet(TT_ME).catch(() => null)) || {};
+  return { ok: true, html: personPage(se.who, await ttAcct(), doc.map || {}, true, ((st2.push || {})[se.who] || []).length > 0) };
+}
+/** What the person has open now: issue keys and the IDs of their ads that need a fix. */
+function seenOf(who, acct) {
+  const W = String(who || '').toLowerCase();
+  return { iss: (acct.issues || []).filter(x => !/^yes/i.test(x.fixed) && String(x.by || '').toLowerCase().indexOf(W) >= 0).map(issueKey),
+    ads: (acct.checks || []).filter(c => String(c.by || '').toLowerCase().indexOf(W) >= 0 && String(c.problems || '').trim() && !/^ok$/i.test(String(c.problems).trim())).map(c => String(c.id || c.ad)) };
+}
+/** Once a day: a notification to each signed-up person about new issues or new ads that need a fix. */
+async function dailyPush() {
+  const st = (await fsGet(TT_ME).catch(() => null)) || {}, P = st.push || {};
+  if (!Object.keys(P).length) return;
+  acctHeld = null; const acct = await ttAcct(), dead = [], seenNew = {};
+  for (const who of Object.keys(P)) {
+    const now = seenOf(who, acct), was = (st.seen || {})[who] || { iss: [], ads: [] };
+    const ni = now.iss.filter(k => was.iss.indexOf(k) < 0).length, na = now.ads.filter(k => was.ads.indexOf(k) < 0).length;
+    seenNew[who] = now;
+    if (!ni && !na) continue;
+    const body = [ni ? ni + ' new issue' + (ni === 1 ? '' : 's') : '', na ? na + ' ad' + (na === 1 ? '' : 's') + ' to fix' : ''].filter(Boolean).join(' · ');
+    for (const token of P[who]) {
+      try { await notify.fcm({ token, data: { title: 'TikTok · your ads', body, url: '/tiktok/me', eventType: 'tiktok' }, webpush: { headers: { Urgency: 'high', TTL: '86400' } } }); }
+      catch (e) { const s2 = e && e.response && e.response.status; if (s2 === 404 || s2 === 400) dead.push([who, token]); else console.warn('TikTok push: ' + ((e && e.message) || e)); }
+    }
+  }
+  await fsUpdate(TT_ME, d => { d = d || {}; d.seen = Object.assign({}, d.seen || {}, seenNew); dead.forEach(([w, t]) => { if (d.push && d.push[w]) d.push[w] = d.push[w].filter(x => x !== t); }); return d; });
 }
 function codeMailHtml(code) {
   const F = "font-family:Inter,'Segoe UI',Helvetica,Arial,sans-serif";
@@ -356,7 +389,7 @@ function verify(e){e.preventDefault();var b=document.getElementById('b2');b.disa
 load();</script></body></html>`;
 }
 /** v683 the email's page: the app's look (header, account, TikTok), the person's navy card with all their open issues, and their Ad Checks. */
-function personPage(who, acct, map, signedIn) {
+function personPage(who, acct, map, signedIn, pushOn) {
   const E = notify.esc, W = String(who || '').toLowerCase(), m = /^([^@]+)@(.+)$/.exec(W), nm = (map[W] && map[W].name) || (m ? m[1] : 'Your ads');
   const mon = k => { const x = /^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}:\d{2}))?/.exec(String(k || '')); return x ? (+x[3]) + ' ' + MON[+x[2] - 1] + ' ' + x[1] + (x[4] ? ' · ' + x[4] : '') : String(k || ''); };
   const PIC = u => 'https://europe-west2-human-appeal-media-plan.cloudfunctions.net/tiktok/pic?u=' + encodeURIComponent(u);
@@ -367,7 +400,8 @@ function personPage(who, acct, map, signedIn) {
   const person = part => { let lab = '', w = part; const c = part.indexOf(': '); if (c > 0 && c < 40) { lab = part.slice(0, c); w = part.slice(c + 2); }
     const mm = /([^\s@(]+)@([a-z0-9.-]+)/i.exec(w), k = mm ? (mm[1] + '@' + mm[2]).toLowerCase() : '', n = k && map && map[k] && map[k].name;
     return { name: n || (mm ? mm[1] : /claude/i.test(w) ? 'Claude' : /older/i.test(w) ? 'Older' : w), sub: [mm ? (n ? k : '@' + mm[2]) + (/api/i.test(w) ? ' · via API' : '') : /older/i.test(w) ? 'before the change log' : /api/i.test(w) ? 'via API' : '', lab].filter(Boolean).join(' · ') }; };
-  const G = new Map(); chk.forEach(c => [...new Set(String(c.problems).split(';').map(p => prob(p.trim())[0]))].forEach(k => { if (!G.has(k)) G.set(k, { col: prob(k)[1], L: [] }); G.get(k).L.push(c); }));
+  const G = new Map(); chk.forEach(c => [...new Set(String(c.problems).split(';').map(p => prob(p.trim())[0]))].forEach(k => { if (!G.has(k)) G.set(k, { col: prob(k)[1], L: [] }); const L = G.get(k).L, same = L.find(o => o.ad === c.ad && o.campaign === c.campaign);
+    if (same) { if (c.id && same.ids.indexOf(String(c.id)) < 0) same.ids.push(String(c.id)); } else L.push(Object.assign({}, c, { ids: c.id ? [String(c.id)] : [] })); }));
   const others = by => String(by || '').split(/\s+·\s+/).length - 1;
   const list = iss.map((x, i) => `<button type="button" class="ir" onclick="go('i${i}')"><div class="it"><b>${E(x.type || 'Issue')}</b><span class="ch">›</span></div><p>${E(x.what || '')}</p><div class="im"><span class="gold">${others(x.by) > 0 ? '+' + others(x.by) + ' more made these ads' : ''}</span><span class="dt">${E(mon(x.found))}</span></div></button>`).join('');
   const pages = iss.map((x, i) => `<section class="pg" id="i${i}" hidden><button type="button" class="bk" onclick="go('')">‹&nbsp; Issues Log</button>
@@ -378,13 +412,15 @@ function personPage(who, acct, map, signedIn) {
     ${x.made ? `<div class="c"><div class="l">Ads created · New York time</div>${String(x.made).split(/\n+/).filter(Boolean).map(l => { const q = /^\s*(\d+)\s*:\s*(.+)$/.exec(l); return q ? `<div class="r"><b>${E(q[1])}</b><span>${E(q[2])}</span></div>` : `<div class="r"><b>${E(l)}</b></div>`; }).join('')}</div>` : ''}</section>`).join('');
   let ai = 0;
   const checks = [...G.entries()].sort((a, b) => b[1].L.length - a[1].L.length).map(([k, g]) => `<details class="cg"><summary style="--c:${g.col}"><i></i><b>${E(k)}</b><em>${g.L.length}</em><span class="ar">⌄</span></summary>
-    ${g.L.map(c => { const id = 'a' + (ai++); return `<div class="ca" onclick="tg('${id}')"><b>${E(c.ad)}</b>${(c.pics || []).length ? `<div class="pics">${c.pics.slice(0, 5).map(u => u === 'spark' ? '<span class="sp">Spark</span>' : `<span class="pc"><img src="${E(PIC(u))}" alt="" loading="lazy"></span>`).join('')}${c.pics.length > 5 ? `<em>+${c.pics.length - 5}</em>` : ''}</div>` : ''}
+    ${g.L.map(c => { const id = 'a' + (ai++); return `<div class="ca" onclick="tg('${id}')"><b class="an"><span>${E(c.ad)}</span>${c.ids.length > 1 ? `<span class="x2">×${c.ids.length}</span>` : ''}</b>${(c.pics || []).length ? `<div class="pics">${c.pics.slice(0, 5).map(u => u === 'spark' ? '<span class="sp">Spark</span>' : `<span class="pc"><img src="${E(PIC(u))}" alt="" loading="lazy"></span>`).join('')}${c.pics.length > 5 ? `<em>+${c.pics.length - 5}</em>` : ''}</div>` : ''}
       <span class="dt">${E(String(c.campaign).replace(/^HAUS_/, '').replace(/_TikTok.*$/, ''))} · ${E(mon(c.created).replace(/ · .*/, ''))}</span>
-      <div class="dd" id="${id}" hidden><small>Problems</small><p>${String(c.problems).split(';').map(p => E(p.trim())).join('<br>')}</p>${c.by ? `<small>Created by</small><p>${E(c.by)}</p>` : ''}<small>Campaign</small><p>${E(c.campaign)}</p>${c.adgroup ? `<small>Ad group</small><p>${E(c.adgroup)}</p>` : ''}${c.id ? `<small>Ad ID</small><p>${E(c.id)} <button type="button" class="cp" onclick="event.stopPropagation();cp('${E(c.id)}',this)">Copy</button></p>` : ''}</div></div>`; }).join('')}</details>`).join('');
+      <div class="dd" id="${id}" hidden><small>Problems</small><p>${String(c.problems).split(';').map(p => E(p.trim())).join('<br>')}</p>${c.by ? `<small>Created by</small><p>${E(c.by)}</p>` : ''}<small>Campaign</small><p>${E(c.campaign)}</p>${c.adgroup ? `<small>Ad group</small><p>${E(c.adgroup)}</p>` : ''}${c.ids.length ? `<small>Ad ID${c.ids.length > 1 ? 's · ' + c.ids.length + ' copies' : ''}</small>${c.ids.map(d => `<p>${E(d)} <button type="button" class="cp" onclick="event.stopPropagation();cp('${E(d)}',this)">Copy</button></p>`).join('')}` : ''}</div></div>`; }).join('')}</details>`).join('');
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><meta name="theme-color" content="#203C8E"><title>${E(nm)} · TikTok · HEMERA</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>*{box-sizing:border-box;margin:0}body{background:#F1F3F8;font-family:Inter,system-ui,sans-serif;color:#141B33;padding-bottom:30px}button{font:inherit;color:inherit}
-.hd{position:sticky;top:0;z-index:5;padding:14px 16px;background:linear-gradient(120deg,#132457,#203C8E 60%,#3B5BC8)}.hd img{height:30px;display:block}
+.hd{position:sticky;top:0;z-index:5;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(120deg,#132457,#203C8E 60%,#3B5BC8)}.lo{display:flex;flex-direction:column;align-items:center;gap:3px}.lo img{height:22px;display:block}.lo span{font-size:9px;font-weight:900;letter-spacing:.34em;padding-left:.34em;color:#E2B874}
+.bl{position:relative;width:38px;height:38px;border-radius:12px;border:0;background:rgba(255,255,255,.13);color:#fff;display:grid;place-items:center;cursor:pointer}.bl svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.bl.on{background:#E2B874;color:#132457}.bl.on::after{content:"";position:absolute;top:7px;right:8px;width:7px;height:7px;border-radius:50%;background:#13804F;box-shadow:0 0 0 2px #E2B874}
+.tst{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#141B33;color:#fff;font-size:13px;font-weight:700;padding:10px 16px;border-radius:12px;max-width:90vw;text-align:center;z-index:9}.x2{display:inline-block;font-size:10.5px;font-weight:900;color:#B0812E;background:#FBF1DE;border-radius:6px;padding:1px 6px;margin-left:4px;vertical-align:1px}
 .w{max-width:560px;margin:0 auto;padding:14px 16px}.acc{display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:99px;padding:5px 14px 5px 7px;box-shadow:0 6px 16px rgba(20,40,110,.07);font-weight:800;font-size:13px}.acc img{width:22px;height:22px}.acc small{font-size:11px;color:#8A93A8;font-weight:700;margin-left:2px}
 .t{font-family:"DM Serif Display",Georgia,serif;font-size:32px;margin:18px 2px 4px}.t span{background:linear-gradient(transparent 58%,#F2D38F 0)}.sub{font-size:11px;font-weight:900;letter-spacing:.1em;color:#8A93A8;margin:0 2px 12px;text-transform:uppercase}
 .card{background:#fff;border-radius:18px;box-shadow:0 10px 26px rgba(20,40,110,.08);overflow:hidden;margin-bottom:14px}
@@ -394,7 +430,7 @@ function personPage(who, acct, map, signedIn) {
 .ir p{font-size:13.5px;color:#6B7385;font-weight:600;margin-top:4px;line-height:1.45}.im{display:flex;justify-content:space-between;margin-top:10px;font-size:12.5px;font-weight:800}.gold{color:#B0812E}.dt{color:#8A93A8;font-size:12px;font-weight:700}
 details summary{list-style:none;cursor:pointer}details summary::-webkit-details-marker{display:none}
 .cg{border-top:1px solid #EEF1F6}.cg:first-of-type{border-top:0}.cg summary{display:flex;align-items:center;gap:10px;padding:15px 18px}.cg summary i{width:10px;height:10px;border-radius:3px;background:var(--c)}.cg summary b{flex:1;font-size:14px}.cg summary em{font-style:normal;font-weight:900;color:var(--c);font-size:16px}.ar{color:#8A93A8;font-weight:900;font-size:15px;transition:transform .2s}.cg[open] .ar{transform:rotate(180deg)}
-.ca{padding:12px 18px;border-top:1px solid #E6EAF3;background:#F4F6FB;cursor:pointer}.ca b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pics{display:flex;gap:4px;align-items:center;margin:7px 0 5px}.pc{width:30px;height:40px;border-radius:7px;overflow:hidden;background:#E3E8F5;display:block}.pc img{width:100%;height:100%;object-fit:cover;display:block}.sp{display:grid;place-items:center;width:30px;height:40px;border-radius:7px;background:#E3E8F5;color:#203C8E;font-size:8px;font-weight:900}.pics em{font-style:normal;font-size:11px;font-weight:900;color:#8A93A8}
+.ca{padding:12px 18px;border-top:1px solid #E6EAF3;background:#F4F6FB;cursor:pointer}.ca b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ca .an{display:flex;align-items:center}.an span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis}.an .x2{flex:none}.pics{display:flex;gap:4px;align-items:center;margin:7px 0 5px}.pc{width:30px;height:40px;border-radius:7px;overflow:hidden;background:#E3E8F5;display:block}.pc img{width:100%;height:100%;object-fit:cover;display:block}.sp{display:grid;place-items:center;width:30px;height:40px;border-radius:7px;background:#E3E8F5;color:#203C8E;font-size:8px;font-weight:900}.pics em{font-style:normal;font-size:11px;font-weight:900;color:#8A93A8}
 .dd{margin-top:8px}.dd small{display:block;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#8A93A8;margin-top:8px}.dd p{font-size:13px;font-weight:700;margin-top:2px;word-break:break-word}.cp{border:0;background:#E3E8F5;color:#203C8E;font-size:11px;font-weight:800;border-radius:7px;padding:3px 9px;margin-left:6px;cursor:pointer}
 .empty{padding:20px;text-align:center;font-weight:700;color:#13804F}
 .bk{border:0;background:none;color:#203C8E;font-weight:800;font-size:15px;padding:6px 2px 12px;cursor:pointer}
@@ -404,7 +440,7 @@ details summary{list-style:none;cursor:pointer}details summary::-webkit-details-
 .p{display:flex;align-items:center;gap:10px;padding:7px 0}.p>div{flex:1;min-width:0}.p i{width:34px;height:34px;border-radius:50%;background:linear-gradient(140deg,#2C4FB8,#203C8E);color:#fff;font-style:normal;font-weight:900;display:grid;place-items:center;flex:none}.p b{font-size:14px}.p small{display:block;font-size:11.5px;color:#8A93A8;font-weight:700}
 .gl{height:3px;margin:26px auto 14px;max-width:220px;background:linear-gradient(90deg,transparent,#E2B874,transparent);border-radius:99px}.ft{text-align:center;font-size:11.5px;color:#8A93A8;font-weight:700}.ft a{color:#B0812E;text-decoration:none;font-weight:800}
 .pg .w{padding:0}</style></head>
-<body><div class="hd"><img src="https://sekna-app.web.app/get/logo-white.webp" alt="HEMERA"></div>
+<body><div class="hd"><span style="width:38px"></span><div class="lo"><img src="https://sekna-app.web.app/get/logo-white.webp" alt=""><span>HEMERA</span></div>${signedIn ? `<button type="button" class="bl${pushOn ? ' on' : ''}" id="bell" onclick="bell()" aria-label="Notifications"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></button>` : '<span style="width:38px"></span>'}</div>
 <div class="w"><div id="home"><span class="acc"><img src="https://sekna-app.web.app/icons/ha-brand.png" alt="">Human Appeal US<small>· TikTok Ads</small></span>
 <div class="t">Issues <span>Log</span></div><div class="sub">${iss.length} open · active ads only · tap one</div>
 <div class="card"><div class="nb"><span class="glow"></span><span class="av">${E(String(nm).charAt(0).toUpperCase())}</span><div class="n"><b>${E(nm)}</b><small>${E(W)}</small></div><div class="big"><em>${iss.length}</em><span>open issue${iss.length === 1 ? '' : 's'}</span></div></div>${list || '<div class="empty">No open issue. Thank you!</div>'}</div>
@@ -416,6 +452,20 @@ ${pages}
 addEventListener('popstate',function(){var id=location.hash.slice(1);document.getElementById('home').hidden=!!id;document.querySelectorAll('.pg').forEach(function(p){p.hidden=p.id!==id})});
 function tg(id){var d=document.getElementById(id);if(d)d.hidden=!d.hidden}
 function out(){var s='';try{s=localStorage.getItem('tt_me')||'';localStorage.removeItem('tt_me')}catch(e){}fetch('/tiktok/me/out',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({sess:s})}).finally(function(){location.href='/tiktok/me'})}
+function toast(t){var d=document.createElement('div');d.className='tst';d.textContent=t;document.body.appendChild(d);setTimeout(function(){d.remove()},3200)}
+function sess(){try{return localStorage.getItem('tt_me')||''}catch(e){return ''}}
+function bell(){var b=document.getElementById('bell'),on=b.classList.contains('on');
+ if(!('serviceWorker' in navigator)||!('Notification' in window)||!('PushManager' in window)){toast(/iPhone|iPad/.test(navigator.userAgent)?'On iPhone: Share → Add to Home Screen, then open it from there.':'This browser can’t show notifications.');return}
+ b.disabled=true;var F='https://www.gstatic.com/firebasejs/10.12.2/';
+ function js(u){return new Promise(function(r,j){var s=document.createElement('script');s.src=u;s.onload=r;s.onerror=j;document.head.appendChild(s)})}
+ js('/firebase-config.js').then(function(){return js(F+'firebase-app-compat.js')}).then(function(){return js(F+'firebase-messaging-compat.js')}).then(function(){
+  if(!firebase.apps.length)firebase.initializeApp(self.SEKNA_FIREBASE);
+  return navigator.serviceWorker.register('/tiktok/me-sw.js',{scope:'/tiktok/me'})}).then(function(reg){
+  if(on)return firebase.messaging().getToken({vapidKey:self.SEKNA_FIREBASE.vapidKey,serviceWorkerRegistration:reg}).catch(function(){return ''}).then(function(t){return fetch('/tiktok/me/push',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({sess:sess(),token:t,on:false})})}).then(function(){b.classList.remove('on');toast('Notifications off.')});
+  return Notification.requestPermission().then(function(p){if(p!=='granted')throw new Error('Allow notifications for this site first.');
+   return firebase.messaging().getToken({vapidKey:self.SEKNA_FIREBASE.vapidKey,serviceWorkerRegistration:reg})}).then(function(t){
+   return fetch('/tiktok/me/push',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({sess:sess(),token:t,on:true})}).then(function(r){return r.json()})}).then(function(j){if(!j.ok)throw new Error(j.error||'Try again.');b.classList.add('on');toast('Done. We’ll tell you once a day if something new needs a fix.')})
+ }).catch(function(e){toast((e&&e.message)||'Try again.')}).finally(function(){b.disabled=false})}
 function cp(t,b){try{navigator.clipboard.writeText(t).then(function(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1200)})}catch(e){}}</script></body></html>`;
 }
 /** The issue on a page of its own (HEMERA's look), for the email's link. */
@@ -494,7 +544,7 @@ const fn = onRequest({
   // GET /pic?u=<TikTok picture link>: the picture through this server (only links that are in the sheet's Creatives tab)
   // v685 the person's own page: /tiktok/me (work email → 6-digit code → their issues and ad checks)
   if (/^(?:\/tiktok)?\/me$/.test(route) && req.method === 'GET') { res.set('Content-Type', 'text/html; charset=utf-8'); res.set('X-Robots-Tag', 'noindex'); res.status(200).send(meGate()); return; }
-  if (/^(?:\/tiktok)?\/me\/(code|verify|page|out)$/.test(route) && req.method === 'POST') {
+  if (/^(?:\/tiktok)?\/me\/(code|verify|page|out|push)$/.test(route) && req.method === 'POST') {
     let b = req.body; if (!(b && typeof b === 'object' && !Buffer.isBuffer(b))) { try { b = JSON.parse(Buffer.isBuffer(b) ? b.toString('utf8') : (typeof b === 'string' ? b : (req.rawBody ? req.rawBody.toString('utf8') : '{}'))); } catch (e) { b = {}; } }
     try { res.json(await meRoute(route.split('/').pop(), b || {})); } catch (e) { res.json({ ok: false, error: String((e && e.message) || e).slice(0, 200) }); }
     return;
@@ -745,4 +795,7 @@ function lyOf(k, x, hist) {
   };
 }
 
-module.exports = { buildTikTokData, buildTikTokMonths, buildTikTokSnap, buildTikTokAcct, buildTikTokFeed, TT_CH, TT_SHEET_ID, fn };
+const daily = require('firebase-functions/v2/scheduler').onSchedule({ schedule: '15 9 * * *', timeZone: 'America/New_York', region: 'europe-west2',
+  serviceAccount: 'sekna-server@human-appeal-media-plan.iam.gserviceaccount.com', memory: '256MiB', timeoutSeconds: 120 }, () => dailyPush());
+
+module.exports = { daily, dailyPush, buildTikTokData, buildTikTokMonths, buildTikTokSnap, buildTikTokAcct, buildTikTokFeed, TT_CH, TT_SHEET_ID, fn };
