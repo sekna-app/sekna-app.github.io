@@ -10861,6 +10861,7 @@ body.dark-mode .ttf-tdot{box-shadow:0 0 0 3px #0D1430}
 .tta-oh.g span{background:#13804F;box-shadow:0 0 0 4px #E3F6EC}.tta-oh.g b{color:#13804F}.tta-oh.r span{background:#C63A4A;box-shadow:0 0 0 4px #FBDDE1}.tta-oh.r b{color:#C63A4A}
 #dashboardFooter{font-size:10px!important;font-weight:900!important;letter-spacing:.18em!important;text-transform:uppercase;color:#A3AABB!important}
 .ttq-more{animation:ttPop .3s cubic-bezier(.2,.9,.3,1.25) both;transform-origin:top center}@keyframes ttPop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+.tta-new{font-size:10.5px;font-weight:900;color:#fff;background:#C63A4A;border-radius:99px;padding:3px 9px;white-space:nowrap}
 .tta-tap{width:100%;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;padding:0}.tta-chv{color:#8A93A8;font-weight:900;transition:transform .2s;margin-left:6px}.tta-tm.on .tta-chv{transform:rotate(180deg)}
 .tta-act{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 2px}.tta-act button{border:0;background:#EEF2FB;color:#203C8E;border-radius:99px;padding:7px 12px;font:inherit;font-size:11.5px;font-weight:800;cursor:pointer}.tta-act button:first-child{background:#203C8E;color:#fff}.tta-act button.red{background:#FBDDE1;color:#C63A4A}.tta-act button[disabled]{opacity:.4}
 .tta-acv{margin-top:10px;background:#F6F8FD;border-radius:14px;padding:10px}.tta-acv .ttf-dates{margin-bottom:8px}.tta-rng{display:flex;gap:8px;margin-bottom:8px}.tta-rng label{flex:1;font-size:10px;font-weight:800;color:#8A93A8}.tta-rng input{display:block;width:100%;margin-top:3px;border:1px solid #DFE4EF;border-radius:10px;padding:6px 8px;font:inherit;font-size:12px}
@@ -15089,6 +15090,7 @@ function nfGo(id){
  if(x.type==='streak'||x.type==='spend_alert'||x.type==='roas_drop'){if(x.account&&x.account!==CURRENT_ACCOUNT)switchAccount(x.account);switchDashboardTab('overview');if(x.type==='roas_drop')setTimeout(()=>{try{if(!document.getElementById('roasDrop'))roasDropCheck(DASH_DATA,true)}catch(e){}},1600);return}
  if(x.type==='alexandra'){akOpenFrom(/request/i.test(x.title||'')?'req':'chat');return}
  if(x.type==='tasks'){openTasks('mine');return}
+ if(x.type==='tiktok'){switchDashboardTab('ttac');setTimeout(()=>{try{document.querySelector('.tta-team').scrollIntoView({block:'start',behavior:'smooth'})}catch(e){}},900);return}
  if(x.type==='app_update'){openUpdates();return}
  if(x.type==='celebrate'){serverCall('celebrationLatest',getAccessToken()).then(c=>{if(c&&c.id)celShow(c,true)}).catch(()=>{});return}
  if(x.account&&x.account!==CURRENT_ACCOUNT)switchAccount(x.account);
@@ -24185,7 +24187,7 @@ async function ttArSync(){if(!ttIsAdmin()||TTP.arBusy||TTP.arDone)return;TTP.arB
 function ttTeamBlock(D){ttAkPicSync();ttArSync();const K=ttTeamKeys(D),adm=ttIsAdmin();if(!K.length)return '';const named=K.filter(o=>{const m=(TTP.map||{})[o.k];return m&&m.email}).length;
  return `<div class="tta-sec"><b>Team accounts</b><span>${named} of ${K.length} with an email · tap a person</span></div><div class="card tta-team">${K.map(o=>{const m=(TTP.map||{})[o.k]||{},n=ttMapOf(o.k),op=TTP.open===o.k,mask=o.k.split('@'),nm=n?n.name:(m.email?ttFirst(m.email):mask[0]);
   const av=ttPav({name:nm,k:'p',av:n&&n.prof?personAv(n.prof.avatar,n.prof.name):''},36),iss=ttTmIssues(D,o.k);
-  return `<div class="tta-tm${op?' on':''}"><button type="button" class="tta-tmh tta-tap" onclick="ttTeamOpen('${esc(o.k)}')">${av}<div><b>${esc(nm)}</b><small>${m.email?esc(m.email):'No email yet'}</small></div>${m.email?'<span class="tta-ok">✓</span>':'<em>No email</em>'}<span class="tta-chv">⌄</span></button>
+  return `<div class="tta-tm${op?' on':''}"><button type="button" class="tta-tmh tta-tap" onclick="ttTeamOpen('${esc(o.k)}')">${av}<div><b>${esc(nm)}</b><small>${m.email?esc(m.email):'No email yet'}</small></div>${((TTP.map||{})._pend||{})[o.k]?`<span class="tta-new">${((TTP.map||{})._pend||{})[o.k].length} new</span>`:m.email?'<span class="tta-ok">✓</span>':'<em>No email</em>'}<span class="tta-chv">⌄</span></button>
    ${op?`<div class="tta-act">${adm?`${m.email?`<button type="button" onclick="ttTeamSend('${esc(o.k)}',this)"${iss.L.length?'':' disabled'}>Send email</button>`:''}<button type="button" onclick="ttTeamView('${esc(o.k)}',this)">View</button><button type="button" onclick="TTP.edit=TTP.edit==='${esc(o.k)}'?'':'${esc(o.k)}';TTP.act='';ttAcDraw()">${m.email?'Change email':'Add email'}</button>`:''}<button type="button" onclick="TTP.act=TTP.act==='${esc(o.k)}'?'':'${esc(o.k)}';TTP.edit='';ttAcDraw()">Activity</button>${adm?`<button type="button" onclick="ttMailTest('${esc(o.k)}',this)">Test to me</button>${m.email?`<button type="button" class="red" onclick="ttTeamClear('${esc(o.k)}')">Remove</button>`:''}`:''}</div>
     ${TTP.edit===o.k?`<div class="tta-ed"><label>Work email<input id="ttTmE" type="email" inputmode="email" autocapitalize="off" spellcheck="false" maxlength="120" placeholder="${esc(o.k)}" value="${esc(m.email||'')}"></label>
      <small class="tta-hint">Their own email. The name is taken from it, and the issue emails and the sign-in code go here. It must match ${esc(o.k)}.</small>
@@ -24206,7 +24208,7 @@ function ttTeamAct(D,k){const R=TTP.ar||'month',td=new Date().toISOString().slic
 // Send the email to the person now (their newest 3 open issues)
 function ttTeamSend(k,btn){const D=TTA.data,I=ttTmIssues(D,k);if(!I.L.length)return;const m=(TTP.map||{})[k]||{};if(!confirm('Email '+(m.email||k)+' about their '+I.L.length+' open issue'+(I.L.length===1?'':'s')+'?'))return;
  btn.disabled=true;btn.textContent='Sending…';fetch(TT_API+'/issueMail',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),key:ttIssueKey(I.L[0]),who:k})}).then(x=>x.json())
-  .then(j=>{if(!(j&&j.ok))throw new Error((j&&j.error)||'Could not send.');btn.textContent='Sent ✓';showSettingsToast('Email sent');ttPeopleLoad(true)})
+  .then(j=>{if(!(j&&j.ok))throw new Error((j&&j.error)||'Could not send.');btn.textContent='Sent ✓';showSettingsToast('Email and notification sent');if(TTP.map&&TTP.map._pend)delete TTP.map._pend[k];ttPeopleLoad(true)})
   .catch(e=>{btn.disabled=false;btn.textContent='Send email';showSettingsToast(errorText(e))})}
 // Remove: their email link and their counts (opens, emails) are cleared
 function ttTeamClear(k){if(!confirm('Remove the email of '+k+' and clear their counts?'))return;

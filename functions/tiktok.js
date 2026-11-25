@@ -355,26 +355,28 @@ function seenOf(who, acct) {
     ads: (acct.checks || []).filter(c => String(c.by || '').toLowerCase().indexOf(W) >= 0 && String(c.problems || '').trim() && !/^ok$/i.test(String(c.problems).trim())).map(c => String(c.id || c.ad)) };
 }
 /** Once a day: a notification to each signed-up person about new issues or new ads that need a fix. */
+// v719 nothing goes to the ad makers on its own: a new issue → a notification to the owner in the app, and the person is marked "new" in Team accounts until the owner taps Send
 async function dailyMail(acct, st) {
-  if (!notify.mailReady()) return;
-  const doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, map = doc.map || {}, first = !st.mailed, mailedNew = {}, mlogNew = {};
+  const doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, map = doc.map || {}, first = !st.mailed, mailedNew = {}, pend = {}, lines = [];
   for (const who of Object.keys(map)) {
     const m = map[who]; if (who.charAt(0) === '_' || !m || !m.email) continue;
     const dg = digestOf(who, acct), keys = dg.L.map(issueKey), was = (st.mailed || {})[who] || [];
     const fresh = keys.filter(k => was.indexOf(k) < 0);
     mailedNew[who] = [...new Set(was.concat(keys))].slice(-300);
     if (first || !fresh.length) continue; // the first run only notes what is open now
-    const name = nameOf(m, who) || 'there';
-    try { mlogNew[who] = { at: Date.now(), n: fresh.length, by: 'auto' }; await notify.sendMail({ to: m.email, subject: 'TikTok: ' + (fresh.length === 1 ? 'a new issue' : fresh.length + ' new issues') + ' on your ads', rawHtml: digestMailHtml(name, dg.L.slice(0, 3), dg.L.length, dg.toFix, 'https://sekna-app.web.app/tiktok/me') }); }
-    catch (e) { console.warn('TikTok mail: ' + ((e && e.message) || e)); delete mailedNew[who]; delete mlogNew[who]; }
+    pend[who] = fresh; lines.push((nameOf(m, who) || who.split('@')[0]) + ' ' + fresh.length);
   }
-  await fsUpdate(TT_ME, d => { d = d || {}; d.mailed = Object.assign({}, d.mailed || {}, mailedNew); d.mlog = d.mlog || {}; Object.keys(mlogNew).forEach(w => { d.mlog[w] = (d.mlog[w] || []).concat([mlogNew[w]]).slice(-200); }); return d; });
+  await fsUpdate(TT_ME, d => { d = d || {}; d.mailed = Object.assign({}, d.mailed || {}, mailedNew); d.pend = d.pend || {}; Object.keys(pend).forEach(w => { d.pend[w] = [...new Set((d.pend[w] || []).concat(pend[w]))]; }); return d; });
+  if (!lines.length) return;
+  const n = Object.values(pend).reduce((t, l) => t + l.length, 0), admins = require('./access').ACCESS.ADMIN_EMAILS;
+  await notify.send({ pushes: admins.map(email => ({ email, eventType: 'tiktok', title: 'TikTok · ' + n + ' new issue' + (n === 1 ? '' : 's'),
+    body: lines.join(' · ') + '. Want to email them? Open Account & Policy → Team accounts and tap Send.' })) }).catch(e => console.warn('TikTok notice: ' + ((e && e.message) || e)));
 }
 async function dailyPush() {
   const st = (await fsGet(TT_ME).catch(() => null)) || {}, P = st.push || {};
   acctHeld = null; const acct = await ttAcct();
   await dailyMail(acct, st).catch(e => console.warn('TikTok mail: ' + ((e && e.message) || e)));
-  if (!Object.keys(P).length) return;
+  return; // v719 the ad makers hear only when the owner taps Send (email + notification)
   const dead = [], seenNew = {};
   for (const who of Object.keys(P)) {
     const now = seenOf(who, acct), was = (st.seen || {})[who] || { iss: [], ads: [] };
@@ -908,7 +910,7 @@ const fn = onRequest({
       res.json({ ok: true, result: personPage(who, await ttAcct(), d.map || {}, false, false, await ttFeed().catch(() => null)).replace('var AH=', 'var VT=' + JSON.stringify(vt) + ';var AH=') }); return;
     }
     if (route === '/people') { const d = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, me = (await fsGet(TT_ME).catch(() => null)) || {};
-      res.json({ ok: true, result: Object.assign({}, d.map || {}, { _mails: d.mails || {}, _opens: me.opens || {}, _mlog: me.mlog || {} }) }); return; }
+      res.json({ ok: true, result: Object.assign({}, d.map || {}, { _mails: d.mails || {}, _opens: me.opens || {}, _mlog: me.mlog || {}, _pend: me.pend || {} }) }); return; }
     // v680 email the person who made the ads of an issue (admins; only people linked to a HEMERA profile)
     // v682 a test: the email for one of this person's open issues, sent to the admin who taps it (not to the person)
     if (route === '/issueMailTest') {
@@ -934,7 +936,9 @@ const fn = onRequest({
       const name = nameOf(m, who) || 'there';
       const dg = digestOf(who, acct), L3 = (dg.L.length ? dg.L : [issue]).slice(0, 3);
       await notify.sendMail({ to: m.email, replyTo: me && me.email ? me.email : undefined, subject: 'TikTok: ' + (dg.L.length || 1) + ' open issue' + ((dg.L.length || 1) === 1 ? '' : 's') + ' on your ads', rawHtml: digestMailHtml(name, L3, dg.L.length || 1, dg.toFix, 'https://sekna-app.web.app/tiktok/me') });
-      await fsUpdate(TT_ME, d => { d = d || {}; d.mailed = d.mailed || {}; d.mailed[who] = [...new Set((d.mailed[who] || []).concat(dg.L.map(issueKey)))]; d.mlog = d.mlog || {}; d.mlog[who] = (d.mlog[who] || []).concat([{ at: Date.now(), n: dg.L.length, by: 'admin' }]).slice(-200); return d; });
+      const stM = (await fsUpdate(TT_ME, d => { d = d || {}; d.mailed = d.mailed || {}; d.mailed[who] = [...new Set((d.mailed[who] || []).concat(dg.L.map(issueKey)))]; d.mlog = d.mlog || {}; d.mlog[who] = (d.mlog[who] || []).concat([{ at: Date.now(), n: dg.L.length, by: 'admin' }]).slice(-200); if (d.pend) delete d.pend[who]; return d; })) || {};
+      let pushed = 0;
+      for (const token of ((stM.push || {})[who] || [])) { try { await notify.fcm({ token, data: { title: 'TikTok · your ads', body: dg.L.length + ' open issue' + (dg.L.length === 1 ? '' : 's') + ' to fix. Tap to see them.', url: '/tiktok/me', eventType: 'tiktok' }, webpush: { headers: { Urgency: 'high', TTL: '86400' } } }); pushed++; } catch (e) { console.warn('TikTok push: ' + ((e && e.message) || e)); } }
       const at = Date.now();
       await fsUpdate(TT_PEOPLE, d => { d = d || {}; d.mails = d.mails || {}; const l = d.mails[key] = (d.mails[key] || []).filter(x => x.who !== who); l.push({ who, at }); return d; });
       res.json({ ok: true, result: { at } }); return;
