@@ -11025,6 +11025,7 @@ body.dark-mode .ttf-tdot{box-shadow:0 0 0 3px #0D1430}
 /* v677 Account & Policy one card; Activity split-bar list */
 .tta-one{padding:14px 16px!important;border-radius:18px}.tta-oh{display:flex;align-items:center;gap:9px;margin-bottom:6px}.tta-oh span{width:10px;height:10px;border-radius:50%}.tta-oh b{font-size:15.5px}
 .tta-oh.g span{background:#13804F;box-shadow:0 0 0 4px #E3F6EC}.tta-oh.g b{color:#13804F}.tta-oh.r span{background:#C63A4A;box-shadow:0 0 0 4px #FBDDE1}.tta-oh.r b{color:#C63A4A}
+.tta-view{position:fixed;inset:0;z-index:9999;background:#132457;display:flex;flex-direction:column}.tta-vh{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 14px 10px;color:#fff}.tta-vh b{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tta-vh button{border:0;border-radius:10px;background:#E2B874;color:#132457;font-weight:900;padding:7px 14px;cursor:pointer}.tta-view iframe{flex:1;border:0;width:100%;background:#F1F3F8}.tta-hint{display:block;font-size:11px;color:#8A93A8;font-weight:700;margin:-4px 0 8px;line-height:1.4}
 .tta-kv{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid #EEF1F6;font-size:13px;font-weight:700;color:#6B7385}.tta-kv b{color:#141B33;font-weight:900}.tta-kv b.g{color:#13804F}.tta-kv b.r{color:#C63A4A}
 .tta-sec{display:flex;justify-content:space-between;align-items:baseline;margin:16px 4px 8px}.tta-sec b{font-size:15px;color:#0F1F52}.tta-sec span{font-size:10.5px;color:#8A93A8;font-weight:800}
 .tta-tmh .tta-ok{width:26px;height:26px;padding:0;border-radius:50%;background:#E3F6EC;color:#13804F;display:grid;place-items:center;font-weight:900;font-size:13px;flex:none}
@@ -24249,16 +24250,27 @@ function ttIsAdmin(){return !!(typeof ACCESS_PROFILE!=='undefined'&&ACCESS_PROFI
 function ttTeamBlock(D){const K=ttTeamKeys(D),adm=ttIsAdmin();if(!K.length)return '';const P=((typeof PFP!=='undefined'&&PFP.people)||[]),named=K.filter(o=>ttMapOf(o.k)).length;
  return `<div class="tta-sec"><b>Team accounts</b><span>${named} of ${K.length} named</span></div><div class="card tta-team">${K.map(o=>{const m=(TTP.map||{})[o.k]||{},n=ttMapOf(o.k),ed=TTP.edit===o.k,mask=o.k.split('@');
   const av=ttPav({name:n?n.name:mask[0],k:'p',av:n&&n.prof?personAv(n.prof.avatar,n.prof.name):''},36);
-  return `<div class="tta-tm"><div class="tta-tmh">${av}<div><b>${esc(n?n.name:mask[0])}</b><small>${n?esc(o.k):'Not named yet'}</small></div>${adm&&!ed?`<button type="button" class="tta-mt" onclick="ttMailTest('${esc(o.k)}',this)">Email</button>`:''}${ed?`<button type="button" onclick="ttTeamEdit('${esc(o.k)}')">Close</button>`:n?(adm?`<button type="button" class="tta-ok" aria-label="Change" onclick="ttTeamEdit('${esc(o.k)}')">✓</button>`:'<span class="tta-ok">✓</span>'):adm?`<button type="button" class="tta-add" onclick="ttTeamEdit('${esc(o.k)}')">+ Name</button>`:'<em>Not named</em>'}</div>
-   ${ed?`<div class="tta-ed"><label>Choose a HEMERA profile<select id="ttTmP"><option value="">— Not on HEMERA —</option>${P.map(p=>`<option value="${esc(String(p.email||'').toLowerCase())}"${String(p.email||'').toLowerCase()===m.email?' selected':''}>${esc(p.name||p.email)}</option>`).join('')}</select></label>
-    <label>Or type a name<input id="ttTmN" type="text" maxlength="60" placeholder="e.g. Mariam" value="${esc(m.name||'')}"></label>
+  return `<div class="tta-tm"><div class="tta-tmh">${av}<div><b>${esc(n?n.name:mask[0])}</b><small>${n?esc(o.k):'Not named yet'}</small></div>${adm&&!ed?`<button type="button" class="tta-mt" onclick="ttTeamView('${esc(o.k)}',this)">View</button><button type="button" class="tta-mt" onclick="ttMailTest('${esc(o.k)}',this)">Email</button>`:''}${ed?`<button type="button" onclick="ttTeamEdit('${esc(o.k)}')">Close</button>`:n?(adm?`<button type="button" class="tta-ok" aria-label="Change" onclick="ttTeamEdit('${esc(o.k)}')">✓</button>`:'<span class="tta-ok">✓</span>'):adm?`<button type="button" class="tta-add" onclick="ttTeamEdit('${esc(o.k)}')">+ Name</button>`:'<em>Not named</em>'}</div>
+   ${ed?`<div class="tta-ed"><label>Work email<input id="ttTmE" type="email" inputmode="email" autocapitalize="off" spellcheck="false" maxlength="120" placeholder="${esc(o.k)}" value="${esc(m.email||'')}" oninput="ttTeamFill(this.value)"></label>
+    <small class="tta-hint">Their own email. The issue emails and the sign-in code go here. It must match ${esc(o.k)}.</small>
+    <label>Name<input id="ttTmN" type="text" maxlength="60" placeholder="Taken from the email" oninput="delete this.dataset.auto" value="${esc(m.name||'')}"></label>
+    <label>Or pick a HEMERA profile<select id="ttTmP" onchange="ttTeamPick(this)"><option value="">—</option>${P.map(p=>`<option value="${esc(String(p.email||'').toLowerCase())}" data-n="${esc(p.name||'')}"${String(p.email||'').toLowerCase()===m.email?' selected':''}>${esc(p.name||p.email)}</option>`).join('')}</select></label>
     <div class="tta-edb">${n?`<button type="button" class="ghost" onclick="ttTeamSave('${esc(o.k)}',1)">Clear</button>`:''}<button type="button" onclick="ttTeamSave('${esc(o.k)}')">Save</button></div></div>`:''}</div>`}).join('')}</div>`}
 function ttMailTest(k,btn){btn.disabled=true;btn.textContent='Sending…';
  fetch(TT_API+'/issueMailTest',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),who:k})}).then(x=>x.json())
   .then(j=>{if(!(j&&j.ok))throw new Error((j&&j.error)||'Could not send.');btn.textContent='Sent ✓';showSettingsToast('Test sent to you: '+(j.result.issue||'an issue'))})
   .catch(e=>{btn.disabled=false;btn.textContent='Email';showSettingsToast(errorText(e))})}
 function ttTeamEdit(k){TTP.edit=TTP.edit===k?'':k;try{pfPeopleLoad()}catch(e){}ttAcDraw()}
-function ttTeamSave(k,clear){const p=clear?'':(document.getElementById('ttTmP')||{}).value||'',n=clear?'':((document.getElementById('ttTmN')||{}).value||'').trim();
+
+function ttTeamFill(v){const n=document.getElementById('ttTmN');if(!n||(n.value&&!n.dataset.auto))return;n.dataset.auto='1';const l=String(v||'').split('@')[0].split(/[._\-+0-9]/).filter(Boolean)[0]||'';n.value=l?l.charAt(0).toUpperCase()+l.slice(1).toLowerCase():''}
+function ttTeamPick(sel){const o=sel.options[sel.selectedIndex];if(!o||!o.value)return;const e=document.getElementById('ttTmE'),n=document.getElementById('ttTmN');if(e)e.value=o.value;if(n)n.value=o.getAttribute('data-n')||n.value}
+
+function ttTeamView(k,btn){btn.disabled=true;const t=btn.textContent;btn.textContent='…';
+ fetch(TT_API+'/peopleView',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),who:k})}).then(x=>x.json())
+  .then(j=>{if(!(j&&j.ok))throw new Error((j&&j.error)||'Could not open.');let w=document.getElementById('ttTmView');if(!w){w=document.createElement('div');w.id='ttTmView';w.className='tta-view';document.body.appendChild(w)}
+   w.innerHTML='<div class="tta-vh"><b>Their page · '+esc(k)+'</b><button type="button" onclick="document.getElementById(\'ttTmView\').remove()">Close</button></div><iframe title="Their page"></iframe>';w.querySelector('iframe').srcdoc=j.result})
+  .catch(e=>showSettingsToast(errorText(e))).finally(()=>{btn.disabled=false;btn.textContent=t})}
+function ttTeamSave(k,clear){const p=clear?'':((document.getElementById('ttTmE')||{}).value||'').trim().toLowerCase(),n=clear?'':((document.getElementById('ttTmN')||{}).value||'').trim();
  fetch(TT_API+'/peopleSet',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),key:k,name:n,email:p})}).then(x=>x.json())
   .then(j=>{if(!(j&&j.ok))throw new Error((j&&j.error)||'Could not save.');TTP.map=j.result||{};TTP.edit='';showSettingsToast(clear?'Cleared':'Saved for the whole team');ttAcDraw()})
   .catch(e=>showSettingsToast(errorText(e)))}

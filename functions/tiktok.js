@@ -383,6 +383,8 @@ function personPage(who, acct, map, signedIn, pushOn, feed) {
   if (feed) { const L = (feed.acts || []).filter(a => W && String(a.op || '').toLowerCase().indexOf(W) >= 0), U = {}, hasC = new Set(L.filter(a => /^creative$/i.test(a.name)).map(a => a.id));
     L.forEach(a => { if (/^destination page$/i.test(a.name)) { const m = /https?:\/\/\S+/.exec(a.det || ''); if (m && !U[a.id]) U[a.id] = m[0]; } });
     ah = L.filter(a => !(/^destination page$/i.test(a.name) && hasC.has(a.id))).slice(0, 1500).map(a => [a.d, a.tm, a.name, a.act, a.obj, a.id, a.det, a.src, /^creative$/i.test(a.name) ? (U[a.id] || '') : '']); }
+  const ac = acct.account || {}, acOk = /^active$/i.test(ac.status) && !(acct.rejected || []).length;
+  const apCard = `<div class="card apc"><div class="aph ${acOk ? 'g' : 'r'}"><span></span><b>${acOk ? 'Account is healthy' : !/^active$/i.test(ac.status) ? 'Account is ' + E(ac.status || 'not active') : 'Some ads need a look'}</b></div><small>${E(ac.name || 'Human Appeal US · TikTok Ads')}${ac.checked ? ' · checked ' + E(mon(ac.checked).replace(/ · .*/, '')) : ''}</small></div>`;
   const others = by => String(by || '').split(/\s+·\s+/).length - 1;
   const list = iss.map((x, i) => `<button type="button" class="ir" onclick="go('i${i}')"><div class="it"><b>${E(x.type || 'Issue')}</b><span class="ch">›</span></div><p>${E(x.what || '')}</p><div class="im"><span class="gold">${others(x.by) > 0 ? '+' + others(x.by) + ' more made these ads' : ''}</span><span class="dt">${E(mon(x.found))}</span></div></button>`).join('');
   const pages = iss.map((x, i) => `<section class="pg" id="i${i}" hidden><button type="button" class="bk" onclick="go('')">‹&nbsp; Issues Log</button>
@@ -418,6 +420,7 @@ details summary{list-style:none;cursor:pointer}details summary::-webkit-details-
 .hr{position:relative;overflow:hidden;border-radius:20px;padding:18px;margin-bottom:14px;color:#fff;background:linear-gradient(135deg,#132457,#203C8E 55%,#2C4FB8);box-shadow:0 12px 28px rgba(20,40,110,.18)}.hr .glow{position:absolute;right:-34px;top:-40px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(226,184,116,.32),transparent 70%)}
 .hr small{position:relative;font-size:11px;font-weight:900;letter-spacing:.12em;color:#E2B874}.hr>b{position:relative;display:block;font-size:42px;font-weight:900;line-height:1.05;margin-top:6px}.hr .hs{position:relative;font-size:14px;font-weight:700;color:#C9D3F5}
 .k3{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.k3 div{background:rgba(255,255,255,.1);border-radius:12px;padding:9px 11px;font-size:11.5px;font-weight:700;color:#C9D3F5}.k3 em{display:block;font-style:normal;font-size:20px;font-weight:900}.k3 .kg{color:#5EE0A0}.k3 .ky{color:#E2B874}.k3 .kr{color:#FF9AA8}
+.apc{padding:15px 16px}.aph{display:flex;align-items:center;gap:9px}.aph span{width:10px;height:10px;border-radius:50%}.aph b{font-size:16px}.aph.g span{background:#13804F;box-shadow:0 0 0 4px #E3F6EC}.aph.g b{color:#13804F}.aph.r span{background:#C63A4A;box-shadow:0 0 0 4px #FBDDE1}.aph.r b{color:#C63A4A}.apc small{display:block;margin:6px 0 0 19px;font-size:12px;color:#8A93A8;font-weight:700}
 .drw{position:fixed;left:0;top:0;height:100vh;height:100lvh;z-index:20;width:84%;max-width:340px;padding:16px 14px 18px;overflow-y:auto;display:flex;flex-direction:column;color:#fff;background:linear-gradient(170deg,#132457,#203C8E 60%,#2C4FB8);transform:translateX(-105%);transition:transform .28s cubic-bezier(.2,.75,.25,1)}.drw.on{transform:none}.drw>*{flex-shrink:0}
 .ov{position:fixed;left:0;right:0;top:0;height:100vh;height:100lvh;z-index:19;background:rgba(10,20,50,.45);opacity:0;pointer-events:none;transition:opacity .25s}.ov.on{opacity:1;pointer-events:auto}
 .dh{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.dh img{height:26px}.dx{width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;display:grid;place-items:center;cursor:pointer}.dx svg,.dni svg,.chv,.ck,.lk{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -446,8 +449,8 @@ html.dk body{background:#0B1430;color:#E7EBF3}html.dk .card,html.dk .c,html.dk .
 .p{display:flex;align-items:center;gap:10px;padding:7px 0}.p>div{flex:1;min-width:0}.p i{width:34px;height:34px;border-radius:50%;background:linear-gradient(140deg,#2C4FB8,#203C8E);color:#fff;font-style:normal;font-weight:900;display:grid;place-items:center;flex:none}.p b{font-size:14px}.p small{display:block;font-size:11.5px;color:#8A93A8;font-weight:700}
 .gl{height:3px;margin:26px auto 14px;max-width:220px;background:linear-gradient(90deg,transparent,#E2B874,transparent);border-radius:99px}.ft{text-align:center;font-size:11.5px;color:#8A93A8;font-weight:700}.ft a{color:#B0812E;text-decoration:none;font-weight:800}
 html{background:#132457}.w{flex:1 0 auto;width:100%}.pg .w{padding:0}
-.fb{margin-top:30px;position:relative;text-align:center;color:#fff;padding:22px 16px calc(24px + env(safe-area-inset-bottom));background:linear-gradient(120deg,#132457,#203C8E 60%,#3B5BC8)}.fb:before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,transparent,#E2B874 20%,#F2D38F 50%,#E2B874 80%,transparent)}
-.fb img{height:22px;display:block;margin:0 auto}.fb p{font-size:13.5px;font-weight:800;margin-top:9px}.fb small{display:block;font-size:11.5px;color:#B7C3EA;font-weight:700;margin-top:6px}.fb a{color:#E2B874;font-weight:800;text-decoration:none}</style></head>
+.fb{margin-top:30px;position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;color:#fff;padding:9px 16px calc(9px + env(safe-area-inset-bottom));background:linear-gradient(120deg,#132457,#203C8E 60%,#3B5BC8)}.fb:before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#E2B874 20%,#F2D38F 50%,#E2B874 80%,transparent)}
+.fb p{font-size:11.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.fb p span{color:#B7C3EA;font-weight:700}.fb a{flex:none;font-size:10.5px;color:#E2B874;font-weight:800;text-decoration:none;border:1px solid rgba(226,184,116,.6);border-radius:99px;padding:4px 10px;white-space:nowrap}</style></head>
 <body><div class="hd"><button type="button" class="bl" onclick="dr(1)" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><div class="lo"><img src="https://sekna-app.web.app/get/logo-white.webp" alt=""><span>HEMERA</span></div>${signedIn ? `<span id="bell" class="${pushOn ? 'on' : ''}" hidden></span>` : ''}</div>
 <div class="w"><div id="home"><span class="acc"><img src="https://sekna-app.web.app/icons/ha-brand.png" alt="">Human Appeal US<img class="tta" src="https://sekna-app.web.app/icons/tiktok-ads.png" alt="TikTok Ads"></span>
 <div class="t">Issues <span>Log</span></div><div class="sub">${iss.length} open · active ads only · tap one</div>
@@ -456,11 +459,12 @@ html{background:#132457}.w{flex:1 0 auto;width:100%}.pg .w{padding:0}
 <div class="card">${checks || '<div class="empty">Every live ad you made passes.</div>'}</div></div>
 ${pages}
 <section class="pg" id="ah" hidden><button type="button" class="bk" onclick="go('')">‹&nbsp; Issues Log</button><div class="t">Activity <span>History</span></div><div id="ahb"></div></section>
+<section class="pg" id="ap" hidden><button type="button" class="bk" onclick="go('')">‹&nbsp; Issues Log</button><div class="t">Account <span>&amp; Policy</span></div>${apCard}</section>
 <section class="pg" id="st" hidden><button type="button" class="bk" onclick="go('')">‹&nbsp; Issues Log</button><div class="t">Settings</div>
  <div class="card sts">${signedIn ? `<button type="button" class="str" onclick="bell()"><span class="sti"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span><b>Notifications<small>Once a day, only when something new needs a fix</small></b><span class="tog${pushOn ? ' on' : ''}" data-n></span></button>` : ''}
  <button type="button" class="str" onclick="dk()"><span class="sti"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></span><b>Dark mode<small>Easier on the eyes at night</small></b><span class="tog" id="dkt"></span></button>
  ${signedIn ? `<button type="button" class="str" onclick="out()"><span class="sti red"><svg viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg></span><b class="red">Sign out</b></button>` : ''}</div></section>
-</div><footer class="fb" id="fb"><img src="https://sekna-app.web.app/get/logo-white.webp" alt="HEMERA"><p>Broadcast to you from HEMERA</p><small>TikTok · Human Appeal US · <a href="https://sekna-app.web.app/get/" target="_blank" rel="noopener">What is HEMERA?</a></small></footer>
+</div><footer class="fb" id="fb"><p>Broadcast from HEMERA<span> · TikTok · HA US</span></p><a href="https://sekna-app.web.app/get/" target="_blank" rel="noopener">What is HEMERA?</a></footer>
 <div class="ov" id="ov" onclick="dr(0)"></div><aside class="drw" id="drw" aria-label="Menu">
  <div class="dh"><img src="https://sekna-app.web.app/get/logo-white.webp" alt="HEMERA"><button type="button" class="dx" onclick="dr(0)" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
  <div class="dlb">CLIENT ACCOUNT</div>
@@ -468,7 +472,8 @@ ${pages}
   <div class="dam" id="dam" hidden><div class="dao"><span class="dlg"><img src="https://sekna-app.web.app/icons/ha-brand.png" alt=""></span><b>Human Appeal US</b><svg class="ck" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
    <div class="dao off"><span class="dlg"><img src="https://sekna-app.web.app/icons/ha-brand.png" alt=""></span><b>Human Appeal AR<small>Soon</small></b><svg class="lk" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div></div></div>
  <div class="dg"><button type="button" class="dn on" data-v="" onclick="go('')"><span class="dni"><svg viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9L2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></span>Issues &amp; Ad Checks</button>
-  <button type="button" class="dn" data-v="ah" onclick="go('ah')"><span class="dni"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg></span>Activity History</button></div>
+  <button type="button" class="dn" data-v="ah" onclick="go('ah')"><span class="dni"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg></span>Activity History</button>
+  <button type="button" class="dn" data-v="ap" onclick="go('ap')"><span class="dni"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="M8.5 12l2.5 2.5 4.5-4.5"/></svg></span>Account &amp; Policy</button></div>
  <div class="dg">${signedIn ? `<button type="button" class="dn" onclick="bell()"><span class="dni"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span>Notifications<span class="tog${pushOn ? ' on' : ''}" data-n></span></button>` : ''}
   <button type="button" class="dn" data-v="st" onclick="go('st')"><span class="dni"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span>Settings</button></div>
  <div class="dme"><span class="dav">${E(String(nm).charAt(0).toUpperCase())}</span><div><b>${E(nm)}</b><small>${E(W)}</small></div>${signedIn ? `<button type="button" class="dso" onclick="out()" aria-label="Sign out" title="Sign out"><svg viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg></button>` : ''}</div>
@@ -506,7 +511,7 @@ function ahDraw(){var h=document.getElementById('ahb');if(!h)return;if(!AH){h.in
     +(cs.length?cs.map(function(x){return '<div class="ba">'+(x.f&&x.f!==a[2]?'<small>'+es(x.f)+'</small>':'')+'<div>'+(x.b?'<s>'+es(x.b)+'</s><i>→</i>':'')+'<b>'+es(x.a||'—')+'</b></div></div>'}).join(''):(a[6]&&a[6]!==a[2]?'<p class="tdet">'+es(a[6])+'</p>':''))
     +(a[8]?pin(a[8]):'')+(a[7]&&a[7]!=='--'?'<small class="tsrc">'+es(a[7])+'</small>':'')+'</div></div>'}).join('')+'</div>'+(L.length>AF.n?'<button type="button" class="more" onclick="ahM()">Show more ('+(L.length-AF.n)+')</button>':''):'<div class="card"><div class="empty" style="color:#8A93A8">No change on these days.</div></div>')
   +'<p class="ft" style="margin-top:12px">Times in your local time</p>'}
-if(location.hash==='#ah'||location.hash==='#st'){var h0=location.hash.slice(1);document.getElementById('fb').hidden=h0==='st';document.getElementById('home').hidden=true;document.getElementById(h0).hidden=false;if(h0==='ah')ahDraw()}
+if(location.hash==='#ah'||location.hash==='#st'||location.hash==='#ap'){var h0=location.hash.slice(1);document.getElementById('fb').hidden=h0==='st';document.getElementById('home').hidden=true;document.getElementById(h0).hidden=false;if(h0==='ah')ahDraw()}
 function toast(t){var d=document.createElement('div');d.className='tst';d.textContent=t;document.body.appendChild(d);setTimeout(function(){d.remove()},3200)}
 function sess(){try{return localStorage.getItem('tt_me')||''}catch(e){return ''}}
 function bell(){var b=document.getElementById('bell'),on=b.classList.contains('on');
@@ -632,7 +637,7 @@ const fn = onRequest({
     } catch (e) { console.warn('TikTok picture: ' + ((e && e.message) || e)); res.status(502).send(''); }
     return;
   }
-  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct' && route !== '/feed' && route !== '/people' && route !== '/peopleSet' && route !== '/issueMail' && route !== '/issueMailTest') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
+  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct' && route !== '/feed' && route !== '/people' && route !== '/peopleSet' && route !== '/peopleView' && route !== '/issueMail' && route !== '/issueMailTest') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
   let body = req.body;
   if (!(body && typeof body === 'object' && !Buffer.isBuffer(body))) {
     const text = Buffer.isBuffer(body) ? body.toString('utf8') : typeof body === 'string' ? body : (req.rawBody ? req.rawBody.toString('utf8') : '');
@@ -645,10 +650,20 @@ const fn = onRequest({
       const key = String(body.key || '').trim().toLowerCase().slice(0, 120);
       if (!key) throw new Error('No account.');
       const name = String(body.name || '').trim().slice(0, 60), email = String(body.email || '').trim().toLowerCase().slice(0, 120);
+      if (email) { const km = /^([^@]+)@(.+)$/.exec(key), em = /^([^@\s]+)@([a-z0-9.-]+)$/.exec(email);
+        if (!em) throw new Error('Type a full email.');
+        if (km && (em[2] !== km[2] || em[1].charAt(0) !== km[1].charAt(0) || em[1].slice(-1) !== km[1].slice(-1))) throw new Error('This email does not match ' + key + '.'); }
       const doc = await fsUpdate(TT_PEOPLE, d => { d = d || {}; d.map = d.map || {}; if (!name && !email) delete d.map[key]; else d.map[key] = { name, email, at: Date.now() }; return d; });
       res.json({ ok: true, result: (doc && doc.map) || {} }); return;
     }
     await assertAccess(body.token);
+    // v696 an admin sees a person's emailed page exactly as it looks to them (no sign-in, no notifications)
+    if (route === '/peopleView') {
+      await assertAdmin(body.token);
+      const who = String(body.who || '').trim().toLowerCase().slice(0, 120); if (!who) throw new Error('No account.');
+      const d = (await fsGet(TT_PEOPLE).catch(() => null)) || {};
+      res.json({ ok: true, result: personPage(who, await ttAcct(), d.map || {}, false, false, await ttFeed().catch(() => null)) }); return;
+    }
     if (route === '/people') { const d = (await fsGet(TT_PEOPLE).catch(() => null)) || {}; res.json({ ok: true, result: Object.assign({}, d.map || {}, { _mails: d.mails || {} }) }); return; }
     // v680 email the person who made the ads of an issue (admins; only people linked to a HEMERA profile)
     // v682 a test: the email for one of this person's open issues, sent to the admin who taps it (not to the person)
