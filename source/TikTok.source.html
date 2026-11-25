@@ -10791,8 +10791,8 @@ body.dark-mode .tts-chips button{background:#16204A;border-color:#26326A;color:#
 .tti-av{display:inline-grid;place-items:center;border-radius:50%;color:#fff;font-weight:900;flex:none}
 .tti-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .tti-back{display:inline-flex;align-items:center;gap:4px;border:0;background:none;font:inherit;font-size:13px;font-weight:800;color:#203C8E;padding:4px 2px 10px;cursor:pointer}.tti-back svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
-.tti-hero{background:linear-gradient(140deg,#203C8E,#2C4FB8);color:#fff;border-radius:18px;padding:16px;margin-bottom:10px;box-shadow:0 10px 26px rgba(20,40,110,.12)}
-.tti-hero small{display:block;font-size:10px;font-weight:900;letter-spacing:.1em;color:#E2B874}.tti-hero h3{font-size:21px;font-weight:900;margin:6px 0 10px;line-height:1.2}
+.tti-hero{background:linear-gradient(140deg,#203C8E,#2C4FB8);color:#fff;border-radius:18px;padding:13px 16px 14px;margin-bottom:10px;box-shadow:0 10px 26px rgba(20,40,110,.12)}
+.tti-hero small{display:block;font-size:10px;font-weight:900;letter-spacing:.1em;color:#E2B874}.tti-hero h3{font-size:20px;font-weight:900;margin:5px 0 0;line-height:1.2}.tti-hero .tti-st{margin-top:8px}
 .tti-st{display:inline-block;font-size:11px;font-weight:900;border-radius:99px;padding:4px 12px}.tti-st.r{background:#FBDDE1;color:#C63A4A}.tti-st.g{background:#E3F6EC;color:#13804F}
 .tti-c{padding:14px!important;border-radius:16px;margin-bottom:10px}.tti-l{font-size:9.5px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#8A93A8;margin-bottom:8px}
 .tti-what{font-size:13.5px;color:#141B33;font-weight:600;line-height:1.55}
@@ -24049,7 +24049,7 @@ function ttCopy(t,btn){const done=()=>{if(btn){const o=btn.textContent;btn.textC
  try{navigator.clipboard.writeText(t).then(done,()=>{})}catch(e){}}
 function ttIssuePage(x){const f=/^yes/i.test(x.fixed),A=ttIssueAds(x.ads),P=ttPeople(x.by);
  return `<button type="button" class="tti-back" onclick="ttIssueBack()"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg>Issues Log</button>
-  <div class="tti-hero"><small>${esc(ttKind(x.type).toUpperCase())} · FOUND ${esc(ttDay(x.found).toUpperCase())}</small><h3>${esc(x.type||'Issue')}</h3><span class="tti-st ${f?'g':'r'}">${f?'Fixed':'Open'}</span></div>
+  <div class="tti-hero"><small>${esc(ttKind(x.type).toUpperCase())} · FOUND ${esc(ttDay(x.found).toUpperCase())}</small><h3>${esc(x.type||'Issue')}</h3>${f?'<span class="tti-st g">Fixed</span>':''}</div>
   <div class="card tti-c"><div class="tti-l">What's wrong</div><p class="tti-what">${esc(x.what||'—')}</p></div>
   ${A.L&&A.L.length?`<div class="card tti-c"><div class="tti-l">Ads affected${A.n?' · '+A.n+' active':''}</div>${A.L.map(a=>{const id=(/(\d{15,})/.exec(a)||[])[1];
     return `<div class="tti-ad"><span class="tti-pic"></span><b>${esc(a)}</b><button type="button" onclick="ttCopy('${esc(id||a).replace(/'/g,'&#39;')}',this)">${id?'Copy ID':'Copy'}</button></div>`}).join('')}</div>`:''}
