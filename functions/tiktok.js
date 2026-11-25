@@ -355,10 +355,27 @@ function seenOf(who, acct) {
     ads: (acct.checks || []).filter(c => String(c.by || '').toLowerCase().indexOf(W) >= 0 && String(c.problems || '').trim() && !/^ok$/i.test(String(c.problems).trim())).map(c => String(c.id || c.ad)) };
 }
 /** Once a day: a notification to each signed-up person about new issues or new ads that need a fix. */
+async function dailyMail(acct, st) {
+  if (!notify.mailReady()) return;
+  const doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, map = doc.map || {}, first = !st.mailed, mailedNew = {};
+  for (const who of Object.keys(map)) {
+    const m = map[who]; if (who.charAt(0) === '_' || !m || !m.email) continue;
+    const dg = digestOf(who, acct), keys = dg.L.map(issueKey), was = (st.mailed || {})[who] || [];
+    const fresh = keys.filter(k => was.indexOf(k) < 0);
+    mailedNew[who] = [...new Set(was.concat(keys))].slice(-300);
+    if (first || !fresh.length) continue; // the first run only notes what is open now
+    const name = String(m.name || String(m.email).split('@')[0]).split(/\s+/)[0];
+    try { await notify.sendMail({ to: m.email, subject: 'TikTok: ' + (fresh.length === 1 ? 'a new issue' : fresh.length + ' new issues') + ' on your ads', rawHtml: digestMailHtml(name, dg.L.slice(0, 3), dg.L.length, dg.toFix, 'https://sekna-app.web.app/tiktok/me') }); }
+    catch (e) { console.warn('TikTok mail: ' + ((e && e.message) || e)); delete mailedNew[who]; }
+  }
+  await fsUpdate(TT_ME, d => { d = d || {}; d.mailed = Object.assign({}, d.mailed || {}, mailedNew); return d; });
+}
 async function dailyPush() {
   const st = (await fsGet(TT_ME).catch(() => null)) || {}, P = st.push || {};
+  acctHeld = null; const acct = await ttAcct();
+  await dailyMail(acct, st).catch(e => console.warn('TikTok mail: ' + ((e && e.message) || e)));
   if (!Object.keys(P).length) return;
-  acctHeld = null; const acct = await ttAcct(), dead = [], seenNew = {};
+  const dead = [], seenNew = {};
   for (const who of Object.keys(P)) {
     const now = seenOf(who, acct), was = (st.seen || {})[who] || { iss: [], ads: [] };
     const ni = now.iss.filter(k => was.iss.indexOf(k) < 0).length, na = now.ads.filter(k => was.ads.indexOf(k) < 0).length;
@@ -701,6 +718,33 @@ function issuePage(x, msg, map, key) {
 /** A short id for an issue (the same on the page): its date, type and ads. */
 function issueKey(x) { const t = String(x.found || '') + '|' + String(x.type || '') + '|' + String(x.ads || '').slice(0, 60); let h = 5381; for (let i = 0; i < t.length; i++) h = ((h * 33) ^ t.charCodeAt(i)) >>> 0; return h.toString(36); }
 /** The issue email (design C, "Personal note"); the button opens the issue on the TikTok page. */
+/** v713 the TikTok email: the banner with the greeting, the person's newest 3 open issues, and one button. */
+function digestMailHtml(name, list, open, toFix, link) {
+  const E = notify.esc, F = "font-family:Inter,'Segoe UI',Helvetica,Arial,sans-serif", B = 'https://sekna-app.web.app/icons/email/';
+  const mon = k => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(k || '')); return m ? (+m[3]) + ' ' + MON[+m[2] - 1] : ''; };
+  const rows = list.map((x, i) => `<tr><td style="padding:11px 0;${i ? 'border-top:1px solid #EEF1F6;' : ''}" valign="top" width="16"><div style="width:8px;height:8px;border-radius:50%;background:#C63A4A;margin-top:6px"></div></td>
+<td style="padding:11px 8px;${i ? 'border-top:1px solid #EEF1F6;' : ''}"><p style="margin:0;${F};font-size:14px;font-weight:800;color:#141B33">${E(x.type || 'Issue')}</p><p style="margin:3px 0 0;${F};font-size:12px;font-weight:600;color:#6B7385;line-height:1.45">${E(String(x.what || '').slice(0, 90))}${String(x.what || '').length > 90 ? '…' : ''}</p></td>
+<td style="padding:11px 0;${i ? 'border-top:1px solid #EEF1F6;' : ''}${F};font-size:11px;font-weight:700;color:#8A93A8;white-space:nowrap" valign="top" align="right">${E(mon(x.found))}</td></tr>`).join('');
+  const more = open > list.length ? `<p style="margin:4px 0 0;${F};font-size:12px;font-weight:700;color:#8A93A8">+${open - list.length} more on your page</p>` : '';
+  return `<!doctype html><html><body style="margin:0;background:#F4F6FB;padding:20px 10px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px">
+<tr><td background="${B}tt-banner.jpg" bgcolor="#0F1F52" valign="top" style="background:#0F1F52 url(${B}tt-banner.jpg) right center / cover no-repeat;border-radius:18px;height:150px;padding:18px 20px">
+<img src="${B}hemera-logo.png" alt="HEMERA" height="18" style="display:block;height:18px;border:0">
+<div style="height:46px;line-height:46px">&nbsp;</div>
+<p style="margin:0;${F};font-size:21px;font-weight:900;color:#ffffff">Hi ${E(name)}</p>
+<p style="margin:3px 0 0;${F};font-size:12.5px;font-weight:700;color:#C9D3F5">${open} open issue${open === 1 ? '' : 's'}${toFix ? ' · ' + toFix + ' ad' + (toFix === 1 ? '' : 's') + ' to fix' : ''}</p></td></tr>
+<tr><td style="height:12px;line-height:12px">&nbsp;</td></tr>
+<tr><td style="background:#ffffff;border-radius:18px;padding:18px 18px 20px">
+<p style="margin:0 0 4px;${F};font-size:10px;font-weight:900;letter-spacing:1.4px;color:#B0812E">${list.length < open ? 'YOUR NEWEST OPEN ISSUES' : 'YOUR OPEN ISSUES'}</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table>${more}
+<table role="presentation" cellpadding="0" cellspacing="0" style="margin:16px auto 0"><tr><td style="background:#203C8E;border-radius:12px"><a href="${E(link)}" style="display:inline-block;padding:12px 26px;${F};font-size:14px;font-weight:800;color:#ffffff;text-decoration:none">Open my issues</a></td></tr></table></td></tr>
+<tr><td style="padding:14px 0 0;${F};font-size:11px;color:#8A93A8;text-align:center">You get this because a new issue was found on ads you made.</td></tr></table></td></tr></table></body></html>`;
+}
+/** One person's open issues (newest first) and how many of their live ads need a fix. */
+function digestOf(who, acct) {
+  const W = String(who || '').toLowerCase(), L = (acct.issues || []).filter(x => !/^yes/i.test(x.fixed) && String(x.by || '').toLowerCase().indexOf(W) >= 0).sort((a, b) => String(b.found || '').localeCompare(String(a.found || '')));
+  const toFix = (acct.checks || []).filter(c => String(c.by || '').toLowerCase().indexOf(W) >= 0 && String(c.problems || '').trim() && !/^ok$/i.test(String(c.problems).trim())).length;
+  return { L, toFix };
+}
 function issueMailHtml(x, name, link) {
   const E = notify.esc, F = "font-family:Inter,'Segoe UI',Helvetica,Arial,sans-serif", url = link || ('https://sekna-app.web.app/tiktok/?is=' + issueKey(x));
   const kind = /landing|link|https?/i.test(x.type) ? 'LANDING PAGE' : /utm|pixel|track/i.test(x.type) ? 'TRACKING' : /name|duplicate|videos in one/i.test(x.type) ? 'NAMING' : /country|text|content|caption/i.test(x.type) ? 'CONTENT' : 'ISSUE';
@@ -855,7 +899,8 @@ const fn = onRequest({
       const doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, m = (doc.map || {})[who] || {}, name = m.name || who.split('@')[0];
       const tok = require('crypto').randomBytes(18).toString('base64url');
       await fsUpdate(TT_LINKS, d => { d = d || {}; const now = Date.now(); Object.keys(d).forEach(k => { if (!d[k] || d[k].exp < now) delete d[k]; }); d[tok] = { key: issueKey(issue), who, exp: now + 14 * 864e5, test: true }; return d; });
-      await notify.sendMail({ to: me.email, subject: '[Test] TikTok issue to fix: ' + String(issue.type || 'Issue').slice(0, 80), rawHtml: issueMailHtml(issue, name, 'https://sekna-app.web.app/tiktok/me') });
+      const dg = digestOf(who, acct), L3 = (dg.L.length ? dg.L : [issue]).slice(0, 3);
+      await notify.sendMail({ to: me.email, subject: '[Test] TikTok: ' + (dg.L.length || 1) + ' open issue' + ((dg.L.length || 1) === 1 ? '' : 's') + ' on your ads', rawHtml: digestMailHtml(name, L3, dg.L.length || 1, dg.toFix, 'https://sekna-app.web.app/tiktok/me') });
       res.json({ ok: true, result: { to: me.email, issue: issue.type } }); return;
     }
     if (route === '/issueMail') {
@@ -869,7 +914,9 @@ const fn = onRequest({
       const name = m.name || String(m.email).split('@')[0];
       const tok = require('crypto').randomBytes(18).toString('base64url');
       await fsUpdate(TT_LINKS, d => { d = d || {}; const now = Date.now(); Object.keys(d).forEach(k => { if (!d[k] || d[k].exp < now) delete d[k]; }); d[tok] = { key, who, exp: now + 14 * 864e5 }; return d; });
-      await notify.sendMail({ to: m.email, replyTo: me && me.email ? me.email : undefined, subject: 'TikTok issue to fix: ' + String(issue.type || 'Issue').slice(0, 80), rawHtml: issueMailHtml(issue, name, 'https://sekna-app.web.app/tiktok/me') });
+      const dg = digestOf(who, acct), L3 = (dg.L.length ? dg.L : [issue]).slice(0, 3);
+      await notify.sendMail({ to: m.email, replyTo: me && me.email ? me.email : undefined, subject: 'TikTok: ' + (dg.L.length || 1) + ' open issue' + ((dg.L.length || 1) === 1 ? '' : 's') + ' on your ads', rawHtml: digestMailHtml(name, L3, dg.L.length || 1, dg.toFix, 'https://sekna-app.web.app/tiktok/me') });
+      await fsUpdate(TT_ME, d => { d = d || {}; d.mailed = d.mailed || {}; d.mailed[who] = [...new Set((d.mailed[who] || []).concat(dg.L.map(issueKey)))]; return d; });
       const at = Date.now();
       await fsUpdate(TT_PEOPLE, d => { d = d || {}; d.mails = d.mails || {}; const l = d.mails[key] = (d.mails[key] || []).filter(x => x.who !== who); l.push({ who, at }); return d; });
       res.json({ ok: true, result: { at } }); return;
@@ -1043,7 +1090,7 @@ function lyOf(k, x, hist) {
   };
 }
 
-const daily = require('firebase-functions/v2/scheduler').onSchedule({ schedule: '15 9 * * *', timeZone: 'America/New_York', region: 'europe-west2',
+const daily = require('firebase-functions/v2/scheduler').onSchedule({ schedule: '15 9 * * *', timeZone: 'America/New_York', region: 'europe-west2', ...(notify.MAIL_ON_DEPLOY ? { secrets: [notify.GMAIL_PASSWORD] } : {}),
   serviceAccount: 'sekna-server@human-appeal-media-plan.iam.gserviceaccount.com', memory: '256MiB', timeoutSeconds: 120 }, () => dailyPush());
 
 module.exports = { daily, dailyPush, buildTikTokData, buildTikTokMonths, buildTikTokSnap, buildTikTokAcct, buildTikTokFeed, TT_CH, TT_SHEET_ID, fn };
