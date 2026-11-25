@@ -288,15 +288,18 @@ async function meSay(b) {
   const first = String((map[who] && map[who].name) || '').trim().split(/\s+/)[0] || 'there', bad = c => String(c.problems || '').trim() && !/^ok$/i.test(String(c.problems).trim());
   const L = (acct.issues || []).filter(x => String(x.by || '').toLowerCase().indexOf(who) >= 0).map(x => sayIssue(first, x)).concat((acct.checks || []).filter(c => bad(c) && String(c.by || '').toLowerCase().indexOf(who) >= 0).map(c => sayCheck(first, c)));
   const en = L.find(t => sayKey(t) === k); if (!en) return { ok: false, error: 'This message is not here any more.' };
+  const ak = require('./ak'), admin = require('./access').ACCESS.ADMIN_EMAILS[1], mine = String((map[who] && map[who].email) || '');
+  // no Egyptian copy yet: Alexandra writes it now (the person's own Alexandra account, or the owner's until they join the app) and it is kept
+  if (!AR[k]) { let eg = ''; if (mine) eg = await ak.ttEgy(en, mine, first).catch(() => ''); if (!eg) eg = await ak.ttEgy(en, admin, 'TikTok page').catch(() => '');
+    if (/[؀-ۿ]/.test(eg)) { AR[k] = eg; await fsUpdate('server/tt-ar', d => { d = d || {}; d.map = d.map || {}; d.map[k] = eg; return d; }).catch(() => null); } }
   const text = AR[k] || en;
-  if (sayCache.has(text)) return sayCache.get(text);
-  const ak = require('./ak'), admin = require('./access').ACCESS ? require('./access').ACCESS.ADMIN_EMAILS[1] : 'ibrahim@sekna.co.uk';
+  if (sayCache.has(text)) return Object.assign({ text, ar: !!AR[k] }, sayCache.get(text));
   let r = await ak.tts({ text }, { email: String((map[who] && map[who].email) || admin), name: first }).catch(e => ({ ok: false, error: String(e.message || e) }));
   if (!r || !r.ok) r = await ak.tts({ text }, { email: admin, name: 'TikTok page' }).catch(e => ({ ok: false, error: String(e.message || e) }));
   if (!r || !r.ok) return { ok: false, error: 'Alexandra cannot talk right now.' };
   const out = { ok: true, mime: r.mime, data: r.data };
   if (sayCache.size > 80) sayCache.delete(sayCache.keys().next().value);
-  sayCache.set(text, out); return out;
+  sayCache.set(text, out); return Object.assign({ text, ar: !!AR[k] }, out);
 }
 async function meRoute(op, b) {
   if (op === 'say') return meSay(b);
@@ -581,7 +584,7 @@ function say(b){var was=SAY===b;sayStop();if(AU){try{AU.pause()}catch(e){}AU=nul
   setTimeout(function(){if(SAY!==b)return;a.play().then(show).catch(function(){sayStop();toast('Tap again to hear her.')})},Math.max(0,700-(Date.now()-t0)))}
  if(VC[k]){play(VC[k]);return}
  var s0='';try{s0=localStorage.getItem('tt_me')||''}catch(e){}
- fetch('/tiktok/me/say',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({sess:s0,vt:VT,k:k})}).then(function(r){return r.json()}).then(function(j){if(!j||!j.ok)throw new Error((j&&j.error)||'Alexandra cannot talk right now.');VC[k]=URL.createObjectURL(wav(j.data,j.mime||''));play(VC[k])})
+ fetch('/tiktok/me/say',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({sess:s0,vt:VT,k:k})}).then(function(r){return r.json()}).then(function(j){if(!j||!j.ok)throw new Error((j&&j.error)||'Alexandra cannot talk right now.');if(j.text){t=j.text;ar=!!j.ar;b.setAttribute('data-say',t);if(ar)b.setAttribute('data-lang','ar')}VC[k]=URL.createObjectURL(wav(j.data,j.mime||''));play(VC[k])})
   .catch(function(e){if(SAY===b){sayStop();toast(e.message||'Try again.')}})}
 try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=function(){}}catch(e){}
 function toast(t){var d=document.createElement('div');d.className='tst';d.textContent=t;document.body.appendChild(d);setTimeout(function(){d.remove()},3200)}

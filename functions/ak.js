@@ -505,4 +505,15 @@ ${facts}`;
   return { ok: true, think: String(o.think || '').slice(0, 400), seen: (Array.isArray(o.seen) ? o.seen : []).slice(0, 6).map(x => String(x).slice(0, 30)),
     options: o.options.slice(0, 3).map(x => ({ tag: String(x.tag || '').toUpperCase().slice(0, 24), text: String(x.text || '').trim().slice(0, max + 20) })).filter(x => x.text) };
 }
-module.exports = { xop, note, search, memGet, memText, ask, link, state, usageMail, voice, live, tts, notifSet, notifGet };
+// v703 the TikTok page: one message for an ad maker, said by Alexandra in Egyptian Arabic (its own prompt; the Google prompts are untouched)
+async function ttEgy(text, email, name) {
+  const pp = await prep(String(email || '').toLowerCase(), String(name || '').slice(0, 60)); if (pp.blocked) return '';
+  const keys = (pp.keys || []).filter(Boolean), url = String(pp.url || '').replace(/:streamGenerateContent.*$/, ':generateContent').replace(/\?alt=sse$/, '');
+  const payload = { contents: [{ role: 'user', parts: [{ text: 'You are Alexandra, a warm, friendly girl from Alexandria who helps the TikTok ads team. Rewrite this message as what you would say out loud to your colleague, in natural spoken Egyptian Arabic (Arabic letters). Keep every fact. Write people\'s names in Arabic letters. Do not read long ad or campaign codes letter by letter: say them shortly in words. Short, kind, 2 to 4 sentences. Only the text, nothing else.\n\n' + String(text).slice(0, 1500) }] }],
+    generationConfig: { temperature: 0.4, maxOutputTokens: 600, thinkingConfig: { thinkingBudget: 0 } } };
+  let r = null; for (let ki = 0; ki < keys.length; ki++) { r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': keys[ki] }, body: JSON.stringify(payload) }); if (r.status === 429) continue; break; }
+  if (!r || !r.ok) return '';
+  const j = await r.json().catch(() => ({}));
+  return ((((j.candidates || [])[0] || {}).content || {}).parts || []).map(x => x.text || '').join('').trim().slice(0, 1500);
+}
+module.exports = { xop, note, search, memGet, memText, ask, link, state, usageMail, voice, live, tts, notifSet, notifGet, ttEgy };
