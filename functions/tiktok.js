@@ -442,7 +442,8 @@ function personPage(who, acct, map, signedIn, pushOn, feed) {
   let ah = null;
   if (feed) { const L = (feed.acts || []).filter(a => W && String(a.op || '').toLowerCase().indexOf(W) >= 0), U = {}, hasC = new Set(L.filter(a => /^creative$/i.test(a.name)).map(a => a.id));
     L.forEach(a => { if (/^destination page$/i.test(a.name)) { const m = /https?:\/\/\S+/.exec(a.det || ''); if (m && !U[a.id]) U[a.id] = m[0]; } });
-    ah = L.filter(a => !(/^destination page$/i.test(a.name) && hasC.has(a.id))).slice(0, 1500).map(a => [a.d, a.tm, a.name, a.act, a.obj, a.id, a.det, a.src, /^creative$/i.test(a.name) ? (U[a.id] || '') : '']); }
+    const made = new Set(L.filter(a => /^ad$/i.test(a.name) && /^create/i.test(a.act)).map(a => a.id)); // a new ad: its creative card says Create, the bare 'Ad' card goes
+    ah = L.filter(a => !(/^destination page$/i.test(a.name) && hasC.has(a.id)) && !(/^ad$/i.test(a.name) && /^create/i.test(a.act) && hasC.has(a.id))).slice(0, 1500).map(a => [a.d, a.tm, a.name, /^creative$/i.test(a.name) && made.has(a.id) ? 'Create' : a.act, a.obj, a.id, a.det, a.src, /^creative$/i.test(a.name) ? (U[a.id] || '') : '']); }
   const ac = acct.account || {}, acOk = /^active$/i.test(ac.status) && !(acct.rejected || []).length;
   const apCard = `<div class="card apc"><div class="aph ${acOk ? 'g' : 'r'}"><span></span><b>${acOk ? 'Account is healthy' : !/^active$/i.test(ac.status) ? 'Account is ' + E(ac.status || 'not active') : 'Some ads need a look'}</b></div><div class="apr"><img class="apl" src="https://sekna-app.web.app/icons/ha-brand.png" alt=""><div><b>${E(ac.name || 'Human Appeal US')}</b><small>Ad account</small></div><img class="apt" src="https://sekna-app.web.app/icons/tiktok-ads.png" alt="TikTok Ads"></div>
     <div class="kv"><span>Status</span><b class="${/^active$/i.test(ac.status) ? 'g' : 'r'}">${E(ac.status || '—')}</b></div>

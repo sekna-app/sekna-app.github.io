@@ -24202,7 +24202,8 @@ function ttfField(n){n=String(n||'');return /status|on\/off/i.test(n)?'Status':/
 
 function ttfMerge(L){const U={};L.forEach(a=>{if(/^destination page$/i.test(a.name)){const m=/https?:\/\/\S+/.exec(a.det||'');if(m&&!U[a.id])U[a.id]=m[0]}});
  const hasC=new Set(L.filter(a=>/^creative$/i.test(a.name)).map(a=>a.id));
- return L.filter(a=>!(/^destination page$/i.test(a.name)&&hasC.has(a.id))).map(a=>/^creative$/i.test(a.name)&&U[a.id]?Object.assign({},a,{url:U[a.id]}):a)}
+ const made=new Set(L.filter(a=>/^ad$/i.test(a.name)&&/^create/i.test(a.act)).map(a=>a.id));
+ return L.filter(a=>!(/^destination page$/i.test(a.name)&&hasC.has(a.id))&&!(/^ad$/i.test(a.name)&&/^create/i.test(a.act)&&hasC.has(a.id))).map(a=>{if(!/^creative$/i.test(a.name))return a;const o=Object.assign({},a);if(U[a.id])o.url=U[a.id];if(made.has(a.id))o.act='Create';return o})}
 function ttfUrlLabel(u){try{const x=new URL(u);return (x.pathname.replace(/\/$/,'').split('/').pop()||x.hostname).replace(/[-_]+/g,' ')}catch(e){return 'Landing page'}}
 
 function ttfTone(v,d){v=String(v||'').toLowerCase();return /^(enabled?|active|on|approved|delivering|running|live)\b/.test(v)?'g':/^(paused|disabled|off|rejected|deleted|not delivering|suspended|inactive|in review|under review)\b/.test(v)?'r':d}
