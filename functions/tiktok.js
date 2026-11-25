@@ -528,7 +528,24 @@ html.dk body{background:#0B1430;color:#E7EBF3}html.dk .card,html.dk .c,html.dk .
 .gl{height:3px;margin:26px auto 14px;max-width:220px;background:linear-gradient(90deg,transparent,#E2B874,transparent);border-radius:99px}.ft{text-align:center;font-size:11.5px;color:#8A93A8;font-weight:700}.ft a{color:#B0812E;text-decoration:none;font-weight:800}
 html{background:#132457}.w{flex:1 0 auto;width:100%}.pg .w{padding:0}.r.mk{align-items:center}.r.mk>div{min-width:0}.r.mk>div span{display:block;margin-top:2px}.ba .r,.ba s.r{color:#C63A4A}.ba s.g{color:#13804F}.ba b.r{color:#C63A4A;background:#FBE4E7}
 .fb{margin-top:30px;position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;color:#fff;padding:9px 16px calc(9px + env(safe-area-inset-bottom));background:linear-gradient(120deg,#132457,#203C8E 60%,#3B5BC8)}.fb:before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#E2B874 20%,#F2D38F 50%,#E2B874 80%,transparent)}
-.fb p{font-size:11.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.fb p span{color:#B7C3EA;font-weight:700}.fb a{flex:none;font-size:10.5px;color:#E2B874;font-weight:800;text-decoration:none;border:1px solid rgba(226,184,116,.6);border-radius:99px;padding:4px 10px;white-space:nowrap}</style></head>
+.fb p{font-size:11.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.fb p span{color:#B7C3EA;font-weight:700}.fb a{flex:none;font-size:10.5px;color:#E2B874;font-weight:800;text-decoration:none;border:1px solid rgba(226,184,116,.6);border-radius:99px;padding:4px 10px;white-space:nowrap}
+/* v711 slimmer: everything a size smaller, the menu narrower */
+.hd{padding:8px 14px}.lo img{height:18px}.lo span{font-size:8px}.bl{width:34px;height:34px;border-radius:11px}
+.w{padding:12px 14px}.t{font-size:26px!important;margin-top:12px}.sub{font-size:10px;margin-bottom:10px}.acc{font-size:12px;padding:4px 12px 4px 6px}.acc img{width:20px;height:20px}
+.card{border-radius:16px}.nb{padding:14px;gap:12px}.av{width:46px;height:46px;font-size:20px}.nb b{font-size:17px}.nb small{font-size:11px}.big em{font-size:28px}.big span{font-size:10px}
+.ir{padding:12px 16px}.it b{font-size:14.5px}.ir p{font-size:12.5px}.im{font-size:11.5px;margin-top:8px}.dt{font-size:11px}
+.cg summary{padding:12px 16px}.cg summary b{font-size:13px}.ca{padding:10px 16px 10px 13px}.ca b{font-size:12.5px}
+.hh{padding:11px 14px 12px;border-radius:16px}.hh small{font-size:9.5px}.hh h2{font-size:18px}.c{padding:12px 14px;border-radius:14px}.w2,.c .w{font-size:13.5px}.r{font-size:12.5px}.p b{font-size:13px}.p i{width:30px;height:30px}
+.hr{padding:15px;border-radius:18px}.hr>b{font-size:34px}.hr .hs{font-size:12.5px}.k3 div{padding:8px 10px;font-size:10.5px}.k3 em{font-size:17px}
+.tc{padding:10px 12px}.tct b{font-size:13px}.rr>b{font-size:12px}
+.drw{max-width:290px;padding:12px 12px 14px}.dlb{font-size:9.5px;margin-bottom:6px}.dac1{padding:9px 10px}.dlg{width:32px;height:32px}.dlg>img{width:22px;height:22px}.dat b{font-size:13px}.dat small{font-size:10.5px}
+.dn{padding:9px 12px;font-size:13px;gap:10px}.dni{width:26px;height:26px;border-radius:8px}.dx svg,.dni svg{width:15px;height:15px}.dme{padding:8px 10px}.dav{width:32px;height:32px;font-size:14px}.dme b{font-size:13px}.dme small{font-size:10.5px}.dso{width:32px;height:32px}
+@media (min-width:1000px){body{padding-left:240px}.drw{width:240px!important;max-width:240px!important}.w{max-width:600px}}
+/* Team Board effect on every filter: the blue pill with its glow glides under the picked one */
+.sgp{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%)!important;box-shadow:0 4px 12px rgba(61,107,255,.38)!important}
+.calp{position:relative;display:flex;gap:1px;flex-wrap:nowrap;background:#E9EDF5;border-radius:10px;padding:3px;margin:6px 18px}.calp button{position:relative;z-index:1;flex:1;border:0!important;background:transparent!important;border-radius:8px;padding:6px 6px;font-size:11.5px;font-weight:700;color:#4b5263;transition:color .25s}.calp button.on{color:#fff!important}
+.calg button.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);box-shadow:0 4px 12px rgba(61,107,255,.38)}.calg button{transition:transform .15s}.calg button:active{transform:scale(.94)}
+</style></head>
 <body><div class="hd"><button type="button" class="bl" onclick="dr(1)" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><div class="lo"><img src="https://sekna-app.web.app/get/logo-white.webp" alt=""><span>HEMERA</span></div>${signedIn ? `<span id="bell" class="${pushOn ? 'on' : ''}" hidden></span>` : ''}</div>
 <div class="w"><div id="home" class="fu"><span class="acc"><img src="https://sekna-app.web.app/icons/ha-brand.png" alt="">Human Appeal US<img class="tta" src="https://sekna-app.web.app/icons/tiktok-ads.png" alt="TikTok Ads"></span>
 <div class="t">Issues <span>Log</span></div><div class="sub">${iss.length} open · active ads only · tap one</div>
@@ -601,15 +618,15 @@ function calOpen(){CAL.sel=AF.r==='day'?AF.day:'';CAL.pre=AF.r!=='day'&&AF.r!=='
 function calClose(){var o=document.getElementById('cal');if(o){o.classList.remove('on');setTimeout(function(){o.remove()},220)}}
 function calNav(n){var a=CAL.m.split('-'),d=new Date(Date.UTC(+a[0],a[1]-1+n,1));CAL.m=d.toISOString().slice(0,7);calDraw()}
 function calPick(d){CAL.sel=d;CAL.pre='';calDraw()}function calPre(r){CAL.pre=r;CAL.sel='';calDraw()}
-function calDraw(){var o=document.getElementById('cal');if(!o)return;var a=CAL.m.split('-'),y=+a[0],mo=+a[1],first=new Date(Date.UTC(y,mo-1,1)),days=new Date(Date.UTC(y,mo,0)).getUTCDate(),lead=(first.getUTCDay()+6)%7,t=tdy(),min=(AH&&AH.length?AH[AH.length-1][0]:t),cells='',P=function(n){return (n<10?'0':'')+n};
+function calDraw(){var o=document.getElementById('cal');if(!o)return;segKeep();var a=CAL.m.split('-'),y=+a[0],mo=+a[1],first=new Date(Date.UTC(y,mo-1,1)),days=new Date(Date.UTC(y,mo,0)).getUTCDate(),lead=(first.getUTCDay()+6)%7,t=tdy(),min=(AH&&AH.length?AH[AH.length-1][0]:t),cells='',P=function(n){return (n<10?'0':'')+n};
  for(var i=0;i<lead;i++)cells+='<span></span>';
  for(var d=1;d<=days;d++){var k=y+'-'+P(mo)+'-'+P(d),off=k>t||k<min;cells+='<button type="button" class="'+(k===CAL.sel?'on':'')+(k===t?' td':'')+'"'+(off?' disabled':' onclick="calPick(\\''+k+'\\')"')+'>'+d+'</button>'}
  var lab=CAL.sel?day(CAL.sel):CAL.pre==='y'?'Yesterday':CAL.pre==='7'?'Last 7 days':CAL.pre==='30'?'Last 30 days':'Pick a day',pb=function(r,l){return '<button type="button" class="'+(CAL.pre===r?'on':'')+'" onclick="calPre(\\''+r+'\\')">'+l+'</button>'};
  o.innerHTML='<div class="calc"><div class="calh"><small>PICK A DAY</small><button type="button" class="calx" onclick="calClose()" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>'
-  +'<div class="calp">'+pb('y','Yesterday')+pb('7','Last 7 days')+pb('30','Last 30 days')+'</div>'
+  +'<div class="calp seg"><i class="sgp"></i>'+pb('y','Yesterday')+pb('7','Last 7 days')+pb('30','Last 30 days')+'</div>'
   +'<div class="calm"><button type="button" onclick="calNav(-1)"'+(CAL.m<=min.slice(0,7)?' disabled':'')+'>‹</button><b>'+['January','February','March','April','May','June','July','August','September','October','November','December'][mo-1]+' '+y+'</b><button type="button" onclick="calNav(1)"'+(CAL.m>=t.slice(0,7)?' disabled':'')+'>›</button></div>'
   +'<div class="calw"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div><div class="calg">'+cells+'</div>'
-  +'<div class="calf"><div><b>'+lab+'</b><small>'+(CAL.sel?'one day':CAL.pre?'until today':'tap a day')+'</small></div><button type="button" class="calcl" onclick="calPre(\\'\\');CAL.sel=\\'\\';calDraw()">Clear</button><button type="button" class="calsh" onclick="calShow()">Show</button></div></div>'}
+  +'<div class="calf"><div><b>'+lab+'</b><small>'+(CAL.sel?'one day':CAL.pre?'until today':'tap a day')+'</small></div><button type="button" class="calcl" onclick="calPre(\\'\\');CAL.sel=\\'\\';calDraw()">Clear</button><button type="button" class="calsh" onclick="calShow()">Show</button></div></div>';segPos()}
 function calShow(){if(CAL.sel){AF.r='day';AF.day=CAL.sel}else if(CAL.pre){AF.r=CAL.pre}else AF.r='all';AF.n=100;calClose();ahDraw()}
 document.querySelectorAll('[data-ny]').forEach(function(e){var v=e.getAttribute('data-ny'),l=loc(v.slice(0,10),v.slice(11,16));if(l.tm&&l.d)e.textContent=day(l.d)+' · '+l.tm});
 if(location.hash==='#ah'||location.hash==='#ap'){var h0=location.hash.slice(1);document.getElementById('fb').hidden=h0==='st';document.getElementById('home').hidden=true;document.getElementById(h0).hidden=false;if(h0==='ah')ahDraw()}
