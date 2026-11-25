@@ -480,6 +480,9 @@ details summary{list-style:none;cursor:pointer}details summary::-webkit-details-
 .vb.on{background:conic-gradient(#E2B874 calc(var(--p,0)*1%),rgba(255,255,255,.28) 0);box-shadow:0 0 0 3px rgba(226,184,116,.25),0 6px 16px rgba(0,0,0,.25)}.vb.on:before{inset:3px;background:url(https://europe-west2-human-appeal-media-plan.cloudfunctions.net/tiktok/akpic) center/cover,#203C8E}.vb.on .vp,.vb.on .vai{display:none}
 .vcap{margin:-2px 0 10px;background:#fff;border-radius:12px;padding:9px 12px;font-size:12.5px;font-weight:600;color:#4b5263;line-height:1.45;box-shadow:0 6px 16px rgba(20,40,110,.07)}.vcap b{color:#141B33}html.dk .vcap{background:#16204A;color:#C9D3F5}
 .vrow{display:flex;align-items:center;gap:10px;margin:10px 0 6px}.vrow .vb{width:38px;height:38px}.vrow span{font-size:12px;font-weight:800;color:#203C8E}.dd .vcap{margin:4px 0 6px;box-shadow:none}
+@media (min-width:1000px){.ov{display:none!important}.hd .bl{display:none}.hd{padding:12px 24px}.drw .dh{display:none}
+ body{padding-left:280px}.drw{transform:none!important;width:280px!important;max-width:280px!important;height:100vh!important;box-shadow:none}
+ .w{max-width:640px;margin:0 auto;padding:22px 16px}}
 .drw{position:fixed;left:0;top:0;height:100vh;height:100lvh;z-index:20;width:84%;max-width:340px;padding:16px 14px 18px;overflow-y:auto;display:flex;flex-direction:column;color:#fff;background:linear-gradient(170deg,#132457,#203C8E 60%,#2C4FB8);transform:translateX(-105%);transition:transform .28s cubic-bezier(.2,.75,.25,1)}.drw.on{transform:none}.drw>*{flex-shrink:0}
 .ov{position:fixed;left:0;right:0;top:0;height:100vh;height:100lvh;z-index:19;background:rgba(10,20,50,.45);opacity:0;pointer-events:none;transition:opacity .25s}.ov.on{opacity:1;pointer-events:auto}
 .dh{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.dh img{height:26px}.dx{width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;display:grid;place-items:center;cursor:pointer}.dx svg,.dni svg,.chv,.ck,.lk{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -550,7 +553,7 @@ ${pages}
  <div class="dme"><span class="dav">${E(String(nm).charAt(0).toUpperCase())}</span><div><b>${E(nm)}</b><small>${E(W)}</small></div>${signedIn ? `<button type="button" class="dso" onclick="out()" aria-label="Sign out" title="Sign out"><svg viewBox="0 0 24 24"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"/></svg></button>` : ''}</div>
 </aside>
 <script>var AH=${JSON.stringify(ah).replace(/</g, '\\u003c')};
-function dr(o){document.getElementById('drw').classList.toggle('on',!!o);document.getElementById('ov').classList.toggle('on',!!o)}
+function dr(o){if(innerWidth>=1000)o=0;document.getElementById('drw').classList.toggle('on',!!o);document.getElementById('ov').classList.toggle('on',!!o)}
 function dk(v){var on=v==null?!document.documentElement.classList.contains('dk'):v;document.documentElement.classList.toggle('dk',on);var t=document.getElementById('dkt');if(t)t.classList.toggle('on',on);if(v==null)try{localStorage.setItem('tt_me_dk',on?'1':'')}catch(e){}}
 try{dk(localStorage.getItem('tt_me_dk')==='1')}catch(e){}
 // v707 the issues slide left and right (the Slide animation)
