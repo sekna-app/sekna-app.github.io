@@ -282,6 +282,13 @@ h2{font-size:36px;letter-spacing:-.03em;line-height:1.08;margin:8px 0 10px;font-
 .mpw-t p{margin:0;font-size:14.5px;line-height:1.55;color:var(--sub);font-weight:600}
 .mpw-t .gr{color:var(--green);font-weight:800}
 .mpw-t .bd{display:flex;gap:8px;margin-left:auto;flex:none}
+.mpw-r{display:flex;align-items:center;gap:18px;margin-top:14px;padding:18px 20px;border-radius:20px;background:linear-gradient(135deg,rgba(226,184,116,.18),rgba(226,184,116,.05));border:1px solid rgba(226,184,116,.45)}
+.mpw-rg{--p:0;flex:0 0 96px;height:96px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#E2B874 calc(var(--p)*1%),rgba(255,255,255,.12) 0);position:relative}
+.mpw-rg:before{content:"";position:absolute;inset:9px;border-radius:50%;background:#132457}
+.mpw-rg b{position:relative;font-family:'DM Serif Display',Georgia,serif;font-weight:400;font-size:28px;color:#F2D38F}
+.mpw-r small{display:block;font-size:10.5px;font-weight:900;letter-spacing:.14em;color:#E2B874}
+.mpw-r strong{display:block;font-size:18px;font-weight:900;color:#fff;margin-top:4px}
+.mpw-r p{margin:4px 0 0;font-size:13px;line-height:1.5;color:var(--sub);font-weight:600}
 .mpw-t .bd span{text-align:center;border-radius:14px;padding:8px 12px;background:rgba(255,255,255,.06);border:1px solid var(--line)}
 .mpw-t .bd b{display:block;font-size:20px;font-weight:900;color:#fff}.mpw-t .bd small{font-size:10.5px;color:var(--mute);font-weight:700}
 @media (max-width:1000px){
@@ -860,6 +867,7 @@ html.lite .nav img{opacity:1!important}
       <div class="mpw-t"><span class="ic"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
         <p>We tested <span class="gr">5 different planning scenarios</span>, along with multiple model settings, using a <span class="gr">blind backtest</span>. This setup delivered the <span class="gr">strongest overall accuracy</span> for forecasting Spend, Revenue, and Conversions, so it was selected as the <span class="gr">final media planning model</span>.</p>
         <div class="bd"><span><b>5</b><small>scenarios</small></span><span><b>Blind</b><small>backtest</small></span></div></div>
+      <div class="mpw-r"><div class="mpw-rg" style="--p:98"><b>98%</b></div><div><small>REAL RESULT · OCTOBER 2026</small><strong>The plan hit 98%</strong><p>What we achieved against the media plan in October, Human Appeal US.</p></div></div>
     </div>
   </section>
 
