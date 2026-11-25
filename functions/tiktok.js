@@ -555,7 +555,7 @@ html{background:#132457}.w{flex:1 0 auto;width:100%}.pg .w{padding:0}.r.mk{align
 html.dk .accm{background:#16204A;color:#E7EBF3}
 
 .dsig{display:block;text-align:center;margin:14px 0 12px;text-decoration:none;flex-shrink:0}.dsig img{height:12px;opacity:.5;display:block;margin:0 auto}.dsig span{display:block;margin-top:6px;font-size:10.5px;font-weight:800;color:#E2B874}
-.rail,.dkh,.lon{display:none}
+.rail,.dkh,.lo img.lon{display:none}.acc{font-weight:900!important}.acc img.tta{height:13px!important;filter:contrast(1.4)}
 @media (min-width:1000px){body{padding-left:290px!important}
  .rail{display:flex;flex-direction:column;align-items:center;gap:8px;position:fixed;left:0;top:0;bottom:0;width:74px;padding:16px 0;z-index:21;background:linear-gradient(180deg,#132457,#203C8E)}
  .rav{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#132457;color:#fff;font-weight:900;box-shadow:0 0 0 2px #E2B874;margin-bottom:14px}
@@ -565,7 +565,7 @@ html.dk .accm{background:#16204A;color:#E7EBF3}
  .dkh{display:block;margin:0 8px 16px}.dkh b{display:block;font-family:"DM Serif Display",Georgia,serif;font-size:21px;font-weight:400;color:#203C8E}.dkh small{font-size:10.5px;font-weight:700;color:#8A93A8}
  .drw .dg{background:none!important}.drw .dn{color:#2B3350!important;font-size:12.5px!important;padding:9px 10px!important;border:0!important;border-radius:10px}.drw .dni{background:none!important;width:22px!important;height:22px!important;color:#4b5263}.drw .dn.on{background:#fff!important;color:#203C8E!important;box-shadow:inset 3px 0 0 #203C8E,0 4px 12px rgba(20,40,110,.08)!important}.drw .dn.on .dni{color:#203C8E}
  .drw .dsig{margin-top:auto}.drw .dsig img{filter:brightness(0) saturate(100%) invert(19%) sepia(61%) saturate(2400%) hue-rotate(214deg) brightness(88%);opacity:.4}.drw .dsig span{color:#B0812E}
- .hd{background:#fff!important;border-bottom:1px solid #E6EAF2}.hd .lo img{display:none}.hd .lo img.lon{display:block}.hd .lo span{color:#B0812E}
+ .hd{background:#fff!important;border-bottom:1px solid #E6EAF2}.hd .lo img{display:none}.hd .lo img.lon{display:block!important}.hd .lo span{color:#B0812E}
  .w{max-width:760px!important}}
 
 .fb{all:unset;display:block;text-align:center;padding:22px 16px calc(26px + env(safe-area-inset-bottom))!important;margin-top:26px}.fb:before{display:none!important}
