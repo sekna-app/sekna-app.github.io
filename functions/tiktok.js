@@ -355,7 +355,7 @@ function codeMailHtml(code) {
 <p style="margin:18px 0 0;${F};font-size:12px;color:#8A93A8">It works for 10 minutes. If you did not ask for it, ignore this email.</p></td></tr></table></td></tr></table></body></html>`;
 }
 /** The sign-in screen, in HEMERA's sign-in look. */
-let gateHtml = null;
+let gateHtml = null, akPicHeld = null;
 /** The sign-in page: the app's own gate (functions/me-gate.html). */
 function meGate() {
   if (!gateHtml) gateHtml = require('fs').readFileSync(require('path').join(__dirname, 'me-gate.html'), 'utf8');
@@ -393,12 +393,11 @@ function personPage(who, acct, map, signedIn, pushOn, feed) {
     <div class="kv"><span>Checked</span><b>${E(mon(ac.checked) || '—')}</b></div></div>`;
   // v699 Alexandra reads the problem out (the phone's own voice; nothing is sent anywhere)
   const first = String((map[W] && map[W].name) || '').trim().split(/\s+/)[0] || 'there';
-  const vn = t => { const n = Math.max(3, Math.round(String(t).split(/\s+/).length / 2.6)); return `<button type="button" class="vn" data-say="${E(t)}" onclick="event.stopPropagation();say(this)" aria-label="Alexandra explains"><span class="vav"></span><span class="vpl"><svg class="vp" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg><svg class="vs" viewBox="0 0 24 24"><rect x="7" y="6" width="3.5" height="12" rx="1"/><rect x="13.5" y="6" width="3.5" height="12" rx="1"/></svg></span><span class="vw">${[5, 9, 14, 8, 12, 17, 10, 6, 13, 16, 9, 12, 7, 15, 11, 6, 10, 14, 8, 5].map((h, i) => `<i style="height:${h}px;animation-delay:${(i % 7) * 0.09}s"></i>`).join('')}</span><em>0:${String(n).padStart(2, '0')}</em></button>`; };
+  const vn = t => `<button type="button" class="vb" data-say="${E(t)}" onclick="event.stopPropagation();say(this)" aria-label="Alexandra explains"><i class="vai">AI</i><svg class="vp" viewBox="0 0 24 24"><path d="M9 6.5l9 5.5-9 5.5z"/></svg><span class="vd"><i></i><i></i><i></i></span></button>`;
   const others = by => String(by || '').split(/\s+·\s+/).length - 1;
   const list = iss.map((x, i) => `<button type="button" class="ir" onclick="go('i${i}')"><div class="it"><b>${E(x.type || 'Issue')}</b><span class="ch">›</span></div><p>${E(x.what || '')}</p><div class="im"><span class="gold">${others(x.by) > 0 ? '+' + others(x.by) + ' more made these ads' : ''}</span><span class="dt">${E(mon(x.found))}</span></div></button>`).join('');
   const pages = iss.map((x, i) => `<section class="pg" id="i${i}" hidden><button type="button" class="bk" onclick="go('')">‹&nbsp; Issues Log</button>
-    <div class="hh"><small>${kindOf(x.type)} · FOUND ${E(mon(x.found).toUpperCase())}</small><h2>${E(x.type || 'Issue')}</h2></div>
-    ${vn(`Hi ${first}. This is Alexandra. There is an issue on your TikTok ads: ${x.type || 'an issue'}. ${String(x.what || '').replace(/[_/]+/g, ' ')}. Please fix it when you can. Thank you!`)}
+    <div class="hh hv"><div><small>${kindOf(x.type)} · FOUND ${E(mon(x.found).toUpperCase())}</small><h2>${E(x.type || 'Issue')}</h2></div>${vn(`Hi ${first}. This is Alexandra. There is an issue on your TikTok ads: ${x.type || 'an issue'}. ${String(x.what || '').replace(/[_/]+/g, ' ')}. Please fix it when you can. Thank you!`)}</div><p class="vcap" hidden></p>
     <div class="c"><div class="l">What's wrong</div><p class="w">${E(x.what || '—')}</p></div>
     ${x.ads ? `<div class="c"><div class="l">Ads affected</div>${String(x.ads).split(/\n+|,\s+(?=[A-Za-z])/).filter(Boolean).map(a => `<div class="r"><b>${E(a)}</b></div>`).join('')}</div>` : ''}
     ${x.by ? `<div class="c"><div class="l">Made by</div>${String(x.by).split(/\s+·\s+/).map(person).map(p => `<div class="p"><i>${E(String(p.name).charAt(0).toUpperCase())}</i><div><b>${E(p.name)}</b><small>${E(p.sub)}</small></div></div>`).join('')}</div>` : ''}
@@ -407,7 +406,7 @@ function personPage(who, acct, map, signedIn, pushOn, feed) {
   const checks = [...G.entries()].sort((a, b) => b[1].L.length - a[1].L.length).map(([k, g]) => `<details class="cg"><summary style="--c:${g.col}"><i></i><b>${E(k)}</b><em>${g.L.length}</em><span class="ar">⌄</span></summary>
     ${g.L.map(c => { const id = 'a' + (ai++); return `<div class="ca" onclick="tg('${id}')"><b class="an"><span>${E(c.ad)}</span>${c.ids.length > 1 ? `<span class="x2">×${c.ids.length}</span>` : ''}</b>${(c.pics || []).length ? `<div class="pics">${c.pics.slice(0, 5).map(u => u === 'spark' ? '<span class="sp">Spark</span>' : `<span class="pc"><img src="${E(PIC(u))}" alt="" loading="lazy"></span>`).join('')}${c.pics.length > 5 ? `<em>+${c.pics.length - 5}</em>` : ''}</div>` : ''}
       <span class="dt">${E(String(c.campaign).replace(/^HAUS_/, '').replace(/_TikTok.*$/, ''))} · ${E(mon(c.created).replace(/ · .*/, ''))}</span>
-      <div class="dd" id="${id}" hidden>${vn(`Hi ${first}. This is Alexandra. One of your ads in ${String(c.campaign).replace(/^HAUS_/, '').replace(/_TikTok.*$/, '').replace(/_/g, ' ')} needs a fix. ${String(c.problems).split(';').map(p => p.trim()).filter(Boolean).join('. ')}. Please fix it when you can. Thank you!`)}<div class="wr">${String(c.problems).split(';').map(p => p.trim()).filter(Boolean).map(p => `<span>${E(p)}</span>`).join('')}</div>${c.by ? `<small>Created by</small><p>${E(c.by)}</p>` : ''}<small>Campaign</small><p>${E(c.campaign)}</p>${c.adgroup ? `<small>Ad group</small><p>${E(c.adgroup)}</p>` : ''}${c.ids.length ? `<small>Ad ID${c.ids.length > 1 ? 's · ' + c.ids.length + ' copies' : ''}</small>${c.ids.map(d => `<p>${E(d)} <button type="button" class="cp" onclick="event.stopPropagation();cp('${E(d)}',this)">Copy</button></p>`).join('')}` : ''}</div></div>`; }).join('<div class="sp2"><i></i></div>')}</details>`).join('');
+      <div class="dd" id="${id}" hidden><div class="vrow">${vn(`Hi ${first}. This is Alexandra. One of your ads in ${String(c.campaign).replace(/^HAUS_/, '').replace(/_TikTok.*$/, '').replace(/_/g, ' ')} needs a fix. ${String(c.problems).split(';').map(p => p.trim()).filter(Boolean).join('. ')}. Please fix it when you can. Thank you!`)}<span>Hear it from Alexandra</span></div><p class="vcap" hidden></p><div class="wr">${String(c.problems).split(';').map(p => p.trim()).filter(Boolean).map(p => `<span>${E(p)}</span>`).join('')}</div>${c.by ? `<small>Created by</small><p>${E(c.by)}</p>` : ''}<small>Campaign</small><p>${E(c.campaign)}</p>${c.adgroup ? `<small>Ad group</small><p>${E(c.adgroup)}</p>` : ''}${c.ids.length ? `<small>Ad ID${c.ids.length > 1 ? 's · ' + c.ids.length + ' copies' : ''}</small>${c.ids.map(d => `<p>${E(d)} <button type="button" class="cp" onclick="event.stopPropagation();cp('${E(d)}',this)">Copy</button></p>`).join('')}` : ''}</div></div>`; }).join('<div class="sp2"><i></i></div>')}</details>`).join('');
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex"><meta name="theme-color" content="#132457"><link rel="manifest" href="/tiktok/me-manifest.json"><link rel="apple-touch-icon" href="/icons/icon-192.png"><link rel="icon" href="/icons/icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="HEMERA"><title>${E(nm)} · TikTok · HEMERA</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>*{box-sizing:border-box;margin:0}body{background:#F1F3F8;font-family:Inter,system-ui,sans-serif;color:#141B33;padding-bottom:0;min-height:100vh;display:flex;flex-direction:column}button{font:inherit;color:inherit}
@@ -431,9 +430,15 @@ details summary{list-style:none;cursor:pointer}details summary::-webkit-details-
 .hr small{position:relative;font-size:11px;font-weight:900;letter-spacing:.12em;color:#E2B874}.hr>b{position:relative;display:block;font-size:42px;font-weight:900;line-height:1.05;margin-top:6px}.hr .hs{position:relative;font-size:14px;font-weight:700;color:#C9D3F5}
 .k3{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.k3 div{background:rgba(255,255,255,.1);border-radius:12px;padding:9px 11px;font-size:11.5px;font-weight:700;color:#C9D3F5}.k3 em{display:block;font-style:normal;font-size:20px;font-weight:900}.k3 .kg{color:#5EE0A0}.k3 .ky{color:#E2B874}.k3 .kr{color:#FF9AA8}
 .apc{padding:15px 16px}.aph{display:flex;align-items:center;gap:9px}.aph span{width:10px;height:10px;border-radius:50%}.aph b{font-size:16px}.aph.g span{background:#13804F;box-shadow:0 0 0 4px #E3F6EC}.aph.g b{color:#13804F}.aph.r span{background:#C63A4A;box-shadow:0 0 0 4px #FBDDE1}.aph.r b{color:#C63A4A}.apc small{display:block;margin:6px 0 6px 19px;font-size:12px;color:#8A93A8;font-weight:700}.kv{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid #EEF1F6;font-size:13px;font-weight:700;color:#6B7385}.kv b{color:#141B33;font-weight:900}.kv b.g{color:#13804F}.kv b.r{color:#C63A4A}html.dk .kv{border-color:#26326A}html.dk .kv b{color:#E7EBF3}
-.vn{display:flex;align-items:center;gap:9px;width:100%;max-width:330px;border:0;background:#fff;border-radius:99px;padding:6px 14px 6px 6px;margin:0 0 10px;cursor:pointer;box-shadow:0 8px 20px rgba(20,40,110,.1);color:#203C8E}.dd .vn{margin:8px 0 2px;box-shadow:0 4px 12px rgba(20,40,110,.08)}
-.vav{width:38px;height:38px;border-radius:50%;background:url(https://sekna-app.web.app/icons/alexandra/vn.webp) center/cover;box-shadow:0 0 0 2px #E2B874;flex:none}.vpl{width:30px;height:30px;border-radius:50%;background:#203C8E;display:grid;place-items:center;flex:none}.vpl svg{width:13px;height:13px;fill:#fff}.vpl .vs,.vn.on .vpl .vp{display:none}.vn.on .vpl .vs{display:block}
-.vw{flex:1;display:flex;align-items:center;gap:2px;height:20px;min-width:0;overflow:hidden}.vw i{width:3px;border-radius:2px;background:#C9D3F5;flex:none}.vn.on .vw i{background:#E2B874;animation:vb .7s ease-in-out infinite alternate}@keyframes vb{from{transform:scaleY(.35)}to{transform:scaleY(1.1)}}.vn em{font-style:normal;font-size:11px;font-weight:800;color:#8A93A8;flex:none}html.dk .vn{background:#16204A}
+.hv{display:flex;align-items:center;gap:12px}.hv>div{flex:1;min-width:0}
+.vb{position:relative;width:46px;height:46px;border-radius:50%;border:0;padding:0;flex:none;cursor:pointer;display:grid;place-items:center;background:conic-gradient(from 200deg,#5B8CFF,#A78BFA,#F3D58E,#5B8CFF);box-shadow:0 6px 16px rgba(120,100,250,.35)}
+.vb:before{content:"";position:absolute;inset:2.5px;border-radius:50%;background:linear-gradient(135deg,#5B8CFF,#A78BFA);transition:opacity .25s}
+.vb .vp{position:relative;z-index:1;width:18px;height:18px;fill:#fff}.vai{position:absolute;top:-4px;left:-6px;z-index:2;font:900 8px/1 Inter,system-ui,sans-serif;font-style:normal;color:#fff;background:linear-gradient(90deg,#5B8CFF,#A78BFA);border-radius:6px;padding:3px 4px;box-shadow:0 0 0 1.5px #fff}
+.vd{display:none;position:relative;z-index:1;gap:3px}.vd i{width:5px;height:5px;border-radius:50%;background:#fff;animation:vdot .9s ease-in-out infinite}.vd i:nth-child(2){animation-delay:.15s}.vd i:nth-child(3){animation-delay:.3s}@keyframes vdot{50%{transform:translateY(-4px);opacity:.5}}
+.vb.ld{animation:vspin 1.1s linear infinite}.vb.ld .vp,.vb.ld .vai{display:none}.vb.ld .vd{display:flex;animation:vspin 1.1s linear infinite reverse}@keyframes vspin{to{transform:rotate(360deg)}}
+.vb.on{background:conic-gradient(#E2B874 calc(var(--p,0)*1%),rgba(255,255,255,.28) 0);box-shadow:0 0 0 3px rgba(226,184,116,.25),0 6px 16px rgba(0,0,0,.25)}.vb.on:before{inset:3px;background:url(https://europe-west2-human-appeal-media-plan.cloudfunctions.net/tiktok/akpic) center/cover,#203C8E}.vb.on .vp,.vb.on .vai{display:none}
+.vcap{margin:-2px 0 10px;background:#fff;border-radius:12px;padding:9px 12px;font-size:12.5px;font-weight:600;color:#4b5263;line-height:1.45;box-shadow:0 6px 16px rgba(20,40,110,.07)}.vcap b{color:#141B33}html.dk .vcap{background:#16204A;color:#C9D3F5}
+.vrow{display:flex;align-items:center;gap:10px;margin:10px 0 6px}.vrow .vb{width:38px;height:38px}.vrow span{font-size:12px;font-weight:800;color:#203C8E}.dd .vcap{margin:4px 0 6px;box-shadow:none}
 .drw{position:fixed;left:0;top:0;height:100vh;height:100lvh;z-index:20;width:84%;max-width:340px;padding:16px 14px 18px;overflow-y:auto;display:flex;flex-direction:column;color:#fff;background:linear-gradient(170deg,#132457,#203C8E 60%,#2C4FB8);transform:translateX(-105%);transition:transform .28s cubic-bezier(.2,.75,.25,1)}.drw.on{transform:none}.drw>*{flex-shrink:0}
 .ov{position:fixed;left:0;right:0;top:0;height:100vh;height:100lvh;z-index:19;background:rgba(10,20,50,.45);opacity:0;pointer-events:none;transition:opacity .25s}.ov.on{opacity:1;pointer-events:auto}
 .dh{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.dh img{height:26px}.dx{width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;display:grid;place-items:center;cursor:pointer}.dx svg,.dni svg,.chv,.ck,.lk{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -523,12 +528,20 @@ function ahDraw(){var h=document.getElementById('ahb');if(!h)return;if(!AH){h.in
   +'<p class="ft" style="margin-top:12px">Times in your local time</p>'}
 document.querySelectorAll('[data-ny]').forEach(function(e){var v=e.getAttribute('data-ny'),l=loc(v.slice(0,10),v.slice(11,16));if(l.tm&&l.d)e.textContent=day(l.d)+' · '+l.tm});
 if(location.hash==='#ah'||location.hash==='#ap'){var h0=location.hash.slice(1);document.getElementById('fb').hidden=h0==='st';document.getElementById('home').hidden=true;document.getElementById(h0).hidden=false;if(h0==='ah')ahDraw()}
-var SAY=null;
+var SAY=null,SAYT=null;
+function sayStop(){var S=window.speechSynthesis;try{S&&S.cancel()}catch(e){}clearInterval(SAYT);document.querySelectorAll('.vb.on,.vb.ld').forEach(function(x){x.classList.remove('on','ld');x.style.removeProperty('--p')});document.querySelectorAll('.vcap').forEach(function(c){c.hidden=true});SAY=null}
 function say(b){var S=window.speechSynthesis;if(!S||!window.SpeechSynthesisUtterance){toast('This phone can\u2019t play the voice.');return}
- var was=SAY===b;S.cancel();document.querySelectorAll('.vn.on').forEach(function(x){x.classList.remove('on')});SAY=null;if(was)return;
- var u=new SpeechSynthesisUtterance(b.getAttribute('data-say'));u.lang='en-US';u.rate=1;u.pitch=1.05;
+ var was=SAY===b;sayStop();if(was)return;SAY=b;
+ var t=b.getAttribute('data-say'),cap=b.closest('.hv')?b.closest('.hv').nextElementSibling:b.closest('.vrow')?b.closest('.vrow').nextElementSibling:null,t0=Date.now(),est=Math.max(3,t.split(/\s+/).length/2.6)*1000,started=0;
+ b.classList.add('ld');
+ var u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=1;u.pitch=1.05;
  var V=S.getVoices().filter(function(v){return /^en/i.test(v.lang)}),pick=V.filter(function(v){return /samantha|female|zira|aria|jenny|google us english|karen|moira|serena/i.test(v.name)})[0]||V[0];if(pick)u.voice=pick;
- u.onend=u.onerror=function(){b.classList.remove('on');if(SAY===b)SAY=null};b.classList.add('on');SAY=b;S.speak(u)}
+ function go(){if(SAY!==b)return;b.classList.remove('ld');b.classList.add('on');started=Date.now();if(cap&&cap.classList.contains('vcap')){var k=t.indexOf('. ');cap.innerHTML='<b>'+es(t.slice(0,k>0?k+1:0))+'</b> '+es(t.slice(k>0?k+2:0));cap.hidden=false}
+  SAYT=setInterval(function(){if(SAY!==b)return;b.style.setProperty('--p',Math.min(97,(Date.now()-started)/est*100))},120)}
+ u.onstart=function(){setTimeout(go,Math.max(0,800-(Date.now()-t0)))};
+ u.onboundary=function(e){if(SAY===b&&started&&e.charIndex)b.style.setProperty('--p',Math.min(99,e.charIndex/t.length*100))};
+ u.onend=u.onerror=function(){if(SAY!==b)return;b.style.setProperty('--p',100);setTimeout(function(){if(SAY===b)sayStop()},500)};
+ S.speak(u)}
 try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=function(){}}catch(e){}
 function toast(t){var d=document.createElement('div');d.className='tst';d.textContent=t;document.body.appendChild(d);setTimeout(function(){d.remove()},3200)}
 function sess(){try{return localStorage.getItem('tt_me')||''}catch(e){return ''}}
@@ -627,6 +640,16 @@ const fn = onRequest({
     try { res.json(await meRoute(route.split('/').pop(), b || {})); } catch (e) { res.json({ ok: false, error: String((e && e.message) || e).slice(0, 200) }); }
     return;
   }
+  // v700 GET /akpic: Alexandra's account photo (or her picture from the app when none was sent yet)
+  if (/^(?:\/tiktok)?\/akpic$/.test(route) && req.method === 'GET') {
+    try {
+      if (!akPicHeld || Date.now() - akPicHeld.at > 30 * 60000) { const d = (await fsGet('server/tt-akpic').catch(() => null)) || {}; akPicHeld = { at: Date.now(), d }; }
+      const m = /^data:(image\/[a-z]+);base64,(.+)$/.exec(akPicHeld.d.data || '');
+      if (!m) { res.redirect(302, 'https://sekna-app.web.app/icons/alexandra/vn.webp'); return; }
+      res.set('Content-Type', m[1]); res.set('Cache-Control', 'public, max-age=1800'); res.send(Buffer.from(m[2], 'base64'));
+    } catch (e) { res.redirect(302, 'https://sekna-app.web.app/icons/alexandra/vn.webp'); }
+    return;
+  }
   // v681 the issue page from the email: /tiktok/i/<secret> (on sekna-app.web.app) or /i/<secret> here; no sign-in, 14 days
   const im = /^(?:\/tiktok)?\/i\/([A-Za-z0-9_-]{16,40})$/.exec(route);
   if (im && req.method === 'GET') {
@@ -655,7 +678,7 @@ const fn = onRequest({
     } catch (e) { console.warn('TikTok picture: ' + ((e && e.message) || e)); res.status(502).send(''); }
     return;
   }
-  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct' && route !== '/feed' && route !== '/people' && route !== '/peopleSet' && route !== '/peopleView' && route !== '/issueMail' && route !== '/issueMailTest') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
+  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct' && route !== '/feed' && route !== '/people' && route !== '/peopleSet' && route !== '/peopleView' && route !== '/akPicSet' && route !== '/issueMail' && route !== '/issueMailTest') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
   let body = req.body;
   if (!(body && typeof body === 'object' && !Buffer.isBuffer(body))) {
     const text = Buffer.isBuffer(body) ? body.toString('utf8') : typeof body === 'string' ? body : (req.rawBody ? req.rawBody.toString('utf8') : '');
@@ -677,6 +700,14 @@ const fn = onRequest({
       res.json({ ok: true, result: (doc && doc.map) || {} }); return;
     }
     await assertAccess(body.token);
+    // v700 Alexandra's account photo, sent by the app when an admin opens Account & Policy
+    if (route === '/akPicSet') {
+      await assertAdmin(body.token);
+      const data = String(body.data || ''), v = String(body.v || '').slice(0, 80);
+      if (!/^data:image\/(png|jpe?g|webp);base64,/.test(data) || data.length > 700000) throw new Error('Not a photo.');
+      await fsUpdate('server/tt-akpic', () => ({ v, data, at: Date.now() })); akPicHeld = null;
+      res.json({ ok: true }); return;
+    }
     // v696 an admin sees a person's emailed page exactly as it looks to them (no sign-in, no notifications)
     if (route === '/peopleView') {
       await assertAdmin(body.token);
