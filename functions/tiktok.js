@@ -319,7 +319,7 @@ async function meRoute(op, b) {
     return { ok: true, on };
   }
   const st2 = (await fsGet(TT_ME).catch(() => null)) || {};
-  return { ok: true, html: personPage(se.who, await ttAcct(), doc.map || {}, true, ((st2.push || {})[se.who] || []).length > 0) };
+  return { ok: true, html: personPage(se.who, await ttAcct(), doc.map || {}, true, ((st2.push || {})[se.who] || []).length > 0, await ttFeed().catch(() => null)) };
 }
 /** What the person has open now: issue keys and the IDs of their ads that need a fix. */
 function seenOf(who, acct) {
@@ -389,7 +389,7 @@ function verify(e){e.preventDefault();var b=document.getElementById('b2');b.disa
 load();</script></body></html>`;
 }
 /** v683 the email's page: the app's look (header, account, TikTok), the person's navy card with all their open issues, and their Ad Checks. */
-function personPage(who, acct, map, signedIn, pushOn) {
+function personPage(who, acct, map, signedIn, pushOn, feed) {
   const E = notify.esc, W = String(who || '').toLowerCase(), m = /^([^@]+)@(.+)$/.exec(W), nm = (map[W] && map[W].name) || (m ? m[1] : 'Your ads');
   const mon = k => { const x = /^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}:\d{2}))?/.exec(String(k || '')); return x ? (+x[3]) + ' ' + MON[+x[2] - 1] + ' ' + x[1] + (x[4] ? ' · ' + x[4] : '') : String(k || ''); };
   const PIC = u => 'https://europe-west2-human-appeal-media-plan.cloudfunctions.net/tiktok/pic?u=' + encodeURIComponent(u);
@@ -402,6 +402,10 @@ function personPage(who, acct, map, signedIn, pushOn) {
     return { name: n || (mm ? mm[1] : /claude/i.test(w) ? 'Claude' : /older/i.test(w) ? 'Older' : w), sub: [mm ? (n ? k : '@' + mm[2]) + (/api/i.test(w) ? ' · via API' : '') : /older/i.test(w) ? 'before the change log' : /api/i.test(w) ? 'via API' : '', lab].filter(Boolean).join(' · ') }; };
   const G = new Map(); chk.forEach(c => [...new Set(String(c.problems).split(';').map(p => prob(p.trim())[0]))].forEach(k => { if (!G.has(k)) G.set(k, { col: prob(k)[1], L: [] }); const L = G.get(k).L, same = L.find(o => o.ad === c.ad && o.campaign === c.campaign);
     if (same) { if (c.id && same.ids.indexOf(String(c.id)) < 0) same.ids.push(String(c.id)); } else L.push(Object.assign({}, c, { ids: c.id ? [String(c.id)] : [] })); }));
+  const mine = (acct.checks || []).filter(c => W && String(c.by || '').toLowerCase().indexOf(W) >= 0);
+  const made = feed ? (feed.acts || []).filter(a => W && String(a.op || '').toLowerCase().indexOf(W) >= 0 && /^create/i.test(a.act) && /^ad$/i.test(a.obj)).length : null;
+  const hero = made == null ? '' : `<div class="hr"><span class="glow"></span><small>ADS YOU MADE</small><b>${made.toLocaleString('en-US')}</b><span class="hs">ads created in the ad account</span>
+    <div class="k3"><div><em class="kg">${mine.length - chk.length}</em>Pass checks</div><div><em class="ky">${chk.length}</em>Need a fix</div><div><em class="kr">${iss.length}</em>Open issues</div></div></div>`;
   const others = by => String(by || '').split(/\s+·\s+/).length - 1;
   const list = iss.map((x, i) => `<button type="button" class="ir" onclick="go('i${i}')"><div class="it"><b>${E(x.type || 'Issue')}</b><span class="ch">›</span></div><p>${E(x.what || '')}</p><div class="im"><span class="gold">${others(x.by) > 0 ? '+' + others(x.by) + ' more made these ads' : ''}</span><span class="dt">${E(mon(x.found))}</span></div></button>`).join('');
   const pages = iss.map((x, i) => `<section class="pg" id="i${i}" hidden><button type="button" class="bk" onclick="go('')">‹&nbsp; Issues Log</button>
@@ -434,6 +438,9 @@ details summary{list-style:none;cursor:pointer}details summary::-webkit-details-
 .sp2{display:flex;align-items:center;gap:8px;height:18px;padding:0 18px;background:#F4F6FB}.sp2:before,.sp2:after{content:"";flex:1;height:1px;background:#DDE2EE}.sp2 i{width:5px;height:5px;border-radius:50%;background:#E2B874}
 .dd p:has(.cp){display:flex;justify-content:space-between;align-items:center}.wr{display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin-top:8px}.wr span{background:#FBDDE1;color:#C63A4A;font-size:12px;font-weight:800;border-radius:8px;padding:4px 10px;line-height:1.35}.ca b{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ca .an{display:flex;align-items:center}.an span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis}.an .x2{flex:none}.pics{display:flex;gap:4px;align-items:center;margin:7px 0 5px}.pc{width:30px;height:40px;border-radius:7px;overflow:hidden;background:#E3E8F5;display:block}.pc img{width:100%;height:100%;object-fit:cover;display:block}.sp{display:grid;place-items:center;width:30px;height:40px;border-radius:7px;background:#E3E8F5;color:#203C8E;font-size:8px;font-weight:900}.pics em{font-style:normal;font-size:11px;font-weight:900;color:#8A93A8}
 .dd{margin-top:8px}.dd small{display:block;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#8A93A8;margin-top:8px}.dd p{font-size:13px;font-weight:700;margin-top:2px;word-break:break-word}.cp{border:0;background:#E3E8F5;color:#203C8E;font-size:11px;font-weight:800;border-radius:7px;padding:3px 9px;margin-left:6px;cursor:pointer}
+.hr{position:relative;overflow:hidden;border-radius:20px;padding:18px;margin-bottom:14px;color:#fff;background:linear-gradient(135deg,#132457,#203C8E 55%,#2C4FB8);box-shadow:0 12px 28px rgba(20,40,110,.18)}.hr .glow{position:absolute;right:-34px;top:-40px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(226,184,116,.32),transparent 70%)}
+.hr small{position:relative;font-size:11px;font-weight:900;letter-spacing:.12em;color:#E2B874}.hr>b{position:relative;display:block;font-size:42px;font-weight:900;line-height:1.05;margin-top:6px}.hr .hs{position:relative;font-size:14px;font-weight:700;color:#C9D3F5}
+.k3{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.k3 div{background:rgba(255,255,255,.1);border-radius:12px;padding:9px 11px;font-size:11.5px;font-weight:700;color:#C9D3F5}.k3 em{display:block;font-style:normal;font-size:20px;font-weight:900}.k3 .kg{color:#5EE0A0}.k3 .ky{color:#E2B874}.k3 .kr{color:#FF9AA8}
 .empty{padding:20px;text-align:center;font-weight:700;color:#13804F}
 .bk{border:0;background:none;color:#203C8E;font-weight:800;font-size:15px;padding:6px 2px 12px;cursor:pointer}
 .hh{background:linear-gradient(140deg,#203C8E,#2C4FB8);color:#fff;border-radius:18px;padding:13px 16px 14px;margin-bottom:10px;box-shadow:0 10px 26px rgba(20,40,110,.12)}.hh small{font-size:10.5px;font-weight:900;letter-spacing:.1em;color:#E2B874}.hh h2{font-size:21px;font-weight:900;margin-top:5px}
@@ -444,7 +451,7 @@ details summary{list-style:none;cursor:pointer}details summary::-webkit-details-
 .pg .w{padding:0}</style></head>
 <body><div class="hd"><span style="width:38px"></span><div class="lo"><img src="https://sekna-app.web.app/get/logo-white.webp" alt=""><span>HEMERA</span></div>${signedIn ? `<button type="button" class="bl${pushOn ? ' on' : ''}" id="bell" onclick="bell()" aria-label="Notifications"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></button>` : '<span style="width:38px"></span>'}</div>
 <div class="w"><div id="home"><span class="acc"><img src="https://sekna-app.web.app/icons/ha-brand.png" alt="">Human Appeal US<img class="tta" src="https://sekna-app.web.app/icons/tiktok-ads.png" alt="TikTok Ads"></span>
-<div class="t">Issues <span>Log</span></div><div class="sub">${iss.length} open · active ads only · tap one</div>
+<div class="t">Issues <span>Log</span></div>${hero}<div class="sub">${iss.length} open · active ads only · tap one</div>
 <div class="card"><div class="nb"><span class="glow"></span><span class="av">${E(String(nm).charAt(0).toUpperCase())}</span><div class="n"><b>${E(nm)}</b><small>${E(W)}</small></div><div class="big"><em>${iss.length}</em><span>open issue${iss.length === 1 ? '' : 's'}</span></div></div>${list || '<div class="empty">No open issue. Thank you!</div>'}</div>
 <div class="t">Ad <span>Checks</span></div><div class="sub">${chk.length} of your live ads need a fix · tap a problem</div>
 <div class="card">${checks || '<div class="empty">Every live ad you made passes.</div>'}</div></div>
