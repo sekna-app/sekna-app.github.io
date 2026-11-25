@@ -547,6 +547,10 @@ html{background:#132457}.w{flex:1 0 auto;width:100%}.pg .w{padding:0}.r.mk{align
 .fb{margin-top:30px;position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;color:#fff;padding:9px 16px calc(9px + env(safe-area-inset-bottom));background:linear-gradient(120deg,#132457,#203C8E 60%,#3B5BC8)}.fb:before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#E2B874 20%,#F2D38F 50%,#E2B874 80%,transparent)}
 .fb p{font-size:11.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.fb p span{color:#B7C3EA;font-weight:700}.fb a{flex:none;font-size:10.5px;color:#E2B874;font-weight:800;text-decoration:none;border:1px solid rgba(226,184,116,.6);border-radius:99px;padding:4px 10px;white-space:nowrap}
 /* v711 slimmer: everything a size smaller, the menu narrower */
+.fb{all:unset;display:block;text-align:center;padding:22px 16px calc(26px + env(safe-area-inset-bottom))!important;margin-top:26px}.fb:before{display:none!important}
+.fb[hidden]{display:none!important}.fbt{font-size:10px!important;font-weight:900;letter-spacing:.18em;color:#A3AABB!important;white-space:normal!important}.fbl{display:inline-flex!important;align-items:center;gap:6px;margin-top:9px;font-size:12.5px!important;font-weight:800;color:#B0812E!important;text-decoration:none;border:0!important;padding:5px 12px 5px 5px!important;border-radius:99px!important;background:rgba(226,184,116,.12)}.fbl img{width:20px;height:20px;border-radius:6px}.fbl span{font-size:15px;line-height:1}
+.dd.pop{animation:pop .3s cubic-bezier(.2,.9,.3,1.25) both;transform-origin:top center}@keyframes pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+
 .t.pg-in{animation:pgIn .45s cubic-bezier(.2,.8,.2,1) both}.t.pg-in span{animation:pgMark .6s .15s cubic-bezier(.2,.8,.2,1) both;background-size:100% 100%;background-repeat:no-repeat}
 @keyframes pgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@keyframes pgMark{from{background-size:0% 100%}to{background-size:100% 100%}}
 .apr{display:flex;align-items:center;gap:8px;background:#F6F8FD;border-radius:10px;padding:6px 9px;margin:8px 0 6px}.apl{width:24px;height:24px;border-radius:7px;background:#fff;padding:2px;box-shadow:0 1px 3px rgba(20,40,110,.12)}.apr div{flex:1;min-width:0}.apr b{display:block;font-size:12.5px}.apr small{display:block!important;margin:0!important;font-size:10px!important}.apt{height:10px;width:auto}html.dk .apr{background:#1b2656}
@@ -561,7 +565,7 @@ html{background:#132457}.w{flex:1 0 auto;width:100%}.pg .w{padding:0}.r.mk{align
 .tc{padding:10px 12px}.tct b{font-size:13px}.rr>b{font-size:12px}
 .drw{max-width:290px;padding:12px 12px 14px}.dlb{font-size:9.5px;margin-bottom:6px}.dac1{padding:9px 10px}.dlg{width:32px;height:32px}.dlg>img{width:22px;height:22px}.dat b{font-size:13px}.dat small{font-size:10.5px}
 .dn{padding:9px 12px;font-size:13px;gap:10px}.dni{width:26px;height:26px;border-radius:8px}.dx svg,.dni svg{width:15px;height:15px}.dme{padding:8px 10px}.dav{width:32px;height:32px;font-size:14px}.dme b{font-size:13px}.dme small{font-size:10.5px}.dso{width:32px;height:32px}
-@media (min-width:1000px){.fb{background:none!important;padding:18px 16px 26px!important;justify-content:center;gap:12px}.fb:before{display:none}.fb p{color:#8A93A8;font-size:11px}.fb p span{color:#A3AABB}.fb a{color:#B0812E;border-color:#E2C994}body{padding-left:240px}.drw{width:240px!important;max-width:240px!important}.w{max-width:600px}}
+@media (min-width:1000px){body{padding-left:240px}.drw{width:240px!important;max-width:240px!important}.w{max-width:600px}}
 /* Team Board effect on every filter: the blue pill with its glow glides under the picked one */
 .sgp{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%)!important;box-shadow:0 4px 12px rgba(61,107,255,.38)!important}
 .calp{position:relative;display:flex;gap:1px;flex-wrap:nowrap;background:#E9EDF5;border-radius:10px;padding:3px;margin:6px 18px}.calp button{position:relative;z-index:1;flex:1;border:0!important;background:transparent!important;border-radius:8px;padding:6px 6px;font-size:11.5px;font-weight:700;color:#4b5263;transition:color .25s}.calp button.on{color:#fff!important}
@@ -577,7 +581,7 @@ ${pages}
 <section class="pg" id="ah" hidden><button type="button" class="bk" onclick="go('')">‹&nbsp; Issues Log</button><div class="t">Activity <span>History</span></div><div id="ahb"></div></section>
 <section class="pg" id="ap" hidden><button type="button" class="bk" onclick="go('')">‹&nbsp; Issues Log</button><div class="t">Account <span>&amp; Policy</span></div>${apCard}</section>
 
-</div><footer class="fb" id="fb"><p>Broadcast from HEMERA<span> · TikTok · HA US</span></p><a href="https://sekna-app.web.app/get/" target="_blank" rel="noopener">What is HEMERA?</a></footer>
+</div><footer class="fb" id="fb"><p class="fbt">HEMERA · ISSUES &amp; AD CHECKS · HUMAN APPEAL</p><a class="fbl" href="https://sekna-app.web.app/get/" target="_blank" rel="noopener"><img src="https://sekna-app.web.app/icons/icon-192.png" alt="">Get the HEMERA app<span>›</span></a></footer>
 <div class="ov" id="ov" onclick="dr(0)"></div><aside class="drw" id="drw" aria-label="Menu">
  <div class="dh"><img src="https://sekna-app.web.app/get/logo-white.webp" alt="HEMERA"><button type="button" class="dx" onclick="dr(0)" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
  <div class="dlb">CLIENT ACCOUNT</div>
@@ -601,7 +605,7 @@ function fu(el){if(!el)return;el.classList.remove('fu');void el.offsetWidth;el.c
 addEventListener('DOMContentLoaded',function(){fu(document.getElementById('home'))});
 function go(id,ns){setTimeout(function(){if(!ns)fu(id?document.getElementById(id):document.getElementById('home'));segPos()},0);dr(0);document.getElementById('fb').hidden=!!id;document.querySelectorAll('.dn[data-v]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-v')===(id||''))});if(id==='ah')ahDraw();document.getElementById('home').hidden=!!id;document.querySelectorAll('.pg').forEach(function(p){p.hidden=p.id!==id});try{if(id)history.pushState({p:id},'','#'+id);else if(location.hash)history.pushState({},'',location.pathname)}catch(e){}scrollTo(0,0)}
 addEventListener('popstate',function(){var id=location.hash.slice(1);document.getElementById('fb').hidden=!!id;if(id==='ah')ahDraw();document.getElementById('home').hidden=!!id;document.querySelectorAll('.pg').forEach(function(p){p.hidden=p.id!==id})});
-function tg(id){var d=document.getElementById(id);if(d){d.hidden=!d.hidden;d.parentNode.classList.toggle('op',!d.hidden)}}
+function tg(id){var d=document.getElementById(id);if(d){d.hidden=!d.hidden;d.parentNode.classList.toggle('op',!d.hidden);d.classList.remove('pop');if(!d.hidden){void d.offsetWidth;d.classList.add('pop')}}}
 function out(){var s='';try{s=localStorage.getItem('tt_me')||'';localStorage.removeItem('tt_me')}catch(e){}fetch('/tiktok/me/out',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({sess:s})}).finally(function(){location.href='/tiktok/me'})}
 function nt(o){document.querySelectorAll('[data-n]').forEach(function(x){x.classList.toggle('on',o)})}
 var MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],AF={r:'all',f:'',n:100};
