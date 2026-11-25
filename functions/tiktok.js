@@ -357,18 +357,18 @@ function seenOf(who, acct) {
 /** Once a day: a notification to each signed-up person about new issues or new ads that need a fix. */
 async function dailyMail(acct, st) {
   if (!notify.mailReady()) return;
-  const doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, map = doc.map || {}, first = !st.mailed, mailedNew = {};
+  const doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, map = doc.map || {}, first = !st.mailed, mailedNew = {}, mlogNew = {};
   for (const who of Object.keys(map)) {
     const m = map[who]; if (who.charAt(0) === '_' || !m || !m.email) continue;
     const dg = digestOf(who, acct), keys = dg.L.map(issueKey), was = (st.mailed || {})[who] || [];
     const fresh = keys.filter(k => was.indexOf(k) < 0);
     mailedNew[who] = [...new Set(was.concat(keys))].slice(-300);
     if (first || !fresh.length) continue; // the first run only notes what is open now
-    const name = String(m.name || String(m.email).split('@')[0]).split(/\s+/)[0];
-    try { await notify.sendMail({ to: m.email, subject: 'TikTok: ' + (fresh.length === 1 ? 'a new issue' : fresh.length + ' new issues') + ' on your ads', rawHtml: digestMailHtml(name, dg.L.slice(0, 3), dg.L.length, dg.toFix, 'https://sekna-app.web.app/tiktok/me') }); }
-    catch (e) { console.warn('TikTok mail: ' + ((e && e.message) || e)); delete mailedNew[who]; }
+    const name = nameOf(m, who) || 'there';
+    try { mlogNew[who] = { at: Date.now(), n: fresh.length, by: 'auto' }; await notify.sendMail({ to: m.email, subject: 'TikTok: ' + (fresh.length === 1 ? 'a new issue' : fresh.length + ' new issues') + ' on your ads', rawHtml: digestMailHtml(name, dg.L.slice(0, 3), dg.L.length, dg.toFix, 'https://sekna-app.web.app/tiktok/me') }); }
+    catch (e) { console.warn('TikTok mail: ' + ((e && e.message) || e)); delete mailedNew[who]; delete mlogNew[who]; }
   }
-  await fsUpdate(TT_ME, d => { d = d || {}; d.mailed = Object.assign({}, d.mailed || {}, mailedNew); return d; });
+  await fsUpdate(TT_ME, d => { d = d || {}; d.mailed = Object.assign({}, d.mailed || {}, mailedNew); d.mlog = d.mlog || {}; Object.keys(mlogNew).forEach(w => { d.mlog[w] = (d.mlog[w] || []).concat([mlogNew[w]]).slice(-200); }); return d; });
 }
 async function dailyPush() {
   const st = (await fsGet(TT_ME).catch(() => null)) || {}, P = st.push || {};
@@ -420,7 +420,7 @@ function sayAll(acct, map) {
   return [...new Set(out)];
 }
 function personPage(who, acct, map, signedIn, pushOn, feed) {
-  const E = notify.esc, W = String(who || '').toLowerCase(), m = /^([^@]+)@(.+)$/.exec(W), nm = (map[W] && map[W].name) || (m ? m[1] : 'Your ads');
+  const E = notify.esc, W = String(who || '').toLowerCase(), m = /^([^@]+)@(.+)$/.exec(W), nm = (map[W] && map[W].name) || nameOf(map[W], W) || (m ? m[1] : 'Your ads');
   const mon = k => { const x = /^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}:\d{2}))?/.exec(String(k || '')); return x ? (+x[3]) + ' ' + MON[+x[2] - 1] + ' ' + x[1] + (x[4] ? ' · ' + x[4] : '') : String(k || ''); };
   const PIC = u => 'https://europe-west2-human-appeal-media-plan.cloudfunctions.net/tiktok/pic?u=' + encodeURIComponent(u);
   const iss = (acct.issues || []).filter(x => !/^yes/i.test(x.fixed) && W && String(x.by || '').toLowerCase().indexOf(W) >= 0);
@@ -449,7 +449,7 @@ function personPage(who, acct, map, signedIn, pushOn, feed) {
     <div class="kv"><span>Opened</span><b>${E(mon(ac.opened) || '—')}</b></div>
     <div class="kv"><span>Checked</span><b>${E(mon(ac.checked) || '—')}</b></div></div>`;
   // v699 Alexandra reads the problem out (the phone's own voice; nothing is sent anywhere)
-  const first = String((map[W] && map[W].name) || '').trim().split(/\s+/)[0] || 'there';
+  const first = nameOf(map[W], W) || 'there';
   const VOICE = false; // v705 Alexandra is off on this page for now (the code stays for later)
   const vn = t0 => { if (!VOICE) return ''; const ar = AR[sayKey(t0)], t = ar || t0; return `<button type="button" class="vb" data-k="${sayKey(t0)}" data-say="${E(t)}"${ar ? ' data-lang="ar"' : ''} onclick="event.stopPropagation();say(this)" aria-label="Alexandra explains"><i class="vai">AI</i><svg class="vp" viewBox="0 0 24 24"><path d="M9 6.5l9 5.5-9 5.5z"/></svg><span class="vd"><i></i><i></i><i></i></span></button>`; };
   const others = by => String(by || '').split(/\s+·\s+/).length - 1;
@@ -520,7 +520,7 @@ details summary{list-style:none;cursor:pointer}details summary::-webkit-details-
 .calp{display:flex;gap:6px;padding:6px 18px;flex-wrap:wrap}.calp button{border:1.5px solid #E3E7F0;background:#fff;border-radius:99px;padding:7px 12px;font:inherit;font-size:12.5px;font-weight:800;color:#4b5263;cursor:pointer}.calp button.on{background:#203C8E;border-color:#203C8E;color:#fff}
 .calm{display:flex;align-items:center;justify-content:space-between;padding:8px 18px}.calm b{font-size:16px}.calm button{width:36px;height:36px;border-radius:12px;border:1px solid #E3E7F0;background:#fff;font-size:20px;font-weight:900;color:#203C8E;cursor:pointer}.calm button[disabled]{opacity:.3}
 .calw,.calg{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;padding:0 18px}.calw span{text-align:center;font-size:11px;font-weight:800;color:#8A93A8;padding:4px 0}
-.calg{padding-bottom:14px}.calg button{aspect-ratio:1;border:1.5px solid #E3E7F0;background:#fff;border-radius:12px;font:inherit;font-size:14px;font-weight:800;color:#141B33;cursor:pointer}.calg button[disabled]{opacity:.35;cursor:default}.calg button.td{border-color:#B7C3EA}.calg button.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);border-color:transparent;color:#fff;box-shadow:0 6px 14px rgba(61,107,255,.35)}
+.calg{padding-bottom:14px}.calg button{aspect-ratio:1;border:1.5px solid #E3E7F0;background:#fff;border-radius:12px;font:inherit;font-size:14px;font-weight:800;color:#141B33;cursor:pointer}.calg button[disabled]{opacity:.35;cursor:default}.calg button.mid{background:#E8EEFF;border-color:#C9D6FF;color:#203C8E}.calg button.td{border-color:#B7C3EA}.calg button.on{background:radial-gradient(circle at 30% 20%,#5d86ff,#203c8e 70%);border-color:transparent;color:#fff;box-shadow:0 6px 14px rgba(61,107,255,.35)}
 .calf{display:flex;align-items:center;gap:8px;padding:14px 18px;background:#F6F8FD;border-top:1px solid #EEF1F6}.calf div{flex:1;min-width:0}.calf b{display:block;font-size:15px}.calf small{font-size:11.5px;color:#8A93A8;font-weight:700}.calcl{border:1.5px solid #E3E7F0;background:#fff;border-radius:12px;padding:10px 14px;font:inherit;font-weight:800;color:#4b5263;cursor:pointer}.calsh{border:0;background:#203C8E;color:#fff;border-radius:12px;padding:11px 18px;font:inherit;font-weight:800;cursor:pointer}
 .l,.dd small{color:#B0812E!important}.pg .t{margin-top:2px}.bk{padding-bottom:4px!important}
 .fu{animation:fu .38s cubic-bezier(.2,.75,.25,1) both}@keyframes fu{from{opacity:0;transform:translateY(10px)}}
@@ -609,9 +609,10 @@ function es(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){return 
 function nyOff(u){try{var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).formatToParts(new Date(u)).forEach(function(x){p[x.type]=x.value});return Date.UTC(+p.year,p.month-1,+p.day,+p.hour%24,+p.minute)-u}catch(e){return -18e6}}
 function loc(d,tm){var a=String(d||'').split('-'),t=String(tm||'').split(':');if(a.length<3||t.length<2)return {d:d,tm:tm};var u=Date.UTC(+a[0],a[1]-1,+a[2],+t[0],+t[1]),x=new Date(u-nyOff(u)),P=function(n){return (n<10?'0':'')+n};var hh=x.getHours();return {d:x.getFullYear()+'-'+P(x.getMonth()+1)+'-'+P(x.getDate()),tm:((hh%12)||12)+':'+P(x.getMinutes())+(hh<12?' AM':' PM')}}
 function day(d){var a=String(d||'').split('-');return a.length<3?d:(+a[2])+' '+MO[a[1]-1]+' '+a[0]}
+function dm(d){return day(d).split(' ').slice(0,2).join(' ')}
 function tdy(){return new Date(Date.now()-18e6).toISOString().slice(0,10)}
 function add(k,n){var d=new Date(k+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)}
-function inR(d){var t=tdy();return AF.r==='7'?(d>=add(t,-7)&&d<=t):AF.r==='30'?(d>=add(t,-30)&&d<=t):AF.r==='y'?d===add(t,-1):AF.r==='day'?d===AF.day:true}
+function inR(d){var t=tdy();return AF.r==='7'?(d>=add(t,-7)&&d<=t):AF.r==='30'?(d>=add(t,-30)&&d<=t):AF.r==='y'?d===add(t,-1):AF.r==='day'?d===AF.day:AF.r==='rng'?(d>=AF.from&&d<=AF.to):true}
 function fld(n){n=String(n||'').toLowerCase();return /status|on.off/.test(n)?'Status':/budget|bid|cost/.test(n)?'Budget':/creative|video|text|identity|spark/.test(n)?'Creative':/url|destination|deeplink|page/.test(n)?'Landing':/review/.test(n)?'Review':(n==='ad'||/name/.test(n))?'Ad':'Other'}
 function chg(det){return String(det||'').split(' | ').map(function(p){var i=p.indexOf(': '),j=p.indexOf(' -> ');if(i<1||j<i)return null;return {f:p.slice(0,i).trim(),b:p.slice(i+2,j).trim().slice(0,90),a:p.slice(j+4).trim().slice(0,90)}}).filter(Boolean)}
 function tone(v,d){v=String(v||'').toLowerCase();return /^(enabled?|active|on|approved|delivering|running|live)\b/.test(v)?'g':/^(paused|disabled|off|rejected|deleted|not delivering|suspended|inactive|in review|under review)\b/.test(v)?'r':d}
@@ -621,8 +622,8 @@ function ahDraw(){var h=document.getElementById('ahb');if(!h)return;segKeep();if
  var A=AH.filter(function(a){return inR(a[0])}),c=0,ch=0,dl=0;A.forEach(function(a){if(/^create/i.test(a[3]))c++;else if(/^delete/i.test(a[3]))dl++;else ch++});
  var F=[];A.forEach(function(a){var f=fld(a[2]);if(f!=='Landing'&&f!=='Ad'&&F.indexOf(f)<0)F.push(f)});if(AF.f&&F.indexOf(AF.f)<0)AF.f='';
  var L=A.filter(function(a){return !AF.f||fld(a[2])===AF.f}),last='',rk=AF.r==='30'?'7':AF.r,b=function(k,l){return '<button type="button" class="'+(rk===k?'on':'')+'" onclick="ahR(\\''+k+'\\')">'+l+'</button>'};
- h.innerHTML='<div class="hr"><span class="glow"></span><small>'+(AF.r==='day'?day(AF.day).toUpperCase():({all:'ALL CHANGES','7':'LAST 7 DAYS','30':'LAST 30 DAYS',y:'YESTERDAY'})[AF.r])+'</small><b>'+A.length.toLocaleString('en-US')+'</b><span class="hs">change'+(A.length===1?'':'s')+' you made</span><div class="k3"><div><em class="kg">'+c+'</em>Created</div><div><em>'+ch+'</em>Changed</div><div><em class="kr">'+dl+'</em>Deleted</div></div></div>'
-  +'<div class="seg"><i class="sgp"></i>'+b('all','All')+b('7',AF.r==='30'?'Last 30 days':'Last 7 days')+b('y','Yesterday')+'<button type="button" class="'+(AF.r==='day'?'on':'')+'" onclick="calOpen()"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>'+(AF.r==='day'?day(AF.day).replace(/ \d{4}$/,''):'Pick a day')+'</button></div>'
+ h.innerHTML='<div class="hr"><span class="glow"></span><small>'+(AF.r==='rng'?(dm(AF.from)+' – '+day(AF.to)).toUpperCase():AF.r==='day'?day(AF.day).toUpperCase():({all:'ALL CHANGES','7':'LAST 7 DAYS','30':'LAST 30 DAYS',y:'YESTERDAY'})[AF.r])+'</small><b>'+A.length.toLocaleString('en-US')+'</b><span class="hs">change'+(A.length===1?'':'s')+' you made</span><div class="k3"><div><em class="kg">'+c+'</em>Created</div><div><em>'+ch+'</em>Changed</div><div><em class="kr">'+dl+'</em>Deleted</div></div></div>'
+  +'<div class="seg"><i class="sgp"></i>'+b('all','All')+b('7',AF.r==='30'?'Last 30 days':'Last 7 days')+b('y','Yesterday')+'<button type="button" class="'+(AF.r==='day'||AF.r==='rng'?'on':'')+'" onclick="calOpen()"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>'+(AF.r==='rng'?dm(AF.from)+' – '+dm(AF.to):AF.r==='day'?dm(AF.day):'Pick a day')+'</button></div>'
   +(F.length>1?'<div class="seg sg2"><i class="sgp"></i>'+F.map(function(f){return '<button type="button" class="'+(AF.f===f?'on':'')+'" onclick="ahF(\\''+f+'\\')">'+f+'</button>'}).join('')+'</div>':'')
   +(L.length?'<div class="tl">'+L.slice(0,AF.n).map(function(a){var l=loc(a[0],a[1]),k=/^create/i.test(a[3])?'g':/^delete/i.test(a[3])?'r':'b',hd=l.d!==last?(last=l.d,'<div class="tday">'+day(l.d)+'</div>'):'',cs=chg(a[6]).slice(0,3);
    return hd+'<div class="ti"><span class="tdot '+k+'"></span><div class="c tc"><div class="tct"><b>'+es(a[2])+'</b><small>'+es(l.tm)+'</small></div><span class="ttag">'+es(a[3])+' · '+es(a[4])+(a[5]?' · '+es(a[5]):'')+'</span>'
@@ -635,21 +636,21 @@ function segPos(){var P=document.querySelectorAll('.seg .sgp');if(SEGW.length){P
  document.querySelectorAll('.seg').forEach(function(g){var p=g.querySelector('.sgp'),o=g.querySelector('button.on');if(!p)return;if(!o){p.style.opacity=0;return}p.style.opacity=1;p.style.width=o.offsetWidth+'px';p.style.height=o.offsetHeight+'px';p.style.transform='translate('+o.offsetLeft+'px,'+o.offsetTop+'px)'})}
 addEventListener('resize',segPos);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(segPos);
 // Pick a day: the app's Report Period calendar (days only)
-var CAL={m:'',sel:''};
-function calOpen(){CAL.sel=AF.r==='day'?AF.day:'';CAL.pre=AF.r!=='day'&&AF.r!=='all'?AF.r:'';CAL.m=(CAL.sel||tdy()).slice(0,7);var o=document.getElementById('cal');if(!o){o=document.createElement('div');o.id='cal';o.className='calo';o.onclick=function(e){if(e.target===o)calClose()};document.body.appendChild(o)}calDraw();requestAnimationFrame(function(){o.classList.add('on')})}
+var CAL={m:'',sel:'',end:''};
+function calOpen(){CAL.sel=AF.r==='day'?AF.day:AF.r==='rng'?AF.from:'';CAL.end=AF.r==='rng'?AF.to:'';CAL.pre=AF.r!=='day'&&AF.r!=='all'?AF.r:'';CAL.m=(CAL.sel||tdy()).slice(0,7);var o=document.getElementById('cal');if(!o){o=document.createElement('div');o.id='cal';o.className='calo';o.onclick=function(e){if(e.target===o)calClose()};document.body.appendChild(o)}calDraw();requestAnimationFrame(function(){o.classList.add('on')})}
 function calClose(){var o=document.getElementById('cal');if(o){o.classList.remove('on');setTimeout(function(){o.remove()},220)}}
 function calNav(n){var a=CAL.m.split('-'),d=new Date(Date.UTC(+a[0],a[1]-1+n,1));CAL.m=d.toISOString().slice(0,7);calDraw()}
-function calPick(d){CAL.sel=d;CAL.pre='';calDraw()}function calPre(r){CAL.pre=r;CAL.sel='';calDraw()}
+function calPick(d){if(!CAL.sel||CAL.end||d<CAL.sel){CAL.sel=d;CAL.end=''}else if(d>CAL.sel)CAL.end=d;else CAL.end='';CAL.pre='';calDraw()}function calPre(r){CAL.pre=r;CAL.sel='';calDraw()}
 function calDraw(){var o=document.getElementById('cal');if(!o)return;segKeep();var a=CAL.m.split('-'),y=+a[0],mo=+a[1],first=new Date(Date.UTC(y,mo-1,1)),days=new Date(Date.UTC(y,mo,0)).getUTCDate(),lead=(first.getUTCDay()+6)%7,t=tdy(),min=(AH&&AH.length?AH[AH.length-1][0]:t),cells='',P=function(n){return (n<10?'0':'')+n};
  for(var i=0;i<lead;i++)cells+='<span></span>';
- for(var d=1;d<=days;d++){var k=y+'-'+P(mo)+'-'+P(d),off=k>t||k<min;cells+='<button type="button" class="'+(k===CAL.sel?'on':'')+(k===t?' td':'')+'"'+(off?' disabled':' onclick="calPick(\\''+k+'\\')"')+'>'+d+'</button>'}
- var lab=CAL.sel?day(CAL.sel):CAL.pre==='y'?'Yesterday':CAL.pre==='7'?'Last 7 days':CAL.pre==='30'?'Last 30 days':'Pick a day',pb=function(r,l){return '<button type="button" class="'+(CAL.pre===r?'on':'')+'" onclick="calPre(\\''+r+'\\')">'+l+'</button>'};
- o.innerHTML='<div class="calc"><div class="calh"><small>PICK A DAY</small><button type="button" class="calx" onclick="calClose()" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>'
+ for(var d=1;d<=days;d++){var k=y+'-'+P(mo)+'-'+P(d),off=k>t||k<min;cells+='<button type="button" class="'+(k===CAL.sel||k===CAL.end?'on':CAL.sel&&CAL.end&&k>CAL.sel&&k<CAL.end?'mid':'')+(k===t?' td':'')+'"'+(off?' disabled':' onclick="calPick(\\''+k+'\\')"')+'>'+d+'</button>'}
+ var nd=CAL.sel&&CAL.end?Math.round((Date.parse(CAL.end)-Date.parse(CAL.sel))/864e5)+1:0,lab=nd?dm(CAL.sel)+' – '+day(CAL.end):CAL.sel?day(CAL.sel):CAL.pre==='y'?'Yesterday':CAL.pre==='7'?'Last 7 days':CAL.pre==='30'?'Last 30 days':'Pick a day',pb=function(r,l){return '<button type="button" class="'+(CAL.pre===r?'on':'')+'" onclick="calPre(\\''+r+'\\')">'+l+'</button>'};
+ o.innerHTML='<div class="calc"><div class="calh"><small>PICK DAYS</small><button type="button" class="calx" onclick="calClose()" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>'
   +'<div class="calp seg"><i class="sgp"></i>'+pb('y','Yesterday')+pb('7','Last 7 days')+pb('30','Last 30 days')+'</div>'
   +'<div class="calm"><button type="button" onclick="calNav(-1)"'+(CAL.m<=min.slice(0,7)?' disabled':'')+'>‹</button><b>'+['January','February','March','April','May','June','July','August','September','October','November','December'][mo-1]+' '+y+'</b><button type="button" onclick="calNav(1)"'+(CAL.m>=t.slice(0,7)?' disabled':'')+'>›</button></div>'
   +'<div class="calw"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div><div class="calg">'+cells+'</div>'
-  +'<div class="calf"><div><b>'+lab+'</b><small>'+(CAL.sel?'one day':CAL.pre?'until today':'tap a day')+'</small></div><button type="button" class="calcl" onclick="calPre(\\'\\');CAL.sel=\\'\\';calDraw()">Clear</button><button type="button" class="calsh" onclick="calShow()">Show</button></div></div>';segPos()}
-function calShow(){if(CAL.sel){AF.r='day';AF.day=CAL.sel}else if(CAL.pre){AF.r=CAL.pre}else AF.r='all';AF.n=100;calClose();ahDraw()}
+  +'<div class="calf"><div><b>'+lab+'</b><small>'+(nd?nd+' days':CAL.sel?'one day · tap another day for a range':CAL.pre?'until today':'tap a day')+'</small></div><button type="button" class="calcl" onclick="calPre(\\'\\');CAL.sel=\\'\\';CAL.end=\\'\\';calDraw()">Clear</button><button type="button" class="calsh" onclick="calShow()">Show</button></div></div>';segPos()}
+function calShow(){if(CAL.sel&&CAL.end){AF.r='rng';AF.from=CAL.sel;AF.to=CAL.end}else if(CAL.sel){AF.r='day';AF.day=CAL.sel}else if(CAL.pre){AF.r=CAL.pre}else AF.r='all';AF.n=100;calClose();ahDraw()}
 document.querySelectorAll('[data-ny]').forEach(function(e){var v=e.getAttribute('data-ny'),l=loc(v.slice(0,10),v.slice(11,16));if(l.tm&&l.d)e.textContent=day(l.d)+' · '+l.tm});
 if(location.hash==='#ah'||location.hash==='#ap'){var h0=location.hash.slice(1);document.getElementById('fb').hidden=h0==='st';document.getElementById('home').hidden=true;document.getElementById(h0).hidden=false;if(h0==='ah')ahDraw()}
 var SAY=null,SAYT=null;
@@ -729,7 +730,7 @@ function digestMailHtml(name, list, open, toFix, link) {
   return `<!doctype html><html><body style="margin:0;background:#F4F6FB;padding:20px 10px"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px">
 <tr><td background="${B}tt-banner.jpg" bgcolor="#0F1F52" valign="top" style="background:#0F1F52 url(${B}tt-banner.jpg) right center / cover no-repeat;border-radius:18px;height:150px;padding:18px 20px">
 <img src="${B}hemera-logo.png" alt="HEMERA" height="18" style="display:block;height:18px;border:0">
-<div style="height:46px;line-height:46px">&nbsp;</div>
+<div style="height:58px;line-height:58px">&nbsp;</div>
 <p style="margin:0;${F};font-size:21px;font-weight:900;color:#ffffff">Hi ${E(name)}</p>
 <p style="margin:3px 0 0;${F};font-size:12.5px;font-weight:700;color:#C9D3F5">${open} open issue${open === 1 ? '' : 's'}${toFix ? ' · ' + toFix + ' ad' + (toFix === 1 ? '' : 's') + ' to fix' : ''}</p></td></tr>
 <tr><td style="height:12px;line-height:12px">&nbsp;</td></tr>
@@ -738,6 +739,11 @@ function digestMailHtml(name, list, open, toFix, link) {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table>${more}
 <table role="presentation" cellpadding="0" cellspacing="0" style="margin:16px auto 0"><tr><td style="background:#203C8E;border-radius:12px"><a href="${E(link)}" style="display:inline-block;padding:12px 26px;${F};font-size:14px;font-weight:800;color:#ffffff;text-decoration:none">Open my issues</a></td></tr></table></td></tr>
 <tr><td style="padding:14px 0 0;${F};font-size:11px;color:#8A93A8;text-align:center">You get this because a new issue was found on ads you made.</td></tr></table></td></tr></table></body></html>`;
+}
+function nameOf(m, who) {
+  const n = String((m && m.name) || '').trim().split(/\s+/)[0]; if (n) return n;
+  const l = String((m && m.email) || '').split('@')[0].split(/[._\-+0-9]/).filter(Boolean)[0] || '';
+  return l ? l.charAt(0).toUpperCase() + l.slice(1).toLowerCase() : '';
 }
 /** One person's open issues (newest first) and how many of their live ads need a fix. */
 function digestOf(who, acct) {
@@ -834,7 +840,7 @@ const fn = onRequest({
     } catch (e) { console.warn('TikTok picture: ' + ((e && e.message) || e)); res.status(502).send(''); }
     return;
   }
-  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct' && route !== '/feed' && route !== '/people' && route !== '/peopleSet' && route !== '/peopleView' && route !== '/akPicSet' && route !== '/arNeed' && route !== '/arSet' && route !== '/issueMail' && route !== '/issueMailTest') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
+  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct' && route !== '/feed' && route !== '/people' && route !== '/peopleSet' && route !== '/peopleView' && route !== '/akPicSet' && route !== '/mailPreview' && route !== '/peopleClear' && route !== '/arNeed' && route !== '/arSet' && route !== '/issueMail' && route !== '/issueMailTest') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
   let body = req.body;
   if (!(body && typeof body === 'object' && !Buffer.isBuffer(body))) {
     const text = Buffer.isBuffer(body) ? body.toString('utf8') : typeof body === 'string' ? body : (req.rawBody ? req.rawBody.toString('utf8') : '');
@@ -877,6 +883,19 @@ const fn = onRequest({
       await fsUpdate('server/tt-akpic', () => ({ v, data, at: Date.now() })); akPicHeld = null;
       res.json({ ok: true }); return;
     }
+    // v714 the email this person would get now (to look at in the app), and clearing a person
+    if (route === '/mailPreview') {
+      await assertAdmin(body.token);
+      const who = String(body.who || '').trim().toLowerCase(), d = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, m = (d.map || {})[who] || {}, acct = await ttAcct(), dg = digestOf(who, acct);
+      res.json({ ok: true, result: dg.L.length ? digestMailHtml(nameOf(m, who) || 'there', dg.L.slice(0, 3), dg.L.length, dg.toFix, 'https://sekna-app.web.app/tiktok/me') : '' }); return;
+    }
+    if (route === '/peopleClear') {
+      await assertAdmin(body.token);
+      const who = String(body.who || '').trim().toLowerCase(); if (!who) throw new Error('No account.');
+      const doc = await fsUpdate(TT_PEOPLE, d => { d = d || {}; d.map = d.map || {}; delete d.map[who]; return d; });
+      await fsUpdate(TT_ME, d => { d = d || {}; ['opens', 'mlog', 'mailed', 'push', 'seen'].forEach(k => { if (d[k]) delete d[k][who]; }); Object.keys(d.sess || {}).forEach(t => { if (d.sess[t].who === who) delete d.sess[t]; }); return d; });
+      res.json({ ok: true, result: (doc && doc.map) || {} }); return;
+    }
     // v696 an admin sees a person's emailed page exactly as it looks to them (no sign-in, no notifications)
     if (route === '/peopleView') {
       await assertAdmin(body.token);
@@ -886,7 +905,7 @@ const fn = onRequest({
       res.json({ ok: true, result: personPage(who, await ttAcct(), d.map || {}, false, false, await ttFeed().catch(() => null)).replace('var AH=', 'var VT=' + JSON.stringify(vt) + ';var AH=') }); return;
     }
     if (route === '/people') { const d = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, me = (await fsGet(TT_ME).catch(() => null)) || {};
-      res.json({ ok: true, result: Object.assign({}, d.map || {}, { _mails: d.mails || {}, _opens: me.opens || {} }) }); return; }
+      res.json({ ok: true, result: Object.assign({}, d.map || {}, { _mails: d.mails || {}, _opens: me.opens || {}, _mlog: me.mlog || {} }) }); return; }
     // v680 email the person who made the ads of an issue (admins; only people linked to a HEMERA profile)
     // v682 a test: the email for one of this person's open issues, sent to the admin who taps it (not to the person)
     if (route === '/issueMailTest') {
@@ -896,11 +915,9 @@ const fn = onRequest({
       const issue = (acct.issues || []).find(x => !/^yes/i.test(x.fixed) && String(x.by || '').toLowerCase().indexOf(who) >= 0) || (acct.issues || [])[0];
       if (!issue) throw new Error('No open issue to send.');
       if (!notify.mailReady()) throw new Error('Email is not set up on the server yet.');
-      const doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, m = (doc.map || {})[who] || {}, name = m.name || who.split('@')[0];
-      const tok = require('crypto').randomBytes(18).toString('base64url');
-      await fsUpdate(TT_LINKS, d => { d = d || {}; const now = Date.now(); Object.keys(d).forEach(k => { if (!d[k] || d[k].exp < now) delete d[k]; }); d[tok] = { key: issueKey(issue), who, exp: now + 14 * 864e5, test: true }; return d; });
+      const doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, m = (doc.map || {})[who] || {}, name = nameOf(m, who) || 'there';
       const dg = digestOf(who, acct), L3 = (dg.L.length ? dg.L : [issue]).slice(0, 3);
-      await notify.sendMail({ to: me.email, subject: '[Test] TikTok: ' + (dg.L.length || 1) + ' open issue' + ((dg.L.length || 1) === 1 ? '' : 's') + ' on your ads', rawHtml: digestMailHtml(name, L3, dg.L.length || 1, dg.toFix, 'https://sekna-app.web.app/tiktok/me') });
+      await notify.sendMail({ to: me.email, subject: (dg.L.length ? '[Test] ' : '[Test · sample issue, they have none] ') + 'TikTok: ' + (dg.L.length || 1) + ' open issue' + ((dg.L.length || 1) === 1 ? '' : 's') + ' on your ads', rawHtml: digestMailHtml(name, L3, dg.L.length || 1, dg.toFix, 'https://sekna-app.web.app/tiktok/me') });
       res.json({ ok: true, result: { to: me.email, issue: issue.type } }); return;
     }
     if (route === '/issueMail') {
@@ -911,12 +928,10 @@ const fn = onRequest({
       const doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, m = (doc.map || {})[who];
       if (!m || !m.email) throw new Error('Link this person to a HEMERA profile first (Account & Policy → Team accounts).');
       if (!notify.mailReady()) throw new Error('Email is not set up on the server yet.');
-      const name = m.name || String(m.email).split('@')[0];
-      const tok = require('crypto').randomBytes(18).toString('base64url');
-      await fsUpdate(TT_LINKS, d => { d = d || {}; const now = Date.now(); Object.keys(d).forEach(k => { if (!d[k] || d[k].exp < now) delete d[k]; }); d[tok] = { key, who, exp: now + 14 * 864e5 }; return d; });
+      const name = nameOf(m, who) || 'there';
       const dg = digestOf(who, acct), L3 = (dg.L.length ? dg.L : [issue]).slice(0, 3);
       await notify.sendMail({ to: m.email, replyTo: me && me.email ? me.email : undefined, subject: 'TikTok: ' + (dg.L.length || 1) + ' open issue' + ((dg.L.length || 1) === 1 ? '' : 's') + ' on your ads', rawHtml: digestMailHtml(name, L3, dg.L.length || 1, dg.toFix, 'https://sekna-app.web.app/tiktok/me') });
-      await fsUpdate(TT_ME, d => { d = d || {}; d.mailed = d.mailed || {}; d.mailed[who] = [...new Set((d.mailed[who] || []).concat(dg.L.map(issueKey)))]; return d; });
+      await fsUpdate(TT_ME, d => { d = d || {}; d.mailed = d.mailed || {}; d.mailed[who] = [...new Set((d.mailed[who] || []).concat(dg.L.map(issueKey)))]; d.mlog = d.mlog || {}; d.mlog[who] = (d.mlog[who] || []).concat([{ at: Date.now(), n: dg.L.length, by: 'admin' }]).slice(-200); return d; });
       const at = Date.now();
       await fsUpdate(TT_PEOPLE, d => { d = d || {}; d.mails = d.mails || {}; const l = d.mails[key] = (d.mails[key] || []).filter(x => x.who !== who); l.push({ who, at }); return d; });
       res.json({ ok: true, result: { at } }); return;
