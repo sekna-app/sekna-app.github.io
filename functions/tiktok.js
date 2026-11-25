@@ -290,7 +290,8 @@ async function meSay(b) {
   const en = L.find(t => sayKey(t) === k); if (!en) return { ok: false, error: 'This message is not here any more.' };
   const ak = require('./ak'), admin = require('./access').ACCESS.ADMIN_EMAILS[1], mine = String((map[who] && map[who].email) || '');
   // no Egyptian copy yet: Alexandra writes it now (the person's own Alexandra account, or the owner's until they join the app) and it is kept
-  if (!AR[k]) { let eg = ''; if (mine) eg = await ak.ttEgy(en, mine, first).catch(() => ''); if (!eg) eg = await ak.ttEgy(en, admin, 'TikTok page').catch(() => '');
+  if (!AR[k]) { const bad = e => { console.error('TikTok Egyptian text: ' + ((e && e.message) || e)); return ''; };
+    let eg = ''; if (mine) eg = await ak.ttEgy(en, mine, first).catch(bad); if (!eg) eg = await ak.ttEgy(en, admin, 'TikTok page').catch(bad);
     if (/[؀-ۿ]/.test(eg)) { AR[k] = eg; await fsUpdate('server/tt-ar', d => { d = d || {}; d.map = d.map || {}; d.map[k] = eg; return d; }).catch(() => null); } }
   const text = AR[k] || en;
   if (sayCache.has(text)) return Object.assign({ text, ar: !!AR[k] }, sayCache.get(text));

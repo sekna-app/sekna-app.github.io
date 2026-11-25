@@ -510,9 +510,9 @@ async function ttEgy(text, email, name) {
   const pp = await prep(String(email || '').toLowerCase(), String(name || '').slice(0, 60)); if (pp.blocked) return '';
   const keys = (pp.keys || []).filter(Boolean), url = String(pp.url || '').replace(/:streamGenerateContent.*$/, ':generateContent').replace(/\?alt=sse$/, '');
   const payload = { contents: [{ role: 'user', parts: [{ text: 'You are Alexandra, a warm, friendly girl from Alexandria who helps the TikTok ads team. Rewrite this message as what you would say out loud to your colleague, in natural spoken Egyptian Arabic (Arabic letters). Keep every fact. Write people\'s names in Arabic letters. Do not read long ad or campaign codes letter by letter: say them shortly in words. Short, kind, 2 to 4 sentences. Only the text, nothing else.\n\n' + String(text).slice(0, 1500) }] }],
-    generationConfig: { temperature: 0.4, maxOutputTokens: 600, thinkingConfig: { thinkingBudget: 0 } } };
+    generationConfig: { temperature: 0.4, maxOutputTokens: 4000 } };
   let r = null; for (let ki = 0; ki < keys.length; ki++) { r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': keys[ki] }, body: JSON.stringify(payload) }); if (r.status === 429) continue; break; }
-  if (!r || !r.ok) return '';
+  if (!r || !r.ok) { const t = r ? await r.text().catch(() => '') : 'no key'; console.error('TikTok Egyptian text ' + (r ? r.status : '') + ': ' + String(t).slice(0, 300)); return ''; }
   const j = await r.json().catch(() => ({}));
   return ((((j.candidates || [])[0] || {}).content || {}).parts || []).map(x => x.text || '').join('').trim().slice(0, 1500);
 }
