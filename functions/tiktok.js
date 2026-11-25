@@ -275,9 +275,88 @@ function ttSnap() {
   snapPending = buildTikTokSnap().then(v => { snapHeld = { at: Date.now(), v }; snapPending = null; return v; }, e => { snapPending = null; if (snapHeld) return snapHeld.v; throw e; });
   return snapPending;
 }
-const TT_PEOPLE = 'server/tt-people', TT_LINKS = 'server/tt-issue-links';
+const TT_PEOPLE = 'server/tt-people', TT_LINKS = 'server/tt-issue-links', TT_ME = 'server/tt-me';
+const sha = t => require('crypto').createHash('sha256').update(String(t)).digest('hex');
+/** The person's own page: sign in with the work email (the one linked in Team accounts), a 6-digit code by email, a session for 60 days. */
+async function meRoute(op, b) {
+  const email = String(b.email || '').trim().toLowerCase();
+  if (op === 'code') {
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw new Error('Enter your work email.');
+    const doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, who = Object.keys(doc.map || {}).find(k => String((doc.map[k] || {}).email || '').toLowerCase() === email);
+    // the same answer either way, so the page does not tell who is in the team
+    if (who) {
+      const st = (await fsGet(TT_ME).catch(() => null)) || {}, c = (st.codes || {})[sha(email)];
+      if (c && Date.now() - c.at < 45000) throw new Error('A code was just sent. Wait a few seconds and try again.');
+      const code = String(require('crypto').randomInt(0, 1000000)).padStart(6, '0');
+      await fsUpdate(TT_ME, d => { d = d || {}; d.codes = d.codes || {}; const now = Date.now(); Object.keys(d.codes).forEach(k => { if (d.codes[k].exp < now) delete d.codes[k]; }); d.codes[sha(email)] = { h: sha(email + '|' + code), exp: now + 10 * 60000, at: now, tries: 0, who }; return d; });
+      if (notify.mailReady()) await notify.sendMail({ to: email, subject: 'Your HEMERA code: ' + code, rawHtml: codeMailHtml(code) });
+    }
+    return { ok: true };
+  }
+  if (op === 'verify') {
+    const code = String(b.code || '').replace(/\D/g, ''); let out = null, bad = 'That code is not right. Check it and try again.';
+    await fsUpdate(TT_ME, d => { d = d || {}; d.codes = d.codes || {}; d.sess = d.sess || {}; const k = sha(email), c = d.codes[k];
+      if (!c || c.exp < Date.now()) { bad = 'The code has expired. Ask for a new one.'; return d; }
+      if (c.tries >= 5) { bad = 'Too many tries. Ask for a new code.'; return d; }
+      if (c.h !== sha(email + '|' + code)) { c.tries++; return d; }
+      delete d.codes[k]; const tok = require('crypto').randomBytes(24).toString('base64url'), now = Date.now();
+      Object.keys(d.sess).forEach(t => { if (d.sess[t].exp < now) delete d.sess[t]; });
+      d.sess[sha(tok)] = { who: c.who, email, exp: now + 60 * 864e5 }; out = tok; return d; });
+    if (!out) throw new Error(bad);
+    return { ok: true, sess: out };
+  }
+  const st = (await fsGet(TT_ME).catch(() => null)) || {}, se = (st.sess || {})[sha(b.sess || '')];
+  if (op === 'out') { if (se) await fsUpdate(TT_ME, d => { d = d || {}; if (d.sess) delete d.sess[sha(b.sess || '')]; return d; }); return { ok: true }; }
+  if (!se || se.exp < Date.now()) return { ok: false, signedOut: true, error: 'Please sign in again.' };
+  const doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {};
+  if (String(((doc.map || {})[se.who] || {}).email || '').toLowerCase() !== se.email) return { ok: false, signedOut: true, error: 'This email is not linked any more.' };
+  return { ok: true, html: personPage(se.who, await ttAcct(), doc.map || {}, true) };
+}
+function codeMailHtml(code) {
+  const F = "font-family:Inter,'Segoe UI',Helvetica,Arial,sans-serif";
+  return `<!doctype html><html><body style="margin:0;background:#F4F6FB;padding:24px 12px"><table role="presentation" width="100%"><tr><td align="center"><table role="presentation" width="100%" style="max-width:460px"><tr><td style="background:#ffffff;border-radius:20px;padding:26px 24px;text-align:center">
+<p style="margin:0;${F};font-size:11px;font-weight:900;letter-spacing:1.5px;color:#B0812E">HEMERA · TIKTOK</p><h1 style="margin:8px 0 6px;${F};font-size:21px;font-weight:900;color:#0F1F52">Your sign-in code</h1>
+<p style="margin:0 0 18px;${F};font-size:13px;color:#6B7385">Enter it on the page to see the issues on your TikTok ads.</p>
+<div style="display:inline-block;background:#203C8E;color:#fff;border-radius:14px;padding:14px 22px;${F};font-size:30px;font-weight:900;letter-spacing:8px">${code}</div>
+<p style="margin:18px 0 0;${F};font-size:12px;color:#8A93A8">It works for 10 minutes. If you did not ask for it, ignore this email.</p></td></tr></table></td></tr></table></body></html>`;
+}
+/** The sign-in screen, in HEMERA's sign-in look. */
+function meGate() {
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><meta name="theme-color" content="#0c1a46"><title>TikTok · HEMERA</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box;margin:0}html,body{height:100%}body{font-family:Inter,system-ui,sans-serif;background:#0c1a46;display:grid;place-items:center;padding:20px;overflow:hidden}
+.o{position:fixed;border-radius:50%;filter:blur(42px);opacity:.75;pointer-events:none}.o1{width:360px;height:360px;left:-110px;top:-90px;background:#3d6bff;animation:a 14s ease-in-out infinite alternate}.o2{width:440px;height:440px;right:-170px;bottom:-150px;background:#c28d3e;opacity:.55;animation:a 18s ease-in-out infinite alternate-reverse}
+@keyframes a{to{transform:translate(40px,30px) scale(1.08)}}
+.card{position:relative;width:100%;max-width:380px;background:#fff;border-radius:24px;padding:26px 20px 22px;text-align:center;box-shadow:0 30px 60px rgba(0,0,0,.35);animation:in .6s cubic-bezier(.2,.75,.25,1) both}@keyframes in{from{opacity:0;transform:translateY(14px)}}
+.lgb{margin:-26px -20px 14px;padding:18px 0 16px;border-radius:24px 24px 0 0;background:linear-gradient(120deg,#132457,#203C8E 60%,#3B5BC8)}.lg{width:150px;margin:0 auto;display:block}.tag{font-size:10px;font-weight:900;letter-spacing:.42em;padding-left:.42em;color:#B0812E;margin-bottom:18px}
+h1{font-size:22px;letter-spacing:-.03em;color:#1d2433;margin:4px 0 8px}.sub{font-size:12.5px;line-height:1.6;color:#636b7a;margin:0 auto 18px;max-width:300px}
+label{display:block;text-align:left;margin-bottom:14px}label span{display:block;margin:0 0 6px 2px;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#7b8392}
+input{width:100%;font:inherit;font-size:15px;font-weight:600;border:1.5px solid #dfe4ef;border-radius:14px;padding:13px 14px;outline:none}input:focus{border-color:#203C8E}
+.code{font-size:26px;font-weight:900;letter-spacing:12px;text-align:center}
+.btn{width:100%;border:0;border-radius:14px;padding:14px;font:inherit;font-size:14px;font-weight:800;color:#fff;background:linear-gradient(140deg,#203C8E,#2C4FB8);cursor:pointer;box-shadow:0 10px 22px rgba(32,60,142,.3)}.btn[disabled]{opacity:.6}
+.ic{width:60px;height:60px;margin:0 auto 10px;border-radius:20px;display:grid;place-items:center;background:#eef2fd;color:#203c8e}.ic svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.err{color:#c0392b;font-size:12px;font-weight:700;min-height:16px;margin:-4px 0 10px}.lk{display:flex;justify-content:center;gap:18px;margin-top:14px}.lk button{border:0;background:none;font:inherit;font-size:12px;font-weight:800;color:#203C8E;cursor:pointer}
+.ft{position:fixed;bottom:14px;left:0;right:0;text-align:center;font-size:10.5px;font-weight:700;color:rgba(255,255,255,.7)}</style></head>
+<body><span class="o o1"></span><span class="o o2"></span>
+<main class="card"><div class="lgb"><img class="lg" src="https://sekna-app.web.app/get/logo-white.webp" alt="HEMERA"></div><div class="tag">TIKTOK ISSUES</div>
+<section id="s1"><h1>Your TikTok ads</h1><p class="sub">Enter your work email. We'll send you a code to see the issues on the ads you made.</p>
+<form onsubmit="send(event)"><label><span>Work email</span><input id="em" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" placeholder="name@sekna.co.uk"></label><p class="err" id="e1"></p><button class="btn" id="b1">Send verification code</button></form></section>
+<section id="s2" hidden><div class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7l8 6 8-6"/></svg></div><h1>Check your inbox</h1><p class="sub">If <b id="echo"></b> is on the team, we sent it a 6-digit code.</p>
+<form onsubmit="verify(event)"><label><span>Code</span><input id="cd" class="code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••"></label><p class="err" id="e2"></p><button class="btn" id="b2">Verify &amp; Continue</button></form>
+<div class="lk"><button type="button" onclick="show(1)">Change email</button><button type="button" onclick="send()">Resend code</button></div></section></main>
+<p class="ft">TikTok · Human Appeal US · Account Health</p>
+<script>var B=location.pathname.indexOf('/tiktok/')===0?'/tiktok/me/':'me/';function api(op,b){return fetch(B+op,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(b)}).then(function(r){return r.json()})}
+function show(n){document.getElementById('s1').hidden=n!==1;document.getElementById('s2').hidden=n!==2}
+function S(){try{return localStorage.getItem('tt_me')||''}catch(e){return ''}}
+function load(){var s=S();if(!s)return;api('page',{sess:s}).then(function(j){if(j&&j.ok){document.open();document.write(j.html);document.close()}else{try{localStorage.removeItem('tt_me')}catch(e){}}})}
+function send(e){if(e)e.preventDefault();var em=document.getElementById('em').value.trim(),b=document.getElementById('b1');document.getElementById('e1').textContent='';b.disabled=true;
+ api('code',{email:em}).then(function(j){b.disabled=false;if(!j.ok){document.getElementById('e1').textContent=j.error||'Try again.';show(1);return}document.getElementById('echo').textContent=em;show(2);document.getElementById('cd').focus()}).catch(function(){b.disabled=false;document.getElementById('e1').textContent='No connection. Try again.'})}
+function verify(e){e.preventDefault();var b=document.getElementById('b2');b.disabled=true;document.getElementById('e2').textContent='';
+ api('verify',{email:document.getElementById('em').value.trim(),code:document.getElementById('cd').value}).then(function(j){b.disabled=false;if(!j.ok){document.getElementById('e2').textContent=j.error||'Try again.';return}try{localStorage.setItem('tt_me',j.sess)}catch(x){}load()}).catch(function(){b.disabled=false})}
+load();</script></body></html>`;
+}
 /** v683 the email's page: the app's look (header, account, TikTok), the person's navy card with all their open issues, and their Ad Checks. */
-function personPage(who, acct, map) {
+function personPage(who, acct, map, signedIn) {
   const E = notify.esc, W = String(who || '').toLowerCase(), m = /^([^@]+)@(.+)$/.exec(W), nm = (map[W] && map[W].name) || (m ? m[1] : 'Your ads');
   const mon = k => { const x = /^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}:\d{2}))?/.exec(String(k || '')); return x ? (+x[3]) + ' ' + MON[+x[2] - 1] + ' ' + x[1] + (x[4] ? ' · ' + x[4] : '') : String(k || ''); };
   const PIC = u => 'https://europe-west2-human-appeal-media-plan.cloudfunctions.net/tiktok/pic?u=' + encodeURIComponent(u);
@@ -332,10 +411,11 @@ details summary{list-style:none;cursor:pointer}details summary::-webkit-details-
 <div class="t">Ad <span>Checks</span></div><div class="sub">${chk.length} of your live ads need a fix · tap a problem</div>
 <div class="card">${checks || '<div class="empty">Every live ad you made passes.</div>'}</div></div>
 ${pages}
-<div class="gl"></div><p class="ft">TikTok · Human Appeal US · Account Health<br><a href="https://sekna-app.web.app/get/">Get the HEMERA app</a></p></div>
+<div class="gl"></div><p class="ft">TikTok · Human Appeal US · Account Health<br><a href="https://sekna-app.web.app/get/">Get the HEMERA app</a>${signedIn ? ' · <a href="#" onclick="out();return false">Sign out</a>' : ''}</p></div>
 <script>function go(id){document.getElementById('home').hidden=!!id;document.querySelectorAll('.pg').forEach(function(p){p.hidden=p.id!==id});if(id)history.pushState({p:id},'','#'+id);else if(location.hash)history.pushState({},'',location.pathname);scrollTo(0,0)}
 addEventListener('popstate',function(){var id=location.hash.slice(1);document.getElementById('home').hidden=!!id;document.querySelectorAll('.pg').forEach(function(p){p.hidden=p.id!==id})});
 function tg(id){var d=document.getElementById(id);if(d)d.hidden=!d.hidden}
+function out(){var s='';try{s=localStorage.getItem('tt_me')||'';localStorage.removeItem('tt_me')}catch(e){}fetch('/tiktok/me/out',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({sess:s})}).finally(function(){location.href='/tiktok/me'})}
 function cp(t,b){try{navigator.clipboard.writeText(t).then(function(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy'},1200)})}catch(e){}}</script></body></html>`;
 }
 /** The issue on a page of its own (HEMERA's look), for the email's link. */
@@ -381,7 +461,7 @@ function issueMailHtml(x, name, link) {
 <p style="margin:0;${F};font-size:13.5px;font-weight:600;color:#4b5263;line-height:1.5">${E(x.what || '')}</p>
 ${x.ads ? `<p style="margin:10px 0 0;${F};font-size:12px;font-weight:800;color:#203C8E">${E(String(x.ads).replace(/\n+/g, ' · '))}</p>` : ''}</td></tr></table>
 <div style="height:20px"></div><table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto"><tr><td style="background:#203C8E;border-radius:12px"><a href="${url}" style="display:inline-block;padding:13px 26px;${F};font-size:14px;font-weight:800;color:#ffffff;text-decoration:none">See the issue</a></td></tr></table>
-<p style="margin:14px 0 0;${F};font-size:12px;color:#6B7385;text-align:center">The link works for 14 days, no sign-in needed.</p></td></tr></table><p style="${F};font-size:11px;color:#8A93A8;text-align:center;margin:18px 0 0">TikTok · Human Appeal US · Account Health<br>You get this because an ad you made has an open issue.</p></td></tr></table></body></html>`;
+<p style="margin:14px 0 0;${F};font-size:12px;color:#6B7385;text-align:center">Sign in with your work email to see all the issues on your ads.</p></td></tr></table><p style="${F};font-size:11px;color:#8A93A8;text-align:center;margin:18px 0 0">TikTok · Human Appeal US · Account Health<br>You get this because an ad you made has an open issue.</p></td></tr></table></body></html>`;
 }
 let feedHeld = null, feedPending = null;
 function ttFeed() {
@@ -412,6 +492,13 @@ const fn = onRequest({
   const route = String(req.path || '/').replace(/\/+$/, '') || '/';
   if (route === '/ping') { res.json({ ok: true }); return; }
   // GET /pic?u=<TikTok picture link>: the picture through this server (only links that are in the sheet's Creatives tab)
+  // v685 the person's own page: /tiktok/me (work email → 6-digit code → their issues and ad checks)
+  if (/^(?:\/tiktok)?\/me$/.test(route) && req.method === 'GET') { res.set('Content-Type', 'text/html; charset=utf-8'); res.set('X-Robots-Tag', 'noindex'); res.status(200).send(meGate()); return; }
+  if (/^(?:\/tiktok)?\/me\/(code|verify|page|out)$/.test(route) && req.method === 'POST') {
+    let b = req.body; if (!(b && typeof b === 'object' && !Buffer.isBuffer(b))) { try { b = JSON.parse(Buffer.isBuffer(b) ? b.toString('utf8') : (typeof b === 'string' ? b : (req.rawBody ? req.rawBody.toString('utf8') : '{}'))); } catch (e) { b = {}; } }
+    try { res.json(await meRoute(route.split('/').pop(), b || {})); } catch (e) { res.json({ ok: false, error: String((e && e.message) || e).slice(0, 200) }); }
+    return;
+  }
   // v681 the issue page from the email: /tiktok/i/<secret> (on sekna-app.web.app) or /i/<secret> here; no sign-in, 14 days
   const im = /^(?:\/tiktok)?\/i\/([A-Za-z0-9_-]{16,40})$/.exec(route);
   if (im && req.method === 'GET') {
@@ -470,7 +557,7 @@ const fn = onRequest({
       const doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, m = (doc.map || {})[who] || {}, name = m.name || who.split('@')[0];
       const tok = require('crypto').randomBytes(18).toString('base64url');
       await fsUpdate(TT_LINKS, d => { d = d || {}; const now = Date.now(); Object.keys(d).forEach(k => { if (!d[k] || d[k].exp < now) delete d[k]; }); d[tok] = { key: issueKey(issue), who, exp: now + 14 * 864e5, test: true }; return d; });
-      await notify.sendMail({ to: me.email, subject: '[Test] TikTok issue to fix: ' + String(issue.type || 'Issue').slice(0, 80), rawHtml: issueMailHtml(issue, name, 'https://sekna-app.web.app/tiktok/i/' + tok) });
+      await notify.sendMail({ to: me.email, subject: '[Test] TikTok issue to fix: ' + String(issue.type || 'Issue').slice(0, 80), rawHtml: issueMailHtml(issue, name, 'https://sekna-app.web.app/tiktok/me') });
       res.json({ ok: true, result: { to: me.email, issue: issue.type } }); return;
     }
     if (route === '/issueMail') {
@@ -484,7 +571,7 @@ const fn = onRequest({
       const name = m.name || String(m.email).split('@')[0];
       const tok = require('crypto').randomBytes(18).toString('base64url');
       await fsUpdate(TT_LINKS, d => { d = d || {}; const now = Date.now(); Object.keys(d).forEach(k => { if (!d[k] || d[k].exp < now) delete d[k]; }); d[tok] = { key, who, exp: now + 14 * 864e5 }; return d; });
-      await notify.sendMail({ to: m.email, replyTo: me && me.email ? me.email : undefined, subject: 'TikTok issue to fix: ' + String(issue.type || 'Issue').slice(0, 80), rawHtml: issueMailHtml(issue, name, 'https://sekna-app.web.app/tiktok/i/' + tok) });
+      await notify.sendMail({ to: m.email, replyTo: me && me.email ? me.email : undefined, subject: 'TikTok issue to fix: ' + String(issue.type || 'Issue').slice(0, 80), rawHtml: issueMailHtml(issue, name, 'https://sekna-app.web.app/tiktok/me') });
       const at = Date.now();
       await fsUpdate(TT_PEOPLE, d => { d = d || {}; d.mails = d.mails || {}; const l = d.mails[key] = (d.mails[key] || []).filter(x => x.who !== who); l.push({ who, at }); return d; });
       res.json({ ok: true, result: { at } }); return;
