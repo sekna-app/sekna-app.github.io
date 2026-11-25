@@ -24252,7 +24252,13 @@ function ttIsAdmin(){return !!(typeof ACCESS_PROFILE!=='undefined'&&ACCESS_PROFI
 
 function ttAkPicSync(){try{if(!ttIsAdmin()||TTP.akSent)return;const d=akBav();if(!d||!/^data:image\//.test(d.data||''))return;const k='tt_akpic_v';if(localStorage.getItem(k)===String(d.v||d.data.length))return;TTP.akSent=1;
  fetch(TT_API+'/akPicSet',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),v:d.v||'',data:d.data})}).then(x=>x.json()).then(j=>{if(j&&j.ok)localStorage.setItem(k,String(d.v||d.data.length))}).catch(()=>{})}catch(e){}}
-function ttTeamBlock(D){ttAkPicSync();const K=ttTeamKeys(D),adm=ttIsAdmin();if(!K.length)return '';const P=((typeof PFP!=='undefined'&&PFP.people)||[]),named=K.filter(o=>ttMapOf(o.k)).length;
+
+async function ttArSync(){if(!ttIsAdmin()||TTP.arBusy||TTP.arDone)return;TTP.arBusy=1;
+ const post=(r,b)=>fetch(TT_API+r,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(Object.assign({token:getAccessToken()},b))}).then(x=>x.json());
+ try{for(let n=0;n<4;n++){const j=await post('/arNeed',{});const L=(j&&j.ok&&j.result)||[];if(!L.length)break;
+   const t=await akX({op:'tr',plat:'tiktok',texts:L});const out=(t&&t.ok&&t.out)||[];const items=L.map((en,i)=>({en,ar:out[i]||''})).filter(x=>x.ar);if(!items.length)break;await post('/arSet',{items})}
+  TTP.arDone=1}catch(e){}finally{TTP.arBusy=0}}
+function ttTeamBlock(D){ttAkPicSync();ttArSync();const K=ttTeamKeys(D),adm=ttIsAdmin();if(!K.length)return '';const P=((typeof PFP!=='undefined'&&PFP.people)||[]),named=K.filter(o=>ttMapOf(o.k)).length;
  const oR=TTP.opR||'all',fb=(k,l)=>`<button type="button" class="${oR===k?'on':''}" onclick="TTP.opR='${k}';ttAcDraw()">${l}</button>`;
  return `<div class="tta-sec"><b>Team accounts</b><span>${named} of ${K.length} with an email</span></div><div class="ttf-dates tta-of">${fb('all','All time')}${fb('7','Last 7 days')}${fb('t','Today')}</div><div class="card tta-team">${K.map(o=>{const m=(TTP.map||{})[o.k]||{},n=ttMapOf(o.k),ed=TTP.edit===o.k,mask=o.k.split('@');
   const av=ttPav({name:n?n.name:mask[0],k:'p',av:n&&n.prof?personAv(n.prof.avatar,n.prof.name):''},36);

@@ -320,6 +320,7 @@ async function meRoute(op, b) {
   }
   // v697 how often each person opens their page (shown to admins in Team accounts)
   const st2 = (await fsUpdate(TT_ME, d => { d = d || {}; d.opens = d.opens || {}; const o = d.opens[se.who] || { n: 0 }, dy = new Date().toISOString().slice(0, 10); o.n++; o.last = Date.now(); o.days = o.days || {}; o.days[dy] = (o.days[dy] || 0) + 1; Object.keys(o.days).sort().slice(0, -90).forEach(k => delete o.days[k]); d.opens[se.who] = o; return d; }).catch(() => null)) || {};
+  await arLoad();
   return { ok: true, html: personPage(se.who, await ttAcct(), doc.map || {}, true, ((st2.push || {})[se.who] || []).length > 0, await ttFeed().catch(() => null)) };
 }
 /** What the person has open now: issue keys and the IDs of their ads that need a fix. */
@@ -362,6 +363,20 @@ function meGate() {
   return gateHtml;
 }
 /** v683 the email's page: the app's look (header, account, TikTok), the person's navy card with all their open issues, and their Ad Checks. */
+// v701 what Alexandra says, in English; the Egyptian Arabic copy is made once by the app (Alexandra's translate) and kept here
+const sayIssue = (first, x) => `Hi ${first}. This is Alexandra. There is an issue on your TikTok ads: ${x.type || 'an issue'}. ${String(x.what || '').replace(/[_/]+/g, ' ')}. Please fix it when you can. Thank you!`;
+const sayCheck = (first, c) => `Hi ${first}. This is Alexandra. One of your ads in ${String(c.campaign).replace(/^HAUS_/, '').replace(/_TikTok.*$/, '').replace(/_/g, ' ')} needs a fix. ${String(c.problems).split(';').map(p => p.trim()).filter(Boolean).join('. ')}. Please fix it when you can. Thank you!`;
+const sayKey = t => require('crypto').createHash('sha1').update(String(t)).digest('hex').slice(0, 16);
+let AR = {}, arAt = 0;
+async function arLoad() { if (Date.now() - arAt < 5 * 60000) return AR; AR = (((await fsGet('server/tt-ar').catch(() => null)) || {}).map) || {}; arAt = Date.now(); return AR; }
+/** Every message Alexandra would say to the people who have an email in Team accounts (for the app to translate). */
+function sayAll(acct, map) {
+  const out = [], bad = c => String(c.problems || '').trim() && !/^ok$/i.test(String(c.problems).trim());
+  Object.keys(map || {}).forEach(W => { if (W.charAt(0) === '_' || !map[W] || !map[W].email) return; const first = String(map[W].name || '').trim().split(/\s+/)[0] || 'there';
+    (acct.issues || []).filter(x => !/^yes/i.test(x.fixed) && String(x.by || '').toLowerCase().indexOf(W) >= 0).forEach(x => out.push(sayIssue(first, x)));
+    (acct.checks || []).filter(c => bad(c) && String(c.by || '').toLowerCase().indexOf(W) >= 0).forEach(c => out.push(sayCheck(first, c))); });
+  return [...new Set(out)];
+}
 function personPage(who, acct, map, signedIn, pushOn, feed) {
   const E = notify.esc, W = String(who || '').toLowerCase(), m = /^([^@]+)@(.+)$/.exec(W), nm = (map[W] && map[W].name) || (m ? m[1] : 'Your ads');
   const mon = k => { const x = /^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}:\d{2}))?/.exec(String(k || '')); return x ? (+x[3]) + ' ' + MON[+x[2] - 1] + ' ' + x[1] + (x[4] ? ' · ' + x[4] : '') : String(k || ''); };
@@ -393,11 +408,11 @@ function personPage(who, acct, map, signedIn, pushOn, feed) {
     <div class="kv"><span>Checked</span><b>${E(mon(ac.checked) || '—')}</b></div></div>`;
   // v699 Alexandra reads the problem out (the phone's own voice; nothing is sent anywhere)
   const first = String((map[W] && map[W].name) || '').trim().split(/\s+/)[0] || 'there';
-  const vn = t => `<button type="button" class="vb" data-say="${E(t)}" onclick="event.stopPropagation();say(this)" aria-label="Alexandra explains"><i class="vai">AI</i><svg class="vp" viewBox="0 0 24 24"><path d="M9 6.5l9 5.5-9 5.5z"/></svg><span class="vd"><i></i><i></i><i></i></span></button>`;
+  const vn = t0 => { const ar = AR[sayKey(t0)], t = ar || t0; return `<button type="button" class="vb" data-say="${E(t)}"${ar ? ' data-lang="ar"' : ''} onclick="event.stopPropagation();say(this)" aria-label="Alexandra explains"><i class="vai">AI</i><svg class="vp" viewBox="0 0 24 24"><path d="M9 6.5l9 5.5-9 5.5z"/></svg><span class="vd"><i></i><i></i><i></i></span></button>`; };
   const others = by => String(by || '').split(/\s+·\s+/).length - 1;
   const list = iss.map((x, i) => `<button type="button" class="ir" onclick="go('i${i}')"><div class="it"><b>${E(x.type || 'Issue')}</b><span class="ch">›</span></div><p>${E(x.what || '')}</p><div class="im"><span class="gold">${others(x.by) > 0 ? '+' + others(x.by) + ' more made these ads' : ''}</span><span class="dt">${E(mon(x.found))}</span></div></button>`).join('');
   const pages = iss.map((x, i) => `<section class="pg" id="i${i}" hidden><button type="button" class="bk" onclick="go('')">‹&nbsp; Issues Log</button>
-    <div class="hh hv"><div><small>${kindOf(x.type)} · FOUND ${E(mon(x.found).toUpperCase())}</small><h2>${E(x.type || 'Issue')}</h2></div>${vn(`Hi ${first}. This is Alexandra. There is an issue on your TikTok ads: ${x.type || 'an issue'}. ${String(x.what || '').replace(/[_/]+/g, ' ')}. Please fix it when you can. Thank you!`)}</div><p class="vcap" hidden></p>
+    <div class="hh hv"><div><small>${kindOf(x.type)} · FOUND ${E(mon(x.found).toUpperCase())}</small><h2>${E(x.type || 'Issue')}</h2></div>${vn(sayIssue(first, x))}</div><p class="vcap" hidden></p>
     <div class="c"><div class="l">What's wrong</div><p class="w">${E(x.what || '—')}</p></div>
     ${x.ads ? `<div class="c"><div class="l">Ads affected</div>${String(x.ads).split(/\n+|,\s+(?=[A-Za-z])/).filter(Boolean).map(a => `<div class="r"><b>${E(a)}</b></div>`).join('')}</div>` : ''}
     ${x.by ? `<div class="c"><div class="l">Made by</div>${String(x.by).split(/\s+·\s+/).map(person).map(p => `<div class="p"><i>${E(String(p.name).charAt(0).toUpperCase())}</i><div><b>${E(p.name)}</b><small>${E(p.sub)}</small></div></div>`).join('')}</div>` : ''}
@@ -406,7 +421,7 @@ function personPage(who, acct, map, signedIn, pushOn, feed) {
   const checks = [...G.entries()].sort((a, b) => b[1].L.length - a[1].L.length).map(([k, g]) => `<details class="cg"><summary style="--c:${g.col}"><i></i><b>${E(k)}</b><em>${g.L.length}</em><span class="ar">⌄</span></summary>
     ${g.L.map(c => { const id = 'a' + (ai++); return `<div class="ca" onclick="tg('${id}')"><b class="an"><span>${E(c.ad)}</span>${c.ids.length > 1 ? `<span class="x2">×${c.ids.length}</span>` : ''}</b>${(c.pics || []).length ? `<div class="pics">${c.pics.slice(0, 5).map(u => u === 'spark' ? '<span class="sp">Spark</span>' : `<span class="pc"><img src="${E(PIC(u))}" alt="" loading="lazy"></span>`).join('')}${c.pics.length > 5 ? `<em>+${c.pics.length - 5}</em>` : ''}</div>` : ''}
       <span class="dt">${E(String(c.campaign).replace(/^HAUS_/, '').replace(/_TikTok.*$/, ''))} · ${E(mon(c.created).replace(/ · .*/, ''))}</span>
-      <div class="dd" id="${id}" hidden><div class="vrow">${vn(`Hi ${first}. This is Alexandra. One of your ads in ${String(c.campaign).replace(/^HAUS_/, '').replace(/_TikTok.*$/, '').replace(/_/g, ' ')} needs a fix. ${String(c.problems).split(';').map(p => p.trim()).filter(Boolean).join('. ')}. Please fix it when you can. Thank you!`)}<span>Hear it from Alexandra</span></div><p class="vcap" hidden></p><div class="wr">${String(c.problems).split(';').map(p => p.trim()).filter(Boolean).map(p => `<span>${E(p)}</span>`).join('')}</div>${c.by ? `<small>Created by</small><p>${E(c.by)}</p>` : ''}<small>Campaign</small><p>${E(c.campaign)}</p>${c.adgroup ? `<small>Ad group</small><p>${E(c.adgroup)}</p>` : ''}${c.ids.length ? `<small>Ad ID${c.ids.length > 1 ? 's · ' + c.ids.length + ' copies' : ''}</small>${c.ids.map(d => `<p>${E(d)} <button type="button" class="cp" onclick="event.stopPropagation();cp('${E(d)}',this)">Copy</button></p>`).join('')}` : ''}</div></div>`; }).join('<div class="sp2"><i></i></div>')}</details>`).join('');
+      <div class="dd" id="${id}" hidden><div class="vrow">${vn(sayCheck(first, c))}<span>Hear it from Alexandra</span></div><p class="vcap" hidden></p><div class="wr">${String(c.problems).split(';').map(p => p.trim()).filter(Boolean).map(p => `<span>${E(p)}</span>`).join('')}</div>${c.by ? `<small>Created by</small><p>${E(c.by)}</p>` : ''}<small>Campaign</small><p>${E(c.campaign)}</p>${c.adgroup ? `<small>Ad group</small><p>${E(c.adgroup)}</p>` : ''}${c.ids.length ? `<small>Ad ID${c.ids.length > 1 ? 's · ' + c.ids.length + ' copies' : ''}</small>${c.ids.map(d => `<p>${E(d)} <button type="button" class="cp" onclick="event.stopPropagation();cp('${E(d)}',this)">Copy</button></p>`).join('')}` : ''}</div></div>`; }).join('<div class="sp2"><i></i></div>')}</details>`).join('');
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex"><meta name="theme-color" content="#132457"><link rel="manifest" href="/tiktok/me-manifest.json"><link rel="apple-touch-icon" href="/icons/icon-192.png"><link rel="icon" href="/icons/icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="HEMERA"><title>${E(nm)} · TikTok · HEMERA</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>*{box-sizing:border-box;margin:0}body{background:#F1F3F8;font-family:Inter,system-ui,sans-serif;color:#141B33;padding-bottom:0;min-height:100vh;display:flex;flex-direction:column}button{font:inherit;color:inherit}
@@ -534,9 +549,9 @@ function say(b){var S=window.speechSynthesis;if(!S||!window.SpeechSynthesisUtter
  var was=SAY===b;sayStop();if(was)return;SAY=b;
  var t=b.getAttribute('data-say'),cap=b.closest('.hv')?b.closest('.hv').nextElementSibling:b.closest('.vrow')?b.closest('.vrow').nextElementSibling:null,t0=Date.now(),est=Math.max(3,t.split(/\s+/).length/2.6)*1000,started=0;
  b.classList.add('ld');
- var u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=1;u.pitch=1.05;
- var V=S.getVoices().filter(function(v){return /^en/i.test(v.lang)}),pick=V.filter(function(v){return /samantha|female|zira|aria|jenny|google us english|karen|moira|serena/i.test(v.name)})[0]||V[0];if(pick)u.voice=pick;
- function go(){if(SAY!==b)return;b.classList.remove('ld');b.classList.add('on');started=Date.now();if(cap&&cap.classList.contains('vcap')){var k=t.indexOf('. ');cap.innerHTML='<b>'+es(t.slice(0,k>0?k+1:0))+'</b> '+es(t.slice(k>0?k+2:0));cap.hidden=false}
+ var ar=b.getAttribute('data-lang')==='ar',u=new SpeechSynthesisUtterance(t);u.lang=ar?'ar-EG':'en-US';u.rate=ar?.95:1;u.pitch=1.05;
+ var V=S.getVoices().filter(function(v){return ar?/^ar/i.test(v.lang):/^en/i.test(v.lang)}),pick=(ar?V.filter(function(v){return /eg/i.test(v.lang)})[0]||V.filter(function(v){return /laila|salma|hoda|female|zeina|mariam|amira/i.test(v.name)})[0]:V.filter(function(v){return /samantha|female|zira|aria|jenny|google us english|karen|moira|serena/i.test(v.name)})[0])||V[0];if(pick)u.voice=pick;
+ function go(){if(SAY!==b)return;b.classList.remove('ld');b.classList.add('on');started=Date.now();if(cap&&cap.classList.contains('vcap')){cap.dir=ar?'rtl':'ltr';var k=ar?t.search(/[.،!]\s/):t.indexOf('. ');cap.innerHTML='<b>'+es(t.slice(0,k>0?k+1:0))+'</b> '+es(t.slice(k>0?k+2:0));cap.hidden=false}
   SAYT=setInterval(function(){if(SAY!==b)return;b.style.setProperty('--p',Math.min(97,(Date.now()-started)/est*100))},120)}
  u.onstart=function(){setTimeout(go,Math.max(0,800-(Date.now()-t0)))};
  u.onboundary=function(e){if(SAY===b&&started&&e.charIndex)b.style.setProperty('--p',Math.min(99,e.charIndex/t.length*100))};
@@ -658,7 +673,7 @@ const fn = onRequest({
       const L = ((await fsGet(TT_LINKS).catch(() => null)) || {})[im[1]];
       if (!L || L.exp < Date.now()) { res.status(410).send(issuePage(null, 'This link has expired. Ask the team to send it again.')); return; }
       const acct = await ttAcct(), doc = (await fsGet(TT_PEOPLE).catch(() => null)) || {};
-      res.status(200).send(personPage(L.who || '', acct, doc.map || {}));
+      await arLoad(); res.status(200).send(personPage(L.who || '', acct, doc.map || {}));
     } catch (e) { console.warn('Issue page: ' + ((e && e.message) || e)); res.status(500).send(issuePage(null, 'The page could not load. Try again in a minute.')); }
     return;
   }
@@ -678,7 +693,7 @@ const fn = onRequest({
     } catch (e) { console.warn('TikTok picture: ' + ((e && e.message) || e)); res.status(502).send(''); }
     return;
   }
-  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct' && route !== '/feed' && route !== '/people' && route !== '/peopleSet' && route !== '/peopleView' && route !== '/akPicSet' && route !== '/issueMail' && route !== '/issueMailTest') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
+  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct' && route !== '/feed' && route !== '/people' && route !== '/peopleSet' && route !== '/peopleView' && route !== '/akPicSet' && route !== '/arNeed' && route !== '/arSet' && route !== '/issueMail' && route !== '/issueMailTest') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
   let body = req.body;
   if (!(body && typeof body === 'object' && !Buffer.isBuffer(body))) {
     const text = Buffer.isBuffer(body) ? body.toString('utf8') : typeof body === 'string' ? body : (req.rawBody ? req.rawBody.toString('utf8') : '');
@@ -700,6 +715,19 @@ const fn = onRequest({
       res.json({ ok: true, result: (doc && doc.map) || {} }); return;
     }
     await assertAccess(body.token);
+    // v701 the messages that still need an Egyptian Arabic copy, and saving the copies (admins; the app translates)
+    if (route === '/arNeed') {
+      await assertAdmin(body.token); arAt = 0; await arLoad();
+      const d = (await fsGet(TT_PEOPLE).catch(() => null)) || {};
+      res.json({ ok: true, result: sayAll(await ttAcct(), d.map || {}).filter(t => !AR[sayKey(t)]).slice(0, 30) }); return;
+    }
+    if (route === '/arSet') {
+      await assertAdmin(body.token);
+      const items = (Array.isArray(body.items) ? body.items : []).slice(0, 40).map(x => [String(x.en || '').slice(0, 1500), String(x.ar || '').trim().slice(0, 1500)]).filter(x => x[0] && /[\u0600-\u06FF]/.test(x[1]));
+      const doc = await fsUpdate('server/tt-ar', d => { d = d || {}; d.map = d.map || {}; items.forEach(([en, ar]) => { d.map[sayKey(en)] = ar; }); const K = Object.keys(d.map); if (K.length > 2000) K.slice(0, K.length - 2000).forEach(k => delete d.map[k]); return d; });
+      AR = (doc && doc.map) || AR; arAt = Date.now();
+      res.json({ ok: true, result: items.length }); return;
+    }
     // v700 Alexandra's account photo, sent by the app when an admin opens Account & Policy
     if (route === '/akPicSet') {
       await assertAdmin(body.token);
@@ -713,7 +741,7 @@ const fn = onRequest({
       await assertAdmin(body.token);
       const who = String(body.who || '').trim().toLowerCase().slice(0, 120); if (!who) throw new Error('No account.');
       const d = (await fsGet(TT_PEOPLE).catch(() => null)) || {};
-      res.json({ ok: true, result: personPage(who, await ttAcct(), d.map || {}, false, false, await ttFeed().catch(() => null)) }); return;
+      await arLoad(); res.json({ ok: true, result: personPage(who, await ttAcct(), d.map || {}, false, false, await ttFeed().catch(() => null)) }); return;
     }
     if (route === '/people') { const d = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, me = (await fsGet(TT_ME).catch(() => null)) || {};
       res.json({ ok: true, result: Object.assign({}, d.map || {}, { _mails: d.mails || {}, _opens: me.opens || {} }) }); return; }
