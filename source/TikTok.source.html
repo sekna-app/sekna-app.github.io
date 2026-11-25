@@ -10827,7 +10827,7 @@ body.dark-mode .tti-gh{border-color:#26326A}body.dark-mode .tti-gh b{color:#E7EB
 .ttf-k3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}.ttf-k3 div{background:rgba(255,255,255,.1);border-radius:12px;padding:8px;font-size:10px;color:#C9D3F5;font-weight:700}.ttf-k3 em{display:block;font-style:normal;font-size:18px;font-weight:900;color:#fff}.ttf-k3 .g{color:#7EF0B9}.ttf-k3 .r{color:#FF9AA6}
 .ttf-day{font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#8A93A8;padding:12px 0 2px}
 .ttf-ai{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;font-weight:900;font-size:14px;flex:none}.ttf-ai.g{background:#E3F6EC;color:#13804F}.ttf-ai.b{background:#EEF2FB;color:#2453D6}.ttf-ai.r{background:#FBDDE1;color:#C63A4A}
-.ttf-a p{font-size:12.5px;color:#141B33;font-weight:700;margin-top:2px;word-break:break-word}.ttf-id{font-size:10px;color:#8A93A8;font-weight:700}.ttf-det{font-weight:600!important;color:#6B7385!important;font-size:11.5px!important;margin-top:3px}.ttf-src{display:inline-block;margin-top:4px;font-size:10px;font-weight:800;color:#B0812E}
+.ttf-a p{font-size:12.5px;color:#141B33;font-weight:700;margin-top:2px;word-break:break-word}.ttf-id{font-size:10px;color:#8A93A8;font-weight:700}.ttf-det{font-weight:600!important;color:#6B7385!important;font-size:11.5px!important;margin-top:3px}.ttf-src{display:inline-block;margin-top:4px;font-size:10px;font-weight:800;color:#B0812E}.ttf-pin{display:inline-flex;align-items:center;gap:4px;margin-top:7px;max-width:100%;font-size:11.5px;font-weight:800;color:#203C8E;background:#EEF2FB;border-radius:99px;padding:4px 10px 4px 7px;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:capitalize}.ttf-pin svg{width:14px;height:14px;flex:none;fill:#E2B874;stroke:#B0812E;stroke-width:1.6}.ttf-pin svg circle{fill:#fff}body.dark-mode .ttf-pin{background:#26326A;color:#DCE3F8}
 body.dark-mode .ttf-tr,body.dark-mode .ttf-dates button,body.dark-mode .ttf-dates label{background:#16204A;border-color:#26326A;color:#C9D3F5}body.dark-mode .ttf-c,body.dark-mode .ttf-a{border-color:#26326A}body.dark-mode .ttf-ct b,body.dark-mode .ttf-c p,body.dark-mode .ttf-a p,body.dark-mode .ttf-phh b{color:#E7EBF3}
 /* v675 no currency on Account Health; team accounts */
 body.tt-nocur .cur-box{display:none!important}
@@ -24082,7 +24082,11 @@ function ttfRange(r){TTF.range=r;if(r!=='day')TTF.day='';TTF.show=100;ttFeedDraw
 function ttfDay(v){if(!v)return;TTF.range='day';TTF.day=v;TTF.show=100;ttFeedDraw()}
 function ttfDates(){const b=(k,l)=>`<button type="button" class="${TTF.range===k?'on':''}" onclick="ttfRange('${k}')">${l}</button>`;
  return `<div class="ttf-dates">${b('all','All')}${b('7','Last 7 days')}${b('y','Yesterday')}<label class="${TTF.range==='day'?'on':''}"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="3"/><path d="M8 3v4M16 3v4M4 10h16"/></svg>${TTF.range==='day'?esc(ttDay(TTF.day)):'Pick a day'}<input type="date" value="${esc(TTF.day)}" onchange="ttfDay(this.value)"></label></div>`}
-function ttfWhen(t){t=String(t||'');return ttDay(t)+(t.length>11?' · '+esc(t.slice(11,16)):'')}
+// times in the sheet are New York time: show them in the viewer's own time
+function ttfNyOff(u){try{const p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).formatToParts(new Date(u)).forEach(x=>{p[x.type]=x.value});return Date.UTC(+p.year,p.month-1,+p.day,+p.hour%24,+p.minute)-u}catch(e){return -5*36e5}}
+function ttfLoc(d,tm){const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(String(d||'')),t=/^(\d{1,2}):(\d{2})/.exec(String(tm||''));if(!m||!t)return {d:String(d||'').slice(0,10),tm:String(tm||'')};
+ const u=Date.UTC(+m[1],m[2]-1,+m[3],+t[1],+t[2]),x=new Date(u-ttfNyOff(u)),P=n=>String(n).padStart(2,'0');return {d:x.getFullYear()+'-'+P(x.getMonth()+1)+'-'+P(x.getDate()),tm:P(x.getHours())+':'+P(x.getMinutes())}}
+function ttfWhen(t){t=String(t||'');if(t.length<=11)return ttDay(t);const l=ttfLoc(t.slice(0,10),t.slice(11,16));return ttDay(l.d)+' · '+esc(l.tm)}
 function ttfCatPick(c){TTF.cat=TTF.cat===c?'':c;TTF.show=100;ttFeedDraw()}
 function ttfMore(){TTF.show+=100;ttFeedDraw()}
 // Translate: the comments on screen into Arabic, 40 at a time (Alexandra's Gemini, on the server)
@@ -24097,7 +24101,12 @@ function ttfOp(op){op=String(op||'').trim();const m=/^([^\s@]+)@([a-z0-9.-]+)/i.
  if(m){const n=ttMapOf(op);return n?{k:op.toLowerCase(),name:n.name,sub:op.toLowerCase(),kind:'p',av:n.prof?personAv(n.prof.avatar,n.prof.name):''}:{k:op.toLowerCase(),name:m[1],sub:'@'+m[2],kind:'p'}}if(/tiktok/i.test(op))return {k:'tiktok',name:'TikTok',sub:'',kind:'c',av:'<img src="icons/alexandra/logo-tiktok.png?v=3" alt="">'};return {k:op.toLowerCase()||'?',name:op||'Not known',sub:'',kind:'o'}}
 // the field a change is about, for the filter
 function ttfField(n){n=String(n||'');return /status|on\/off/i.test(n)?'Status':/budget|bid|cost/i.test(n)?'Budget':/creative|video|text|identity|spark/i.test(n)?'Creative':/url|destination|deeplink|page/i.test(n)?'Landing page':/review/i.test(n)?'Review':/^ad$|name/i.test(n)?'Ad':'Other'}
-function ttfFld(f){TTF.fld=f;TTF.show=100;ttFeedDraw()}
+// a creative change gets its landing page (the "Destination page" change of the same ad) as a pin
+function ttfMerge(L){const U={};L.forEach(a=>{if(/^destination page$/i.test(a.name)){const m=/https?:\/\/\S+/.exec(a.det||'');if(m&&!U[a.id])U[a.id]=m[0]}});
+ const hasC=new Set(L.filter(a=>/^creative$/i.test(a.name)).map(a=>a.id));
+ return L.filter(a=>!(/^destination page$/i.test(a.name)&&hasC.has(a.id))).map(a=>/^creative$/i.test(a.name)&&U[a.id]?Object.assign({},a,{url:U[a.id]}):a)}
+function ttfUrlLabel(u){try{const x=new URL(u);return (x.pathname.replace(/\/$/,'').split('/').pop()||x.hostname).replace(/[-_]+/g,' ')}catch(e){return 'Landing page'}}
+function ttfFld(f){TTF.fld=TTF.fld===f?'':f;TTF.show=100;ttFeedDraw()}
 // "Text: -> Hello | Video: old -> new" → [{f,b,a}]
 function ttfChanges(det){return String(det||'').split(/\s+\|\s+/).map(p=>{const m=/^([^:]{1,40}):\s*(.*?)\s*->\s*(.*)$/.exec(p.trim());return m?{f:m[1].trim(),b:m[2].trim().slice(0,90),a:m[3].trim().slice(0,90)}:null}).filter(Boolean)}
 function ttfWho(k){TTF.fld='';TTF.who=k;TTF.show=100;ttFeedDraw();try{scrollTo({top:0})}catch(e){}}
@@ -24115,7 +24124,7 @@ function ttFeedDraw(){
     return `<div class="ttf-c">${ttPic({pic:v.pic})}<div class="ttf-cb"><div class="ttf-ct"><b>${esc(c.user||'—')}</b><small>${ttfWhen(c.t)}</small></div><p dir="auto">${esc(c.text)}</p>${tr?`<p class="ttf-ar" dir="rtl">${esc(tr)}</p>`:TTF.tr&&tr==null?'<p class="ttf-ar wait">…</p>':''}
      <div class="ttf-cm"><span class="ttf-chip" style="color:${col};background:${bg}">${esc(k.split(' /')[0])}</span>${c.status?`<span class="ttf-st ${c.status==='hidden'?'h':'p'}">${c.status==='hidden'?'Hidden':'Public'}</span>`:''}${c.blocked?'<span class="ttf-st h">Blocked word</span>':''}${c.type==='reply'?'<span class="ttf-st h">Reply</span>':''}<span class="ttf-lk">♥ ${fmt(c.likes,0)}</span></div>
      ${v.name?`<small class="ttf-v">On: ${esc(v.name)}</small>`:''}</div></div>`}).join('')+(L.length>TTF.show?`<button type="button" class="ttf-more" onclick="ttfMore()">Show more (${L.length-TTF.show})</button>`:''):'<div class="dx-empty">No comment here for this filter.</div>'}</div>
-   <div class="tts-note">From the TikTok sheet (updated daily) · New York time${TTF.tr?' · Arabic by Alexandra':''}</div>`;
+   <div class="tts-note">From the TikTok sheet (updated daily) · times in your local time${TTF.tr?' · Arabic by Alexandra':''}</div>`;
   if(TTF.tr)ttfTrRun();
  }else{
   const A=(D.acts||[]).filter(a=>ttfIn(a.d)),G=new Map();
@@ -24128,11 +24137,12 @@ function ttFeedDraw(){
     <div class="tti-hero ttf-ph"><div class="ttf-phh">${ttPav({name:P.p.name,av:P.p.av,k:P.p.kind==='p'?'p':P.p.kind==='c'?'c':'o'},44)}<div><h3>${esc(P.p.name)}</h3><small>${esc([P.p.sub,top(P)].filter(Boolean).join(' · '))}</small></div><em>${fmt(P.L.length,0)}</em></div>
      <div class="ttf-k3"><div><em class="g">${P.c}</em>Create</div><div><em>${P.ch}</em>Change</div><div><em class="r">${P.dl}</em>Delete</div></div></div>
     ${ttfDates()}
-    ${(()=>{const F=[...new Set(P.L.map(a=>ttfField(a.name)))];if(TTF.fld&&!F.includes(TTF.fld))TTF.fld='';return F.length>1?`<div class="ttf-dates ttf-fld"><button type="button" class="${TTF.fld?'':'on'}" onclick="ttfFld('')">All fields</button>${F.map(f=>`<button type="button" class="${TTF.fld===f?'on':''}" onclick="ttfFld('${f}')">${f}</button>`).join('')}</div>`:''})()}
-    ${(()=>{const L=P.L.filter(a=>!TTF.fld||ttfField(a.name)===TTF.fld);let last='';
-     return L.length?`<div class="ttf-tl">${L.slice(0,TTF.show).map(a=>{const [k]=ttfActIco(a.act),day=a.d!==last?(last=a.d,`<div class="ttf-tday">${esc(ttDay(a.d))}</div>`):'',ch=ttfChanges(a.det).slice(0,3);
-      return day+`<div class="ttf-ti"><span class="ttf-tdot ${k}"></span><div class="card ttf-tc"><div class="ttf-ct"><b>${esc(a.name)}</b><small>${esc(a.tm)}</small></div><span class="ttf-tag">${esc(a.act)} · ${esc(a.obj)}${a.id?' · '+esc(a.id):''}</span>
+    ${(()=>{const F=[...new Set(P.L.map(a=>ttfField(a.name)))].filter(f=>f!=='Landing page'&&f!=='Ad');if(TTF.fld&&!F.includes(TTF.fld))TTF.fld='';return F.length>1?`<div class="ttf-dates ttf-fld">${F.map(f=>`<button type="button" class="${TTF.fld===f?'on':''}" onclick="ttfFld('${f}')">${f}</button>`).join('')}</div>`:''})()}
+    ${(()=>{const L=ttfMerge(P.L).filter(a=>!TTF.fld||ttfField(a.name)===TTF.fld);let last='';
+     return L.length?`<div class="ttf-tl">${L.slice(0,TTF.show).map(a=>{const [k]=ttfActIco(a.act),lc=ttfLoc(a.d,a.tm),day=lc.d!==last?(last=lc.d,`<div class="ttf-tday">${esc(ttDay(lc.d))}</div>`):'',ch=ttfChanges(a.det).slice(0,3);
+      return day+`<div class="ttf-ti"><span class="ttf-tdot ${k}"></span><div class="card ttf-tc"><div class="ttf-ct"><b>${esc(a.name)}</b><small>${esc(lc.tm)}</small></div><span class="ttf-tag">${esc(a.act)} · ${esc(a.obj)}${a.id?' · '+esc(a.id):''}</span>
        ${ch.length?ch.map(c=>`<div class="ttf-ba">${c.f&&c.f!==a.name?`<small>${esc(c.f)}</small>`:''}<div>${c.b?`<s>${esc(c.b)}</s><i>→</i>`:''}<b>${esc(c.a||'—')}</b></div></div>`).join(''):a.det&&a.det!==a.name?`<p class="ttf-det">${esc(a.det)}</p>`:''}
+       ${a.url?`<a class="ttf-pin" href="${esc(a.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><path d="M12 21s-6-5.6-6-11a6 6 0 0 1 12 0c0 5.4-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg>${esc(ttfUrlLabel(a.url))}</a>`:''}
        ${a.src&&a.src!=='--'?`<small class="ttf-src">${esc(a.src)}</small>`:''}</div></div>`}).join('')}</div>`+(L.length>TTF.show?`<button type="button" class="ttf-more" onclick="ttfMore()">Show more (${L.length-TTF.show})</button>`:''):'<div class="card section"><div class="dx-empty">No change on these days.</div></div>'})()}`;
    return}
   const TC=groups.reduce((t,g)=>t+g.c,0),TCH=groups.reduce((t,g)=>t+g.ch,0),TD=groups.reduce((t,g)=>t+g.dl,0),rl={all:'All changes','7':'Last 7 days',y:'Yesterday',day:ttDay(TTF.day)}[TTF.range]||'';
@@ -24142,7 +24152,7 @@ function ttFeedDraw(){
    ${groups.length?`<div class="card ttf-list">${groups.map(g=>{const ld=g.L.reduce((m,a)=>a.d>m?a.d:m,'');return `<button type="button" class="ttf-row" onclick="ttfWho('${esc(g.p.k).replace(/'/g,'&#39;')}')">${ttPav({name:g.p.name,av:g.p.av,k:g.p.kind==='p'?'p':g.p.kind==='c'?'c':'o'},40)}
     <div class="ttf-rb"><b>${esc(g.p.name)}</b><small><span class="g">${fmt(g.c,0)} created</span> · <span class="b">${fmt(g.ch,0)} changed</span> · <span class="r">${fmt(g.dl,0)} deleted</span></small><div class="ttf-sb"><i style="flex:${g.c||0.001};background:#13804F"></i><i style="flex:${g.ch||0.001};background:#203C8E"></i><i style="flex:${g.dl||0.001};background:#C63A4A"></i></div></div>
     <div class="ttf-rn"><em>${fmt(g.L.length,0)}</em><span>${ld?(ld===ttfToday()?'today':'last '+esc(ttDay(ld).replace(/ \d{4}$/,''))):''}</span></div></button>`}).join('')}</div>`:'<div class="card section"><div class="dx-empty">No change on these days.</div></div>'}
-   <div class="tts-note">From TikTok's change log in the sheet · New York time · tap a person to see their changes</div>`;
+   <div class="tts-note">From TikTok's change log in the sheet · tap a person to see their changes</div>`;
  }
 }
 
