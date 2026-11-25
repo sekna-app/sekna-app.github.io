@@ -425,7 +425,7 @@ function personPage(who, acct, map, signedIn, pushOn, feed) {
     L.forEach(a => { if (/^destination page$/i.test(a.name)) { const m = /https?:\/\/\S+/.exec(a.det || ''); if (m && !U[a.id]) U[a.id] = m[0]; } });
     ah = L.filter(a => !(/^destination page$/i.test(a.name) && hasC.has(a.id))).slice(0, 1500).map(a => [a.d, a.tm, a.name, a.act, a.obj, a.id, a.det, a.src, /^creative$/i.test(a.name) ? (U[a.id] || '') : '']); }
   const ac = acct.account || {}, acOk = /^active$/i.test(ac.status) && !(acct.rejected || []).length;
-  const apCard = `<div class="card apc"><div class="aph ${acOk ? 'g' : 'r'}"><span></span><b>${acOk ? 'Account is healthy' : !/^active$/i.test(ac.status) ? 'Account is ' + E(ac.status || 'not active') : 'Some ads need a look'}</b></div><small>${E(ac.name || 'Human Appeal US · TikTok Ads')}</small>
+  const apCard = `<div class="card apc"><div class="aph ${acOk ? 'g' : 'r'}"><span></span><b>${acOk ? 'Account is healthy' : !/^active$/i.test(ac.status) ? 'Account is ' + E(ac.status || 'not active') : 'Some ads need a look'}</b></div><div class="apr"><img class="apl" src="https://sekna-app.web.app/icons/ha-brand.png" alt=""><div><b>${E(ac.name || 'Human Appeal US')}</b><small>Ad account</small></div><img class="apt" src="https://sekna-app.web.app/icons/tiktok-ads.png" alt="TikTok Ads"></div>
     <div class="kv"><span>Status</span><b class="${/^active$/i.test(ac.status) ? 'g' : 'r'}">${E(ac.status || '—')}</b></div>
     <div class="kv"><span>Balance</span><b>${ac.balance != null ? '$' + Number(ac.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '—'}</b></div>
     <div class="kv"><span>Rejected ads</span><b class="${(acct.rejected || []).length ? 'r' : 'g'}">${(acct.rejected || []).length || 'None'}</b></div>
@@ -530,6 +530,10 @@ html{background:#132457}.w{flex:1 0 auto;width:100%}.pg .w{padding:0}.r.mk{align
 .fb{margin-top:30px;position:relative;display:flex;align-items:center;justify-content:space-between;gap:10px;color:#fff;padding:9px 16px calc(9px + env(safe-area-inset-bottom));background:linear-gradient(120deg,#132457,#203C8E 60%,#3B5BC8)}.fb:before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#E2B874 20%,#F2D38F 50%,#E2B874 80%,transparent)}
 .fb p{font-size:11.5px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.fb p span{color:#B7C3EA;font-weight:700}.fb a{flex:none;font-size:10.5px;color:#E2B874;font-weight:800;text-decoration:none;border:1px solid rgba(226,184,116,.6);border-radius:99px;padding:4px 10px;white-space:nowrap}
 /* v711 slimmer: everything a size smaller, the menu narrower */
+.t.pg-in{animation:pgIn .45s cubic-bezier(.2,.8,.2,1) both}.t.pg-in span{animation:pgMark .6s .15s cubic-bezier(.2,.8,.2,1) both;background-size:100% 100%;background-repeat:no-repeat}
+@keyframes pgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@keyframes pgMark{from{background-size:0% 100%}to{background-size:100% 100%}}
+.apr{display:flex;align-items:center;gap:8px;background:#F6F8FD;border-radius:10px;padding:6px 9px;margin:8px 0 6px}.apl{width:24px;height:24px;border-radius:7px;background:#fff;padding:2px;box-shadow:0 1px 3px rgba(20,40,110,.12)}.apr div{flex:1;min-width:0}.apr b{display:block;font-size:12.5px}.apr small{display:block!important;margin:0!important;font-size:10px!important}.apt{height:10px;width:auto}html.dk .apr{background:#1b2656}
+
 .hd{padding:8px 14px}.lo img{height:18px}.lo span{font-size:8px}.bl{width:34px;height:34px;border-radius:11px}
 .w{padding:12px 14px}.t{font-size:26px!important;margin-top:12px}.sub{font-size:10px;margin-bottom:10px}.acc{font-size:12px;padding:4px 12px 4px 6px}.acc img{width:20px;height:20px}
 .card{border-radius:16px}.nb{padding:14px;gap:12px}.av{width:46px;height:46px;font-size:20px}.nb b{font-size:17px}.nb small{font-size:11px}.big em{font-size:28px}.big span{font-size:10px}
@@ -576,7 +580,8 @@ try{dk(localStorage.getItem('tt_me_dk')==='1')}catch(e){}
 // v707 the issues slide left and right (the Slide animation)
 var SLB=0;function slide(i,d){if(SLB&&Date.now()-SLB<900)return;var a=document.getElementById('i'+i),b=document.getElementById('i'+(i+d));if(!a||!b)return;SLB=1;SLB=Date.now();a.classList.add(d>0?'so-l':'so-r');
  setTimeout(function(){a.classList.remove('so-l','so-r');try{go('i'+(i+d),1)}catch(e){}b.classList.remove('si-r','si-l','fu');void b.offsetWidth;b.classList.add(d>0?'si-r':'si-l');setTimeout(function(){b.classList.remove('si-r','si-l');SLB=0},340)},200)}
-function fu(el){if(!el)return;el.classList.remove('fu');void el.offsetWidth;el.classList.add('fu')}
+function fu(el){if(!el)return;el.classList.remove('fu');void el.offsetWidth;el.classList.add('fu');el.querySelectorAll('.t').forEach(function(t){t.classList.remove('pg-in');void t.offsetWidth;t.classList.add('pg-in')})}
+addEventListener('DOMContentLoaded',function(){fu(document.getElementById('home'))});
 function go(id,ns){setTimeout(function(){if(!ns)fu(id?document.getElementById(id):document.getElementById('home'));segPos()},0);dr(0);document.getElementById('fb').hidden=id==='st';document.querySelectorAll('.dn[data-v]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-v')===(id||''))});if(id==='ah')ahDraw();document.getElementById('home').hidden=!!id;document.querySelectorAll('.pg').forEach(function(p){p.hidden=p.id!==id});try{if(id)history.pushState({p:id},'','#'+id);else if(location.hash)history.pushState({},'',location.pathname)}catch(e){}scrollTo(0,0)}
 addEventListener('popstate',function(){var id=location.hash.slice(1);document.getElementById('fb').hidden=id==='st';if(id==='ah')ahDraw();document.getElementById('home').hidden=!!id;document.querySelectorAll('.pg').forEach(function(p){p.hidden=p.id!==id})});
 function tg(id){var d=document.getElementById(id);if(d){d.hidden=!d.hidden;d.parentNode.classList.toggle('op',!d.hidden)}}
