@@ -10853,7 +10853,7 @@ body.tt-nocur .cur-box{display:none!important}
 .ttf-ti{position:relative}.ttf-tdot{position:absolute;left:-19px;top:15px;width:12px;height:12px;border-radius:50%;box-shadow:0 0 0 3px #F4F6FB}.ttf-tdot.g{background:#13804F}.ttf-tdot.b{background:#203C8E}.ttf-tdot.r{background:#C63A4A}
 .ttf-tc{padding:11px 13px!important;border-radius:14px;margin-bottom:9px}.ttf-tag{display:inline-block;font-size:10px;font-weight:800;color:#203C8E;background:#EEF2FB;border-radius:6px;padding:2px 7px;margin-top:4px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ttf-ba{margin-top:7px}.ttf-ba small{display:block;font-size:9.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#8A93A8}.ttf-ba div{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12.5px;font-weight:800;margin-top:2px}
-.ttf-ba s{color:#C63A4A;background:#FBDDE1;border-radius:6px;padding:1px 6px;word-break:break-word}.ttf-ba b{color:#13804F;background:#E3F6EC;border-radius:6px;padding:1px 6px;word-break:break-word}.ttf-ba i{font-style:normal;color:#B0812E}
+.ttf-ba s{color:#C63A4A;background:#FBDDE1;border-radius:6px;padding:1px 6px;word-break:break-word}.ttf-ba b{color:#13804F;background:#E3F6EC;border-radius:6px;padding:1px 6px;word-break:break-word}.ttf-ba i{font-style:normal;color:#B0812E}.ttf-ba s.g{color:#13804F;background:#E3F6EC}.ttf-ba b.r{color:#C63A4A;background:#FBDDE1}.tta-st{display:block;font-size:10.5px!important;color:#B0812E!important;font-weight:800!important;margin-top:2px}
 body.dark-mode .ttf-tdot{box-shadow:0 0 0 3px #0D1430}
 /* v677 Account & Policy one card; Activity split-bar list */
 .tta-one{padding:14px 16px!important;border-radius:18px}.tta-oh{display:flex;align-items:center;gap:9px;margin-bottom:6px}.tta-oh span{width:10px;height:10px;border-radius:50%}.tta-oh b{font-size:15.5px}
@@ -23966,7 +23966,7 @@ function ttAcDraw(){
     <div class="tta-kv"><span>Balance</span><b>${money(a.balance)}</b></div>
     <div class="tta-kv"><span>Rejected ads</span><b class="${rj.length?'r':'g'}">${rj.length?rj.length:'None'}</b></div>${rj.length?'':`<small class="tta-note">${/smart/i.test(D.note||'')||!D.note?'No ad rejected or in review':esc(String(D.note).slice(0,60))}</small>`}
     <div class="tta-kv"><span>Opened</span><b>${ttDay(a.opened)}</b></div>
-    ${a.checked?`<div class="tta-kv"><span>Checked</span><b>${ttDay(a.checked)}</b></div>`:''}</div>
+    ${a.checked?`<div class="tta-kv"><span>Checked</span><b>${ttfWhen(String(a.checked).replace('T',' '))}</b></div>`:''}</div>
    ${ttTeamBlock(D)}
    ${rj.length?`<div class="tts-sub">Ads that need a look</div><div class="card tts-tbl">${rj.map(r=>`<div class="tts-tr tta-tr"><span><b>${esc(r.ad||'')}</b><small>${esc(r.campaign||'')}${r.changed?' · '+ttDay(r.changed):''}</small></span><span class="tts-chip bad">${esc(r.state||'Rejected')}</span></div>`).join('')}</div>`:''}`;
  }else if(CURRENT_TAB==='ttqa'){
@@ -24059,7 +24059,7 @@ function ttIssuePage(x){const f=/^yes/i.test(x.fixed),A=ttIssueAds(x.ads),P=ttPe
     return `<div class="tti-ad"><span class="tti-pic"></span><b>${esc(a)}</b><button type="button" onclick="ttCopy('${esc(id||a).replace(/'/g,'&#39;')}',this)">${id?'Copy ID':'Copy'}</button></div>`}).join('')}</div>`:''}
   ${P.length?`<div class="card tti-c"><div class="tti-l">Made by</div>${P.map(p=>{const mm=p.key&&(TTP.map||{})[p.key],sent=((((TTP.map||{})._mails||{})[ttIssueKey(x)])||[]).find(z=>z.who===p.key);
    return `<div class="tti-p">${ttPav(p,32)}<div><b>${esc(p.name)}</b><small>${esc(p.sub)}${p.lab?' · '+esc(p.lab):''}</small></div>${mm&&mm.email&&ttIsAdmin()?`<button type="button" class="tti-mail${sent?' sent':''}" onclick="ttIssueMail('${ttIssueKey(x)}','${esc(p.key)}','${esc(p.name).replace(/'/g,'&#39;')}',this)">${sent?'Sent '+esc(new Date(sent.at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})):'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3.5 7l8.5 6 8.5-6"/></svg>Email'}</button>`:''}</div>`}).join('')}</div>`:''}
-  ${x.made?`<div class="card tti-c"><div class="tti-l">Ads created · New York time</div>${String(x.made).split(/\n+/).filter(Boolean).map(l=>{const m=/^\s*(\d+)\s*:\s*(.+)$/.exec(l);return m?`<div class="tti-ad"><b>${esc(m[1])}</b><span class="tti-d">${esc(m[2])}</span><button type="button" onclick="ttCopy('${esc(m[1])}',this)">Copy ID</button></div>`:`<p class="tti-what">${esc(l)}</p>`}).join('')}</div>`:''}
+  ${x.made?`<div class="card tti-c"><div class="tti-l">Ads created · your time</div>${String(x.made).split(/\n+/).filter(Boolean).map(l=>{const m=/^\s*(\d+)\s*:\s*(.+)$/.exec(l);return m?`<div class="tti-ad"><b>${esc(m[1])}</b><span class="tti-d">${ttfWhen(m[2].trim())}</span><button type="button" onclick="ttCopy('${esc(m[1])}',this)">Copy ID</button></div>`:`<p class="tti-what">${esc(l)}</p>`}).join('')}</div>`:''}
   ${x.owner?`<div class="card tti-c"><div class="tti-l">Owner</div><p class="tti-what">${esc(x.owner)}</p></div>`:''}`}
 
 /* TikTok · Comments (kinds as tiles, a date filter, Translate) and Activity History (by person, open one for their changes, a date filter) */
@@ -24107,6 +24107,8 @@ function ttfMerge(L){const U={};L.forEach(a=>{if(/^destination page$/i.test(a.na
  const hasC=new Set(L.filter(a=>/^creative$/i.test(a.name)).map(a=>a.id));
  return L.filter(a=>!(/^destination page$/i.test(a.name)&&hasC.has(a.id))).map(a=>/^creative$/i.test(a.name)&&U[a.id]?Object.assign({},a,{url:U[a.id]}):a)}
 function ttfUrlLabel(u){try{const x=new URL(u);return (x.pathname.replace(/\/$/,'').split('/').pop()||x.hostname).replace(/[-_]+/g,' ')}catch(e){return 'Landing page'}}
+// Enabled → Paused: the new value red, the old one green (and the other way round)
+function ttfTone(v,d){v=String(v||'').toLowerCase();return /^(enabled?|active|on|approved|delivering|running|live)\b/.test(v)?'g':/^(paused|disabled|off|rejected|deleted|not delivering|suspended|inactive|in review|under review)\b/.test(v)?'r':d}
 function ttfFld(f){TTF.fld=TTF.fld===f?'':f;TTF.show=100;ttFeedDraw()}
 // "Text: -> Hello | Video: old -> new" → [{f,b,a}]
 function ttfChanges(det){return String(det||'').split(/\s+\|\s+/).map(p=>{const m=/^([^:]{1,40}):\s*(.*?)\s*->\s*(.*)$/.exec(p.trim());return m?{f:m[1].trim(),b:m[2].trim().slice(0,90),a:m[3].trim().slice(0,90)}:null}).filter(Boolean)}
@@ -24142,7 +24144,7 @@ function ttFeedDraw(){
     ${(()=>{const L=ttfMerge(P.L).filter(a=>!TTF.fld||ttfField(a.name)===TTF.fld);let last='';
      return L.length?`<div class="ttf-tl">${L.slice(0,TTF.show).map(a=>{const [k]=ttfActIco(a.act),lc=ttfLoc(a.d,a.tm),day=lc.d!==last?(last=lc.d,`<div class="ttf-tday">${esc(ttDay(lc.d))}</div>`):'',ch=ttfChanges(a.det).slice(0,3);
       return day+`<div class="ttf-ti"><span class="ttf-tdot ${k}"></span><div class="card ttf-tc"><div class="ttf-ct"><b>${esc(a.name)}</b><small>${esc(lc.tm)}</small></div><span class="ttf-tag">${esc(a.act)} · ${esc(a.obj)}${a.id?' · '+esc(a.id):''}</span>
-       ${ch.length?ch.map(c=>`<div class="ttf-ba">${c.f&&c.f!==a.name?`<small>${esc(c.f)}</small>`:''}<div>${c.b?`<s>${esc(c.b)}</s><i>→</i>`:''}<b>${esc(c.a||'—')}</b></div></div>`).join(''):a.det&&a.det!==a.name?`<p class="ttf-det">${esc(a.det)}</p>`:''}
+       ${ch.length?ch.map(c=>`<div class="ttf-ba">${c.f&&c.f!==a.name?`<small>${esc(c.f)}</small>`:''}<div>${c.b?`<s class="${ttfTone(c.b,'r')}">${esc(c.b)}</s><i>→</i>`:''}<b class="${ttfTone(c.a,'g')}">${esc(c.a||'—')}</b></div></div>`).join(''):a.det&&a.det!==a.name?`<p class="ttf-det">${esc(a.det)}</p>`:''}
        ${a.url?`<a class="ttf-pin" href="${esc(a.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><path d="M12 21s-6-5.6-6-11a6 6 0 0 1 12 0c0 5.4-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg>${esc(ttfUrlLabel(a.url))}</a>`:''}
        ${a.src&&a.src!=='--'?`<small class="ttf-src">${esc(a.src)}</small>`:''}</div></div>`}).join('')}</div>`+(L.length>TTF.show?`<button type="button" class="ttf-more" onclick="ttfMore()">Show more (${L.length-TTF.show})</button>`:''):'<div class="card section"><div class="dx-empty">No change on these days.</div></div>'})()}`;
    return}
@@ -24165,11 +24167,9 @@ function ttIsAdmin(){return !!(typeof ACCESS_PROFILE!=='undefined'&&ACCESS_PROFI
 function ttTeamBlock(D){const K=ttTeamKeys(D),adm=ttIsAdmin();if(!K.length)return '';const P=((typeof PFP!=='undefined'&&PFP.people)||[]),named=K.filter(o=>ttMapOf(o.k)).length;
  return `<div class="tta-sec"><b>Team accounts</b><span>${named} of ${K.length} named</span></div><div class="card tta-team">${K.map(o=>{const m=(TTP.map||{})[o.k]||{},n=ttMapOf(o.k),ed=TTP.edit===o.k,mask=o.k.split('@');
   const av=ttPav({name:n?n.name:mask[0],k:'p',av:n&&n.prof?personAv(n.prof.avatar,n.prof.name):''},36);
-  return `<div class="tta-tm"><div class="tta-tmh">${av}<div><b>${esc(n?n.name:mask[0])}</b><small>${n?esc(o.k):'Not named yet'}</small></div>${adm&&!ed?`<button type="button" class="tta-mt" onclick="ttTeamView('${esc(o.k)}',this)">View</button><button type="button" class="tta-mt" onclick="ttMailTest('${esc(o.k)}',this)">Email</button>`:''}${ed?`<button type="button" onclick="ttTeamEdit('${esc(o.k)}')">Close</button>`:n?(adm?`<button type="button" class="tta-ok" aria-label="Change" onclick="ttTeamEdit('${esc(o.k)}')">✓</button>`:'<span class="tta-ok">✓</span>'):adm?`<button type="button" class="tta-add" onclick="ttTeamEdit('${esc(o.k)}')">+ Name</button>`:'<em>Not named</em>'}</div>
-   ${ed?`<div class="tta-ed"><label>Work email<input id="ttTmE" type="email" inputmode="email" autocapitalize="off" spellcheck="false" maxlength="120" placeholder="${esc(o.k)}" value="${esc(m.email||'')}" oninput="ttTeamFill(this.value)"></label>
-    <small class="tta-hint">Their own email. The issue emails and the sign-in code go here. It must match ${esc(o.k)}.</small>
-    <label>Name<input id="ttTmN" type="text" maxlength="60" placeholder="Taken from the email" oninput="delete this.dataset.auto" value="${esc(m.name||'')}"></label>
-    <label>Or pick a HEMERA profile<select id="ttTmP" onchange="ttTeamPick(this)"><option value="">—</option>${P.map(p=>`<option value="${esc(String(p.email||'').toLowerCase())}" data-n="${esc(p.name||'')}"${String(p.email||'').toLowerCase()===m.email?' selected':''}>${esc(p.name||p.email)}</option>`).join('')}</select></label>
+  return `<div class="tta-tm"><div class="tta-tmh">${av}<div><b>${esc(n?n.name:mask[0])}</b><small>${n?esc(m.email||o.k):'Not named yet'}</small>${(()=>{const op=((TTP.map||{})._opens||{})[o.k],ml=Object.values((TTP.map||{})._mails||{}).reduce((t,L)=>t+(L||[]).filter(z=>z.who===o.k).length,0);return op||ml?`<small class="tta-st">${op?`Opened ${op.n}× · last ${esc(ttDay(new Date(op.last).toISOString().slice(0,10)).replace(/ \d{4}$/,''))}`:'Not opened yet'} · ${ml} email${ml===1?'':'s'}</small>`:''})()}</div>${adm&&!ed?`<button type="button" class="tta-mt" onclick="ttTeamView('${esc(o.k)}',this)">View</button><button type="button" class="tta-mt" onclick="ttMailTest('${esc(o.k)}',this)">Email</button>`:''}${ed?`<button type="button" onclick="ttTeamEdit('${esc(o.k)}')">Close</button>`:n?(adm?`<button type="button" class="tta-ok" aria-label="Change" onclick="ttTeamEdit('${esc(o.k)}')">✓</button>`:'<span class="tta-ok">✓</span>'):adm?`<button type="button" class="tta-add" onclick="ttTeamEdit('${esc(o.k)}')">+ Name</button>`:'<em>Not named</em>'}</div>
+   ${ed?`<div class="tta-ed"><label>Work email<input id="ttTmE" type="email" inputmode="email" autocapitalize="off" spellcheck="false" maxlength="120" placeholder="${esc(o.k)}" value="${esc(m.email||'')}" ></label>
+    <small class="tta-hint">Their own email. The name is taken from it, and the issue emails and the sign-in code go here. It must match ${esc(o.k)}.</small>
     <div class="tta-edb">${n?`<button type="button" class="ghost" onclick="ttTeamSave('${esc(o.k)}',1)">Clear</button>`:''}<button type="button" onclick="ttTeamSave('${esc(o.k)}')">Save</button></div></div>`:''}</div>`}).join('')}</div>`}
 function ttMailTest(k,btn){btn.disabled=true;btn.textContent='Sending…';
  fetch(TT_API+'/issueMailTest',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),who:k})}).then(x=>x.json())
@@ -24185,7 +24185,7 @@ function ttTeamView(k,btn){btn.disabled=true;const t=btn.textContent;btn.textCon
   .then(j=>{if(!(j&&j.ok))throw new Error((j&&j.error)||'Could not open.');let w=document.getElementById('ttTmView');if(!w){w=document.createElement('div');w.id='ttTmView';w.className='tta-view';document.body.appendChild(w)}
    w.innerHTML='<div class="tta-vh"><b>Their page · '+esc(k)+'</b><button type="button" onclick="document.getElementById(\'ttTmView\').remove()">Close</button></div><iframe title="Their page"></iframe>';w.querySelector('iframe').srcdoc=j.result})
   .catch(e=>showSettingsToast(errorText(e))).finally(()=>{btn.disabled=false;btn.textContent=t})}
-function ttTeamSave(k,clear){const p=clear?'':((document.getElementById('ttTmE')||{}).value||'').trim().toLowerCase(),n=clear?'':((document.getElementById('ttTmN')||{}).value||'').trim();
+function ttTeamSave(k,clear){const p=clear?'':((document.getElementById('ttTmE')||{}).value||'').trim().toLowerCase(),n='';if(!clear&&!p){showSettingsToast('Type their work email.');return}
  fetch(TT_API+'/peopleSet',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),key:k,name:n,email:p})}).then(x=>x.json())
   .then(j=>{if(!(j&&j.ok))throw new Error((j&&j.error)||'Could not save.');TTP.map=j.result||{};TTP.edit='';showSettingsToast(clear?'Cleared':'Saved for the whole team');ttAcDraw()})
   .catch(e=>showSettingsToast(errorText(e)))}
