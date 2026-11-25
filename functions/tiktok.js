@@ -319,7 +319,7 @@ async function meRoute(op, b) {
     return { ok: true, on };
   }
   // v697 how often each person opens their page (shown to admins in Team accounts)
-  const st2 = (await fsUpdate(TT_ME, d => { d = d || {}; d.opens = d.opens || {}; const o = d.opens[se.who] || { n: 0 }; o.n++; o.last = Date.now(); d.opens[se.who] = o; return d; }).catch(() => null)) || {};
+  const st2 = (await fsUpdate(TT_ME, d => { d = d || {}; d.opens = d.opens || {}; const o = d.opens[se.who] || { n: 0 }, dy = new Date().toISOString().slice(0, 10); o.n++; o.last = Date.now(); o.days = o.days || {}; o.days[dy] = (o.days[dy] || 0) + 1; Object.keys(o.days).sort().slice(0, -90).forEach(k => delete o.days[k]); d.opens[se.who] = o; return d; }).catch(() => null)) || {};
   return { ok: true, html: personPage(se.who, await ttAcct(), doc.map || {}, true, ((st2.push || {})[se.who] || []).length > 0, await ttFeed().catch(() => null)) };
 }
 /** What the person has open now: issue keys and the IDs of their ads that need a fix. */
@@ -492,7 +492,7 @@ function nt(o){document.querySelectorAll('[data-n]').forEach(function(x){x.class
 var MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],AF={r:'all',f:'',n:100};
 function es(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function nyOff(u){try{var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).formatToParts(new Date(u)).forEach(function(x){p[x.type]=x.value});return Date.UTC(+p.year,p.month-1,+p.day,+p.hour%24,+p.minute)-u}catch(e){return -18e6}}
-function loc(d,tm){var a=String(d||'').split('-'),t=String(tm||'').split(':');if(a.length<3||t.length<2)return {d:d,tm:tm};var u=Date.UTC(+a[0],a[1]-1,+a[2],+t[0],+t[1]),x=new Date(u-nyOff(u)),P=function(n){return (n<10?'0':'')+n};return {d:x.getFullYear()+'-'+P(x.getMonth()+1)+'-'+P(x.getDate()),tm:P(x.getHours())+':'+P(x.getMinutes())}}
+function loc(d,tm){var a=String(d||'').split('-'),t=String(tm||'').split(':');if(a.length<3||t.length<2)return {d:d,tm:tm};var u=Date.UTC(+a[0],a[1]-1,+a[2],+t[0],+t[1]),x=new Date(u-nyOff(u)),P=function(n){return (n<10?'0':'')+n};var hh=x.getHours();return {d:x.getFullYear()+'-'+P(x.getMonth()+1)+'-'+P(x.getDate()),tm:((hh%12)||12)+':'+P(x.getMinutes())+(hh<12?' AM':' PM')}}
 function day(d){var a=String(d||'').split('-');return a.length<3?d:(+a[2])+' '+MO[a[1]-1]+' '+a[0]}
 function tdy(){return new Date(Date.now()-18e6).toISOString().slice(0,10)}
 function add(k,n){var d=new Date(k+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)}
