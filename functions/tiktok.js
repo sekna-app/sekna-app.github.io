@@ -278,7 +278,28 @@ function ttSnap() {
 const TT_PEOPLE = 'server/tt-people', TT_LINKS = 'server/tt-issue-links', TT_ME = 'server/tt-me';
 const sha = t => require('crypto').createHash('sha256').update(String(t)).digest('hex');
 /** The person's own page: sign in with the work email (the one linked in Team accounts), a 6-digit code by email, a session for 60 days. */
+// v702 Alexandra's own voice (Gemini, the same voice as in the app) for one message on the page; kept in memory
+const sayCache = new Map(), viewToks = new Map();
+async function meSay(b) {
+  let who = '';
+  if (b.vt && viewToks.has(String(b.vt))) { const v = viewToks.get(String(b.vt)); if (v.exp > Date.now()) who = v.who; }
+  if (!who) { const st = (await fsGet(TT_ME).catch(() => null)) || {}, se = (st.sess || {})[sha(b.sess || '')]; if (!se || se.exp < Date.now()) return { ok: false, signedOut: true, error: 'Please sign in again.' }; who = se.who; }
+  const k = String(b.k || ''), d = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, map = d.map || {}, acct = await ttAcct(); await arLoad();
+  const first = String((map[who] && map[who].name) || '').trim().split(/\s+/)[0] || 'there', bad = c => String(c.problems || '').trim() && !/^ok$/i.test(String(c.problems).trim());
+  const L = (acct.issues || []).filter(x => String(x.by || '').toLowerCase().indexOf(who) >= 0).map(x => sayIssue(first, x)).concat((acct.checks || []).filter(c => bad(c) && String(c.by || '').toLowerCase().indexOf(who) >= 0).map(c => sayCheck(first, c)));
+  const en = L.find(t => sayKey(t) === k); if (!en) return { ok: false, error: 'This message is not here any more.' };
+  const text = AR[k] || en;
+  if (sayCache.has(text)) return sayCache.get(text);
+  const ak = require('./ak'), admin = require('./access').ACCESS ? require('./access').ACCESS.ADMIN_EMAILS[1] : 'ibrahim@sekna.co.uk';
+  let r = await ak.tts({ text }, { email: String((map[who] && map[who].email) || admin), name: first }).catch(e => ({ ok: false, error: String(e.message || e) }));
+  if (!r || !r.ok) r = await ak.tts({ text }, { email: admin, name: 'TikTok page' }).catch(e => ({ ok: false, error: String(e.message || e) }));
+  if (!r || !r.ok) return { ok: false, error: 'Alexandra cannot talk right now.' };
+  const out = { ok: true, mime: r.mime, data: r.data };
+  if (sayCache.size > 80) sayCache.delete(sayCache.keys().next().value);
+  sayCache.set(text, out); return out;
+}
 async function meRoute(op, b) {
+  if (op === 'say') return meSay(b);
   const email = String(b.email || '').trim().toLowerCase();
   if (op === 'code') {
     if (!/^[^@\s]+@sekna\.co\.uk$/.test(email)) throw new Error('Use your work email.');
@@ -408,7 +429,7 @@ function personPage(who, acct, map, signedIn, pushOn, feed) {
     <div class="kv"><span>Checked</span><b>${E(mon(ac.checked) || '—')}</b></div></div>`;
   // v699 Alexandra reads the problem out (the phone's own voice; nothing is sent anywhere)
   const first = String((map[W] && map[W].name) || '').trim().split(/\s+/)[0] || 'there';
-  const vn = t0 => { const ar = AR[sayKey(t0)], t = ar || t0; return `<button type="button" class="vb" data-say="${E(t)}"${ar ? ' data-lang="ar"' : ''} onclick="event.stopPropagation();say(this)" aria-label="Alexandra explains"><i class="vai">AI</i><svg class="vp" viewBox="0 0 24 24"><path d="M9 6.5l9 5.5-9 5.5z"/></svg><span class="vd"><i></i><i></i><i></i></span></button>`; };
+  const vn = t0 => { const ar = AR[sayKey(t0)], t = ar || t0; return `<button type="button" class="vb" data-k="${sayKey(t0)}" data-say="${E(t)}"${ar ? ' data-lang="ar"' : ''} onclick="event.stopPropagation();say(this)" aria-label="Alexandra explains"><i class="vai">AI</i><svg class="vp" viewBox="0 0 24 24"><path d="M9 6.5l9 5.5-9 5.5z"/></svg><span class="vd"><i></i><i></i><i></i></span></button>`; };
   const others = by => String(by || '').split(/\s+·\s+/).length - 1;
   const list = iss.map((x, i) => `<button type="button" class="ir" onclick="go('i${i}')"><div class="it"><b>${E(x.type || 'Issue')}</b><span class="ch">›</span></div><p>${E(x.what || '')}</p><div class="im"><span class="gold">${others(x.by) > 0 ? '+' + others(x.by) + ' more made these ads' : ''}</span><span class="dt">${E(mon(x.found))}</span></div></button>`).join('');
   const pages = iss.map((x, i) => `<section class="pg" id="i${i}" hidden><button type="button" class="bk" onclick="go('')">‹&nbsp; Issues Log</button>
@@ -544,19 +565,24 @@ function ahDraw(){var h=document.getElementById('ahb');if(!h)return;if(!AH){h.in
 document.querySelectorAll('[data-ny]').forEach(function(e){var v=e.getAttribute('data-ny'),l=loc(v.slice(0,10),v.slice(11,16));if(l.tm&&l.d)e.textContent=day(l.d)+' · '+l.tm});
 if(location.hash==='#ah'||location.hash==='#ap'){var h0=location.hash.slice(1);document.getElementById('fb').hidden=h0==='st';document.getElementById('home').hidden=true;document.getElementById(h0).hidden=false;if(h0==='ah')ahDraw()}
 var SAY=null,SAYT=null;
-function sayStop(){var S=window.speechSynthesis;try{S&&S.cancel()}catch(e){}clearInterval(SAYT);document.querySelectorAll('.vb.on,.vb.ld').forEach(function(x){x.classList.remove('on','ld');x.style.removeProperty('--p')});document.querySelectorAll('.vcap').forEach(function(c){c.hidden=true});SAY=null}
-function say(b){var S=window.speechSynthesis;if(!S||!window.SpeechSynthesisUtterance){toast('This phone can\u2019t play the voice.');return}
- var was=SAY===b;sayStop();if(was)return;SAY=b;
- var t=b.getAttribute('data-say'),cap=b.closest('.hv')?b.closest('.hv').nextElementSibling:b.closest('.vrow')?b.closest('.vrow').nextElementSibling:null,t0=Date.now(),est=Math.max(3,t.split(/\s+/).length/2.6)*1000,started=0;
+function sayStop(){try{if(AU)AU.pause()}catch(e){}clearInterval(SAYT);document.querySelectorAll('.vb.on,.vb.ld').forEach(function(x){x.classList.remove('on','ld');x.style.removeProperty('--p')});document.querySelectorAll('.vcap').forEach(function(c){c.hidden=true});SAY=null}
+var VT=window.VT||'',AU=null,VC={};
+function wav(b64,mime){var bin=atob(b64),n=bin.length,pcm=new Uint8Array(n);for(var i=0;i<n;i++)pcm[i]=bin.charCodeAt(i);if(/wav|mpeg|mp3|ogg/i.test(mime))return new Blob([pcm],{type:mime});
+ var rate=+((/rate=(\d+)/.exec(mime)||[])[1]||24000),h=new ArrayBuffer(44),v=new DataView(h),w=function(o,s){for(var k=0;k<s.length;k++)v.setUint8(o+k,s.charCodeAt(k))};
+ w(0,'RIFF');v.setUint32(4,36+n,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,rate,true);v.setUint32(28,rate*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,n,true);
+ return new Blob([h,pcm],{type:'audio/wav'})}
+function say(b){var was=SAY===b;sayStop();if(AU){try{AU.pause()}catch(e){}AU=null}if(was)return;SAY=b;
+ var t=b.getAttribute('data-say'),ar=b.getAttribute('data-lang')==='ar',k=b.getAttribute('data-k'),cap=b.closest('.hv')?b.closest('.hv').nextElementSibling:b.closest('.vrow')?b.closest('.vrow').nextElementSibling:null,t0=Date.now();
  b.classList.add('ld');
- var ar=b.getAttribute('data-lang')==='ar',u=new SpeechSynthesisUtterance(t);u.lang=ar?'ar-EG':'en-US';u.rate=ar?.95:1;u.pitch=1.05;
- var V=S.getVoices().filter(function(v){return ar?/^ar/i.test(v.lang):/^en/i.test(v.lang)}),pick=(ar?V.filter(function(v){return /eg/i.test(v.lang)})[0]||V.filter(function(v){return /laila|salma|hoda|female|zeina|mariam|amira/i.test(v.name)})[0]:V.filter(function(v){return /samantha|female|zira|aria|jenny|google us english|karen|moira|serena/i.test(v.name)})[0])||V[0];if(pick)u.voice=pick;
- function go(){if(SAY!==b)return;b.classList.remove('ld');b.classList.add('on');started=Date.now();if(cap&&cap.classList.contains('vcap')){cap.dir=ar?'rtl':'ltr';var k=ar?t.search(/[.،!]\s/):t.indexOf('. ');cap.innerHTML='<b>'+es(t.slice(0,k>0?k+1:0))+'</b> '+es(t.slice(k>0?k+2:0));cap.hidden=false}
-  SAYT=setInterval(function(){if(SAY!==b)return;b.style.setProperty('--p',Math.min(97,(Date.now()-started)/est*100))},120)}
- u.onstart=function(){setTimeout(go,Math.max(0,800-(Date.now()-t0)))};
- u.onboundary=function(e){if(SAY===b&&started&&e.charIndex)b.style.setProperty('--p',Math.min(99,e.charIndex/t.length*100))};
- u.onend=u.onerror=function(){if(SAY!==b)return;b.style.setProperty('--p',100);setTimeout(function(){if(SAY===b)sayStop()},500)};
- S.speak(u)}
+ var a=new Audio();a.preload='auto';AU=a;try{a.play().catch(function(){})}catch(e){}
+ function show(){if(SAY!==b)return;b.classList.remove('ld');b.classList.add('on');if(cap&&cap.classList.contains('vcap')){cap.dir=ar?'rtl':'ltr';var q=ar?t.search(/[.،!]\s/):t.indexOf('. ');cap.innerHTML='<b>'+es(t.slice(0,q>0?q+1:0))+'</b> '+es(t.slice(q>0?q+2:0));cap.hidden=false}
+  SAYT=setInterval(function(){if(SAY!==b||!a.duration)return;b.style.setProperty('--p',Math.min(100,a.currentTime/a.duration*100))},100)}
+ function play(url){if(SAY!==b)return;a.src=url;a.onended=function(){if(SAY!==b)return;b.style.setProperty('--p',100);setTimeout(function(){if(SAY===b)sayStop()},450)};a.onerror=function(){if(SAY===b){sayStop();toast('Could not play her voice.')}};
+  setTimeout(function(){if(SAY!==b)return;a.play().then(show).catch(function(){sayStop();toast('Tap again to hear her.')})},Math.max(0,700-(Date.now()-t0)))}
+ if(VC[k]){play(VC[k]);return}
+ var s0='';try{s0=localStorage.getItem('tt_me')||''}catch(e){}
+ fetch('/tiktok/me/say',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({sess:s0,vt:VT,k:k})}).then(function(r){return r.json()}).then(function(j){if(!j||!j.ok)throw new Error((j&&j.error)||'Alexandra cannot talk right now.');VC[k]=URL.createObjectURL(wav(j.data,j.mime||''));play(VC[k])})
+  .catch(function(e){if(SAY===b){sayStop();toast(e.message||'Try again.')}})}
 try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=function(){}}catch(e){}
 function toast(t){var d=document.createElement('div');d.className='tst';d.textContent=t;document.body.appendChild(d);setTimeout(function(){d.remove()},3200)}
 function sess(){try{return localStorage.getItem('tt_me')||''}catch(e){return ''}}
@@ -650,7 +676,7 @@ const fn = onRequest({
   // GET /pic?u=<TikTok picture link>: the picture through this server (only links that are in the sheet's Creatives tab)
   // v685 the person's own page: /tiktok/me (work email → 6-digit code → their issues and ad checks)
   if (/^(?:\/tiktok)?\/me$/.test(route) && req.method === 'GET') { res.set('Content-Type', 'text/html; charset=utf-8'); res.set('X-Robots-Tag', 'noindex'); res.status(200).send(meGate()); return; }
-  if (/^(?:\/tiktok)?\/me\/(code|verify|page|out|push)$/.test(route) && req.method === 'POST') {
+  if (/^(?:\/tiktok)?\/me\/(code|verify|page|out|push|say)$/.test(route) && req.method === 'POST') {
     let b = req.body; if (!(b && typeof b === 'object' && !Buffer.isBuffer(b))) { try { b = JSON.parse(Buffer.isBuffer(b) ? b.toString('utf8') : (typeof b === 'string' ? b : (req.rawBody ? req.rawBody.toString('utf8') : '{}'))); } catch (e) { b = {}; } }
     try { res.json(await meRoute(route.split('/').pop(), b || {})); } catch (e) { res.json({ ok: false, error: String((e && e.message) || e).slice(0, 200) }); }
     return;
@@ -741,7 +767,8 @@ const fn = onRequest({
       await assertAdmin(body.token);
       const who = String(body.who || '').trim().toLowerCase().slice(0, 120); if (!who) throw new Error('No account.');
       const d = (await fsGet(TT_PEOPLE).catch(() => null)) || {};
-      await arLoad(); res.json({ ok: true, result: personPage(who, await ttAcct(), d.map || {}, false, false, await ttFeed().catch(() => null)) }); return;
+      await arLoad(); const vt = require('crypto').randomBytes(12).toString('base64url'); viewToks.set(vt, { who, exp: Date.now() + 3 * 3600e3 }); if (viewToks.size > 200) viewToks.delete(viewToks.keys().next().value);
+      res.json({ ok: true, result: personPage(who, await ttAcct(), d.map || {}, false, false, await ttFeed().catch(() => null)).replace('var AH=', 'var VT=' + JSON.stringify(vt) + ';var AH=') }); return;
     }
     if (route === '/people') { const d = (await fsGet(TT_PEOPLE).catch(() => null)) || {}, me = (await fsGet(TT_ME).catch(() => null)) || {};
       res.json({ ok: true, result: Object.assign({}, d.map || {}, { _mails: d.mails || {}, _opens: me.opens || {} }) }); return; }
