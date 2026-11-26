@@ -12236,7 +12236,7 @@ const AKS=[
  {img:'team2',vid:1,dur:5000,k:'FOR THE TEAM',h:'Every sheet and link, <em>connected to her</em>'},
  {img:'eyes3',vid:1,dur:5300,k:'ALEXANDRA',h:'She reads <em>every number</em>'},
  {img:'answers4',vid:1,dur:5850,k:'HEMERA',h:'and turns it into <em>answers</em>'},
- {img:'flag7',vid:1,dur:5500,k:'ALEXANDRA × HEMERA',h:'Built for <em>HEMERA</em>'},
+ {img:'flag8',vid:1,dur:5500,k:'ALEXANDRA × HEMERA',h:'Built for <em>HEMERA</em>'},
  {img:'sekna4',vid:1,dur:6000,k:'SEKNA',h:'Made at <em>Sekna</em>'},
  {img:'invite2',vid:1,once:1,k:'MEET ALEXANDRA',h:'Ask her <em>anything</em>'}];
 const AKS_TR=['none','sweepD','diag','split','beamD','sweepL','calm'],AKS_DUR=3800,AKS_SEQ=5000,AKS_T=1050,AKS_E='cubic-bezier(.7,0,.2,1)';
@@ -22646,8 +22646,8 @@ const AKSFX_K={
  pop:()=>akSfxTone('sine',620,1000,0,.1,.13,.004)};
 
 const AKSFX_CUE={alliance2:[[.05,'boom']],team2:[[1.4,'air']],eyes3:[[.35,'tick'],[.6,'blips'],[2.6,'tick']],
- answers4:[[1.7,'charge'],[3.25,'zap']],flag7:[],sekna4:[[.2,'hum'],[4.2,'beep']],invite2:[[.9,'send'],[2.4,'dots'],[3,'pop'],[3.8,'pop']]};
-const AKSND_VO={alliance2:[[.35,1]],team2:[[.3,2]],eyes3:[[.35,3]],answers4:[[.6,4]],flag7:[[.55,5]],sekna4:[[.9,6]],invite2:[[.25,7],[4.95,8]]};
+ answers4:[[1.7,'charge'],[3.25,'zap']],flag8:[],sekna4:[[.2,'hum'],[4.2,'beep']],invite2:[[.9,'send'],[2.4,'dots'],[3,'pop'],[3.8,'pop']]};
+const AKSND_VO={alliance2:[[.35,1]],team2:[[.3,2]],eyes3:[[.35,3]],answers4:[[.6,4]],flag8:[[.55,5]],sekna4:[[.9,6]],invite2:[[.25,7],[4.95,8]]};
 
 function akSndLate(n){const S=window.AKST,dt=(Date.now()-(AKSFX.at||0))/1000;if(!S||S.i<0||dt>1.5||!akSfxOk())return;(AKSND_VO[(AKS[S.i]||{}).img]||[]).forEach(([t,k])=>{if('vo'+k===n&&t+dt<2)akSndVoice(k,Math.max(0,t-dt))})}
 function akSfxSlide(i,tr){akSfxStop();akSubSlide(i);AKSFX.at=Date.now();if(!akSfxOk())return;akSndMusic();(AKSND_VO[(AKS[i]||{}).img]||[]).forEach(([t,k])=>{if(AKSFX.buf['vo'+k])akSndVoice(k,t)});try{if(tr==='beamD')AKSFX_K.beam();else if(tr!=='none')AKSFX_K.whoosh()}catch(e){}
