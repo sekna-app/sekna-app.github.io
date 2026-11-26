@@ -22444,8 +22444,8 @@ function akSfxCtx(){try{if(!AKSFX.c){const C=window.AudioContext||window.webkitA
 function akSfxStop(){AKSFX.t.forEach(clearTimeout);AKSFX.t=[];AKSFX.vo.forEach(v=>{try{v.stop()}catch(e){}});AKSFX.vo=[];akSndDuck(false)}
 function akSndDuck(on){const c=AKSFX.c,g=AKSFX.mg;if(!c||!g)return;try{g.gain.cancelScheduledValues(c.currentTime);g.gain.setTargetAtTime(on?.38:.9,c.currentTime,on?.1:.4)}catch(e){}}
  
-const AKSND_F=['music','vo1','vo2','vo3','vo4','vo5','vo6','vo7','vo8','awake','whoosh','air','charge','light','hum','beep','send'];
-const AKSND_G={awake:.8,light:.75,shimmer:.5,whoosh:.4,air:.28,charge:.5,beam:.75,hum:.3,beep:.4,send:.55};
+const AKSND_F=['music','flag8','vo1','vo2','vo3','vo4','vo5','vo6','vo7','vo8','awake','whoosh','air','charge','light','hum','beep','send'];
+const AKSND_G={flag8:.75,awake:.8,light:.75,shimmer:.5,whoosh:.4,air:.28,charge:.5,beam:.75,hum:.3,beep:.4,send:.55};
 function akSndLoad(){const c=AKSFX.c;if(!c||AKSFX.ld)return;AKSFX.ld=1;
  AKSND_F.forEach(n=>fetch('icons/alexandra/a/'+n+'.mp3?v=1').then(r=>r.arrayBuffer()).then(b=>new Promise((ok,no)=>c.decodeAudioData(b,ok,no))).then(d=>{AKSFX.buf[n]=d;if(n==='music')akSndMusic();akSndLate(n)}).catch(()=>{}))}
 function akSndPlay(n,dt,g,dur){const c=AKSFX.c,d=AKSFX.buf[n];if(!c||!d)return null;const s=c.createBufferSource(),v=c.createGain(),t=c.currentTime+(AKSFX.b||0)+(dt||0);s.buffer=d;v.gain.value=g==null?(AKSND_G[n]||.6):g;s.connect(v);v.connect(AKSFX.m);s.start(t,0,dur||d.duration);return s}
@@ -22476,10 +22476,12 @@ const AKSFX_K={
  beep:()=>{if(akSndPlay('beep'))return;akSfxTone('sine',1046,1046,0,.12,.07,.005);akSfxTone('sine',1318,1318,.16,.14,.07,.005)},
  send:()=>{if(akSndPlay('send'))return;akSfxNoise(0,.35,.1,'bandpass',600,3000,1,.2);akSfxTone('sine',500,1500,0,.25,.07,.01)},
  dots:()=>[0,.15,.3].forEach(d=>akSfxTone('sine',1400,1400,d,.05,.03,.003)),
- pop:()=>akSfxTone('sine',620,1000,0,.1,.13,.004)};
+ pop:()=>akSfxTone('sine',620,1000,0,.1,.13,.004),
+ 
+ vid:()=>{const n=(AKS[(window.AKST||{}).i]||{}).img,s=akSndPlay(n);if(s)AKSFX.vo.push(s)}};
 
 const AKSFX_CUE={alliance2:[[.05,'boom']],team2:[[1.4,'air']],eyes3:[[.35,'tick'],[.6,'blips'],[2.6,'tick']],
- answers4:[[1.7,'charge'],[3.25,'zap']],flag8:[],sekna4:[[.2,'hum'],[4.2,'beep']],invite2:[[.9,'send'],[2.4,'dots'],[3,'pop'],[3.8,'pop']]};
+ answers4:[[1.7,'charge'],[3.25,'zap']],flag8:[[0,'vid']],sekna4:[[.2,'hum'],[4.2,'beep']],invite2:[[.9,'send'],[2.4,'dots'],[3,'pop'],[3.8,'pop']]};
 const AKSND_VO={alliance2:[[.35,1]],team2:[[.3,2]],eyes3:[[.35,3]],answers4:[[.6,4]],flag8:[[.55,5]],sekna4:[[.9,6]],invite2:[[.25,7],[4.95,8]]};
 
 function akSndLate(n){const S=window.AKST,dt=(Date.now()-(AKSFX.at||0))/1000;if(!S||S.i<0||dt>1.5||!akSfxOk())return;(AKSND_VO[(AKS[S.i]||{}).img]||[]).forEach(([t,k])=>{if('vo'+k===n&&t+dt<2)akSndVoice(k,Math.max(0,t-dt))})}
