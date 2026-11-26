@@ -12069,7 +12069,7 @@ const AKS=[
  {img:'team2',vid:1,dur:5000,k:'FOR THE TEAM',h:'Every sheet and link, <em>connected to her</em>'},
  {img:'eyes3',vid:1,dur:5300,k:'ALEXANDRA',h:'She reads <em>every number</em>'},
  {img:'answers4',vid:1,dur:5850,k:'HEMERA',h:'and turns it into <em>answers</em>'},
- {img:'flag9',vid:1,dur:5500,k:'ALEXANDRA × HEMERA',h:'Built for <em>HEMERA</em>'},
+ {img:'flag10',vid:1,dur:5500,k:'ALEXANDRA × HEMERA',h:'Built for <em>HEMERA</em>'},
  {img:'sekna4',vid:1,dur:6000,k:'SEKNA',h:'Made at <em>Sekna</em>'},
  {img:'invite2',vid:1,once:1,k:'MEET ALEXANDRA',h:'Ask her <em>anything</em>'}];
 const AKS_TR=['none','sweepD','diag','split','beamD','sweepL','calm'],AKS_DUR=3800,AKS_SEQ=5000,AKS_T=1050,AKS_E='cubic-bezier(.7,0,.2,1)';
@@ -22444,8 +22444,8 @@ function akSfxCtx(){try{if(!AKSFX.c){const C=window.AudioContext||window.webkitA
 function akSfxStop(){AKSFX.t.forEach(clearTimeout);AKSFX.t=[];AKSFX.vo.forEach(v=>{try{v.stop()}catch(e){}});AKSFX.vo=[];akSndDuck(false)}
 function akSndDuck(on){const c=AKSFX.c,g=AKSFX.mg;if(!c||!g)return;try{g.gain.cancelScheduledValues(c.currentTime);g.gain.setTargetAtTime(on?.38:.9,c.currentTime,on?.1:.4)}catch(e){}}
  
-const AKSND_F=['music','flag9','vo1','vo2','vo3','vo4','vo5','vo6','vo7','vo8','awake','whoosh','air','charge','light','hum','beep','send'];
-const AKSND_G={flag9:.75,awake:.8,light:.75,shimmer:.5,whoosh:.4,air:.28,charge:.5,beam:.75,hum:.3,beep:.4,send:.55};
+const AKSND_F=['music','flag10','vo1','vo2','vo3','vo4','vo5','vo6','vo7','vo8','awake','whoosh','air','charge','light','hum','beep','send'];
+const AKSND_G={flag10:.75,awake:.8,light:.75,shimmer:.5,whoosh:.4,air:.28,charge:.5,beam:.75,hum:.3,beep:.4,send:.55};
 function akSndLoad(){const c=AKSFX.c;if(!c||AKSFX.ld)return;AKSFX.ld=1;
  AKSND_F.forEach(n=>fetch('icons/alexandra/a/'+n+'.mp3?v=1').then(r=>r.arrayBuffer()).then(b=>new Promise((ok,no)=>c.decodeAudioData(b,ok,no))).then(d=>{AKSFX.buf[n]=d;if(n==='music')akSndMusic();akSndLate(n)}).catch(()=>{}))}
 function akSndPlay(n,dt,g,dur){const c=AKSFX.c,d=AKSFX.buf[n];if(!c||!d)return null;const s=c.createBufferSource(),v=c.createGain(),t=c.currentTime+(AKSFX.b||0)+(dt||0);s.buffer=d;v.gain.value=g==null?(AKSND_G[n]||.6):g;s.connect(v);v.connect(AKSFX.m);s.start(t,0,dur||d.duration);return s}
@@ -22481,8 +22481,8 @@ const AKSFX_K={
  vid:()=>{const n=(AKS[(window.AKST||{}).i]||{}).img,s=akSndPlay(n);if(s)AKSFX.vo.push(s)}};
 
 const AKSFX_CUE={alliance2:[[.05,'boom']],team2:[[1.4,'air']],eyes3:[[.35,'tick'],[.6,'blips'],[2.6,'tick']],
- answers4:[[1.7,'charge'],[3.25,'zap']],flag9:[[0,'vid']],sekna4:[[.2,'hum'],[4.2,'beep']],invite2:[[.9,'send'],[2.4,'dots'],[3,'pop'],[3.8,'pop']]};
-const AKSND_VO={alliance2:[[.35,1]],team2:[[.3,2]],eyes3:[[.35,3]],answers4:[[.6,4]],flag9:[[.55,5]],sekna4:[[.9,6]],invite2:[[.25,7],[4.95,8]]};
+ answers4:[[1.7,'charge'],[3.25,'zap']],flag10:[[0,'vid']],sekna4:[[.2,'hum'],[4.2,'beep']],invite2:[[.9,'send'],[2.4,'dots'],[3,'pop'],[3.8,'pop']]};
+const AKSND_VO={alliance2:[[.35,1]],team2:[[.3,2]],eyes3:[[.35,3]],answers4:[[.6,4]],flag10:[[.55,5]],sekna4:[[.9,6]],invite2:[[.25,7],[4.95,8]]};
 
 function akSndLate(n){const S=window.AKST,dt=(Date.now()-(AKSFX.at||0))/1000;if(!S||S.i<0||dt>1.5||!akSfxOk())return;(AKSND_VO[(AKS[S.i]||{}).img]||[]).forEach(([t,k])=>{if('vo'+k===n&&t+dt<2)akSndVoice(k,Math.max(0,t-dt))})}
 function akSfxSlide(i,tr){akSfxStop();akSubSlide(i);AKSFX.at=Date.now();if(!akSfxOk())return;akSndMusic();(AKSND_VO[(AKS[i]||{}).img]||[]).forEach(([t,k])=>{if(AKSFX.buf['vo'+k])akSndVoice(k,t)});try{if(tr==='beamD')AKSFX_K.beam();else if(tr!=='none')AKSFX_K.whoosh()}catch(e){}
