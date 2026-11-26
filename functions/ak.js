@@ -122,6 +122,20 @@ async function xop(b, who, isOwner) {
     let out = []; try { out = JSON.parse(t); } catch (e) { const m = /\[[\s\S]*\]/.exec(t); try { out = m ? JSON.parse(m[0]) : []; } catch (e2) { out = []; } }
     return { ok: true, out: texts.map((_, i) => String((Array.isArray(out) ? out[i] : '') || '')) };
   }
+  // v735 Explain (swipe a card): two or three spoken sentences about what the card shows, in Egyptian Arabic; the app then reads it with her voice
+  if (op === 'brief') {
+    const text = String(b.text || '').replace(/\s+/g, ' ').trim().slice(0, 700), what = String(b.what || 'a card').slice(0, 120), hint = String(b.hint || '').slice(0, 400);
+    if (!text) return { ok: false, error: 'Nothing to explain.' };
+    const pp = await prep(email, String(b.name || who.name || '').slice(0, 60)); if (pp.blocked) return { ok: false, error: 'No access.' };
+    const keys = (pp.keys || []).filter(Boolean), url = String(pp.url || '').replace(/:streamGenerateContent.*$/, ':generateContent').replace(/\?alt=sse$/, '');
+    const payload = { contents: [{ role: 'user', parts: [{ text: 'You are Alexandra, a warm, friendly girl from Alexandria who helps the HEMERA ads team. The person tapped Explain on the "' + what + '" card. ' + hint + '\nSay what you would say out loud, in natural spoken Egyptian Arabic (Arabic letters): 2 or 3 short sentences, what it means and what to do. Do not read long codes or IDs. Only the spoken text.\n\nThe card shows: ' + text }] }],
+      generationConfig: { temperature: 0.4, maxOutputTokens: 4000 } };
+    let r = null; for (let ki = 0; ki < keys.length; ki++) { r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-goog-api-key': keys[ki] }, body: JSON.stringify(payload) }); if (r.status === 429) continue; break; }
+    if (!r || !r.ok) return { ok: false, error: 'Alexandra cannot explain right now.' };
+    const j = await r.json().catch(() => ({})), say = ((((j.candidates || [])[0] || {}).content || {}).parts || []).map(x => x.text || '').join('').trim().slice(0, 1200);
+    await uuBump(email, d => { d.q = (d.q || 0) + 1; });
+    return say ? { ok: true, say } : { ok: false, error: 'Alexandra cannot explain right now.' };
+  }
   if (op === 'stt') { const audio = String(b.audio || ''), mime = /^audio\/(wav|aac|ogg|webm|mp4|mpeg)$/.test(String(b.mime || '')) ? b.mime : 'audio/wav';
     if (!audio || audio.length > 9e6 || !/^[A-Za-z0-9+/=]+$/.test(audio.slice(0, 200))) return { ok: false, error: 'Could not hear the message.' };
     const pp = await prep(email, String(b.name || who.name || '').slice(0, 60)); if (pp.blocked) return { ok: false, error: 'No access.' };
