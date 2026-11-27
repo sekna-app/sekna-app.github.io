@@ -11002,6 +11002,33 @@ body.dark-mode .ttq-gh{background:#16204A}body.dark-mode .ttq-gh b,body.dark-mod
 .tta-note{display:block;margin:-6px 0 4px;text-align:right;font-size:10.5px;font-weight:700;color:#13804F}
 .tta-tmh .tta-mt{background:#203C8E;color:#fff;margin-right:2px}
 </style>
+  <style id="ttThemeB">
+    /* v747 TikTok theme B "Black & light" (the owner's pick): black header, black hero cards with TikTok cyan and pink, light pages.
+     * To go back to the HEMERA navy look, delete this whole <style id="ttThemeB"> block. */
+    body.plat-tt{--tt-c:#25F4EE;--tt-p:#FE2C55;--tt-k:#000;background:#f6f6f8!important}
+    body.plat-tt header.topbar,body.plat-tt .topbar{background:#000!important;background-image:none!important;box-shadow:0 1px 0 rgba(255,255,255,.06)!important}
+    body.plat-tt .topbar::before,body.plat-tt .topbar::after{display:none!important}
+    body.plat-tt :is(.mx-period-go,.mx-all,.mx-tl.on .mx-all){background:#000!important;background-image:none!important;color:#fff!important}
+    body.plat-tt .menu-toggle,body.plat-tt .topbar .icon-btn,body.plat-tt .topbar button{background-color:#1d1d24!important;border-color:#2a2a33!important}
+    body.plat-tt .side-drawer.sk-drawer,body.plat-tt aside#sideDrawer{background:radial-gradient(60% 30% at 85% 0%,rgba(254,44,85,.22),transparent 70%),radial-gradient(50% 25% at 0% 100%,rgba(37,244,238,.14),transparent 70%),#0b0b0f!important}
+    /* big hero cards → black, cyan label, a soft pink glow in the corner */
+    body.plat-tt :is(.ox-hero,.cp-hero,.cp-hd,.cp-dh,.fc-hero,.py-hero,.sta-hero,.sx-hero,.tti-hero,.tts-hero,.upx-hero,.ad-hero,.ttm-hh,.ttm-hr,.lv-sum,.lyx-sum,.b4-sum,.tk-mine-h,.vcp-band,.ph2,.mt.mt3,.bd-hd,.tks-h,#mtdVarianceCard.vc,.rx-sum.g,.rx-sum.w,.mxt-btn,.tta-apc .tta-hd){background:radial-gradient(70% 90% at 100% 0%,rgba(254,44,85,.30),transparent 60%),#000!important;border-color:#1c1c22!important}
+    body.plat-tt :is(.ox-hero,.cp-hero,.py-hero,.sta-hero,.sx-hero,.tti-hero,.tts-hero,.ttm-hh,.ttm-hr) :is(.cp-k,.k,.eyebrow,.ox-k)>*:first-child,body.plat-tt :is(.ox-hero,.cp-hero,.py-hero,.sta-hero,.tti-hero,.ttm-hh) .cp-k{color:var(--tt-c)!important}
+    /* active tabs, pills and segments → black with a pink line under */
+    body.plat-tt :is(.cp-pbar button.on,#campPanel .cp-pl.on,.cp-pl.on,.cur-sw button.on,.chg-seg:not(.gslA) button.on,.rw-mode button.on,.ttm-calg button.on,.ttm-sgp,.pm-chips button.on,.tk-views button.on,.tk-weeks button.on,.tk-dg button.on,.tk-chip.on,body .py-seg button.on,.wx-tab.on,.gsl-pill,.wx-pill,.cp-pkr-t .cp-pl.on,.lf-wk button.on,.ai-f.on,.nf-fs button.on,.ss-fs button.on,.srv-dial button.on,.act-rg>.on,.lj2>div.on,.wly-ms button.on,.fcP-pill){background:#000!important;background-image:none!important;color:#fff!important;box-shadow:inset 0 -2px 0 var(--tt-p)!important;border-color:#000!important}
+    /* buttons */
+    body.plat-tt :is(.sk-primary-btn,.sk-blue-btn,.ai-save,.tk-save,.pm-save,.sk-mini-btn,.cp-btn:not(.s),.cp-cb){background:#000!important;background-image:none!important;color:#fff!important;border-color:#000!important}
+    /* the chat button in the bottom bar → TikTok pink */
+    body.plat-tt .bbar .bb-fab span{background:var(--tt-p)!important;background-image:none!important;box-shadow:0 6px 18px rgba(254,44,85,.38)!important}
+    body.plat-tt .bbar button.on{color:#000!important}
+    /* the coloured line on top of the Daily cards: cyan → pink */
+    body.plat-tt .kpi::before{background:linear-gradient(90deg,var(--tt-c),var(--tt-p))!important}
+    body.plat-tt .date-line{background:#ececf0!important;color:#111!important}
+    body.plat-tt .cur-chip button b{background:#000!important;background-image:none!important;color:#fff!important}
+    body.plat-tt :is(.month-progress.spend span,.ox-bar .spend,.mc-bar.a span){background:linear-gradient(90deg,#000,#3a3a44)!important}
+    body.plat-tt .mr3.spend{background:#000!important}
+    body.plat-tt .sk-loadbar::before{background:linear-gradient(90deg,var(--tt-c),var(--tt-p))!important}
+  </style>
 </head>
 <body class="plat-tt">
 <div class="lsp" id="launchSp" aria-hidden="true">
@@ -14953,7 +14980,7 @@ async function dxTypes(dk,btn){
  let ex=null;try{ex=await ensureMonthExtras()}catch(e){}
  const P=ex&&dayParts(dk,ex);
  if(!P||!P.channels||!Object.keys(P.channels).length){box.innerHTML='<div class="dx-tyw">No campaign type numbers for this day yet.</div>';return}
- const ch=mergeVideo(P.channels),names=CHANNEL_ORDER.slice();Object.keys(ch).forEach(n=>{if(!names.includes(n))names.push(n)});
+ const ch=mergeVideo(P.channels),names=TT_CH_NAMES.slice();Object.keys(ch).forEach(n=>{if(!names.includes(n))names.push(n)}); // TikTok: the four TikTok types in their own order and colours
  const rows=names.map((n,i)=>ch[n]?{n,k:Math.min(i,4),c:ch[n]}:null).filter(r=>r&&(r.c.spend||r.c.value));
  box.innerHTML=`<table class="dx-tyt"><tr><th>Type</th><th>Cost</th><th>Clicks</th><th>Conv.</th><th>Value</th></tr>${rows.map(r=>`<tr><td><i class="m${r.k}"></i>${esc(CHANNEL_SHORT[r.n]||r.n)}</td><td>${money(r.c.spend)}</td><td>${fmt(r.c.clicks||0,0)}</td><td>${fmt(r.c.conversions||0,0)}</td><td>${money(r.c.value)}</td></tr>`).join('')}</table>${matchMedia('(min-width:1100px)').matches?'':''}`;
  // v273 desktop: the types table runs as long as the figures table beside it (empty rows fill the rest)
@@ -15692,11 +15719,11 @@ const PERIOD_SEL={};
 const MX_TYPES={};
 const typeKey=n=>isVideoChannel(n)?'Video (YouTube)':n;
 function mxTypes(){const t=MX_TYPES[CURRENT_ACCOUNT];return t&&t.length?t:null}
-function mxTypesLabel(){const t=mxTypes();return t?CHANNEL_ORDER.filter(n=>t.includes(n)).concat(t.filter(n=>!CHANNEL_ORDER.includes(n))).map(n=>CHANNEL_SHORT[n]||n).join(' + '):''}
+function mxTypesLabel(){const t=mxTypes();return t?TT_CH_NAMES.filter(n=>t.includes(n)).concat(t.filter(n=>!TT_CH_NAMES.includes(n))).map(n=>CHANNEL_SHORT[n]||n).join(' + '):''}
 function mxTypeTag(){const l=mxTypesLabel();return l?' · '+l:''}
 function mxTypeList(ex){
  const seen=[];(ex.channels||[]).forEach(n=>{const k=typeKey(n);if(!seen.includes(k))seen.push(k)});
- return CHANNEL_ORDER.filter(n=>seen.includes(n)).concat(seen.filter(n=>!CHANNEL_ORDER.includes(n)));
+ return TT_CH_NAMES.filter(n=>seen.includes(n)).concat(seen.filter(n=>!TT_CH_NAMES.includes(n)));
 }
 function toggleMxType(i){
  const ex=MONTH_EXTRA[CURRENT_ACCOUNT]||{}, all=mxTypeList(ex), n=i<0?'':all[i];
@@ -16112,7 +16139,7 @@ const CHANNEL_SHORT={'Search Brand':'Search Brand','Search Non-Brand':'Non-Brand
 function channelList(S,avg){
  if(!S.channels)return [];
  const chs=mergeVideo(S.channels);
- const names=CHANNEL_ORDER.slice();Object.keys(chs).forEach(n=>{if(!names.includes(n))names.push(n)});
+ const names=TT_CH_NAMES.slice();Object.keys(chs).forEach(n=>{if(!names.includes(n))names.push(n)}); // TikTok: Partnership, Sales, Catalog, Reach get the first four colours
  const per=v=>avg?v/(S.days||1):v;
  return names.map((n,i)=>{const c=chs[n];if(!c||(!c.spend&&!c.value))return null;
    return {n,short:CHANNEL_SHORT[n]||n,k:Math.min(i,5),spend:per(c.spend),value:per(c.value),conversions:per(c.conversions),clicks:per(c.clicks),roas:c.spend?c.value/c.spend:null}}).filter(Boolean);
