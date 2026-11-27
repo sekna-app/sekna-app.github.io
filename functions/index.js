@@ -5,7 +5,7 @@ const { onRequest } = require('firebase-functions/v2/https');
 const { onMessagePublished } = require('firebase-functions/v2/pubsub');
 const { onSchedule } = require('firebase-functions/v2/scheduler');
 const { buildDashboardData, getMonthCompareData, normalizeAccountKey_, buildForecast, setForecast, buildAssumptions, setAssumptions, buildVsLy, buildSearchTerms, buildSearchTermsDaily, buildActionLog, buildCampPerf } = require('./dash');
-const { ACCESS, assertAccess, assertAdmin, assertPerm, assertLabView, assertOwner } = require('./access');
+const { ACCESS, assertAccess, assertAdmin, assertPerm, assertLabView, assertOwner, hasPlatform } = require('./access');
 const { fsGet, fsSet, fsAppend, fsList, fsClearList, request, PROJECT_ID } = require('./google');
 const { archiveStatus, archiveMove, archiveProgress } = require('./archive');
 const tasks = require('./tasks');
@@ -125,6 +125,8 @@ async function withAccess(token, dataPromise) {
   const [access, data] = await Promise.allSettled([assertAccess(token), dataPromise]);
   if (access.status === 'rejected') throw access.reason;
   if (await accounts.maintenanceBlocks(access.value.email)) { const e = new Error('SEKNA_MAINTENANCE'); e.access = true; throw e; }
+  // v750 Google's numbers only for people with Google Ads on their profile
+  if (!(await hasPlatform(access.value.email, 'google'))) { const e = new Error('SEKNA_NO_PLATFORM: Google Ads is not on your profile. Ask the HEMERA admin to add it.'); e.platform = 'google'; throw e; }
   if (data.status === 'rejected') throw data.reason;
   return data.value;
 }

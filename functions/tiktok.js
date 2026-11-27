@@ -251,7 +251,7 @@ async function buildTikTokData() {
  * The sheet is read at most once a minute; the last good copy is kept in memory.
  */
 const { onRequest } = require('firebase-functions/v2/https');
-const { assertAccess, assertAdmin } = require('./access');
+const { assertAdmin, assertPlatform } = require('./access');
 const ORIGINS = ['https://sekna-app.web.app', 'https://sekna-app.firebaseapp.com', 'https://sekna-app.github.io'];
 let held = null, pending = null;
 function ttData(force) {
@@ -377,7 +377,7 @@ const fn = onRequest({
       const doc = await fsUpdate(TT_PEOPLE, d => { d = d || {}; d.map = d.map || {}; if (!nm2 && !email) delete d.map[key]; else d.map[key] = { name: nm2, email, at: Date.now() }; return d; });
       res.json({ ok: true, result: (doc && doc.map) || {} }); return;
     }
-    await assertAccess(body.token);
+    await assertPlatform(body.token, 'tiktok');
     if (route === '/peopleClear') {
       await assertAdmin(body.token);
       const who = String(body.who || '').trim().toLowerCase(); if (!who) throw new Error('No account.');

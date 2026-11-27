@@ -120,15 +120,24 @@ function permDefaults(role) {
   VIEW_KEYS.forEach(k => { out[k] = true; });
   return out;
 }
+// v750 the ad platforms on the person's profile (Admin → Positions → platforms) decide which platforms they can open:
+// Google Ads → the Google page, TikTok Ads → the TikTok page. Admins open all. No platforms saved yet → Google only.
+const PLAT_ALL = ['google', 'microsoft', 'openai', 'meta', 'tiktok', 'snapchat', 'linkedin', 'x'];
+function platsOf(email, t) {
+  if (isAdminEmail(email)) return PLAT_ALL.slice();
+  const m = t.mem[email] || {};
+  return Array.isArray(m.plats) ? m.plats.filter(k => PLAT_ALL.indexOf(k) >= 0) : ['google'];
+}
 function permsOf(email, t) {
   email = String(email || '').trim().toLowerCase();
   const out = {};
-  if (isAdminEmail(email)) { ALL_KEYS.forEach(k => { out[k] = true; }); return out; }
+  if (isAdminEmail(email)) { ALL_KEYS.forEach(k => { out[k] = true; }); out.plats = platsOf(email, t); return out; }
   const def = permDefaults((t.mem[email] || {}).role), o = t.over[email] || {};
   // Blocked (Admin → Permissions → Block): nothing at all; the app shows an error screen.
-  if (o.blocked === true) { ALL_KEYS.forEach(k => { out[k] = false; }); out.blocked = true; return out; }
+  if (o.blocked === true) { ALL_KEYS.forEach(k => { out[k] = false; }); out.blocked = true; out.plats = []; return out; }
   // true: shown · 'lock': in the menu with a lock, no access · false: hidden · 'view' (Media Plan Lab only): open it, change nothing.
   ALL_KEYS.forEach(k => { out[k] = typeof o[k] === 'boolean' || o[k] === 'lock' || (k === 'lab' && o[k] === 'view') ? o[k] : def[k]; });
+  out.plats = platsOf(email, t);
   return out;
 }
 async function permsFor(email) { return permsOf(email, await permTable()); }
@@ -140,6 +149,13 @@ async function assertPerm(token, key) {
   return a;
 }
 async function assertAdmin(token) { return assertPerm(token, 'admin'); }
+/** v750 Lets the call through only when this platform is on the person's profile; else SEKNA_NO_PLATFORM (the page explains). */
+async function hasPlatform(email, plat) { return ((await permsFor(email)).plats || []).indexOf(plat) >= 0; }
+async function assertPlatform(token, plat) {
+  const a = await assertAccess(token);
+  if (!(await hasPlatform(a.email, plat))) { const err = new Error('SEKNA_NO_PLATFORM: ' + (plat === 'tiktok' ? 'TikTok Ads' : 'Google Ads') + ' is not on your profile. Ask the HEMERA admin to add it.'); err.platform = plat; throw err; }
+  return a;
+}
 /** Media Plan Lab, reading only: people given the Lab, or given it as View only. */
 async function assertLabView(token) {
   const a = await assertAccess(token), v = (await permsFor(a.email)).lab;
@@ -153,5 +169,5 @@ async function assertOwner(token) {
   return a;
 }
 
-module.exports = { ACCESS, ACC, sha256, assertAccess, assertAdmin, checkAccessToken, accessRows, storeRows, forgetRows,
+module.exports = { ACCESS, ACC, sha256, assertAccess, assertAdmin, assertPlatform, hasPlatform, checkAccessToken, accessRows, storeRows, forgetRows,
   accessMoved, markMoved, isAdminEmail, PERM_KEYS: ALL_KEYS, PERM_DOC, permDefaults, permsFor, can, assertPerm, assertLabView, assertOwner, forgetPerms };
