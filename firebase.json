@@ -106,20 +106,6 @@
         ]
       }
     ],
-    "rewrites": [
-      {
-        "source": "/tiktok/i/**",
-        "function": { "functionId": "tiktok", "region": "europe-west2" }
-      },
-      {
-        "source": "/tiktok/me",
-        "function": { "functionId": "tiktok", "region": "europe-west2" }
-      },
-      {
-        "source": "/tiktok/me/**",
-        "function": { "functionId": "tiktok", "region": "europe-west2" }
-      }
-    ],
     "redirects": [
       {
         "source": "/get/SEKNA.apk",

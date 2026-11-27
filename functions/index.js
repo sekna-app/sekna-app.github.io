@@ -393,7 +393,7 @@ async function parity(token, account) {
 
 // TikTok · Human Appeal US has its own server (functions/tiktok.js) and its own page (/tiktok).
 exports.tiktok = require('./tiktok').fn;
-exports.tiktokDaily = require('./tiktok').daily;
+// v745 the TikTok daily notice (tiktokDaily) is removed with the ad makers' page
 
 exports.api = onRequest({
   region: 'europe-west2',
