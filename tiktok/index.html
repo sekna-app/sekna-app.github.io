@@ -9930,6 +9930,13 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .cp-sheet.open{opacity:1;pointer-events:auto}
     .cp-sc{position:absolute;inset:0;overflow-y:auto;background:var(--bg,#F4F6FB);transform:translateY(24px);transition:transform .3s cubic-bezier(.2,.8,.2,1);-webkit-overflow-scrolling:touch}
     .cp-sheet.open .cp-sc{transform:none}
+    /* v743 Compare header: short and light, like the Same Hijri day page */
+    .cp-top2{display:flex;align-items:center;gap:14px;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 14px;background:#f4f6fb;border-bottom:1px solid #e4e8f2;position:sticky;top:0;z-index:3}
+    .cp-bk2{flex:none;width:46px;height:46px;border-radius:14px;border:1px solid #e1e6f1;background:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 2px 8px rgba(20,30,70,.05)}
+    .cp-bk2 svg{width:22px;height:22px;fill:none;stroke:#3a4256;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+    .cp-t2{min-width:0}.cp-hk{font:900 11px Inter,system-ui,sans-serif;letter-spacing:.14em;color:#203c8e;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .cp-tt2{font:900 25px/1.1 Inter,system-ui,sans-serif;letter-spacing:-.03em;color:#141b33;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    body.dark-mode .cp-top2{background:#0f141c;border-color:#232a36}body.dark-mode .cp-bk2{background:#1a212c;border-color:#2a313c}body.dark-mode .cp-bk2 svg{stroke:#dfe5f2}body.dark-mode .cp-hk{color:#9fb8ff}body.dark-mode .cp-tt2{color:#f1f4fa}
     .cp-top{background:radial-gradient(120% 220% at 0 0,#2C4FB8,#203C8E 60%,#132457);color:#fff;padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 16px}
     .cp-bk{border:0;background:rgba(255,255,255,.12);color:#fff;font:inherit;font-size:12px;font-weight:800;padding:6px 12px;border-radius:99px;margin-bottom:10px;cursor:pointer}
     .cp-tt{font-family:'DM Serif Display',Georgia,serif;font-size:23px;line-height:1.1;margin-top:4px;overflow-wrap:anywhere}
@@ -10193,7 +10200,7 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     .cp-wlg{display:flex;gap:12px;flex-wrap:wrap;font:700 11px Inter,system-ui,sans-serif;color:#6b7385;margin-top:8px}.cp-wlg span{display:flex;align-items:center;gap:5px}.cp-wlg i{width:8px;height:8px;border-radius:50%;background:#3d6bff}.cp-wlg i.b{background:#e2b874}.cp-wlg .r{margin-left:auto;color:#a9b0c0}
     .cp-wl{padding:6px 14px}
     .cp-wr{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid #f1f3f8;font:700 12.5px Inter,system-ui,sans-serif;color:#6b7385}.cp-wr.h{border:0;padding:6px 0 2px;font-size:10px;letter-spacing:.06em}
-    .cp-wr>span:last-child{display:flex;align-items:center;gap:6px}.cp-wr i{font-style:normal;color:#c9cfdc}
+    .cp-wr>span:last-child{display:grid;grid-template-columns:96px 10px 96px;align-items:center;justify-items:end;flex:none}.cp-wr>span:last-child>i{justify-self:center}.cp-wr i{font-style:normal;color:#c9cfdc}
     .cp-wr b{font:900 13.5px Inter,system-ui,sans-serif;color:var(--text,#141b33);font-variant-numeric:tabular-nums;padding:2px 7px;border-radius:7px}.cp-wr b+i+b{color:#8a93a8;font-weight:800}
     .cp-wr b.w{background:#eef2fc;color:#203c8e}.cp-wr b+i+b.w{background:#fdf6e7;color:#9a6d1f}
     .cp-wr.h b{font:800 10px Inter,system-ui,sans-serif;padding:0 7px}.cp-wr.h b.a{color:#3d6bff}.cp-wr.h b.bb{color:#c99a45}
@@ -10814,7 +10821,13 @@ body.dark-mode .chg-ver.b{background:#16203a!important;color:#e9eef7!important}b
 
 #dayChannelsGrid .ctd{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 
-.ak-vtx{margin-top:6px}.ak-vtx>summary{cursor:pointer;font:700 11.5px Inter,system-ui,sans-serif;color:#6b7385;list-style:none}.ak-vtx>summary::-webkit-details-marker{display:none}.ak-vtx>summary:before{content:"▸ "}.ak-vtx[open]>summary:before{content:"▾ "}
+.ak-vtx{margin-top:8px}.ak-vtx>summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:6px;font:800 11.5px Inter,system-ui,sans-serif;color:#3d5bd9;background:rgba(61,107,255,.09);padding:4px 10px 4px 7px;border-radius:99px;user-select:none}.ak-vtx>summary::-webkit-details-marker{display:none}
+.ak-vtx>summary i{width:16px;height:16px;border-radius:50%;background:#3d6bff;position:relative;flex:none;transition:transform .2s}.ak-vtx>summary i:after{content:"";position:absolute;left:5px;top:4px;width:4px;height:4px;border-right:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(45deg)}
+.ak-vtx[open]>summary i{transform:rotate(180deg)}.ak-vtx .c{display:none}.ak-vtx[open] .c{display:inline}.ak-vtx[open] .o{display:none}
+.ak-vtxb{margin-top:8px;animation:akVtxIn .22s ease-out}@keyframes akVtxIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.ak-m .ak-alt{line-height:1.75;margin:0 0 10px;overflow-wrap:anywhere}.ak-m .ak-alt:last-child{margin-bottom:0}.ak-m.h{overflow-wrap:anywhere}
+.ak.dk .ak-vtx>summary{color:#9fb8ff;background:rgba(159,184,255,.12)}
+
 
 /* v649 rich cards, A · glass navy, colour by the result */
 .akr{position:relative;border-radius:14px;padding:10px 12px 10px 14px;color:#fff;background:rgba(8,16,42,.86);border:1px solid rgba(255,255,255,.12);box-shadow:0 8px 20px rgba(0,0,0,.18);overflow:hidden;font-family:Inter,system-ui,sans-serif;text-align:left}
@@ -22523,6 +22536,8 @@ function cpDraw(){
  const L=d.latest,ix=cpIx(c),[a,b]=cpPer(L),m=d.c[CPX.i],ch=cpCh(m[1]),rows=ix[CPX.i],r=cpSum(rows,a,b);
  const sc=o.querySelector('.cp-sc'),y=sc?sc.scrollTop:0;
  const top=(k,t,s)=>`<div class="cp-top"><button type="button" class="cp-bk" onclick="cpBack()">‹ Back</button><div class="cp-k">${k}</div><div class="cp-tt">${t}</div><div class="cp-sub">${s}</div></div>`;
+ 
+ const top2=(k,t,s)=>`<div class="cp-top2"><button type="button" class="cp-bk2" onclick="cpBack()" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><div class="cp-t2"><div class="cp-hk">${k} · ${s}</div><div class="cp-tt2">${t}</div></div></div>`;
  let html='';
  if(CPX.mode==='det'){
   const n=cpDays(a,b),cus=CPS.per==='c',base=cus?cpUsual((s,e)=>cpSum(rows,s,e),a,b,(rows[0]||[])[0]):cpSum(rows,cpD(a,-n),cpD(a,-1)),acc=cpAll(ix,a,b);
@@ -22560,7 +22575,7 @@ function cpDraw(){
   }
   const pbOpts=[['prev','The period before'],['lm','Same days last month'],['ly','Same days last year'],['c','Custom dates']];
   const first=c.first||'';
-  html=top('COMPARE',two?'Campaign vs campaign':'Same campaign, two periods',cpPerName(L)+' · '+cpRange(a,b))+`<div class="cp-in">
+  html=top2('COMPARE',two?'Campaign vs campaign':'Same campaign, two periods',cpPerName(L)+' · '+cpRange(a,b))+`<div class="cp-in">
    <div class="cp-pbar cp-mode"><button type="button" class="${two?'on':''}" onclick="cpSet('cm','camp')">Two campaigns</button><button type="button" class="${two?'':'on'}" onclick="cpSet('cm','per')">Two periods</button></div>
    ${cpPbarHtml()}
    <div class="cp-ab2">${cpAbLine('i',two?'A':'',CPX.i,a,b)}${two?cpAbLine('b','B',CPX.b,a,b):''}</div>
@@ -23380,7 +23395,7 @@ async function akRoasAlert(){try{
   if(j&&j.ok){const rate=+((String(j.mime||'').match(/rate=(\d+)/)||[])[1]||24000),o=akWavBlob(j.data,rate),secs=Math.max(1,Math.round(o.pcm.length/rate)),vid='v'+Date.now();
    AKV.urls[vid]=URL.createObjectURL(o.blob);akVoicePut(vid,o.blob);const n=26,step=Math.floor(o.pcm.length/n)||1,bars=[];for(let i=0;i<n;i++){let m=0;for(let k=i*step;k<(i+1)*step&&k<o.pcm.length;k+=40)m=Math.max(m,Math.abs(o.pcm[k]));bars.push(Math.round(4+Math.min(1,m/16000)*16))}
    vb=`<span class="ak-vb" data-v="${vid}" data-d="${secs}" onclick="akPlay(this)">${akI('play')}<span>${bars.map(h=>`<i data-h="${h}" style="height:${h}px"></i>`).join('')}</span><b>${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}</b></span>`}}catch(e){}
- AK.msgs.push({w:'h',cls:'alert',html:`${vb}<p dir="auto" class="ak-alt">${txt}</p>`,nw:1});try{akSave()}catch(e){}
+ AK.msgs.push({w:'h',cls:'alert',html:vb?`${vb}${akVtx(`<p dir="auto" class="ak-alt">${txt}</p>`)}`:`<p dir="auto" class="ak-alt">${txt}</p>`,nw:1});try{akSave()}catch(e){}
  if(document.getElementById('akBox')){akDraw();akSfxLoad().then(()=>akSfx('recv'))}else akAlertBanner(bad.length>1?`${bad.length} campaigns under the ROAS target`:`${nm(bad[0])} is under the ROAS target`,!!vb)
 }catch(e){}}
 function akAlertBanner(line,voice){document.getElementById('akAlb')?.remove();
@@ -23425,12 +23440,13 @@ async function akWeekly(){try{if(typeof DASH_DATA==='undefined'||!DASH_DATA||AK.
  const q='(Weekly voice update for Thursday.) Write what you will say out loud, about 45 seconds, in Egyptian Arabic with an Alexandrian touch, no markdown, no lists, no [[CARDS]]: the last 7 days spend, value and ROAS compared with the 7 days before; the best campaign and the worst campaign (with enough spend) and why; then a clear recommendation: should we raise the budget or not, and where. Say numbers simply.';
  let txt='';try{const r=await fetch(AK_SRV,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),q,history:[],ctx:cx,name:akMe().name})});
   if(/json/.test(r.headers.get('Content-Type')||'')&&!/stream/.test(r.headers.get('X-Ak')||'')){const j=await r.json();txt=j&&j.ok?String(j.answer||''):''}else txt=await r.text()}catch(e){}
- txt=akCardsSplit(txt).text.replace(/[*#_`]/g,'').trim();if(txt.length<40){storeSet(key,'');return}
+ txt=akCardsSplit(txt).text.replace(/_+/g,' ').replace(/[*#`]/g,'').replace(/[ \t]{2,}/g,' ').trim();if(txt.length<40){storeSet(key,'');return}
  let vb='';try{const r=await fetch(AK_SRV.replace(/\/ak\/ask$/,'/ak/tts'),{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),name:akMe().name,text:txt.slice(0,1700)})});const j=await r.json();
   if(j&&j.ok){const rate=+((String(j.mime||'').match(/rate=(\d+)/)||[])[1]||24000),o=akWavBlob(j.data,rate),secs=Math.max(1,Math.round(o.pcm.length/rate)),vid='v'+Date.now();AKV.urls[vid]=URL.createObjectURL(o.blob);akVoicePut(vid,o.blob);
    const n=30,step=Math.floor(o.pcm.length/n)||1,bars=[];for(let i=0;i<n;i++){let m=0;for(let k=i*step;k<(i+1)*step&&k<o.pcm.length;k+=40)m=Math.max(m,Math.abs(o.pcm[k]));bars.push(Math.round(4+Math.min(1,m/16000)*16))}
    vb=`<span class="ak-vb" data-v="${vid}" data-d="${secs}" onclick="akPlay(this)">${akI('play')}<span>${bars.map(h=>`<i data-h="${h}" style="height:${h}px"></i>`).join('')}</span><b>${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}</b></span>`}}catch(e){}
- AK.msgs.push({w:'h',cls:'alert',html:`<p class="aklv-log">🗓 Weekly update</p>${vb}<p dir="auto" class="ak-alt">${akLiveHi(akLiveTx(txt))}</p>`,nw:1});try{akSave()}catch(e){}
+ const tp=akParas(txt).map(x=>`<p dir="auto" class="ak-alt">${akLiveHi(akLiveTx(x))}</p>`).join('');
+ AK.msgs.push({w:'h',cls:'alert',html:`<p class="aklv-log">🗓 Weekly update</p>${vb?vb+akVtx(tp):tp}`,nw:1});try{akSave()}catch(e){}
  if(document.getElementById('akBox')){akDraw();akSfxLoad().then(()=>akSfx('recv'))}else akAlertBanner('Your weekly update is ready',!!vb)}catch(e){}}
 
  
@@ -23961,13 +23977,16 @@ async function akTypeCall(ch){if(!MONTH_EXTRA[CURRENT_ACCOUNT]){try{loadMonthExt
 
 function akVrOn(){try{return localStorage.getItem('hm_ak_vrep')==='1'}catch(e){return false}}
 function akVrSet(on,btn){try{localStorage.setItem('hm_ak_vrep',on?'1':'0')}catch(e){}if(btn){btn.setAttribute('aria-checked',on);const sw=btn.querySelector('.ak-sw');if(sw)sw.classList.toggle('on',on)}}
+
+function akVtx(h){return `<details class="ak-vtx"><summary><i></i><span class="o">Show text</span><span class="c">Hide text</span></summary><div class="ak-vtxb">${h}</div></details>`}
+function akParas(t){const ss=String(t).split(/(?<=[.!?؟])\s+/).filter(Boolean),out=[];for(let i=0;i<ss.length;i+=2)out.push(ss.slice(i,i+2).join(' '));return out.length?out:[String(t)]}
 async function akVoReply(ans){try{await new Promise(r=>setTimeout(r,60));const i=AK.msgs.length-1,m=AK.msgs[i];if(!m||m.w!=='h')return;
  let t=akSmartSplit(ans).text;t=akActSplit(t).text;t=akCardsSplit(t).text;t=String(t).replace(/<[^>]+>/g,' ').replace(/[*_#`>|]/g,' ').replace(/\s+/g,' ').trim().slice(0,1700);if(!t)return;
  const r=await fetch(AK_SRV.replace(/\/ak\/ask$/,'/ak/tts'),{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),name:akMe().name,text:t})});const j=await r.json();if(!j||!j.ok)return;
  const rate=+((String(j.mime||'').match(/rate=(\d+)/)||[])[1]||24000),o=akWavBlob(j.data,rate),secs=Math.max(1,Math.round(o.pcm.length/rate)),vid='v'+Date.now();
  AKV.urls[vid]=URL.createObjectURL(o.blob);akVoicePut(vid,o.blob);const n=26,step=Math.floor(o.pcm.length/n)||1,bars=[];for(let k=0;k<n;k++){let mx=0;for(let q=k*step;q<(k+1)*step&&q<o.pcm.length;q+=40)mx=Math.max(mx,Math.abs(o.pcm[q]));bars.push(Math.round(4+Math.min(1,mx/16000)*16))}
  const vb=`<span class="ak-vb" data-v="${vid}" data-d="${secs}" onclick="akPlay(this)">${akI('play')}<span>${bars.map(h=>`<i data-h="${h}" style="height:${h}px"></i>`).join('')}</span><b>${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')}</b></span>`;
- m.html=`${vb}<details class="ak-vtx"><summary>Show text</summary>${m.html}</details>`;try{akSave()}catch(e){}
+ m.html=`${vb}${akVtx(m.html)}`;try{akSave()}catch(e){}
  if(document.getElementById('akBox')){akDraw();setTimeout(()=>{const b=document.querySelector(`#akBox .ak-vb[data-v="${vid}"]`);if(b)try{akPlay(b)}catch(e){}},250)}}catch(e){}}
 
 
