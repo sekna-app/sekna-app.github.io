@@ -284,6 +284,33 @@ function wipeOld(force) {
     .then(() => fsUpdate(TT_PEOPLE, d => { d = d || {}; delete d.mails; return d; })).catch(e => console.warn('TikTok clean-up: ' + ((e && e.message) || e)));
 }
 // v745 the separate page for the ad makers (/tiktok/me), its sign-in, its emails and the daily notice are closed and removed.
+/* ---------- v746 Campaign Performance: every campaign day by day (History tab + the month tabs), in the shape of Google's buildCampPerf ----------
+ * c = [[name, type]], d = { 'yyyy-MM-dd': [ci, spend, impr, clicks, conv, value, ci, ...] } (US dollars, CTA conversions and value). The last 550 days. */
+async function buildTikTokCamp() {
+  const meta = await sheetMeta(TT_SHEET_ID), tabs = monthTabsOf(meta);
+  const vals = tabs.length ? await batchGet(TT_SHEET_ID, tabs.map(t => a1(t.title, 'A2:M'))) : [];
+  const byMonth = {}, put = rows => { const part = {};
+    rows.forEach(r => { const k = dayKey(r[COL.DATE]), ch = chOf(r[COL.CAT]), nm = String(r[1] || '').trim(); if (!k || !ch || !nm) return;
+      (part[k.slice(0, 7)] = part[k.slice(0, 7)] || []).push([k, nm, ch, num(r[COL.SPEND]), num(r[COL.IMPR]), num(r[COL.CLICKS]), num(r[COL.CONV]), num(r[COL.VALUE])]); });
+    Object.keys(part).forEach(mk => { byMonth[mk] = part[mk]; }); };
+  put(await historyRows(meta));
+  tabs.slice().reverse().forEach((t, i) => put(vals[tabs.length - 1 - i] || [])); // a month tab replaces the history for its month
+  const all = [].concat.apply([], Object.keys(byMonth).map(mk => byMonth[mk]));
+  const last = all.reduce((m, x) => x[0] > m ? x[0] : m, ''), from = last ? new Date(Date.parse(last + 'T12:00:00Z') - 550 * 864e5).toISOString().slice(0, 10) : '';
+  const camps = [], idx = {}, days = {}, r2 = v => Math.round(v * 100) / 100;
+  all.forEach(x => { if (x[0] < from) return; const key = x[1] + '|' + x[2]; let ci = idx[key]; if (ci === undefined) { ci = idx[key] = camps.length; camps.push([x[1], x[2]]); }
+    const a = (days[x[0]] = days[x[0]] || {})[ci] = (days[x[0]] || {})[ci] || [0, 0, 0, 0, 0]; for (let i = 0; i < 5; i++) a[i] += x[3 + i]; });
+  const d = {};
+  Object.keys(days).sort().forEach(k => { const out = []; Object.keys(days[k]).forEach(ci => { const a = days[k][ci]; if (a.some(v => v)) out.push(+ci, r2(a[0]), Math.round(a[1]), Math.round(a[2]), r2(a[3]), r2(a[4])); }); if (out.length) d[k] = out; });
+  return { v: 1, at: Date.now(), latest: last, c: camps, d };
+}
+let campHeld = null, campPending = null;
+function ttCamp(force) {
+  if (!force && campHeld && Date.now() - campHeld.at < 5 * 60000) return Promise.resolve(campHeld.v);
+  if (campPending) return campPending;
+  campPending = buildTikTokCamp().then(v => { campHeld = { at: Date.now(), v }; campPending = null; return v; }, e => { campPending = null; if (campHeld) return campHeld.v; throw e; });
+  return campPending;
+}
 let feedHeld = null, feedPending = null;
 function ttFeed() {
   if (feedHeld && Date.now() - feedHeld.at < 5 * 60000) return Promise.resolve(feedHeld.v);
@@ -329,7 +356,7 @@ const fn = onRequest({
     } catch (e) { console.warn('TikTok picture: ' + ((e && e.message) || e)); res.status(502).send(''); }
     return;
   }
-  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct' && route !== '/feed' && route !== '/people' && route !== '/peopleSet' && route !== '/peopleClear') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
+  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct' && route !== '/feed' && route !== '/camp' && route !== '/people' && route !== '/peopleSet' && route !== '/peopleClear') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
   let body = req.body;
   if (!(body && typeof body === 'object' && !Buffer.isBuffer(body))) {
     const text = Buffer.isBuffer(body) ? body.toString('utf8') : typeof body === 'string' ? body : (req.rawBody ? req.rawBody.toString('utf8') : '');
@@ -359,7 +386,7 @@ const fn = onRequest({
       res.json({ ok: true, result: (doc && doc.map) || {} }); return;
     }
     if (route === '/people') { const d = (await fsGet(TT_PEOPLE).catch(() => null)) || {}; res.json({ ok: true, result: Object.assign({}, d.map || {}) }); return; }
-    res.json({ ok: true, result: route === '/months' ? await ttMonths() : route === '/snap' ? await ttSnap() : route === '/acct' ? await ttAcct() : route === '/feed' ? await ttFeed() : await ttData(!!body.force) });
+    res.json({ ok: true, result: route === '/months' ? await ttMonths() : route === '/snap' ? await ttSnap() : route === '/acct' ? await ttAcct() : route === '/feed' ? await ttFeed() : route === '/camp' ? await ttCamp(!!body.force) : await ttData(!!body.force) });
   } catch (e) {
     res.json({ ok: false, access: !!(e && (e.access || e.blocked)), error: String((e && e.message) || e).slice(0, 300) });
   }
@@ -528,4 +555,4 @@ function lyOf(k, x, hist) {
   };
 }
 
-module.exports = { buildTikTokData, buildTikTokMonths, buildTikTokSnap, buildTikTokAcct, buildTikTokFeed, TT_CH, TT_SHEET_ID, fn };
+module.exports = { buildTikTokCamp, buildTikTokData, buildTikTokMonths, buildTikTokSnap, buildTikTokAcct, buildTikTokFeed, TT_CH, TT_SHEET_ID, fn };

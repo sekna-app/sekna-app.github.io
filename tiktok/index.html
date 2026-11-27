@@ -11341,6 +11341,7 @@ body.dark-mode .ttq-gh{background:#16204A}body.dark-mode .ttq-gh b,body.dark-mod
 
   <button class="sk-grp" type="button" data-grp="ps" onclick="navGroup('ps')" aria-expanded="false"><span class="sk-gt"><b>Performance Snapshots</b><small class="sk-gn"></small></span><svg class="sk-gchev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
   <div class="sk-grp-body" id="grp-ps"><nav class="sk-nav" aria-label="Performance Snapshots">
+    <button class="sk-nav-btn" id="campTabBtn" type="button" onclick="switchDashboardTab('camp')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10v4h3l6 4V6L7 10z"/><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a7.5 7.5 0 0 1 0 11"/></svg></span><span>Campaign Performance</span></button>
     <button class="sk-nav-btn" id="ttcrTabBtn" type="button" onclick="switchDashboardTab('ttcr')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="13" height="14" rx="2.5"/><path d="M16.5 10l4-2.5v9l-4-2.5"/></svg></span><span>Creatives</span></button>
     <button class="sk-nav-btn" id="tttpTabBtn" type="button" onclick="switchDashboardTab('tttp')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.6"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.6"/><path d="M14 17h6M17 14v6"/></svg></span><span>Topics &amp; Landing Pages</span></button>
     <button class="sk-nav-btn" id="ttpaTabBtn" type="button" onclick="switchDashboardTab('ttpa')"><span class="sk-nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM16 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M2.5 20a5.5 5.5 0 0 1 11 0M10.5 20a5.5 5.5 0 0 1 11 0"/></svg></span><span>Partners</span></button>
@@ -11931,6 +11932,7 @@ body.dark-mode .ttq-gh{background:#16204A}body.dark-mode .ttq-gh b,body.dark-mod
   <div class="tab-panel" id="ttacPanel"><div id="ttacBody" class="tts"></div></div>
   <div class="tab-panel" id="ttqaPanel"><div id="ttqaBody" class="tts"></div></div>
   <div class="tab-panel" id="ttisPanel"><div id="ttisBody" class="tts"></div></div>
+  <div class="tab-panel" id="campPanel"><div id="cpBody"></div></div>
   <div class="tab-panel" id="ttcrPanel"><div id="ttcrBody" class="tts"></div></div>
   <div class="tab-panel" id="tttpPanel"><div id="tttpBody" class="tts"></div></div>
   <div class="tab-panel" id="ttpaPanel"><div id="ttpaBody" class="tts"></div></div>
@@ -11977,6 +11979,10 @@ function ttRun(){let ok=()=>{},fail=()=>{};const r={withSuccessHandler(f){ok=f;r
  getMonthCompareData(acc,tok){ttMonthsCall(tok).then(ok,fail)}};return r}
 
 function ttMonthsCall(tok){return fetch(TT_API+'/months',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:tok})})
+ .then(x=>{if(!x.ok)throw new Error('The TikTok server did not answer ('+x.status+').');return x.json()})
+ .then(j=>{if(j&&j.ok&&j.result)return j.result;const e=new Error((j&&j.error)||'The TikTok server did not answer.');e.access=!!(j&&j.access);throw e})}
+
+function ttCampCall(tok,force){return fetch(TT_API+'/camp',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:tok,force:!!force})})
  .then(x=>{if(!x.ok)throw new Error('The TikTok server did not answer ('+x.status+').');return x.json()})
  .then(j=>{if(j&&j.ok&&j.result)return j.result;const e=new Error((j&&j.error)||'The TikTok server did not answer.');e.access=!!(j&&j.access);throw e})}
 
@@ -13575,7 +13581,7 @@ function switchDashboardTab(tab){
  setPageTitle();
  const projectBtn=document.getElementById('projectPerfBtn');
  if(projectBtn)projectBtn.classList.remove('active');
- if(DASH_DATA)renderExtraTab(DASH_DATA);
+ if(DASH_DATA)renderExtraTab(DASH_DATA);else if(tab==='camp')renderCamp();
 
  closeSidebar();
  animateScene(SWIPE_FROM||(DASH_TABS.indexOf(CURRENT_TAB)<prev?'left':'right'));
@@ -17619,6 +17625,8 @@ function getDeviceId(){
 function hasServer(){return !!(window.google&&google.script&&google.script.run)}
 function serverCall(name,...args){
  if(name==='getMonthCompareData')return ttMonthsCall(args[args.length-1]);
+ 
+ if(name==='getCampPerf')return ttCampCall(args[args.length-1],!!args[1]);
  if(name==='seasonsInfo')return Promise.resolve({goals:{},prep:{}});
  if(TT_NO_GOOGLE[name])return Promise.reject(new Error('This is on the Google page.'));
  return new Promise((resolve,reject)=>{
@@ -19638,14 +19646,14 @@ function myPerms(){
 }
 
 const VIEW_KEYS=['overview','days','channel','plans','ranks','camp','months','seasons','ask','team','mine','leaveview','notifs','updates','about','share'];
-function canDo(k){if(['lab','plans','ranks','terms','camp','chg'].indexOf(k)>=0)return false;const p=myPerms();if(k==='terms'||k==='ttcr'||k==='tttp'||k==='ttpa'||k==='ttac'||k==='ttqa'||k==='ttis'||k==='ttcm'||k==='ttah')k='ranks';if(k==='chg')k='camp'; 
+function canDo(k){if(['lab','plans','ranks','terms','chg'].indexOf(k)>=0)return false;const p=myPerms();if(k==='terms'||k==='ttcr'||k==='tttp'||k==='ttpa'||k==='ttac'||k==='ttqa'||k==='ttis'||k==='ttcm'||k==='ttah')k='ranks';if(k==='chg')k='camp'; 
  if(k==='lab')return p.lab===true||p.lab==='view';return k in p?p[k]===true:VIEW_KEYS.includes(k)}
 
 function labEdit(){return myPerms().lab===true}
 
 function isLocked(k){return myPerms()[k]==='lock'}
 
-const MENU_PERM=[['overviewTabBtn','overview'],['daysTabBtn','days'],['channelTabBtn','channel'],['ttcrTabBtn','ttcr'],['tttpTabBtn','tttp'],['ttpaTabBtn','ttpa'],['ttacTabBtn','ttac'],['ttqaTabBtn','ttqa'],['ttisTabBtn','ttis'],['ttcmTabBtn','ttcm'],['ttahTabBtn','ttah'],['labTabBtn','lab'],['plansTabBtn','plans'],['ranksTabBtn','ranks'],['termsTabBtn','terms'],['campTabBtn','camp'],['chgTabBtn','chg'],['monthsTabBtn','months'],['seasonsTabBtn','seasons'],['askNavBtn','ask'],
+const MENU_PERM=[['overviewTabBtn','overview'],['daysTabBtn','days'],['channelTabBtn','channel'],['campTabBtn','camp'],['ttcrTabBtn','ttcr'],['tttpTabBtn','tttp'],['ttpaTabBtn','ttpa'],['ttacTabBtn','ttac'],['ttqaTabBtn','ttqa'],['ttisTabBtn','ttis'],['ttcmTabBtn','ttcm'],['ttahTabBtn','ttah'],['labTabBtn','lab'],['plansTabBtn','plans'],['ranksTabBtn','ranks'],['termsTabBtn','terms'],['campTabBtn','camp'],['chgTabBtn','chg'],['monthsTabBtn','months'],['seasonsTabBtn','seasons'],['askNavBtn','ask'],
  ['ttTeamBtn','team'],['ttMineBtn','mine'],['ttBuildBtn','build'],['ttLeaveBtn','leaveview'],['ttQuickBtn','quick'],['nfNavBtn','notifs'],['updatesNavBtn','updates'],['aboutNavBtn','about'],['adminNavBtn','admin']];
 function lockSheet(name){
  let o=document.getElementById('lockSheet');
@@ -22368,7 +22376,7 @@ try{document.fonts&&document.fonts.load('400 16px AKufi','\u0645\u0631\u062d\u06
 
  
 let CP={}, CPS={per:'y',from:'',to:'',types:[],sort:'sp',dir:-1,so:false}, CPX=null, CP_ACC={}, CP_CHS=[];
-const CP_CH={'Search Brand':['Search Brand','#2453D6'],'Search Non-Brand':['Non-Brand','#7B5CF0'],'Performance Max':['PMax','#C99A45'],'Demand Gen':['Demand Gen','#1D9CC8'],'Video (YouTube)':['Video','#E05566']};
+const CP_CH={'Partnership':['Partnership','#7B5CF0'],'Sales':['Sales','#2453D6'],'Catalog':['Catalog','#C99A45'],'Reach':['Reach','#1D9CC8'],'Search Brand':['Search Brand','#2453D6'],'Search Non-Brand':['Non-Brand','#7B5CF0'],'Performance Max':['PMax','#C99A45'],'Demand Gen':['Demand Gen','#1D9CC8'],'Video (YouTube)':['Video','#E05566']};
 const CP_PERS=[['y','Yesterday'],['3','3D'],['7','7D'],['30','30D'],['c','Custom']];
 
 const CP_M=[['ro','ROAS'],['sp','Spend',0,1],['va','Value'],['cv','Conv.'],['cpa','CPA',1],['cl','Clicks'],['im','Impr.'],['ctr','CTR'],['cpc','CPC',1],['cvr','Conv. rate'],['aov','Avg. value']];
