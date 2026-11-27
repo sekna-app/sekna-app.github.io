@@ -4644,6 +4644,12 @@ window.addEventListener('load',function(){
     .acx-r .lg{width:30px;height:30px;border-radius:9px;background:#f4f1fb;display:grid;place-items:center;flex:none;overflow:hidden}.acx-r .lg img{width:22px;height:22px;object-fit:contain}
     .acx-r b{display:block;font:800 13.5px Inter,system-ui,sans-serif}.acx-r small{font:700 11px Inter,system-ui,sans-serif;color:#6b7385}
     .acx-r i{margin-left:auto;width:18px;height:18px;border-radius:50%;border:2px solid #c9cfdc;box-sizing:border-box;flex:none}.acx-r.on i{border:5px solid #3d6bff}
+    .acx-tabs .acx-up{all:unset;cursor:pointer;margin:-2px 0 0 auto;align-self:flex-start;padding:0;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;color:#6b7385}.acx-up svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+    .acx.shut{padding:0}.acx-cur{all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px}
+    .acx-cur .lg{width:38px;height:38px;border-radius:11px;background:#f4f1fb;display:grid;place-items:center;overflow:hidden;flex:none}.acx-cur .lg img{width:28px;height:28px;object-fit:contain}
+    .acx-ct{min-width:0;flex:1}.acx-ct b{display:block;font:900 15px Inter,system-ui,sans-serif;color:#141b33;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.acx-ct small{font:700 12px Inter,system-ui,sans-serif;color:#6b7385}
+    .acx-ch{width:20px;height:20px;fill:none;stroke:#6b7385;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;flex:none}
+    body.dark-mode .acx-ct b{color:#fff}
     body.dark-mode .acx{background:#151a22;color:#e7ebf3}body.dark-mode .acx-tabs{border-color:#252a32}body.dark-mode .acx-tabs button.on{color:#fff}body.dark-mode .acx-tabs button.on:after{background:#7d9cff}body.dark-mode .acx-r.on{background:#1d2740}
     /* v750 the account chip: just the platform's logo (the word was crowding the Live line) */
     .acc-pf{padding:3px!important;gap:0!important}.acc-pf span{display:none}
@@ -13096,14 +13102,18 @@ function closeSoon(e){if(e&&e.target!==e.currentTarget)return;const o=document.g
 /* v750 platforms on the person's profile (Admin): Google Ads → the Google page, TikTok Ads → the TikTok page. Admins see all.
  * No platforms saved yet → Google only. The servers check it too. */
 function myPlats(){const p=(ACCESS_PROFILE&&ACCESS_PROFILE.perms)||null;return p&&Array.isArray(p.plats)?p.plats:null}
-const ACX_APP='t';let ACX_TAB=ACX_APP==='t'?'tiktok':'google';
+let ACX_OPEN=false;const ACX_APP='t';let ACX_TAB=ACX_APP==='t'?'tiktok':'google';
 function acxDraw(){const el=document.getElementById('acx');if(!el)return;const pl=myPlats()||(ACX_APP==='t'?['google','tiktok']:['google','tiktok']);
  const tabs=[['google','Google','icons/alexandra/logo-google.png?v=3',2],['tiktok','TikTok','icons/alexandra/logo-tiktok.png?v=3',1]].filter(t=>pl.indexOf(t[0])>=0);
  if(!tabs.length){el.innerHTML='';return}if(!tabs.some(t=>t[0]===ACX_TAB))ACX_TAB=tabs[0][0];
  const logo=(document.querySelector('img[data-client-logo][src]')||{}).src||'';
  const rows=ACX_TAB==='google'?[['usa','Human Appeal US','Google Ads · USD'],['ar','Human Appeal AR','Google Ads · GBP']]:[['tt','Human Appeal US','TikTok Ads · USD']];
  const cur=ACX_APP==='t'?'tt':CURRENT_ACCOUNT;
- el.innerHTML=(tabs.length>1?`<div class="acx-tabs" role="tablist">${tabs.map(t=>`<button type="button" role="tab" class="${t[0]===ACX_TAB?'on':''}" aria-selected="${t[0]===ACX_TAB}" onclick="ACX_TAB='${t[0]}';acxDraw()"><img src="${t[2]}" alt="">${t[1]} <em>${t[3]}</em></button>`).join('')}</div>`:'')+
+ // v751 closed: the old card (logo, account, platform, arrow); the arrow opens the switch
+ if(!ACX_OPEN){const nm=ACX_APP==='t'?'Human Appeal US':(CURRENT_ACCOUNT==='ar'?'Human Appeal AR':'Human Appeal US'),pf=ACX_APP==='t'?'TikTok Ads':'Google Ads';
+  el.classList.add('shut');el.innerHTML=`<button type="button" class="acx-cur" onclick="ACX_OPEN=true;acxDraw()" aria-expanded="false"><span class="lg">${logo?`<img src="${logo}" alt="">`:''}</span><span class="acx-ct"><b>${nm}</b><small>${pf}</small></span><svg class="acx-ch" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>`;return}
+ el.classList.remove('shut');
+ el.innerHTML=(tabs.length>1?`<div class="acx-tabs" role="tablist">${tabs.map(t=>`<button type="button" role="tab" class="${t[0]===ACX_TAB?'on':''}" aria-selected="${t[0]===ACX_TAB}" onclick="ACX_TAB='${t[0]}';acxDraw()"><img src="${t[2]}" alt="">${t[1]}</button>`).join('')}<button type="button" class="acx-up" aria-label="Close" onclick="ACX_OPEN=false;acxDraw()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button></div>`:`<div class="acx-tabs"><button type="button" class="acx-up" aria-label="Close" onclick="ACX_OPEN=false;acxDraw()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button></div>`)+
   rows.map(([k,n,sub])=>`<button type="button" class="acx-r${k===cur?' on':''}" onclick="acxPick('${k}')"><span class="lg">${logo?`<img src="${logo}" alt="">`:''}</span><span><b>${n}</b><small>${sub}</small></span><i></i></button>`).join('')}
 function acxPick(k){
  if(ACX_APP==='t'){if(k==='tt'){closeSidebar();return}ttGoGoogle(k);return}
@@ -13113,7 +13123,7 @@ function platGate(){const pl=myPlats();if(!pl)return;const mine=ACX_APP==='t'?'t
  if(pl.indexOf(mine)>=0){acxDraw();return}
  if(pl.indexOf(other)>=0){location.replace(ACX_APP==='t'?'/':'/tiktok/');return}
  showError(new Error((mine==='tiktok'?'TikTok Ads':'Google Ads')+' is not on your profile. Ask the HEMERA admin to add it.'))}
-function openSidebar(){try{acxDraw()}catch(e){}
+function openSidebar(){try{ACX_OPEN=false;acxDraw()}catch(e){}
  navGroupApply();
  const drawer=document.getElementById('sideDrawer'),overlay=document.getElementById('drawerOverlay');
  if(drawer)drawer.classList.add('open');
