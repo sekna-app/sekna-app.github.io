@@ -125,8 +125,10 @@ function permDefaults(role) {
 const PLAT_ALL = ['google', 'microsoft', 'openai', 'meta', 'tiktok', 'snapchat', 'linkedin', 'x'];
 function platsOf(email, t) {
   if (isAdminEmail(email)) return PLAT_ALL.slice();
-  const m = t.mem[email] || {};
-  return Array.isArray(m.plats) ? m.plats.filter(k => PLAT_ALL.indexOf(k) >= 0) : ['google'];
+  const m = t.mem[email] || {}, pr = Array.isArray(m.plats) ? m.plats : null;
+  // v753 the Data page switches (Admin → Platforms) when set; a platform must also be on the profile
+  if (Array.isArray(m.data)) return m.data.filter(k => PLAT_ALL.indexOf(k) >= 0 && (!pr || pr.indexOf(k) >= 0));
+  return pr ? pr.filter(k => PLAT_ALL.indexOf(k) >= 0) : ['google'];
 }
 function permsOf(email, t) {
   email = String(email || '').trim().toLowerCase();

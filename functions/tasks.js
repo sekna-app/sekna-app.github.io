@@ -481,6 +481,10 @@ const T = {
         // v475 the ad platforms this person works on (Admin → Positions)
         const list = (Array.isArray(value) ? value : []).map(String).filter((k, i, a) => PLAT_KEYS.indexOf(k) >= 0 && a.indexOf(k) === i);
         if (Array.isArray(value)) m.plats = list; else delete m.plats;
+      } else if (field === 'data') {
+        // v753 which platform pages this person can open in HEMERA (Google, TikTok); a platform only on the profile stays off
+        const list = (Array.isArray(value) ? value : []).map(String).filter((k, i, a) => ['google', 'tiktok'].indexOf(k) >= 0 && a.indexOf(k) === i);
+        m.data = list;
       } else throw new Error('Unknown field'); // v353 the avatar or photo is each person's own choice (setMyAvatar)
       if (Object.keys(m).length) all[email] = m; else delete all[email];
       result = all[email] || {};
