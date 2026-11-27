@@ -6467,10 +6467,10 @@ window.addEventListener('load',function(){
     .mxd-sm>div{padding:10px 12px;border-right:1px solid #e7eaf2;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px}.mxd-sm>div:last-child{border:0}
     .mxd-sm small{width:100%;font-size:10.5px;font-weight:800;color:#7b84a0}.mxd-sm b{font-size:16px;font-weight:900;color:#1d2433}
     .mxd-ty{display:grid}
-    .mxd-r{display:grid;grid-template-columns:28px minmax(0,1.5fr) repeat(3,minmax(0,1fr)) 70px;gap:14px;align-items:center;padding:11px 4px;border-top:1px solid #e7eaf2}
-    .mxd-ty.c .mxd-r{grid-template-columns:28px minmax(0,1.4fr) repeat(4,minmax(0,1fr)) 30px}
+    .mxd-r{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(3,minmax(0,1fr)) 70px;gap:14px;align-items:center;padding:11px 4px;border-top:1px solid #e7eaf2}
+    .mxd-ty.c .mxd-r{grid-template-columns:minmax(0,1.4fr) repeat(4,minmax(0,1fr)) 30px}
     .mxd-r>u{text-decoration:none;width:26px;height:26px;border-radius:8px;color:#fff;display:grid;place-items:center;font-size:11.5px;font-weight:900}
-    .mxd-r .n{display:flex;align-items:center;gap:10px;min-width:0}.mxd-r .n b{display:block;font-size:14px;color:#1d2433}.mxd-r .n small{font-size:11px;color:#7b84a0;font-weight:700}
+    .mxd-r .n{display:flex;align-items:center;gap:10px;min-width:0}.mxd-r .n .mxd-sq{width:9px;height:9px;border-radius:3px;flex:none;margin-right:-3px}.mxd-r .n b{display:block;font-size:14px;color:#1d2433}.mxd-r .n small{font-size:11px;color:#7b84a0;font-weight:700}
     .mxd-r .v small{display:block;font-size:10px;color:#7b84a0;font-weight:800}.mxd-r .v b{display:block;font-size:14px;font-weight:800;color:#1d2433}
     .mxd-r .v b.l{color:#9aa1b2;font-weight:700}.mxd-r .v b.w{color:#1d2433}
     .mxd-ty.c .mxd-r .v b:nth-of-type(2){font-size:12.5px}
@@ -6741,9 +6741,9 @@ window.addEventListener('load',function(){
       /* the report rows on a phone */
       #monthsPanel .mxd-sm{grid-template-columns:repeat(3,minmax(0,1fr))}
       #monthsPanel .mxd-sm>div:nth-child(3n){border-right:0}#monthsPanel .mxd-sm>div:nth-child(-n+3){border-bottom:1px solid #e7eaf2}
-      #monthsPanel .mxd-r,#monthsPanel .mxd-ty.c .mxd-r{grid-template-columns:26px minmax(0,1fr) auto;gap:8px 10px}
+      #monthsPanel .mxd-r,#monthsPanel .mxd-ty.c .mxd-r{grid-template-columns:minmax(0,1fr) auto;gap:8px 10px}
       #monthsPanel .mxd-r>.v{display:none}
-      #monthsPanel .mxd-r>.v3{grid-column:2/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+      #monthsPanel .mxd-r>.v3{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
       #monthsPanel .mxd-ty.c .mxd-r>.v3{grid-template-columns:repeat(4,minmax(0,1fr))}
       #monthsPanel .mxd-r>.v3>div{background:#f5f7fb;border-radius:9px;padding:5px 8px}
       #monthsPanel .mxd-r>.v3 small{display:block;font-size:9px;color:#7b84a0;font-weight:800}#monthsPanel .mxd-r>.v3 b{display:block;font-size:12px;font-weight:800;color:#1d2433}#monthsPanel .mxd-r>.v3 b.l{color:#9aa1b2;font-weight:700;font-size:11px}
@@ -10057,6 +10057,12 @@ html:not(.desktop-site-mode){touch-action:pan-x pan-y}
     /* v543 Campaign Performance top, the owner's pick: numbers in the navy card, then a light period bar, type pills, sort / compare links */
     .cp-g3h{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:10px}.cp-g3h>div{background:rgba(255,255,255,.08);border-radius:11px;padding:7px 9px;min-width:0}
     .cp-g3h small{display:block;font-size:9px;color:#9FB0E6;font-weight:800;letter-spacing:.08em}.cp-g3h b{display:block;font-size:15.5px;font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cp-g3h .mx-arrow{margin:3px 0 0;display:inline-block}
+    /* v742 the owner's pick B: the percentages are just the coloured number (no pill), smaller */
+    .cp-hero .mx-arrow,#app .cp-hero .mx-arrow,.mxd-sm .mx-arrow,#app .mxd-sm .mx-arrow,.mr3-chip,#app .mr3-chip{background:none!important;padding:0!important;border-radius:0!important;font-size:10.5px!important;font-weight:800!important;letter-spacing:0!important}
+    .cp-hero .mx-arrow.good{color:#6ee7ad!important}.cp-hero .mx-arrow.bad{color:#ff9aa6!important}.cp-hero .mx-arrow.neutral{color:#c6cfee!important}
+    .mxd-sm .mx-arrow{flex-basis:100%;margin-top:-2px}.mxd-sm .mx-arrow.good{color:#13804f!important}.mxd-sm .mx-arrow.bad{color:#c2382f!important}.mxd-sm .mx-arrow.neutral{color:#6a7390!important}
+    body.dark-mode .mxd-sm .mx-arrow.good{color:#5be3a3!important}body.dark-mode .mxd-sm .mx-arrow.bad{color:#ff9aa6!important}body.dark-mode .mxd-sm .mx-arrow.neutral{color:#b9c2d6!important}
+    .mr3-chip,.mr3-chip.good,.mr3-chip.bad,.mr3-chip.neutral{color:#fff!important;opacity:.95}
     .cp-pbar{display:flex;background:#E9ECF3;border-radius:12px;padding:3px;margin:12px 0 0}.cp-pbar button{flex:1;border:0;background:none;border-radius:9px;padding:8px 0;font:inherit;font-size:12px;font-weight:800;color:#6B7385;cursor:pointer}.cp-pbar button.on{background:#fff;color:#203C8E;box-shadow:0 2px 6px rgba(20,40,110,.12)}
     .cp-pls{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:10px -2px 0;padding:1px 2px 2px}.cp-pls::-webkit-scrollbar{display:none}
     .cp-pl{flex:none;display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line,#DFE4EF);background:var(--card,#fff);color:#4b5263;border-radius:99px;padding:5px 12px 5px 6px;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
@@ -12378,17 +12384,20 @@ function akPgGo(id){
   pg.insertAdjacentHTML('beforeend',`<div class="ak-cf" onclick="if(event.target===this)this.remove()"><div class="ak-cfb" role="alertdialog" aria-label="Clear chat"><b>Clear this chat?</b><p>All the messages on this device will be deleted. This cannot be undone.</p><div><button type="button" onclick="this.closest('.ak-cf').remove()">Cancel</button><button type="button" class="del" onclick="this.closest('.ak-cf').remove();akPgGo('clear!')">Clear</button></div></div></div>`);return}
  akAboutClose();
  if(id==='nums'){setTimeout(()=>{const i=document.getElementById('akQ');if(i&&!AK.busy){i.value="How are today's numbers?";akSend()}},250);return}
- if(id==='clear!'){AK.msgs=[];AK.hist=[];AK.nav={};AK.res=null;AK.resIds=[];AK.ls=[];AK.ts=[];AK.t0=Date.now();try{localStorage.removeItem(AK_KEEP)}catch(e){}const nm=akMe().name.split(' ')[0];akBot(`<p>Hi${nm?' '+akEsc(nm):''}. Pick from the menu or type your question.</p>`);AK.kb=true;akKb();return}
+ if(id==='clear!'){AK.msgs=[];AK.hist=[];AK.nav={};AK.res=null;AK.resIds=[];AK.ls=[];AK.ts=[];AK.t0=Date.now();try{localStorage.removeItem(akKeep())}catch(e){}const nm=akMe().name.split(' ')[0];akBot(`<p>Hi${nm?' '+akEsc(nm):''}. Pick from the menu or type your question.</p>`);AK.kb=true;akKb();return}
  setTimeout(()=>akMenu(id),200)}
 function closeAsk(){document.documentElement.classList.remove('ak-bubbed');akBubSys(false);if(AKR.on)akRecStop();AK.add=null;AK.teach=false;AK.ask=null;const o=document.getElementById('akBox');if(!o)return;o.classList.remove('open');setTimeout(()=>o.remove(),280)}
 function akBot(html,cls){AK.msgs.push({w:'h',html,cls:cls||'',nw:1});akSfx('recv');akDraw()}
 function akUser(t,quote){AK.msgs.push({w:'u',html:`${quote?`<span class="ak-rq" dir="auto">${akEsc(String(quote).slice(0,140))}</span>`:''}<span dir="auto">${akEsc(t)}</span>`,nw:1});akSfx('send');akDraw()}
 
 const AK_KEEP='hm_ask_chat';
+
+function akKeep(a){return AK_KEEP+'_'+String(a||CURRENT_ACCOUNT||'usa')}
+try{const o=localStorage.getItem(AK_KEEP);if(o){if(!localStorage.getItem(akKeep()))localStorage.setItem(akKeep(),o);localStorage.removeItem(AK_KEEP)}}catch(e){}
 function akSave(){clearTimeout(akSave.t);akSave.t=setTimeout(()=>{try{if(!AK.msgs.length)return;AK.t0=AK.t0||Date.now();
- localStorage.setItem(AK_KEEP,JSON.stringify({t0:AK.t0,msgs:AK.msgs.slice(-60).map(m=>({w:m.w,html:String(m.html).replace(/ data-u="blob:[^"]*"/g,''),cls:m.cls||'',pid:m.pid||''})),hist:AK.hist.slice(-12),nav:AK.nav,res:(AK.res||[]).map(r=>r.id)}))}catch(e){}},400)}
-function akRestore(){if(AK.msgs.length)return;try{const o=JSON.parse(localStorage.getItem(AK_KEEP)||'null');if(!o)return;
- if(Date.now()-(o.t0||0)>864e5){localStorage.removeItem(AK_KEEP);return}
+ localStorage.setItem(akKeep(AK.acct),JSON.stringify({t0:AK.t0,msgs:AK.msgs.slice(-60).map(m=>({w:m.w,html:String(m.html).replace(/ data-u="blob:[^"]*"/g,''),cls:m.cls||'',pid:m.pid||''})),hist:AK.hist.slice(-12),nav:AK.nav,res:(AK.res||[]).map(r=>r.id)}))}catch(e){}},400)}
+function akRestore(){const ac=String(CURRENT_ACCOUNT||'usa');if(AK.acct&&AK.acct!==ac){clearTimeout(akSave.t);AK.msgs=[];AK.hist=[];AK.nav={};AK.res=null;AK.resIds=[];AK.t0=0}AK.acct=ac;if(AK.msgs.length)return;try{const o=JSON.parse(localStorage.getItem(akKeep(ac))||'null');if(!o)return;
+ if(Date.now()-(o.t0||0)>864e5){localStorage.removeItem(akKeep(ac));return}
  AK.t0=o.t0;AK.msgs=o.msgs||[];AK.hist=o.hist||[];AK.nav=o.nav||{};AK.resIds=o.res||[]}catch(e){}}
 function akDraw(){akSave();try{akLimRing()}catch(e){}
  const b=document.getElementById('akBd');if(!b)return;
@@ -15900,7 +15909,7 @@ function mxdTypes(S,avg){
  const tot=list.reduce((a,c)=>a+c.spend,0)||1,all=list.reduce((a,c)=>a+c.value,0)/tot;
  const cov=S.coverage&&S.coverage.covered<S.coverage.total?`<div class="mx-note">Based on ${S.coverage.covered} of ${S.coverage.total} months — daily data${dailyStartText()}.</div>`:'';
  const rows=list.filter(c=>c.roas!=null).sort((a,b)=>b.roas-a.roas).concat(list.filter(c=>c.roas==null));
- return hd+cov+`<div class="mxd-ty">${rows.map((c,i)=>`<div class="mxd-r"><u style="background:${MXD_C[c.k]||MXD_C[5]}">${i+1}</u><div class="n">${chIco(c.n)}<div><b>${esc(chName(c.n))}</b><small>${Math.round(c.spend/tot*100)}% of spend</small></div></div>
+ return hd+cov+`<div class="mxd-ty">${rows.map((c,i)=>`<div class="mxd-r"><div class="n"><i class="mxd-sq" style="background:${MXD_C[c.k]||MXD_C[5]}"></i>${chIco(c.n)}<div><b>${esc(chName(c.n))}</b><small>${Math.round(c.spend/tot*100)}% of spend</small></div></div>
   <div class="v"><small>Spend</small><b>${money(c.spend)}</b></div><div class="v"><small>Conv.</small><b>${fmt(c.conversions,avg?1:0)}</b></div><div class="v"><small>Revenue</small><b>${money(c.value)}</b></div>
   <em class="${c.roas!=null&&c.roas>=all?'up':'dn'}">${c.roas!=null?fmt(c.roas,2)+'x':'—'}</em>
   <div class="v3"><div><small>Spend</small><b>${money(c.spend)}</b></div><div><small>Conv.</small><b>${fmt(c.conversions,avg?1:0)}</b></div><div><small>Revenue</small><b>${money(c.value)}</b></div></div></div>`).join('')}</div>`;
@@ -22124,7 +22133,8 @@ function cpPerName(L){const p=CPS.per;return p==='3'?'Last 3 days':p==='7'?'Last
 function cpDot(r,acc){if(!r.sp)return 'o';if(r.ro<1)return 'r';return acc&&r.ro<acc?'w':'g'}
 
 function cpTri(rows,ix,L){const st=(rows[0]||[])[0]||'';const t=[30,90,180].map(n=>{const a=cpD(L,-(n-1)),r=cpSum(rows,a,L);return {n,a,r,c:cpDot(r,cpAccRo(ix,a,L))}});for(let k=1;k<3;k++)if(st&&st>=t[k-1].a){t[k].c='o';t[k].nd=1}return t}
-function cpPerPick(p){if(p==='c'){cpPkOpen('main');return}CPS.per=p;renderCamp();cpDraw()}
+
+function cpPerPick(p){const tp=CPX&&CPX.mode==='cmp'&&CPX.cm==='per';if(p==='c'){cpPkOpen('main');if(tp&&CPK)CPK.then='b',cpPkDraw(true);return}if(tp){CPX.pb='prev'}CPS.per=p;renderCamp();cpDraw()}
 function cpDate(k,v){if(!/^\d{4}-\d{2}-\d{2}$/.test(v))return;CPS[k]=v;CPS.per='c';renderCamp();cpDraw()}
 function cpType(i){const n=i<0?'':CP_CHS[i];let t=CPS.types.slice();if(!n)t=[];else t=t.includes(n)?t.filter(x=>x!==n):t.concat(n);if(t.length>=CP_CHS.length)t=[];CPS.types=t;renderCamp()}
 function cpSortOpen(){CPS.so=!CPS.so;renderCamp()}
@@ -22177,8 +22187,7 @@ function renderCamp(){
  const usual=CPS.per==='c'?cpUsual((s,e)=>cpAdd(pick.map(i=>cpSum(ix[i],s,e))),a,b):null;
  body.innerHTML=cpHero(L,a,b,show,tot,usual)+cpBarHtml(show)+
   (show.length?`<div class="cp-list">${show.map(x=>cpCard(x,cpTri(ix[x.i],ix,L),cpCh(x.t),acc)).join('')}</div>`:`<div class="cp-wait cp-empty">No spend in this period.</div>`)+
-  `<div class="cp-lg"><i class="g"></i>at or above the account <i class="w"></i>below it <i class="r"></i>losing money <i class="o"></i>no data · dots: last 30 · 90 · 180 days</div>`+
-  `<div class="cp-note">From the campaign tabs of the sheet · data from ${c.first?cpLbl(c.first,{year:'numeric'}):'—'} · read ${d.at?new Date(d.at).toLocaleString('en-GB',{weekday:'short',hour:'2-digit',minute:'2-digit'}):''} · <a href="#" onclick="cpLoad(true);return false">${c.busy?'Reading…':'Read now'}</a></div>`;
+  '';
 }
 
  
@@ -22275,7 +22284,6 @@ function cpDraw(){
    <div class="cp-pbar cp-mode"><button type="button" class="${two?'on':''}" onclick="cpSet('cm','camp')">Two campaigns</button><button type="button" class="${two?'':'on'}" onclick="cpSet('cm','per')">Two periods</button></div>
    ${cpPbarHtml()}
    <div class="cp-ab2">${cpAbLine('i',two?'A':'',CPX.i,a,b)}${two?cpAbLine('b','B',CPX.b,a,b):''}</div>
-   ${two?'':cpPbList(a,b)}
    ${rb?cpWin(r,rb,two,va,vb,m,two?d.c[CPX.b]:null,[a,b],[ba,bb]):'<div class="cp-wait cp-empty">Pick a second campaign.</div>'}</div>`;
  }
  o.innerHTML=`<div class="cp-sc">${html}</div>`;
@@ -22337,7 +22345,7 @@ function cpPkClear(){CPK.a=CPK.b=CPK.anc='';cpPkDraw()}
 function cpPkShow(){
  if(!CPK||!CPK.a||!CPK.b)return;const {t,a,b}=CPK;
  if(t==='b'){if(CPX){CPX.bf=a;CPX.bt=b;CPX.pb='c'}CPK=null;cpPkClose();cpDraw();return}
- CPS.from=a;CPS.to=b;CPS.per='c';CPK=null;cpPkClose();renderCamp();cpDraw();
+ const nx=CPK.then;CPS.from=a;CPS.to=b;CPS.per='c';CPK=null;cpPkClose();renderCamp();cpDraw();if(nx==='b'&&CPX)setTimeout(()=>cpPkOpen('b'),320);
 }
 function cpPkDraw(full){
  const o=document.getElementById('cpPk');if(!o||!CPK)return;const card=o.querySelector('.pk-card'),K=CPK;
@@ -22364,7 +22372,7 @@ function cpPkDraw(full){
  if(!full&&host&&card.dataset.tab===K.tab){const y=host.scrollTop;host.innerHTML=body;host.scrollTop=y;card.querySelector('.pk-foot').outerHTML=foot;return}
  card.dataset.tab=K.tab;
  const pres=K.tab==='m'?[['this','This month'],['last','Last month'],['3m','Last 3 months'],['6m','Last 6 months'],['ramadan','Last Ramadan'],['qurbani','Last Qurbani']]:[['14d','Last 14 days'],['60d','Last 60 days'],['90d','Last 90 days'],['mon','Whole month']];
- card.innerHTML=`<div class="pk-head"><div><small>${K.t==='b'?'Period B':'Custom period'}</small></div><button type="button" class="pk-x" onclick="cpPkClose()" aria-label="Close">✕</button></div>
+ card.innerHTML=`<div class="pk-head"><div><small>${K.t==='b'?'Period B':K.then?'Period A':'Custom period'}</small></div><button type="button" class="pk-x" onclick="cpPkClose()" aria-label="Close">✕</button></div>
   <div class="wx-tabs pk-tabs"><button type="button" class="wx-tab${K.tab==='m'?' on':''}" onclick="cpPkTab('m')">Months</button><button type="button" class="wx-tab${K.tab==='d'?' on':''}" onclick="cpPkTab('d')">Days</button></div>
   <div class="pk-chips">${pres.map(([id,l])=>`<button type="button" onclick="cpPkPre('${id}')">${l}</button>`).join('')}</div><div class="pk-body">${body}</div>${foot}`;
  const b=card.querySelector('.pk-body'),on=b&&b.querySelector('.pk-m.on');if(b)b.scrollTop=on?Math.max(0,on.offsetTop-b.offsetTop-120):(K.tab==='m'?b.scrollHeight:0);
