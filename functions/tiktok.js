@@ -253,25 +253,37 @@ async function buildTikTokData() {
 const { onRequest } = require('firebase-functions/v2/https');
 const { assertAdmin, assertPlatform } = require('./access');
 const ORIGINS = ['https://sekna-app.web.app', 'https://sekna-app.firebaseapp.com', 'https://sekna-app.github.io'];
+/* v755 TikTok's own read times (Admin → Tools → Reading the sheets): "All day" (the default) reads as before;
+ * with set times the sheet is read only inside the window, and between windows the last copy held by the server is used
+ * (a server that has just started reads once). Saved in server/tt-read. */
+const TT_READ = 'server/tt-read';
+let readCfg = { on: false, from: '10:00', to: '10:20', tz: 'Asia/Muscat' }, readCfgAt = 0;
+const lastRead = {};
+function readCfgLoad() { if (Date.now() - readCfgAt < 60000) return; readCfgAt = Date.now(); fsGet(TT_READ).then(d => { if (d && d.cfg) readCfg = Object.assign({}, readCfg, d.cfg); }).catch(() => {}); }
+function hmIn(tz) { try { const p = {}; new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date()).forEach(x => { p[x.type] = x.value; }); return (+p.hour) * 60 + (+p.minute); } catch (e) { return -1; } }
+const toMin = hm => { const m = /^(\d{1,2}):(\d{2})$/.exec(String(hm || '')); return m ? (+m[1]) * 60 + (+m[2]) : -1; };
+function inWindow() { const n = hmIn(readCfg.tz || 'Asia/Muscat'), a = toMin(readCfg.from), b = toMin(readCfg.to); if (n < 0 || a < 0 || b < 0) return true; return a <= b ? (n >= a && n <= b) : (n >= a || n <= b); }
+/** True when the copy held since `at` can be used now. */
+function fresh(at, ttl, kind) { readCfgLoad(); if (Date.now() - at < ttl) return true; if (!readCfg.on) return false; return !inWindow(); }
 let held = null, pending = null;
 function ttData(force) {
-  if (!force && held && Date.now() - held.at < 60000) return Promise.resolve(held.v);
+  if (!force && held && fresh(held.at, 60000, 'data')) return Promise.resolve(held.v);
   if (pending) return pending;
-  pending = buildTikTokData().then(v => { held = { at: Date.now(), v }; pending = null; return v; }, e => { pending = null; if (held) return held.v; throw e; });
+  pending = buildTikTokData().then(v => { held = { at: Date.now(), v }; lastRead.data = Date.now(); pending = null; return v; }, e => { pending = null; if (held) return held.v; throw e; });
   return pending;
 }
 let monthsHeld = null, monthsPending = null;
 function ttMonths() {
-  if (monthsHeld && Date.now() - monthsHeld.at < 5 * 60000) return Promise.resolve(monthsHeld.v);
+  if (monthsHeld && fresh(monthsHeld.at, 5 * 60000, 'months')) return Promise.resolve(monthsHeld.v);
   if (monthsPending) return monthsPending;
-  monthsPending = buildTikTokMonths().then(v => { monthsHeld = { at: Date.now(), v }; monthsPending = null; return v; }, e => { monthsPending = null; if (monthsHeld) return monthsHeld.v; throw e; });
+  monthsPending = buildTikTokMonths().then(v => { monthsHeld = { at: Date.now(), v }; lastRead.months = Date.now(); monthsPending = null; return v; }, e => { monthsPending = null; if (monthsHeld) return monthsHeld.v; throw e; });
   return monthsPending;
 }
 let snapHeld = null, snapPending = null;
 function ttSnap() {
-  if (snapHeld && Date.now() - snapHeld.at < 5 * 60000) return Promise.resolve(snapHeld.v);
+  if (snapHeld && fresh(snapHeld.at, 5 * 60000, 'snap')) return Promise.resolve(snapHeld.v);
   if (snapPending) return snapPending;
-  snapPending = buildTikTokSnap().then(v => { snapHeld = { at: Date.now(), v }; snapPending = null; return v; }, e => { snapPending = null; if (snapHeld) return snapHeld.v; throw e; });
+  snapPending = buildTikTokSnap().then(v => { snapHeld = { at: Date.now(), v }; lastRead.snap = Date.now(); snapPending = null; return v; }, e => { snapPending = null; if (snapHeld) return snapHeld.v; throw e; });
   return snapPending;
 }
 const TT_PEOPLE = 'server/tt-people';
@@ -306,23 +318,23 @@ async function buildTikTokCamp() {
 }
 let campHeld = null, campPending = null;
 function ttCamp(force) {
-  if (!force && campHeld && Date.now() - campHeld.at < 5 * 60000) return Promise.resolve(campHeld.v);
+  if (!force && campHeld && fresh(campHeld.at, 5 * 60000, 'camp')) return Promise.resolve(campHeld.v);
   if (campPending) return campPending;
-  campPending = buildTikTokCamp().then(v => { campHeld = { at: Date.now(), v }; campPending = null; return v; }, e => { campPending = null; if (campHeld) return campHeld.v; throw e; });
+  campPending = buildTikTokCamp().then(v => { campHeld = { at: Date.now(), v }; lastRead.camp = Date.now(); campPending = null; return v; }, e => { campPending = null; if (campHeld) return campHeld.v; throw e; });
   return campPending;
 }
 let feedHeld = null, feedPending = null;
 function ttFeed() {
-  if (feedHeld && Date.now() - feedHeld.at < 5 * 60000) return Promise.resolve(feedHeld.v);
+  if (feedHeld && fresh(feedHeld.at, 5 * 60000, 'feed')) return Promise.resolve(feedHeld.v);
   if (feedPending) return feedPending;
-  feedPending = buildTikTokFeed().then(v => { feedHeld = { at: Date.now(), v }; feedPending = null; return v; }, e => { feedPending = null; if (feedHeld) return feedHeld.v; throw e; });
+  feedPending = buildTikTokFeed().then(v => { feedHeld = { at: Date.now(), v }; lastRead.feed = Date.now(); feedPending = null; return v; }, e => { feedPending = null; if (feedHeld) return feedHeld.v; throw e; });
   return feedPending;
 }
 let acctHeld = null, acctPending = null;
 function ttAcct() {
-  if (acctHeld && Date.now() - acctHeld.at < 5 * 60000) return Promise.resolve(acctHeld.v);
+  if (acctHeld && fresh(acctHeld.at, 5 * 60000, 'acct')) return Promise.resolve(acctHeld.v);
   if (acctPending) return acctPending;
-  acctPending = buildTikTokAcct().then(v => { acctHeld = { at: Date.now(), v }; acctPending = null; return v; }, e => { acctPending = null; if (acctHeld) return acctHeld.v; throw e; });
+  acctPending = buildTikTokAcct().then(v => { acctHeld = { at: Date.now(), v }; lastRead.acct = Date.now(); acctPending = null; return v; }, e => { acctPending = null; if (acctHeld) return acctHeld.v; throw e; });
   return acctPending;
 }
 const fn = onRequest({
@@ -356,7 +368,7 @@ const fn = onRequest({
     } catch (e) { console.warn('TikTok picture: ' + ((e && e.message) || e)); res.status(502).send(''); }
     return;
   }
-  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct' && route !== '/feed' && route !== '/camp' && route !== '/people' && route !== '/peopleSet' && route !== '/peopleClear') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
+  if ((route !== '/data' && route !== '/months' && route !== '/snap' && route !== '/acct' && route !== '/feed' && route !== '/camp' && route !== '/readGet' && route !== '/readSet' && route !== '/people' && route !== '/peopleSet' && route !== '/peopleClear') || req.method !== 'POST') { res.status(404).json({ ok: false, error: 'Not found' }); return; }
   let body = req.body;
   if (!(body && typeof body === 'object' && !Buffer.isBuffer(body))) {
     const text = Buffer.isBuffer(body) ? body.toString('utf8') : typeof body === 'string' ? body : (req.rawBody ? req.rawBody.toString('utf8') : '');
@@ -378,6 +390,17 @@ const fn = onRequest({
       res.json({ ok: true, result: (doc && doc.map) || {} }); return;
     }
     await assertPlatform(body.token, 'tiktok');
+    // v755 TikTok's read times (admins)
+    if (route === '/readGet' || route === '/readSet') {
+      await assertAdmin(body.token);
+      if (route === '/readSet') {
+        const c = body.cfg || {}, hm = v => /^\d{2}:\d{2}$/.test(String(v || '')) ? String(v) : null;
+        if (c.on && (!hm(c.from) || !hm(c.to))) throw new Error('Pick both times.');
+        const cfg = { on: !!c.on, from: hm(c.from) || readCfg.from, to: hm(c.to) || readCfg.to, tz: ['Asia/Muscat', 'Africa/Cairo'].indexOf(c.tz) >= 0 ? c.tz : 'Asia/Muscat' };
+        await fsUpdate(TT_READ, d => Object.assign({}, d || {}, { cfg, at: Date.now() })); readCfg = cfg; readCfgAt = Date.now();
+      } else { readCfgAt = 0; readCfgLoad(); const d = await fsGet(TT_READ).catch(() => null); if (d && d.cfg) readCfg = Object.assign({}, readCfg, d.cfg); }
+      res.json({ ok: true, result: { cfg: readCfg, last: lastRead, inWindow: inWindow() } }); return;
+    }
     if (route === '/peopleClear') {
       await assertAdmin(body.token);
       const who = String(body.who || '').trim().toLowerCase(); if (!who) throw new Error('No account.');

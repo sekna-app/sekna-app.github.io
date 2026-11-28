@@ -4214,6 +4214,25 @@ window.addEventListener('load',function(){
     body.dark-mode .cel-h{color:#fff}body.dark-mode .cel-comp textarea{background:#10141b;border-color:#252a32;color:#fff}
     /* v170: Admin → Server → Reading the sheets */
     .rw{background:#fff;border:1px solid #e7eaf2;border-radius:18px;padding:14px;margin-bottom:14px}
+    /* v755 Reading the sheets: the owner's pick "The day as a line" */
+    .rwb-tr{background:#fff;border:1px solid #e3e7f2;border-radius:18px;padding:12px 12px 8px;margin-top:10px}
+    .rwb-k{font:900 10px Inter,system-ui,sans-serif;letter-spacing:.12em;color:#8a93a8;margin-bottom:6px}
+    .rwb-lane{display:grid;grid-template-columns:70px 1fr;align-items:center;gap:8px;padding:6px 0}
+    .rwb-nm{display:flex;align-items:center;gap:6px;font:800 12px Inter,system-ui,sans-serif;color:#141b33}.rwb-nm img{width:16px;height:16px;border-radius:50%;background:#fff;object-fit:contain}
+    .rwb-line{position:relative;height:30px;background:#f4f6fb;border-radius:9px}
+    .rwb-b{position:absolute;top:4px;bottom:4px;border:0;border-radius:6px;background:#203c8e;cursor:pointer;padding:0;min-width:10px}
+    .rwb-b.ok{background:#13894f}.rwb-b.tt{background:#111}.rwb-b.all{opacity:.28}.rwb-b.all.tt{background:repeating-linear-gradient(45deg,#111,#111 4px,#555 4px 8px);opacity:.35}.rwb-b.sel{box-shadow:0 0 0 3px #e2b874}
+    .rwb-now{position:absolute;top:-4px;bottom:-4px;width:2px;background:#e2b874;pointer-events:none}.rwb-now:after{content:"";position:absolute;top:-4px;left:-3px;width:8px;height:8px;border-radius:50%;background:#e2b874}
+    .rwb-hrs{display:grid;grid-template-columns:70px 1fr;gap:8px}.rwb-hrs div{display:flex;justify-content:space-between;font:800 9.5px Inter,system-ui,sans-serif;color:#9aa1b2}
+    .rwb-seg{display:flex;gap:4px;background:#eef1f7;border-radius:12px;padding:3px;margin-top:10px}.rwb-seg button{all:unset;cursor:pointer;flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 0;border-radius:9px;font:800 12.5px Inter,system-ui,sans-serif;color:#6b7385}.rwb-seg button.on{background:#fff;color:#141b33;box-shadow:0 1px 4px rgba(20,30,70,.12)}.rwb-seg img{width:16px;height:16px;border-radius:50%;background:#fff;object-fit:contain}
+    .rwb-tz{display:flex;justify-content:flex-end;gap:12px;margin-top:6px}.rwb-tz button{all:unset;cursor:pointer;font:700 11.5px Inter,system-ui,sans-serif;color:#8a93a8}.rwb-tz button.on{color:#203c8e}.rwb-tz b{font-weight:900}
+    .rwb-list{background:#fff;border:1px solid #e3e7f2;border-radius:18px;overflow:hidden;margin-top:10px}
+    .rwb-r{all:unset;box-sizing:border-box;cursor:pointer;width:100%;display:flex;align-items:center;gap:10px;padding:11px 12px;border-top:1px solid #eef0f6}.rwb-r:first-child{border-top:0}.rwb-r.sel{background:#f5f7fd}
+    .rwb-r>i{width:34px;height:34px;border-radius:10px;background:var(--b);color:var(--c);display:grid;place-items:center;flex:none}.rwb-r>i svg{width:18px;height:18px}
+    .rwb-r b{display:block;font:800 13.5px Inter,system-ui,sans-serif;color:#141b33}.rwb-r small{font:700 11px Inter,system-ui,sans-serif;color:#6b7385}
+    .rwb-t{margin-left:auto;text-align:right;font:900 13px Inter,system-ui,sans-serif;color:#203c8e;white-space:nowrap}.rwb-t small{display:block}.rwb-t u{text-decoration:none;display:inline-flex;align-items:center;gap:3px}.rwb-t u.ok{color:#13894f}.rwb-t u svg{width:12px;height:12px}
+    .rwb-ed{padding:10px 12px;background:#f5f7fd;border-top:1px solid #eef0f6;display:grid;gap:8px}
+    body.dark-mode .rwb-tr,body.dark-mode .rwb-list{background:#151a22;border-color:#2a313c}body.dark-mode .rwb-line{background:#1c2330}body.dark-mode .rwb-nm,body.dark-mode .rwb-r b{color:#e7ebf3}body.dark-mode .rwb-r{border-color:#232a36}body.dark-mode .rwb-r.sel,body.dark-mode .rwb-ed{background:#1c2433}body.dark-mode .rwb-seg{background:#1c2330}body.dark-mode .rwb-seg button.on{background:#2a3242;color:#fff}
     .rw-st{display:flex;gap:12px;align-items:center;border-radius:16px;padding:12px;margin-top:10px;color:#fff;background:linear-gradient(150deg,#26469f,#14245e)}
     .rw-st>span{width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,.16);display:grid;place-items:center;font-size:19px;flex:none}
     .rw-st b{display:block;font-size:14px}.rw-st small{font-size:11px;color:rgba(255,255,255,.8);font-weight:700}
@@ -21711,43 +21730,56 @@ function rwStatus(d,c){
  if(t.alerted||(u||a))return {cls:'bad',ic:'warn',t:"Data didn't come today",s:`USA ${u?'in':'missing'} · AR ${a?'in':'missing'} · Refresh to retry`};
  return {cls:'wait',ic:'clock',t:"Waiting for today's data",s:`From ${rw12(c.from)} ${(RW_TZ.find(x=>x[0]===c.tz)||RW_TZ[0])[1]}`};
 }
+
+
+const RWB_TT='https:\/\/europe-west2-human-appeal-media-plan.cloudfunctions.net/tiktok';
+let RWT={data:null,busy:false,edit:null,msg:''};
+function rwtLoad(){if(RWT.busy)return;RWT.busy=true;fetch(RWB_TT+'/readGet',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken()})}).then(r=>r.json()).then(j=>{RWT.busy=false;RWT.data=j&&j.ok?j.result:{error:(j&&j.error)||'TikTok server did not answer'};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}).catch(e=>{RWT.busy=false;RWT.data={error:errorText(e)};if(ADMIN_LAST)renderAdmin(ADMIN_LAST)})}
+function rwtCur(){return RWT.edit||((RWT.data&&RWT.data.cfg)||{on:false,from:'10:00',to:'10:20',tz:'Asia/Muscat'})}
+function rwtSet(k,v){RWT.edit=Object.assign({},rwtCur(),{[k]:v});RWT.msg='';if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+async function rwtSave(btn){btn.disabled=true;btn.textContent='Saving…';
+ try{const r=await fetch(RWB_TT+'/readSet',{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({token:getAccessToken(),cfg:rwtCur()})}).then(x=>x.json());if(!r||!r.ok)throw new Error((r&&r.error)||'Could not save');RWT.data=r.result;RWT.edit=null;RWT.msg=aI('check')+'Saved'}
+ catch(e){RWT.msg=aI('warn')+esc(errorText(e))}if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
+const RWB_TTI=[{n:'Daily data',p:'Daily · Days · Month · Reports Studio',ic:'trend',c:'#203c8e',bg:'#e9eefc',k:'data'},{n:'Campaign performance',p:'Every TikTok campaign',ic:'moon',c:'#6f29a6',bg:'#f3eafa',k:'camp'},{n:'Account & checks',p:'Account & Policy · Ad Checks · Issues',ic:'check',c:'#13894f',bg:'#e3f6ec',k:'acct'},{n:'Activity & comments',p:'Activity History · Comments',ic:'clock',c:'#a56a06',bg:'#fff3dc',k:'feed'}];
+function rwbMin(hm){const m=String(hm||'').match(/^(\d{1,2}):(\d{2})$/);return m?(+m[1])*60+(+m[2]):0}
+function rwbNow(tz){try{const p={};new Intl.DateTimeFormat('en-GB',{timeZone:tz,hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date()).forEach(x=>p[x.type]=x.value);return (+p.hour)*60+(+p.minute)}catch(e){return 0}}
+function rwbOpen(plat,k){RW.plat=plat;RW.sel=RW.sel===plat+':'+k?null:plat+':'+k;if(plat==='google'){RW.pick=RW.sel?[k]:[];if(RW.sel){const w=rwSnapWin(rwCur(),k);RW.pt={from:w.from,to:w.to}}}if(ADMIN_LAST)renderAdmin(ADMIN_LAST)}
 function readWinHtml(){
- if(!RW.data&&!RW.busy)rwLoad();if(!FXT.data&&!FXT.busy)fxtLoad();
- const d=RW.data||{}, c=rwCur(), ch=!!RW.edit||!!FXT.edit, pick=RW.pick||[], fl=RW.fl||'all';
+ if(!RW.data&&!RW.busy)rwLoad();if(!FXT.data&&!FXT.busy)fxtLoad();if(!RWT.data&&!RWT.busy)rwtLoad();
+ const d=RW.data||{},c=rwCur(),t=rwtCur(),plat=RW.plat||'google',ch=!!RW.edit||!!FXT.edit,td=(d.days||[]).find(x=>x.day===d.today)||{};
  if(d.error)return `<div class="rw"><b class="ad-h">${aI('sheet')}Reading the sheets</b><div class="mrp-msg">${aI('warn')}${esc(d.error)}</div></div>`;
- const st=rwStatus(d,c), sw=(k,on)=>`<button type="button" class="rw-sw${on?' on':''}" onclick="rwSet('${k}',${!on})" aria-pressed="${on}"></button>`;
- const used=d.allDay?Math.max(0,Math.min(100,(d.reads||0)/d.allDay*100)):0, saved=100-used;
- const level=used<5?['LOW USE','ok']:used<30?['MEDIUM USE','mid']:['HIGH USE','hi'];
- const td=(d.days||[]).find(x=>x.day===d.today)||{};
- const day=x=>{const dt=new Date(x.day+'T12:00:00Z'),lbl=x.day===d.today?'Today':dt.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',timeZone:'UTC'});
-   const v=ms=>ms?`<b class="ok">${aI('check')}${esc(rwAt(ms))}</b>`:`<b class="no">${aI('x')}none</b>`;
-   return `<div class="rw-lr"><span>${esc(lbl)}</span><span>USA ${v(x.usa)}</span><span>AR ${v(x.ar)}</span></div>`};
- 
- 
- const multi=pick.length>0, list=RW_SNAPS.filter(x=>fl==='all'||rwWhen(rwSnapWin(c,x.k).from)===fl);
- const snap=x=>{const w=rwSnapWin(c,x.k),on=pick.includes(x.k),done=x.k==='media'?(td.usa&&td.ar):x.k==='terms'?(td.tusa&&td.tar):x.k==='camp'?(td.cusa&&td.car):0,allDay=!c.on&&x.k!=='fx';
-   return `<button type="button" class="rw-r${on?' on':''}" onclick="rwPick('${x.k}')" style="--c:${x.c};--b:${x.bg}">${multi?`<s>${aI('check')}</s>`:''}<i>${aI(x.ic)}</i><span><b>${x.n}${x.soon?'<em>Soon</em>':''}</b><small>${x.p}</small></span>
-     <span class="rw-tc">${allDay?'All day':esc(rw12(w.from))}<small>${allDay?'':x.one?'daily':'to '+esc(rw12(w.to))}</small>${done?`<u>${aI('check')}today</u>`:''}</span></button>`};
- const one=pick.length===1&&RW_SNAPS.find(x=>x.k===pick[0]), fxOnly=pick.length&&pick.every(k=>k==='fx');
- const bar=pick.length?`<div class="rw-pk"><b>${aI('clock')}Read ${one?esc(one.n):pick.length+' snapshots'} at</b>
-   <div class="rw-tm"${fxOnly?' style="grid-template-columns:1fr"':''}><label><small>${fxOnly?'TIME':'FROM'}</small><input type="time" value="${esc((RW.pt||{}).from||'')}" onchange="rwPt('from',this.value)"></label>${fxOnly?'':`<em>→</em><label><small>TO</small><input type="time" value="${esc((RW.pt||{}).to||'')}" onchange="rwPt('to',this.value)"></label>`}</div>
-   <button type="button" class="rw-ap" onclick="rwApply()">Set time</button></div>`:'';
- const acc=`<div class="rw-acc${RW.open?' op':''}"><button type="button" class="rw-ah" onclick="rwOpen()">${aI('sheet')}<b>Snapshots</b><span class="rw-dots">${RW_SNAPS.map(x=>`<i style="background:${x.c}"></i>`).join('')}</span><svg class="aic rw-cv" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
-   <div class="rw-ab"><div><div class="rw-fl">${RW_FL.map(([k,l])=>`<button type="button" class="${fl===k?'on':''}" onclick="rwFl('${k}')">${l}</button>`).join('')}</div>
-   ${multi?'<div class="rw-more">Select more</div>':''}<div class="rw-rows">${list.map(snap).join('')||'<div class="sk-admin-empty">Nothing at this time of day.</div>'}</div></div></div></div>`;
- return `<div class="rw"><b class="ad-h">${aI('sheet')}Reading the sheets</b>
-   <div class="rw-st ${st.cls}"><span>${aI(st.ic)}</span><div><b>${esc(st.t)}</b><small>${esc(st.s)}</small></div></div>
+ const tz=c.tz||'Asia/Muscat',now=rwbNow(tz),zone=(RW_TZ.find(x=>x[0]===tz)||RW_TZ[0])[1];
+ const done=k=>k==='media'?(td.usa&&td.ar):k==='terms'?(td.tusa&&td.tar):k==='camp'?(td.cusa&&td.car):0;
+ const blk=(plat,k,from,to,cls,lbl)=>{const a=rwbMin(from),b=Math.max(rwbMin(to),a),w=Math.max(b-a,14);return `<button type="button" class="rwb-b ${cls}${RW.sel===plat+':'+k?' sel':''}" style="left:${(a/1440*100).toFixed(2)}%;width:${(w/1440*100).toFixed(2)}%" title="${esc(lbl)}" aria-label="${esc(lbl)}" onclick="rwbOpen('${plat}','${k}')"></button>`};
+ const gl=c.on?RW_SNAPS.map(x=>{const w=rwSnapWin(c,x.k);return blk('google',x.k,w.from,w.to,done(x.k)?'ok':'',x.n+' '+rw12(w.from))}).join(''):`<button type="button" class="rwb-b all" style="left:0;width:100%" onclick="rwSet('on',true)" aria-label="Google reads all day"></button>`;
+ const tl=t.on?blk('tiktok','win',t.from,t.to,(RWT.data&&RWT.data.last&&RWT.data.last.data)?'ok':'tt','TikTok '+rw12(t.from)):`<button type="button" class="rwb-b all tt" style="left:0;width:100%" onclick="rwbOpen('tiktok','win')" aria-label="TikTok reads all day"></button>`;
+ const lane=(p,n,lg,inner)=>`<div class="rwb-lane"><span class="rwb-nm"><img src="icons/alexandra/${lg}.png?v=3" alt="">${n}</span><div class="rwb-line">${inner}<span class="rwb-now" style="left:${(now/1440*100).toFixed(2)}%"></span></div></div>`;
+ const track=`<div class="rwb-tr"><div class="rwb-k">TODAY · ${esc(zone.toUpperCase())} TIME · TAP A BLOCK</div>${lane('google','Google','logo-google',gl)}${lane('tiktok','TikTok','logo-tiktok',tl)}<div class="rwb-hrs"><span></span><div><span>12 AM</span><span>6</span><span>12 PM</span><span>6</span><span>12</span></div></div></div>`;
+ const seg=`<div class="rwb-seg">${[['google','Google','logo-google'],['tiktok','TikTok','logo-tiktok']].map(([k,l,lg])=>`<button type="button" class="${plat===k?'on':''}" onclick="RW.plat='${k}';RW.sel=null;RW.pick=[];renderAdmin(ADMIN_LAST)"><img src="icons/alexandra/${lg}.png?v=3" alt="">${l}</button>`).join('')}</div>`;
+ const st=rwStatus(d,c);
+ let body='';
+ if(plat==='google'){
+  const row=x=>{const w=rwSnapWin(c,x.k),sel=RW.sel==='google:'+x.k,ad=!c.on&&x.k!=='fx';
+   return `<button type="button" class="rwb-r${sel?' sel':''}" onclick="rwbOpen('google','${x.k}')" style="--c:${x.c};--b:${x.bg}"><i>${aI(x.ic)}</i><span><b>${x.n}</b><small>${x.p}</small></span><span class="rwb-t">${ad?'All day':esc(rw12(w.from))}<small>${done(x.k)?`<u class="ok">${aI('check')}read today</u>`:ad||x.one?'daily':'to '+esc(rw12(w.to))}</small></span></button>`+(sel?`<div class="rwb-ed"><div class="rw-tm"${x.one?' style="grid-template-columns:1fr"':''}><label><small>${x.one?'TIME':'FROM'}</small><input type="time" value="${esc((RW.pt||{}).from||'')}" onchange="rwPt('from',this.value)"></label>${x.one?'':`<em>→</em><label><small>TO</small><input type="time" value="${esc((RW.pt||{}).to||'')}" onchange="rwPt('to',this.value)"></label>`}</div><button type="button" class="rw-ap" onclick="rwApply();RW.sel=null">Set time</button></div>`:'')};
+  body=`<div class="rw-st ${st.cls}"><span>${aI(st.ic)}</span><div><b>${esc(st.t)}</b><small>${esc(st.s)}</small></div></div>
+   <div class="rwb-list">${RW_SNAPS.map(row).join('')}</div>
    <div class="rw-mode"><button type="button" class="${c.on?'on':''}" onclick="rwSet('on',true)">${aI('alarm')}Set times</button><button type="button" class="${c.on?'':'on'}" onclick="rwSet('on',false)">${aI('refresh')}All day</button></div>
-   <div class="rw-tzs rw-tz2">${RW_TZ.map(([k,l])=>`<button type="button" class="${k===c.tz?'on':''}" onclick="rwSet('tz','${k}')">${noFl(RW_FLAG[k])?`<i>${RW_FLAG[k]}</i>`:''}<b>${l}</b><small>${esc(rwNow(k))}</small></button>`).join('')}</div>
-   ${acc}${bar}
-   ${c.on?`
-   <div class="rw-l">OPTIONS</div><div class="rw-opts"><div class="rw-o"><div><b>Stop when the data is in</b><small>No reads after the new day</small></div>${sw('stopOnData',c.stopOnData!==false)}</div>
-     <div class="rw-o"><div><b>Alert if it doesn't come</b><small>At ${esc(rw12(c.to))}</small></div>${sw('alert',c.alert!==false)}</div></div>`:''}
-   <div class="rw-l">THIS MONTH</div><div class="rw-use"><span class="rw-g" style="--p:${Math.max(used,1.5).toFixed(1)}"><i>${used<1&&used>0?'<1':Math.round(used)}%</i></span><div><b>${fmt(d.reads||0,0)} sheet reads</b><small>Saved ${saved>=99.95?'100':fmt(saved,1)}% vs all day</small><span class="rw-tag ${level[1]}">${level[0]}</span></div></div>
-   ${(d.days||[]).length?`<div class="rw-l">LAST 3 DAYS</div><div class="rw-log">${d.days.slice(0,3).map(day).join('')}</div>`:''}
-   ${RW.msg?`<div class="mrp-msg">${RW.msg}</div>`:''}
-   <button type="button" class="pm-save" onclick="rwSave(this)" ${ch?'':'disabled'}>${ch?'Save':'No changes'}</button>
-   </div>`;
+   ${c.on?`<div class="rw-opts"><div class="rw-o"><div><b>Stop when the data is in</b><small>No reads after the new day</small></div><button type="button" class="rw-sw${c.stopOnData!==false?' on':''}" onclick="rwSet('stopOnData',${c.stopOnData===false})" aria-pressed="${c.stopOnData!==false}"></button></div><div class="rw-o"><div><b>Alert if it doesn't come</b><small>At ${esc(rw12(c.to))}</small></div><button type="button" class="rw-sw${c.alert!==false?' on':''}" onclick="rwSet('alert',${c.alert===false})" aria-pressed="${c.alert!==false}"></button></div></div>`:''}
+   ${(d.days||[]).length?`<div class="rw-l">LAST 3 DAYS</div><div class="rw-log">${d.days.slice(0,3).map(x=>{const dt=new Date(x.day+'T12:00:00Z'),l=x.day===d.today?'Today':dt.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',timeZone:'UTC'}),v=ms=>ms?`<b class="ok">${aI('check')}${esc(rwAt(ms))}</b>`:`<b class="no">${aI('x')}none</b>`;return `<div class="rw-lr"><span>${esc(l)}</span><span>USA ${v(x.usa)}</span><span>AR ${v(x.ar)}</span></div>`}).join('')}</div>`:''}
+   ${RW.msg?`<div class="mrp-msg">${RW.msg}</div>`:''}<button type="button" class="pm-save" onclick="rwSave(this)" ${ch?'':'disabled'}>${ch?'Save':'No changes'}</button>`;
+ }else{
+  const T=RWT.data||{},last=T.last||{},chT=!!RWT.edit;
+  const tst=T.error?{cls:'bad',ic:'warn',t:'TikTok server did not answer',s:T.error}:!t.on?{cls:'all',ic:'refresh',t:'Reading all day',s:'Live: the sheet is read as people open the pages'}:T.inWindow?{cls:'run',ic:'wait',t:'Reading now',s:`Until ${rw12(t.to)} ${zone}`}:{cls:last.data?'ok':'wait',ic:last.data?'check':'clock',t:last.data?'Read today':'Waiting for the read',s:`${rw12(t.from)} to ${rw12(t.to)} ${(RW_TZ.find(x=>x[0]===t.tz)||RW_TZ[0])[1]}`};
+  const sel=RW.sel==='tiktok:win';
+  body=`<div class="rw-st ${tst.cls}"><span>${aI(tst.ic)}</span><div><b>${esc(tst.t)}</b><small>${esc(tst.s)}</small></div></div>
+   <div class="rwb-list">${RWB_TTI.map(x=>`<button type="button" class="rwb-r${sel?' sel':''}" onclick="rwbOpen('tiktok','win')" style="--c:${x.c};--b:${x.bg}"><i>${aI(x.ic)}</i><span><b>${x.n}</b><small>${x.p}</small></span><span class="rwb-t">${t.on?esc(rw12(t.from)):'All day'}<small>${last[x.k]?`<u class="ok">${aI('check')}${esc(rwAt(last[x.k]))}</u>`:t.on?'to '+esc(rw12(t.to)):'live'}</small></span></button>`).join('')}</div>
+   ${sel||t.on?`<div class="rwb-ed"><div class="rw-tm"><label><small>FROM</small><input type="time" value="${esc(t.from)}" onchange="rwtSet('from',this.value)"></label><em>→</em><label><small>TO</small><input type="time" value="${esc(t.to)}" onchange="rwtSet('to',this.value)"></label></div></div>`:''}
+   <div class="rw-mode"><button type="button" class="${t.on?'on':''}" onclick="rwtSet('on',true)">${aI('alarm')}Set times</button><button type="button" class="${t.on?'':'on'}" onclick="rwtSet('on',false)">${aI('refresh')}All day</button></div>
+   <small class="ad-sub" style="display:block;margin:2px 0 4px">TikTok reads all four together. Between reads the app shows the last copy.</small>
+   ${RWT.msg?`<div class="mrp-msg">${RWT.msg}</div>`:''}<button type="button" class="pm-save" onclick="rwtSave(this)" ${chT?'':'disabled'}>${chT?'Save':'No changes'}</button>`;
+ }
+ return `<div class="rw rwb"><b class="ad-h">${aI('sheet')}Reading the sheets</b>${track}${seg}
+  <div class="rwb-tz">${RW_TZ.map(([k,l])=>`<button type="button" class="${k===tz?'on':''}" onclick="rwSet('tz','${k}');rwtSet('tz','${k}')">${l} <b>${esc(rwNow(k))}</b></button>`).join('')}</div>${body}</div>`;
 }
  
 let FXT={data:null,busy:false,edit:null,msg:'',open:false};
